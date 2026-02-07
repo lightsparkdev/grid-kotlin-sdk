@@ -9,7 +9,7 @@ jobs:
   detect_breaking_changes:
     runs-on: 'ubuntu-latest'
     name: detect-breaking-changes
-    if: github.repository == 'lightsparkdev/grid-api'
+    if: github.repository == 'stainless-sdks/grid-kotlin'
     steps:
       - name: Calculate fetch-depth
         run: |
