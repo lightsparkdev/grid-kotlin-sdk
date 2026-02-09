@@ -1,11 +1,11 @@
-rootProject.name = "grid-kotlin-root"
+rootProject.name = "lightspark-grid-kotlin-root"
 
 val projectNames = rootDir.listFiles()
     ?.asSequence()
     .orEmpty()
     .filter { file ->
         file.isDirectory &&
-        file.name.startsWith("grid-kotlin") &&
+        file.name.startsWith("lightspark-grid-kotlin") &&
         file.listFiles()?.asSequence().orEmpty().any { it.name == "build.gradle.kts" }
     }
     .map { it.name }

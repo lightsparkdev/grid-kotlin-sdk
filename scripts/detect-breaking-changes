@@ -7,8 +7,8 @@ cd "$(dirname "$0")/.."
 echo "==> Detecting breaking changes"
 
 TEST_PATHS=(
-	grid-kotlin-core/src/test/kotlin/com/grid/api/models
-	grid-kotlin-core/src/test/kotlin/com/grid/api/services
+	lightspark-grid-kotlin-core/src/test/kotlin/com/lightspark/grid/models
+	lightspark-grid-kotlin-core/src/test/kotlin/com/lightspark/grid/services
 )
 
 for PATHSPEC in "${TEST_PATHS[@]}"; do
