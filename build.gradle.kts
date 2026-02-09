@@ -8,8 +8,8 @@ repositories {
 }
 
 allprojects {
-    group = "com.grid.api"
-    version = "0.0.1" // x-release-please-version
+    group = "com.lightspark.grid"
+    version = "0.1.0" // x-release-please-version
 }
 
 subprojects {
@@ -32,7 +32,7 @@ subprojects {
 // Avoid race conditions between `dokkaHtmlCollector` and `dokkaJavadocJar` tasks
 tasks.named("dokkaHtmlCollector").configure {
     subprojects.flatMap { it.tasks }
-        .filter { it.project.name != "grid-kotlin" && it.name == "dokkaJavadocJar" }
+        .filter { it.project.name != "lightspark-grid-kotlin" && it.name == "dokkaJavadocJar" }
         .forEach { mustRunAfter(it) }
 }
 

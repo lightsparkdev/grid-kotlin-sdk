@@ -1,19 +1,19 @@
-# Grid Kotlin API Library
+# Lightspark Grid Kotlin API Library
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.grid.api/grid-kotlin)](https://central.sonatype.com/artifact/com.grid.api/grid-kotlin/0.0.1)
-[![javadoc](https://javadoc.io/badge2/com.grid.api/grid-kotlin/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.grid.api/grid-kotlin/0.0.1)
+[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/0.1.0)
+[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/0.1.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.1.0)
 
 <!-- x-release-please-end -->
 
-The Grid Kotlin SDK provides convenient access to the [Grid REST API](grid.lightspark.com) from applications written in Kotlin.
+The Lightspark Grid Kotlin SDK provides convenient access to the [Lightspark Grid REST API](grid.lightspark.com) from applications written in Kotlin.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-KDocs are available on [javadoc.io](https://javadoc.io/doc/com.grid.api/grid-kotlin/0.0.1).
+KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.1.0).
 
 <!-- x-release-please-end -->
 
@@ -24,16 +24,16 @@ KDocs are available on [javadoc.io](https://javadoc.io/doc/com.grid.api/grid-kot
 ### Gradle
 
 ```kotlin
-implementation("com.grid.api:grid-kotlin:0.0.1")
+implementation("com.lightspark.grid:lightspark-grid-kotlin:0.1.0")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.grid.api</groupId>
-  <artifactId>grid-kotlin</artifactId>
-  <version>0.0.1</version>
+  <groupId>com.lightspark.grid</groupId>
+  <artifactId>lightspark-grid-kotlin</artifactId>
+  <version>0.1.0</version>
 </dependency>
 ```
 
@@ -46,14 +46,14 @@ This library requires Java 8 or later.
 ## Usage
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
-import com.grid.api.models.quotes.Quote
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.quotes.Quote
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
-// Configures using the `grid.username`, `grid.password`, `grid.webhookSignature` and `grid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `GRID_BASE_URL` environment variables
-val client: GridClient = GridOkHttpClient.fromEnv()
+// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -69,21 +69,21 @@ val quote: Quote = client.quotes().create(params)
 Configure the client using system properties or environment variables:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-// Configures using the `grid.username`, `grid.password`, `grid.webhookSignature` and `grid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `GRID_BASE_URL` environment variables
-val client: GridClient = GridOkHttpClient.fromEnv()
+// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 ```
 
 Or manually:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .username("My Username")
     .password("My Password")
     .build()
@@ -92,12 +92,12 @@ val client: GridClient = GridOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-val client: GridClient = GridOkHttpClient.builder()
-    // Configures using the `grid.username`, `grid.password`, `grid.webhookSignature` and `grid.baseUrl` system properties
-    // Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `GRID_BASE_URL` environment variables
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
+    // Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
+    // Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
     .fromEnv()
     .username("My Username")
     .build()
@@ -105,12 +105,12 @@ val client: GridClient = GridOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter             | System property         | Environment variable     | Required | Default value                                  |
-| ------------------ | ----------------------- | ------------------------ | -------- | ---------------------------------------------- |
-| `username`         | `grid.username`         | `GRID_USERNAME`          | true     | -                                              |
-| `password`         | `grid.password`         | `GRID_PASSWORD`          | true     | -                                              |
-| `webhookSignature` | `grid.webhookSignature` | `GRID_WEBHOOK_SIGNATURE` | false    | -                                              |
-| `baseUrl`          | `grid.baseUrl`          | `GRID_BASE_URL`          | true     | `"https://api.lightspark.com/grid/2025-10-13"` |
+| Setter             | System property                       | Environment variable       | Required | Default value                                  |
+| ------------------ | ------------------------------------- | -------------------------- | -------- | ---------------------------------------------- |
+| `username`         | `lightsparkgrid.gridUsername`         | `GRID_USERNAME`            | true     | -                                              |
+| `password`         | `lightsparkgrid.gridPassword`         | `GRID_PASSWORD`            | true     | -                                              |
+| `webhookSignature` | `lightsparkgrid.gridWebhookSignature` | `GRID_WEBHOOK_SIGNATURE`   | false    | -                                              |
+| `baseUrl`          | `lightsparkgrid.baseUrl`              | `LIGHTSPARK_GRID_BASE_URL` | true     | `"https://api.lightspark.com/grid/2025-10-13"` |
 
 System properties take precedence over environment variables.
 
@@ -123,9 +123,9 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```kotlin
-import com.grid.api.client.GridClient
+import com.lightspark.grid.client.LightsparkGridClient
 
-val clientWithOptions: GridClient = client.withOptions {
+val clientWithOptions: LightsparkGridClient = client.withOptions {
     it.baseUrl("https://example.com")
     it.maxRetries(42)
 }
@@ -135,7 +135,7 @@ The `withOptions()` method does not affect the original client or service.
 
 ## Requests and responses
 
-To send a request to the Grid API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
+To send a request to the Lightspark Grid API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Kotlin class.
 
 For example, `client.quotes().create(...)` should be called with an instance of `QuoteCreateParams`, and it will return an instance of `Quote`.
 
@@ -152,14 +152,14 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
-import com.grid.api.models.quotes.Quote
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.quotes.Quote
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
-// Configures using the `grid.username`, `grid.password`, `grid.webhookSignature` and `grid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `GRID_BASE_URL` environment variables
-val client: GridClient = GridOkHttpClient.fromEnv()
+// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -173,14 +173,14 @@ val quote: Quote = client.async().quotes().create(params)
 Or create an asynchronous client from the beginning:
 
 ```kotlin
-import com.grid.api.client.GridClientAsync
-import com.grid.api.client.okhttp.GridOkHttpClientAsync
-import com.grid.api.models.quotes.Quote
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.client.LightsparkGridClientAsync
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.quotes.Quote
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
-// Configures using the `grid.username`, `grid.password`, `grid.webhookSignature` and `grid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `GRID_BASE_URL` environment variables
-val client: GridClientAsync = GridOkHttpClientAsync.fromEnv()
+// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+val client: LightsparkGridClientAsync = LightsparkGridOkHttpClientAsync.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -200,8 +200,8 @@ The SDK defines methods that accept files.
 To upload a file, pass a [`Path`](https://docs.oracle.com/javase/8/docs/api/java/nio/file/Path.html):
 
 ```kotlin
-import com.grid.api.models.customers.bulk.BulkUploadCsvParams
-import com.grid.api.models.customers.bulk.BulkUploadCsvResponse
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 import java.nio.file.Paths
 
 val params: BulkUploadCsvParams = BulkUploadCsvParams.builder()
@@ -213,8 +213,8 @@ val response: BulkUploadCsvResponse = client.customers().bulk().uploadCsv(params
 Or an arbitrary [`InputStream`](https://docs.oracle.com/javase/8/docs/api/java/io/InputStream.html):
 
 ```kotlin
-import com.grid.api.models.customers.bulk.BulkUploadCsvParams
-import com.grid.api.models.customers.bulk.BulkUploadCsvResponse
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 import java.net.URL
 
 val params: BulkUploadCsvParams = BulkUploadCsvParams.builder()
@@ -226,8 +226,8 @@ val response: BulkUploadCsvResponse = client.customers().bulk().uploadCsv(params
 Or a `ByteArray`:
 
 ```kotlin
-import com.grid.api.models.customers.bulk.BulkUploadCsvParams
-import com.grid.api.models.customers.bulk.BulkUploadCsvResponse
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 
 val params: BulkUploadCsvParams = BulkUploadCsvParams.builder()
     .file("content".toByteArray())
@@ -235,12 +235,12 @@ val params: BulkUploadCsvParams = BulkUploadCsvParams.builder()
 val response: BulkUploadCsvResponse = client.customers().bulk().uploadCsv(params)
 ```
 
-Note that when passing a non-`Path` its filename is unknown so it will not be included in the request. To manually set a filename, pass a [`MultipartField`](grid-kotlin-core/src/main/kotlin/com/grid/api/core/Values.kt):
+Note that when passing a non-`Path` its filename is unknown so it will not be included in the request. To manually set a filename, pass a [`MultipartField`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/Values.kt):
 
 ```kotlin
-import com.grid.api.core.MultipartField
-import com.grid.api.models.customers.bulk.BulkUploadCsvParams
-import com.grid.api.models.customers.bulk.BulkUploadCsvResponse
+import com.lightspark.grid.core.MultipartField
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
+import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 import java.io.InputStream
 import java.net.URL
 
@@ -260,10 +260,10 @@ The SDK defines methods that deserialize responses into instances of Kotlin clas
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```kotlin
-import com.grid.api.core.http.Headers
-import com.grid.api.core.http.HttpResponseFor
-import com.grid.api.models.quotes.Quote
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.core.http.Headers
+import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.quotes.Quote
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -280,7 +280,7 @@ val headers: Headers = quote.headers()
 You can still deserialize the response into an instance of a Kotlin class if needed:
 
 ```kotlin
-import com.grid.api.models.quotes.Quote
+import com.lightspark.grid.models.quotes.Quote
 
 val parsedQuote: Quote = quote.parse()
 ```
@@ -289,26 +289,26 @@ val parsedQuote: Quote = quote.parse()
 
 The SDK throws custom unchecked exception types:
 
-- [`GridServiceException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`LightsparkGridServiceException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                |
-  | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-  | 400    | [`BadRequestException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                                                  |
+  | ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+  | 400    | [`BadRequestException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/UnexpectedStatusCodeException.kt) |
 
-- [`GridIoException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridIoException.kt): I/O networking errors.
+- [`LightsparkGridIoException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridIoException.kt): I/O networking errors.
 
-- [`GridRetryableException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`LightsparkGridRetryableException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`GridInvalidDataException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`LightsparkGridInvalidDataException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`GridException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`LightsparkGridException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Pagination
 
@@ -321,7 +321,7 @@ To iterate through all results across all pages, use the `autoPager()` method, w
 When using the synchronous client, the method returns a [`Sequence`](https://kotlinlang.org/docs/sequences.html)
 
 ```kotlin
-import com.grid.api.models.customers.CustomerListPage
+import com.lightspark.grid.models.customers.CustomerListPage
 
 val page: CustomerListPage = client.customers().list()
 page.autoPager()
@@ -332,7 +332,7 @@ page.autoPager()
 When using the asynchronous client, the method returns a [`Flow`](https://kotlinlang.org/docs/flow.html):
 
 ```kotlin
-import com.grid.api.models.customers.CustomerListPageAsync
+import com.lightspark.grid.models.customers.CustomerListPageAsync
 
 val page: CustomerListPageAsync = client.async().customers().list()
 page.autoPager()
@@ -346,8 +346,8 @@ To access individual page items and manually request the next page, use the `ite
 `hasNextPage()`, and `nextPage()` methods:
 
 ```kotlin
-import com.grid.api.models.customers.CustomerListPage
-import com.grid.api.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerListPage
+import com.lightspark.grid.models.customers.CustomerOneOf
 
 val page: CustomerListPage = client.customers().list()
 while (true) {
@@ -367,21 +367,21 @@ while (true) {
 
 The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
 
-Enable logging by setting the `GRID_LOG` environment variable to `info`:
+Enable logging by setting the `LIGHTSPARK_GRID_LOG` environment variable to `info`:
 
 ```sh
-export GRID_LOG=info
+export LIGHTSPARK_GRID_LOG=info
 ```
 
 Or to `debug` for more verbose logging:
 
 ```sh
-export GRID_LOG=debug
+export LIGHTSPARK_GRID_LOG=debug
 ```
 
 ## ProGuard and R8
 
-Although the SDK uses reflection, it is still usable with [ProGuard](https://github.com/Guardsquare/proguard) and [R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) because `grid-kotlin-core` is published with a [configuration file](grid-kotlin-core/src/main/resources/META-INF/proguard/grid-kotlin-core.pro) containing [keep rules](https://www.guardsquare.com/manual/configuration/usage).
+Although the SDK uses reflection, it is still usable with [ProGuard](https://github.com/Guardsquare/proguard) and [R8](https://developer.android.com/topic/performance/app-optimization/enable-app-optimization) because `lightspark-grid-kotlin-core` is published with a [configuration file](lightspark-grid-kotlin-core/src/main/resources/META-INF/proguard/lightspark-grid-kotlin-core.pro) containing [keep rules](https://www.guardsquare.com/manual/configuration/usage).
 
 ProGuard and R8 should automatically detect and use the published rules, but you can also manually copy the keep rules if necessary.
 
@@ -391,7 +391,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`GridOkHttpClient`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClient.kt) or [`GridOkHttpClientAsync`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`LightsparkGridOkHttpClient`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClient.kt) or [`LightsparkGridOkHttpClientAsync`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -417,10 +417,10 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .fromEnv()
     .maxRetries(4)
     .build()
@@ -433,7 +433,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```kotlin
-import com.grid.api.models.quotes.Quote
+import com.lightspark.grid.models.quotes.Quote
 
 val quote: Quote = client.quotes().create(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
@@ -443,11 +443,11 @@ val quote: Quote = client.quotes().create(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import java.time.Duration
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .fromEnv()
     .timeout(Duration.ofSeconds(30))
     .build()
@@ -458,12 +458,12 @@ val client: GridClient = GridOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import java.net.InetSocketAddress
 import java.net.Proxy
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .fromEnv()
     .proxy(Proxy(
       Proxy.Type.HTTP, InetSocketAddress(
@@ -482,10 +482,10 @@ val client: GridClient = GridOkHttpClient.builder()
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .fromEnv()
     // If `sslSocketFactory` is set, then `trustManager` must be set, and vice versa.
     .sslSocketFactory(yourSSLSocketFactory)
@@ -498,15 +498,15 @@ val client: GridClient = GridOkHttpClient.builder()
 
 The SDK consists of three artifacts:
 
-- `grid-kotlin-core`
+- `lightspark-grid-kotlin-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`GridClient`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClient.kt), [`GridClientAsync`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientAsync.kt), [`GridClientImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientImpl.kt), and [`GridClientAsyncImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientAsyncImpl.kt), all of which can work with any HTTP client
-- `grid-kotlin-client-okhttp`
+  - Exposes [`LightsparkGridClient`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClient.kt), [`LightsparkGridClientAsync`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientAsync.kt), [`LightsparkGridClientImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientImpl.kt), and [`LightsparkGridClientAsyncImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientAsyncImpl.kt), all of which can work with any HTTP client
+- `lightspark-grid-kotlin-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`GridOkHttpClient`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClient.kt) and [`GridOkHttpClientAsync`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClientAsync.kt), which provide a way to construct [`GridClientImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientImpl.kt) and [`GridClientAsyncImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientAsyncImpl.kt), respectively, using OkHttp
-- `grid-kotlin`
-  - Depends on and exposes the APIs of both `grid-kotlin-core` and `grid-kotlin-client-okhttp`
+  - Exposes [`LightsparkGridOkHttpClient`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClient.kt) and [`LightsparkGridOkHttpClientAsync`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClientAsync.kt), which provide a way to construct [`LightsparkGridClientImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientImpl.kt) and [`LightsparkGridClientAsyncImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientAsyncImpl.kt), respectively, using OkHttp
+- `lightspark-grid-kotlin`
+  - Depends on and exposes the APIs of both `lightspark-grid-kotlin-core` and `lightspark-grid-kotlin-client-okhttp`
   - Does not have its own logic
 
 This structure allows replacing the SDK's default HTTP client without pulling in unnecessary dependencies.
@@ -518,17 +518,17 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 
 To use a customized `OkHttpClient`:
 
-1. Replace your [`grid-kotlin` dependency](#installation) with `grid-kotlin-core`
-2. Copy `grid-kotlin-client-okhttp`'s [`OkHttpClient`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`GridClientImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientImpl.kt) or [`GridClientAsyncImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientAsyncImpl.kt), similarly to [`GridOkHttpClient`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClient.kt) or [`GridOkHttpClientAsync`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClientAsync.kt), using your customized client
+1. Replace your [`lightspark-grid-kotlin` dependency](#installation) with `lightspark-grid-kotlin-core`
+2. Copy `lightspark-grid-kotlin-client-okhttp`'s [`OkHttpClient`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`LightsparkGridClientImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientImpl.kt) or [`LightsparkGridClientAsyncImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientAsyncImpl.kt), similarly to [`LightsparkGridOkHttpClient`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClient.kt) or [`LightsparkGridOkHttpClientAsync`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
-1. Replace your [`grid-kotlin` dependency](#installation) with `grid-kotlin-core`
-2. Write a class that implements the [`HttpClient`](grid-kotlin-core/src/main/kotlin/com/grid/api/core/http/HttpClient.kt) interface
-3. Construct [`GridClientImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientImpl.kt) or [`GridClientAsyncImpl`](grid-kotlin-core/src/main/kotlin/com/grid/api/client/GridClientAsyncImpl.kt), similarly to [`GridOkHttpClient`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClient.kt) or [`GridOkHttpClientAsync`](grid-kotlin-client-okhttp/src/main/kotlin/com/grid/api/client/okhttp/GridOkHttpClientAsync.kt), using your new client class
+1. Replace your [`lightspark-grid-kotlin` dependency](#installation) with `lightspark-grid-kotlin-core`
+2. Write a class that implements the [`HttpClient`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/http/HttpClient.kt) interface
+3. Construct [`LightsparkGridClientImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientImpl.kt) or [`LightsparkGridClientAsyncImpl`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/client/LightsparkGridClientAsyncImpl.kt), similarly to [`LightsparkGridOkHttpClient`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClient.kt) or [`LightsparkGridOkHttpClientAsync`](lightspark-grid-kotlin-client-okhttp/src/main/kotlin/com/lightspark/grid/client/okhttp/LightsparkGridOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -539,8 +539,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```kotlin
-import com.grid.api.core.JsonValue
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -554,8 +554,8 @@ These can be accessed on the built object later using the `_additionalHeaders()`
 To set undocumented parameters on _nested_ headers, query params, or body classes, call the `putAdditionalProperty` method on the nested class:
 
 ```kotlin
-import com.grid.api.core.JsonValue
-import com.grid.api.models.transferin.TransferInCreateParams
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.transferin.TransferInCreateParams
 
 val params: TransferInCreateParams = TransferInCreateParams.builder()
     .destination(TransferInCreateParams.Destination.builder()
@@ -566,11 +566,11 @@ val params: TransferInCreateParams = TransferInCreateParams.builder()
 
 These properties can be accessed on the nested built object later using the `_additionalProperties()` method.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](grid-kotlin-core/src/main/kotlin/com/grid/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/Values.kt) object to its setter:
 
 ```kotlin
-import com.grid.api.core.JsonValue
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .destination(JsonValue.from(42))
@@ -580,10 +580,10 @@ val params: QuoteCreateParams = QuoteCreateParams.builder()
     .build()
 ```
 
-The most straightforward way to create a [`JsonValue`](grid-kotlin-core/src/main/kotlin/com/grid/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/Values.kt) is using its `from(...)` method:
 
 ```kotlin
-import com.grid.api.core.JsonValue
+import com.lightspark.grid.core.JsonValue
 
 // Create primitive JSON values
 val nullValue: JsonValue = JsonValue.from(null)
@@ -617,11 +617,11 @@ val complexValue: JsonValue = JsonValue.from(mapOf(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](grid-kotlin-core/src/main/kotlin/com/grid/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/core/Values.kt):
 
 ```kotlin
-import com.grid.api.core.JsonMissing
-import com.grid.api.models.quotes.QuoteCreateParams
+import com.lightspark.grid.core.JsonMissing
+import com.lightspark.grid.models.quotes.QuoteCreateParams
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .lockedCurrencyAmount(10000L)
@@ -636,10 +636,10 @@ val params: QuoteCreateParams = QuoteCreateParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```kotlin
-import com.grid.api.core.JsonBoolean
-import com.grid.api.core.JsonNull
-import com.grid.api.core.JsonNumber
-import com.grid.api.core.JsonValue
+import com.lightspark.grid.core.JsonBoolean
+import com.lightspark.grid.core.JsonNull
+import com.lightspark.grid.core.JsonNumber
+import com.lightspark.grid.core.JsonValue
 
 val additionalProperties: Map<String, JsonValue> = client.quotes().create(params)._additionalProperties()
 val secretPropertyValue: JsonValue = additionalProperties.get("secretProperty")
@@ -656,8 +656,8 @@ val result = when (secretPropertyValue) {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```kotlin
-import com.grid.api.core.JsonField
-import com.grid.api.models.quotes.QuoteDestinationOneOf
+import com.lightspark.grid.core.JsonField
+import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 
 val destination: JsonField<QuoteDestinationOneOf> = client.quotes().create(params)._destination()
 
@@ -679,12 +679,12 @@ if (destination.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`GridInvalidDataException`](grid-kotlin-core/src/main/kotlin/com/grid/api/errors/GridInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`LightsparkGridInvalidDataException`](lightspark-grid-kotlin-core/src/main/kotlin/com/lightspark/grid/errors/LightsparkGridInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```kotlin
-import com.grid.api.models.quotes.Quote
+import com.lightspark.grid.models.quotes.Quote
 
 val quote: Quote = client.quotes().create(params).validate()
 ```
@@ -692,7 +692,7 @@ val quote: Quote = client.quotes().create(params).validate()
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```kotlin
-import com.grid.api.models.quotes.Quote
+import com.lightspark.grid.models.quotes.Quote
 
 val quote: Quote = client.quotes().create(
   params, RequestOptions.builder().responseValidation(true).build()
@@ -702,10 +702,10 @@ val quote: Quote = client.quotes().create(
 Or configure the default for all method calls at the client level:
 
 ```kotlin
-import com.grid.api.client.GridClient
-import com.grid.api.client.okhttp.GridOkHttpClient
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-val client: GridClient = GridOkHttpClient.builder()
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .fromEnv()
     .responseValidation(true)
     .build()
