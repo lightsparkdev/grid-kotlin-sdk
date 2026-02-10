@@ -38,12 +38,8 @@ internal class PlatformListInternalAccountsResponseTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                                        .accountType(
-                                            PaymentInstructions.AccountOrWalletInfo.Clabe
-                                                .AccountType
-                                                .CLABE
-                                        )
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
                                         .clabeNumber("123456789012345678")
                                         .reference("UMA-Q12345-REF")
                                         .build()
@@ -81,11 +77,8 @@ internal class PlatformListInternalAccountsResponseTest {
                     .addFundingPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                                    .accountType(
-                                        PaymentInstructions.AccountOrWalletInfo.Clabe.AccountType
-                                            .CLABE
-                                    )
+                                PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                    .builder()
                                     .clabeNumber("123456789012345678")
                                     .reference("UMA-Q12345-REF")
                                     .build()
@@ -127,12 +120,8 @@ internal class PlatformListInternalAccountsResponseTest {
                         .addFundingPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                                        .accountType(
-                                            PaymentInstructions.AccountOrWalletInfo.Clabe
-                                                .AccountType
-                                                .CLABE
-                                        )
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
                                         .clabeNumber("123456789012345678")
                                         .reference("UMA-Q12345-REF")
                                         .build()

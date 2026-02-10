@@ -96,10 +96,9 @@ internal class ProGuardCompatibilityTest {
     fun quoteDestinationOneOfRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteDestinationOneOf =
-            QuoteDestinationOneOf.ofAccount(
-                QuoteDestinationOneOf.Account.builder()
+            QuoteDestinationOneOf.ofAccountDestination(
+                QuoteDestinationOneOf.AccountDestination.builder()
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
                     .build()
             )
 

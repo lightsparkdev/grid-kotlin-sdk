@@ -4,7 +4,7 @@ package com.lightspark.grid.models.platform.externalaccounts
 
 import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.customers.externalaccounts.UsAccountInfo
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,11 +17,10 @@ internal class ExternalAccountCreateParamsTest {
             .externalAccountCreate(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountInfoOneOf.UsAccount.builder()
-                            .accountCategory(
-                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                            )
+                        UsAccountInfo.builder()
+                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                             .accountNumber("12345678901")
+                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
                                 BeneficiaryOneOf.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
@@ -59,11 +58,10 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            ExternalAccountInfoOneOf.UsAccount.builder()
-                                .accountCategory(
-                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                )
+                            UsAccountInfo.builder()
+                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                 .accountNumber("12345678901")
+                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
                                     BeneficiaryOneOf.Individual.builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -99,11 +97,10 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountInfoOneOf.UsAccount.builder()
-                            .accountCategory(
-                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                            )
+                        UsAccountInfo.builder()
+                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                             .accountNumber("12345678901")
+                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
                                 BeneficiaryOneOf.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
@@ -140,11 +137,10 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            ExternalAccountInfoOneOf.UsAccount.builder()
-                                .accountCategory(
-                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                )
+                            UsAccountInfo.builder()
+                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                 .accountNumber("12345678901")
+                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
                                     BeneficiaryOneOf.Individual.builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -166,11 +162,10 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountInfoOneOf.UsAccount.builder()
-                            .accountCategory(
-                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                            )
+                        UsAccountInfo.builder()
+                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                             .accountNumber("12345678901")
+                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
                                 BeneficiaryOneOf.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
