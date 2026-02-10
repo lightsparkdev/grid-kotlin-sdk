@@ -15,28 +15,26 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class QuoteSourceOneOfTest {
 
     @Test
-    fun ofAccount() {
-        val account =
-            QuoteSourceOneOf.Account.builder()
+    fun ofAccountQuoteSource() {
+        val accountQuoteSource =
+            QuoteSourceOneOf.AccountQuoteSource.builder()
                 .accountId("InternalAccount:85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .build()
 
-        val quoteSourceOneOf = QuoteSourceOneOf.ofAccount(account)
+        val quoteSourceOneOf = QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource)
 
-        assertThat(quoteSourceOneOf.account()).isEqualTo(account)
-        assertThat(quoteSourceOneOf.realtimeFunding()).isNull()
+        assertThat(quoteSourceOneOf.accountQuoteSource()).isEqualTo(accountQuoteSource)
+        assertThat(quoteSourceOneOf.realtimeFundingQuoteSource()).isNull()
     }
 
     @Test
-    fun ofAccountRoundtrip() {
+    fun ofAccountQuoteSourceRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteSourceOneOf =
-            QuoteSourceOneOf.ofAccount(
-                QuoteSourceOneOf.Account.builder()
+            QuoteSourceOneOf.ofAccountQuoteSource(
+                QuoteSourceOneOf.AccountQuoteSource.builder()
                     .accountId("InternalAccount:85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                    .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
             )
@@ -51,28 +49,28 @@ internal class QuoteSourceOneOfTest {
     }
 
     @Test
-    fun ofRealtimeFunding() {
-        val realtimeFunding =
-            QuoteSourceOneOf.RealtimeFunding.builder()
+    fun ofRealtimeFundingQuoteSource() {
+        val realtimeFundingQuoteSource =
+            QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
                 .currency("USD")
-                .sourceType(QuoteSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                 .build()
 
-        val quoteSourceOneOf = QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding)
+        val quoteSourceOneOf =
+            QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource)
 
-        assertThat(quoteSourceOneOf.account()).isNull()
-        assertThat(quoteSourceOneOf.realtimeFunding()).isEqualTo(realtimeFunding)
+        assertThat(quoteSourceOneOf.accountQuoteSource()).isNull()
+        assertThat(quoteSourceOneOf.realtimeFundingQuoteSource())
+            .isEqualTo(realtimeFundingQuoteSource)
     }
 
     @Test
-    fun ofRealtimeFundingRoundtrip() {
+    fun ofRealtimeFundingQuoteSourceRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteSourceOneOf =
-            QuoteSourceOneOf.ofRealtimeFunding(
-                QuoteSourceOneOf.RealtimeFunding.builder()
+            QuoteSourceOneOf.ofRealtimeFundingQuoteSource(
+                QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
                     .currency("USD")
-                    .sourceType(QuoteSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                     .build()
             )

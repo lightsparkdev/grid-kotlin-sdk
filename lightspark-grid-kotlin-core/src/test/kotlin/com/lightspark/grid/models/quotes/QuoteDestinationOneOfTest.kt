@@ -8,7 +8,7 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.customers.externalaccounts.UsAccountInfo
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -19,28 +19,26 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class QuoteDestinationOneOfTest {
 
     @Test
-    fun ofAccount() {
-        val account =
-            QuoteDestinationOneOf.Account.builder()
+    fun ofAccountDestination() {
+        val accountDestination =
+            QuoteDestinationOneOf.AccountDestination.builder()
                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
                 .build()
 
-        val quoteDestinationOneOf = QuoteDestinationOneOf.ofAccount(account)
+        val quoteDestinationOneOf = QuoteDestinationOneOf.ofAccountDestination(accountDestination)
 
-        assertThat(quoteDestinationOneOf.account()).isEqualTo(account)
-        assertThat(quoteDestinationOneOf.umaAddress()).isNull()
-        assertThat(quoteDestinationOneOf.externalAccountDetails()).isNull()
+        assertThat(quoteDestinationOneOf.accountDestination()).isEqualTo(accountDestination)
+        assertThat(quoteDestinationOneOf.umaAddressDestination()).isNull()
+        assertThat(quoteDestinationOneOf.externalAccountDetailsDestination()).isNull()
     }
 
     @Test
-    fun ofAccountRoundtrip() {
+    fun ofAccountDestinationRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteDestinationOneOf =
-            QuoteDestinationOneOf.ofAccount(
-                QuoteDestinationOneOf.Account.builder()
+            QuoteDestinationOneOf.ofAccountDestination(
+                QuoteDestinationOneOf.AccountDestination.builder()
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
                     .build()
             )
 
@@ -54,13 +52,12 @@ internal class QuoteDestinationOneOfTest {
     }
 
     @Test
-    fun ofUmaAddress() {
-        val umaAddress =
-            QuoteDestinationOneOf.UmaAddress.builder()
-                .destinationType(QuoteDestinationOneOf.UmaAddress.DestinationType.UMA_ADDRESS)
+    fun ofUmaAddressDestination() {
+        val umaAddressDestination =
+            QuoteDestinationOneOf.UmaAddressDestination.builder()
                 .umaAddress("\$receiver@uma.domain.com")
                 .counterpartyInformation(
-                    QuoteDestinationOneOf.UmaAddress.CounterpartyInformation.builder()
+                    QuoteDestinationOneOf.UmaAddressDestination.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -69,23 +66,24 @@ internal class QuoteDestinationOneOfTest {
                 .currency("EUR")
                 .build()
 
-        val quoteDestinationOneOf = QuoteDestinationOneOf.ofUmaAddress(umaAddress)
+        val quoteDestinationOneOf =
+            QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination)
 
-        assertThat(quoteDestinationOneOf.account()).isNull()
-        assertThat(quoteDestinationOneOf.umaAddress()).isEqualTo(umaAddress)
-        assertThat(quoteDestinationOneOf.externalAccountDetails()).isNull()
+        assertThat(quoteDestinationOneOf.accountDestination()).isNull()
+        assertThat(quoteDestinationOneOf.umaAddressDestination()).isEqualTo(umaAddressDestination)
+        assertThat(quoteDestinationOneOf.externalAccountDetailsDestination()).isNull()
     }
 
     @Test
-    fun ofUmaAddressRoundtrip() {
+    fun ofUmaAddressDestinationRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteDestinationOneOf =
-            QuoteDestinationOneOf.ofUmaAddress(
-                QuoteDestinationOneOf.UmaAddress.builder()
-                    .destinationType(QuoteDestinationOneOf.UmaAddress.DestinationType.UMA_ADDRESS)
+            QuoteDestinationOneOf.ofUmaAddressDestination(
+                QuoteDestinationOneOf.UmaAddressDestination.builder()
                     .umaAddress("\$receiver@uma.domain.com")
                     .counterpartyInformation(
-                        QuoteDestinationOneOf.UmaAddress.CounterpartyInformation.builder()
+                        QuoteDestinationOneOf.UmaAddressDestination.CounterpartyInformation
+                            .builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                             .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                             .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -105,21 +103,16 @@ internal class QuoteDestinationOneOfTest {
     }
 
     @Test
-    fun ofExternalAccountDetails() {
-        val externalAccountDetails =
-            QuoteDestinationOneOf.ExternalAccountDetails.builder()
-                .destinationType(
-                    QuoteDestinationOneOf.ExternalAccountDetails.DestinationType
-                        .EXTERNAL_ACCOUNT_DETAILS
-                )
+    fun ofExternalAccountDetailsDestination() {
+        val externalAccountDetailsDestination =
+            QuoteDestinationOneOf.ExternalAccountDetailsDestination.builder()
                 .externalAccountDetails(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            ExternalAccountInfoOneOf.UsAccount.builder()
-                                .accountCategory(
-                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                )
+                            UsAccountInfo.builder()
+                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                 .accountNumber("123456789")
+                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
                                     BeneficiaryOneOf.Individual.builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -150,31 +143,29 @@ internal class QuoteDestinationOneOfTest {
                 .build()
 
         val quoteDestinationOneOf =
-            QuoteDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)
+            QuoteDestinationOneOf.ofExternalAccountDetailsDestination(
+                externalAccountDetailsDestination
+            )
 
-        assertThat(quoteDestinationOneOf.account()).isNull()
-        assertThat(quoteDestinationOneOf.umaAddress()).isNull()
-        assertThat(quoteDestinationOneOf.externalAccountDetails()).isEqualTo(externalAccountDetails)
+        assertThat(quoteDestinationOneOf.accountDestination()).isNull()
+        assertThat(quoteDestinationOneOf.umaAddressDestination()).isNull()
+        assertThat(quoteDestinationOneOf.externalAccountDetailsDestination())
+            .isEqualTo(externalAccountDetailsDestination)
     }
 
     @Test
-    fun ofExternalAccountDetailsRoundtrip() {
+    fun ofExternalAccountDetailsDestinationRoundtrip() {
         val jsonMapper = jsonMapper()
         val quoteDestinationOneOf =
-            QuoteDestinationOneOf.ofExternalAccountDetails(
-                QuoteDestinationOneOf.ExternalAccountDetails.builder()
-                    .destinationType(
-                        QuoteDestinationOneOf.ExternalAccountDetails.DestinationType
-                            .EXTERNAL_ACCOUNT_DETAILS
-                    )
+            QuoteDestinationOneOf.ofExternalAccountDetailsDestination(
+                QuoteDestinationOneOf.ExternalAccountDetailsDestination.builder()
                     .externalAccountDetails(
                         ExternalAccountCreate.builder()
                             .accountInfo(
-                                ExternalAccountInfoOneOf.UsAccount.builder()
-                                    .accountCategory(
-                                        ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                    )
+                                UsAccountInfo.builder()
+                                    .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                     .accountNumber("123456789")
+                                    .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                     .beneficiary(
                                         BeneficiaryOneOf.Individual.builder()
                                             .birthDate(LocalDate.parse("1990-01-15"))

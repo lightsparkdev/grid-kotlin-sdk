@@ -15,11 +15,10 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
                             BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))
@@ -50,11 +49,10 @@ internal class ExternalAccountCreateTest {
         assertThat(externalAccountCreate.accountInfo())
             .isEqualTo(
                 ExternalAccountInfoOneOf.ofUsAccount(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
                             BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))
@@ -90,11 +88,10 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
                             BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))

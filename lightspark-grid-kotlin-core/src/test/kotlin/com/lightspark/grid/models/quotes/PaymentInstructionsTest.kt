@@ -14,10 +14,7 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                        .accountType(
-                            PaymentInstructions.AccountOrWalletInfo.Clabe.AccountType.CLABE
-                        )
+                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
                         .clabeNumber("123456789012345678")
                         .reference("UMA-Q12345-REF")
                         .build()
@@ -30,11 +27,8 @@ internal class PaymentInstructionsTest {
 
         assertThat(paymentInstructions.accountOrWalletInfo())
             .isEqualTo(
-                PaymentInstructions.AccountOrWalletInfo.ofClabe(
-                    PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                        .accountType(
-                            PaymentInstructions.AccountOrWalletInfo.Clabe.AccountType.CLABE
-                        )
+                PaymentInstructions.AccountOrWalletInfo.ofPaymentClabeAccount(
+                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
                         .clabeNumber("123456789012345678")
                         .reference("UMA-Q12345-REF")
                         .build()
@@ -53,10 +47,7 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.Clabe.builder()
-                        .accountType(
-                            PaymentInstructions.AccountOrWalletInfo.Clabe.AccountType.CLABE
-                        )
+                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
                         .clabeNumber("123456789012345678")
                         .reference("UMA-Q12345-REF")
                         .build()
