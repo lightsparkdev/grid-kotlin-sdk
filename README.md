@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/0.2.0)
-[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/0.3.0)
+[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.3.0)
 
 <!-- x-release-please-end -->
 
@@ -11,9 +11,18 @@ The Lightspark Grid Kotlin SDK provides convenient access to the [Lightspark Gri
 
 It is generated with [Stainless](https://www.stainless.com/).
 
+## MCP Server
+
+Use the Lightspark Grid MCP Server to enable AI assistants to interact with this API, allowing them to explore endpoints, make test requests, and use documentation to help integrate this SDK into your application.
+
+[![Add to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en-US/install-mcp?name=lightspark-grid-mcp&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsImxpZ2h0c3BhcmstZ3JpZC1tY3AiXSwiZW52Ijp7IkdSSURfQ0xJRU5UX0lEIjoiTXkgVXNlcm5hbWUiLCJHUklEX0NMSUVOVF9TRUNSRVQiOiJNeSBQYXNzd29yZCIsIkdSSURfV0VCSE9PS19QVUJLRVkiOiJNeSBXZWJob29rIFNpZ25hdHVyZSJ9fQ)
+[![Install in VS Code](https://img.shields.io/badge/_-Add_to_VS_Code-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCA0MCA0MCI+PHBhdGggZmlsbD0iI0VFRSIgZmlsbC1ydWxlPSJldmVub2RkIiBkPSJNMzAuMjM1IDM5Ljg4NGEyLjQ5MSAyLjQ5MSAwIDAgMS0xLjc4MS0uNzNMMTIuNyAyNC43OGwtMy40NiAyLjYyNC0zLjQwNiAyLjU4MmExLjY2NSAxLjY2NSAwIDAgMS0xLjA4Mi4zMzggMS42NjQgMS42NjQgMCAwIDEtMS4wNDYtLjQzMWwtMi4yLTJhMS42NjYgMS42NjYgMCAwIDEgMC0yLjQ2M0w3LjQ1OCAyMCA0LjY3IDE3LjQ1MyAxLjUwNyAxNC41N2ExLjY2NSAxLjY2NSAwIDAgMSAwLTIuNDYzbDIuMi0yYTEuNjY1IDEuNjY1IDAgMCAxIDIuMTMtLjA5N2w2Ljg2MyA1LjIwOUwyOC40NTIuODQ0YTIuNDg4IDIuNDg4IDAgMCAxIDEuODQxLS43MjljLjM1MS4wMDkuNjk5LjA5MSAxLjAxOS4yNDVsOC4yMzYgMy45NjFhMi41IDIuNSAwIDAgMSAxLjQxNSAyLjI1M3YuMDk5LS4wNDVWMzMuMzd2LS4wNDUuMDk1YTIuNTAxIDIuNTAxIDAgMCAxLTEuNDE2IDIuMjU3bC04LjIzNSAzLjk2MWEyLjQ5MiAyLjQ5MiAwIDAgMS0xLjA3Ny4yNDZabS43MTYtMjguOTQ3LTExLjk0OCA5LjA2MiAxMS45NTIgOS4wNjUtLjAwNC0xOC4xMjdaIi8+PC9zdmc+)](https://vscode.stainless.com/mcp/%7B%22name%22%3A%22lightspark-grid-mcp%22%2C%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22lightspark-grid-mcp%22%5D%2C%22env%22%3A%7B%22GRID_CLIENT_ID%22%3A%22My%20Username%22%2C%22GRID_CLIENT_SECRET%22%3A%22My%20Password%22%2C%22GRID_WEBHOOK_PUBKEY%22%3A%22My%20Webhook%20Signature%22%7D%7D)
+
+> Note: You may need to set environment variables in your MCP client.
+
 <!-- x-release-please-start-version -->
 
-KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.2.0).
+KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.3.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +33,7 @@ KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/l
 ### Gradle
 
 ```kotlin
-implementation("com.lightspark.grid:lightspark-grid-kotlin:0.2.0")
+implementation("com.lightspark.grid:lightspark-grid-kotlin:0.3.0")
 ```
 
 ### Maven
@@ -33,7 +42,7 @@ implementation("com.lightspark.grid:lightspark-grid-kotlin:0.2.0")
 <dependency>
   <groupId>com.lightspark.grid</groupId>
   <artifactId>lightspark-grid-kotlin</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -53,8 +62,8 @@ import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
-// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+// Configures using the `lightsparkgrid.gridClientId`, `lightsparkgrid.gridClientSecret`, `lightsparkgrid.gridWebhookPubkey` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_CLIENT_ID`, `GRID_CLIENT_SECRET`, `GRID_WEBHOOK_PUBKEY` and `LIGHTSPARK_GRID_BASE_URL` environment variables
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
@@ -78,8 +87,8 @@ Configure the client using system properties or environment variables:
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
-// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+// Configures using the `lightsparkgrid.gridClientId`, `lightsparkgrid.gridClientSecret`, `lightsparkgrid.gridWebhookPubkey` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_CLIENT_ID`, `GRID_CLIENT_SECRET`, `GRID_WEBHOOK_PUBKEY` and `LIGHTSPARK_GRID_BASE_URL` environment variables
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 ```
 
@@ -102,8 +111,8 @@ import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
-    // Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
-    // Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+    // Configures using the `lightsparkgrid.gridClientId`, `lightsparkgrid.gridClientSecret`, `lightsparkgrid.gridWebhookPubkey` and `lightsparkgrid.baseUrl` system properties
+    // Or configures using the `GRID_CLIENT_ID`, `GRID_CLIENT_SECRET`, `GRID_WEBHOOK_PUBKEY` and `LIGHTSPARK_GRID_BASE_URL` environment variables
     .fromEnv()
     .username("My Username")
     .build()
@@ -111,12 +120,12 @@ val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
 
 See this table for the available options:
 
-| Setter             | System property                       | Environment variable       | Required | Default value                                  |
-| ------------------ | ------------------------------------- | -------------------------- | -------- | ---------------------------------------------- |
-| `username`         | `lightsparkgrid.gridUsername`         | `GRID_USERNAME`            | true     | -                                              |
-| `password`         | `lightsparkgrid.gridPassword`         | `GRID_PASSWORD`            | true     | -                                              |
-| `webhookSignature` | `lightsparkgrid.gridWebhookSignature` | `GRID_WEBHOOK_SIGNATURE`   | false    | -                                              |
-| `baseUrl`          | `lightsparkgrid.baseUrl`              | `LIGHTSPARK_GRID_BASE_URL` | true     | `"https://api.lightspark.com/grid/2025-10-13"` |
+| Setter             | System property                    | Environment variable       | Required | Default value                                  |
+| ------------------ | ---------------------------------- | -------------------------- | -------- | ---------------------------------------------- |
+| `username`         | `lightsparkgrid.gridClientId`      | `GRID_CLIENT_ID`           | true     | -                                              |
+| `password`         | `lightsparkgrid.gridClientSecret`  | `GRID_CLIENT_SECRET`       | true     | -                                              |
+| `webhookSignature` | `lightsparkgrid.gridWebhookPubkey` | `GRID_WEBHOOK_PUBKEY`      | false    | -                                              |
+| `baseUrl`          | `lightsparkgrid.baseUrl`           | `LIGHTSPARK_GRID_BASE_URL` | true     | `"https://api.lightspark.com/grid/2025-10-13"` |
 
 System properties take precedence over environment variables.
 
@@ -165,8 +174,8 @@ import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
-// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+// Configures using the `lightsparkgrid.gridClientId`, `lightsparkgrid.gridClientSecret`, `lightsparkgrid.gridWebhookPubkey` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_CLIENT_ID`, `GRID_CLIENT_SECRET`, `GRID_WEBHOOK_PUBKEY` and `LIGHTSPARK_GRID_BASE_URL` environment variables
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
@@ -192,8 +201,8 @@ import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
-// Configures using the `lightsparkgrid.gridUsername`, `lightsparkgrid.gridPassword`, `lightsparkgrid.gridWebhookSignature` and `lightsparkgrid.baseUrl` system properties
-// Or configures using the `GRID_USERNAME`, `GRID_PASSWORD`, `GRID_WEBHOOK_SIGNATURE` and `LIGHTSPARK_GRID_BASE_URL` environment variables
+// Configures using the `lightsparkgrid.gridClientId`, `lightsparkgrid.gridClientSecret`, `lightsparkgrid.gridWebhookPubkey` and `lightsparkgrid.baseUrl` system properties
+// Or configures using the `GRID_CLIENT_ID`, `GRID_CLIENT_SECRET`, `GRID_WEBHOOK_PUBKEY` and `LIGHTSPARK_GRID_BASE_URL` environment variables
 val client: LightsparkGridClientAsync = LightsparkGridOkHttpClientAsync.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()

@@ -397,12 +397,12 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter            |System property                      |Environment variable      |Required|Default value                                 |
-         * |------------------|-------------------------------------|--------------------------|--------|----------------------------------------------|
-         * |`username`        |`lightsparkgrid.gridUsername`        |`GRID_USERNAME`           |true    |-                                             |
-         * |`password`        |`lightsparkgrid.gridPassword`        |`GRID_PASSWORD`           |true    |-                                             |
-         * |`webhookSignature`|`lightsparkgrid.gridWebhookSignature`|`GRID_WEBHOOK_SIGNATURE`  |false   |-                                             |
-         * |`baseUrl`         |`lightsparkgrid.baseUrl`             |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
+         * |Setter            |System property                   |Environment variable      |Required|Default value                                 |
+         * |------------------|----------------------------------|--------------------------|--------|----------------------------------------------|
+         * |`username`        |`lightsparkgrid.gridClientId`     |`GRID_CLIENT_ID`          |true    |-                                             |
+         * |`password`        |`lightsparkgrid.gridClientSecret` |`GRID_CLIENT_SECRET`      |true    |-                                             |
+         * |`webhookSignature`|`lightsparkgrid.gridWebhookPubkey`|`GRID_WEBHOOK_PUBKEY`     |false   |-                                             |
+         * |`baseUrl`         |`lightsparkgrid.baseUrl`          |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
          *
          * System properties take precedence over environment variables.
          */
@@ -410,12 +410,13 @@ private constructor(
             (System.getProperty("lightsparkgrid.baseUrl")
                     ?: System.getenv("LIGHTSPARK_GRID_BASE_URL"))
                 ?.let { baseUrl(it) }
-            (System.getProperty("lightsparkgrid.gridUsername") ?: System.getenv("GRID_USERNAME"))
+            (System.getProperty("lightsparkgrid.gridClientId") ?: System.getenv("GRID_CLIENT_ID"))
                 ?.let { username(it) }
-            (System.getProperty("lightsparkgrid.gridPassword") ?: System.getenv("GRID_PASSWORD"))
+            (System.getProperty("lightsparkgrid.gridClientSecret")
+                    ?: System.getenv("GRID_CLIENT_SECRET"))
                 ?.let { password(it) }
-            (System.getProperty("lightsparkgrid.gridWebhookSignature")
-                    ?: System.getenv("GRID_WEBHOOK_SIGNATURE"))
+            (System.getProperty("lightsparkgrid.gridWebhookPubkey")
+                    ?: System.getenv("GRID_WEBHOOK_PUBKEY"))
                 ?.let { webhookSignature(it) }
         }
 
