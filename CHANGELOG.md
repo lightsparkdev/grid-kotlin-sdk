@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 (2026-02-10)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* adding min and max to fx api ([8eb3d65](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8eb3d65a6c8f13dc31ba18b713dd341c2adf91a7))
+* **api:** manual updates ([2aa88b8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2aa88b8cdb9d358aa6d36efef5cd58356f5f390e))
+
+
+### Chores
+
+* configure new SDK language ([e8b921b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e8b921bd2ba2c7d77682a25864e61743916f13a9))
+
 ## 0.2.0 (2026-02-10)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.1.0...v0.2.0)
