@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 (2026-02-10)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** remove reference to empty base objects ([08ceeb9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/08ceeb90cc686cf7d11ed1e8fb137baa9f2739af))
+* updating stainless.yml to publish to maven ([f7e44a6](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f7e44a6491b911054d34f0f1f807e2666da28c8e))
+
 ## 0.1.0 (2026-02-09)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.0.1...v0.1.0)
