@@ -7,7 +7,7 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
-/** Retrieve detailed information about a specific transaction */
+/** Retrieve detailed information about a specific transaction. */
 class TransactionRetrieveParams
 private constructor(
     private val transactionId: String?,

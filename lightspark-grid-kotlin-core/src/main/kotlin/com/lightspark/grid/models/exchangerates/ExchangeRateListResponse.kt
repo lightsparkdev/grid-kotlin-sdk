@@ -179,11 +179,12 @@ private constructor(
         private val destinationPaymentRail: JsonField<String>,
         private val exchangeRate: JsonField<Double>,
         private val fees: JsonField<Fees>,
+        private val maxSendingAmount: JsonField<Long>,
+        private val minSendingAmount: JsonField<Long>,
         private val receivingAmount: JsonField<Long>,
+        private val sendingAmount: JsonField<Long>,
         private val sourceCurrency: JsonField<Currency>,
         private val updatedAt: JsonField<OffsetDateTime>,
-        private val sendingAmount: JsonField<Long>,
-        private val sourcePaymentRail: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -199,31 +200,35 @@ private constructor(
             @ExcludeMissing
             exchangeRate: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
+            @JsonProperty("maxSendingAmount")
+            @ExcludeMissing
+            maxSendingAmount: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("minSendingAmount")
+            @ExcludeMissing
+            minSendingAmount: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("receivingAmount")
             @ExcludeMissing
             receivingAmount: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("sendingAmount")
+            @ExcludeMissing
+            sendingAmount: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("sourceCurrency")
             @ExcludeMissing
             sourceCurrency: JsonField<Currency> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("sendingAmount")
-            @ExcludeMissing
-            sendingAmount: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("sourcePaymentRail")
-            @ExcludeMissing
-            sourcePaymentRail: JsonField<String> = JsonMissing.of(),
         ) : this(
             destinationCurrency,
             destinationPaymentRail,
             exchangeRate,
             fees,
+            maxSendingAmount,
+            minSendingAmount,
             receivingAmount,
+            sendingAmount,
             sourceCurrency,
             updatedAt,
-            sendingAmount,
-            sourcePaymentRail,
             mutableMapOf(),
         )
 
@@ -244,7 +249,7 @@ private constructor(
             destinationPaymentRail.getRequired("destinationPaymentRail")
 
         /**
-         * Number of destination currency units per sending currency unit
+         * Number of sending currency units per receiving currency unit.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -260,12 +265,37 @@ private constructor(
         fun fees(): Fees = fees.getRequired("fees")
 
         /**
+         * The maximum supported sending amount in the smallest unit of the source currency.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun maxSendingAmount(): Long = maxSendingAmount.getRequired("maxSendingAmount")
+
+        /**
+         * The minimum supported sending amount in the smallest unit of the source currency.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun minSendingAmount(): Long = minSendingAmount.getRequired("minSendingAmount")
+
+        /**
          * The receiving amount in the smallest unit of the destination currency
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun receivingAmount(): Long = receivingAmount.getRequired("receivingAmount")
+
+        /**
+         * The sending amount in the smallest unit of the source currency (e.g., cents for USD).
+         * Echoed back from the request if provided.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun sendingAmount(): Long = sendingAmount.getRequired("sendingAmount")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -280,23 +310,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
-
-        /**
-         * The sending amount in the smallest unit of the source currency (e.g., cents for USD).
-         * Echoed back from the request if provided.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun sendingAmount(): Long? = sendingAmount.getNullable("sendingAmount")
-
-        /**
-         * The payment rail used for the source (e.g., ACCOUNT, RTP)
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun sourcePaymentRail(): String? = sourcePaymentRail.getNullable("sourcePaymentRail")
 
         /**
          * Returns the raw JSON value of [destinationCurrency].
@@ -336,6 +349,26 @@ private constructor(
         @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Fees> = fees
 
         /**
+         * Returns the raw JSON value of [maxSendingAmount].
+         *
+         * Unlike [maxSendingAmount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("maxSendingAmount")
+        @ExcludeMissing
+        fun _maxSendingAmount(): JsonField<Long> = maxSendingAmount
+
+        /**
+         * Returns the raw JSON value of [minSendingAmount].
+         *
+         * Unlike [minSendingAmount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("minSendingAmount")
+        @ExcludeMissing
+        fun _minSendingAmount(): JsonField<Long> = minSendingAmount
+
+        /**
          * Returns the raw JSON value of [receivingAmount].
          *
          * Unlike [receivingAmount], this method doesn't throw if the JSON field has an unexpected
@@ -344,6 +377,16 @@ private constructor(
         @JsonProperty("receivingAmount")
         @ExcludeMissing
         fun _receivingAmount(): JsonField<Long> = receivingAmount
+
+        /**
+         * Returns the raw JSON value of [sendingAmount].
+         *
+         * Unlike [sendingAmount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("sendingAmount")
+        @ExcludeMissing
+        fun _sendingAmount(): JsonField<Long> = sendingAmount
 
         /**
          * Returns the raw JSON value of [sourceCurrency].
@@ -363,26 +406,6 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
-
-        /**
-         * Returns the raw JSON value of [sendingAmount].
-         *
-         * Unlike [sendingAmount], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("sendingAmount")
-        @ExcludeMissing
-        fun _sendingAmount(): JsonField<Long> = sendingAmount
-
-        /**
-         * Returns the raw JSON value of [sourcePaymentRail].
-         *
-         * Unlike [sourcePaymentRail], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("sourcePaymentRail")
-        @ExcludeMissing
-        fun _sourcePaymentRail(): JsonField<String> = sourcePaymentRail
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -407,7 +430,10 @@ private constructor(
              * .destinationPaymentRail()
              * .exchangeRate()
              * .fees()
+             * .maxSendingAmount()
+             * .minSendingAmount()
              * .receivingAmount()
+             * .sendingAmount()
              * .sourceCurrency()
              * .updatedAt()
              * ```
@@ -422,11 +448,12 @@ private constructor(
             private var destinationPaymentRail: JsonField<String>? = null
             private var exchangeRate: JsonField<Double>? = null
             private var fees: JsonField<Fees>? = null
+            private var maxSendingAmount: JsonField<Long>? = null
+            private var minSendingAmount: JsonField<Long>? = null
             private var receivingAmount: JsonField<Long>? = null
+            private var sendingAmount: JsonField<Long>? = null
             private var sourceCurrency: JsonField<Currency>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
-            private var sendingAmount: JsonField<Long> = JsonMissing.of()
-            private var sourcePaymentRail: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
@@ -434,11 +461,12 @@ private constructor(
                 destinationPaymentRail = data.destinationPaymentRail
                 exchangeRate = data.exchangeRate
                 fees = data.fees
+                maxSendingAmount = data.maxSendingAmount
+                minSendingAmount = data.minSendingAmount
                 receivingAmount = data.receivingAmount
+                sendingAmount = data.sendingAmount
                 sourceCurrency = data.sourceCurrency
                 updatedAt = data.updatedAt
-                sendingAmount = data.sendingAmount
-                sourcePaymentRail = data.sourcePaymentRail
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -474,7 +502,7 @@ private constructor(
                 this.destinationPaymentRail = destinationPaymentRail
             }
 
-            /** Number of destination currency units per sending currency unit */
+            /** Number of sending currency units per receiving currency unit. */
             fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
             /**
@@ -500,6 +528,36 @@ private constructor(
              */
             fun fees(fees: JsonField<Fees>) = apply { this.fees = fees }
 
+            /** The maximum supported sending amount in the smallest unit of the source currency. */
+            fun maxSendingAmount(maxSendingAmount: Long) =
+                maxSendingAmount(JsonField.of(maxSendingAmount))
+
+            /**
+             * Sets [Builder.maxSendingAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxSendingAmount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun maxSendingAmount(maxSendingAmount: JsonField<Long>) = apply {
+                this.maxSendingAmount = maxSendingAmount
+            }
+
+            /** The minimum supported sending amount in the smallest unit of the source currency. */
+            fun minSendingAmount(minSendingAmount: Long) =
+                minSendingAmount(JsonField.of(minSendingAmount))
+
+            /**
+             * Sets [Builder.minSendingAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.minSendingAmount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun minSendingAmount(minSendingAmount: JsonField<Long>) = apply {
+                this.minSendingAmount = minSendingAmount
+            }
+
             /** The receiving amount in the smallest unit of the destination currency */
             fun receivingAmount(receivingAmount: Long) =
                 receivingAmount(JsonField.of(receivingAmount))
@@ -513,6 +571,23 @@ private constructor(
              */
             fun receivingAmount(receivingAmount: JsonField<Long>) = apply {
                 this.receivingAmount = receivingAmount
+            }
+
+            /**
+             * The sending amount in the smallest unit of the source currency (e.g., cents for USD).
+             * Echoed back from the request if provided.
+             */
+            fun sendingAmount(sendingAmount: Long) = sendingAmount(JsonField.of(sendingAmount))
+
+            /**
+             * Sets [Builder.sendingAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sendingAmount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun sendingAmount(sendingAmount: JsonField<Long>) = apply {
+                this.sendingAmount = sendingAmount
             }
 
             fun sourceCurrency(sourceCurrency: Currency) =
@@ -541,38 +616,6 @@ private constructor(
              */
             fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
                 this.updatedAt = updatedAt
-            }
-
-            /**
-             * The sending amount in the smallest unit of the source currency (e.g., cents for USD).
-             * Echoed back from the request if provided.
-             */
-            fun sendingAmount(sendingAmount: Long) = sendingAmount(JsonField.of(sendingAmount))
-
-            /**
-             * Sets [Builder.sendingAmount] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.sendingAmount] with a well-typed [Long] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun sendingAmount(sendingAmount: JsonField<Long>) = apply {
-                this.sendingAmount = sendingAmount
-            }
-
-            /** The payment rail used for the source (e.g., ACCOUNT, RTP) */
-            fun sourcePaymentRail(sourcePaymentRail: String) =
-                sourcePaymentRail(JsonField.of(sourcePaymentRail))
-
-            /**
-             * Sets [Builder.sourcePaymentRail] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.sourcePaymentRail] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun sourcePaymentRail(sourcePaymentRail: JsonField<String>) = apply {
-                this.sourcePaymentRail = sourcePaymentRail
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -605,7 +648,10 @@ private constructor(
              * .destinationPaymentRail()
              * .exchangeRate()
              * .fees()
+             * .maxSendingAmount()
+             * .minSendingAmount()
              * .receivingAmount()
+             * .sendingAmount()
              * .sourceCurrency()
              * .updatedAt()
              * ```
@@ -618,11 +664,12 @@ private constructor(
                     checkRequired("destinationPaymentRail", destinationPaymentRail),
                     checkRequired("exchangeRate", exchangeRate),
                     checkRequired("fees", fees),
+                    checkRequired("maxSendingAmount", maxSendingAmount),
+                    checkRequired("minSendingAmount", minSendingAmount),
                     checkRequired("receivingAmount", receivingAmount),
+                    checkRequired("sendingAmount", sendingAmount),
                     checkRequired("sourceCurrency", sourceCurrency),
                     checkRequired("updatedAt", updatedAt),
-                    sendingAmount,
-                    sourcePaymentRail,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -638,11 +685,12 @@ private constructor(
             destinationPaymentRail()
             exchangeRate()
             fees().validate()
+            maxSendingAmount()
+            minSendingAmount()
             receivingAmount()
+            sendingAmount()
             sourceCurrency().validate()
             updatedAt()
-            sendingAmount()
-            sourcePaymentRail()
             validated = true
         }
 
@@ -665,11 +713,12 @@ private constructor(
                 (if (destinationPaymentRail.asKnown() == null) 0 else 1) +
                 (if (exchangeRate.asKnown() == null) 0 else 1) +
                 (fees.asKnown()?.validity() ?: 0) +
+                (if (maxSendingAmount.asKnown() == null) 0 else 1) +
+                (if (minSendingAmount.asKnown() == null) 0 else 1) +
                 (if (receivingAmount.asKnown() == null) 0 else 1) +
-                (sourceCurrency.asKnown()?.validity() ?: 0) +
-                (if (updatedAt.asKnown() == null) 0 else 1) +
                 (if (sendingAmount.asKnown() == null) 0 else 1) +
-                (if (sourcePaymentRail.asKnown() == null) 0 else 1)
+                (sourceCurrency.asKnown()?.validity() ?: 0) +
+                (if (updatedAt.asKnown() == null) 0 else 1)
 
         /** Fees associated with an exchange rate */
         class Fees
@@ -825,11 +874,12 @@ private constructor(
                 destinationPaymentRail == other.destinationPaymentRail &&
                 exchangeRate == other.exchangeRate &&
                 fees == other.fees &&
+                maxSendingAmount == other.maxSendingAmount &&
+                minSendingAmount == other.minSendingAmount &&
                 receivingAmount == other.receivingAmount &&
+                sendingAmount == other.sendingAmount &&
                 sourceCurrency == other.sourceCurrency &&
                 updatedAt == other.updatedAt &&
-                sendingAmount == other.sendingAmount &&
-                sourcePaymentRail == other.sourcePaymentRail &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -839,11 +889,12 @@ private constructor(
                 destinationPaymentRail,
                 exchangeRate,
                 fees,
+                maxSendingAmount,
+                minSendingAmount,
                 receivingAmount,
+                sendingAmount,
                 sourceCurrency,
                 updatedAt,
-                sendingAmount,
-                sourcePaymentRail,
                 additionalProperties,
             )
         }
@@ -851,7 +902,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{destinationCurrency=$destinationCurrency, destinationPaymentRail=$destinationPaymentRail, exchangeRate=$exchangeRate, fees=$fees, receivingAmount=$receivingAmount, sourceCurrency=$sourceCurrency, updatedAt=$updatedAt, sendingAmount=$sendingAmount, sourcePaymentRail=$sourcePaymentRail, additionalProperties=$additionalProperties}"
+            "Data{destinationCurrency=$destinationCurrency, destinationPaymentRail=$destinationPaymentRail, exchangeRate=$exchangeRate, fees=$fees, maxSendingAmount=$maxSendingAmount, minSendingAmount=$minSendingAmount, receivingAmount=$receivingAmount, sendingAmount=$sendingAmount, sourceCurrency=$sourceCurrency, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

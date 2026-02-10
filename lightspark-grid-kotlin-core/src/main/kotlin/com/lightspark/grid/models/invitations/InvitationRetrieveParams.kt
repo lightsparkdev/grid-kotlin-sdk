@@ -7,7 +7,7 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
-/** Get a specific UMA invitation by code. */
+/** Retrieve details about an UMA invitation by its invitation code. */
 class InvitationRetrieveParams
 private constructor(
     private val invitationCode: String?,
