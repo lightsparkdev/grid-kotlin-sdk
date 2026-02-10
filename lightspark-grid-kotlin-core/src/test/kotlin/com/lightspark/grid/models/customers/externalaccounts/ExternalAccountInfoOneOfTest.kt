@@ -18,9 +18,10 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofUsAccount() {
         val usAccount =
-            ExternalAccountInfoOneOf.UsAccount.builder()
-                .accountCategory(ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING)
+            UsAccountInfo.builder()
+                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                 .accountNumber("123456789")
+                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -67,9 +68,10 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUsAccount(
-                ExternalAccountInfoOneOf.UsAccount.builder()
-                    .accountCategory(ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING)
+                UsAccountInfo.builder()
+                    .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                     .accountNumber("123456789")
+                    .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -104,7 +106,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofClabe() {
         val clabe =
-            ExternalAccountInfoOneOf.Clabe.builder()
+            ClabeAccountInfo.builder()
+                .accountType(ClabeAccountInfo.AccountType.CLABE)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -150,7 +153,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofClabe(
-                ExternalAccountInfoOneOf.Clabe.builder()
+                ClabeAccountInfo.builder()
+                    .accountType(ClabeAccountInfo.AccountType.CLABE)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -184,7 +188,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPix() {
         val pix =
-            ExternalAccountInfoOneOf.Pix.builder()
+            PixAccountInfo.builder()
+                .accountType(PixAccountInfo.AccountType.PIX)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -203,7 +208,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .build()
                 )
                 .pixKey("55119876543210")
-                .pixKeyType(ExternalAccountInfoOneOf.Pix.PixKeyType.PHONE)
+                .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
                 .taxId("1234567890")
                 .build()
 
@@ -232,7 +237,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPix(
-                ExternalAccountInfoOneOf.Pix.builder()
+                PixAccountInfo.builder()
+                    .accountType(PixAccountInfo.AccountType.PIX)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -251,7 +257,7 @@ internal class ExternalAccountInfoOneOfTest {
                             .build()
                     )
                     .pixKey("55119876543210")
-                    .pixKeyType(ExternalAccountInfoOneOf.Pix.PixKeyType.PHONE)
+                    .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
                     .taxId("1234567890")
                     .build()
             )
@@ -268,7 +274,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofIban() {
         val iban =
-            ExternalAccountInfoOneOf.Iban.builder()
+            IbanAccountInfo.builder()
+                .accountType(IbanAccountInfo.AccountType.IBAN)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -315,7 +322,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofIban(
-                ExternalAccountInfoOneOf.Iban.builder()
+                IbanAccountInfo.builder()
+                    .accountType(IbanAccountInfo.AccountType.IBAN)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -350,7 +358,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofUpi() {
         val upi =
-            ExternalAccountInfoOneOf.Upi.builder()
+            UpiAccountInfo.builder()
+                .accountType(UpiAccountInfo.AccountType.UPI)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -396,7 +405,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUpi(
-                ExternalAccountInfoOneOf.Upi.builder()
+                UpiAccountInfo.builder()
+                    .accountType(UpiAccountInfo.AccountType.UPI)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -430,8 +440,9 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofNgnAccount() {
         val ngnAccount =
-            ExternalAccountInfoOneOf.NgnAccount.builder()
+            NgnAccountInfo.builder()
                 .accountNumber("0123456789")
+                .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                 .bankName("First Bank of Nigeria")
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
@@ -450,9 +461,7 @@ internal class ExternalAccountInfoOneOfTest {
                         )
                         .build()
                 )
-                .purposeOfPayment(
-                    ExternalAccountInfoOneOf.NgnAccount.PurposeOfPayment.GOODS_OR_SERVICES
-                )
+                .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)
@@ -480,8 +489,9 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofNgnAccount(
-                ExternalAccountInfoOneOf.NgnAccount.builder()
+                NgnAccountInfo.builder()
                     .accountNumber("0123456789")
+                    .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                     .bankName("First Bank of Nigeria")
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
@@ -500,9 +510,7 @@ internal class ExternalAccountInfoOneOfTest {
                             )
                             .build()
                     )
-                    .purposeOfPayment(
-                        ExternalAccountInfoOneOf.NgnAccount.PurposeOfPayment.GOODS_OR_SERVICES
-                    )
+                    .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
                     .build()
             )
 
@@ -518,8 +526,9 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofCadAccount() {
         val cadAccount =
-            ExternalAccountInfoOneOf.CadAccount.builder()
+            CadAccountInfo.builder()
                 .accountNumber("1234567")
+                .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                 .bankCode("001")
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
@@ -566,8 +575,9 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofCadAccount(
-                ExternalAccountInfoOneOf.CadAccount.builder()
+                CadAccountInfo.builder()
                     .accountNumber("1234567")
+                    .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                     .bankCode("001")
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
@@ -602,8 +612,9 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofGbpAccount() {
         val gbpAccount =
-            ExternalAccountInfoOneOf.GbpAccount.builder()
+            GbpAccountInfo.builder()
                 .accountNumber("12345678")
+                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
@@ -649,8 +660,9 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGbpAccount(
-                ExternalAccountInfoOneOf.GbpAccount.builder()
+                GbpAccountInfo.builder()
                     .accountNumber("12345678")
+                    .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
@@ -684,8 +696,9 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPhpAccount() {
         val phpAccount =
-            ExternalAccountInfoOneOf.PhpAccount.builder()
+            PhpAccountInfo.builder()
                 .accountNumber("001234567890")
+                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
@@ -731,8 +744,9 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPhpAccount(
-                ExternalAccountInfoOneOf.PhpAccount.builder()
+                PhpAccountInfo.builder()
                     .accountNumber("001234567890")
+                    .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
@@ -766,8 +780,9 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSgdAccount() {
         val sgdAccount =
-            ExternalAccountInfoOneOf.SgdAccount.builder()
+            SgdAccountInfo.builder()
                 .accountNumber("0123456789")
+                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .beneficiary(
                     BeneficiaryOneOf.Individual.builder()
@@ -814,8 +829,9 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSgdAccount(
-                ExternalAccountInfoOneOf.SgdAccount.builder()
+                SgdAccountInfo.builder()
                     .accountNumber("0123456789")
+                    .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
                     .beneficiary(
                         BeneficiaryOneOf.Individual.builder()
@@ -850,7 +866,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSparkWallet() {
         val sparkWallet =
-            ExternalAccountInfoOneOf.SparkWallet.builder()
+            SparkWalletInfo.builder()
+                .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
                 .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
                 .build()
 
@@ -879,7 +896,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSparkWallet(
-                ExternalAccountInfoOneOf.SparkWallet.builder()
+                SparkWalletInfo.builder()
+                    .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
                     .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
                     .build()
             )
@@ -896,7 +914,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofLightning() {
         val lightning =
-            ExternalAccountInfoOneOf.Lightning.builder()
+            LightningWalletInfo.builder()
+                .accountType(LightningWalletInfo.AccountType.LIGHTNING)
                 .bolt12(
                     "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
                 )
@@ -931,7 +950,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofLightning(
-                ExternalAccountInfoOneOf.Lightning.builder()
+                LightningWalletInfo.builder()
+                    .accountType(LightningWalletInfo.AccountType.LIGHTNING)
                     .bolt12(
                         "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
                     )
@@ -954,7 +974,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSolanaWallet() {
         val solanaWallet =
-            ExternalAccountInfoOneOf.SolanaWallet.builder()
+            SolanaWalletInfo.builder()
+                .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
                 .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
                 .build()
 
@@ -983,7 +1004,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSolanaWallet(
-                ExternalAccountInfoOneOf.SolanaWallet.builder()
+                SolanaWalletInfo.builder()
+                    .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
                     .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
                     .build()
             )
@@ -1000,7 +1022,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofTronWallet() {
         val tronWallet =
-            ExternalAccountInfoOneOf.TronWallet.builder()
+            TronWalletInfo.builder()
+                .accountType(TronWalletInfo.AccountType.TRON_WALLET)
                 .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
                 .build()
 
@@ -1029,7 +1052,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofTronWallet(
-                ExternalAccountInfoOneOf.TronWallet.builder()
+                TronWalletInfo.builder()
+                    .accountType(TronWalletInfo.AccountType.TRON_WALLET)
                     .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
                     .build()
             )
@@ -1046,7 +1070,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPolygonWallet() {
         val polygonWallet =
-            ExternalAccountInfoOneOf.PolygonWallet.builder()
+            PolygonWalletInfo.builder()
+                .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
                 .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                 .build()
 
@@ -1075,7 +1100,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPolygonWallet(
-                ExternalAccountInfoOneOf.PolygonWallet.builder()
+                PolygonWalletInfo.builder()
+                    .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
                     .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                     .build()
             )
@@ -1092,7 +1118,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofBaseWallet() {
         val baseWallet =
-            ExternalAccountInfoOneOf.BaseWallet.builder()
+            BaseWalletInfo.builder()
+                .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
                 .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                 .build()
 
@@ -1121,7 +1148,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofBaseWallet(
-                ExternalAccountInfoOneOf.BaseWallet.builder()
+                BaseWalletInfo.builder()
+                    .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
                     .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                     .build()
             )

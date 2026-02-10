@@ -23,6 +23,7 @@ import com.lightspark.grid.errors.UnauthorizedException
 import com.lightspark.grid.errors.UnexpectedStatusCodeException
 import com.lightspark.grid.errors.UnprocessableEntityException
 import com.lightspark.grid.models.quotes.QuoteCreateParams
+import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
@@ -74,13 +75,16 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -116,13 +120,16 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -158,13 +165,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -200,13 +210,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -242,13 +255,16 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -284,13 +300,16 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -326,13 +345,16 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -368,13 +390,16 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -410,13 +435,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -452,13 +480,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -494,13 +525,16 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -536,13 +570,16 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -578,13 +615,16 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -620,13 +660,16 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -662,13 +705,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -704,13 +750,16 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
@@ -744,13 +793,16 @@ internal class ErrorHandlingTest {
             assertThrows<LightsparkGridException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
-                        .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destination(
+                            QuoteDestinationOneOf.AccountDestination.builder()
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .lockedCurrencyAmount(10000L)
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
-                            QuoteSourceOneOf.Account.builder()
+                            QuoteSourceOneOf.AccountQuoteSource.builder()
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )

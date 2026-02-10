@@ -11,13 +11,16 @@ internal class QuoteCreateParamsTest {
     @Test
     fun create() {
         QuoteCreateParams.builder()
-            .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+            .destination(
+                QuoteDestinationOneOf.AccountDestination.builder()
+                    .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .build()
+            )
             .lockedCurrencyAmount(10000L)
             .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
             .source(
-                QuoteSourceOneOf.Account.builder()
+                QuoteSourceOneOf.AccountQuoteSource.builder()
                     .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                    .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
             )
@@ -37,13 +40,16 @@ internal class QuoteCreateParamsTest {
     fun body() {
         val params =
             QuoteCreateParams.builder()
-                .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.Account.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )
@@ -62,10 +68,9 @@ internal class QuoteCreateParamsTest {
 
         assertThat(body.destination())
             .isEqualTo(
-                QuoteDestinationOneOf.ofAccount(
-                    QuoteDestinationOneOf.Account.builder()
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
                         .build()
                 )
             )
@@ -74,10 +79,9 @@ internal class QuoteCreateParamsTest {
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteSourceOneOf.ofAccount(
-                    QuoteSourceOneOf.Account.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )
@@ -99,20 +103,27 @@ internal class QuoteCreateParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             QuoteCreateParams.builder()
-                .accountDestination("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .accountSource("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
         assertThat(body.destination())
             .isEqualTo(
-                QuoteDestinationOneOf.ofAccount(
-                    QuoteDestinationOneOf.Account.builder()
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
                         .build()
                 )
             )
@@ -121,10 +132,9 @@ internal class QuoteCreateParamsTest {
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteSourceOneOf.ofAccount(
-                    QuoteSourceOneOf.Account.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
             )

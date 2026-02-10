@@ -15,7 +15,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
@@ -485,75 +484,32 @@ private constructor(
             this.destination = destination
         }
 
-        /** Alias for calling [destination] with `QuoteDestinationOneOf.ofAccount(account)`. */
-        fun destination(account: QuoteDestinationOneOf.Account) =
-            destination(QuoteDestinationOneOf.ofAccount(account))
-
         /**
-         * Alias for calling [destination] with the following:
-         * ```kotlin
-         * QuoteDestinationOneOf.Account.builder()
-         *     .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
-         *     .accountId(accountId)
-         *     .build()
-         * ```
+         * Alias for calling [destination] with
+         * `QuoteDestinationOneOf.ofAccountDestination(accountDestination)`.
          */
-        fun accountDestination(accountId: String) =
-            destination(
-                QuoteDestinationOneOf.Account.builder()
-                    .destinationType(QuoteDestinationOneOf.Account.DestinationType.ACCOUNT)
-                    .accountId(accountId)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [destination] with `QuoteDestinationOneOf.ofUmaAddress(umaAddress)`.
-         */
-        fun destination(umaAddress: QuoteDestinationOneOf.UmaAddress) =
-            destination(QuoteDestinationOneOf.ofUmaAddress(umaAddress))
-
-        /**
-         * Alias for calling [destination] with the following:
-         * ```kotlin
-         * QuoteDestinationOneOf.UmaAddress.builder()
-         *     .destinationType(QuoteDestinationOneOf.UmaAddress.DestinationType.UMA_ADDRESS)
-         *     .umaAddress(umaAddress)
-         *     .build()
-         * ```
-         */
-        fun umaAddressDestination(umaAddress: String) =
-            destination(
-                QuoteDestinationOneOf.UmaAddress.builder()
-                    .destinationType(QuoteDestinationOneOf.UmaAddress.DestinationType.UMA_ADDRESS)
-                    .umaAddress(umaAddress)
-                    .build()
-            )
+        fun destination(accountDestination: QuoteDestinationOneOf.AccountDestination) =
+            destination(QuoteDestinationOneOf.ofAccountDestination(accountDestination))
 
         /**
          * Alias for calling [destination] with
-         * `QuoteDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)`.
+         * `QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination)`.
          */
-        fun destination(externalAccountDetails: QuoteDestinationOneOf.ExternalAccountDetails) =
-            destination(QuoteDestinationOneOf.ofExternalAccountDetails(externalAccountDetails))
+        fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
+            destination(QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination))
 
         /**
-         * Alias for calling [destination] with the following:
-         * ```kotlin
-         * QuoteDestinationOneOf.ExternalAccountDetails.builder()
-         *     .destinationType(QuoteDestinationOneOf.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
-         *     .externalAccountDetails(externalAccountDetails)
-         *     .build()
-         * ```
+         * Alias for calling [destination] with
+         * `QuoteDestinationOneOf.ofExternalAccountDetailsDestination(externalAccountDetailsDestination)`.
          */
-        fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
+        fun destination(
+            externalAccountDetailsDestination:
+                QuoteDestinationOneOf.ExternalAccountDetailsDestination
+        ) =
             destination(
-                QuoteDestinationOneOf.ExternalAccountDetails.builder()
-                    .destinationType(
-                        QuoteDestinationOneOf.ExternalAccountDetails.DestinationType
-                            .EXTERNAL_ACCOUNT_DETAILS
-                    )
-                    .externalAccountDetails(externalAccountDetails)
-                    .build()
+                QuoteDestinationOneOf.ofExternalAccountDetailsDestination(
+                    externalAccountDetailsDestination
+                )
             )
 
         /** Number of sending currency units per receiving currency unit. */
@@ -650,48 +606,19 @@ private constructor(
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
 
-        /** Alias for calling [source] with `QuoteSourceOneOf.ofAccount(account)`. */
-        fun source(account: QuoteSourceOneOf.Account) = source(QuoteSourceOneOf.ofAccount(account))
+        /**
+         * Alias for calling [source] with
+         * `QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource)`.
+         */
+        fun source(accountQuoteSource: QuoteSourceOneOf.AccountQuoteSource) =
+            source(QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource))
 
         /**
-         * Alias for calling [source] with the following:
-         * ```kotlin
-         * QuoteSourceOneOf.Account.builder()
-         *     .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
-         *     .accountId(accountId)
-         *     .build()
-         * ```
+         * Alias for calling [source] with
+         * `QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource)`.
          */
-        fun accountSource(accountId: String) =
-            source(
-                QuoteSourceOneOf.Account.builder()
-                    .sourceType(QuoteSourceOneOf.Account.SourceType.ACCOUNT)
-                    .accountId(accountId)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [source] with `QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
-         */
-        fun source(realtimeFunding: QuoteSourceOneOf.RealtimeFunding) =
-            source(QuoteSourceOneOf.ofRealtimeFunding(realtimeFunding))
-
-        /**
-         * Alias for calling [source] with the following:
-         * ```kotlin
-         * QuoteSourceOneOf.RealtimeFunding.builder()
-         *     .sourceType(QuoteSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
-         *     .currency(currency)
-         *     .build()
-         * ```
-         */
-        fun realtimeFundingSource(currency: String) =
-            source(
-                QuoteSourceOneOf.RealtimeFunding.builder()
-                    .sourceType(QuoteSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
-                    .currency(currency)
-                    .build()
-            )
+        fun source(realtimeFundingQuoteSource: QuoteSourceOneOf.RealtimeFundingQuoteSource) =
+            source(QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource))
 
         /** Current status of the quote */
         fun status(status: Status) = status(JsonField.of(status))
