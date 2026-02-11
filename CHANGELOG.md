@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1 (2026-02-11)
+
+Full Changelog: [v0.3.0...v0.3.1](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.3.0...v0.3.1)
+
+### Chores
+
+* update SDK settings ([3fa02cd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3fa02cdf0597fd486c84a1613d0d08bf92b9fcf4))
+
 ## 0.3.0 (2026-02-10)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.2.0...v0.3.0)
