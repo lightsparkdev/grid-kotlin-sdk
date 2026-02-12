@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2026-02-12)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* **api:** add webhook events/unwrap, move test webhook to sandbox, update transaction types ([1f4fd99](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1f4fd99825afb16bb22dc90be737ccbbc6a5e519))
+
 ## 0.4.0 (2026-02-12)
 
 Full Changelog: [v0.3.1...v0.4.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.3.1...v0.4.0)
