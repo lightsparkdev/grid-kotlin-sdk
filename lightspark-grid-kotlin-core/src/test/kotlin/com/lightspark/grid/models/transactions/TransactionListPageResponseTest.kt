@@ -21,19 +21,15 @@ internal class TransactionListPageResponseTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
-                                .currency("EUR")
+                            TransactionDestinationOneOf.AccountTransactionDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
-                                )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
                         .type(TransactionType.INCOMING)
                         .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
+                            CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -56,19 +52,15 @@ internal class TransactionListPageResponseTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
-                        Transaction.Destination.Account.builder()
-                            .currency("EUR")
+                        TransactionDestinationOneOf.AccountTransactionDestination.builder()
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                            .destinationType(
-                                Transaction.Destination.Account.DestinationType.ACCOUNT
-                            )
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .status(TransactionStatus.CREATED)
                     .type(TransactionType.INCOMING)
                     .counterpartyInformation(
-                        Transaction.CounterpartyInformation.builder()
+                        CounterpartyInformation.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                             .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                             .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -95,19 +87,15 @@ internal class TransactionListPageResponseTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
-                                .currency("EUR")
+                            TransactionDestinationOneOf.AccountTransactionDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
-                                )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
                         .type(TransactionType.INCOMING)
                         .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
+                            CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
