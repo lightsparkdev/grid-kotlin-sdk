@@ -18,6 +18,8 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.transactions.CounterpartyInformation
+import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
@@ -31,11 +33,11 @@ class SandboxSendFundsResponse
 private constructor(
     private val id: JsonField<String>,
     private val customerId: JsonField<String>,
-    private val destination: JsonField<Transaction.Destination>,
+    private val destination: JsonField<TransactionDestinationOneOf>,
     private val platformCustomerId: JsonField<String>,
     private val status: JsonField<TransactionStatus>,
     private val type: JsonField<TransactionType>,
-    private val counterpartyInformation: JsonField<Transaction.CounterpartyInformation>,
+    private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val description: JsonField<String>,
     private val settledAt: JsonField<OffsetDateTime>,
@@ -62,7 +64,7 @@ private constructor(
         customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("destination")
         @ExcludeMissing
-        destination: JsonField<Transaction.Destination> = JsonMissing.of(),
+        destination: JsonField<TransactionDestinationOneOf> = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -72,7 +74,7 @@ private constructor(
         @JsonProperty("type") @ExcludeMissing type: JsonField<TransactionType> = JsonMissing.of(),
         @JsonProperty("counterpartyInformation")
         @ExcludeMissing
-        counterpartyInformation: JsonField<Transaction.CounterpartyInformation> = JsonMissing.of(),
+        counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -175,7 +177,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun destination(): Transaction.Destination = destination.getRequired("destination")
+    fun destination(): TransactionDestinationOneOf = destination.getRequired("destination")
 
     /**
      * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -208,7 +210,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun counterpartyInformation(): Transaction.CounterpartyInformation? =
+    fun counterpartyInformation(): CounterpartyInformation? =
         counterpartyInformation.getNullable("counterpartyInformation")
 
     /**
@@ -354,7 +356,7 @@ private constructor(
      */
     @JsonProperty("destination")
     @ExcludeMissing
-    fun _destination(): JsonField<Transaction.Destination> = destination
+    fun _destination(): JsonField<TransactionDestinationOneOf> = destination
 
     /**
      * Returns the raw JSON value of [platformCustomerId].
@@ -388,8 +390,7 @@ private constructor(
      */
     @JsonProperty("counterpartyInformation")
     @ExcludeMissing
-    fun _counterpartyInformation(): JsonField<Transaction.CounterpartyInformation> =
-        counterpartyInformation
+    fun _counterpartyInformation(): JsonField<CounterpartyInformation> = counterpartyInformation
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -558,12 +559,11 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var customerId: JsonField<String>? = null
-        private var destination: JsonField<Transaction.Destination>? = null
+        private var destination: JsonField<TransactionDestinationOneOf>? = null
         private var platformCustomerId: JsonField<String>? = null
         private var status: JsonField<TransactionStatus>? = null
         private var type: JsonField<TransactionType>? = null
-        private var counterpartyInformation: JsonField<Transaction.CounterpartyInformation> =
-            JsonMissing.of()
+        private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
         private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -632,62 +632,45 @@ private constructor(
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /** Destination account details */
-        fun destination(destination: Transaction.Destination) =
+        fun destination(destination: TransactionDestinationOneOf) =
             destination(JsonField.of(destination))
 
         /**
          * Sets [Builder.destination] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.destination] with a well-typed [Transaction.Destination]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.destination] with a well-typed
+         * [TransactionDestinationOneOf] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
          */
-        fun destination(destination: JsonField<Transaction.Destination>) = apply {
+        fun destination(destination: JsonField<TransactionDestinationOneOf>) = apply {
             this.destination = destination
         }
 
-        /** Alias for calling [destination] with `Transaction.Destination.ofAccount(account)`. */
-        fun destination(account: Transaction.Destination.Account) =
-            destination(Transaction.Destination.ofAccount(account))
-
         /**
-         * Alias for calling [destination] with the following:
-         * ```kotlin
-         * Transaction.Destination.Account.builder()
-         *     .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
-         *     .accountId(accountId)
-         *     .build()
-         * ```
+         * Alias for calling [destination] with
+         * `TransactionDestinationOneOf.ofAccountTransactionDestination(accountTransactionDestination)`.
          */
-        fun accountDestination(accountId: String) =
+        fun destination(
+            accountTransactionDestination: TransactionDestinationOneOf.AccountTransactionDestination
+        ) =
             destination(
-                Transaction.Destination.Account.builder()
-                    .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
-                    .accountId(accountId)
-                    .build()
+                TransactionDestinationOneOf.ofAccountTransactionDestination(
+                    accountTransactionDestination
+                )
             )
 
         /**
-         * Alias for calling [destination] with `Transaction.Destination.ofUmaAddress(umaAddress)`.
+         * Alias for calling [destination] with
+         * `TransactionDestinationOneOf.ofUmaAddressTransactionDestination(umaAddressTransactionDestination)`.
          */
-        fun destination(umaAddress: Transaction.Destination.UmaAddress) =
-            destination(Transaction.Destination.ofUmaAddress(umaAddress))
-
-        /**
-         * Alias for calling [destination] with the following:
-         * ```kotlin
-         * Transaction.Destination.UmaAddress.builder()
-         *     .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
-         *     .umaAddress(umaAddress)
-         *     .build()
-         * ```
-         */
-        fun umaAddressDestination(umaAddress: String) =
+        fun destination(
+            umaAddressTransactionDestination:
+                TransactionDestinationOneOf.UmaAddressTransactionDestination
+        ) =
             destination(
-                Transaction.Destination.UmaAddress.builder()
-                    .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
-                    .umaAddress(umaAddress)
-                    .build()
+                TransactionDestinationOneOf.ofUmaAddressTransactionDestination(
+                    umaAddressTransactionDestination
+                )
             )
 
         /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
@@ -733,19 +716,20 @@ private constructor(
          * Additional information about the counterparty, if available and relevant to the
          * transaction and platform. Only applicable for transactions to/from UMA addresses.
          */
-        fun counterpartyInformation(counterpartyInformation: Transaction.CounterpartyInformation) =
+        fun counterpartyInformation(counterpartyInformation: CounterpartyInformation) =
             counterpartyInformation(JsonField.of(counterpartyInformation))
 
         /**
          * Sets [Builder.counterpartyInformation] to an arbitrary JSON value.
          *
          * You should usually call [Builder.counterpartyInformation] with a well-typed
-         * [Transaction.CounterpartyInformation] value instead. This method is primarily for setting
-         * the field to an undocumented or not yet supported value.
+         * [CounterpartyInformation] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
          */
-        fun counterpartyInformation(
-            counterpartyInformation: JsonField<Transaction.CounterpartyInformation>
-        ) = apply { this.counterpartyInformation = counterpartyInformation }
+        fun counterpartyInformation(counterpartyInformation: JsonField<CounterpartyInformation>) =
+            apply {
+                this.counterpartyInformation = counterpartyInformation
+            }
 
         /** When the transaction was created */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))

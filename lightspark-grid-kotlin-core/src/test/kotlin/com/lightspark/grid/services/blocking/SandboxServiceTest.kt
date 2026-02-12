@@ -34,4 +34,20 @@ internal class SandboxServiceTest {
 
         response.validate()
     }
+
+    @Disabled("Prism tests are disabled")
+    @Test
+    fun sendTestWebhook() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .baseUrl(TestServerExtension.BASE_URL)
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val sandboxService = client.sandbox()
+
+        val response = sandboxService.sendTestWebhook()
+
+        response.validate()
+    }
 }

@@ -17,6 +17,8 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
+import com.lightspark.grid.models.sandbox.SandboxSendTestWebhookParams
+import com.lightspark.grid.models.sandbox.SandboxSendTestWebhookResponse
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsyncImpl
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
@@ -50,6 +52,13 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
     ): SandboxSendFundsResponse =
         // post /sandbox/send
         withRawResponse().sendFunds(params, requestOptions).parse()
+
+    override suspend fun sendTestWebhook(
+        params: SandboxSendTestWebhookParams,
+        requestOptions: RequestOptions,
+    ): SandboxSendTestWebhookResponse =
+        // post /webhooks/test
+        withRawResponse().sendTestWebhook(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SandboxServiceAsync.WithRawResponse {
@@ -97,6 +106,34 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
             return errorHandler.handle(response).parseable {
                 response
                     .use { sendFundsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val sendTestWebhookHandler: Handler<SandboxSendTestWebhookResponse> =
+            jsonHandler<SandboxSendTestWebhookResponse>(clientOptions.jsonMapper)
+
+        override suspend fun sendTestWebhook(
+            params: SandboxSendTestWebhookParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SandboxSendTestWebhookResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("webhooks", "test")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { sendTestWebhookHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
