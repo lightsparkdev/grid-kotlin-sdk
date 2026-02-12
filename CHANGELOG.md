@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.4.0 (2026-02-12)
+
+Full Changelog: [v0.3.1...v0.4.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.3.1...v0.4.0)
+
+### Features
+
+* **api:** fix package names ([6fdce75](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6fdce75b4db56c58193e627d0f47b4e5219e6e0b))
+* **api:** manual updates ([fb13f2e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fb13f2e4e664b5dccc1da4c5f69983cd36d4586a))
+* **api:** set release_environment to npm ([0307ccb](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/0307ccb8a234d080604d4effa567122d4e2cfeb4))
+
+
+### Chores
+
+* update SDK settings ([68bd41b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/68bd41b29139764a041c397a78bb2aecbda8a534))
+
 ## 0.3.1 (2026-02-11)
 
 Full Changelog: [v0.3.0...v0.3.1](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.3.0...v0.3.1)
