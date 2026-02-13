@@ -5,8 +5,6 @@ package com.lightspark.grid.models.transferin
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.transactions.CounterpartyInformation
-import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
 import java.time.OffsetDateTime
@@ -22,15 +20,17 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
                 .type(TransactionType.INCOMING)
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Transaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -47,9 +47,11 @@ internal class TransactionTest {
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(transaction.destination())
             .isEqualTo(
-                TransactionDestinationOneOf.ofAccountTransactionDestination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                Transaction.Destination.ofAccount(
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
             )
@@ -58,7 +60,7 @@ internal class TransactionTest {
         assertThat(transaction.type()).isEqualTo(TransactionType.INCOMING)
         assertThat(transaction.counterpartyInformation())
             .isEqualTo(
-                CounterpartyInformation.builder()
+                Transaction.CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -78,15 +80,17 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
                 .type(TransactionType.INCOMING)
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Transaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))

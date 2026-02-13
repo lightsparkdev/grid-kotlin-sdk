@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -26,7 +27,7 @@ internal class CustomerListPageResponseTest {
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
                         .address(
-                            CustomerOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -58,7 +59,7 @@ internal class CustomerListPageResponseTest {
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
                         .address(
-                            CustomerOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -94,7 +95,7 @@ internal class CustomerListPageResponseTest {
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
                         .address(
-                            CustomerOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")

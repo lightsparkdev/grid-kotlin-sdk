@@ -20,16 +20,19 @@ import java.util.Objects
 @JsonSerialize(using = ExternalAccountInfoOneOf.Serializer::class)
 class ExternalAccountInfoOneOf
 private constructor(
-    private val usAccount: UsAccountInfo? = null,
-    private val clabe: ClabeAccountInfo? = null,
-    private val pix: PixAccountInfo? = null,
-    private val iban: IbanAccountInfo? = null,
-    private val upi: UpiAccountInfo? = null,
-    private val ngnAccount: NgnAccountInfo? = null,
-    private val cadAccount: CadAccountInfo? = null,
-    private val gbpAccount: GbpAccountInfo? = null,
-    private val phpAccount: PhpAccountInfo? = null,
-    private val sgdAccount: SgdAccountInfo? = null,
+    private val brlAccount: BrlExternalAccountInfo? = null,
+    private val dkkAccount: DkkExternalAccountInfo? = null,
+    private val gbpAccount: GbpExternalAccountInfo? = null,
+    private val hkdAccount: HkdExternalAccountInfo? = null,
+    private val idrAccount: IdrExternalAccountInfo? = null,
+    private val inrAccount: InrExternalAccountInfo? = null,
+    private val mxnAccount: MxnExternalAccountInfo? = null,
+    private val myrAccount: MyrExternalAccountInfo? = null,
+    private val phpAccount: PhpExternalAccountInfo? = null,
+    private val sgdAccount: SgdExternalAccountInfo? = null,
+    private val thbAccount: ThbExternalAccountInfo? = null,
+    private val usdAccount: UsdExternalAccountInfo? = null,
+    private val vndAccount: VndExternalAccountInfo? = null,
     private val sparkWallet: SparkWalletInfo? = null,
     private val lightning: LightningWalletInfo? = null,
     private val solanaWallet: SolanaWalletInfo? = null,
@@ -39,25 +42,31 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
-    fun usAccount(): UsAccountInfo? = usAccount
+    fun brlAccount(): BrlExternalAccountInfo? = brlAccount
 
-    fun clabe(): ClabeAccountInfo? = clabe
+    fun dkkAccount(): DkkExternalAccountInfo? = dkkAccount
 
-    fun pix(): PixAccountInfo? = pix
+    fun gbpAccount(): GbpExternalAccountInfo? = gbpAccount
 
-    fun iban(): IbanAccountInfo? = iban
+    fun hkdAccount(): HkdExternalAccountInfo? = hkdAccount
 
-    fun upi(): UpiAccountInfo? = upi
+    fun idrAccount(): IdrExternalAccountInfo? = idrAccount
 
-    fun ngnAccount(): NgnAccountInfo? = ngnAccount
+    fun inrAccount(): InrExternalAccountInfo? = inrAccount
 
-    fun cadAccount(): CadAccountInfo? = cadAccount
+    fun mxnAccount(): MxnExternalAccountInfo? = mxnAccount
 
-    fun gbpAccount(): GbpAccountInfo? = gbpAccount
+    fun myrAccount(): MyrExternalAccountInfo? = myrAccount
 
-    fun phpAccount(): PhpAccountInfo? = phpAccount
+    fun phpAccount(): PhpExternalAccountInfo? = phpAccount
 
-    fun sgdAccount(): SgdAccountInfo? = sgdAccount
+    fun sgdAccount(): SgdExternalAccountInfo? = sgdAccount
+
+    fun thbAccount(): ThbExternalAccountInfo? = thbAccount
+
+    fun usdAccount(): UsdExternalAccountInfo? = usdAccount
+
+    fun vndAccount(): VndExternalAccountInfo? = vndAccount
 
     fun sparkWallet(): SparkWalletInfo? = sparkWallet
 
@@ -71,25 +80,31 @@ private constructor(
 
     fun baseWallet(): BaseWalletInfo? = baseWallet
 
-    fun isUsAccount(): Boolean = usAccount != null
+    fun isBrlAccount(): Boolean = brlAccount != null
 
-    fun isClabe(): Boolean = clabe != null
-
-    fun isPix(): Boolean = pix != null
-
-    fun isIban(): Boolean = iban != null
-
-    fun isUpi(): Boolean = upi != null
-
-    fun isNgnAccount(): Boolean = ngnAccount != null
-
-    fun isCadAccount(): Boolean = cadAccount != null
+    fun isDkkAccount(): Boolean = dkkAccount != null
 
     fun isGbpAccount(): Boolean = gbpAccount != null
+
+    fun isHkdAccount(): Boolean = hkdAccount != null
+
+    fun isIdrAccount(): Boolean = idrAccount != null
+
+    fun isInrAccount(): Boolean = inrAccount != null
+
+    fun isMxnAccount(): Boolean = mxnAccount != null
+
+    fun isMyrAccount(): Boolean = myrAccount != null
 
     fun isPhpAccount(): Boolean = phpAccount != null
 
     fun isSgdAccount(): Boolean = sgdAccount != null
+
+    fun isThbAccount(): Boolean = thbAccount != null
+
+    fun isUsdAccount(): Boolean = usdAccount != null
+
+    fun isVndAccount(): Boolean = vndAccount != null
 
     fun isSparkWallet(): Boolean = sparkWallet != null
 
@@ -103,25 +118,31 @@ private constructor(
 
     fun isBaseWallet(): Boolean = baseWallet != null
 
-    fun asUsAccount(): UsAccountInfo = usAccount.getOrThrow("usAccount")
+    fun asBrlAccount(): BrlExternalAccountInfo = brlAccount.getOrThrow("brlAccount")
 
-    fun asClabe(): ClabeAccountInfo = clabe.getOrThrow("clabe")
+    fun asDkkAccount(): DkkExternalAccountInfo = dkkAccount.getOrThrow("dkkAccount")
 
-    fun asPix(): PixAccountInfo = pix.getOrThrow("pix")
+    fun asGbpAccount(): GbpExternalAccountInfo = gbpAccount.getOrThrow("gbpAccount")
 
-    fun asIban(): IbanAccountInfo = iban.getOrThrow("iban")
+    fun asHkdAccount(): HkdExternalAccountInfo = hkdAccount.getOrThrow("hkdAccount")
 
-    fun asUpi(): UpiAccountInfo = upi.getOrThrow("upi")
+    fun asIdrAccount(): IdrExternalAccountInfo = idrAccount.getOrThrow("idrAccount")
 
-    fun asNgnAccount(): NgnAccountInfo = ngnAccount.getOrThrow("ngnAccount")
+    fun asInrAccount(): InrExternalAccountInfo = inrAccount.getOrThrow("inrAccount")
 
-    fun asCadAccount(): CadAccountInfo = cadAccount.getOrThrow("cadAccount")
+    fun asMxnAccount(): MxnExternalAccountInfo = mxnAccount.getOrThrow("mxnAccount")
 
-    fun asGbpAccount(): GbpAccountInfo = gbpAccount.getOrThrow("gbpAccount")
+    fun asMyrAccount(): MyrExternalAccountInfo = myrAccount.getOrThrow("myrAccount")
 
-    fun asPhpAccount(): PhpAccountInfo = phpAccount.getOrThrow("phpAccount")
+    fun asPhpAccount(): PhpExternalAccountInfo = phpAccount.getOrThrow("phpAccount")
 
-    fun asSgdAccount(): SgdAccountInfo = sgdAccount.getOrThrow("sgdAccount")
+    fun asSgdAccount(): SgdExternalAccountInfo = sgdAccount.getOrThrow("sgdAccount")
+
+    fun asThbAccount(): ThbExternalAccountInfo = thbAccount.getOrThrow("thbAccount")
+
+    fun asUsdAccount(): UsdExternalAccountInfo = usdAccount.getOrThrow("usdAccount")
+
+    fun asVndAccount(): VndExternalAccountInfo = vndAccount.getOrThrow("vndAccount")
 
     fun asSparkWallet(): SparkWalletInfo = sparkWallet.getOrThrow("sparkWallet")
 
@@ -139,16 +160,19 @@ private constructor(
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            usAccount != null -> visitor.visitUsAccount(usAccount)
-            clabe != null -> visitor.visitClabe(clabe)
-            pix != null -> visitor.visitPix(pix)
-            iban != null -> visitor.visitIban(iban)
-            upi != null -> visitor.visitUpi(upi)
-            ngnAccount != null -> visitor.visitNgnAccount(ngnAccount)
-            cadAccount != null -> visitor.visitCadAccount(cadAccount)
+            brlAccount != null -> visitor.visitBrlAccount(brlAccount)
+            dkkAccount != null -> visitor.visitDkkAccount(dkkAccount)
             gbpAccount != null -> visitor.visitGbpAccount(gbpAccount)
+            hkdAccount != null -> visitor.visitHkdAccount(hkdAccount)
+            idrAccount != null -> visitor.visitIdrAccount(idrAccount)
+            inrAccount != null -> visitor.visitInrAccount(inrAccount)
+            mxnAccount != null -> visitor.visitMxnAccount(mxnAccount)
+            myrAccount != null -> visitor.visitMyrAccount(myrAccount)
             phpAccount != null -> visitor.visitPhpAccount(phpAccount)
             sgdAccount != null -> visitor.visitSgdAccount(sgdAccount)
+            thbAccount != null -> visitor.visitThbAccount(thbAccount)
+            usdAccount != null -> visitor.visitUsdAccount(usdAccount)
+            vndAccount != null -> visitor.visitVndAccount(vndAccount)
             sparkWallet != null -> visitor.visitSparkWallet(sparkWallet)
             lightning != null -> visitor.visitLightning(lightning)
             solanaWallet != null -> visitor.visitSolanaWallet(solanaWallet)
@@ -167,44 +191,56 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitUsAccount(usAccount: UsAccountInfo) {
-                    usAccount.validate()
+                override fun visitBrlAccount(brlAccount: BrlExternalAccountInfo) {
+                    brlAccount.validate()
                 }
 
-                override fun visitClabe(clabe: ClabeAccountInfo) {
-                    clabe.validate()
+                override fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo) {
+                    dkkAccount.validate()
                 }
 
-                override fun visitPix(pix: PixAccountInfo) {
-                    pix.validate()
-                }
-
-                override fun visitIban(iban: IbanAccountInfo) {
-                    iban.validate()
-                }
-
-                override fun visitUpi(upi: UpiAccountInfo) {
-                    upi.validate()
-                }
-
-                override fun visitNgnAccount(ngnAccount: NgnAccountInfo) {
-                    ngnAccount.validate()
-                }
-
-                override fun visitCadAccount(cadAccount: CadAccountInfo) {
-                    cadAccount.validate()
-                }
-
-                override fun visitGbpAccount(gbpAccount: GbpAccountInfo) {
+                override fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo) {
                     gbpAccount.validate()
                 }
 
-                override fun visitPhpAccount(phpAccount: PhpAccountInfo) {
+                override fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo) {
+                    hkdAccount.validate()
+                }
+
+                override fun visitIdrAccount(idrAccount: IdrExternalAccountInfo) {
+                    idrAccount.validate()
+                }
+
+                override fun visitInrAccount(inrAccount: InrExternalAccountInfo) {
+                    inrAccount.validate()
+                }
+
+                override fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo) {
+                    mxnAccount.validate()
+                }
+
+                override fun visitMyrAccount(myrAccount: MyrExternalAccountInfo) {
+                    myrAccount.validate()
+                }
+
+                override fun visitPhpAccount(phpAccount: PhpExternalAccountInfo) {
                     phpAccount.validate()
                 }
 
-                override fun visitSgdAccount(sgdAccount: SgdAccountInfo) {
+                override fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo) {
                     sgdAccount.validate()
+                }
+
+                override fun visitThbAccount(thbAccount: ThbExternalAccountInfo) {
+                    thbAccount.validate()
+                }
+
+                override fun visitUsdAccount(usdAccount: UsdExternalAccountInfo) {
+                    usdAccount.validate()
+                }
+
+                override fun visitVndAccount(vndAccount: VndExternalAccountInfo) {
+                    vndAccount.validate()
                 }
 
                 override fun visitSparkWallet(sparkWallet: SparkWalletInfo) {
@@ -251,25 +287,44 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitUsAccount(usAccount: UsAccountInfo) = usAccount.validity()
+                override fun visitBrlAccount(brlAccount: BrlExternalAccountInfo) =
+                    brlAccount.validity()
 
-                override fun visitClabe(clabe: ClabeAccountInfo) = clabe.validity()
+                override fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo) =
+                    dkkAccount.validity()
 
-                override fun visitPix(pix: PixAccountInfo) = pix.validity()
+                override fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo) =
+                    gbpAccount.validity()
 
-                override fun visitIban(iban: IbanAccountInfo) = iban.validity()
+                override fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo) =
+                    hkdAccount.validity()
 
-                override fun visitUpi(upi: UpiAccountInfo) = upi.validity()
+                override fun visitIdrAccount(idrAccount: IdrExternalAccountInfo) =
+                    idrAccount.validity()
 
-                override fun visitNgnAccount(ngnAccount: NgnAccountInfo) = ngnAccount.validity()
+                override fun visitInrAccount(inrAccount: InrExternalAccountInfo) =
+                    inrAccount.validity()
 
-                override fun visitCadAccount(cadAccount: CadAccountInfo) = cadAccount.validity()
+                override fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo) =
+                    mxnAccount.validity()
 
-                override fun visitGbpAccount(gbpAccount: GbpAccountInfo) = gbpAccount.validity()
+                override fun visitMyrAccount(myrAccount: MyrExternalAccountInfo) =
+                    myrAccount.validity()
 
-                override fun visitPhpAccount(phpAccount: PhpAccountInfo) = phpAccount.validity()
+                override fun visitPhpAccount(phpAccount: PhpExternalAccountInfo) =
+                    phpAccount.validity()
 
-                override fun visitSgdAccount(sgdAccount: SgdAccountInfo) = sgdAccount.validity()
+                override fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo) =
+                    sgdAccount.validity()
+
+                override fun visitThbAccount(thbAccount: ThbExternalAccountInfo) =
+                    thbAccount.validity()
+
+                override fun visitUsdAccount(usdAccount: UsdExternalAccountInfo) =
+                    usdAccount.validity()
+
+                override fun visitVndAccount(vndAccount: VndExternalAccountInfo) =
+                    vndAccount.validity()
 
                 override fun visitSparkWallet(sparkWallet: SparkWalletInfo) = sparkWallet.validity()
 
@@ -295,16 +350,19 @@ private constructor(
         }
 
         return other is ExternalAccountInfoOneOf &&
-            usAccount == other.usAccount &&
-            clabe == other.clabe &&
-            pix == other.pix &&
-            iban == other.iban &&
-            upi == other.upi &&
-            ngnAccount == other.ngnAccount &&
-            cadAccount == other.cadAccount &&
+            brlAccount == other.brlAccount &&
+            dkkAccount == other.dkkAccount &&
             gbpAccount == other.gbpAccount &&
+            hkdAccount == other.hkdAccount &&
+            idrAccount == other.idrAccount &&
+            inrAccount == other.inrAccount &&
+            mxnAccount == other.mxnAccount &&
+            myrAccount == other.myrAccount &&
             phpAccount == other.phpAccount &&
             sgdAccount == other.sgdAccount &&
+            thbAccount == other.thbAccount &&
+            usdAccount == other.usdAccount &&
+            vndAccount == other.vndAccount &&
             sparkWallet == other.sparkWallet &&
             lightning == other.lightning &&
             solanaWallet == other.solanaWallet &&
@@ -315,16 +373,19 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
-            usAccount,
-            clabe,
-            pix,
-            iban,
-            upi,
-            ngnAccount,
-            cadAccount,
+            brlAccount,
+            dkkAccount,
             gbpAccount,
+            hkdAccount,
+            idrAccount,
+            inrAccount,
+            mxnAccount,
+            myrAccount,
             phpAccount,
             sgdAccount,
+            thbAccount,
+            usdAccount,
+            vndAccount,
             sparkWallet,
             lightning,
             solanaWallet,
@@ -335,16 +396,19 @@ private constructor(
 
     override fun toString(): String =
         when {
-            usAccount != null -> "ExternalAccountInfoOneOf{usAccount=$usAccount}"
-            clabe != null -> "ExternalAccountInfoOneOf{clabe=$clabe}"
-            pix != null -> "ExternalAccountInfoOneOf{pix=$pix}"
-            iban != null -> "ExternalAccountInfoOneOf{iban=$iban}"
-            upi != null -> "ExternalAccountInfoOneOf{upi=$upi}"
-            ngnAccount != null -> "ExternalAccountInfoOneOf{ngnAccount=$ngnAccount}"
-            cadAccount != null -> "ExternalAccountInfoOneOf{cadAccount=$cadAccount}"
+            brlAccount != null -> "ExternalAccountInfoOneOf{brlAccount=$brlAccount}"
+            dkkAccount != null -> "ExternalAccountInfoOneOf{dkkAccount=$dkkAccount}"
             gbpAccount != null -> "ExternalAccountInfoOneOf{gbpAccount=$gbpAccount}"
+            hkdAccount != null -> "ExternalAccountInfoOneOf{hkdAccount=$hkdAccount}"
+            idrAccount != null -> "ExternalAccountInfoOneOf{idrAccount=$idrAccount}"
+            inrAccount != null -> "ExternalAccountInfoOneOf{inrAccount=$inrAccount}"
+            mxnAccount != null -> "ExternalAccountInfoOneOf{mxnAccount=$mxnAccount}"
+            myrAccount != null -> "ExternalAccountInfoOneOf{myrAccount=$myrAccount}"
             phpAccount != null -> "ExternalAccountInfoOneOf{phpAccount=$phpAccount}"
             sgdAccount != null -> "ExternalAccountInfoOneOf{sgdAccount=$sgdAccount}"
+            thbAccount != null -> "ExternalAccountInfoOneOf{thbAccount=$thbAccount}"
+            usdAccount != null -> "ExternalAccountInfoOneOf{usdAccount=$usdAccount}"
+            vndAccount != null -> "ExternalAccountInfoOneOf{vndAccount=$vndAccount}"
             sparkWallet != null -> "ExternalAccountInfoOneOf{sparkWallet=$sparkWallet}"
             lightning != null -> "ExternalAccountInfoOneOf{lightning=$lightning}"
             solanaWallet != null -> "ExternalAccountInfoOneOf{solanaWallet=$solanaWallet}"
@@ -357,30 +421,44 @@ private constructor(
 
     companion object {
 
-        fun ofUsAccount(usAccount: UsAccountInfo) = ExternalAccountInfoOneOf(usAccount = usAccount)
+        fun ofBrlAccount(brlAccount: BrlExternalAccountInfo) =
+            ExternalAccountInfoOneOf(brlAccount = brlAccount)
 
-        fun ofClabe(clabe: ClabeAccountInfo) = ExternalAccountInfoOneOf(clabe = clabe)
+        fun ofDkkAccount(dkkAccount: DkkExternalAccountInfo) =
+            ExternalAccountInfoOneOf(dkkAccount = dkkAccount)
 
-        fun ofPix(pix: PixAccountInfo) = ExternalAccountInfoOneOf(pix = pix)
-
-        fun ofIban(iban: IbanAccountInfo) = ExternalAccountInfoOneOf(iban = iban)
-
-        fun ofUpi(upi: UpiAccountInfo) = ExternalAccountInfoOneOf(upi = upi)
-
-        fun ofNgnAccount(ngnAccount: NgnAccountInfo) =
-            ExternalAccountInfoOneOf(ngnAccount = ngnAccount)
-
-        fun ofCadAccount(cadAccount: CadAccountInfo) =
-            ExternalAccountInfoOneOf(cadAccount = cadAccount)
-
-        fun ofGbpAccount(gbpAccount: GbpAccountInfo) =
+        fun ofGbpAccount(gbpAccount: GbpExternalAccountInfo) =
             ExternalAccountInfoOneOf(gbpAccount = gbpAccount)
 
-        fun ofPhpAccount(phpAccount: PhpAccountInfo) =
+        fun ofHkdAccount(hkdAccount: HkdExternalAccountInfo) =
+            ExternalAccountInfoOneOf(hkdAccount = hkdAccount)
+
+        fun ofIdrAccount(idrAccount: IdrExternalAccountInfo) =
+            ExternalAccountInfoOneOf(idrAccount = idrAccount)
+
+        fun ofInrAccount(inrAccount: InrExternalAccountInfo) =
+            ExternalAccountInfoOneOf(inrAccount = inrAccount)
+
+        fun ofMxnAccount(mxnAccount: MxnExternalAccountInfo) =
+            ExternalAccountInfoOneOf(mxnAccount = mxnAccount)
+
+        fun ofMyrAccount(myrAccount: MyrExternalAccountInfo) =
+            ExternalAccountInfoOneOf(myrAccount = myrAccount)
+
+        fun ofPhpAccount(phpAccount: PhpExternalAccountInfo) =
             ExternalAccountInfoOneOf(phpAccount = phpAccount)
 
-        fun ofSgdAccount(sgdAccount: SgdAccountInfo) =
+        fun ofSgdAccount(sgdAccount: SgdExternalAccountInfo) =
             ExternalAccountInfoOneOf(sgdAccount = sgdAccount)
+
+        fun ofThbAccount(thbAccount: ThbExternalAccountInfo) =
+            ExternalAccountInfoOneOf(thbAccount = thbAccount)
+
+        fun ofUsdAccount(usdAccount: UsdExternalAccountInfo) =
+            ExternalAccountInfoOneOf(usdAccount = usdAccount)
+
+        fun ofVndAccount(vndAccount: VndExternalAccountInfo) =
+            ExternalAccountInfoOneOf(vndAccount = vndAccount)
 
         fun ofSparkWallet(sparkWallet: SparkWalletInfo) =
             ExternalAccountInfoOneOf(sparkWallet = sparkWallet)
@@ -407,25 +485,31 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitUsAccount(usAccount: UsAccountInfo): T
+        fun visitBrlAccount(brlAccount: BrlExternalAccountInfo): T
 
-        fun visitClabe(clabe: ClabeAccountInfo): T
+        fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo): T
 
-        fun visitPix(pix: PixAccountInfo): T
+        fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo): T
 
-        fun visitIban(iban: IbanAccountInfo): T
+        fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo): T
 
-        fun visitUpi(upi: UpiAccountInfo): T
+        fun visitIdrAccount(idrAccount: IdrExternalAccountInfo): T
 
-        fun visitNgnAccount(ngnAccount: NgnAccountInfo): T
+        fun visitInrAccount(inrAccount: InrExternalAccountInfo): T
 
-        fun visitCadAccount(cadAccount: CadAccountInfo): T
+        fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo): T
 
-        fun visitGbpAccount(gbpAccount: GbpAccountInfo): T
+        fun visitMyrAccount(myrAccount: MyrExternalAccountInfo): T
 
-        fun visitPhpAccount(phpAccount: PhpAccountInfo): T
+        fun visitPhpAccount(phpAccount: PhpExternalAccountInfo): T
 
-        fun visitSgdAccount(sgdAccount: SgdAccountInfo): T
+        fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo): T
+
+        fun visitThbAccount(thbAccount: ThbExternalAccountInfo): T
+
+        fun visitUsdAccount(usdAccount: UsdExternalAccountInfo): T
+
+        fun visitVndAccount(vndAccount: VndExternalAccountInfo): T
 
         fun visitSparkWallet(sparkWallet: SparkWalletInfo): T
 
@@ -462,54 +546,69 @@ private constructor(
             val accountType = json.asObject()?.get("accountType")?.asString()
 
             when (accountType) {
-                "US_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UsAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(usAccount = it, _json = json)
+                "BRL_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<BrlExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(brlAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
-                "CLABE" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ClabeAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(clabe = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "PIX" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PixAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(pix = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "IBAN" -> {
-                    return tryDeserialize(node, jacksonTypeRef<IbanAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(iban = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "UPI" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UpiAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(upi = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "NGN_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<NgnAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(ngnAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "CAD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<CadAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(cadAccount = it, _json = json)
+                "DKK_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<DkkExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(dkkAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
                 "GBP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<GbpAccountInfo>())?.let {
+                    return tryDeserialize(node, jacksonTypeRef<GbpExternalAccountInfo>())?.let {
                         ExternalAccountInfoOneOf(gbpAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
+                "HKD_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<HkdExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(hkdAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "IDR_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<IdrExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(idrAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "INR_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<InrExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(inrAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "MXN_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MxnExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(mxnAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "MYR_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<MyrExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(myrAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
                 "PHP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PhpAccountInfo>())?.let {
+                    return tryDeserialize(node, jacksonTypeRef<PhpExternalAccountInfo>())?.let {
                         ExternalAccountInfoOneOf(phpAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
                 "SGD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<SgdAccountInfo>())?.let {
+                    return tryDeserialize(node, jacksonTypeRef<SgdExternalAccountInfo>())?.let {
                         ExternalAccountInfoOneOf(sgdAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "THB_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<ThbExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(thbAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "USD_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<UsdExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(usdAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "VND_ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<VndExternalAccountInfo>())?.let {
+                        ExternalAccountInfoOneOf(vndAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
                 "SPARK_WALLET" -> {
@@ -557,16 +656,19 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.usAccount != null -> generator.writeObject(value.usAccount)
-                value.clabe != null -> generator.writeObject(value.clabe)
-                value.pix != null -> generator.writeObject(value.pix)
-                value.iban != null -> generator.writeObject(value.iban)
-                value.upi != null -> generator.writeObject(value.upi)
-                value.ngnAccount != null -> generator.writeObject(value.ngnAccount)
-                value.cadAccount != null -> generator.writeObject(value.cadAccount)
+                value.brlAccount != null -> generator.writeObject(value.brlAccount)
+                value.dkkAccount != null -> generator.writeObject(value.dkkAccount)
                 value.gbpAccount != null -> generator.writeObject(value.gbpAccount)
+                value.hkdAccount != null -> generator.writeObject(value.hkdAccount)
+                value.idrAccount != null -> generator.writeObject(value.idrAccount)
+                value.inrAccount != null -> generator.writeObject(value.inrAccount)
+                value.mxnAccount != null -> generator.writeObject(value.mxnAccount)
+                value.myrAccount != null -> generator.writeObject(value.myrAccount)
                 value.phpAccount != null -> generator.writeObject(value.phpAccount)
                 value.sgdAccount != null -> generator.writeObject(value.sgdAccount)
+                value.thbAccount != null -> generator.writeObject(value.thbAccount)
+                value.usdAccount != null -> generator.writeObject(value.usdAccount)
+                value.vndAccount != null -> generator.writeObject(value.vndAccount)
                 value.sparkWallet != null -> generator.writeObject(value.sparkWallet)
                 value.lightning != null -> generator.writeObject(value.lightning)
                 value.solanaWallet != null -> generator.writeObject(value.solanaWallet)

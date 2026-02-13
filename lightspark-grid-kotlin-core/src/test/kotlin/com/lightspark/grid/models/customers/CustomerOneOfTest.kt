@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -29,7 +30,7 @@ internal class CustomerOneOfTest {
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
                 .address(
-                    CustomerOneOf.Individual.Address.builder()
+                    Address.builder()
                         .country("US")
                         .line1("123 Main Street")
                         .postalCode("94105")
@@ -64,7 +65,7 @@ internal class CustomerOneOfTest {
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
                     .address(
-                        CustomerOneOf.Individual.Address.builder()
+                        Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -101,7 +102,7 @@ internal class CustomerOneOfTest {
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .customerType(CustomerOneOf.Business.CustomerType.BUSINESS)
                 .address(
-                    CustomerOneOf.Business.Address.builder()
+                    Address.builder()
                         .country("US")
                         .line1("123 Main Street")
                         .postalCode("94105")
@@ -117,7 +118,7 @@ internal class CustomerOneOfTest {
                             CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
                         )
                         .address(
-                            CustomerOneOf.Business.BeneficialOwner.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -165,7 +166,7 @@ internal class CustomerOneOfTest {
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerType(CustomerOneOf.Business.CustomerType.BUSINESS)
                     .address(
-                        CustomerOneOf.Business.Address.builder()
+                        Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -181,7 +182,7 @@ internal class CustomerOneOfTest {
                                 CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
                             )
                             .address(
-                                CustomerOneOf.Business.BeneficialOwner.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
