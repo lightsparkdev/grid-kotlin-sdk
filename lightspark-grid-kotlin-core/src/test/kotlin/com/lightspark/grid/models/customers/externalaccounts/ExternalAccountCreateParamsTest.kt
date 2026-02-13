@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.customers.externalaccounts
 
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,33 +14,30 @@ internal class ExternalAccountCreateParamsTest {
             .externalAccountCreate(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                        ExternalAccountInfoOneOf.UsAccount.builder()
+                            .accountCategory(
+                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                            )
+                            .accountNumber("12345678901")
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                                    .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Doe")
+                                    .nationality("US")
                                     .address(
-                                        BrlBeneficiary.Address.builder()
+                                        Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
                                             .city("San Francisco")
-                                            .line2("line2")
+                                            .line2("Apt 4B")
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
-                                    .countryOfResidence("countryOfResidence")
-                                    .email("email")
-                                    .nationality("US")
-                                    .phoneNumber("phoneNumber")
-                                    .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .pixKey("pixKey")
-                            .pixKeyType("pixKeyType")
-                            .taxId("taxId")
+                            .routingNumber("123456789")
+                            .bankName("Chase Bank")
                             .build()
                     )
                     .currency("USD")
@@ -58,33 +56,31 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                            ExternalAccountInfoOneOf.UsAccount.builder()
+                                .accountCategory(
+                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                )
+                                .accountNumber("12345678901")
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                        .builder()
+                                        .birthDate(LocalDate.parse("1990-01-15"))
                                         .fullName("John Doe")
+                                        .nationality("US")
                                         .address(
-                                            BrlBeneficiary.Address.builder()
+                                            Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
                                                 .city("San Francisco")
-                                                .line2("line2")
+                                                .line2("Apt 4B")
                                                 .state("CA")
                                                 .build()
                                         )
-                                        .birthDate("1990-01-15")
-                                        .countryOfResidence("countryOfResidence")
-                                        .email("email")
-                                        .nationality("US")
-                                        .phoneNumber("phoneNumber")
-                                        .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
+                                .routingNumber("123456789")
+                                .bankName("Chase Bank")
                                 .build()
                         )
                         .currency("USD")
@@ -101,33 +97,30 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                        ExternalAccountInfoOneOf.UsAccount.builder()
+                            .accountCategory(
+                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                            )
+                            .accountNumber("12345678901")
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                                    .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Doe")
+                                    .nationality("US")
                                     .address(
-                                        BrlBeneficiary.Address.builder()
+                                        Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
                                             .city("San Francisco")
-                                            .line2("line2")
+                                            .line2("Apt 4B")
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
-                                    .countryOfResidence("countryOfResidence")
-                                    .email("email")
-                                    .nationality("US")
-                                    .phoneNumber("phoneNumber")
-                                    .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .pixKey("pixKey")
-                            .pixKeyType("pixKeyType")
-                            .taxId("taxId")
+                            .routingNumber("123456789")
+                            .bankName("Chase Bank")
                             .build()
                     )
                     .currency("USD")
@@ -145,12 +138,20 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
-                                .individualBeneficiary("John Doe")
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
+                            ExternalAccountInfoOneOf.UsAccount.builder()
+                                .accountCategory(
+                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                )
+                                .accountNumber("12345678901")
+                                .beneficiary(
+                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                        .builder()
+                                        .birthDate(LocalDate.parse("1990-01-15"))
+                                        .fullName("John Doe")
+                                        .nationality("US")
+                                        .build()
+                                )
+                                .routingNumber("123456789")
                                 .build()
                         )
                         .currency("USD")
@@ -164,12 +165,19 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
-                            .individualBeneficiary("John Doe")
-                            .pixKey("pixKey")
-                            .pixKeyType("pixKeyType")
-                            .taxId("taxId")
+                        ExternalAccountInfoOneOf.UsAccount.builder()
+                            .accountCategory(
+                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                            )
+                            .accountNumber("12345678901")
+                            .beneficiary(
+                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                                    .birthDate(LocalDate.parse("1990-01-15"))
+                                    .fullName("John Doe")
+                                    .nationality("US")
+                                    .build()
+                            )
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")

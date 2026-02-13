@@ -6,9 +6,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
-import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
+import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -108,33 +109,31 @@ internal class QuoteDestinationOneOfTest {
                 .externalAccountDetails(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                            ExternalAccountInfoOneOf.UsAccount.builder()
+                                .accountCategory(
+                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                )
+                                .accountNumber("123456789")
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("fullName")
+                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                        .builder()
+                                        .birthDate(LocalDate.parse("1990-01-15"))
+                                        .fullName("John Michael Doe")
+                                        .nationality("US")
                                         .address(
-                                            BrlBeneficiary.Address.builder()
-                                                .country("country")
-                                                .line1("line1")
-                                                .postalCode("postalCode")
-                                                .city("city")
-                                                .line2("line2")
-                                                .state("state")
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .city("San Francisco")
+                                                .line2("Apt 4B")
+                                                .state("CA")
                                                 .build()
                                         )
-                                        .birthDate("birthDate")
-                                        .countryOfResidence("countryOfResidence")
-                                        .email("email")
-                                        .nationality("nationality")
-                                        .phoneNumber("phoneNumber")
-                                        .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
+                                .routingNumber("987654321")
+                                .bankName("Chase Bank")
                                 .build()
                         )
                         .currency("USD")
@@ -165,35 +164,31 @@ internal class QuoteDestinationOneOfTest {
                     .externalAccountDetails(
                         ExternalAccountCreate.builder()
                             .accountInfo(
-                                BrlExternalAccountInfo.builder()
-                                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                ExternalAccountInfoOneOf.UsAccount.builder()
+                                    .accountCategory(
+                                        ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                    )
+                                    .accountNumber("123456789")
                                     .beneficiary(
-                                        BrlBeneficiary.builder()
-                                            .beneficiaryType(
-                                                BrlBeneficiary.BeneficiaryType.INDIVIDUAL
-                                            )
-                                            .fullName("fullName")
+                                        ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                            .builder()
+                                            .birthDate(LocalDate.parse("1990-01-15"))
+                                            .fullName("John Michael Doe")
+                                            .nationality("US")
                                             .address(
-                                                BrlBeneficiary.Address.builder()
-                                                    .country("country")
-                                                    .line1("line1")
-                                                    .postalCode("postalCode")
-                                                    .city("city")
-                                                    .line2("line2")
-                                                    .state("state")
+                                                Address.builder()
+                                                    .country("US")
+                                                    .line1("123 Main Street")
+                                                    .postalCode("94105")
+                                                    .city("San Francisco")
+                                                    .line2("Apt 4B")
+                                                    .state("CA")
                                                     .build()
                                             )
-                                            .birthDate("birthDate")
-                                            .countryOfResidence("countryOfResidence")
-                                            .email("email")
-                                            .nationality("nationality")
-                                            .phoneNumber("phoneNumber")
-                                            .registrationNumber("registrationNumber")
                                             .build()
                                     )
-                                    .pixKey("pixKey")
-                                    .pixKeyType("pixKeyType")
-                                    .taxId("taxId")
+                                    .routingNumber("987654321")
+                                    .bankName("Chase Bank")
                                     .build()
                             )
                             .currency("USD")
