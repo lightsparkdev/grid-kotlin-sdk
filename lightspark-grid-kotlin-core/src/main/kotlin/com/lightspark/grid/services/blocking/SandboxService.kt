@@ -8,8 +8,6 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
-import com.lightspark.grid.models.sandbox.SandboxSendTestWebhookParams
-import com.lightspark.grid.models.sandbox.SandboxSendTestWebhookResponse
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.UmaService
 
@@ -40,16 +38,6 @@ interface SandboxService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SandboxSendFundsResponse
 
-    /** Send a test webhook to the configured endpoint */
-    fun sendTestWebhook(
-        params: SandboxSendTestWebhookParams = SandboxSendTestWebhookParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): SandboxSendTestWebhookResponse
-
-    /** @see sendTestWebhook */
-    fun sendTestWebhook(requestOptions: RequestOptions): SandboxSendTestWebhookResponse =
-        sendTestWebhook(SandboxSendTestWebhookParams.none(), requestOptions)
-
     /** A view of [SandboxService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -73,22 +61,5 @@ interface SandboxService {
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SandboxSendFundsResponse>
-
-        /**
-         * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as
-         * [SandboxService.sendTestWebhook].
-         */
-        @MustBeClosed
-        fun sendTestWebhook(
-            params: SandboxSendTestWebhookParams = SandboxSendTestWebhookParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SandboxSendTestWebhookResponse>
-
-        /** @see sendTestWebhook */
-        @MustBeClosed
-        fun sendTestWebhook(
-            requestOptions: RequestOptions
-        ): HttpResponseFor<SandboxSendTestWebhookResponse> =
-            sendTestWebhook(SandboxSendTestWebhookParams.none(), requestOptions)
     }
 }
