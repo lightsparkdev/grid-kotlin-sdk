@@ -46,7 +46,6 @@ private constructor(
     private val totalReceivingAmount: JsonField<Long>,
     private val totalSendingAmount: JsonField<Long>,
     private val transactionId: JsonField<String>,
-    private val originalQuoteId: JsonField<String>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -87,9 +86,6 @@ private constructor(
         @JsonProperty("transactionId")
         @ExcludeMissing
         transactionId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("originalQuoteId")
-        @ExcludeMissing
-        originalQuoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("paymentInstructions")
         @ExcludeMissing
         paymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
@@ -110,7 +106,6 @@ private constructor(
         totalReceivingAmount,
         totalSendingAmount,
         transactionId,
-        originalQuoteId,
         paymentInstructions,
         rateDetails,
         mutableMapOf(),
@@ -220,14 +215,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun transactionId(): String = transactionId.getRequired("transactionId")
-
-    /**
-     * ID of the quote that is being retried
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun originalQuoteId(): String? = originalQuoteId.getNullable("originalQuoteId")
 
     /**
      * Payment instructions for executing the payment. This is not required when using an internal
@@ -362,15 +349,6 @@ private constructor(
     fun _transactionId(): JsonField<String> = transactionId
 
     /**
-     * Returns the raw JSON value of [originalQuoteId].
-     *
-     * Unlike [originalQuoteId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("originalQuoteId")
-    @ExcludeMissing
-    fun _originalQuoteId(): JsonField<String> = originalQuoteId
-
-    /**
      * Returns the raw JSON value of [paymentInstructions].
      *
      * Unlike [paymentInstructions], this method doesn't throw if the JSON field has an unexpected
@@ -442,7 +420,6 @@ private constructor(
         private var totalReceivingAmount: JsonField<Long>? = null
         private var totalSendingAmount: JsonField<Long>? = null
         private var transactionId: JsonField<String>? = null
-        private var originalQuoteId: JsonField<String> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -461,7 +438,6 @@ private constructor(
             totalReceivingAmount = quote.totalReceivingAmount
             totalSendingAmount = quote.totalSendingAmount
             transactionId = quote.transactionId
-            originalQuoteId = quote.originalQuoteId
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
             rateDetails = quote.rateDetails
             additionalProperties = quote.additionalProperties.toMutableMap()
@@ -685,21 +661,6 @@ private constructor(
             this.transactionId = transactionId
         }
 
-        /** ID of the quote that is being retried */
-        fun originalQuoteId(originalQuoteId: String) =
-            originalQuoteId(JsonField.of(originalQuoteId))
-
-        /**
-         * Sets [Builder.originalQuoteId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.originalQuoteId] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun originalQuoteId(originalQuoteId: JsonField<String>) = apply {
-            this.originalQuoteId = originalQuoteId
-        }
-
         /**
          * Payment instructions for executing the payment. This is not required when using an
          * internal account source.
@@ -802,7 +763,6 @@ private constructor(
                 checkRequired("totalReceivingAmount", totalReceivingAmount),
                 checkRequired("totalSendingAmount", totalSendingAmount),
                 checkRequired("transactionId", transactionId),
-                originalQuoteId,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 rateDetails,
                 additionalProperties.toMutableMap(),
@@ -829,7 +789,6 @@ private constructor(
         totalReceivingAmount()
         totalSendingAmount()
         transactionId()
-        originalQuoteId()
         paymentInstructions()?.forEach { it.validate() }
         rateDetails()?.validate()
         validated = true
@@ -862,7 +821,6 @@ private constructor(
             (if (totalReceivingAmount.asKnown() == null) 0 else 1) +
             (if (totalSendingAmount.asKnown() == null) 0 else 1) +
             (if (transactionId.asKnown() == null) 0 else 1) +
-            (if (originalQuoteId.asKnown() == null) 0 else 1) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (rateDetails.asKnown()?.validity() ?: 0)
 
@@ -1775,7 +1733,6 @@ private constructor(
             totalReceivingAmount == other.totalReceivingAmount &&
             totalSendingAmount == other.totalSendingAmount &&
             transactionId == other.transactionId &&
-            originalQuoteId == other.originalQuoteId &&
             paymentInstructions == other.paymentInstructions &&
             rateDetails == other.rateDetails &&
             additionalProperties == other.additionalProperties
@@ -1796,7 +1753,6 @@ private constructor(
             totalReceivingAmount,
             totalSendingAmount,
             transactionId,
-            originalQuoteId,
             paymentInstructions,
             rateDetails,
             additionalProperties,
@@ -1806,5 +1762,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, quoteId=$quoteId, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, originalQuoteId=$originalQuoteId, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
+        "Quote{createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, quoteId=$quoteId, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
 }
