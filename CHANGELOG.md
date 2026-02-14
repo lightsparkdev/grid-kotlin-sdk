@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0 (2026-02-14)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **api:** manual updates ([6750b40](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6750b40c1d2f5e86e857796fc208d73bd9f9c170))
+* **api:** manual updates ([f0b71ed](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f0b71edbe652fd3548873defd64430172b265478))
+* **api:** manual updates ([2fe87f9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2fe87f989e6a767317f85b67f18254103db1a9dd))
+* **api:** remove originalQuoteId field from Quote model ([56c0a2e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/56c0a2e993021a766f0229d1d21bbea559678a07))
+* Revert main to af3a51a ([be6031b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/be6031b30f6db3d202155b76eb653393761a39f9))
+
 ## 0.5.0 (2026-02-12)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.4.0...v0.5.0)
