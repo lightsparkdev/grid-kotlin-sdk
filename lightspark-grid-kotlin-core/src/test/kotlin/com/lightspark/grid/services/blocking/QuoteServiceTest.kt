@@ -7,7 +7,6 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -37,7 +36,7 @@ internal class QuoteServiceTest {
                     .lockedCurrencyAmount(10000L)
                     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                     .source(
-                        QuoteSourceOneOf.AccountQuoteSource.builder()
+                        QuoteCreateParams.Source.AccountQuoteSource.builder()
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .build()

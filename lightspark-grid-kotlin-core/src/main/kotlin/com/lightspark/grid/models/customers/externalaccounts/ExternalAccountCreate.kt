@@ -202,50 +202,53 @@ private constructor(
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUsAccount(usAccount)`.
          */
-        fun accountInfo(usAccount: UsAccountInfo) =
+        fun accountInfo(usAccount: ExternalAccountInfoOneOf.UsAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofUsAccount(usAccount))
 
         /** Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofClabe(clabe)`. */
-        fun accountInfo(clabe: ClabeAccountInfo) =
+        fun accountInfo(clabe: ExternalAccountInfoOneOf.Clabe) =
             accountInfo(ExternalAccountInfoOneOf.ofClabe(clabe))
 
         /** Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofPix(pix)`. */
-        fun accountInfo(pix: PixAccountInfo) = accountInfo(ExternalAccountInfoOneOf.ofPix(pix))
+        fun accountInfo(pix: ExternalAccountInfoOneOf.Pix) =
+            accountInfo(ExternalAccountInfoOneOf.ofPix(pix))
 
         /** Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofIban(iban)`. */
-        fun accountInfo(iban: IbanAccountInfo) = accountInfo(ExternalAccountInfoOneOf.ofIban(iban))
+        fun accountInfo(iban: ExternalAccountInfoOneOf.Iban) =
+            accountInfo(ExternalAccountInfoOneOf.ofIban(iban))
 
         /** Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUpi(upi)`. */
-        fun accountInfo(upi: UpiAccountInfo) = accountInfo(ExternalAccountInfoOneOf.ofUpi(upi))
+        fun accountInfo(upi: ExternalAccountInfoOneOf.Upi) =
+            accountInfo(ExternalAccountInfoOneOf.ofUpi(upi))
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)`.
          */
-        fun accountInfo(ngnAccount: NgnAccountInfo) =
+        fun accountInfo(ngnAccount: ExternalAccountInfoOneOf.NgnAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount))
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofCadAccount(cadAccount)`.
          */
-        fun accountInfo(cadAccount: CadAccountInfo) =
+        fun accountInfo(cadAccount: ExternalAccountInfoOneOf.CadAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofCadAccount(cadAccount))
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount)`.
          */
-        fun accountInfo(gbpAccount: GbpAccountInfo) =
+        fun accountInfo(gbpAccount: ExternalAccountInfoOneOf.GbpAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount))
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)`.
          */
-        fun accountInfo(phpAccount: PhpAccountInfo) =
+        fun accountInfo(phpAccount: ExternalAccountInfoOneOf.PhpAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofPhpAccount(phpAccount))
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)`.
          */
-        fun accountInfo(sgdAccount: SgdAccountInfo) =
+        fun accountInfo(sgdAccount: ExternalAccountInfoOneOf.SgdAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount))
 
         /**

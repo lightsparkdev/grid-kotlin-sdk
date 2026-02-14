@@ -18,17 +18,19 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            UsAccountInfo.builder()
-                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+                            ExternalAccountInfoOneOf.UsAccount.builder()
+                                .accountCategory(
+                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                )
                                 .accountNumber("123456789")
-                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
-                                    BeneficiaryOneOf.Individual.builder()
+                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                        .builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
                                         .fullName("John Michael Doe")
                                         .nationality("US")
                                         .address(
-                                            BeneficiaryOneOf.Individual.Address.builder()
+                                            Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
@@ -60,17 +62,18 @@ internal class ExternalAccountListPageResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        UsAccountInfo.builder()
-                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+                        ExternalAccountInfoOneOf.UsAccount.builder()
+                            .accountCategory(
+                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                            )
                             .accountNumber("123456789")
-                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
-                                BeneficiaryOneOf.Individual.builder()
+                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Michael Doe")
                                     .nationality("US")
                                     .address(
-                                        BeneficiaryOneOf.Individual.Address.builder()
+                                        Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
@@ -106,17 +109,19 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            UsAccountInfo.builder()
-                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+                            ExternalAccountInfoOneOf.UsAccount.builder()
+                                .accountCategory(
+                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                                )
                                 .accountNumber("123456789")
-                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
-                                    BeneficiaryOneOf.Individual.builder()
+                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
+                                        .builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
                                         .fullName("John Michael Doe")
                                         .nationality("US")
                                         .address(
-                                            BeneficiaryOneOf.Individual.Address.builder()
+                                            Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")

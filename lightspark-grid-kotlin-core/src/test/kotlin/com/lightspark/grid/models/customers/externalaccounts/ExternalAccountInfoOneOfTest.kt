@@ -18,17 +18,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofUsAccount() {
         val usAccount =
-            UsAccountInfo.builder()
-                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+            ExternalAccountInfoOneOf.UsAccount.builder()
+                .accountCategory(ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING)
                 .accountNumber("123456789")
-                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -68,17 +67,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUsAccount(
-                UsAccountInfo.builder()
-                    .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+                ExternalAccountInfoOneOf.UsAccount.builder()
+                    .accountCategory(ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING)
                     .accountNumber("123456789")
-                    .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -106,15 +104,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofClabe() {
         val clabe =
-            ClabeAccountInfo.builder()
-                .accountType(ClabeAccountInfo.AccountType.CLABE)
+            ExternalAccountInfoOneOf.Clabe.builder()
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.Clabe.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -153,15 +150,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofClabe(
-                ClabeAccountInfo.builder()
-                    .accountType(ClabeAccountInfo.AccountType.CLABE)
+                ExternalAccountInfoOneOf.Clabe.builder()
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.Clabe.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -188,15 +184,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPix() {
         val pix =
-            PixAccountInfo.builder()
-                .accountType(PixAccountInfo.AccountType.PIX)
+            ExternalAccountInfoOneOf.Pix.builder()
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.Pix.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -208,7 +203,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .build()
                 )
                 .pixKey("55119876543210")
-                .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
+                .pixKeyType(ExternalAccountInfoOneOf.Pix.PixKeyType.PHONE)
                 .taxId("1234567890")
                 .build()
 
@@ -237,15 +232,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPix(
-                PixAccountInfo.builder()
-                    .accountType(PixAccountInfo.AccountType.PIX)
+                ExternalAccountInfoOneOf.Pix.builder()
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.Pix.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -257,7 +251,7 @@ internal class ExternalAccountInfoOneOfTest {
                             .build()
                     )
                     .pixKey("55119876543210")
-                    .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
+                    .pixKeyType(ExternalAccountInfoOneOf.Pix.PixKeyType.PHONE)
                     .taxId("1234567890")
                     .build()
             )
@@ -274,15 +268,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofIban() {
         val iban =
-            IbanAccountInfo.builder()
-                .accountType(IbanAccountInfo.AccountType.IBAN)
+            ExternalAccountInfoOneOf.Iban.builder()
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.Iban.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -322,15 +315,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofIban(
-                IbanAccountInfo.builder()
-                    .accountType(IbanAccountInfo.AccountType.IBAN)
+                ExternalAccountInfoOneOf.Iban.builder()
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.Iban.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -358,15 +350,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofUpi() {
         val upi =
-            UpiAccountInfo.builder()
-                .accountType(UpiAccountInfo.AccountType.UPI)
+            ExternalAccountInfoOneOf.Upi.builder()
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.Upi.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -405,15 +396,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUpi(
-                UpiAccountInfo.builder()
-                    .accountType(UpiAccountInfo.AccountType.UPI)
+                ExternalAccountInfoOneOf.Upi.builder()
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.Upi.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -440,17 +430,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofNgnAccount() {
         val ngnAccount =
-            NgnAccountInfo.builder()
+            ExternalAccountInfoOneOf.NgnAccount.builder()
                 .accountNumber("0123456789")
-                .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                 .bankName("First Bank of Nigeria")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -461,7 +450,9 @@ internal class ExternalAccountInfoOneOfTest {
                         )
                         .build()
                 )
-                .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
+                .purposeOfPayment(
+                    ExternalAccountInfoOneOf.NgnAccount.PurposeOfPayment.GOODS_OR_SERVICES
+                )
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)
@@ -489,17 +480,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofNgnAccount(
-                NgnAccountInfo.builder()
+                ExternalAccountInfoOneOf.NgnAccount.builder()
                     .accountNumber("0123456789")
-                    .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                     .bankName("First Bank of Nigeria")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -510,7 +500,9 @@ internal class ExternalAccountInfoOneOfTest {
                             )
                             .build()
                     )
-                    .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
+                    .purposeOfPayment(
+                        ExternalAccountInfoOneOf.NgnAccount.PurposeOfPayment.GOODS_OR_SERVICES
+                    )
                     .build()
             )
 
@@ -526,17 +518,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofCadAccount() {
         val cadAccount =
-            CadAccountInfo.builder()
+            ExternalAccountInfoOneOf.CadAccount.builder()
                 .accountNumber("1234567")
-                .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                 .bankCode("001")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -575,17 +566,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofCadAccount(
-                CadAccountInfo.builder()
+                ExternalAccountInfoOneOf.CadAccount.builder()
                     .accountNumber("1234567")
-                    .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                     .bankCode("001")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -612,16 +602,15 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofGbpAccount() {
         val gbpAccount =
-            GbpAccountInfo.builder()
+            ExternalAccountInfoOneOf.GbpAccount.builder()
                 .accountNumber("12345678")
-                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -660,16 +649,15 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGbpAccount(
-                GbpAccountInfo.builder()
+                ExternalAccountInfoOneOf.GbpAccount.builder()
                     .accountNumber("12345678")
-                    .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -696,17 +684,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPhpAccount() {
         val phpAccount =
-            PhpAccountInfo.builder()
+            ExternalAccountInfoOneOf.PhpAccount.builder()
                 .accountNumber("001234567890")
-                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -744,17 +731,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPhpAccount(
-                PhpAccountInfo.builder()
+                ExternalAccountInfoOneOf.PhpAccount.builder()
                     .accountNumber("001234567890")
-                    .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -780,17 +766,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSgdAccount() {
         val sgdAccount =
-            SgdAccountInfo.builder()
+            ExternalAccountInfoOneOf.SgdAccount.builder()
                 .accountNumber("0123456789")
-                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
+                    ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.builder()
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
                         .nationality("US")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -829,17 +814,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSgdAccount(
-                SgdAccountInfo.builder()
+                ExternalAccountInfoOneOf.SgdAccount.builder()
                     .accountNumber("0123456789")
-                    .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
+                        ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.builder()
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
                             .nationality("US")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")

@@ -4,9 +4,9 @@ package com.lightspark.grid.services.blocking.platform
 
 import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
+import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.UsAccountInfo
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -31,17 +31,18 @@ internal class ExternalAccountServiceTest {
             externalAccountService.create(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsAccountInfo.builder()
-                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
+                        ExternalAccountInfoOneOf.UsAccount.builder()
+                            .accountCategory(
+                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
+                            )
                             .accountNumber("12345678901")
-                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
-                                BeneficiaryOneOf.Individual.builder()
+                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Doe")
                                     .nationality("US")
                                     .address(
-                                        BeneficiaryOneOf.Individual.Address.builder()
+                                        Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
