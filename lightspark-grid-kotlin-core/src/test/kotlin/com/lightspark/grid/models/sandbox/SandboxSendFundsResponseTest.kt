@@ -99,7 +99,6 @@ internal class SandboxSendFundsResponseTest {
                 .exchangeRate(1.08)
                 .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
-                .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000003")
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .rateDetails(
                     OutgoingRateDetails.builder()
@@ -220,8 +219,6 @@ internal class SandboxSendFundsResponseTest {
         assertThat(sandboxSendFundsResponse.failureReason())
             .isEqualTo(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
         assertThat(sandboxSendFundsResponse.fees()).isEqualTo(10L)
-        assertThat(sandboxSendFundsResponse.originalTransactionId())
-            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000003")
         assertThat(sandboxSendFundsResponse.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(sandboxSendFundsResponse.rateDetails())
@@ -340,7 +337,6 @@ internal class SandboxSendFundsResponseTest {
                 .exchangeRate(1.08)
                 .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
-                .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000003")
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .rateDetails(
                     OutgoingRateDetails.builder()
