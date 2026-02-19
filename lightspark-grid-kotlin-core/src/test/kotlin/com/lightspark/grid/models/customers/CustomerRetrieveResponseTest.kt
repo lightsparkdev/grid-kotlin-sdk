@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +29,7 @@ internal class CustomerRetrieveResponseTest {
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .customerType(CustomerRetrieveResponse.Individual.CustomerType.INDIVIDUAL)
                 .address(
-                    Address.builder()
+                    CustomerRetrieveResponse.Individual.Address.builder()
                         .country("US")
                         .line1("123 Main Street")
                         .postalCode("94105")
@@ -65,7 +64,7 @@ internal class CustomerRetrieveResponseTest {
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerType(CustomerRetrieveResponse.Individual.CustomerType.INDIVIDUAL)
                     .address(
-                        Address.builder()
+                        CustomerRetrieveResponse.Individual.Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -102,7 +101,7 @@ internal class CustomerRetrieveResponseTest {
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .customerType(CustomerRetrieveResponse.Business.CustomerType.BUSINESS)
                 .address(
-                    Address.builder()
+                    CustomerRetrieveResponse.Business.Address.builder()
                         .country("US")
                         .line1("123 Main Street")
                         .postalCode("94105")
@@ -119,7 +118,7 @@ internal class CustomerRetrieveResponseTest {
                                 .DIRECTOR
                         )
                         .address(
-                            Address.builder()
+                            CustomerRetrieveResponse.Business.BeneficialOwner.Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -167,7 +166,7 @@ internal class CustomerRetrieveResponseTest {
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerType(CustomerRetrieveResponse.Business.CustomerType.BUSINESS)
                     .address(
-                        Address.builder()
+                        CustomerRetrieveResponse.Business.Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -184,7 +183,7 @@ internal class CustomerRetrieveResponseTest {
                                     .DIRECTOR
                             )
                             .address(
-                                Address.builder()
+                                CustomerRetrieveResponse.Business.BeneficialOwner.Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
