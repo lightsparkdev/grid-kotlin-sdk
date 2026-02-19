@@ -108,7 +108,8 @@ private constructor(
      * and the transaction will be created at the current exchange rate. It should only be used if
      * you don't want to lock and view rate details before executing the quote. If you are executing
      * a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint instead. This is false by
-     * default.
+     * default. This can only be used for quotes with a `source` which is either an internal
+     * account, or has direct pull functionality (e.g. ACH pull with an external account).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -380,7 +381,9 @@ private constructor(
          * executed and the transaction will be created at the current exchange rate. It should only
          * be used if you don't want to lock and view rate details before executing the quote. If
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
-         * instead. This is false by default.
+         * instead. This is false by default. This can only be used for quotes with a `source` which
+         * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
+         * external account).
          */
         fun immediatelyExecute(immediatelyExecute: Boolean) = apply {
             body.immediatelyExecute(immediatelyExecute)
@@ -684,7 +687,9 @@ private constructor(
          * executed and the transaction will be created at the current exchange rate. It should only
          * be used if you don't want to lock and view rate details before executing the quote. If
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
-         * instead. This is false by default.
+         * instead. This is false by default. This can only be used for quotes with a `source` which
+         * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
+         * external account).
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -967,7 +972,9 @@ private constructor(
              * executed and the transaction will be created at the current exchange rate. It should
              * only be used if you don't want to lock and view rate details before executing the
              * quote. If you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute`
-             * endpoint instead. This is false by default.
+             * endpoint instead. This is false by default. This can only be used for quotes with a
+             * `source` which is either an internal account, or has direct pull functionality (e.g.
+             * ACH pull with an external account).
              */
             fun immediatelyExecute(immediatelyExecute: Boolean) =
                 immediatelyExecute(JsonField.of(immediatelyExecute))
