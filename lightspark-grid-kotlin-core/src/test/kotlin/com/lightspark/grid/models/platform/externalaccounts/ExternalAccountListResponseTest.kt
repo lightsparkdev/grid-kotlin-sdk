@@ -48,6 +48,14 @@ internal class ExternalAccountListResponseTest {
                         )
                         .currency("USD")
                         .status(ExternalAccount.Status.ACTIVE)
+                        .beneficiaryVerificationStatus(
+                            ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                        )
+                        .beneficiaryVerifiedData(
+                            ExternalAccount.BeneficiaryVerifiedData.builder()
+                                .fullName("John Doe")
+                                .build()
+                        )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")
@@ -87,6 +95,14 @@ internal class ExternalAccountListResponseTest {
                     )
                     .currency("USD")
                     .status(ExternalAccount.Status.ACTIVE)
+                    .beneficiaryVerificationStatus(
+                        ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                    )
+                    .beneficiaryVerifiedData(
+                        ExternalAccount.BeneficiaryVerifiedData.builder()
+                            .fullName("John Doe")
+                            .build()
+                    )
                     .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                     .defaultUmaDepositAccount(false)
                     .platformAccountId("acc_123456789")
@@ -130,6 +146,14 @@ internal class ExternalAccountListResponseTest {
                         )
                         .currency("USD")
                         .status(ExternalAccount.Status.ACTIVE)
+                        .beneficiaryVerificationStatus(
+                            ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                        )
+                        .beneficiaryVerifiedData(
+                            ExternalAccount.BeneficiaryVerifiedData.builder()
+                                .fullName("John Doe")
+                                .build()
+                        )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")

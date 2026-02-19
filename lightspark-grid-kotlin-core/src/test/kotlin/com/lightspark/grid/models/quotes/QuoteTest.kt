@@ -50,7 +50,6 @@ internal class QuoteTest {
                 .totalReceivingAmount(1000L)
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
-                .originalQuoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
@@ -138,7 +137,6 @@ internal class QuoteTest {
         assertThat(quote.totalSendingAmount()).isEqualTo(123010L)
         assertThat(quote.transactionId())
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000005")
-        assertThat(quote.originalQuoteId()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(quote.paymentInstructions())
             .containsExactly(
                 PaymentInstructions.builder()
@@ -220,7 +218,6 @@ internal class QuoteTest {
                 .totalReceivingAmount(1000L)
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
-                .originalQuoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(

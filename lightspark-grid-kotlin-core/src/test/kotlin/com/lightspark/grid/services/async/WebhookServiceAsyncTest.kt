@@ -15,7 +15,6 @@ internal class WebhookServiceAsyncTest {
     suspend fun unwrap() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

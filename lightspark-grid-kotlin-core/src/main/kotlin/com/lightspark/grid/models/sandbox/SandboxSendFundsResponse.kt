@@ -48,7 +48,6 @@ private constructor(
     private val exchangeRate: JsonField<Double>,
     private val failureReason: JsonField<FailureReason>,
     private val fees: JsonField<Long>,
-    private val originalTransactionId: JsonField<String>,
     private val quoteId: JsonField<String>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
     private val receivedAmount: JsonField<CurrencyAmount>,
@@ -103,9 +102,6 @@ private constructor(
         @ExcludeMissing
         failureReason: JsonField<FailureReason> = JsonMissing.of(),
         @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("originalTransactionId")
-        @ExcludeMissing
-        originalTransactionId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("rateDetails")
         @ExcludeMissing
@@ -132,7 +128,6 @@ private constructor(
         exchangeRate,
         failureReason,
         fees,
-        originalTransactionId,
         quoteId,
         rateDetails,
         receivedAmount,
@@ -293,15 +288,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun fees(): Long? = fees.getNullable("fees")
-
-    /**
-     * ID of the original transaction that this transaction is retrying, if applicable
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun originalTransactionId(): String? =
-        originalTransactionId.getNullable("originalTransactionId")
 
     /**
      * The ID of the quote that was used to trigger this payment
@@ -480,16 +466,6 @@ private constructor(
     @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
 
     /**
-     * Returns the raw JSON value of [originalTransactionId].
-     *
-     * Unlike [originalTransactionId], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("originalTransactionId")
-    @ExcludeMissing
-    fun _originalTransactionId(): JsonField<String> = originalTransactionId
-
-    /**
      * Returns the raw JSON value of [quoteId].
      *
      * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
@@ -574,7 +550,6 @@ private constructor(
         private var exchangeRate: JsonField<Double> = JsonMissing.of()
         private var failureReason: JsonField<FailureReason> = JsonMissing.of()
         private var fees: JsonField<Long> = JsonMissing.of()
-        private var originalTransactionId: JsonField<String> = JsonMissing.of()
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
         private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
@@ -600,7 +575,6 @@ private constructor(
             exchangeRate = sandboxSendFundsResponse.exchangeRate
             failureReason = sandboxSendFundsResponse.failureReason
             fees = sandboxSendFundsResponse.fees
-            originalTransactionId = sandboxSendFundsResponse.originalTransactionId
             quoteId = sandboxSendFundsResponse.quoteId
             rateDetails = sandboxSendFundsResponse.rateDetails
             receivedAmount = sandboxSendFundsResponse.receivedAmount
@@ -916,21 +890,6 @@ private constructor(
          */
         fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
 
-        /** ID of the original transaction that this transaction is retrying, if applicable */
-        fun originalTransactionId(originalTransactionId: String) =
-            originalTransactionId(JsonField.of(originalTransactionId))
-
-        /**
-         * Sets [Builder.originalTransactionId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.originalTransactionId] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun originalTransactionId(originalTransactionId: JsonField<String>) = apply {
-            this.originalTransactionId = originalTransactionId
-        }
-
         /** The ID of the quote that was used to trigger this payment */
         fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
 
@@ -1040,7 +999,6 @@ private constructor(
                 exchangeRate,
                 failureReason,
                 fees,
-                originalTransactionId,
                 quoteId,
                 rateDetails,
                 receivedAmount,
@@ -1073,7 +1031,6 @@ private constructor(
         exchangeRate()
         failureReason()?.validate()
         fees()
-        originalTransactionId()
         quoteId()
         rateDetails()?.validate()
         receivedAmount()?.validate()
@@ -1112,7 +1069,6 @@ private constructor(
             (if (exchangeRate.asKnown() == null) 0 else 1) +
             (failureReason.asKnown()?.validity() ?: 0) +
             (if (fees.asKnown() == null) 0 else 1) +
-            (if (originalTransactionId.asKnown() == null) 0 else 1) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
             (receivedAmount.asKnown()?.validity() ?: 0) +
@@ -1543,7 +1499,6 @@ private constructor(
             exchangeRate == other.exchangeRate &&
             failureReason == other.failureReason &&
             fees == other.fees &&
-            originalTransactionId == other.originalTransactionId &&
             quoteId == other.quoteId &&
             rateDetails == other.rateDetails &&
             receivedAmount == other.receivedAmount &&
@@ -1570,7 +1525,6 @@ private constructor(
             exchangeRate,
             failureReason,
             fees,
-            originalTransactionId,
             quoteId,
             rateDetails,
             receivedAmount,
@@ -1582,5 +1536,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SandboxSendFundsResponse{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, paymentInstructions=$paymentInstructions, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, originalTransactionId=$originalTransactionId, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
+        "SandboxSendFundsResponse{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, paymentInstructions=$paymentInstructions, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
 }

@@ -286,7 +286,6 @@ internal class UnwrapWebhookEventTest {
                             OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                         )
                         .fees(10L)
-                        .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000003")
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .rateDetails(
                             OutgoingRateDetails.builder()
@@ -426,9 +425,6 @@ internal class UnwrapWebhookEventTest {
                                 OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                             )
                             .fees(10L)
-                            .originalTransactionId(
-                                "Transaction:019542f5-b3e7-1d02-0000-000000000003"
-                            )
                             .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                             .rateDetails(
                                 OutgoingRateDetails.builder()
