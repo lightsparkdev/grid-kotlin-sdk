@@ -23,6 +23,8 @@ private constructor(
     private val accountInfo: JsonField<ExternalAccountInfoOneOf>,
     private val currency: JsonField<String>,
     private val status: JsonField<Status>,
+    private val beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus>,
+    private val beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData>,
     private val customerId: JsonField<String>,
     private val defaultUmaDepositAccount: JsonField<Boolean>,
     private val platformAccountId: JsonField<String>,
@@ -37,6 +39,12 @@ private constructor(
         accountInfo: JsonField<ExternalAccountInfoOneOf> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("beneficiaryVerificationStatus")
+        @ExcludeMissing
+        beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus> = JsonMissing.of(),
+        @JsonProperty("beneficiaryVerifiedData")
+        @ExcludeMissing
+        beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -51,6 +59,8 @@ private constructor(
         accountInfo,
         currency,
         status,
+        beneficiaryVerificationStatus,
+        beneficiaryVerifiedData,
         customerId,
         defaultUmaDepositAccount,
         platformAccountId,
@@ -86,6 +96,24 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun status(): Status = status.getRequired("status")
+
+    /**
+     * The result of verifying the beneficiary name against the account holder name
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun beneficiaryVerificationStatus(): BeneficiaryVerificationStatus? =
+        beneficiaryVerificationStatus.getNullable("beneficiaryVerificationStatus")
+
+    /**
+     * Verified beneficiary data returned by the payment rail, if available
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun beneficiaryVerifiedData(): BeneficiaryVerifiedData? =
+        beneficiaryVerifiedData.getNullable("beneficiaryVerifiedData")
 
     /**
      * The customer this account is tied to, or null if the account is on behalf of the platform.
@@ -146,6 +174,27 @@ private constructor(
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+    /**
+     * Returns the raw JSON value of [beneficiaryVerificationStatus].
+     *
+     * Unlike [beneficiaryVerificationStatus], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("beneficiaryVerificationStatus")
+    @ExcludeMissing
+    fun _beneficiaryVerificationStatus(): JsonField<BeneficiaryVerificationStatus> =
+        beneficiaryVerificationStatus
+
+    /**
+     * Returns the raw JSON value of [beneficiaryVerifiedData].
+     *
+     * Unlike [beneficiaryVerifiedData], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("beneficiaryVerifiedData")
+    @ExcludeMissing
+    fun _beneficiaryVerifiedData(): JsonField<BeneficiaryVerifiedData> = beneficiaryVerifiedData
 
     /**
      * Returns the raw JSON value of [customerId].
@@ -209,6 +258,9 @@ private constructor(
         private var accountInfo: JsonField<ExternalAccountInfoOneOf>? = null
         private var currency: JsonField<String>? = null
         private var status: JsonField<Status>? = null
+        private var beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus> =
+            JsonMissing.of()
+        private var beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of()
         private var customerId: JsonField<String> = JsonMissing.of()
         private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
@@ -219,6 +271,8 @@ private constructor(
             accountInfo = externalAccount.accountInfo
             currency = externalAccount.currency
             status = externalAccount.status
+            beneficiaryVerificationStatus = externalAccount.beneficiaryVerificationStatus
+            beneficiaryVerifiedData = externalAccount.beneficiaryVerifiedData
             customerId = externalAccount.customerId
             defaultUmaDepositAccount = externalAccount.defaultUmaDepositAccount
             platformAccountId = externalAccount.platformAccountId
@@ -445,6 +499,38 @@ private constructor(
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
 
+        /** The result of verifying the beneficiary name against the account holder name */
+        fun beneficiaryVerificationStatus(
+            beneficiaryVerificationStatus: BeneficiaryVerificationStatus
+        ) = beneficiaryVerificationStatus(JsonField.of(beneficiaryVerificationStatus))
+
+        /**
+         * Sets [Builder.beneficiaryVerificationStatus] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.beneficiaryVerificationStatus] with a well-typed
+         * [BeneficiaryVerificationStatus] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun beneficiaryVerificationStatus(
+            beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus>
+        ) = apply { this.beneficiaryVerificationStatus = beneficiaryVerificationStatus }
+
+        /** Verified beneficiary data returned by the payment rail, if available */
+        fun beneficiaryVerifiedData(beneficiaryVerifiedData: BeneficiaryVerifiedData) =
+            beneficiaryVerifiedData(JsonField.of(beneficiaryVerifiedData))
+
+        /**
+         * Sets [Builder.beneficiaryVerifiedData] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.beneficiaryVerifiedData] with a well-typed
+         * [BeneficiaryVerifiedData] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun beneficiaryVerifiedData(beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData>) =
+            apply {
+                this.beneficiaryVerifiedData = beneficiaryVerifiedData
+            }
+
         /**
          * The customer this account is tied to, or null if the account is on behalf of the
          * platform.
@@ -537,6 +623,8 @@ private constructor(
                 checkRequired("accountInfo", accountInfo),
                 checkRequired("currency", currency),
                 checkRequired("status", status),
+                beneficiaryVerificationStatus,
+                beneficiaryVerifiedData,
                 customerId,
                 defaultUmaDepositAccount,
                 platformAccountId,
@@ -555,6 +643,8 @@ private constructor(
         accountInfo().validate()
         currency()
         status().validate()
+        beneficiaryVerificationStatus()?.validate()
+        beneficiaryVerifiedData()?.validate()
         customerId()
         defaultUmaDepositAccount()
         platformAccountId()
@@ -579,6 +669,8 @@ private constructor(
             (accountInfo.asKnown()?.validity() ?: 0) +
             (if (currency.asKnown() == null) 0 else 1) +
             (status.asKnown()?.validity() ?: 0) +
+            (beneficiaryVerificationStatus.asKnown()?.validity() ?: 0) +
+            (beneficiaryVerifiedData.asKnown()?.validity() ?: 0) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
@@ -721,6 +813,310 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** The result of verifying the beneficiary name against the account holder name */
+    class BeneficiaryVerificationStatus
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val MATCHED = of("MATCHED")
+
+            val PARTIAL_MATCH = of("PARTIAL_MATCH")
+
+            val NOT_MATCHED = of("NOT_MATCHED")
+
+            val UNSUPPORTED = of("UNSUPPORTED")
+
+            val CHECKED_BY_RECEIVING_FI = of("CHECKED_BY_RECEIVING_FI")
+
+            val PENDING = of("PENDING")
+
+            fun of(value: String) = BeneficiaryVerificationStatus(JsonField.of(value))
+        }
+
+        /** An enum containing [BeneficiaryVerificationStatus]'s known values. */
+        enum class Known {
+            MATCHED,
+            PARTIAL_MATCH,
+            NOT_MATCHED,
+            UNSUPPORTED,
+            CHECKED_BY_RECEIVING_FI,
+            PENDING,
+        }
+
+        /**
+         * An enum containing [BeneficiaryVerificationStatus]'s known values, as well as an
+         * [_UNKNOWN] member.
+         *
+         * An instance of [BeneficiaryVerificationStatus] can contain an unknown value in a couple
+         * of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            MATCHED,
+            PARTIAL_MATCH,
+            NOT_MATCHED,
+            UNSUPPORTED,
+            CHECKED_BY_RECEIVING_FI,
+            PENDING,
+            /**
+             * An enum member indicating that [BeneficiaryVerificationStatus] was instantiated with
+             * an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                MATCHED -> Value.MATCHED
+                PARTIAL_MATCH -> Value.PARTIAL_MATCH
+                NOT_MATCHED -> Value.NOT_MATCHED
+                UNSUPPORTED -> Value.UNSUPPORTED
+                CHECKED_BY_RECEIVING_FI -> Value.CHECKED_BY_RECEIVING_FI
+                PENDING -> Value.PENDING
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                MATCHED -> Known.MATCHED
+                PARTIAL_MATCH -> Known.PARTIAL_MATCH
+                NOT_MATCHED -> Known.NOT_MATCHED
+                UNSUPPORTED -> Known.UNSUPPORTED
+                CHECKED_BY_RECEIVING_FI -> Known.CHECKED_BY_RECEIVING_FI
+                PENDING -> Known.PENDING
+                else ->
+                    throw LightsparkGridInvalidDataException(
+                        "Unknown BeneficiaryVerificationStatus: $value"
+                    )
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): BeneficiaryVerificationStatus = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is BeneficiaryVerificationStatus && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Verified beneficiary data returned by the payment rail, if available */
+    class BeneficiaryVerifiedData
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val fullName: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of()
+        ) : this(fullName, mutableMapOf())
+
+        /**
+         * The verified full name of the account holder as returned by the payment rail
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun fullName(): String? = fullName.getNullable("fullName")
+
+        /**
+         * Returns the raw JSON value of [fullName].
+         *
+         * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [BeneficiaryVerifiedData].
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [BeneficiaryVerifiedData]. */
+        class Builder internal constructor() {
+
+            private var fullName: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(beneficiaryVerifiedData: BeneficiaryVerifiedData) = apply {
+                fullName = beneficiaryVerifiedData.fullName
+                additionalProperties = beneficiaryVerifiedData.additionalProperties.toMutableMap()
+            }
+
+            /** The verified full name of the account holder as returned by the payment rail */
+            fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+
+            /**
+             * Sets [Builder.fullName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.fullName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [BeneficiaryVerifiedData].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): BeneficiaryVerifiedData =
+                BeneficiaryVerifiedData(fullName, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): BeneficiaryVerifiedData = apply {
+            if (validated) {
+                return@apply
+            }
+
+            fullName()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = (if (fullName.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is BeneficiaryVerifiedData &&
+                fullName == other.fullName &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(fullName, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "BeneficiaryVerifiedData{fullName=$fullName, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -731,6 +1127,8 @@ private constructor(
             accountInfo == other.accountInfo &&
             currency == other.currency &&
             status == other.status &&
+            beneficiaryVerificationStatus == other.beneficiaryVerificationStatus &&
+            beneficiaryVerifiedData == other.beneficiaryVerifiedData &&
             customerId == other.customerId &&
             defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
             platformAccountId == other.platformAccountId &&
@@ -743,6 +1141,8 @@ private constructor(
             accountInfo,
             currency,
             status,
+            beneficiaryVerificationStatus,
+            beneficiaryVerifiedData,
             customerId,
             defaultUmaDepositAccount,
             platformAccountId,
@@ -753,5 +1153,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, beneficiaryVerificationStatus=$beneficiaryVerificationStatus, beneficiaryVerifiedData=$beneficiaryVerifiedData, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }
