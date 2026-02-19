@@ -19,7 +19,7 @@ internal class QuoteCreateParamsTest {
             .lockedCurrencyAmount(10000L)
             .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
             .source(
-                QuoteCreateParams.Source.AccountQuoteSource.builder()
+                QuoteSourceOneOf.AccountQuoteSource.builder()
                     .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
@@ -48,7 +48,7 @@ internal class QuoteCreateParamsTest {
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteCreateParams.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -79,8 +79,8 @@ internal class QuoteCreateParamsTest {
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteCreateParams.Source.ofAccountQuote(
-                    QuoteCreateParams.Source.AccountQuoteSource.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -111,7 +111,7 @@ internal class QuoteCreateParamsTest {
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteCreateParams.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
@@ -132,8 +132,8 @@ internal class QuoteCreateParamsTest {
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteCreateParams.Source.ofAccountQuote(
-                    QuoteCreateParams.Source.AccountQuoteSource.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )

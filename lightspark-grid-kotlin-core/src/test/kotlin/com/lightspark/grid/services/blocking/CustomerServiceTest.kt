@@ -7,7 +7,6 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -39,7 +38,8 @@ internal class CustomerServiceTest {
                                     .INDIVIDUAL
                             )
                             .address(
-                                Address.builder()
+                                CustomerCreateParams.CreateCustomerRequest.Individual.Address
+                                    .builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -98,7 +98,8 @@ internal class CustomerServiceTest {
                                     .INDIVIDUAL
                             )
                             .address(
-                                Address.builder()
+                                CustomerUpdateParams.UpdateCustomerRequest.Individual.Address
+                                    .builder()
                                     .country("US")
                                     .line1("456 Market St")
                                     .postalCode("94103")

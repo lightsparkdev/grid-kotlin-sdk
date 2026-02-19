@@ -4,9 +4,9 @@ package com.lightspark.grid.models.platform.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.customers.externalaccounts.UsAccountInfo
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,19 +21,17 @@ internal class ExternalAccountListResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.UsAccount.builder()
-                                .accountCategory(
-                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                )
+                            UsAccountInfo.builder()
+                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                 .accountNumber("123456789")
+                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
-                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
-                                        .builder()
+                                    BeneficiaryOneOf.Individual.builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
                                         .fullName("John Michael Doe")
                                         .nationality("US")
                                         .address(
-                                            Address.builder()
+                                            BeneficiaryOneOf.Individual.Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
@@ -62,18 +60,17 @@ internal class ExternalAccountListResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        ExternalAccountInfoOneOf.UsAccount.builder()
-                            .accountCategory(
-                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                            )
+                        UsAccountInfo.builder()
+                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                             .accountNumber("123456789")
+                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
-                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                                BeneficiaryOneOf.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Michael Doe")
                                     .nationality("US")
                                     .address(
-                                        Address.builder()
+                                        BeneficiaryOneOf.Individual.Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
@@ -106,19 +103,17 @@ internal class ExternalAccountListResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.UsAccount.builder()
-                                .accountCategory(
-                                    ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                                )
+                            UsAccountInfo.builder()
+                                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                                 .accountNumber("123456789")
+                                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                                 .beneficiary(
-                                    ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual
-                                        .builder()
+                                    BeneficiaryOneOf.Individual.builder()
                                         .birthDate(LocalDate.parse("1990-01-15"))
                                         .fullName("John Michael Doe")
                                         .nationality("US")
                                         .address(
-                                            Address.builder()
+                                            BeneficiaryOneOf.Individual.Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")

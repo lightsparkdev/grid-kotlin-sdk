@@ -15,18 +15,17 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                            BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))
                                 .fullName("John Michael Doe")
                                 .nationality("US")
                                 .address(
-                                    Address.builder()
+                                    BeneficiaryOneOf.Individual.Address.builder()
                                         .country("US")
                                         .line1("123 Main Street")
                                         .postalCode("94105")
@@ -50,18 +49,17 @@ internal class ExternalAccountCreateTest {
         assertThat(externalAccountCreate.accountInfo())
             .isEqualTo(
                 ExternalAccountInfoOneOf.ofUsAccount(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                            BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))
                                 .fullName("John Michael Doe")
                                 .nationality("US")
                                 .address(
-                                    Address.builder()
+                                    BeneficiaryOneOf.Individual.Address.builder()
                                         .country("US")
                                         .line1("123 Main Street")
                                         .postalCode("94105")
@@ -90,18 +88,17 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountInfoOneOf.UsAccount.builder()
-                        .accountCategory(
-                            ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                        )
+                    UsAccountInfo.builder()
+                        .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                         .accountNumber("123456789")
+                        .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                            BeneficiaryOneOf.Individual.builder()
                                 .birthDate(LocalDate.parse("1990-01-15"))
                                 .fullName("John Michael Doe")
                                 .nationality("US")
                                 .address(
-                                    Address.builder()
+                                    BeneficiaryOneOf.Individual.Address.builder()
                                         .country("US")
                                         .line1("123 Main Street")
                                         .postalCode("94105")

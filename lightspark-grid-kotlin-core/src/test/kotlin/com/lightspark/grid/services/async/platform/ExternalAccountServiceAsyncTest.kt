@@ -4,9 +4,9 @@ package com.lightspark.grid.services.async.platform
 
 import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.customers.externalaccounts.UsAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -31,18 +31,17 @@ internal class ExternalAccountServiceAsyncTest {
             externalAccountServiceAsync.create(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountInfoOneOf.UsAccount.builder()
-                            .accountCategory(
-                                ExternalAccountInfoOneOf.UsAccount.AccountCategory.CHECKING
-                            )
+                        UsAccountInfo.builder()
+                            .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
                             .accountNumber("12345678901")
+                            .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
                             .beneficiary(
-                                ExternalAccountInfoOneOf.UsAccount.Beneficiary.Individual.builder()
+                                BeneficiaryOneOf.Individual.builder()
                                     .birthDate(LocalDate.parse("1990-01-15"))
                                     .fullName("John Doe")
                                     .nationality("US")
                                     .address(
-                                        Address.builder()
+                                        BeneficiaryOneOf.Individual.Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
