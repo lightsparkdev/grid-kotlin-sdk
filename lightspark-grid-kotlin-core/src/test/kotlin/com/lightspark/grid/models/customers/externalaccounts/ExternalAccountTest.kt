@@ -43,6 +43,12 @@ internal class ExternalAccountTest {
                 )
                 .currency("USD")
                 .status(ExternalAccount.Status.ACTIVE)
+                .beneficiaryVerificationStatus(
+                    ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                )
+                .beneficiaryVerifiedData(
+                    ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")
@@ -81,6 +87,12 @@ internal class ExternalAccountTest {
             )
         assertThat(externalAccount.currency()).isEqualTo("USD")
         assertThat(externalAccount.status()).isEqualTo(ExternalAccount.Status.ACTIVE)
+        assertThat(externalAccount.beneficiaryVerificationStatus())
+            .isEqualTo(ExternalAccount.BeneficiaryVerificationStatus.MATCHED)
+        assertThat(externalAccount.beneficiaryVerifiedData())
+            .isEqualTo(
+                ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+            )
         assertThat(externalAccount.customerId())
             .isEqualTo("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
         assertThat(externalAccount.defaultUmaDepositAccount()).isEqualTo(false)
@@ -121,6 +133,12 @@ internal class ExternalAccountTest {
                 )
                 .currency("USD")
                 .status(ExternalAccount.Status.ACTIVE)
+                .beneficiaryVerificationStatus(
+                    ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                )
+                .beneficiaryVerifiedData(
+                    ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")
