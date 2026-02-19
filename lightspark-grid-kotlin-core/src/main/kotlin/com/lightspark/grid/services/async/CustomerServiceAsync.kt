@@ -49,6 +49,30 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerOneOf
 
+    /** @see create */
+    suspend fun create(
+        createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerOneOf =
+        create(
+            CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
+            requestOptions,
+        )
+
+    /** @see create */
+    suspend fun create(
+        individual: CustomerCreateParams.CreateCustomerRequest.Individual,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerOneOf =
+        create(CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual), requestOptions)
+
+    /** @see create */
+    suspend fun create(
+        business: CustomerCreateParams.CreateCustomerRequest.Business,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerOneOf =
+        create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
+
     /** Retrieve a customer by their system-generated ID */
     suspend fun retrieve(
         customerId: String,
@@ -167,6 +191,36 @@ interface CustomerServiceAsync {
             params: CustomerCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerOneOf>
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerOneOf> =
+            create(
+                CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            individual: CustomerCreateParams.CreateCustomerRequest.Individual,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerOneOf> =
+            create(
+                CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            business: CustomerCreateParams.CreateCustomerRequest.Business,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerOneOf> =
+            create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /customers/{customerId}`, but is otherwise the same

@@ -28,31 +28,26 @@ internal class CustomerServiceTest {
 
         val customerOneOf =
             customerService.create(
-                CustomerCreateParams.builder()
-                    .createCustomerRequest(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                            .platformCustomerId("9f84e0c2a72c4fa")
-                            .umaAddress("\$john.doe@uma.domain.com")
-                            .customerType(
-                                CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                                    .INDIVIDUAL
-                            )
-                            .address(
-                                CustomerCreateParams.CreateCustomerRequest.Individual.Address
-                                    .builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .umaAddress("\$john.doe@uma.domain.com")
+                    .customerType(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
+                            .INDIVIDUAL
+                    )
+                    .address(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
                             .build()
                     )
+                    .birthDate(LocalDate.parse("1990-01-15"))
+                    .fullName("John Michael Doe")
+                    .nationality("US")
                     .build()
             )
 
