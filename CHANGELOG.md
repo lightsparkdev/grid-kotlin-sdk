@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.6.0 (2026-02-19)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* adding external account validation schema ([55b822f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/55b822f28d1bdcf5dcae613586c4b4402f2fa909))
+* adding helper methods for currencyutils and webhook signature verification ([18be30b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/18be30bd4e30cdf54f00011c79f31cd743ffd5fa))
+* **api:** manual updates ([bb38b12](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/bb38b12a623119f4b0d4cd5d37ea9ff58ac41772))
+* **api:** manual updates ([6750b40](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6750b40c1d2f5e86e857796fc208d73bd9f9c170))
+* **api:** manual updates ([f0b71ed](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f0b71edbe652fd3548873defd64430172b265478))
+* **api:** manual updates ([2fe87f9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2fe87f989e6a767317f85b67f18254103db1a9dd))
+* **api:** remove originalQuoteId field from Quote model ([56c0a2e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/56c0a2e993021a766f0229d1d21bbea559678a07))
+* **api:** remove originalTransactionId from SandboxSendFundsResponse ([c4d6495](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c4d64957499cfaaefc43101c5660f409e5b6f008))
+* Revert main to af3a51a ([be6031b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/be6031b30f6db3d202155b76eb653393761a39f9))
+
+
+### Chores
+
+* **internal:** update `TestServerExtension` comment ([8e4eb16](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8e4eb16dd1e9407fa7338d3d2ab2af013c96b75a))
+
 ## 0.5.0 (2026-02-12)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.4.0...v0.5.0)
