@@ -21,10 +21,10 @@ import java.util.Objects
 class AccountStatusWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val accountId: JsonField<String>,
     private val timestamp: JsonField<OffsetDateTime>,
     private val type: JsonField<Type>,
-    private val webhookId: JsonField<String>,
     private val customerId: JsonField<String>,
     private val newBalance: JsonField<CurrencyAmount>,
     private val oldBalance: JsonField<CurrencyAmount>,
@@ -34,12 +34,12 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        @JsonProperty("webhookId") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -53,16 +53,24 @@ private constructor(
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
     ) : this(
+        id,
         accountId,
         timestamp,
         type,
-        webhookId,
         customerId,
         newBalance,
         oldBalance,
         platformCustomerId,
         mutableMapOf(),
     )
+
+    /**
+     * Unique identifier for this webhook delivery (can be used for idempotency)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * The id of the account whose balance has changed
@@ -87,14 +95,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun type(): Type = type.getRequired("type")
-
-    /**
-     * Unique identifier for this webhook delivery (can be used for idempotency)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun webhookId(): String = webhookId.getRequired("webhookId")
 
     /**
      * The ID of the customer associated with the internal account
@@ -125,6 +125,13 @@ private constructor(
     fun platformCustomerId(): String? = platformCustomerId.getNullable("platformCustomerId")
 
     /**
+     * Returns the raw JSON value of [id].
+     *
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
      * Returns the raw JSON value of [accountId].
      *
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
@@ -146,13 +153,6 @@ private constructor(
      * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-    /**
-     * Returns the raw JSON value of [webhookId].
-     *
-     * Unlike [webhookId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("webhookId") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
 
     /**
      * Returns the raw JSON value of [customerId].
@@ -208,10 +208,10 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .accountId()
          * .timestamp()
          * .type()
-         * .webhookId()
          * ```
          */
         fun builder() = Builder()
@@ -220,10 +220,10 @@ private constructor(
     /** A builder for [AccountStatusWebhookEvent]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var accountId: JsonField<String>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var type: JsonField<Type>? = null
-        private var webhookId: JsonField<String>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
         private var newBalance: JsonField<CurrencyAmount> = JsonMissing.of()
         private var oldBalance: JsonField<CurrencyAmount> = JsonMissing.of()
@@ -231,16 +231,27 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(accountStatusWebhookEvent: AccountStatusWebhookEvent) = apply {
+            id = accountStatusWebhookEvent.id
             accountId = accountStatusWebhookEvent.accountId
             timestamp = accountStatusWebhookEvent.timestamp
             type = accountStatusWebhookEvent.type
-            webhookId = accountStatusWebhookEvent.webhookId
             customerId = accountStatusWebhookEvent.customerId
             newBalance = accountStatusWebhookEvent.newBalance
             oldBalance = accountStatusWebhookEvent.oldBalance
             platformCustomerId = accountStatusWebhookEvent.platformCustomerId
             additionalProperties = accountStatusWebhookEvent.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this webhook delivery (can be used for idempotency) */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** The id of the account whose balance has changed */
         fun accountId(accountId: String) = accountId(JsonField.of(accountId))
@@ -276,18 +287,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun type(type: JsonField<Type>) = apply { this.type = type }
-
-        /** Unique identifier for this webhook delivery (can be used for idempotency) */
-        fun webhookId(webhookId: String) = webhookId(JsonField.of(webhookId))
-
-        /**
-         * Sets [Builder.webhookId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.webhookId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun webhookId(webhookId: JsonField<String>) = apply { this.webhookId = webhookId }
 
         /** The ID of the customer associated with the internal account */
         fun customerId(customerId: String) = customerId(JsonField.of(customerId))
@@ -368,20 +367,20 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .accountId()
          * .timestamp()
          * .type()
-         * .webhookId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): AccountStatusWebhookEvent =
             AccountStatusWebhookEvent(
+                checkRequired("id", id),
                 checkRequired("accountId", accountId),
                 checkRequired("timestamp", timestamp),
                 checkRequired("type", type),
-                checkRequired("webhookId", webhookId),
                 customerId,
                 newBalance,
                 oldBalance,
@@ -397,10 +396,10 @@ private constructor(
             return@apply
         }
 
+        id()
         accountId()
         timestamp()
         type().validate()
-        webhookId()
         customerId()
         newBalance()?.validate()
         oldBalance()?.validate()
@@ -422,10 +421,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountId.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (accountId.asKnown() == null) 0 else 1) +
             (if (timestamp.asKnown() == null) 0 else 1) +
             (type.asKnown()?.validity() ?: 0) +
-            (if (webhookId.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (newBalance.asKnown()?.validity() ?: 0) +
             (oldBalance.asKnown()?.validity() ?: 0) +
@@ -593,10 +592,10 @@ private constructor(
         }
 
         return other is AccountStatusWebhookEvent &&
+            id == other.id &&
             accountId == other.accountId &&
             timestamp == other.timestamp &&
             type == other.type &&
-            webhookId == other.webhookId &&
             customerId == other.customerId &&
             newBalance == other.newBalance &&
             oldBalance == other.oldBalance &&
@@ -606,10 +605,10 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            id,
             accountId,
             timestamp,
             type,
-            webhookId,
             customerId,
             newBalance,
             oldBalance,
@@ -621,5 +620,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AccountStatusWebhookEvent{accountId=$accountId, timestamp=$timestamp, type=$type, webhookId=$webhookId, customerId=$customerId, newBalance=$newBalance, oldBalance=$oldBalance, platformCustomerId=$platformCustomerId, additionalProperties=$additionalProperties}"
+        "AccountStatusWebhookEvent{id=$id, accountId=$accountId, timestamp=$timestamp, type=$type, customerId=$customerId, newBalance=$newBalance, oldBalance=$oldBalance, platformCustomerId=$platformCustomerId, additionalProperties=$additionalProperties}"
 }

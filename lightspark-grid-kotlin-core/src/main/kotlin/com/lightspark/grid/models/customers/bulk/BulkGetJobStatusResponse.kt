@@ -22,7 +22,7 @@ import java.util.Objects
 class BulkGetJobStatusResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val jobId: JsonField<String>,
+    private val id: JsonField<String>,
     private val progress: JsonField<Progress>,
     private val status: JsonField<Status>,
     private val completedAt: JsonField<OffsetDateTime>,
@@ -32,14 +32,14 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("jobId") @ExcludeMissing jobId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("progress") @ExcludeMissing progress: JsonField<Progress> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("completedAt")
         @ExcludeMissing
         completedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("errors") @ExcludeMissing errors: JsonField<List<Error>> = JsonMissing.of(),
-    ) : this(jobId, progress, status, completedAt, errors, mutableMapOf())
+    ) : this(id, progress, status, completedAt, errors, mutableMapOf())
 
     /**
      * Unique identifier for the bulk import job
@@ -47,7 +47,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun jobId(): String = jobId.getRequired("jobId")
+    fun id(): String = id.getRequired("id")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -80,11 +80,11 @@ private constructor(
     fun errors(): List<Error>? = errors.getNullable("errors")
 
     /**
-     * Returns the raw JSON value of [jobId].
+     * Returns the raw JSON value of [id].
      *
-     * Unlike [jobId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("jobId") @ExcludeMissing fun _jobId(): JsonField<String> = jobId
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
      * Returns the raw JSON value of [progress].
@@ -135,7 +135,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .jobId()
+         * .id()
          * .progress()
          * .status()
          * ```
@@ -146,7 +146,7 @@ private constructor(
     /** A builder for [BulkGetJobStatusResponse]. */
     class Builder internal constructor() {
 
-        private var jobId: JsonField<String>? = null
+        private var id: JsonField<String>? = null
         private var progress: JsonField<Progress>? = null
         private var status: JsonField<Status>? = null
         private var completedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -154,7 +154,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(bulkGetJobStatusResponse: BulkGetJobStatusResponse) = apply {
-            jobId = bulkGetJobStatusResponse.jobId
+            id = bulkGetJobStatusResponse.id
             progress = bulkGetJobStatusResponse.progress
             status = bulkGetJobStatusResponse.status
             completedAt = bulkGetJobStatusResponse.completedAt
@@ -163,15 +163,15 @@ private constructor(
         }
 
         /** Unique identifier for the bulk import job */
-        fun jobId(jobId: String) = jobId(JsonField.of(jobId))
+        fun id(id: String) = id(JsonField.of(id))
 
         /**
-         * Sets [Builder.jobId] to an arbitrary JSON value.
+         * Sets [Builder.id] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.jobId] with a well-typed [String] value instead. This
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun jobId(jobId: JsonField<String>) = apply { this.jobId = jobId }
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         fun progress(progress: Progress) = progress(JsonField.of(progress))
 
@@ -261,7 +261,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .jobId()
+         * .id()
          * .progress()
          * .status()
          * ```
@@ -270,7 +270,7 @@ private constructor(
          */
         fun build(): BulkGetJobStatusResponse =
             BulkGetJobStatusResponse(
-                checkRequired("jobId", jobId),
+                checkRequired("id", id),
                 checkRequired("progress", progress),
                 checkRequired("status", status),
                 completedAt,
@@ -286,7 +286,7 @@ private constructor(
             return@apply
         }
 
-        jobId()
+        id()
         progress().validate()
         status().validate()
         completedAt()
@@ -308,7 +308,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (jobId.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
             (progress.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (if (completedAt.asKnown() == null) 0 else 1) +
@@ -1108,7 +1108,7 @@ private constructor(
         }
 
         return other is BulkGetJobStatusResponse &&
-            jobId == other.jobId &&
+            id == other.id &&
             progress == other.progress &&
             status == other.status &&
             completedAt == other.completedAt &&
@@ -1117,11 +1117,11 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(jobId, progress, status, completedAt, errors, additionalProperties)
+        Objects.hash(id, progress, status, completedAt, errors, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BulkGetJobStatusResponse{jobId=$jobId, progress=$progress, status=$status, completedAt=$completedAt, errors=$errors, additionalProperties=$additionalProperties}"
+        "BulkGetJobStatusResponse{id=$id, progress=$progress, status=$status, completedAt=$completedAt, errors=$errors, additionalProperties=$additionalProperties}"
 }

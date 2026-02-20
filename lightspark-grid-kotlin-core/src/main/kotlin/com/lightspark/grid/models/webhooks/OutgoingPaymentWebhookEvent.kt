@@ -32,15 +32,16 @@ import java.util.Objects
 class OutgoingPaymentWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val timestamp: JsonField<OffsetDateTime>,
     private val transaction: JsonField<Transaction>,
     private val type: JsonField<Type>,
-    private val webhookId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -48,8 +49,15 @@ private constructor(
         @ExcludeMissing
         transaction: JsonField<Transaction> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        @JsonProperty("webhookId") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
-    ) : this(timestamp, transaction, type, webhookId, mutableMapOf())
+    ) : this(id, timestamp, transaction, type, mutableMapOf())
+
+    /**
+     * Unique identifier for this webhook delivery (can be used for idempotency)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks)
@@ -74,12 +82,11 @@ private constructor(
     fun type(): Type = type.getRequired("type")
 
     /**
-     * Unique identifier for this webhook delivery (can be used for idempotency)
+     * Returns the raw JSON value of [id].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun webhookId(): String = webhookId.getRequired("webhookId")
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
      * Returns the raw JSON value of [timestamp].
@@ -106,13 +113,6 @@ private constructor(
      */
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
-    /**
-     * Returns the raw JSON value of [webhookId].
-     *
-     * Unlike [webhookId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("webhookId") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -132,10 +132,10 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .timestamp()
          * .transaction()
          * .type()
-         * .webhookId()
          * ```
          */
         fun builder() = Builder()
@@ -144,19 +144,30 @@ private constructor(
     /** A builder for [OutgoingPaymentWebhookEvent]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var transaction: JsonField<Transaction>? = null
         private var type: JsonField<Type>? = null
-        private var webhookId: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(outgoingPaymentWebhookEvent: OutgoingPaymentWebhookEvent) = apply {
+            id = outgoingPaymentWebhookEvent.id
             timestamp = outgoingPaymentWebhookEvent.timestamp
             transaction = outgoingPaymentWebhookEvent.transaction
             type = outgoingPaymentWebhookEvent.type
-            webhookId = outgoingPaymentWebhookEvent.webhookId
             additionalProperties = outgoingPaymentWebhookEvent.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this webhook delivery (can be used for idempotency) */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks) */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
@@ -194,18 +205,6 @@ private constructor(
          */
         fun type(type: JsonField<Type>) = apply { this.type = type }
 
-        /** Unique identifier for this webhook delivery (can be used for idempotency) */
-        fun webhookId(webhookId: String) = webhookId(JsonField.of(webhookId))
-
-        /**
-         * Sets [Builder.webhookId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.webhookId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun webhookId(webhookId: JsonField<String>) = apply { this.webhookId = webhookId }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -232,20 +231,20 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .timestamp()
          * .transaction()
          * .type()
-         * .webhookId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): OutgoingPaymentWebhookEvent =
             OutgoingPaymentWebhookEvent(
+                checkRequired("id", id),
                 checkRequired("timestamp", timestamp),
                 checkRequired("transaction", transaction),
                 checkRequired("type", type),
-                checkRequired("webhookId", webhookId),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -257,10 +256,10 @@ private constructor(
             return@apply
         }
 
+        id()
         timestamp()
         transaction().validate()
         type().validate()
-        webhookId()
         validated = true
     }
 
@@ -278,10 +277,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (timestamp.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (timestamp.asKnown() == null) 0 else 1) +
             (transaction.asKnown()?.validity() ?: 0) +
-            (type.asKnown()?.validity() ?: 0) +
-            (if (webhookId.asKnown() == null) 0 else 1)
+            (type.asKnown()?.validity() ?: 0)
 
     class Transaction
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -2200,19 +2199,19 @@ private constructor(
         }
 
         return other is OutgoingPaymentWebhookEvent &&
+            id == other.id &&
             timestamp == other.timestamp &&
             transaction == other.transaction &&
             type == other.type &&
-            webhookId == other.webhookId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(timestamp, transaction, type, webhookId, additionalProperties)
+        Objects.hash(id, timestamp, transaction, type, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingPaymentWebhookEvent{timestamp=$timestamp, transaction=$transaction, type=$type, webhookId=$webhookId, additionalProperties=$additionalProperties}"
+        "OutgoingPaymentWebhookEvent{id=$id, timestamp=$timestamp, transaction=$transaction, type=$type, additionalProperties=$additionalProperties}"
 }
