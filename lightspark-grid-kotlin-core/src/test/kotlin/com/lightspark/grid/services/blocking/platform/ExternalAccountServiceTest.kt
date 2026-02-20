@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.services.blocking.platform
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryOneOf
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
@@ -11,9 +10,7 @@ import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListP
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class ExternalAccountServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -21,7 +18,6 @@ internal class ExternalAccountServiceTest {
     fun create() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -71,7 +67,6 @@ internal class ExternalAccountServiceTest {
     fun list() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

@@ -2,13 +2,10 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.http.Headers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class WebhookServiceTest {
 
     @Test

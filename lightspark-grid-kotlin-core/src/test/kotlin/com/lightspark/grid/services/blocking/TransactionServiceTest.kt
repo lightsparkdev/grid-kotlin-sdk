@@ -2,16 +2,13 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.transactions.TransactionApproveParams
 import com.lightspark.grid.models.transactions.TransactionRejectParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class TransactionServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -19,7 +16,6 @@ internal class TransactionServiceTest {
     fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -35,7 +31,6 @@ internal class TransactionServiceTest {
     fun list() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -51,7 +46,6 @@ internal class TransactionServiceTest {
     fun approve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -77,7 +71,6 @@ internal class TransactionServiceTest {
     fun reject() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

@@ -2,13 +2,10 @@
 
 package com.lightspark.grid.services.async
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.core.http.Headers
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class WebhookServiceAsyncTest {
 
     @Test

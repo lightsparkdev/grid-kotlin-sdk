@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.CustomerInfoFieldName
@@ -11,9 +10,7 @@ import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class ConfigServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -21,7 +18,6 @@ internal class ConfigServiceTest {
     fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -37,7 +33,6 @@ internal class ConfigServiceTest {
     fun update() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
