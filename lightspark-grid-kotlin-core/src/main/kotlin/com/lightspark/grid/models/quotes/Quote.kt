@@ -22,12 +22,12 @@ import java.util.Objects
 class Quote
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val destination: JsonField<QuoteDestinationOneOf>,
     private val exchangeRate: JsonField<Double>,
     private val expiresAt: JsonField<OffsetDateTime>,
     private val feesIncluded: JsonField<Long>,
-    private val quoteId: JsonField<String>,
     private val receivingCurrency: JsonField<Currency>,
     private val sendingCurrency: JsonField<Currency>,
     private val source: JsonField<QuoteSourceOneOf>,
@@ -42,6 +42,7 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -57,7 +58,6 @@ private constructor(
         @JsonProperty("feesIncluded")
         @ExcludeMissing
         feesIncluded: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("receivingCurrency")
         @ExcludeMissing
         receivingCurrency: JsonField<Currency> = JsonMissing.of(),
@@ -84,12 +84,12 @@ private constructor(
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
     ) : this(
+        id,
         createdAt,
         destination,
         exchangeRate,
         expiresAt,
         feesIncluded,
-        quoteId,
         receivingCurrency,
         sendingCurrency,
         source,
@@ -101,6 +101,14 @@ private constructor(
         rateDetails,
         mutableMapOf(),
     )
+
+    /**
+     * Unique identifier for this quote
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * When this quote was created
@@ -141,14 +149,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun feesIncluded(): Long = feesIncluded.getRequired("feesIncluded")
-
-    /**
-     * Unique identifier for this quote
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun quoteId(): String = quoteId.getRequired("quoteId")
 
     /**
      * Currency for the receiving amount
@@ -226,6 +226,13 @@ private constructor(
     fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
 
     /**
+     * Returns the raw JSON value of [id].
+     *
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
      * Returns the raw JSON value of [createdAt].
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -269,13 +276,6 @@ private constructor(
     @JsonProperty("feesIncluded")
     @ExcludeMissing
     fun _feesIncluded(): JsonField<Long> = feesIncluded
-
-    /**
-     * Returns the raw JSON value of [quoteId].
-     *
-     * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("quoteId") @ExcludeMissing fun _quoteId(): JsonField<String> = quoteId
 
     /**
      * Returns the raw JSON value of [receivingCurrency].
@@ -377,12 +377,12 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .createdAt()
          * .destination()
          * .exchangeRate()
          * .expiresAt()
          * .feesIncluded()
-         * .quoteId()
          * .receivingCurrency()
          * .sendingCurrency()
          * .source()
@@ -398,12 +398,12 @@ private constructor(
     /** A builder for [Quote]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var destination: JsonField<QuoteDestinationOneOf>? = null
         private var exchangeRate: JsonField<Double>? = null
         private var expiresAt: JsonField<OffsetDateTime>? = null
         private var feesIncluded: JsonField<Long>? = null
-        private var quoteId: JsonField<String>? = null
         private var receivingCurrency: JsonField<Currency>? = null
         private var sendingCurrency: JsonField<Currency>? = null
         private var source: JsonField<QuoteSourceOneOf>? = null
@@ -416,12 +416,12 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(quote: Quote) = apply {
+            id = quote.id
             createdAt = quote.createdAt
             destination = quote.destination
             exchangeRate = quote.exchangeRate
             expiresAt = quote.expiresAt
             feesIncluded = quote.feesIncluded
-            quoteId = quote.quoteId
             receivingCurrency = quote.receivingCurrency
             sendingCurrency = quote.sendingCurrency
             source = quote.source
@@ -433,6 +433,17 @@ private constructor(
             rateDetails = quote.rateDetails
             additionalProperties = quote.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this quote */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** When this quote was created */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
@@ -528,17 +539,6 @@ private constructor(
          * value.
          */
         fun feesIncluded(feesIncluded: JsonField<Long>) = apply { this.feesIncluded = feesIncluded }
-
-        /** Unique identifier for this quote */
-        fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
-
-        /**
-         * Sets [Builder.quoteId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.quoteId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun quoteId(quoteId: JsonField<String>) = apply { this.quoteId = quoteId }
 
         /** Currency for the receiving amount */
         fun receivingCurrency(receivingCurrency: Currency) =
@@ -727,12 +727,12 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .createdAt()
          * .destination()
          * .exchangeRate()
          * .expiresAt()
          * .feesIncluded()
-         * .quoteId()
          * .receivingCurrency()
          * .sendingCurrency()
          * .source()
@@ -746,12 +746,12 @@ private constructor(
          */
         fun build(): Quote =
             Quote(
+                checkRequired("id", id),
                 checkRequired("createdAt", createdAt),
                 checkRequired("destination", destination),
                 checkRequired("exchangeRate", exchangeRate),
                 checkRequired("expiresAt", expiresAt),
                 checkRequired("feesIncluded", feesIncluded),
-                checkRequired("quoteId", quoteId),
                 checkRequired("receivingCurrency", receivingCurrency),
                 checkRequired("sendingCurrency", sendingCurrency),
                 checkRequired("source", source),
@@ -772,12 +772,12 @@ private constructor(
             return@apply
         }
 
+        id()
         createdAt()
         destination().validate()
         exchangeRate()
         expiresAt()
         feesIncluded()
-        quoteId()
         receivingCurrency().validate()
         sendingCurrency().validate()
         source().validate()
@@ -804,12 +804,12 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (createdAt.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (createdAt.asKnown() == null) 0 else 1) +
             (destination.asKnown()?.validity() ?: 0) +
             (if (exchangeRate.asKnown() == null) 0 else 1) +
             (if (expiresAt.asKnown() == null) 0 else 1) +
             (if (feesIncluded.asKnown() == null) 0 else 1) +
-            (if (quoteId.asKnown() == null) 0 else 1) +
             (receivingCurrency.asKnown()?.validity() ?: 0) +
             (sendingCurrency.asKnown()?.validity() ?: 0) +
             (source.asKnown()?.validity() ?: 0) +
@@ -970,12 +970,12 @@ private constructor(
         }
 
         return other is Quote &&
+            id == other.id &&
             createdAt == other.createdAt &&
             destination == other.destination &&
             exchangeRate == other.exchangeRate &&
             expiresAt == other.expiresAt &&
             feesIncluded == other.feesIncluded &&
-            quoteId == other.quoteId &&
             receivingCurrency == other.receivingCurrency &&
             sendingCurrency == other.sendingCurrency &&
             source == other.source &&
@@ -990,12 +990,12 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            id,
             createdAt,
             destination,
             exchangeRate,
             expiresAt,
             feesIncluded,
-            quoteId,
             receivingCurrency,
             sendingCurrency,
             source,
@@ -1012,5 +1012,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, quoteId=$quoteId, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
 }

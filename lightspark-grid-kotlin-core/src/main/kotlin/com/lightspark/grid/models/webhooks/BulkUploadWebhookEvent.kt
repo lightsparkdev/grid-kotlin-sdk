@@ -22,15 +22,16 @@ import java.util.Objects
 class BulkUploadWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val bulkCustomerImportJob: JsonField<BulkCustomerImportJob>,
     private val timestamp: JsonField<OffsetDateTime>,
     private val type: JsonField<Type>,
-    private val webhookId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("bulkCustomerImportJob")
         @ExcludeMissing
         bulkCustomerImportJob: JsonField<BulkCustomerImportJob> = JsonMissing.of(),
@@ -38,8 +39,15 @@ private constructor(
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        @JsonProperty("webhookId") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
-    ) : this(bulkCustomerImportJob, timestamp, type, webhookId, mutableMapOf())
+    ) : this(id, bulkCustomerImportJob, timestamp, type, mutableMapOf())
+
+    /**
+     * Unique identifier for this webhook delivery (can be used for idempotency)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -65,12 +73,11 @@ private constructor(
     fun type(): Type = type.getRequired("type")
 
     /**
-     * Unique identifier for this webhook delivery (can be used for idempotency)
+     * Returns the raw JSON value of [id].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun webhookId(): String = webhookId.getRequired("webhookId")
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
      * Returns the raw JSON value of [bulkCustomerImportJob].
@@ -98,13 +105,6 @@ private constructor(
      */
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
-    /**
-     * Returns the raw JSON value of [webhookId].
-     *
-     * Unlike [webhookId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("webhookId") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -124,10 +124,10 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .bulkCustomerImportJob()
          * .timestamp()
          * .type()
-         * .webhookId()
          * ```
          */
         fun builder() = Builder()
@@ -136,19 +136,30 @@ private constructor(
     /** A builder for [BulkUploadWebhookEvent]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var bulkCustomerImportJob: JsonField<BulkCustomerImportJob>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var type: JsonField<Type>? = null
-        private var webhookId: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(bulkUploadWebhookEvent: BulkUploadWebhookEvent) = apply {
+            id = bulkUploadWebhookEvent.id
             bulkCustomerImportJob = bulkUploadWebhookEvent.bulkCustomerImportJob
             timestamp = bulkUploadWebhookEvent.timestamp
             type = bulkUploadWebhookEvent.type
-            webhookId = bulkUploadWebhookEvent.webhookId
             additionalProperties = bulkUploadWebhookEvent.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this webhook delivery (can be used for idempotency) */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         fun bulkCustomerImportJob(bulkCustomerImportJob: BulkCustomerImportJob) =
             bulkCustomerImportJob(JsonField.of(bulkCustomerImportJob))
@@ -187,18 +198,6 @@ private constructor(
          */
         fun type(type: JsonField<Type>) = apply { this.type = type }
 
-        /** Unique identifier for this webhook delivery (can be used for idempotency) */
-        fun webhookId(webhookId: String) = webhookId(JsonField.of(webhookId))
-
-        /**
-         * Sets [Builder.webhookId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.webhookId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun webhookId(webhookId: JsonField<String>) = apply { this.webhookId = webhookId }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -225,20 +224,20 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .bulkCustomerImportJob()
          * .timestamp()
          * .type()
-         * .webhookId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BulkUploadWebhookEvent =
             BulkUploadWebhookEvent(
+                checkRequired("id", id),
                 checkRequired("bulkCustomerImportJob", bulkCustomerImportJob),
                 checkRequired("timestamp", timestamp),
                 checkRequired("type", type),
-                checkRequired("webhookId", webhookId),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -250,10 +249,10 @@ private constructor(
             return@apply
         }
 
+        id()
         bulkCustomerImportJob().validate()
         timestamp()
         type().validate()
-        webhookId()
         validated = true
     }
 
@@ -271,15 +270,15 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (bulkCustomerImportJob.asKnown()?.validity() ?: 0) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (bulkCustomerImportJob.asKnown()?.validity() ?: 0) +
             (if (timestamp.asKnown() == null) 0 else 1) +
-            (type.asKnown()?.validity() ?: 0) +
-            (if (webhookId.asKnown() == null) 0 else 1)
+            (type.asKnown()?.validity() ?: 0)
 
     class BulkCustomerImportJob
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val jobId: JsonField<String>,
+        private val id: JsonField<String>,
         private val progress: JsonField<Progress>,
         private val status: JsonField<Status>,
         private val completedAt: JsonField<OffsetDateTime>,
@@ -289,7 +288,7 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("jobId") @ExcludeMissing jobId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
             @JsonProperty("progress")
             @ExcludeMissing
             progress: JsonField<Progress> = JsonMissing.of(),
@@ -300,7 +299,7 @@ private constructor(
             @JsonProperty("errors")
             @ExcludeMissing
             errors: JsonField<List<Error>> = JsonMissing.of(),
-        ) : this(jobId, progress, status, completedAt, errors, mutableMapOf())
+        ) : this(id, progress, status, completedAt, errors, mutableMapOf())
 
         /**
          * Unique identifier for the bulk import job
@@ -308,7 +307,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun jobId(): String = jobId.getRequired("jobId")
+        fun id(): String = id.getRequired("id")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -341,11 +340,11 @@ private constructor(
         fun errors(): List<Error>? = errors.getNullable("errors")
 
         /**
-         * Returns the raw JSON value of [jobId].
+         * Returns the raw JSON value of [id].
          *
-         * Unlike [jobId], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("jobId") @ExcludeMissing fun _jobId(): JsonField<String> = jobId
+        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
          * Returns the raw JSON value of [progress].
@@ -396,7 +395,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .jobId()
+             * .id()
              * .progress()
              * .status()
              * ```
@@ -407,7 +406,7 @@ private constructor(
         /** A builder for [BulkCustomerImportJob]. */
         class Builder internal constructor() {
 
-            private var jobId: JsonField<String>? = null
+            private var id: JsonField<String>? = null
             private var progress: JsonField<Progress>? = null
             private var status: JsonField<Status>? = null
             private var completedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -415,7 +414,7 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(bulkCustomerImportJob: BulkCustomerImportJob) = apply {
-                jobId = bulkCustomerImportJob.jobId
+                id = bulkCustomerImportJob.id
                 progress = bulkCustomerImportJob.progress
                 status = bulkCustomerImportJob.status
                 completedAt = bulkCustomerImportJob.completedAt
@@ -424,16 +423,16 @@ private constructor(
             }
 
             /** Unique identifier for the bulk import job */
-            fun jobId(jobId: String) = jobId(JsonField.of(jobId))
+            fun id(id: String) = id(JsonField.of(id))
 
             /**
-             * Sets [Builder.jobId] to an arbitrary JSON value.
+             * Sets [Builder.id] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.jobId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.id] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun jobId(jobId: JsonField<String>) = apply { this.jobId = jobId }
+            fun id(id: JsonField<String>) = apply { this.id = id }
 
             fun progress(progress: Progress) = progress(JsonField.of(progress))
 
@@ -524,7 +523,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .jobId()
+             * .id()
              * .progress()
              * .status()
              * ```
@@ -533,7 +532,7 @@ private constructor(
              */
             fun build(): BulkCustomerImportJob =
                 BulkCustomerImportJob(
-                    checkRequired("jobId", jobId),
+                    checkRequired("id", id),
                     checkRequired("progress", progress),
                     checkRequired("status", status),
                     completedAt,
@@ -549,7 +548,7 @@ private constructor(
                 return@apply
             }
 
-            jobId()
+            id()
             progress().validate()
             status().validate()
             completedAt()
@@ -572,7 +571,7 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (jobId.asKnown() == null) 0 else 1) +
+            (if (id.asKnown() == null) 0 else 1) +
                 (progress.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
                 (if (completedAt.asKnown() == null) 0 else 1) +
@@ -1397,7 +1396,7 @@ private constructor(
             }
 
             return other is BulkCustomerImportJob &&
-                jobId == other.jobId &&
+                id == other.id &&
                 progress == other.progress &&
                 status == other.status &&
                 completedAt == other.completedAt &&
@@ -1406,13 +1405,13 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(jobId, progress, status, completedAt, errors, additionalProperties)
+            Objects.hash(id, progress, status, completedAt, errors, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "BulkCustomerImportJob{jobId=$jobId, progress=$progress, status=$status, completedAt=$completedAt, errors=$errors, additionalProperties=$additionalProperties}"
+            "BulkCustomerImportJob{id=$id, progress=$progress, status=$status, completedAt=$completedAt, errors=$errors, additionalProperties=$additionalProperties}"
     }
 
     /** Type of webhook event */
@@ -1577,19 +1576,19 @@ private constructor(
         }
 
         return other is BulkUploadWebhookEvent &&
+            id == other.id &&
             bulkCustomerImportJob == other.bulkCustomerImportJob &&
             timestamp == other.timestamp &&
             type == other.type &&
-            webhookId == other.webhookId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(bulkCustomerImportJob, timestamp, type, webhookId, additionalProperties)
+        Objects.hash(id, bulkCustomerImportJob, timestamp, type, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BulkUploadWebhookEvent{bulkCustomerImportJob=$bulkCustomerImportJob, timestamp=$timestamp, type=$type, webhookId=$webhookId, additionalProperties=$additionalProperties}"
+        "BulkUploadWebhookEvent{id=$id, bulkCustomerImportJob=$bulkCustomerImportJob, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
 }

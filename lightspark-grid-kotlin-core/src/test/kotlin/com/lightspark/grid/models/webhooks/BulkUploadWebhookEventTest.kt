@@ -15,9 +15,10 @@ internal class BulkUploadWebhookEventTest {
     fun create() {
         val bulkUploadWebhookEvent =
             BulkUploadWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .bulkCustomerImportJob(
                     BulkUploadWebhookEvent.BulkCustomerImportJob.builder()
-                        .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                        .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                         .progress(
                             BulkUploadWebhookEvent.BulkCustomerImportJob.Progress.builder()
                                 .failed(50L)
@@ -45,13 +46,14 @@ internal class BulkUploadWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
+        assertThat(bulkUploadWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(bulkUploadWebhookEvent.bulkCustomerImportJob())
             .isEqualTo(
                 BulkUploadWebhookEvent.BulkCustomerImportJob.builder()
-                    .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                    .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                     .progress(
                         BulkUploadWebhookEvent.BulkCustomerImportJob.Progress.builder()
                             .failed(50L)
@@ -79,8 +81,6 @@ internal class BulkUploadWebhookEventTest {
         assertThat(bulkUploadWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(bulkUploadWebhookEvent.type()).isEqualTo(BulkUploadWebhookEvent.Type.BULK_UPLOAD)
-        assertThat(bulkUploadWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
     }
 
     @Test
@@ -88,9 +88,10 @@ internal class BulkUploadWebhookEventTest {
         val jsonMapper = jsonMapper()
         val bulkUploadWebhookEvent =
             BulkUploadWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .bulkCustomerImportJob(
                     BulkUploadWebhookEvent.BulkCustomerImportJob.builder()
-                        .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                        .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                         .progress(
                             BulkUploadWebhookEvent.BulkCustomerImportJob.Progress.builder()
                                 .failed(50L)
@@ -118,7 +119,6 @@ internal class BulkUploadWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val roundtrippedBulkUploadWebhookEvent =

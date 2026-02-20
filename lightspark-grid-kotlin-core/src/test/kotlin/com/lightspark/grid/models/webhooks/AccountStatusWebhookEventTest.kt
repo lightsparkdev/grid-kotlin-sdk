@@ -16,10 +16,10 @@ internal class AccountStatusWebhookEventTest {
     fun create() {
         val accountStatusWebhookEvent =
             AccountStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .accountId("accountId")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(AccountStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .newBalance(
                     CurrencyAmount.builder()
@@ -50,13 +50,13 @@ internal class AccountStatusWebhookEventTest {
                 .platformCustomerId("019542f5-b3e7-1d02-0000-000000000001")
                 .build()
 
+        assertThat(accountStatusWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(accountStatusWebhookEvent.accountId()).isEqualTo("accountId")
         assertThat(accountStatusWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(accountStatusWebhookEvent.type())
             .isEqualTo(AccountStatusWebhookEvent.Type.INCOMING_PAYMENT)
-        assertThat(accountStatusWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(accountStatusWebhookEvent.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(accountStatusWebhookEvent.newBalance())
@@ -96,10 +96,10 @@ internal class AccountStatusWebhookEventTest {
         val jsonMapper = jsonMapper()
         val accountStatusWebhookEvent =
             AccountStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .accountId("accountId")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(AccountStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .newBalance(
                     CurrencyAmount.builder()

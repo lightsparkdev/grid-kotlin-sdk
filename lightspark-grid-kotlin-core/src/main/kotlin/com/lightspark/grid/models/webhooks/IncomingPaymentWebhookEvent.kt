@@ -24,16 +24,17 @@ import java.util.Objects
 class IncomingPaymentWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val timestamp: JsonField<OffsetDateTime>,
     private val transaction: JsonField<IncomingTransaction>,
     private val type: JsonField<Type>,
-    private val webhookId: JsonField<String>,
     private val requestedReceiverCustomerInfoFields: JsonField<List<CounterpartyFieldDefinition>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -41,19 +42,19 @@ private constructor(
         @ExcludeMissing
         transaction: JsonField<IncomingTransaction> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        @JsonProperty("webhookId") @ExcludeMissing webhookId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("requestedReceiverCustomerInfoFields")
         @ExcludeMissing
         requestedReceiverCustomerInfoFields: JsonField<List<CounterpartyFieldDefinition>> =
             JsonMissing.of(),
-    ) : this(
-        timestamp,
-        transaction,
-        type,
-        webhookId,
-        requestedReceiverCustomerInfoFields,
-        mutableMapOf(),
-    )
+    ) : this(id, timestamp, transaction, type, requestedReceiverCustomerInfoFields, mutableMapOf())
+
+    /**
+     * Unique identifier for this webhook delivery (can be used for idempotency)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks)
@@ -78,14 +79,6 @@ private constructor(
     fun type(): Type = type.getRequired("type")
 
     /**
-     * Unique identifier for this webhook delivery (can be used for idempotency)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun webhookId(): String = webhookId.getRequired("webhookId")
-
-    /**
      * Information required by the sender's VASP about the recipient. Platform must provide these in
      * the 200 OK response if approving. Note that this only includes fields which Grid does not
      * already have from initial customer registration.
@@ -95,6 +88,13 @@ private constructor(
      */
     fun requestedReceiverCustomerInfoFields(): List<CounterpartyFieldDefinition>? =
         requestedReceiverCustomerInfoFields.getNullable("requestedReceiverCustomerInfoFields")
+
+    /**
+     * Returns the raw JSON value of [id].
+     *
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
      * Returns the raw JSON value of [timestamp].
@@ -120,13 +120,6 @@ private constructor(
      * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-    /**
-     * Returns the raw JSON value of [webhookId].
-     *
-     * Unlike [webhookId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("webhookId") @ExcludeMissing fun _webhookId(): JsonField<String> = webhookId
 
     /**
      * Returns the raw JSON value of [requestedReceiverCustomerInfoFields].
@@ -158,10 +151,10 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .timestamp()
          * .transaction()
          * .type()
-         * .webhookId()
          * ```
          */
         fun builder() = Builder()
@@ -170,26 +163,37 @@ private constructor(
     /** A builder for [IncomingPaymentWebhookEvent]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var transaction: JsonField<IncomingTransaction>? = null
         private var type: JsonField<Type>? = null
-        private var webhookId: JsonField<String>? = null
         private var requestedReceiverCustomerInfoFields:
             JsonField<MutableList<CounterpartyFieldDefinition>>? =
             null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(incomingPaymentWebhookEvent: IncomingPaymentWebhookEvent) = apply {
+            id = incomingPaymentWebhookEvent.id
             timestamp = incomingPaymentWebhookEvent.timestamp
             transaction = incomingPaymentWebhookEvent.transaction
             type = incomingPaymentWebhookEvent.type
-            webhookId = incomingPaymentWebhookEvent.webhookId
             requestedReceiverCustomerInfoFields =
                 incomingPaymentWebhookEvent.requestedReceiverCustomerInfoFields.map {
                     it.toMutableList()
                 }
             additionalProperties = incomingPaymentWebhookEvent.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this webhook delivery (can be used for idempotency) */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks) */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
@@ -226,18 +230,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun type(type: JsonField<Type>) = apply { this.type = type }
-
-        /** Unique identifier for this webhook delivery (can be used for idempotency) */
-        fun webhookId(webhookId: String) = webhookId(JsonField.of(webhookId))
-
-        /**
-         * Sets [Builder.webhookId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.webhookId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun webhookId(webhookId: JsonField<String>) = apply { this.webhookId = webhookId }
 
         /**
          * Information required by the sender's VASP about the recipient. Platform must provide
@@ -303,20 +295,20 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .timestamp()
          * .transaction()
          * .type()
-         * .webhookId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): IncomingPaymentWebhookEvent =
             IncomingPaymentWebhookEvent(
+                checkRequired("id", id),
                 checkRequired("timestamp", timestamp),
                 checkRequired("transaction", transaction),
                 checkRequired("type", type),
-                checkRequired("webhookId", webhookId),
                 (requestedReceiverCustomerInfoFields ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
@@ -329,10 +321,10 @@ private constructor(
             return@apply
         }
 
+        id()
         timestamp()
         transaction().validate()
         type().validate()
-        webhookId()
         requestedReceiverCustomerInfoFields()?.forEach { it.validate() }
         validated = true
     }
@@ -351,10 +343,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (timestamp.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (timestamp.asKnown() == null) 0 else 1) +
             (transaction.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
-            (if (webhookId.asKnown() == null) 0 else 1) +
             (requestedReceiverCustomerInfoFields.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
 
     /** Type of webhook event */
@@ -519,20 +511,20 @@ private constructor(
         }
 
         return other is IncomingPaymentWebhookEvent &&
+            id == other.id &&
             timestamp == other.timestamp &&
             transaction == other.transaction &&
             type == other.type &&
-            webhookId == other.webhookId &&
             requestedReceiverCustomerInfoFields == other.requestedReceiverCustomerInfoFields &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            id,
             timestamp,
             transaction,
             type,
-            webhookId,
             requestedReceiverCustomerInfoFields,
             additionalProperties,
         )
@@ -541,5 +533,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingPaymentWebhookEvent{timestamp=$timestamp, transaction=$transaction, type=$type, webhookId=$webhookId, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+        "IncomingPaymentWebhookEvent{id=$id, timestamp=$timestamp, transaction=$transaction, type=$type, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
 }

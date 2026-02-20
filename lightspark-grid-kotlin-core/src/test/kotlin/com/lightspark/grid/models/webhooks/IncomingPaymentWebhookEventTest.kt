@@ -25,6 +25,7 @@ internal class IncomingPaymentWebhookEventTest {
     fun create() {
         val incomingPaymentWebhookEvent =
             IncomingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     IncomingTransaction.builder()
@@ -86,7 +87,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .build()
                 )
                 .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .addRequestedReceiverCustomerInfoField(
                     CounterpartyFieldDefinition.builder()
                         .mandatory(true)
@@ -95,6 +95,8 @@ internal class IncomingPaymentWebhookEventTest {
                 )
                 .build()
 
+        assertThat(incomingPaymentWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(incomingPaymentWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(incomingPaymentWebhookEvent.transaction())
@@ -159,8 +161,6 @@ internal class IncomingPaymentWebhookEventTest {
             )
         assertThat(incomingPaymentWebhookEvent.type())
             .isEqualTo(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT)
-        assertThat(incomingPaymentWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(incomingPaymentWebhookEvent.requestedReceiverCustomerInfoFields())
             .containsExactly(
                 CounterpartyFieldDefinition.builder()
@@ -175,6 +175,7 @@ internal class IncomingPaymentWebhookEventTest {
         val jsonMapper = jsonMapper()
         val incomingPaymentWebhookEvent =
             IncomingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     IncomingTransaction.builder()
@@ -236,7 +237,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .build()
                 )
                 .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .addRequestedReceiverCustomerInfoField(
                     CounterpartyFieldDefinition.builder()
                         .mandatory(true)

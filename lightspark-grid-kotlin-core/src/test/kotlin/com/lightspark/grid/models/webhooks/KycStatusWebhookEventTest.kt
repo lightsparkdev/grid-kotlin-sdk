@@ -14,13 +14,15 @@ internal class KycStatusWebhookEventTest {
     fun create() {
         val kycStatusWebhookEvent =
             KycStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .kycStatus(KycStatusWebhookEvent.KycStatus.APPROVED)
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(KycStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
+        assertThat(kycStatusWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(kycStatusWebhookEvent.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(kycStatusWebhookEvent.kycStatus())
@@ -29,8 +31,6 @@ internal class KycStatusWebhookEventTest {
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(kycStatusWebhookEvent.type())
             .isEqualTo(KycStatusWebhookEvent.Type.INCOMING_PAYMENT)
-        assertThat(kycStatusWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
     }
 
     @Test
@@ -38,11 +38,11 @@ internal class KycStatusWebhookEventTest {
         val jsonMapper = jsonMapper()
         val kycStatusWebhookEvent =
             KycStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .kycStatus(KycStatusWebhookEvent.KycStatus.APPROVED)
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(KycStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val roundtrippedKycStatusWebhookEvent =

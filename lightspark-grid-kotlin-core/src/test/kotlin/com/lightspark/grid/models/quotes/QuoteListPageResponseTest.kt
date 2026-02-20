@@ -16,6 +16,7 @@ internal class QuoteListPageResponseTest {
             QuoteListPageResponse.builder()
                 .addData(
                     Quote.builder()
+                        .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
@@ -25,7 +26,6 @@ internal class QuoteListPageResponseTest {
                         .exchangeRate(1.0)
                         .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                         .feesIncluded(10L)
-                        .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .receivingCurrency(
                             Currency.builder()
                                 .code("USD")
@@ -102,6 +102,7 @@ internal class QuoteListPageResponseTest {
         assertThat(quoteListPageResponse.data())
             .containsExactly(
                 Quote.builder()
+                    .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .destination(
                         QuoteDestinationOneOf.AccountDestination.builder()
@@ -111,7 +112,6 @@ internal class QuoteListPageResponseTest {
                     .exchangeRate(1.0)
                     .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                     .feesIncluded(10L)
-                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .receivingCurrency(
                         Currency.builder()
                             .code("USD")
@@ -192,6 +192,7 @@ internal class QuoteListPageResponseTest {
             QuoteListPageResponse.builder()
                 .addData(
                     Quote.builder()
+                        .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
@@ -201,7 +202,6 @@ internal class QuoteListPageResponseTest {
                         .exchangeRate(1.0)
                         .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                         .feesIncluded(10L)
-                        .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .receivingCurrency(
                             Currency.builder()
                                 .code("USD")
