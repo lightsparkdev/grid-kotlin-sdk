@@ -24,6 +24,7 @@ internal class OutgoingPaymentWebhookEventTest {
     fun create() {
         val outgoingPaymentWebhookEvent =
             OutgoingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     OutgoingPaymentWebhookEvent.Transaction.builder()
@@ -137,9 +138,10 @@ internal class OutgoingPaymentWebhookEventTest {
                         .build()
                 )
                 .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
+        assertThat(outgoingPaymentWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(outgoingPaymentWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(outgoingPaymentWebhookEvent.transaction())
@@ -256,8 +258,6 @@ internal class OutgoingPaymentWebhookEventTest {
             )
         assertThat(outgoingPaymentWebhookEvent.type())
             .isEqualTo(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT)
-        assertThat(outgoingPaymentWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
     }
 
     @Test
@@ -265,6 +265,7 @@ internal class OutgoingPaymentWebhookEventTest {
         val jsonMapper = jsonMapper()
         val outgoingPaymentWebhookEvent =
             OutgoingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     OutgoingPaymentWebhookEvent.Transaction.builder()
@@ -378,7 +379,6 @@ internal class OutgoingPaymentWebhookEventTest {
                         .build()
                 )
                 .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val roundtrippedOutgoingPaymentWebhookEvent =
