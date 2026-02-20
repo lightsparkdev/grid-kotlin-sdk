@@ -33,7 +33,7 @@ internal class SandboxSendFundsResponseTest {
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
-                .type(TransactionType.INCOMING)
+                .type(TransactionType.OUTGOING)
                 .counterpartyInformation(
                     CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -45,36 +45,6 @@ internal class SandboxSendFundsResponseTest {
                 .description("Payment for invoice #1234")
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .addPaymentInstruction(
-                    PaymentInstructions.builder()
-                        .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
-                                .reference("UMA-Q12345-REF")
-                                .build()
-                        )
-                        .instructionsNotes(
-                            "Please ensure the reference code is included in the payment memo/description field"
-                        )
-                        .isPlatformAccount(true)
-                        .build()
-                )
-                .addPaymentInstruction(
-                    PaymentInstructions.builder()
-                        .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
-                                .reference("UMA-Q12345-REF")
-                                .build()
-                        )
-                        .instructionsNotes(
-                            "Please ensure the reference code is included in the payment memo/description field"
-                        )
-                        .isPlatformAccount(true)
-                        .build()
-                )
                 .sentAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -98,6 +68,36 @@ internal class SandboxSendFundsResponseTest {
                 .exchangeRate(1.08)
                 .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
+                .addPaymentInstruction(
+                    PaymentInstructions.builder()
+                        .accountOrWalletInfo(
+                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                .builder()
+                                .clabeNumber("123456789012345678")
+                                .reference("UMA-Q12345-REF")
+                                .build()
+                        )
+                        .instructionsNotes(
+                            "Please ensure the reference code is included in the payment memo/description field"
+                        )
+                        .isPlatformAccount(true)
+                        .build()
+                )
+                .addPaymentInstruction(
+                    PaymentInstructions.builder()
+                        .accountOrWalletInfo(
+                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                .builder()
+                                .clabeNumber("123456789012345678")
+                                .reference("UMA-Q12345-REF")
+                                .build()
+                        )
+                        .instructionsNotes(
+                            "Please ensure the reference code is included in the payment memo/description field"
+                        )
+                        .isPlatformAccount(true)
+                        .build()
+                )
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .rateDetails(
                     OutgoingRateDetails.builder()
@@ -145,7 +145,7 @@ internal class SandboxSendFundsResponseTest {
             )
         assertThat(sandboxSendFundsResponse.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(sandboxSendFundsResponse.status()).isEqualTo(TransactionStatus.CREATED)
-        assertThat(sandboxSendFundsResponse.type()).isEqualTo(TransactionType.INCOMING)
+        assertThat(sandboxSendFundsResponse.type()).isEqualTo(TransactionType.OUTGOING)
         assertThat(sandboxSendFundsResponse.counterpartyInformation())
             .isEqualTo(
                 CounterpartyInformation.builder()
@@ -161,33 +161,6 @@ internal class SandboxSendFundsResponseTest {
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
         assertThat(sandboxSendFundsResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(sandboxSendFundsResponse.paymentInstructions())
-            .containsExactly(
-                PaymentInstructions.builder()
-                    .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                            .clabeNumber("123456789012345678")
-                            .reference("UMA-Q12345-REF")
-                            .build()
-                    )
-                    .instructionsNotes(
-                        "Please ensure the reference code is included in the payment memo/description field"
-                    )
-                    .isPlatformAccount(true)
-                    .build(),
-                PaymentInstructions.builder()
-                    .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                            .clabeNumber("123456789012345678")
-                            .reference("UMA-Q12345-REF")
-                            .build()
-                    )
-                    .instructionsNotes(
-                        "Please ensure the reference code is included in the payment memo/description field"
-                    )
-                    .isPlatformAccount(true)
-                    .build(),
-            )
         assertThat(sandboxSendFundsResponse.sentAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
@@ -216,6 +189,33 @@ internal class SandboxSendFundsResponseTest {
         assertThat(sandboxSendFundsResponse.failureReason())
             .isEqualTo(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
         assertThat(sandboxSendFundsResponse.fees()).isEqualTo(10L)
+        assertThat(sandboxSendFundsResponse.paymentInstructions())
+            .containsExactly(
+                PaymentInstructions.builder()
+                    .accountOrWalletInfo(
+                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
+                            .clabeNumber("123456789012345678")
+                            .reference("UMA-Q12345-REF")
+                            .build()
+                    )
+                    .instructionsNotes(
+                        "Please ensure the reference code is included in the payment memo/description field"
+                    )
+                    .isPlatformAccount(true)
+                    .build(),
+                PaymentInstructions.builder()
+                    .accountOrWalletInfo(
+                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
+                            .clabeNumber("123456789012345678")
+                            .reference("UMA-Q12345-REF")
+                            .build()
+                    )
+                    .instructionsNotes(
+                        "Please ensure the reference code is included in the payment memo/description field"
+                    )
+                    .isPlatformAccount(true)
+                    .build(),
+            )
         assertThat(sandboxSendFundsResponse.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(sandboxSendFundsResponse.rateDetails())
@@ -267,7 +267,7 @@ internal class SandboxSendFundsResponseTest {
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
-                .type(TransactionType.INCOMING)
+                .type(TransactionType.OUTGOING)
                 .counterpartyInformation(
                     CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -279,36 +279,6 @@ internal class SandboxSendFundsResponseTest {
                 .description("Payment for invoice #1234")
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .addPaymentInstruction(
-                    PaymentInstructions.builder()
-                        .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
-                                .reference("UMA-Q12345-REF")
-                                .build()
-                        )
-                        .instructionsNotes(
-                            "Please ensure the reference code is included in the payment memo/description field"
-                        )
-                        .isPlatformAccount(true)
-                        .build()
-                )
-                .addPaymentInstruction(
-                    PaymentInstructions.builder()
-                        .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
-                                .reference("UMA-Q12345-REF")
-                                .build()
-                        )
-                        .instructionsNotes(
-                            "Please ensure the reference code is included in the payment memo/description field"
-                        )
-                        .isPlatformAccount(true)
-                        .build()
-                )
                 .sentAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -332,6 +302,36 @@ internal class SandboxSendFundsResponseTest {
                 .exchangeRate(1.08)
                 .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
+                .addPaymentInstruction(
+                    PaymentInstructions.builder()
+                        .accountOrWalletInfo(
+                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                .builder()
+                                .clabeNumber("123456789012345678")
+                                .reference("UMA-Q12345-REF")
+                                .build()
+                        )
+                        .instructionsNotes(
+                            "Please ensure the reference code is included in the payment memo/description field"
+                        )
+                        .isPlatformAccount(true)
+                        .build()
+                )
+                .addPaymentInstruction(
+                    PaymentInstructions.builder()
+                        .accountOrWalletInfo(
+                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                .builder()
+                                .clabeNumber("123456789012345678")
+                                .reference("UMA-Q12345-REF")
+                                .build()
+                        )
+                        .instructionsNotes(
+                            "Please ensure the reference code is included in the payment memo/description field"
+                        )
+                        .isPlatformAccount(true)
+                        .build()
+                )
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .rateDetails(
                     OutgoingRateDetails.builder()

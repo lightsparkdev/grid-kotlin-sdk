@@ -12,7 +12,7 @@ import com.lightspark.grid.models.transactions.TransactionListPageAsync
 import com.lightspark.grid.models.transactions.TransactionListParams
 import com.lightspark.grid.models.transactions.TransactionRejectParams
 import com.lightspark.grid.models.transactions.TransactionRetrieveParams
-import com.lightspark.grid.models.transferin.Transaction
+import com.lightspark.grid.models.transactions.TransactionRetrieveResponse
 
 interface TransactionServiceAsync {
 
@@ -33,17 +33,20 @@ interface TransactionServiceAsync {
         transactionId: String,
         params: TransactionRetrieveParams = TransactionRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Transaction =
+    ): TransactionRetrieveResponse =
         retrieve(params.toBuilder().transactionId(transactionId).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: TransactionRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Transaction
+    ): TransactionRetrieveResponse
 
     /** @see retrieve */
-    suspend fun retrieve(transactionId: String, requestOptions: RequestOptions): Transaction =
+    suspend fun retrieve(
+        transactionId: String,
+        requestOptions: RequestOptions,
+    ): TransactionRetrieveResponse =
         retrieve(transactionId, TransactionRetrieveParams.none(), requestOptions)
 
     /**
@@ -128,7 +131,7 @@ interface TransactionServiceAsync {
             transactionId: String,
             params: TransactionRetrieveParams = TransactionRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Transaction> =
+        ): HttpResponseFor<TransactionRetrieveResponse> =
             retrieve(params.toBuilder().transactionId(transactionId).build(), requestOptions)
 
         /** @see retrieve */
@@ -136,14 +139,14 @@ interface TransactionServiceAsync {
         suspend fun retrieve(
             params: TransactionRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Transaction>
+        ): HttpResponseFor<TransactionRetrieveResponse>
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             transactionId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Transaction> =
+        ): HttpResponseFor<TransactionRetrieveResponse> =
             retrieve(transactionId, TransactionRetrieveParams.none(), requestOptions)
 
         /**

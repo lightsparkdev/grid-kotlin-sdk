@@ -12,6 +12,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.transactions.CounterpartyInformation
 import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
@@ -116,7 +117,19 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Status of a payment transaction
+     * Status of a payment transaction.
+     *
+     * |Status      |Description                                                                                       |
+     * |------------|--------------------------------------------------------------------------------------------------|
+     * |`CREATED`   |Initial lookup has been created                                                                   |
+     * |`PENDING`   |Quote has been created                                                                            |
+     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+     * |`SENT`      |Cross border settlement has been initiated                                                        |
+     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+     * |`FAILED`    |An error occurred during payment                                                                  |
+     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+     * |`EXPIRED`   |Quote has expired                                                                                 |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -390,6 +403,37 @@ private constructor(
                 )
             )
 
+        /**
+         * Alias for calling [destination] with
+         * `TransactionDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)`.
+         */
+        fun destination(
+            externalAccountDetails: TransactionDestinationOneOf.ExternalAccountDetails
+        ) =
+            destination(
+                TransactionDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)
+            )
+
+        /**
+         * Alias for calling [destination] with the following:
+         * ```kotlin
+         * TransactionDestinationOneOf.ExternalAccountDetails.builder()
+         *     .destinationType(TransactionDestinationOneOf.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
+         *     .externalAccountDetails(externalAccountDetails)
+         *     .build()
+         * ```
+         */
+        fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
+            destination(
+                TransactionDestinationOneOf.ExternalAccountDetails.builder()
+                    .destinationType(
+                        TransactionDestinationOneOf.ExternalAccountDetails.DestinationType
+                            .EXTERNAL_ACCOUNT_DETAILS
+                    )
+                    .externalAccountDetails(externalAccountDetails)
+                    .build()
+            )
+
         /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
         fun platformCustomerId(platformCustomerId: String) =
             platformCustomerId(JsonField.of(platformCustomerId))
@@ -405,7 +449,21 @@ private constructor(
             this.platformCustomerId = platformCustomerId
         }
 
-        /** Status of a payment transaction */
+        /**
+         * Status of a payment transaction.
+         *
+         * |Status      |Description                                                                                       |
+         * |------------|--------------------------------------------------------------------------------------------------|
+         * |`CREATED`   |Initial lookup has been created                                                                   |
+         * |`PENDING`   |Quote has been created                                                                            |
+         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+         * |`SENT`      |Cross border settlement has been initiated                                                        |
+         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+         * |`FAILED`    |An error occurred during payment                                                                  |
+         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+         * |`EXPIRED`   |Quote has expired                                                                                 |
+         */
         fun status(status: TransactionStatus) = status(JsonField.of(status))
 
         /**
