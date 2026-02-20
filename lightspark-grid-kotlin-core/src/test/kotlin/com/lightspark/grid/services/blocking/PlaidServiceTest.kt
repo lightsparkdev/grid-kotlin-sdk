@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class PlaidServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun createLinkToken() {
         val client =
@@ -30,7 +30,7 @@ internal class PlaidServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun submitPublicToken() {
         val client =
