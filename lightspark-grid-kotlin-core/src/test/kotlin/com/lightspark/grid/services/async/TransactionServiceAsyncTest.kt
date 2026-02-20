@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class TransactionServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun retrieve() {
         val client =
@@ -26,7 +26,7 @@ internal class TransactionServiceAsyncTest {
         transaction.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun list() {
         val client =
@@ -41,7 +41,7 @@ internal class TransactionServiceAsyncTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun approve() {
         val client =
@@ -66,7 +66,7 @@ internal class TransactionServiceAsyncTest {
         incomingTransaction.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun reject() {
         val client =

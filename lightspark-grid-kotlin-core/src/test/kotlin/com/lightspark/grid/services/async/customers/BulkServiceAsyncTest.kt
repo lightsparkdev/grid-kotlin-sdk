@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class BulkServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun getJobStatus() {
         val client =
@@ -24,7 +24,7 @@ internal class BulkServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun uploadCsv() {
         val client =

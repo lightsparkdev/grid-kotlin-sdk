@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class UmaServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun receivePayment() {
         val client =

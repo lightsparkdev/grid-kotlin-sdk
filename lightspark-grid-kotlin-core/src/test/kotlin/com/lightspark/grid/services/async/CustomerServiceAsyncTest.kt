@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class CustomerServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun create() {
         val client =
@@ -50,7 +50,7 @@ internal class CustomerServiceAsyncTest {
         customerOneOf.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun retrieve() {
         val client =
@@ -65,7 +65,7 @@ internal class CustomerServiceAsyncTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun update() {
         val client =
@@ -108,7 +108,7 @@ internal class CustomerServiceAsyncTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun list() {
         val client =
@@ -123,7 +123,7 @@ internal class CustomerServiceAsyncTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun delete() {
         val client =
@@ -138,7 +138,7 @@ internal class CustomerServiceAsyncTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun getKycLink() {
         val client =
@@ -159,7 +159,7 @@ internal class CustomerServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun listInternalAccounts() {
         val client =

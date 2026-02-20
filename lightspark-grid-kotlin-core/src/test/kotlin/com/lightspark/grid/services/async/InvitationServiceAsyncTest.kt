@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class InvitationServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun create() {
         val client =
@@ -34,7 +34,7 @@ internal class InvitationServiceAsyncTest {
         umaInvitation.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun retrieve() {
         val client =
@@ -49,7 +49,7 @@ internal class InvitationServiceAsyncTest {
         umaInvitation.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun cancel() {
         val client =
@@ -64,7 +64,7 @@ internal class InvitationServiceAsyncTest {
         umaInvitation.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun claim() {
         val client =
