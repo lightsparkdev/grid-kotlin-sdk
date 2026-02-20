@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.7.0 (2026-02-20)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** add purposeOfPayment parameter to quote create ([19289e0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/19289e04c279a12e4b5ba86e32b0aa7dff9f2996))
+* **api:** add type discriminators to transactions, union response types for operations ([179e149](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/179e1499aea1e2255e3b519e62499a2559ff94eb))
+* **client:** add connection pooling option ([69d826d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/69d826da7a3cd347e9e03805ab64d3307dc29591))
+* **client:** add more convenience service method overloads ([018b818](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/018b818d4ef2679406527b2d30f08a7f1225b11a))
+
+
+### Bug Fixes
+
+* **api:** rename jobId/quoteId/webhookId to id in quotes/webhooks/bulk ([4b2c78c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4b2c78c4f92c04db90ce3c67371f0dd5e4dd49c2))
+
+
+### Chores
+
+* **internal:** make `OkHttp` constructor internal ([fb4641d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fb4641d9073671845d7a597dced8daf1ea09e5b1))
+* **internal:** remove mock server code ([cb022ef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/cb022ef9a8309e1917970c280575c2924642d9b0))
+* update mock server docs ([fce08b1](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fce08b189c0bec585829fb8b46eff071363c13a2))
+
+
+### Documentation
+
+* **api:** clarify immediately_execute parameter in quotes ([7a900ba](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7a900ba9000ca40901aa2f0d2d553cad268482c7))
+
 ## 0.6.0 (2026-02-19)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.5.0...v0.6.0)
