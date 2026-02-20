@@ -45,6 +45,7 @@ internal class QuoteServiceTest {
                     .description("Transfer between accounts, either internal or external.")
                     .immediatelyExecute(false)
                     .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                    .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
                     .senderCustomerInfo(
                         QuoteCreateParams.SenderCustomerInfo.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
