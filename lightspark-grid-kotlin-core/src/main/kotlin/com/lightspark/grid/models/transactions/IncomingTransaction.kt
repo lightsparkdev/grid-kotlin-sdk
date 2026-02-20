@@ -13,6 +13,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
@@ -155,7 +156,19 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Status of a payment transaction
+     * Status of a payment transaction.
+     *
+     * |Status      |Description                                                                                       |
+     * |------------|--------------------------------------------------------------------------------------------------|
+     * |`CREATED`   |Initial lookup has been created                                                                   |
+     * |`PENDING`   |Quote has been created                                                                            |
+     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+     * |`SENT`      |Cross border settlement has been initiated                                                        |
+     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+     * |`FAILED`    |An error occurred during payment                                                                  |
+     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+     * |`EXPIRED`   |Quote has expired                                                                                 |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -529,6 +542,37 @@ private constructor(
                 )
             )
 
+        /**
+         * Alias for calling [destination] with
+         * `TransactionDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)`.
+         */
+        fun destination(
+            externalAccountDetails: TransactionDestinationOneOf.ExternalAccountDetails
+        ) =
+            destination(
+                TransactionDestinationOneOf.ofExternalAccountDetails(externalAccountDetails)
+            )
+
+        /**
+         * Alias for calling [destination] with the following:
+         * ```kotlin
+         * TransactionDestinationOneOf.ExternalAccountDetails.builder()
+         *     .destinationType(TransactionDestinationOneOf.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
+         *     .externalAccountDetails(externalAccountDetails)
+         *     .build()
+         * ```
+         */
+        fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
+            destination(
+                TransactionDestinationOneOf.ExternalAccountDetails.builder()
+                    .destinationType(
+                        TransactionDestinationOneOf.ExternalAccountDetails.DestinationType
+                            .EXTERNAL_ACCOUNT_DETAILS
+                    )
+                    .externalAccountDetails(externalAccountDetails)
+                    .build()
+            )
+
         /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
         fun platformCustomerId(platformCustomerId: String) =
             platformCustomerId(JsonField.of(platformCustomerId))
@@ -544,7 +588,21 @@ private constructor(
             this.platformCustomerId = platformCustomerId
         }
 
-        /** Status of a payment transaction */
+        /**
+         * Status of a payment transaction.
+         *
+         * |Status      |Description                                                                                       |
+         * |------------|--------------------------------------------------------------------------------------------------|
+         * |`CREATED`   |Initial lookup has been created                                                                   |
+         * |`PENDING`   |Quote has been created                                                                            |
+         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+         * |`SENT`      |Cross border settlement has been initiated                                                        |
+         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+         * |`FAILED`    |An error occurred during payment                                                                  |
+         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+         * |`EXPIRED`   |Quote has expired                                                                                 |
+         */
         fun status(status: TransactionStatus) = status(JsonField.of(status))
 
         /**
@@ -747,6 +805,30 @@ private constructor(
                     .build()
             )
 
+        /**
+         * Alias for calling [source] with
+         * `TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
+         */
+        fun source(realtimeFunding: TransactionSourceOneOf.RealtimeFunding) =
+            source(TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding))
+
+        /**
+         * Alias for calling [source] with the following:
+         * ```kotlin
+         * TransactionSourceOneOf.RealtimeFunding.builder()
+         *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+         *     .currency(currency)
+         *     .build()
+         * ```
+         */
+        fun realtimeFundingSource(currency: String) =
+            source(
+                TransactionSourceOneOf.RealtimeFunding.builder()
+                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+                    .currency(currency)
+                    .build()
+            )
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -862,6 +944,125 @@ private constructor(
             (rateDetails.asKnown()?.validity() ?: 0) +
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
             (source.asKnown()?.validity() ?: 0)
+
+    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val INCOMING = of("INCOMING")
+
+            fun of(value: String) = Type(JsonField.of(value))
+        }
+
+        /** An enum containing [Type]'s known values. */
+        enum class Known {
+            INCOMING
+        }
+
+        /**
+         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Type] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            INCOMING,
+            /** An enum member indicating that [Type] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                INCOMING -> Value.INCOMING
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                INCOMING -> Known.INCOMING
+                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): Type = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /** If the transaction failed, this field provides the reason for failure. */
     class FailureReason @JsonCreator private constructor(private val value: JsonField<String>) :

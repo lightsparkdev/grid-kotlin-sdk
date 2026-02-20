@@ -36,7 +36,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
+                        .type(TransactionType.OUTGOING)
                         .counterpartyInformation(
                             CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -48,36 +48,6 @@ internal class OutgoingPaymentWebhookEventTest {
                         .description("Payment for invoice #1234")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
                         .sentAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -103,6 +73,36 @@ internal class OutgoingPaymentWebhookEventTest {
                             OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                         )
                         .fees(10L)
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .rateDetails(
                             OutgoingRateDetails.builder()
@@ -154,7 +154,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .status(TransactionStatus.CREATED)
-                    .type(TransactionType.INCOMING)
+                    .type(TransactionType.OUTGOING)
                     .counterpartyInformation(
                         CounterpartyInformation.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -166,36 +166,6 @@ internal class OutgoingPaymentWebhookEventTest {
                     .description("Payment for invoice #1234")
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                    .addPaymentInstruction(
-                        PaymentInstructions.builder()
-                            .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                    .builder()
-                                    .clabeNumber("123456789012345678")
-                                    .reference("UMA-Q12345-REF")
-                                    .build()
-                            )
-                            .instructionsNotes(
-                                "Please ensure the reference code is included in the payment memo/description field"
-                            )
-                            .isPlatformAccount(true)
-                            .build()
-                    )
-                    .addPaymentInstruction(
-                        PaymentInstructions.builder()
-                            .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                    .builder()
-                                    .clabeNumber("123456789012345678")
-                                    .reference("UMA-Q12345-REF")
-                                    .build()
-                            )
-                            .instructionsNotes(
-                                "Please ensure the reference code is included in the payment memo/description field"
-                            )
-                            .isPlatformAccount(true)
-                            .build()
-                    )
                     .sentAmount(
                         CurrencyAmount.builder()
                             .amount(12550L)
@@ -221,6 +191,36 @@ internal class OutgoingPaymentWebhookEventTest {
                         OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                     )
                     .fees(10L)
+                    .addPaymentInstruction(
+                        PaymentInstructions.builder()
+                            .accountOrWalletInfo(
+                                PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                    .builder()
+                                    .clabeNumber("123456789012345678")
+                                    .reference("UMA-Q12345-REF")
+                                    .build()
+                            )
+                            .instructionsNotes(
+                                "Please ensure the reference code is included in the payment memo/description field"
+                            )
+                            .isPlatformAccount(true)
+                            .build()
+                    )
+                    .addPaymentInstruction(
+                        PaymentInstructions.builder()
+                            .accountOrWalletInfo(
+                                PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                    .builder()
+                                    .clabeNumber("123456789012345678")
+                                    .reference("UMA-Q12345-REF")
+                                    .build()
+                            )
+                            .instructionsNotes(
+                                "Please ensure the reference code is included in the payment memo/description field"
+                            )
+                            .isPlatformAccount(true)
+                            .build()
+                    )
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .rateDetails(
                         OutgoingRateDetails.builder()
@@ -277,7 +277,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
+                        .type(TransactionType.OUTGOING)
                         .counterpartyInformation(
                             CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -289,36 +289,6 @@ internal class OutgoingPaymentWebhookEventTest {
                         .description("Payment for invoice #1234")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
                         .sentAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -344,6 +314,36 @@ internal class OutgoingPaymentWebhookEventTest {
                             OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                         )
                         .fees(10L)
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .rateDetails(
                             OutgoingRateDetails.builder()

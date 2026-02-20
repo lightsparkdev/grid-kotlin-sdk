@@ -23,7 +23,7 @@ import com.lightspark.grid.models.transactions.TransactionListPageResponse
 import com.lightspark.grid.models.transactions.TransactionListParams
 import com.lightspark.grid.models.transactions.TransactionRejectParams
 import com.lightspark.grid.models.transactions.TransactionRetrieveParams
-import com.lightspark.grid.models.transferin.Transaction
+import com.lightspark.grid.models.transactions.TransactionRetrieveResponse
 
 class TransactionServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     TransactionService {
@@ -40,7 +40,7 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
     override fun retrieve(
         params: TransactionRetrieveParams,
         requestOptions: RequestOptions,
-    ): Transaction =
+    ): TransactionRetrieveResponse =
         // get /transactions/{transactionId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -78,13 +78,13 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<Transaction> =
-            jsonHandler<Transaction>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<TransactionRetrieveResponse> =
+            jsonHandler<TransactionRetrieveResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: TransactionRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Transaction> {
+        ): HttpResponseFor<TransactionRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("transactionId", params.transactionId())

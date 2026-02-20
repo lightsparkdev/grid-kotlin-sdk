@@ -19,7 +19,7 @@ internal class TransferOutServiceTest {
                 .build()
         val transferOutService = client.transferOut()
 
-        val transaction =
+        val transferOut =
             transferOutService.create(
                 TransferOutCreateParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
@@ -37,6 +37,6 @@ internal class TransferOutServiceTest {
                     .build()
             )
 
-        transaction.validate()
+        transferOut.validate()
     }
 }

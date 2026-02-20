@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
+import com.lightspark.grid.models.transferout.TransferOutCreateResponse
 
 interface TransferOutService {
 
@@ -27,7 +27,7 @@ interface TransferOutService {
     fun create(
         params: TransferOutCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Transaction
+    ): TransferOutCreateResponse
 
     /**
      * A view of [TransferOutService] that provides access to raw HTTP responses for each method.
@@ -51,6 +51,6 @@ interface TransferOutService {
         fun create(
             params: TransferOutCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Transaction>
+        ): HttpResponseFor<TransferOutCreateResponse>
     }
 }

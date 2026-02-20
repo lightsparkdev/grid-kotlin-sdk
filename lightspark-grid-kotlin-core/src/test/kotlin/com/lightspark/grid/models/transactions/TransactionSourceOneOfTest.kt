@@ -27,6 +27,7 @@ internal class TransactionSourceOneOfTest {
 
         assertThat(transactionSourceOneOf.account()).isEqualTo(account)
         assertThat(transactionSourceOneOf.umaAddress()).isNull()
+        assertThat(transactionSourceOneOf.realtimeFunding()).isNull()
     }
 
     @Test
@@ -63,6 +64,7 @@ internal class TransactionSourceOneOfTest {
 
         assertThat(transactionSourceOneOf.account()).isNull()
         assertThat(transactionSourceOneOf.umaAddress()).isEqualTo(umaAddress)
+        assertThat(transactionSourceOneOf.realtimeFunding()).isNull()
     }
 
     @Test
@@ -74,6 +76,43 @@ internal class TransactionSourceOneOfTest {
                     .currency("USD")
                     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
                     .umaAddress("\$sender@uma.domain.com")
+                    .build()
+            )
+
+        val roundtrippedTransactionSourceOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(transactionSourceOneOf),
+                jacksonTypeRef<TransactionSourceOneOf>(),
+            )
+
+        assertThat(roundtrippedTransactionSourceOneOf).isEqualTo(transactionSourceOneOf)
+    }
+
+    @Test
+    fun ofRealtimeFunding() {
+        val realtimeFunding =
+            TransactionSourceOneOf.RealtimeFunding.builder()
+                .currency("USDC")
+                .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
+                .build()
+
+        val transactionSourceOneOf = TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding)
+
+        assertThat(transactionSourceOneOf.account()).isNull()
+        assertThat(transactionSourceOneOf.umaAddress()).isNull()
+        assertThat(transactionSourceOneOf.realtimeFunding()).isEqualTo(realtimeFunding)
+    }
+
+    @Test
+    fun ofRealtimeFundingRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val transactionSourceOneOf =
+            TransactionSourceOneOf.ofRealtimeFunding(
+                TransactionSourceOneOf.RealtimeFunding.builder()
+                    .currency("USDC")
+                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                     .build()
             )
 

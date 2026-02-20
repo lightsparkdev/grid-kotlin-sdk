@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferin.TransferInCreateParams
+import com.lightspark.grid.models.transferin.TransferInCreateResponse
 
 interface TransferInServiceAsync {
 
@@ -31,7 +31,7 @@ interface TransferInServiceAsync {
     suspend fun create(
         params: TransferInCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Transaction
+    ): TransferInCreateResponse
 
     /**
      * A view of [TransferInServiceAsync] that provides access to raw HTTP responses for each
@@ -56,6 +56,6 @@ interface TransferInServiceAsync {
         suspend fun create(
             params: TransferInCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Transaction>
+        ): HttpResponseFor<TransferInCreateResponse>
     }
 }
