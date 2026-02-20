@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class ReceiverServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun lookupExternalAccount() {
         val client =
@@ -32,7 +32,7 @@ internal class ReceiverServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun lookupUma() {
         val client =

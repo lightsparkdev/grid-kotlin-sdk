@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 
 internal class ConfigServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun retrieve() {
         val client =
@@ -28,7 +28,7 @@ internal class ConfigServiceAsyncTest {
         platformConfig.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun update() {
         val client =

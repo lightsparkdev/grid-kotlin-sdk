@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class InternalAccountServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun fund() {
         val client =

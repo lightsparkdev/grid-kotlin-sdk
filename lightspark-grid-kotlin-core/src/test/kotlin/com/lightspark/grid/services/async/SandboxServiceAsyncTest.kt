@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class SandboxServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun sendFunds() {
         val client =
@@ -31,7 +31,7 @@ internal class SandboxServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun sendTestWebhook() {
         val client =

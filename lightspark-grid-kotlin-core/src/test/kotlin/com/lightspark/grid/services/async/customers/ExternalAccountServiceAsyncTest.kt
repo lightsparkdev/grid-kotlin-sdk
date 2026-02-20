@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 internal class ExternalAccountServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun create() {
         val client =
@@ -61,7 +61,7 @@ internal class ExternalAccountServiceAsyncTest {
         externalAccount.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     suspend fun list() {
         val client =
