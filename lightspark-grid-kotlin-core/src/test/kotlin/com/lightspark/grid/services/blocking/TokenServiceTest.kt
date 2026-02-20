@@ -2,15 +2,12 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.tokens.Permission
 import com.lightspark.grid.models.tokens.TokenCreateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class TokenServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -18,7 +15,6 @@ internal class TokenServiceTest {
     fun create() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -40,7 +36,6 @@ internal class TokenServiceTest {
     fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -56,7 +51,6 @@ internal class TokenServiceTest {
     fun list() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -72,7 +66,6 @@ internal class TokenServiceTest {
     fun delete() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

@@ -2,16 +2,13 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.invitations.InvitationClaimParams
 import com.lightspark.grid.models.invitations.InvitationCreateParams
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class InvitationServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -19,7 +16,6 @@ internal class InvitationServiceTest {
     fun create() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -43,7 +39,6 @@ internal class InvitationServiceTest {
     fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -59,7 +54,6 @@ internal class InvitationServiceTest {
     fun cancel() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -75,7 +69,6 @@ internal class InvitationServiceTest {
     fun claim() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

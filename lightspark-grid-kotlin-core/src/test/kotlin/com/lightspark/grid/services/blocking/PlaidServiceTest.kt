@@ -2,15 +2,12 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.plaid.PlaidCreateLinkTokenParams
 import com.lightspark.grid.models.plaid.PlaidSubmitPublicTokenParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class PlaidServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -18,7 +15,6 @@ internal class PlaidServiceTest {
     fun createLinkToken() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -39,7 +35,6 @@ internal class PlaidServiceTest {
     fun submitPublicToken() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

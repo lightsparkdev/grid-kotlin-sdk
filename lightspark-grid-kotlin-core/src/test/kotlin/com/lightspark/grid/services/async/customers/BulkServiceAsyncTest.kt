@@ -2,14 +2,11 @@
 
 package com.lightspark.grid.services.async.customers
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class BulkServiceAsyncTest {
 
     @Disabled("Prism tests are disabled")
@@ -17,7 +14,6 @@ internal class BulkServiceAsyncTest {
     suspend fun getJobStatus() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -33,7 +29,6 @@ internal class BulkServiceAsyncTest {
     suspend fun uploadCsv() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
