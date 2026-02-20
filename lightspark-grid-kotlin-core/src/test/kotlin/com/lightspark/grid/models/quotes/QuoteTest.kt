@@ -14,6 +14,7 @@ internal class QuoteTest {
     fun create() {
         val quote =
             Quote.builder()
+                .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .destination(
                     QuoteDestinationOneOf.AccountDestination.builder()
@@ -23,7 +24,6 @@ internal class QuoteTest {
                 .exchangeRate(1.0)
                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                 .feesIncluded(10L)
-                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receivingCurrency(
                     Currency.builder()
                         .code("USD")
@@ -42,7 +42,7 @@ internal class QuoteTest {
                 )
                 .source(
                     QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )
@@ -92,6 +92,7 @@ internal class QuoteTest {
                 )
                 .build()
 
+        assertThat(quote.id()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(quote.createdAt()).isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
         assertThat(quote.destination())
             .isEqualTo(
@@ -104,7 +105,6 @@ internal class QuoteTest {
         assertThat(quote.exchangeRate()).isEqualTo(1.0)
         assertThat(quote.expiresAt()).isEqualTo(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
         assertThat(quote.feesIncluded()).isEqualTo(10L)
-        assertThat(quote.quoteId()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(quote.receivingCurrency())
             .isEqualTo(
                 Currency.builder()
@@ -127,7 +127,7 @@ internal class QuoteTest {
             .isEqualTo(
                 QuoteSourceOneOf.ofAccountQuoteSource(
                     QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )
@@ -182,6 +182,7 @@ internal class QuoteTest {
         val jsonMapper = jsonMapper()
         val quote =
             Quote.builder()
+                .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .destination(
                     QuoteDestinationOneOf.AccountDestination.builder()
@@ -191,7 +192,6 @@ internal class QuoteTest {
                 .exchangeRate(1.0)
                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                 .feesIncluded(10L)
-                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receivingCurrency(
                     Currency.builder()
                         .code("USD")
@@ -210,7 +210,7 @@ internal class QuoteTest {
                 )
                 .source(
                     QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )

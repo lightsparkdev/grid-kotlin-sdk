@@ -17,6 +17,7 @@ internal class InvitationClaimedWebhookEventTest {
     fun create() {
         val invitationClaimedWebhookEvent =
             InvitationClaimedWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .invitation(
                     UmaInvitation.builder()
                         .code("019542f5")
@@ -45,9 +46,10 @@ internal class InvitationClaimedWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
+        assertThat(invitationClaimedWebhookEvent.id())
+            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(invitationClaimedWebhookEvent.invitation())
             .isEqualTo(
                 UmaInvitation.builder()
@@ -79,8 +81,6 @@ internal class InvitationClaimedWebhookEventTest {
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(invitationClaimedWebhookEvent.type())
             .isEqualTo(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
-        assertThat(invitationClaimedWebhookEvent.webhookId())
-            .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
     }
 
     @Test
@@ -88,6 +88,7 @@ internal class InvitationClaimedWebhookEventTest {
         val jsonMapper = jsonMapper()
         val invitationClaimedWebhookEvent =
             InvitationClaimedWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .invitation(
                     UmaInvitation.builder()
                         .code("019542f5")
@@ -116,7 +117,6 @@ internal class InvitationClaimedWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val roundtrippedInvitationClaimedWebhookEvent =

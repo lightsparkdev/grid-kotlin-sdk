@@ -15,8 +15,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferin.TransferInCreateParams
+import com.lightspark.grid.models.transferin.TransferInCreateResponse
 
 class TransferInServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     TransferInServiceAsync {
@@ -33,7 +33,7 @@ class TransferInServiceAsyncImpl internal constructor(private val clientOptions:
     override suspend fun create(
         params: TransferInCreateParams,
         requestOptions: RequestOptions,
-    ): Transaction =
+    ): TransferInCreateResponse =
         // post /transfer-in
         withRawResponse().create(params, requestOptions).parse()
 
@@ -50,13 +50,13 @@ class TransferInServiceAsyncImpl internal constructor(private val clientOptions:
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createHandler: Handler<Transaction> =
-            jsonHandler<Transaction>(clientOptions.jsonMapper)
+        private val createHandler: Handler<TransferInCreateResponse> =
+            jsonHandler<TransferInCreateResponse>(clientOptions.jsonMapper)
 
         override suspend fun create(
             params: TransferInCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Transaction> {
+        ): HttpResponseFor<TransferInCreateResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

@@ -15,7 +15,7 @@ internal class BulkGetJobStatusResponseTest {
     fun create() {
         val bulkGetJobStatusResponse =
             BulkGetJobStatusResponse.builder()
-                .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                 .progress(
                     BulkGetJobStatusResponse.Progress.builder()
                         .failed(50L)
@@ -40,7 +40,7 @@ internal class BulkGetJobStatusResponseTest {
                 )
                 .build()
 
-        assertThat(bulkGetJobStatusResponse.jobId())
+        assertThat(bulkGetJobStatusResponse.id())
             .isEqualTo("Job:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(bulkGetJobStatusResponse.progress())
             .isEqualTo(
@@ -75,7 +75,7 @@ internal class BulkGetJobStatusResponseTest {
         val jsonMapper = jsonMapper()
         val bulkGetJobStatusResponse =
             BulkGetJobStatusResponse.builder()
-                .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                 .progress(
                     BulkGetJobStatusResponse.Progress.builder()
                         .failed(50L)

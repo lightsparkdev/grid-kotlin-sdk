@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
@@ -10,17 +9,14 @@ import com.lightspark.grid.models.customers.CustomerUpdateParams
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class CustomerServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun create() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -28,43 +24,37 @@ internal class CustomerServiceTest {
 
         val customerOneOf =
             customerService.create(
-                CustomerCreateParams.builder()
-                    .createCustomerRequest(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                            .platformCustomerId("9f84e0c2a72c4fa")
-                            .umaAddress("\$john.doe@uma.domain.com")
-                            .customerType(
-                                CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                                    .INDIVIDUAL
-                            )
-                            .address(
-                                CustomerCreateParams.CreateCustomerRequest.Individual.Address
-                                    .builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .umaAddress("\$john.doe@uma.domain.com")
+                    .customerType(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
+                            .INDIVIDUAL
+                    )
+                    .address(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
                             .build()
                     )
+                    .birthDate(LocalDate.parse("1990-01-15"))
+                    .fullName("John Michael Doe")
+                    .nationality("US")
                     .build()
             )
 
         customerOneOf.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -75,12 +65,11 @@ internal class CustomerServiceTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun update() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -119,12 +108,11 @@ internal class CustomerServiceTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun list() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -135,12 +123,11 @@ internal class CustomerServiceTest {
         page.response().validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun delete() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -151,12 +138,11 @@ internal class CustomerServiceTest {
         customer.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun getKycLink() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
@@ -173,12 +159,11 @@ internal class CustomerServiceTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun listInternalAccounts() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()

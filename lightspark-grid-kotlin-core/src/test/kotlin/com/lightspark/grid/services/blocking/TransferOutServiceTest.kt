@@ -2,28 +2,24 @@
 
 package com.lightspark.grid.services.blocking
 
-import com.lightspark.grid.TestServerExtension
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class TransferOutServiceTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun create() {
         val client =
             LightsparkGridOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .username("My Username")
                 .password("My Password")
                 .build()
         val transferOutService = client.transferOut()
 
-        val transaction =
+        val transferOut =
             transferOutService.create(
                 TransferOutCreateParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
@@ -41,6 +37,6 @@ internal class TransferOutServiceTest {
                     .build()
             )
 
-        transaction.validate()
+        transferOut.validate()
     }
 }

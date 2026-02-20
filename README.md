@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/0.6.0)
-[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/0.6.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.6.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/0.7.0)
+[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/0.7.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.7.0)
 
 <!-- x-release-please-end -->
 
@@ -22,7 +22,7 @@ Use the Lightspark Grid MCP Server to enable AI assistants to interact with this
 
 <!-- x-release-please-start-version -->
 
-KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.6.0).
+KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/0.7.0).
 
 <!-- x-release-please-end -->
 
@@ -33,7 +33,7 @@ KDocs are available on [javadoc.io](https://javadoc.io/doc/com.lightspark.grid/l
 ### Gradle
 
 ```kotlin
-implementation("com.lightspark.grid:lightspark-grid-kotlin:0.6.0")
+implementation("com.lightspark.grid:lightspark-grid-kotlin:0.7.0")
 ```
 
 ### Maven
@@ -42,7 +42,7 @@ implementation("com.lightspark.grid:lightspark-grid-kotlin:0.6.0")
 <dependency>
   <groupId>com.lightspark.grid</groupId>
   <artifactId>lightspark-grid-kotlin</artifactId>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 
@@ -505,6 +505,25 @@ val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     ))
     .build()
 ```
+
+### Connection pooling
+
+To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
+
+```kotlin
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import java.time.Duration
+
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
+    .fromEnv()
+    // If `maxIdleConnections` is set, then `keepAliveDuration` must be set, and vice versa.
+    .maxIdleConnections(10)
+    .keepAliveDuration(Duration.ofMinutes(2))
+    .build()
+```
+
+If both options are unset, OkHttp's default connection pool settings are used.
 
 ### HTTPS
 

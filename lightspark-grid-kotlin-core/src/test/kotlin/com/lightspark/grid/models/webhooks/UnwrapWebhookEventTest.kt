@@ -32,6 +32,7 @@ internal class UnwrapWebhookEventTest {
     fun ofIncomingPayment() {
         val incomingPayment =
             IncomingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     IncomingTransaction.builder()
@@ -93,7 +94,6 @@ internal class UnwrapWebhookEventTest {
                         .build()
                 )
                 .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .addRequestedReceiverCustomerInfoField(
                     CounterpartyFieldDefinition.builder()
                         .mandatory(true)
@@ -119,6 +119,7 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofIncomingPayment(
                 IncomingPaymentWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .transaction(
                         IncomingTransaction.builder()
@@ -184,7 +185,6 @@ internal class UnwrapWebhookEventTest {
                             .build()
                     )
                     .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .addRequestedReceiverCustomerInfoField(
                         CounterpartyFieldDefinition.builder()
                             .mandatory(true)
@@ -207,6 +207,7 @@ internal class UnwrapWebhookEventTest {
     fun ofOutgoingPayment() {
         val outgoingPayment =
             OutgoingPaymentWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .transaction(
                     OutgoingPaymentWebhookEvent.Transaction.builder()
@@ -219,7 +220,7 @@ internal class UnwrapWebhookEventTest {
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
+                        .type(TransactionType.OUTGOING)
                         .counterpartyInformation(
                             CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -231,36 +232,6 @@ internal class UnwrapWebhookEventTest {
                         .description("Payment for invoice #1234")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
-                        .addPaymentInstruction(
-                            PaymentInstructions.builder()
-                                .accountOrWalletInfo(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                        .builder()
-                                        .clabeNumber("123456789012345678")
-                                        .reference("UMA-Q12345-REF")
-                                        .build()
-                                )
-                                .instructionsNotes(
-                                    "Please ensure the reference code is included in the payment memo/description field"
-                                )
-                                .isPlatformAccount(true)
-                                .build()
-                        )
                         .sentAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -286,6 +257,36 @@ internal class UnwrapWebhookEventTest {
                             OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                         )
                         .fees(10L)
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
+                        .addPaymentInstruction(
+                            PaymentInstructions.builder()
+                                .accountOrWalletInfo(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
+                                        .builder()
+                                        .clabeNumber("123456789012345678")
+                                        .reference("UMA-Q12345-REF")
+                                        .build()
+                                )
+                                .instructionsNotes(
+                                    "Please ensure the reference code is included in the payment memo/description field"
+                                )
+                                .isPlatformAccount(true)
+                                .build()
+                        )
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .rateDetails(
                             OutgoingRateDetails.builder()
@@ -320,7 +321,6 @@ internal class UnwrapWebhookEventTest {
                         .build()
                 )
                 .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofOutgoingPayment(outgoingPayment)
@@ -340,6 +340,7 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofOutgoingPayment(
                 OutgoingPaymentWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .transaction(
                         OutgoingPaymentWebhookEvent.Transaction.builder()
@@ -354,7 +355,7 @@ internal class UnwrapWebhookEventTest {
                             )
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .status(TransactionStatus.CREATED)
-                            .type(TransactionType.INCOMING)
+                            .type(TransactionType.OUTGOING)
                             .counterpartyInformation(
                                 CounterpartyInformation.builder()
                                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -366,38 +367,6 @@ internal class UnwrapWebhookEventTest {
                             .description("Payment for invoice #1234")
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                            .addPaymentInstruction(
-                                PaymentInstructions.builder()
-                                    .accountOrWalletInfo(
-                                        PaymentInstructions.AccountOrWalletInfo
-                                            .PaymentClabeAccountInfo
-                                            .builder()
-                                            .clabeNumber("123456789012345678")
-                                            .reference("UMA-Q12345-REF")
-                                            .build()
-                                    )
-                                    .instructionsNotes(
-                                        "Please ensure the reference code is included in the payment memo/description field"
-                                    )
-                                    .isPlatformAccount(true)
-                                    .build()
-                            )
-                            .addPaymentInstruction(
-                                PaymentInstructions.builder()
-                                    .accountOrWalletInfo(
-                                        PaymentInstructions.AccountOrWalletInfo
-                                            .PaymentClabeAccountInfo
-                                            .builder()
-                                            .clabeNumber("123456789012345678")
-                                            .reference("UMA-Q12345-REF")
-                                            .build()
-                                    )
-                                    .instructionsNotes(
-                                        "Please ensure the reference code is included in the payment memo/description field"
-                                    )
-                                    .isPlatformAccount(true)
-                                    .build()
-                            )
                             .sentAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -425,6 +394,38 @@ internal class UnwrapWebhookEventTest {
                                 OutgoingPaymentWebhookEvent.Transaction.FailureReason.QUOTE_EXPIRED
                             )
                             .fees(10L)
+                            .addPaymentInstruction(
+                                PaymentInstructions.builder()
+                                    .accountOrWalletInfo(
+                                        PaymentInstructions.AccountOrWalletInfo
+                                            .PaymentClabeAccountInfo
+                                            .builder()
+                                            .clabeNumber("123456789012345678")
+                                            .reference("UMA-Q12345-REF")
+                                            .build()
+                                    )
+                                    .instructionsNotes(
+                                        "Please ensure the reference code is included in the payment memo/description field"
+                                    )
+                                    .isPlatformAccount(true)
+                                    .build()
+                            )
+                            .addPaymentInstruction(
+                                PaymentInstructions.builder()
+                                    .accountOrWalletInfo(
+                                        PaymentInstructions.AccountOrWalletInfo
+                                            .PaymentClabeAccountInfo
+                                            .builder()
+                                            .clabeNumber("123456789012345678")
+                                            .reference("UMA-Q12345-REF")
+                                            .build()
+                                    )
+                                    .instructionsNotes(
+                                        "Please ensure the reference code is included in the payment memo/description field"
+                                    )
+                                    .isPlatformAccount(true)
+                                    .build()
+                            )
                             .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                             .rateDetails(
                                 OutgoingRateDetails.builder()
@@ -459,7 +460,6 @@ internal class UnwrapWebhookEventTest {
                             .build()
                     )
                     .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .build()
             )
 
@@ -476,9 +476,9 @@ internal class UnwrapWebhookEventTest {
     fun ofTestWebhook() {
         val testWebhook =
             TestWebhookWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofTestWebhook(testWebhook)
@@ -498,9 +498,9 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofTestWebhook(
                 TestWebhookWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(TestWebhookWebhookEvent.Type.TEST)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .build()
             )
 
@@ -517,9 +517,10 @@ internal class UnwrapWebhookEventTest {
     fun ofBulkUpload() {
         val bulkUpload =
             BulkUploadWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .bulkCustomerImportJob(
                     BulkUploadWebhookEvent.BulkCustomerImportJob.builder()
-                        .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                        .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                         .progress(
                             BulkUploadWebhookEvent.BulkCustomerImportJob.Progress.builder()
                                 .failed(50L)
@@ -547,7 +548,6 @@ internal class UnwrapWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofBulkUpload(bulkUpload)
@@ -567,9 +567,10 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofBulkUpload(
                 BulkUploadWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .bulkCustomerImportJob(
                         BulkUploadWebhookEvent.BulkCustomerImportJob.builder()
-                            .jobId("Job:019542f5-b3e7-1d02-0000-000000000006")
+                            .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                             .progress(
                                 BulkUploadWebhookEvent.BulkCustomerImportJob.Progress.builder()
                                     .failed(50L)
@@ -597,7 +598,6 @@ internal class UnwrapWebhookEventTest {
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .build()
             )
 
@@ -614,6 +614,7 @@ internal class UnwrapWebhookEventTest {
     fun ofInvitationClaimed() {
         val invitationClaimed =
             InvitationClaimedWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .invitation(
                     UmaInvitation.builder()
                         .code("019542f5")
@@ -642,7 +643,6 @@ internal class UnwrapWebhookEventTest {
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofInvitationClaimed(invitationClaimed)
@@ -662,6 +662,7 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofInvitationClaimed(
                 InvitationClaimedWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .invitation(
                         UmaInvitation.builder()
                             .code("019542f5")
@@ -690,7 +691,6 @@ internal class UnwrapWebhookEventTest {
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .build()
             )
 
@@ -707,11 +707,11 @@ internal class UnwrapWebhookEventTest {
     fun ofKycStatus() {
         val kycStatus =
             KycStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .kycStatus(KycStatusWebhookEvent.KycStatus.APPROVED)
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(KycStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .build()
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofKycStatus(kycStatus)
@@ -731,11 +731,11 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofKycStatus(
                 KycStatusWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .kycStatus(KycStatusWebhookEvent.KycStatus.APPROVED)
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(KycStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .build()
             )
 
@@ -752,10 +752,10 @@ internal class UnwrapWebhookEventTest {
     fun ofAccountStatus() {
         val accountStatus =
             AccountStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .accountId("accountId")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(AccountStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .newBalance(
                     CurrencyAmount.builder()
@@ -803,10 +803,10 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofAccountStatus(
                 AccountStatusWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .accountId("accountId")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(AccountStatusWebhookEvent.Type.INCOMING_PAYMENT)
-                    .webhookId("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .newBalance(
                         CurrencyAmount.builder()

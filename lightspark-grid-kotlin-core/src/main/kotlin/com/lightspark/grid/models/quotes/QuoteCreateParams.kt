@@ -108,7 +108,8 @@ private constructor(
      * and the transaction will be created at the current exchange rate. It should only be used if
      * you don't want to lock and view rate details before executing the quote. If you are executing
      * a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint instead. This is false by
-     * default.
+     * default. This can only be used for quotes with a `source` which is either an internal
+     * account, or has direct pull functionality (e.g. ACH pull with an external account).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -125,6 +126,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun lookupId(): String? = body.lookupId()
+
+    /**
+     * The purpose of the payment. This may be required when sending to certain geographies such as
+     * India.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun purposeOfPayment(): PurposeOfPayment? = body.purposeOfPayment()
 
     /**
      * Only relevant for UMA destinations. Key-value pairs of information about the sender which was
@@ -189,6 +199,14 @@ private constructor(
      * Unlike [lookupId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _lookupId(): JsonField<String> = body._lookupId()
+
+    /**
+     * Returns the raw JSON value of [purposeOfPayment].
+     *
+     * Unlike [purposeOfPayment], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _purposeOfPayment(): JsonField<PurposeOfPayment> = body._purposeOfPayment()
 
     /**
      * Returns the raw JSON value of [senderCustomerInfo].
@@ -380,7 +398,9 @@ private constructor(
          * executed and the transaction will be created at the current exchange rate. It should only
          * be used if you don't want to lock and view rate details before executing the quote. If
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
-         * instead. This is false by default.
+         * instead. This is false by default. This can only be used for quotes with a `source` which
+         * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
+         * external account).
          */
         fun immediatelyExecute(immediatelyExecute: Boolean) = apply {
             body.immediatelyExecute(immediatelyExecute)
@@ -412,6 +432,25 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun lookupId(lookupId: JsonField<String>) = apply { body.lookupId(lookupId) }
+
+        /**
+         * The purpose of the payment. This may be required when sending to certain geographies such
+         * as India.
+         */
+        fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) = apply {
+            body.purposeOfPayment(purposeOfPayment)
+        }
+
+        /**
+         * Sets [Builder.purposeOfPayment] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.purposeOfPayment] with a well-typed [PurposeOfPayment]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun purposeOfPayment(purposeOfPayment: JsonField<PurposeOfPayment>) = apply {
+            body.purposeOfPayment(purposeOfPayment)
+        }
 
         /**
          * Only relevant for UMA destinations. Key-value pairs of information about the sender which
@@ -591,6 +630,7 @@ private constructor(
         private val description: JsonField<String>,
         private val immediatelyExecute: JsonField<Boolean>,
         private val lookupId: JsonField<String>,
+        private val purposeOfPayment: JsonField<PurposeOfPayment>,
         private val senderCustomerInfo: JsonField<SenderCustomerInfo>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -618,6 +658,9 @@ private constructor(
             @JsonProperty("lookupId")
             @ExcludeMissing
             lookupId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("purposeOfPayment")
+            @ExcludeMissing
+            purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of(),
             @JsonProperty("senderCustomerInfo")
             @ExcludeMissing
             senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of(),
@@ -629,6 +672,7 @@ private constructor(
             description,
             immediatelyExecute,
             lookupId,
+            purposeOfPayment,
             senderCustomerInfo,
             mutableMapOf(),
         )
@@ -684,7 +728,9 @@ private constructor(
          * executed and the transaction will be created at the current exchange rate. It should only
          * be used if you don't want to lock and view rate details before executing the quote. If
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
-         * instead. This is false by default.
+         * instead. This is false by default. This can only be used for quotes with a `source` which
+         * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
+         * external account).
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -701,6 +747,15 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun lookupId(): String? = lookupId.getNullable("lookupId")
+
+        /**
+         * The purpose of the payment. This may be required when sending to certain geographies such
+         * as India.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
 
         /**
          * Only relevant for UMA destinations. Key-value pairs of information about the sender which
@@ -778,6 +833,16 @@ private constructor(
         @JsonProperty("lookupId") @ExcludeMissing fun _lookupId(): JsonField<String> = lookupId
 
         /**
+         * Returns the raw JSON value of [purposeOfPayment].
+         *
+         * Unlike [purposeOfPayment], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("purposeOfPayment")
+        @ExcludeMissing
+        fun _purposeOfPayment(): JsonField<PurposeOfPayment> = purposeOfPayment
+
+        /**
          * Returns the raw JSON value of [senderCustomerInfo].
          *
          * Unlike [senderCustomerInfo], this method doesn't throw if the JSON field has an
@@ -825,6 +890,7 @@ private constructor(
             private var description: JsonField<String> = JsonMissing.of()
             private var immediatelyExecute: JsonField<Boolean> = JsonMissing.of()
             private var lookupId: JsonField<String> = JsonMissing.of()
+            private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
             private var senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -836,6 +902,7 @@ private constructor(
                 description = body.description
                 immediatelyExecute = body.immediatelyExecute
                 lookupId = body.lookupId
+                purposeOfPayment = body.purposeOfPayment
                 senderCustomerInfo = body.senderCustomerInfo
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -967,7 +1034,9 @@ private constructor(
              * executed and the transaction will be created at the current exchange rate. It should
              * only be used if you don't want to lock and view rate details before executing the
              * quote. If you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute`
-             * endpoint instead. This is false by default.
+             * endpoint instead. This is false by default. This can only be used for quotes with a
+             * `source` which is either an internal account, or has direct pull functionality (e.g.
+             * ACH pull with an external account).
              */
             fun immediatelyExecute(immediatelyExecute: Boolean) =
                 immediatelyExecute(JsonField.of(immediatelyExecute))
@@ -999,6 +1068,24 @@ private constructor(
              * supported value.
              */
             fun lookupId(lookupId: JsonField<String>) = apply { this.lookupId = lookupId }
+
+            /**
+             * The purpose of the payment. This may be required when sending to certain geographies
+             * such as India.
+             */
+            fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
+                purposeOfPayment(JsonField.of(purposeOfPayment))
+
+            /**
+             * Sets [Builder.purposeOfPayment] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.purposeOfPayment] with a well-typed
+             * [PurposeOfPayment] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun purposeOfPayment(purposeOfPayment: JsonField<PurposeOfPayment>) = apply {
+                this.purposeOfPayment = purposeOfPayment
+            }
 
             /**
              * Only relevant for UMA destinations. Key-value pairs of information about the sender
@@ -1065,6 +1152,7 @@ private constructor(
                     description,
                     immediatelyExecute,
                     lookupId,
+                    purposeOfPayment,
                     senderCustomerInfo,
                     additionalProperties.toMutableMap(),
                 )
@@ -1084,6 +1172,7 @@ private constructor(
             description()
             immediatelyExecute()
             lookupId()
+            purposeOfPayment()?.validate()
             senderCustomerInfo()?.validate()
             validated = true
         }
@@ -1110,6 +1199,7 @@ private constructor(
                 (if (description.asKnown() == null) 0 else 1) +
                 (if (immediatelyExecute.asKnown() == null) 0 else 1) +
                 (if (lookupId.asKnown() == null) 0 else 1) +
+                (purposeOfPayment.asKnown()?.validity() ?: 0) +
                 (senderCustomerInfo.asKnown()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
@@ -1125,6 +1215,7 @@ private constructor(
                 description == other.description &&
                 immediatelyExecute == other.immediatelyExecute &&
                 lookupId == other.lookupId &&
+                purposeOfPayment == other.purposeOfPayment &&
                 senderCustomerInfo == other.senderCustomerInfo &&
                 additionalProperties == other.additionalProperties
         }
@@ -1138,6 +1229,7 @@ private constructor(
                 description,
                 immediatelyExecute,
                 lookupId,
+                purposeOfPayment,
                 senderCustomerInfo,
                 additionalProperties,
             )
@@ -1146,7 +1238,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
+            "Body{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
     }
 
     /**
@@ -1279,6 +1371,199 @@ private constructor(
             }
 
             return other is LockedCurrencySide && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * The purpose of the payment. This may be required when sending to certain geographies such as
+     * India.
+     */
+    class PurposeOfPayment @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val GIFT = of("GIFT")
+
+            val SELF = of("SELF")
+
+            val GOODS_OR_SERVICES = of("GOODS_OR_SERVICES")
+
+            val EDUCATION = of("EDUCATION")
+
+            val HEALTH_OR_MEDICAL = of("HEALTH_OR_MEDICAL")
+
+            val REAL_ESTATE_PURCHASE = of("REAL_ESTATE_PURCHASE")
+
+            val TAX_PAYMENT = of("TAX_PAYMENT")
+
+            val LOAN_PAYMENT = of("LOAN_PAYMENT")
+
+            val UTILITY_BILL = of("UTILITY_BILL")
+
+            val DONATION = of("DONATION")
+
+            val TRAVEL = of("TRAVEL")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = PurposeOfPayment(JsonField.of(value))
+        }
+
+        /** An enum containing [PurposeOfPayment]'s known values. */
+        enum class Known {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [PurposeOfPayment]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [PurposeOfPayment] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            OTHER,
+            /**
+             * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                GIFT -> Value.GIFT
+                SELF -> Value.SELF
+                GOODS_OR_SERVICES -> Value.GOODS_OR_SERVICES
+                EDUCATION -> Value.EDUCATION
+                HEALTH_OR_MEDICAL -> Value.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Value.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Value.TAX_PAYMENT
+                LOAN_PAYMENT -> Value.LOAN_PAYMENT
+                UTILITY_BILL -> Value.UTILITY_BILL
+                DONATION -> Value.DONATION
+                TRAVEL -> Value.TRAVEL
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                GIFT -> Known.GIFT
+                SELF -> Known.SELF
+                GOODS_OR_SERVICES -> Known.GOODS_OR_SERVICES
+                EDUCATION -> Known.EDUCATION
+                HEALTH_OR_MEDICAL -> Known.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Known.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Known.TAX_PAYMENT
+                LOAN_PAYMENT -> Known.LOAN_PAYMENT
+                UTILITY_BILL -> Known.UTILITY_BILL
+                DONATION -> Known.DONATION
+                TRAVEL -> Known.TRAVEL
+                OTHER -> Known.OTHER
+                else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): PurposeOfPayment = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PurposeOfPayment && value == other.value
         }
 
         override fun hashCode() = value.hashCode()

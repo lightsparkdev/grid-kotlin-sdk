@@ -1,18 +1,29 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.webhooks
+package com.lightspark.grid.models.transferin
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.BaseDeserializer
+import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
@@ -20,246 +31,65 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.transactions.CounterpartyInformation
+import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
-import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class OutgoingPaymentWebhookEvent
-@JsonCreator(mode = JsonCreator.Mode.DISABLED)
+@JsonDeserialize(using = TransferInCreateResponse.Deserializer::class)
+@JsonSerialize(using = TransferInCreateResponse.Serializer::class)
+class TransferInCreateResponse
 private constructor(
-    private val id: JsonField<String>,
-    private val timestamp: JsonField<OffsetDateTime>,
-    private val transaction: JsonField<Transaction>,
-    private val type: JsonField<Type>,
-    private val additionalProperties: MutableMap<String, JsonValue>,
+    private val incomingTransaction: IncomingTransaction? = null,
+    private val outgoingTransaction: OutgoingTransaction? = null,
+    private val _json: JsonValue? = null,
 ) {
 
-    @JsonCreator
-    private constructor(
-        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("timestamp")
-        @ExcludeMissing
-        timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("transaction")
-        @ExcludeMissing
-        transaction: JsonField<Transaction> = JsonMissing.of(),
-        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-    ) : this(id, timestamp, transaction, type, mutableMapOf())
+    fun incomingTransaction(): IncomingTransaction? = incomingTransaction
 
-    /**
-     * Unique identifier for this webhook delivery (can be used for idempotency)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun id(): String = id.getRequired("id")
+    fun outgoingTransaction(): OutgoingTransaction? = outgoingTransaction
 
-    /**
-     * ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
+    fun isIncomingTransaction(): Boolean = incomingTransaction != null
 
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun transaction(): Transaction = transaction.getRequired("transaction")
+    fun isOutgoingTransaction(): Boolean = outgoingTransaction != null
 
-    /**
-     * Type of webhook event
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun type(): Type = type.getRequired("type")
+    fun asIncomingTransaction(): IncomingTransaction =
+        incomingTransaction.getOrThrow("incomingTransaction")
 
-    /**
-     * Returns the raw JSON value of [id].
-     *
-     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+    fun asOutgoingTransaction(): OutgoingTransaction =
+        outgoingTransaction.getOrThrow("outgoingTransaction")
 
-    /**
-     * Returns the raw JSON value of [timestamp].
-     *
-     * Unlike [timestamp], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("timestamp")
-    @ExcludeMissing
-    fun _timestamp(): JsonField<OffsetDateTime> = timestamp
+    fun _json(): JsonValue? = _json
 
-    /**
-     * Returns the raw JSON value of [transaction].
-     *
-     * Unlike [transaction], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("transaction")
-    @ExcludeMissing
-    fun _transaction(): JsonField<Transaction> = transaction
-
-    /**
-     * Returns the raw JSON value of [type].
-     *
-     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-    @JsonAnySetter
-    private fun putAdditionalProperty(key: String, value: JsonValue) {
-        additionalProperties.put(key, value)
-    }
-
-    @JsonAnyGetter
-    @ExcludeMissing
-    fun _additionalProperties(): Map<String, JsonValue> =
-        Collections.unmodifiableMap(additionalProperties)
-
-    fun toBuilder() = Builder().from(this)
-
-    companion object {
-
-        /**
-         * Returns a mutable builder for constructing an instance of [OutgoingPaymentWebhookEvent].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .id()
-         * .timestamp()
-         * .transaction()
-         * .type()
-         * ```
-         */
-        fun builder() = Builder()
-    }
-
-    /** A builder for [OutgoingPaymentWebhookEvent]. */
-    class Builder internal constructor() {
-
-        private var id: JsonField<String>? = null
-        private var timestamp: JsonField<OffsetDateTime>? = null
-        private var transaction: JsonField<Transaction>? = null
-        private var type: JsonField<Type>? = null
-        private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-        internal fun from(outgoingPaymentWebhookEvent: OutgoingPaymentWebhookEvent) = apply {
-            id = outgoingPaymentWebhookEvent.id
-            timestamp = outgoingPaymentWebhookEvent.timestamp
-            transaction = outgoingPaymentWebhookEvent.transaction
-            type = outgoingPaymentWebhookEvent.type
-            additionalProperties = outgoingPaymentWebhookEvent.additionalProperties.toMutableMap()
+    fun <T> accept(visitor: Visitor<T>): T =
+        when {
+            incomingTransaction != null -> visitor.visitIncomingTransaction(incomingTransaction)
+            outgoingTransaction != null -> visitor.visitOutgoingTransaction(outgoingTransaction)
+            else -> visitor.unknown(_json)
         }
-
-        /** Unique identifier for this webhook delivery (can be used for idempotency) */
-        fun id(id: String) = id(JsonField.of(id))
-
-        /**
-         * Sets [Builder.id] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.id] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun id(id: JsonField<String>) = apply { this.id = id }
-
-        /** ISO8601 timestamp when the webhook was sent (can be used to prevent replay attacks) */
-        fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
-
-        /**
-         * Sets [Builder.timestamp] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.timestamp] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
-
-        fun transaction(transaction: Transaction) = transaction(JsonField.of(transaction))
-
-        /**
-         * Sets [Builder.transaction] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.transaction] with a well-typed [Transaction] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun transaction(transaction: JsonField<Transaction>) = apply {
-            this.transaction = transaction
-        }
-
-        /** Type of webhook event */
-        fun type(type: Type) = type(JsonField.of(type))
-
-        /**
-         * Sets [Builder.type] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun type(type: JsonField<Type>) = apply { this.type = type }
-
-        fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-            this.additionalProperties.clear()
-            putAllAdditionalProperties(additionalProperties)
-        }
-
-        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-            additionalProperties.put(key, value)
-        }
-
-        fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-            this.additionalProperties.putAll(additionalProperties)
-        }
-
-        fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-            keys.forEach(::removeAdditionalProperty)
-        }
-
-        /**
-         * Returns an immutable instance of [OutgoingPaymentWebhookEvent].
-         *
-         * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .id()
-         * .timestamp()
-         * .transaction()
-         * .type()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
-         */
-        fun build(): OutgoingPaymentWebhookEvent =
-            OutgoingPaymentWebhookEvent(
-                checkRequired("id", id),
-                checkRequired("timestamp", timestamp),
-                checkRequired("transaction", transaction),
-                checkRequired("type", type),
-                additionalProperties.toMutableMap(),
-            )
-    }
 
     private var validated: Boolean = false
 
-    fun validate(): OutgoingPaymentWebhookEvent = apply {
+    fun validate(): TransferInCreateResponse = apply {
         if (validated) {
             return@apply
         }
 
-        id()
-        timestamp()
-        transaction().validate()
-        type().validate()
+        accept(
+            object : Visitor<Unit> {
+                override fun visitIncomingTransaction(incomingTransaction: IncomingTransaction) {
+                    incomingTransaction.validate()
+                }
+
+                override fun visitOutgoingTransaction(outgoingTransaction: OutgoingTransaction) {
+                    outgoingTransaction.validate()
+                }
+            }
+        )
         validated = true
     }
 
@@ -277,12 +107,124 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (id.asKnown() == null) 0 else 1) +
-            (if (timestamp.asKnown() == null) 0 else 1) +
-            (transaction.asKnown()?.validity() ?: 0) +
-            (type.asKnown()?.validity() ?: 0)
+        accept(
+            object : Visitor<Int> {
+                override fun visitIncomingTransaction(incomingTransaction: IncomingTransaction) =
+                    incomingTransaction.validity()
 
-    class Transaction
+                override fun visitOutgoingTransaction(outgoingTransaction: OutgoingTransaction) =
+                    outgoingTransaction.validity()
+
+                override fun unknown(json: JsonValue?) = 0
+            }
+        )
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is TransferInCreateResponse &&
+            incomingTransaction == other.incomingTransaction &&
+            outgoingTransaction == other.outgoingTransaction
+    }
+
+    override fun hashCode(): Int = Objects.hash(incomingTransaction, outgoingTransaction)
+
+    override fun toString(): String =
+        when {
+            incomingTransaction != null ->
+                "TransferInCreateResponse{incomingTransaction=$incomingTransaction}"
+            outgoingTransaction != null ->
+                "TransferInCreateResponse{outgoingTransaction=$outgoingTransaction}"
+            _json != null -> "TransferInCreateResponse{_unknown=$_json}"
+            else -> throw IllegalStateException("Invalid TransferInCreateResponse")
+        }
+
+    companion object {
+
+        fun ofIncomingTransaction(incomingTransaction: IncomingTransaction) =
+            TransferInCreateResponse(incomingTransaction = incomingTransaction)
+
+        fun ofOutgoingTransaction(outgoingTransaction: OutgoingTransaction) =
+            TransferInCreateResponse(outgoingTransaction = outgoingTransaction)
+    }
+
+    /**
+     * An interface that defines how to map each variant of [TransferInCreateResponse] to a value of
+     * type [T].
+     */
+    interface Visitor<out T> {
+
+        fun visitIncomingTransaction(incomingTransaction: IncomingTransaction): T
+
+        fun visitOutgoingTransaction(outgoingTransaction: OutgoingTransaction): T
+
+        /**
+         * Maps an unknown variant of [TransferInCreateResponse] to a value of type [T].
+         *
+         * An instance of [TransferInCreateResponse] can contain an unknown variant if it was
+         * deserialized from data that doesn't match any known variant. For example, if the SDK is
+         * on an older version than the API, then the API may respond with new variants that the SDK
+         * is unaware of.
+         *
+         * @throws LightsparkGridInvalidDataException in the default implementation.
+         */
+        fun unknown(json: JsonValue?): T {
+            throw LightsparkGridInvalidDataException("Unknown TransferInCreateResponse: $json")
+        }
+    }
+
+    internal class Deserializer :
+        BaseDeserializer<TransferInCreateResponse>(TransferInCreateResponse::class) {
+
+        override fun ObjectCodec.deserialize(node: JsonNode): TransferInCreateResponse {
+            val json = JsonValue.fromJsonNode(node)
+
+            val bestMatches =
+                sequenceOf(
+                        tryDeserialize(node, jacksonTypeRef<IncomingTransaction>())?.let {
+                            TransferInCreateResponse(incomingTransaction = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<OutgoingTransaction>())?.let {
+                            TransferInCreateResponse(outgoingTransaction = it, _json = json)
+                        },
+                    )
+                    .filterNotNull()
+                    .allMaxBy { it.validity() }
+                    .toList()
+            return when (bestMatches.size) {
+                // This can happen if what we're deserializing is completely incompatible with all
+                // the possible variants (e.g. deserializing from boolean).
+                0 -> TransferInCreateResponse(_json = json)
+                1 -> bestMatches.single()
+                // If there's more than one match with the highest validity, then use the first
+                // completely valid match, or simply the first match if none are completely valid.
+                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            }
+        }
+    }
+
+    internal class Serializer :
+        BaseSerializer<TransferInCreateResponse>(TransferInCreateResponse::class) {
+
+        override fun serialize(
+            value: TransferInCreateResponse,
+            generator: JsonGenerator,
+            provider: SerializerProvider,
+        ) {
+            when {
+                value.incomingTransaction != null ->
+                    generator.writeObject(value.incomingTransaction)
+                value.outgoingTransaction != null ->
+                    generator.writeObject(value.outgoingTransaction)
+                value._json != null -> generator.writeObject(value._json)
+                else -> throw IllegalStateException("Invalid TransferInCreateResponse")
+            }
+        }
+    }
+
+    class OutgoingTransaction
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
@@ -788,7 +730,7 @@ private constructor(
         companion object {
 
             /**
-             * Returns a mutable builder for constructing an instance of [Transaction].
+             * Returns a mutable builder for constructing an instance of [OutgoingTransaction].
              *
              * The following fields are required:
              * ```kotlin
@@ -805,7 +747,7 @@ private constructor(
             fun builder() = Builder()
         }
 
-        /** A builder for [Transaction]. */
+        /** A builder for [OutgoingTransaction]. */
         class Builder internal constructor() {
 
             private var id: JsonField<String>? = null
@@ -832,29 +774,30 @@ private constructor(
             private var refund: JsonField<Refund> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(transaction: Transaction) = apply {
-                id = transaction.id
-                customerId = transaction.customerId
-                destination = transaction.destination
-                platformCustomerId = transaction.platformCustomerId
-                status = transaction.status
-                type = transaction.type
-                counterpartyInformation = transaction.counterpartyInformation
-                createdAt = transaction.createdAt
-                description = transaction.description
-                settledAt = transaction.settledAt
-                updatedAt = transaction.updatedAt
-                sentAmount = transaction.sentAmount
-                source = transaction.source
-                exchangeRate = transaction.exchangeRate
-                failureReason = transaction.failureReason
-                fees = transaction.fees
-                paymentInstructions = transaction.paymentInstructions.map { it.toMutableList() }
-                quoteId = transaction.quoteId
-                rateDetails = transaction.rateDetails
-                receivedAmount = transaction.receivedAmount
-                refund = transaction.refund
-                additionalProperties = transaction.additionalProperties.toMutableMap()
+            internal fun from(outgoingTransaction: OutgoingTransaction) = apply {
+                id = outgoingTransaction.id
+                customerId = outgoingTransaction.customerId
+                destination = outgoingTransaction.destination
+                platformCustomerId = outgoingTransaction.platformCustomerId
+                status = outgoingTransaction.status
+                type = outgoingTransaction.type
+                counterpartyInformation = outgoingTransaction.counterpartyInformation
+                createdAt = outgoingTransaction.createdAt
+                description = outgoingTransaction.description
+                settledAt = outgoingTransaction.settledAt
+                updatedAt = outgoingTransaction.updatedAt
+                sentAmount = outgoingTransaction.sentAmount
+                source = outgoingTransaction.source
+                exchangeRate = outgoingTransaction.exchangeRate
+                failureReason = outgoingTransaction.failureReason
+                fees = outgoingTransaction.fees
+                paymentInstructions =
+                    outgoingTransaction.paymentInstructions.map { it.toMutableList() }
+                quoteId = outgoingTransaction.quoteId
+                rateDetails = outgoingTransaction.rateDetails
+                receivedAmount = outgoingTransaction.receivedAmount
+                refund = outgoingTransaction.refund
+                additionalProperties = outgoingTransaction.additionalProperties.toMutableMap()
             }
 
             /** Unique identifier for the transaction */
@@ -1326,7 +1269,7 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [Transaction].
+             * Returns an immutable instance of [OutgoingTransaction].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              *
@@ -1344,8 +1287,8 @@ private constructor(
              *
              * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): Transaction =
-                Transaction(
+            fun build(): OutgoingTransaction =
+                OutgoingTransaction(
                     checkRequired("id", id),
                     checkRequired("customerId", customerId),
                     checkRequired("destination", destination),
@@ -1373,7 +1316,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): Transaction = apply {
+        fun validate(): OutgoingTransaction = apply {
             if (validated) {
                 return@apply
             }
@@ -1979,7 +1922,7 @@ private constructor(
                 return true
             }
 
-            return other is Transaction &&
+            return other is OutgoingTransaction &&
                 id == other.id &&
                 customerId == other.customerId &&
                 destination == other.destination &&
@@ -2034,184 +1977,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Transaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
+            "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
     }
-
-    /** Type of webhook event */
-    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val INCOMING_PAYMENT = of("INCOMING_PAYMENT")
-
-            val OUTGOING_PAYMENT = of("OUTGOING_PAYMENT")
-
-            val TEST = of("TEST")
-
-            val BULK_UPLOAD = of("BULK_UPLOAD")
-
-            val INVITATION_CLAIMED = of("INVITATION_CLAIMED")
-
-            val KYC_STATUS = of("KYC_STATUS")
-
-            val ACCOUNT_STATUS = of("ACCOUNT_STATUS")
-
-            fun of(value: String) = Type(JsonField.of(value))
-        }
-
-        /** An enum containing [Type]'s known values. */
-        enum class Known {
-            INCOMING_PAYMENT,
-            OUTGOING_PAYMENT,
-            TEST,
-            BULK_UPLOAD,
-            INVITATION_CLAIMED,
-            KYC_STATUS,
-            ACCOUNT_STATUS,
-        }
-
-        /**
-         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Type] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            INCOMING_PAYMENT,
-            OUTGOING_PAYMENT,
-            TEST,
-            BULK_UPLOAD,
-            INVITATION_CLAIMED,
-            KYC_STATUS,
-            ACCOUNT_STATUS,
-            /** An enum member indicating that [Type] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                INCOMING_PAYMENT -> Value.INCOMING_PAYMENT
-                OUTGOING_PAYMENT -> Value.OUTGOING_PAYMENT
-                TEST -> Value.TEST
-                BULK_UPLOAD -> Value.BULK_UPLOAD
-                INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
-                KYC_STATUS -> Value.KYC_STATUS
-                ACCOUNT_STATUS -> Value.ACCOUNT_STATUS
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                INCOMING_PAYMENT -> Known.INCOMING_PAYMENT
-                OUTGOING_PAYMENT -> Known.OUTGOING_PAYMENT
-                TEST -> Known.TEST
-                BULK_UPLOAD -> Known.BULK_UPLOAD
-                INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
-                KYC_STATUS -> Known.KYC_STATUS
-                ACCOUNT_STATUS -> Known.ACCOUNT_STATUS
-                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        fun validate(): Type = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Type && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) {
-            return true
-        }
-
-        return other is OutgoingPaymentWebhookEvent &&
-            id == other.id &&
-            timestamp == other.timestamp &&
-            transaction == other.transaction &&
-            type == other.type &&
-            additionalProperties == other.additionalProperties
-    }
-
-    private val hashCode: Int by lazy {
-        Objects.hash(id, timestamp, transaction, type, additionalProperties)
-    }
-
-    override fun hashCode(): Int = hashCode
-
-    override fun toString() =
-        "OutgoingPaymentWebhookEvent{id=$id, timestamp=$timestamp, transaction=$transaction, type=$type, additionalProperties=$additionalProperties}"
 }
