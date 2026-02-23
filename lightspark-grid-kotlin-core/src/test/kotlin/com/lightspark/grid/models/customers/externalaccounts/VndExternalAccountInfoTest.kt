@@ -1,0 +1,122 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.lightspark.grid.models.customers.externalaccounts
+
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.jsonMapper
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+internal class VndExternalAccountInfoTest {
+
+    @Test
+    fun create() {
+        val vndExternalAccountInfo =
+            VndExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(VndExternalAccountInfo.Country.VN)
+                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(vndExternalAccountInfo.accountType())
+            .isEqualTo(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("bankName")
+        assertThat(vndExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                VndExternalAccountInfo.Beneficiary.ofIndividual(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+            )
+        assertThat(vndExternalAccountInfo.countries())
+            .containsExactly(VndExternalAccountInfo.Country.VN)
+        assertThat(vndExternalAccountInfo.paymentRails())
+            .containsExactly(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+    }
+
+    @Test
+    fun roundtrip() {
+        val jsonMapper = jsonMapper()
+        val vndExternalAccountInfo =
+            VndExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(VndExternalAccountInfo.Country.VN)
+                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val roundtrippedVndExternalAccountInfo =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(vndExternalAccountInfo),
+                jacksonTypeRef<VndExternalAccountInfo>(),
+            )
+
+        assertThat(roundtrippedVndExternalAccountInfo).isEqualTo(vndExternalAccountInfo)
+    }
+}

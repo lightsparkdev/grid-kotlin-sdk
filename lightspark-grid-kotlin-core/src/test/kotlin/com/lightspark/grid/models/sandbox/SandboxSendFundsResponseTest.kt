@@ -9,11 +9,10 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
-import com.lightspark.grid.models.transactions.CounterpartyInformation
-import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
+import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,15 +26,17 @@ internal class SandboxSendFundsResponseTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
                 .type(TransactionType.OUTGOING)
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Transaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -71,10 +72,17 @@ internal class SandboxSendFundsResponseTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
@@ -86,10 +94,17 @@ internal class SandboxSendFundsResponseTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
@@ -137,9 +152,11 @@ internal class SandboxSendFundsResponseTest {
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(sandboxSendFundsResponse.destination())
             .isEqualTo(
-                TransactionDestinationOneOf.ofAccountTransactionDestination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                Transaction.Destination.ofAccount(
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
             )
@@ -148,7 +165,7 @@ internal class SandboxSendFundsResponseTest {
         assertThat(sandboxSendFundsResponse.type()).isEqualTo(TransactionType.OUTGOING)
         assertThat(sandboxSendFundsResponse.counterpartyInformation())
             .isEqualTo(
-                CounterpartyInformation.builder()
+                Transaction.CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -193,9 +210,16 @@ internal class SandboxSendFundsResponseTest {
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                            .clabeNumber("123456789012345678")
+                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                            .accountNumber("accountNumber")
+                            .addCountry(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                            )
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                            )
                             .reference("UMA-Q12345-REF")
+                            .routingNumber("routingNumber")
                             .build()
                     )
                     .instructionsNotes(
@@ -205,9 +229,16 @@ internal class SandboxSendFundsResponseTest {
                     .build(),
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                            .clabeNumber("123456789012345678")
+                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                            .accountNumber("accountNumber")
+                            .addCountry(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                            )
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                            )
                             .reference("UMA-Q12345-REF")
+                            .routingNumber("routingNumber")
                             .build()
                     )
                     .instructionsNotes(
@@ -261,15 +292,17 @@ internal class SandboxSendFundsResponseTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    TransactionDestinationOneOf.AccountTransactionDestination.builder()
+                    Transaction.Destination.Account.builder()
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .status(TransactionStatus.CREATED)
                 .type(TransactionType.OUTGOING)
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Transaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -305,10 +338,17 @@ internal class SandboxSendFundsResponseTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
@@ -320,10 +360,17 @@ internal class SandboxSendFundsResponseTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
