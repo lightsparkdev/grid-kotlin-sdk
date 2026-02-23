@@ -2,9 +2,12 @@
 
 package com.lightspark.grid.services.async
 
+import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.webhooks.UnwrapWebhookEvent
+import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.webhooks.WebhookSendTestParams
+import com.lightspark.grid.models.webhooks.WebhookSendTestResponse
 
 interface WebhookServiceAsync {
 
@@ -20,12 +23,15 @@ interface WebhookServiceAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): WebhookServiceAsync
 
-    /**
-     * Unwraps a webhook event from its JSON representation.
-     *
-     * @throws LightsparkGridInvalidDataException if the body could not be parsed.
-     */
-    fun unwrap(body: String): UnwrapWebhookEvent
+    /** Send a test webhook to the configured endpoint */
+    suspend fun sendTest(
+        params: WebhookSendTestParams = WebhookSendTestParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): WebhookSendTestResponse
+
+    /** @see sendTest */
+    suspend fun sendTest(requestOptions: RequestOptions): WebhookSendTestResponse =
+        sendTest(WebhookSendTestParams.none(), requestOptions)
 
     /**
      * A view of [WebhookServiceAsync] that provides access to raw HTTP responses for each method.
@@ -40,5 +46,22 @@ interface WebhookServiceAsync {
         fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): WebhookServiceAsync.WithRawResponse
+
+        /**
+         * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as
+         * [WebhookServiceAsync.sendTest].
+         */
+        @MustBeClosed
+        suspend fun sendTest(
+            params: WebhookSendTestParams = WebhookSendTestParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<WebhookSendTestResponse>
+
+        /** @see sendTest */
+        @MustBeClosed
+        suspend fun sendTest(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<WebhookSendTestResponse> =
+            sendTest(WebhookSendTestParams.none(), requestOptions)
     }
 }

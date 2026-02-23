@@ -14,9 +14,14 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                        .clabeNumber("123456789012345678")
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("accountNumber")
+                        .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
+                        .addPaymentRail(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                        )
                         .reference("UMA-Q12345-REF")
+                        .routingNumber("routingNumber")
                         .build()
                 )
                 .instructionsNotes(
@@ -27,10 +32,15 @@ internal class PaymentInstructionsTest {
 
         assertThat(paymentInstructions.accountOrWalletInfo())
             .isEqualTo(
-                PaymentInstructions.AccountOrWalletInfo.ofPaymentClabeAccount(
-                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                        .clabeNumber("123456789012345678")
+                PaymentInstructions.AccountOrWalletInfo.ofUsdAccount(
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("accountNumber")
+                        .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
+                        .addPaymentRail(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                        )
                         .reference("UMA-Q12345-REF")
+                        .routingNumber("routingNumber")
                         .build()
                 )
             )
@@ -47,9 +57,14 @@ internal class PaymentInstructionsTest {
         val paymentInstructions =
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
-                    PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                        .clabeNumber("123456789012345678")
+                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                        .accountNumber("accountNumber")
+                        .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
+                        .addPaymentRail(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                        )
                         .reference("UMA-Q12345-REF")
+                        .routingNumber("routingNumber")
                         .build()
                 )
                 .instructionsNotes(

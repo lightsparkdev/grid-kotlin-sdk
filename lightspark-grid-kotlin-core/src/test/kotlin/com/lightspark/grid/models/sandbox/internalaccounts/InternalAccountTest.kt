@@ -35,10 +35,17 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
@@ -73,9 +80,16 @@ internal class InternalAccountTest {
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo.builder()
-                            .clabeNumber("123456789012345678")
+                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                            .accountNumber("accountNumber")
+                            .addCountry(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                            )
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
+                            )
                             .reference("UMA-Q12345-REF")
+                            .routingNumber("routingNumber")
                             .build()
                     )
                     .instructionsNotes(
@@ -113,10 +127,17 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentClabeAccountInfo
-                                .builder()
-                                .clabeNumber("123456789012345678")
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("accountNumber")
+                                .addCountry(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .ACH
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .routingNumber("routingNumber")
                                 .build()
                         )
                         .instructionsNotes(
