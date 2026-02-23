@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -16,19 +15,16 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class ExternalAccountInfoOneOfTest {
 
     @Test
-    fun ofUsAccount() {
-        val usAccount =
-            UsAccountInfo.builder()
-                .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
-                .accountNumber("123456789")
-                .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
+    fun ofBrlAccount() {
+        val brlAccount =
+            BrlExternalAccountInfo.builder()
+                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    BrlBeneficiary.builder()
+                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -37,24 +33,37 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
-                .routingNumber("987654321")
-                .bankName("Chase Bank")
+                .addCountry(BrlExternalAccountInfo.Country.BR)
+                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
+                .pixKey("pixKey")
+                .pixKeyType("pixKeyType")
+                .taxId("taxId")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUsAccount(usAccount)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBrlAccount(brlAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isEqualTo(usAccount)
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isEqualTo(brlAccount)
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -64,21 +73,18 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofUsAccountRoundtrip() {
+    fun ofBrlAccountRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofUsAccount(
-                UsAccountInfo.builder()
-                    .accountCategory(UsAccountInfo.AccountCategory.CHECKING)
-                    .accountNumber("123456789")
-                    .accountType(UsAccountInfo.AccountType.US_ACCOUNT)
+            ExternalAccountInfoOneOf.ofBrlAccount(
+                BrlExternalAccountInfo.builder()
+                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        BrlBeneficiary.builder()
+                            .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -87,10 +93,19 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .routingNumber("987654321")
-                    .bankName("Chase Bank")
+                    .addCountry(BrlExternalAccountInfo.Country.BR)
+                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
+                    .pixKey("pixKey")
+                    .pixKeyType("pixKeyType")
+                    .taxId("taxId")
                     .build()
             )
 
@@ -104,17 +119,16 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofClabe() {
-        val clabe =
-            ClabeAccountInfo.builder()
-                .accountType(ClabeAccountInfo.AccountType.CLABE)
+    fun ofDkkAccount() {
+        val dkkAccount =
+            DkkExternalAccountInfo.builder()
+                .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    DkkBeneficiary.builder()
+                        .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -123,23 +137,36 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
-                .clabeNumber("123456789012345678")
+                .addCountry(DkkExternalAccountInfo.Country.DK)
+                .iban("iban")
+                .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofClabe(clabe)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofDkkAccount(dkkAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isEqualTo(clabe)
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isEqualTo(dkkAccount)
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -149,19 +176,18 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofClabeRoundtrip() {
+    fun ofDkkAccountRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofClabe(
-                ClabeAccountInfo.builder()
-                    .accountType(ClabeAccountInfo.AccountType.CLABE)
+            ExternalAccountInfoOneOf.ofDkkAccount(
+                DkkExternalAccountInfo.builder()
+                    .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        DkkBeneficiary.builder()
+                            .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -170,9 +196,18 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .clabeNumber("123456789012345678")
+                    .addCountry(DkkExternalAccountInfo.Country.DK)
+                    .iban("iban")
+                    .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
+                    .swiftBic("swiftBic")
                     .build()
             )
 
@@ -186,17 +221,14 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofPix() {
-        val pix =
-            PixAccountInfo.builder()
-                .accountType(PixAccountInfo.AccountType.PIX)
+    fun ofEurAccount() {
+        val eurAccount =
+            ExternalAccountInfoOneOf.EurAccount.builder()
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -205,25 +237,36 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
-                .pixKey("55119876543210")
-                .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
-                .taxId("1234567890")
+                .addCountry(ExternalAccountInfoOneOf.EurAccount.Country.AT)
+                .iban("iban")
+                .addPaymentRail(ExternalAccountInfoOneOf.EurAccount.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPix(pix)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofEurAccount(eurAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isEqualTo(pix)
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isEqualTo(eurAccount)
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -233,19 +276,16 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofPixRoundtrip() {
+    fun ofEurAccountRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofPix(
-                PixAccountInfo.builder()
-                    .accountType(PixAccountInfo.AccountType.PIX)
+            ExternalAccountInfoOneOf.ofEurAccount(
+                ExternalAccountInfoOneOf.EurAccount.builder()
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -254,349 +294,18 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .pixKey("55119876543210")
-                    .pixKeyType(PixAccountInfo.PixKeyType.PHONE)
-                    .taxId("1234567890")
-                    .build()
-            )
-
-        val roundtrippedExternalAccountInfoOneOf =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
-                jacksonTypeRef<ExternalAccountInfoOneOf>(),
-            )
-
-        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
-    }
-
-    @Test
-    fun ofIban() {
-        val iban =
-            IbanAccountInfo.builder()
-                .accountType(IbanAccountInfo.AccountType.IBAN)
-                .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
-                        .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .build()
-                )
-                .iban("DE89370400440532013000")
-                .swiftBic("DEUTDEFF")
-                .build()
-
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofIban(iban)
-
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isEqualTo(iban)
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
-    }
-
-    @Test
-    fun ofIbanRoundtrip() {
-        val jsonMapper = jsonMapper()
-        val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofIban(
-                IbanAccountInfo.builder()
-                    .accountType(IbanAccountInfo.AccountType.IBAN)
-                    .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
-                            .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .iban("DE89370400440532013000")
-                    .swiftBic("DEUTDEFF")
-                    .build()
-            )
-
-        val roundtrippedExternalAccountInfoOneOf =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
-                jacksonTypeRef<ExternalAccountInfoOneOf>(),
-            )
-
-        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
-    }
-
-    @Test
-    fun ofUpi() {
-        val upi =
-            UpiAccountInfo.builder()
-                .accountType(UpiAccountInfo.AccountType.UPI)
-                .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
-                        .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .build()
-                )
-                .vpa("somecustomers@okbank")
-                .build()
-
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUpi(upi)
-
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isEqualTo(upi)
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
-    }
-
-    @Test
-    fun ofUpiRoundtrip() {
-        val jsonMapper = jsonMapper()
-        val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofUpi(
-                UpiAccountInfo.builder()
-                    .accountType(UpiAccountInfo.AccountType.UPI)
-                    .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
-                            .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .vpa("somecustomers@okbank")
-                    .build()
-            )
-
-        val roundtrippedExternalAccountInfoOneOf =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
-                jacksonTypeRef<ExternalAccountInfoOneOf>(),
-            )
-
-        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
-    }
-
-    @Test
-    fun ofNgnAccount() {
-        val ngnAccount =
-            NgnAccountInfo.builder()
-                .accountNumber("0123456789")
-                .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                .bankName("First Bank of Nigeria")
-                .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
-                        .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .build()
-                )
-                .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
-                .build()
-
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)
-
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isEqualTo(ngnAccount)
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
-    }
-
-    @Test
-    fun ofNgnAccountRoundtrip() {
-        val jsonMapper = jsonMapper()
-        val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofNgnAccount(
-                NgnAccountInfo.builder()
-                    .accountNumber("0123456789")
-                    .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                    .bankName("First Bank of Nigeria")
-                    .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
-                            .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .purposeOfPayment(NgnAccountInfo.PurposeOfPayment.GOODS_OR_SERVICES)
-                    .build()
-            )
-
-        val roundtrippedExternalAccountInfoOneOf =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
-                jacksonTypeRef<ExternalAccountInfoOneOf>(),
-            )
-
-        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
-    }
-
-    @Test
-    fun ofCadAccount() {
-        val cadAccount =
-            CadAccountInfo.builder()
-                .accountNumber("1234567")
-                .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
-                .bankCode("001")
-                .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
-                        .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .build()
-                )
-                .branchCode("00012")
-                .build()
-
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofCadAccount(cadAccount)
-
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isEqualTo(cadAccount)
-        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
-    }
-
-    @Test
-    fun ofCadAccountRoundtrip() {
-        val jsonMapper = jsonMapper()
-        val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofCadAccount(
-                CadAccountInfo.builder()
-                    .accountNumber("1234567")
-                    .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
-                    .bankCode("001")
-                    .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
-                            .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .branchCode("00012")
+                    .addCountry(ExternalAccountInfoOneOf.EurAccount.Country.AT)
+                    .iban("iban")
+                    .addPaymentRail(ExternalAccountInfoOneOf.EurAccount.PaymentRail.SEPA)
+                    .swiftBic("swiftBic")
                     .build()
             )
 
@@ -612,16 +321,15 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofGbpAccount() {
         val gbpAccount =
-            GbpAccountInfo.builder()
+            GbpExternalAccountInfo.builder()
                 .accountNumber("12345678")
-                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    GbpBeneficiary.builder()
+                        .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -630,23 +338,35 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
+                .addCountry(GbpExternalAccountInfo.Country.GB)
+                .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
                 .sortCode("20-00-00")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isEqualTo(gbpAccount)
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -660,16 +380,15 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGbpAccount(
-                GbpAccountInfo.builder()
+                GbpExternalAccountInfo.builder()
                     .accountNumber("12345678")
-                    .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                    .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        GbpBeneficiary.builder()
+                            .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -678,9 +397,523 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
+                    .addCountry(GbpExternalAccountInfo.Country.GB)
+                    .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
                     .sortCode("20-00-00")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofHkdAccount() {
+        val hkdAccount =
+            HkdExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    HkdBeneficiary.builder()
+                        .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(HkdExternalAccountInfo.Country.HK)
+                .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofHkdAccount(hkdAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isEqualTo(hkdAccount)
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofHkdAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofHkdAccount(
+                HkdExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                    .bankName("bankName")
+                    .beneficiary(
+                        HkdBeneficiary.builder()
+                            .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(HkdExternalAccountInfo.Country.HK)
+                    .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofIdrAccount() {
+        val idrAccount =
+            IdrExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .beneficiary(
+                    IdrBeneficiary.builder()
+                        .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(IdrExternalAccountInfo.Country.ID)
+                .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .sortCode("sortCode")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofIdrAccount(idrAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isEqualTo(idrAccount)
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofIdrAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofIdrAccount(
+                IdrExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                    .beneficiary(
+                        IdrBeneficiary.builder()
+                            .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(IdrExternalAccountInfo.Country.ID)
+                    .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .sortCode("sortCode")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofInrAccount() {
+        val inrAccount =
+            InrExternalAccountInfo.builder()
+                .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                .beneficiary(
+                    InrBeneficiary.builder()
+                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(InrExternalAccountInfo.Country.IN)
+                .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
+                .vpa("vpa")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofInrAccount(inrAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isEqualTo(inrAccount)
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofInrAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofInrAccount(
+                InrExternalAccountInfo.builder()
+                    .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                    .beneficiary(
+                        InrBeneficiary.builder()
+                            .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(InrExternalAccountInfo.Country.IN)
+                    .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
+                    .vpa("vpa")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofMxnAccount() {
+        val mxnAccount =
+            MxnExternalAccountInfo.builder()
+                .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                .beneficiary(
+                    MxnBeneficiary.builder()
+                        .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .clabeNumber("123456789012345678")
+                .addCountry(MxnExternalAccountInfo.Country.MX)
+                .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isEqualTo(mxnAccount)
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofMxnAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofMxnAccount(
+                MxnExternalAccountInfo.builder()
+                    .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                    .beneficiary(
+                        MxnBeneficiary.builder()
+                            .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .clabeNumber("123456789012345678")
+                    .addCountry(MxnExternalAccountInfo.Country.MX)
+                    .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofMyrAccount() {
+        val myrAccount =
+            MyrExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    MyrBeneficiary.builder()
+                        .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(MyrExternalAccountInfo.Country.MY)
+                .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMyrAccount(myrAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isEqualTo(myrAccount)
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofMyrAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofMyrAccount(
+                MyrExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                    .bankName("bankName")
+                    .beneficiary(
+                        MyrBeneficiary.builder()
+                            .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(MyrExternalAccountInfo.Country.MY)
+                    .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -696,17 +929,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofPhpAccount() {
         val phpAccount =
-            PhpAccountInfo.builder()
+            PhpExternalAccountInfo.builder()
                 .accountNumber("001234567890")
-                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
+                .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    PhpBeneficiary.builder()
+                        .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -715,22 +947,34 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
+                .addCountry(PhpExternalAccountInfo.Country.PH)
+                .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isEqualTo(phpAccount)
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -744,17 +988,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPhpAccount(
-                PhpAccountInfo.builder()
+                PhpExternalAccountInfo.builder()
                     .accountNumber("001234567890")
-                    .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
+                    .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        PhpBeneficiary.builder()
+                            .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -763,8 +1006,16 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
+                    .addCountry(PhpExternalAccountInfo.Country.PH)
+                    .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -780,17 +1031,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSgdAccount() {
         val sgdAccount =
-            SgdAccountInfo.builder()
+            SgdExternalAccountInfo.builder()
                 .accountNumber("0123456789")
-                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
+                .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .beneficiary(
-                    BeneficiaryOneOf.Individual.builder()
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
-                        .nationality("US")
+                    SgdBeneficiary.builder()
+                        .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
-                            BeneficiaryOneOf.Individual.Address.builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -799,23 +1049,35 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
                         .build()
                 )
+                .addCountry(SgdExternalAccountInfo.Country.SG)
+                .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
                 .swiftCode("DBSSSGSG")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isEqualTo(sgdAccount)
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -829,17 +1091,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSgdAccount(
-                SgdAccountInfo.builder()
+                SgdExternalAccountInfo.builder()
                     .accountNumber("0123456789")
-                    .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
+                    .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
                     .beneficiary(
-                        BeneficiaryOneOf.Individual.builder()
-                            .birthDate(LocalDate.parse("1990-01-15"))
-                            .fullName("John Michael Doe")
-                            .nationality("US")
+                        SgdBeneficiary.builder()
+                            .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .address(
-                                BeneficiaryOneOf.Individual.Address.builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -848,9 +1109,323 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
                             .build()
                     )
+                    .addCountry(SgdExternalAccountInfo.Country.SG)
+                    .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
                     .swiftCode("DBSSSGSG")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofThbAccount() {
+        val thbAccount =
+            ThbExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    ThbBeneficiary.builder()
+                        .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(ThbExternalAccountInfo.Country.TH)
+                .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofThbAccount(thbAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isEqualTo(thbAccount)
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofThbAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofThbAccount(
+                ThbExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                    .bankName("bankName")
+                    .beneficiary(
+                        ThbBeneficiary.builder()
+                            .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(ThbExternalAccountInfo.Country.TH)
+                    .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofUsdAccount() {
+        val usdAccount =
+            UsdExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                .beneficiary(
+                    UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .birthDate("birthDate")
+                        .fullName("fullName")
+                        .nationality("nationality")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(UsdExternalAccountInfo.Country.US)
+                .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                .routingNumber("routingNumber")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isEqualTo(usdAccount)
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofUsdAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofUsdAccount(
+                UsdExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                    .beneficiary(
+                        UsdBeneficiary.builder()
+                            .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .birthDate("birthDate")
+                            .fullName("fullName")
+                            .nationality("nationality")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(UsdExternalAccountInfo.Country.US)
+                    .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                    .routingNumber("routingNumber")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofVndAccount() {
+        val vndAccount =
+            VndExternalAccountInfo.builder()
+                .accountNumber("accountNumber")
+                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .bankName("bankName")
+                .beneficiary(
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(VndExternalAccountInfo.Country.VN)
+                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofVndAccount(vndAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isEqualTo(vndAccount)
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofVndAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofVndAccount(
+                VndExternalAccountInfo.builder()
+                    .accountNumber("accountNumber")
+                    .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                    .bankName("bankName")
+                    .beneficiary(
+                        VndBeneficiary.builder()
+                            .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(VndExternalAccountInfo.Country.VN)
+                    .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -873,16 +1448,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSparkWallet(sparkWallet)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isEqualTo(sparkWallet)
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -927,16 +1506,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofLightning(lightning)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isEqualTo(lightning)
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -981,16 +1564,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSolanaWallet(solanaWallet)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isEqualTo(solanaWallet)
@@ -1029,16 +1616,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTronWallet(tronWallet)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -1077,16 +1668,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPolygonWallet(polygonWallet)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
@@ -1125,16 +1720,20 @@ internal class ExternalAccountInfoOneOfTest {
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBaseWallet(baseWallet)
 
-        assertThat(externalAccountInfoOneOf.usAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.clabe()).isNull()
-        assertThat(externalAccountInfoOneOf.pix()).isNull()
-        assertThat(externalAccountInfoOneOf.iban()).isNull()
-        assertThat(externalAccountInfoOneOf.upi()).isNull()
-        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
         assertThat(externalAccountInfoOneOf.lightning()).isNull()
         assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
