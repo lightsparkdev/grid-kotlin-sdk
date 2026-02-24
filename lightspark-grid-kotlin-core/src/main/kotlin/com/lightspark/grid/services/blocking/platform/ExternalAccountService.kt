@@ -7,7 +7,6 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
@@ -43,18 +42,6 @@ interface ExternalAccountService {
         params: ExternalAccountCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ExternalAccount
-
-    /** @see create */
-    fun create(
-        externalAccountCreate: ExternalAccountCreate,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccount =
-        create(
-            ExternalAccountCreateParams.builder()
-                .externalAccountCreate(externalAccountCreate)
-                .build(),
-            requestOptions,
-        )
 
     /**
      * Retrieve a list of all external accounts that belong to the platform, as opposed to an
@@ -96,19 +83,6 @@ interface ExternalAccountService {
             params: ExternalAccountCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ExternalAccount>
-
-        /** @see create */
-        @MustBeClosed
-        fun create(
-            externalAccountCreate: ExternalAccountCreate,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccount> =
-            create(
-                ExternalAccountCreateParams.builder()
-                    .externalAccountCreate(externalAccountCreate)
-                    .build(),
-                requestOptions,
-            )
 
         /**
          * Returns a raw HTTP response for `get /platform/external-accounts`, but is otherwise the
