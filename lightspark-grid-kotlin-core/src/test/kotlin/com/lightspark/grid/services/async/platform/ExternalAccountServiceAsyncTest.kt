@@ -6,7 +6,7 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -25,7 +25,7 @@ internal class ExternalAccountServiceAsyncTest {
 
         val externalAccount =
             externalAccountServiceAsync.create(
-                ExternalAccountCreate.builder()
+                ExternalAccountCreateParams.builder()
                     .accountInfo(
                         BrlExternalAccountInfo.builder()
                             .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
@@ -59,8 +59,6 @@ internal class ExternalAccountServiceAsyncTest {
                             .build()
                     )
                     .currency("USD")
-                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .defaultUmaDepositAccount(true)
                     .platformAccountId("ext_acc_123456")
                     .build()
             )
