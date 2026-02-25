@@ -17,13 +17,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofBrlAccount() {
         val brlAccount =
-            ExternalAccountInfoOneOf.BrlAccount.builder()
+            BrlExternalAccountInfo.builder()
+                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.builder()
+                    BrlBeneficiary.builder()
+                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -40,8 +41,8 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
-                .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
+                .addCountry(BrlExternalAccountInfo.Country.BR)
+                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
                 .pixKey("pixKey")
                 .pixKeyType("pixKeyType")
                 .taxId("taxId")
@@ -50,6 +51,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBrlAccount(brlAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isEqualTo(brlAccount)
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -58,6 +60,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -76,13 +79,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofBrlAccount(
-                ExternalAccountInfoOneOf.BrlAccount.builder()
+                BrlExternalAccountInfo.builder()
+                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.builder()
+                        BrlBeneficiary.builder()
+                            .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -99,8 +103,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
-                    .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
+                    .addCountry(BrlExternalAccountInfo.Country.BR)
+                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
                     .pixKey("pixKey")
                     .pixKeyType("pixKeyType")
                     .taxId("taxId")
@@ -117,15 +121,16 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofDkkAccount() {
-        val dkkAccount =
-            ExternalAccountInfoOneOf.DkkAccount.builder()
+    fun ofCadAccount() {
+        val cadAccount =
+            ExternalAccountInfoOneOf.CadAccount.builder()
+                .accountNumber("1234567")
+                .bankCode("001")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.DkkAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.DkkAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -142,15 +147,118 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.DkkAccount.Country.DK)
+                .branchCode("00012")
+                .addCountry(ExternalAccountInfoOneOf.CadAccount.Country.CA)
+                .addPaymentRail(ExternalAccountInfoOneOf.CadAccount.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofCadAccount(cadAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isEqualTo(cadAccount)
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofCadAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofCadAccount(
+                ExternalAccountInfoOneOf.CadAccount.builder()
+                    .accountNumber("1234567")
+                    .bankCode("001")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .branchCode("00012")
+                    .addCountry(ExternalAccountInfoOneOf.CadAccount.Country.CA)
+                    .addPaymentRail(ExternalAccountInfoOneOf.CadAccount.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofDkkAccount() {
+        val dkkAccount =
+            DkkExternalAccountInfo.builder()
+                .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+                .beneficiary(
+                    DkkBeneficiary.builder()
+                        .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(DkkExternalAccountInfo.Country.DK)
                 .iban("iban")
-                .addPaymentRail(ExternalAccountInfoOneOf.DkkAccount.PaymentRail.SEPA)
+                .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
                 .swiftBic("swiftBic")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofDkkAccount(dkkAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isEqualTo(dkkAccount)
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -159,6 +267,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -177,13 +286,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofDkkAccount(
-                ExternalAccountInfoOneOf.DkkAccount.builder()
+                DkkExternalAccountInfo.builder()
+                    .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.DkkAccount.Beneficiary.Individual.builder()
+                        DkkBeneficiary.builder()
+                            .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.DkkAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -200,9 +310,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.DkkAccount.Country.DK)
+                    .addCountry(DkkExternalAccountInfo.Country.DK)
                     .iban("iban")
-                    .addPaymentRail(ExternalAccountInfoOneOf.DkkAccount.PaymentRail.SEPA)
+                    .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
                     .swiftBic("swiftBic")
                     .build()
             )
@@ -224,8 +334,7 @@ internal class ExternalAccountInfoOneOfTest {
                     ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -251,6 +360,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofEurAccount(eurAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isEqualTo(eurAccount)
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -259,6 +369,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -282,8 +393,7 @@ internal class ExternalAccountInfoOneOfTest {
                         ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -319,14 +429,15 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofGbpAccount() {
         val gbpAccount =
-            ExternalAccountInfoOneOf.GbpAccount.builder()
+            GbpExternalAccountInfo.builder()
                 .accountNumber("12345678")
+                .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.builder()
+                    GbpBeneficiary.builder()
+                        .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -343,14 +454,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.GbpAccount.Country.GB)
-                .addPaymentRail(ExternalAccountInfoOneOf.GbpAccount.PaymentRail.FASTER_PAYMENTS)
+                .addCountry(GbpExternalAccountInfo.Country.GB)
+                .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
                 .sortCode("20-00-00")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isEqualTo(gbpAccount)
@@ -359,6 +471,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -377,14 +490,15 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGbpAccount(
-                ExternalAccountInfoOneOf.GbpAccount.builder()
+                GbpExternalAccountInfo.builder()
                     .accountNumber("12345678")
+                    .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.builder()
+                        GbpBeneficiary.builder()
+                            .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.GbpAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -401,8 +515,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.GbpAccount.Country.GB)
-                    .addPaymentRail(ExternalAccountInfoOneOf.GbpAccount.PaymentRail.FASTER_PAYMENTS)
+                    .addCountry(GbpExternalAccountInfo.Country.GB)
+                    .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
                     .sortCode("20-00-00")
                     .build()
             )
@@ -419,15 +533,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofHkdAccount() {
         val hkdAccount =
-            ExternalAccountInfoOneOf.HkdAccount.builder()
+            HkdExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
                 .bankName("bankName")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.HkdAccount.Beneficiary.Individual.builder()
+                    HkdBeneficiary.builder()
+                        .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.HkdAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -444,13 +559,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.HkdAccount.Country.HK)
-                .addPaymentRail(ExternalAccountInfoOneOf.HkdAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(HkdExternalAccountInfo.Country.HK)
+                .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofHkdAccount(hkdAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -459,6 +575,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -477,15 +594,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofHkdAccount(
-                ExternalAccountInfoOneOf.HkdAccount.builder()
+                HkdExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
                     .bankName("bankName")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.HkdAccount.Beneficiary.Individual.builder()
+                        HkdBeneficiary.builder()
+                            .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.HkdAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -502,8 +620,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.HkdAccount.Country.HK)
-                    .addPaymentRail(ExternalAccountInfoOneOf.HkdAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(HkdExternalAccountInfo.Country.HK)
+                    .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -519,14 +637,15 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofIdrAccount() {
         val idrAccount =
-            ExternalAccountInfoOneOf.IdrAccount.builder()
+            IdrExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.IdrAccount.Beneficiary.Individual.builder()
+                    IdrBeneficiary.builder()
+                        .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.IdrAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -543,14 +662,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.IdrAccount.Country.ID)
-                .addPaymentRail(ExternalAccountInfoOneOf.IdrAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(IdrExternalAccountInfo.Country.ID)
+                .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .sortCode("sortCode")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofIdrAccount(idrAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -559,6 +679,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -577,14 +698,15 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofIdrAccount(
-                ExternalAccountInfoOneOf.IdrAccount.builder()
+                IdrExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.IdrAccount.Beneficiary.Individual.builder()
+                        IdrBeneficiary.builder()
+                            .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.IdrAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -601,8 +723,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.IdrAccount.Country.ID)
-                    .addPaymentRail(ExternalAccountInfoOneOf.IdrAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(IdrExternalAccountInfo.Country.ID)
+                    .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .sortCode("sortCode")
                     .build()
             )
@@ -619,13 +741,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofInrAccount() {
         val inrAccount =
-            ExternalAccountInfoOneOf.InrAccount.builder()
+            InrExternalAccountInfo.builder()
+                .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.InrAccount.Beneficiary.Individual.builder()
+                    InrBeneficiary.builder()
+                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.InrAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -642,14 +765,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.InrAccount.Country.IN)
-                .addPaymentRail(ExternalAccountInfoOneOf.InrAccount.PaymentRail.UPI)
+                .addCountry(InrExternalAccountInfo.Country.IN)
+                .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
                 .vpa("vpa")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofInrAccount(inrAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -658,6 +782,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isEqualTo(inrAccount)
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -676,13 +801,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofInrAccount(
-                ExternalAccountInfoOneOf.InrAccount.builder()
+                InrExternalAccountInfo.builder()
+                    .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.InrAccount.Beneficiary.Individual.builder()
+                        InrBeneficiary.builder()
+                            .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.InrAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -699,8 +825,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.InrAccount.Country.IN)
-                    .addPaymentRail(ExternalAccountInfoOneOf.InrAccount.PaymentRail.UPI)
+                    .addCountry(InrExternalAccountInfo.Country.IN)
+                    .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
                     .vpa("vpa")
                     .build()
             )
@@ -717,13 +843,14 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofMxnAccount() {
         val mxnAccount =
-            ExternalAccountInfoOneOf.MxnAccount.builder()
+            MxnExternalAccountInfo.builder()
+                .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.MxnAccount.Beneficiary.Individual.builder()
+                    MxnBeneficiary.builder()
+                        .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.MxnAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -741,13 +868,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .build()
                 )
                 .clabeNumber("123456789012345678")
-                .addCountry(ExternalAccountInfoOneOf.MxnAccount.Country.MX)
-                .addPaymentRail(ExternalAccountInfoOneOf.MxnAccount.PaymentRail.SPEI)
+                .addCountry(MxnExternalAccountInfo.Country.MX)
+                .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -756,6 +884,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isEqualTo(mxnAccount)
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -774,13 +903,14 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofMxnAccount(
-                ExternalAccountInfoOneOf.MxnAccount.builder()
+                MxnExternalAccountInfo.builder()
+                    .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.MxnAccount.Beneficiary.Individual.builder()
+                        MxnBeneficiary.builder()
+                            .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.MxnAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -798,8 +928,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .build()
                     )
                     .clabeNumber("123456789012345678")
-                    .addCountry(ExternalAccountInfoOneOf.MxnAccount.Country.MX)
-                    .addPaymentRail(ExternalAccountInfoOneOf.MxnAccount.PaymentRail.SPEI)
+                    .addCountry(MxnExternalAccountInfo.Country.MX)
+                    .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                     .build()
             )
 
@@ -815,15 +945,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofMyrAccount() {
         val myrAccount =
-            ExternalAccountInfoOneOf.MyrAccount.builder()
+            MyrExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
                 .bankName("bankName")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.MyrAccount.Beneficiary.Individual.builder()
+                    MyrBeneficiary.builder()
+                        .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.MyrAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -840,13 +971,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.MyrAccount.Country.MY)
-                .addPaymentRail(ExternalAccountInfoOneOf.MyrAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(MyrExternalAccountInfo.Country.MY)
+                .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMyrAccount(myrAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -855,6 +987,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isEqualTo(myrAccount)
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -873,15 +1006,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofMyrAccount(
-                ExternalAccountInfoOneOf.MyrAccount.builder()
+                MyrExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
                     .bankName("bankName")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.MyrAccount.Beneficiary.Individual.builder()
+                        MyrBeneficiary.builder()
+                            .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.MyrAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -898,8 +1032,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.MyrAccount.Country.MY)
-                    .addPaymentRail(ExternalAccountInfoOneOf.MyrAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(MyrExternalAccountInfo.Country.MY)
+                    .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -913,17 +1047,16 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofPhpAccount() {
-        val phpAccount =
-            ExternalAccountInfoOneOf.PhpAccount.builder()
-                .accountNumber("001234567890")
-                .bankName("BDO Unibank")
+    fun ofNgnAccount() {
+        val ngnAccount =
+            ExternalAccountInfoOneOf.NgnAccount.builder()
+                .accountNumber("0123456789")
+                .bankName("First Bank of Nigeria")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -940,13 +1073,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.PhpAccount.Country.PH)
-                .addPaymentRail(ExternalAccountInfoOneOf.PhpAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(ExternalAccountInfoOneOf.NgnAccount.Country.NG)
+                .addPaymentRail(ExternalAccountInfoOneOf.NgnAccount.PaymentRail.BANK_TRANSFER)
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -955,6 +1089,109 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isEqualTo(ngnAccount)
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.lightning()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+    }
+
+    @Test
+    fun ofNgnAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofNgnAccount(
+                ExternalAccountInfoOneOf.NgnAccount.builder()
+                    .accountNumber("0123456789")
+                    .bankName("First Bank of Nigeria")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addCountry(ExternalAccountInfoOneOf.NgnAccount.Country.NG)
+                    .addPaymentRail(ExternalAccountInfoOneOf.NgnAccount.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofPhpAccount() {
+        val phpAccount =
+            PhpExternalAccountInfo.builder()
+                .accountNumber("001234567890")
+                .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+                .bankName("BDO Unibank")
+                .beneficiary(
+                    PhpBeneficiary.builder()
+                        .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addCountry(PhpExternalAccountInfo.Country.PH)
+                .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isEqualTo(phpAccount)
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -973,15 +1210,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPhpAccount(
-                ExternalAccountInfoOneOf.PhpAccount.builder()
+                PhpExternalAccountInfo.builder()
                     .accountNumber("001234567890")
+                    .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.builder()
+                        PhpBeneficiary.builder()
+                            .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.PhpAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -998,8 +1236,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.PhpAccount.Country.PH)
-                    .addPaymentRail(ExternalAccountInfoOneOf.PhpAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(PhpExternalAccountInfo.Country.PH)
+                    .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -1015,15 +1253,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofSgdAccount() {
         val sgdAccount =
-            ExternalAccountInfoOneOf.SgdAccount.builder()
+            SgdExternalAccountInfo.builder()
                 .accountNumber("0123456789")
+                .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.builder()
+                    SgdBeneficiary.builder()
+                        .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -1040,14 +1279,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.SgdAccount.Country.SG)
-                .addPaymentRail(ExternalAccountInfoOneOf.SgdAccount.PaymentRail.PAYNOW)
+                .addCountry(SgdExternalAccountInfo.Country.SG)
+                .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
                 .swiftCode("DBSSSGSG")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1056,6 +1296,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isEqualTo(sgdAccount)
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1074,15 +1315,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSgdAccount(
-                ExternalAccountInfoOneOf.SgdAccount.builder()
+                SgdExternalAccountInfo.builder()
                     .accountNumber("0123456789")
+                    .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.builder()
+                        SgdBeneficiary.builder()
+                            .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.SgdAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -1099,8 +1341,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.SgdAccount.Country.SG)
-                    .addPaymentRail(ExternalAccountInfoOneOf.SgdAccount.PaymentRail.PAYNOW)
+                    .addCountry(SgdExternalAccountInfo.Country.SG)
+                    .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
                     .swiftCode("DBSSSGSG")
                     .build()
             )
@@ -1117,15 +1359,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofThbAccount() {
         val thbAccount =
-            ExternalAccountInfoOneOf.ThbAccount.builder()
+            ThbExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
                 .bankName("bankName")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.ThbAccount.Beneficiary.Individual.builder()
+                    ThbBeneficiary.builder()
+                        .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.ThbAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -1142,13 +1385,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.ThbAccount.Country.TH)
-                .addPaymentRail(ExternalAccountInfoOneOf.ThbAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(ThbExternalAccountInfo.Country.TH)
+                .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofThbAccount(thbAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1157,6 +1401,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isEqualTo(thbAccount)
@@ -1175,15 +1420,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofThbAccount(
-                ExternalAccountInfoOneOf.ThbAccount.builder()
+                ThbExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
                     .bankName("bankName")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.ThbAccount.Beneficiary.Individual.builder()
+                        ThbBeneficiary.builder()
+                            .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.ThbAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -1200,8 +1446,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.ThbAccount.Country.TH)
-                    .addPaymentRail(ExternalAccountInfoOneOf.ThbAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(ThbExternalAccountInfo.Country.TH)
+                    .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -1217,16 +1463,17 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofUsdAccount() {
         val usdAccount =
-            ExternalAccountInfoOneOf.UsdAccount.builder()
+            UsdExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.UsdAccount.Beneficiary.Individual.builder()
+                    UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .birthDate("birthDate")
                         .fullName("fullName")
                         .nationality("nationality")
                         .address(
-                            ExternalAccountInfoOneOf.UsdAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -1241,14 +1488,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.UsdAccount.Country.US)
-                .addPaymentRail(ExternalAccountInfoOneOf.UsdAccount.PaymentRail.ACH)
+                .addCountry(UsdExternalAccountInfo.Country.US)
+                .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
                 .routingNumber("routingNumber")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1257,6 +1505,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1275,16 +1524,17 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUsdAccount(
-                ExternalAccountInfoOneOf.UsdAccount.builder()
+                UsdExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.UsdAccount.Beneficiary.Individual.builder()
+                        UsdBeneficiary.builder()
+                            .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .birthDate("birthDate")
                             .fullName("fullName")
                             .nationality("nationality")
                             .address(
-                                ExternalAccountInfoOneOf.UsdAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -1299,8 +1549,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.UsdAccount.Country.US)
-                    .addPaymentRail(ExternalAccountInfoOneOf.UsdAccount.PaymentRail.ACH)
+                    .addCountry(UsdExternalAccountInfo.Country.US)
+                    .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
                     .routingNumber("routingNumber")
                     .build()
             )
@@ -1317,15 +1567,16 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofVndAccount() {
         val vndAccount =
-            ExternalAccountInfoOneOf.VndAccount.builder()
+            VndExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
+                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
                 .bankName("bankName")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.VndAccount.Beneficiary.Individual.builder()
+                    VndBeneficiary.builder()
+                        .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
-                            ExternalAccountInfoOneOf.VndAccount.Beneficiary.Individual.Address
-                                .builder()
+                            Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -1342,13 +1593,14 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.VndAccount.Country.VN)
-                .addPaymentRail(ExternalAccountInfoOneOf.VndAccount.PaymentRail.BANK_TRANSFER)
+                .addCountry(VndExternalAccountInfo.Country.VN)
+                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofVndAccount(vndAccount)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1357,6 +1609,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1375,15 +1628,16 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofVndAccount(
-                ExternalAccountInfoOneOf.VndAccount.builder()
+                VndExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
+                    .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
                     .bankName("bankName")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.VndAccount.Beneficiary.Individual.builder()
+                        VndBeneficiary.builder()
+                            .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
-                                ExternalAccountInfoOneOf.VndAccount.Beneficiary.Individual.Address
-                                    .builder()
+                                Address.builder()
                                     .country("US")
                                     .line1("123 Main Street")
                                     .postalCode("94105")
@@ -1400,8 +1654,8 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.VndAccount.Country.VN)
-                    .addPaymentRail(ExternalAccountInfoOneOf.VndAccount.PaymentRail.BANK_TRANSFER)
+                    .addCountry(VndExternalAccountInfo.Country.VN)
+                    .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -1425,6 +1679,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSparkWallet(sparkWallet)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1433,6 +1688,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1483,6 +1739,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofLightning(lightning)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1491,6 +1748,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1541,6 +1799,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSolanaWallet(solanaWallet)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1549,6 +1808,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1593,6 +1853,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTronWallet(tronWallet)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1601,6 +1862,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1645,6 +1907,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPolygonWallet(polygonWallet)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1653,6 +1916,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
@@ -1697,6 +1961,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBaseWallet(baseWallet)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
         assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
         assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
         assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
@@ -1705,6 +1970,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
