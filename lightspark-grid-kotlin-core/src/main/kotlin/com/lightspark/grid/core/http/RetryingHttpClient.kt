@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Stainless.
+
 package com.lightspark.grid.core.http
 
 import com.lightspark.grid.core.DefaultSleeper
