@@ -30,4 +30,19 @@ internal class SandboxServiceAsyncTest {
 
         response.validate()
     }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun sendTestWebhook() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val sandboxServiceAsync = client.sandbox()
+
+        val response = sandboxServiceAsync.sendTestWebhook()
+
+        response.validate()
+    }
 }

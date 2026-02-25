@@ -6,7 +6,6 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -33,7 +32,7 @@ internal class CustomerServiceAsyncTest {
                             .INDIVIDUAL
                     )
                     .address(
-                        Address.builder()
+                        CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -61,9 +60,9 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer = customerServiceAsync.retrieve("customerId")
+        val customerOneOf = customerServiceAsync.retrieve("customerId")
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -76,7 +75,7 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer =
+        val customerOneOf =
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .customerId("customerId")
@@ -88,7 +87,8 @@ internal class CustomerServiceAsyncTest {
                                     .INDIVIDUAL
                             )
                             .address(
-                                Address.builder()
+                                CustomerUpdateParams.UpdateCustomerRequest.Individual.Address
+                                    .builder()
                                     .country("US")
                                     .line1("456 Market St")
                                     .postalCode("94103")
@@ -105,7 +105,7 @@ internal class CustomerServiceAsyncTest {
                     .build()
             )
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -133,9 +133,9 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer = customerServiceAsync.delete("customerId")
+        val customerOneOf = customerServiceAsync.delete("customerId")
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
