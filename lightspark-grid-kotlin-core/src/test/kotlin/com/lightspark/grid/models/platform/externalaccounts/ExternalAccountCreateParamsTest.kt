@@ -3,9 +3,9 @@
 package com.lightspark.grid.models.platform.externalaccounts
 
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
-import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
+import com.lightspark.grid.models.customers.externalaccounts.UsdExternalAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,12 +15,15 @@ internal class ExternalAccountCreateParamsTest {
     fun create() {
         ExternalAccountCreateParams.builder()
             .accountInfo(
-                BrlExternalAccountInfo.builder()
-                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                UsdExternalAccountInfo.builder()
+                    .accountNumber("12345678901")
+                    .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                     .beneficiary(
-                        BrlBeneficiary.builder()
-                            .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        UsdBeneficiary.builder()
+                            .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .birthDate("1990-01-15")
                             .fullName("John Doe")
+                            .nationality("US")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -31,19 +34,15 @@ internal class ExternalAccountCreateParamsTest {
                                     .state("CA")
                                     .build()
                             )
-                            .birthDate("1990-01-15")
                             .countryOfResidence("countryOfResidence")
                             .email("email")
-                            .nationality("US")
                             .phoneNumber("phoneNumber")
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(BrlExternalAccountInfo.Country.BR)
-                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                    .pixKey("pixKey")
-                    .pixKeyType("pixKeyType")
-                    .taxId("taxId")
+                    .addCountry(UsdExternalAccountInfo.Country.US)
+                    .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                    .routingNumber("123456789")
                     .build()
             )
             .currency("USD")
@@ -56,12 +55,15 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                    UsdExternalAccountInfo.builder()
+                        .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            UsdBeneficiary.builder()
+                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .birthDate("1990-01-15")
                                 .fullName("John Doe")
+                                .nationality("US")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -72,19 +74,15 @@ internal class ExternalAccountCreateParamsTest {
                                         .state("CA")
                                         .build()
                                 )
-                                .birthDate("1990-01-15")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
-                                .nationality("US")
                                 .phoneNumber("phoneNumber")
                                 .registrationNumber("registrationNumber")
                                 .build()
                         )
-                        .addCountry(BrlExternalAccountInfo.Country.BR)
-                        .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                        .pixKey("pixKey")
-                        .pixKeyType("pixKeyType")
-                        .taxId("taxId")
+                        .addCountry(UsdExternalAccountInfo.Country.US)
+                        .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                        .routingNumber("123456789")
                         .build()
                 )
                 .currency("USD")
@@ -95,13 +93,16 @@ internal class ExternalAccountCreateParamsTest {
 
         assertThat(body.accountInfo())
             .isEqualTo(
-                ExternalAccountInfoOneOf.ofBrlAccount(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                ExternalAccountInfoOneOf.ofUsdAccount(
+                    UsdExternalAccountInfo.builder()
+                        .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            UsdBeneficiary.builder()
+                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .birthDate("1990-01-15")
                                 .fullName("John Doe")
+                                .nationality("US")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -112,19 +113,15 @@ internal class ExternalAccountCreateParamsTest {
                                         .state("CA")
                                         .build()
                                 )
-                                .birthDate("1990-01-15")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
-                                .nationality("US")
                                 .phoneNumber("phoneNumber")
                                 .registrationNumber("registrationNumber")
                                 .build()
                         )
-                        .addCountry(BrlExternalAccountInfo.Country.BR)
-                        .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                        .pixKey("pixKey")
-                        .pixKeyType("pixKeyType")
-                        .taxId("taxId")
+                        .addCountry(UsdExternalAccountInfo.Country.US)
+                        .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                        .routingNumber("123456789")
                         .build()
                 )
             )
@@ -137,14 +134,20 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
-                        .individualBeneficiary("John Doe")
-                        .addCountry(BrlExternalAccountInfo.Country.BR)
-                        .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                        .pixKey("pixKey")
-                        .pixKeyType("pixKeyType")
-                        .taxId("taxId")
+                    UsdExternalAccountInfo.builder()
+                        .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                        .beneficiary(
+                            UsdBeneficiary.builder()
+                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .birthDate("1990-01-15")
+                                .fullName("John Doe")
+                                .nationality("US")
+                                .build()
+                        )
+                        .addCountry(UsdExternalAccountInfo.Country.US)
+                        .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                        .routingNumber("123456789")
                         .build()
                 )
                 .currency("USD")
@@ -154,15 +157,21 @@ internal class ExternalAccountCreateParamsTest {
 
         assertThat(body.accountInfo())
             .isEqualTo(
-                ExternalAccountInfoOneOf.ofBrlAccount(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
-                        .individualBeneficiary("John Doe")
-                        .addCountry(BrlExternalAccountInfo.Country.BR)
-                        .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                        .pixKey("pixKey")
-                        .pixKeyType("pixKeyType")
-                        .taxId("taxId")
+                ExternalAccountInfoOneOf.ofUsdAccount(
+                    UsdExternalAccountInfo.builder()
+                        .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                        .beneficiary(
+                            UsdBeneficiary.builder()
+                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .birthDate("1990-01-15")
+                                .fullName("John Doe")
+                                .nationality("US")
+                                .build()
+                        )
+                        .addCountry(UsdExternalAccountInfo.Country.US)
+                        .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                        .routingNumber("123456789")
                         .build()
                 )
             )

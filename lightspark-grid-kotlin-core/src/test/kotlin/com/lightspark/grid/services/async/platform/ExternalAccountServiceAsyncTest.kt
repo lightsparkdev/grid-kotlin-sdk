@@ -4,8 +4,8 @@ package com.lightspark.grid.services.async.platform
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
-import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
+import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
+import com.lightspark.grid.models.customers.externalaccounts.UsdExternalAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import org.junit.jupiter.api.Disabled
@@ -27,12 +27,15 @@ internal class ExternalAccountServiceAsyncTest {
             externalAccountServiceAsync.create(
                 ExternalAccountCreateParams.builder()
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                        UsdExternalAccountInfo.builder()
+                            .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                UsdBeneficiary.builder()
+                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .birthDate("1990-01-15")
                                     .fullName("John Doe")
+                                    .nationality("US")
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -43,19 +46,15 @@ internal class ExternalAccountServiceAsyncTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("US")
                                     .phoneNumber("phoneNumber")
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addCountry(BrlExternalAccountInfo.Country.BR)
-                            .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                            .pixKey("pixKey")
-                            .pixKeyType("pixKeyType")
-                            .taxId("taxId")
+                            .addCountry(UsdExternalAccountInfo.Country.US)
+                            .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")
