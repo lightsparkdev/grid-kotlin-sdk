@@ -4,8 +4,10 @@ package com.lightspark.grid.models.platform.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
+import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -19,16 +21,14 @@ internal class ExternalAccountListResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.BrlAccount.builder()
+                            BrlExternalAccountInfo.builder()
+                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                                 .beneficiary(
-                                    ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
-                                        .builder()
+                                    BrlBeneficiary.builder()
+                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
                                         .fullName("fullName")
                                         .address(
-                                            ExternalAccountInfoOneOf.BrlAccount.Beneficiary
-                                                .Individual
-                                                .Address
-                                                .builder()
+                                            Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
@@ -45,8 +45,8 @@ internal class ExternalAccountListResponseTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
-                                .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
+                                .addCountry(BrlExternalAccountInfo.Country.BR)
+                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
                                 .pixKey("pixKey")
                                 .pixKeyType("pixKeyType")
                                 .taxId("taxId")
@@ -74,14 +74,14 @@ internal class ExternalAccountListResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        ExternalAccountInfoOneOf.BrlAccount.builder()
+                        BrlExternalAccountInfo.builder()
+                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                             .beneficiary(
-                                ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.builder()
+                                BrlBeneficiary.builder()
+                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
                                     .fullName("fullName")
                                     .address(
-                                        ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
-                                            .Address
-                                            .builder()
+                                        Address.builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
@@ -98,8 +98,8 @@ internal class ExternalAccountListResponseTest {
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
-                            .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
+                            .addCountry(BrlExternalAccountInfo.Country.BR)
+                            .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
                             .pixKey("pixKey")
                             .pixKeyType("pixKeyType")
                             .taxId("taxId")
@@ -131,16 +131,14 @@ internal class ExternalAccountListResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.BrlAccount.builder()
+                            BrlExternalAccountInfo.builder()
+                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
                                 .beneficiary(
-                                    ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
-                                        .builder()
+                                    BrlBeneficiary.builder()
+                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
                                         .fullName("fullName")
                                         .address(
-                                            ExternalAccountInfoOneOf.BrlAccount.Beneficiary
-                                                .Individual
-                                                .Address
-                                                .builder()
+                                            Address.builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
@@ -157,8 +155,8 @@ internal class ExternalAccountListResponseTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
-                                .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
+                                .addCountry(BrlExternalAccountInfo.Country.BR)
+                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
                                 .pixKey("pixKey")
                                 .pixKeyType("pixKeyType")
                                 .taxId("taxId")
