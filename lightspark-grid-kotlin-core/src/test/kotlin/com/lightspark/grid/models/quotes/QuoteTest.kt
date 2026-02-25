@@ -41,7 +41,7 @@ internal class QuoteTest {
                         .build()
                 )
                 .source(
-                    Quote.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -55,6 +55,10 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )
@@ -77,6 +81,10 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )
@@ -139,8 +147,8 @@ internal class QuoteTest {
             )
         assertThat(quote.source())
             .isEqualTo(
-                Quote.Source.ofAccountQuote(
-                    Quote.Source.AccountQuoteSource.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -157,6 +165,10 @@ internal class QuoteTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("accountNumber")
+                            .accountType(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                    .USD_ACCOUNT
+                            )
                             .addCountry(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                             )
@@ -176,6 +188,10 @@ internal class QuoteTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("accountNumber")
+                            .accountType(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                    .USD_ACCOUNT
+                            )
                             .addCountry(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                             )
@@ -237,7 +253,7 @@ internal class QuoteTest {
                         .build()
                 )
                 .source(
-                    Quote.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -251,6 +267,10 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )
@@ -273,6 +293,10 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )

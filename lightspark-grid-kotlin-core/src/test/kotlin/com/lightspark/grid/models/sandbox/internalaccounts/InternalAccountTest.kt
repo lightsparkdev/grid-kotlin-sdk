@@ -37,6 +37,10 @@ internal class InternalAccountTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )
@@ -82,6 +86,10 @@ internal class InternalAccountTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("accountNumber")
+                            .accountType(
+                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                    .USD_ACCOUNT
+                            )
                             .addCountry(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                             )
@@ -129,6 +137,10 @@ internal class InternalAccountTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
+                                .accountType(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                        .USD_ACCOUNT
+                                )
                                 .addCountry(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
                                 )

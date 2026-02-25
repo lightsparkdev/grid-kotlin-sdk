@@ -16,6 +16,10 @@ internal class PaymentInstructionsTest {
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
+                        .accountType(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                .USD_ACCOUNT
+                        )
                         .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
                         .addPaymentRail(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
@@ -35,6 +39,10 @@ internal class PaymentInstructionsTest {
                 PaymentInstructions.AccountOrWalletInfo.ofUsdAccount(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
+                        .accountType(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                .USD_ACCOUNT
+                        )
                         .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
                         .addPaymentRail(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
@@ -59,6 +67,10 @@ internal class PaymentInstructionsTest {
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
+                        .accountType(
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.AccountType
+                                .USD_ACCOUNT
+                        )
                         .addCountry(PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US)
                         .addPaymentRail(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
