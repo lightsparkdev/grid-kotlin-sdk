@@ -3,9 +3,7 @@
 package com.lightspark.grid.services.blocking.platform
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
-import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import org.junit.jupiter.api.Disabled
@@ -27,14 +25,14 @@ internal class ExternalAccountServiceTest {
             externalAccountService.create(
                 ExternalAccountCreateParams.builder()
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                        ExternalAccountInfoOneOf.BrlAccount.builder()
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual.builder()
                                     .fullName("John Doe")
                                     .address(
-                                        Address.builder()
+                                        ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
+                                            .Address
+                                            .builder()
                                             .country("US")
                                             .line1("123 Main Street")
                                             .postalCode("94105")
@@ -51,8 +49,8 @@ internal class ExternalAccountServiceTest {
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addCountry(BrlExternalAccountInfo.Country.BR)
-                            .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
+                            .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
+                            .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
                             .pixKey("pixKey")
                             .pixKeyType("pixKeyType")
                             .taxId("taxId")

@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.customers
 
-import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,7 +20,7 @@ internal class CustomerCreateParamsTest {
                             .INDIVIDUAL
                     )
                     .address(
-                        Address.builder()
+                        CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
                             .country("US")
                             .line1("123 Main Street")
                             .postalCode("94105")
@@ -51,7 +50,7 @@ internal class CustomerCreateParamsTest {
                                 .INDIVIDUAL
                         )
                         .address(
-                            Address.builder()
+                            CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")
@@ -80,7 +79,7 @@ internal class CustomerCreateParamsTest {
                                 .INDIVIDUAL
                         )
                         .address(
-                            Address.builder()
+                            CustomerCreateParams.CreateCustomerRequest.Individual.Address.builder()
                                 .country("US")
                                 .line1("123 Main Street")
                                 .postalCode("94105")

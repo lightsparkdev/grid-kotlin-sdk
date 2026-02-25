@@ -6,10 +6,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
-import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -109,14 +107,16 @@ internal class QuoteDestinationOneOfTest {
                 .externalAccountDetails(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                            ExternalAccountInfoOneOf.BrlAccount.builder()
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
+                                        .builder()
                                         .fullName("fullName")
                                         .address(
-                                            Address.builder()
+                                            ExternalAccountInfoOneOf.BrlAccount.Beneficiary
+                                                .Individual
+                                                .Address
+                                                .builder()
                                                 .country("US")
                                                 .line1("123 Main Street")
                                                 .postalCode("94105")
@@ -133,8 +133,8 @@ internal class QuoteDestinationOneOfTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addCountry(BrlExternalAccountInfo.Country.BR)
-                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
+                                .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
+                                .addPaymentRail(ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX)
                                 .pixKey("pixKey")
                                 .pixKeyType("pixKeyType")
                                 .taxId("taxId")
@@ -168,16 +168,16 @@ internal class QuoteDestinationOneOfTest {
                     .externalAccountDetails(
                         ExternalAccountCreate.builder()
                             .accountInfo(
-                                BrlExternalAccountInfo.builder()
-                                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                ExternalAccountInfoOneOf.BrlAccount.builder()
                                     .beneficiary(
-                                        BrlBeneficiary.builder()
-                                            .beneficiaryType(
-                                                BrlBeneficiary.BeneficiaryType.INDIVIDUAL
-                                            )
+                                        ExternalAccountInfoOneOf.BrlAccount.Beneficiary.Individual
+                                            .builder()
                                             .fullName("fullName")
                                             .address(
-                                                Address.builder()
+                                                ExternalAccountInfoOneOf.BrlAccount.Beneficiary
+                                                    .Individual
+                                                    .Address
+                                                    .builder()
                                                     .country("US")
                                                     .line1("123 Main Street")
                                                     .postalCode("94105")
@@ -194,8 +194,10 @@ internal class QuoteDestinationOneOfTest {
                                             .registrationNumber("registrationNumber")
                                             .build()
                                     )
-                                    .addCountry(BrlExternalAccountInfo.Country.BR)
-                                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
+                                    .addCountry(ExternalAccountInfoOneOf.BrlAccount.Country.BR)
+                                    .addPaymentRail(
+                                        ExternalAccountInfoOneOf.BrlAccount.PaymentRail.PIX
+                                    )
                                     .pixKey("pixKey")
                                     .pixKeyType("pixKeyType")
                                     .taxId("taxId")
