@@ -353,6 +353,12 @@ private constructor(
             accountInfo(ExternalAccountInfoOneOf.ofInrAccount(inrAccount))
 
         /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofKesAccount(kesAccount)`.
+         */
+        fun accountInfo(kesAccount: ExternalAccountInfoOneOf.KesAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofKesAccount(kesAccount))
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)`.
          */
         fun accountInfo(mxnAccount: MxnExternalAccountInfo) =
@@ -377,6 +383,12 @@ private constructor(
             accountInfo(ExternalAccountInfoOneOf.ofPhpAccount(phpAccount))
 
         /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofRwfAccount(rwfAccount)`.
+         */
+        fun accountInfo(rwfAccount: ExternalAccountInfoOneOf.RwfAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofRwfAccount(rwfAccount))
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)`.
          */
         fun accountInfo(sgdAccount: SgdExternalAccountInfo) =
@@ -389,6 +401,12 @@ private constructor(
             accountInfo(ExternalAccountInfoOneOf.ofThbAccount(thbAccount))
 
         /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofTzsAccount(tzsAccount)`.
+         */
+        fun accountInfo(tzsAccount: ExternalAccountInfoOneOf.TzsAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofTzsAccount(tzsAccount))
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)`.
          */
         fun accountInfo(usdAccount: UsdExternalAccountInfo) =
@@ -399,6 +417,18 @@ private constructor(
          */
         fun accountInfo(vndAccount: VndExternalAccountInfo) =
             accountInfo(ExternalAccountInfoOneOf.ofVndAccount(vndAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofZarAccount(zarAccount)`.
+         */
+        fun accountInfo(zarAccount: ExternalAccountInfoOneOf.ZarAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofZarAccount(zarAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofZmwAccount(zmwAccount)`.
+         */
+        fun accountInfo(zmwAccount: ExternalAccountInfoOneOf.ZmwAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofZmwAccount(zmwAccount))
 
         /**
          * Alias for calling [accountInfo] with
