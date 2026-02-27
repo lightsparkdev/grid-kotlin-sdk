@@ -51,7 +51,6 @@ internal class ExternalAccountServiceAsyncTest {
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addCountry(UsdExternalAccountInfo.Country.US)
                             .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
                             .routingNumber("123456789")
                             .build()

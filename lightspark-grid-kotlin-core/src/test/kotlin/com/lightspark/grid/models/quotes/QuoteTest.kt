@@ -55,9 +55,6 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
-                                .addCountry(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                                )
                                 .addPaymentRail(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
                                         .ACH
@@ -77,9 +74,6 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
-                                .addCountry(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                                )
                                 .addPaymentRail(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
                                         .ACH
@@ -157,9 +151,6 @@ internal class QuoteTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("accountNumber")
-                            .addCountry(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                            )
                             .addPaymentRail(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
                             )
@@ -176,9 +167,6 @@ internal class QuoteTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("accountNumber")
-                            .addCountry(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                            )
                             .addPaymentRail(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
                             )
@@ -251,9 +239,6 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
-                                .addCountry(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                                )
                                 .addPaymentRail(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
                                         .ACH
@@ -273,9 +258,6 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("accountNumber")
-                                .addCountry(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country.US
-                                )
                                 .addPaymentRail(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
                                         .ACH

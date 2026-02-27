@@ -38,7 +38,6 @@ internal class ThbExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ThbExternalAccountInfo.Country.TH)
                 .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -71,8 +70,6 @@ internal class ThbExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(thbExternalAccountInfo.countries())
-            .containsExactly(ThbExternalAccountInfo.Country.TH)
         assertThat(thbExternalAccountInfo.paymentRails())
             .containsExactly(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -107,7 +104,6 @@ internal class ThbExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ThbExternalAccountInfo.Country.TH)
                 .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

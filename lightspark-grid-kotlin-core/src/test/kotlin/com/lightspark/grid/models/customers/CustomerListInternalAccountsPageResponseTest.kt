@@ -40,11 +40,6 @@ internal class CustomerListInternalAccountsPageResponseTest {
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("accountNumber")
-                                        .addCountry(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .Country
-                                                .US
-                                        )
                                         .addPaymentRail(
                                             PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                                 .PaymentRail
@@ -92,10 +87,6 @@ internal class CustomerListInternalAccountsPageResponseTest {
                             .accountOrWalletInfo(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                     .accountNumber("accountNumber")
-                                    .addCountry(
-                                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.Country
-                                            .US
-                                    )
                                     .addPaymentRail(
                                         PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                             .PaymentRail
@@ -147,11 +138,6 @@ internal class CustomerListInternalAccountsPageResponseTest {
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("accountNumber")
-                                        .addCountry(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .Country
-                                                .US
-                                        )
                                         .addPaymentRail(
                                             PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                                 .PaymentRail
