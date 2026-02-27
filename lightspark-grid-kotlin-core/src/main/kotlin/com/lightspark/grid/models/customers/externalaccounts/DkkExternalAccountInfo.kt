@@ -33,7 +33,6 @@ class DkkExternalAccountInfo
 private constructor(
     private val accountType: JsonField<AccountType>,
     private val beneficiary: JsonField<Beneficiary>,
-    private val countries: JsonField<List<Country>>,
     private val iban: JsonField<String>,
     private val paymentRails: JsonField<List<PaymentRail>>,
     private val swiftBic: JsonField<String>,
@@ -48,15 +47,12 @@ private constructor(
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-        @JsonProperty("countries")
-        @ExcludeMissing
-        countries: JsonField<List<Country>> = JsonMissing.of(),
         @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
         @JsonProperty("swiftBic") @ExcludeMissing swiftBic: JsonField<String> = JsonMissing.of(),
-    ) : this(accountType, beneficiary, countries, iban, paymentRails, swiftBic, mutableMapOf())
+    ) : this(accountType, beneficiary, iban, paymentRails, swiftBic, mutableMapOf())
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -69,12 +65,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun countries(): List<Country> = countries.getRequired("countries")
 
     /**
      * The IBAN of the bank
@@ -115,15 +105,6 @@ private constructor(
     @JsonProperty("beneficiary")
     @ExcludeMissing
     fun _beneficiary(): JsonField<Beneficiary> = beneficiary
-
-    /**
-     * Returns the raw JSON value of [countries].
-     *
-     * Unlike [countries], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("countries")
-    @ExcludeMissing
-    fun _countries(): JsonField<List<Country>> = countries
 
     /**
      * Returns the raw JSON value of [iban].
@@ -169,7 +150,6 @@ private constructor(
          * ```kotlin
          * .accountType()
          * .beneficiary()
-         * .countries()
          * .iban()
          * .paymentRails()
          * ```
@@ -182,7 +162,6 @@ private constructor(
 
         private var accountType: JsonField<AccountType>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
-        private var countries: JsonField<MutableList<Country>>? = null
         private var iban: JsonField<String>? = null
         private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
         private var swiftBic: JsonField<String> = JsonMissing.of()
@@ -191,7 +170,6 @@ private constructor(
         internal fun from(dkkExternalAccountInfo: DkkExternalAccountInfo) = apply {
             accountType = dkkExternalAccountInfo.accountType
             beneficiary = dkkExternalAccountInfo.beneficiary
-            countries = dkkExternalAccountInfo.countries.map { it.toMutableList() }
             iban = dkkExternalAccountInfo.iban
             paymentRails = dkkExternalAccountInfo.paymentRails.map { it.toMutableList() }
             swiftBic = dkkExternalAccountInfo.swiftBic
@@ -265,31 +243,6 @@ private constructor(
                     .legalName(legalName)
                     .build()
             )
-
-        fun countries(countries: List<Country>) = countries(JsonField.of(countries))
-
-        /**
-         * Sets [Builder.countries] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.countries] with a well-typed `List<Country>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun countries(countries: JsonField<List<Country>>) = apply {
-            this.countries = countries.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [Country] to [countries].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addCountry(country: Country) = apply {
-            countries =
-                (countries ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("countries", it).add(country)
-                }
-        }
 
         /** The IBAN of the bank */
         fun iban(iban: String) = iban(JsonField.of(iban))
@@ -366,7 +319,6 @@ private constructor(
          * ```kotlin
          * .accountType()
          * .beneficiary()
-         * .countries()
          * .iban()
          * .paymentRails()
          * ```
@@ -377,7 +329,6 @@ private constructor(
             DkkExternalAccountInfo(
                 checkRequired("accountType", accountType),
                 checkRequired("beneficiary", beneficiary),
-                checkRequired("countries", countries).map { it.toImmutable() },
                 checkRequired("iban", iban),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                 swiftBic,
@@ -394,7 +345,6 @@ private constructor(
 
         accountType().validate()
         beneficiary().validate()
-        countries().forEach { it.validate() }
         iban()
         paymentRails().forEach { it.validate() }
         swiftBic()
@@ -417,7 +367,6 @@ private constructor(
     internal fun validity(): Int =
         (accountType.asKnown()?.validity() ?: 0) +
             (beneficiary.asKnown()?.validity() ?: 0) +
-            (countries.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (iban.asKnown() == null) 0 else 1) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (swiftBic.asKnown() == null) 0 else 1)
@@ -712,125 +661,6 @@ private constructor(
         }
     }
 
-    class Country @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val DK = of("DK")
-
-            fun of(value: String) = Country(JsonField.of(value))
-        }
-
-        /** An enum containing [Country]'s known values. */
-        enum class Known {
-            DK
-        }
-
-        /**
-         * An enum containing [Country]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Country] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            DK,
-            /** An enum member indicating that [Country] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                DK -> Value.DK
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                DK -> Known.DK
-                else -> throw LightsparkGridInvalidDataException("Unknown Country: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        fun validate(): Country = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Country && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     class PaymentRail @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -967,7 +797,6 @@ private constructor(
         return other is DkkExternalAccountInfo &&
             accountType == other.accountType &&
             beneficiary == other.beneficiary &&
-            countries == other.countries &&
             iban == other.iban &&
             paymentRails == other.paymentRails &&
             swiftBic == other.swiftBic &&
@@ -975,19 +804,11 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            accountType,
-            beneficiary,
-            countries,
-            iban,
-            paymentRails,
-            swiftBic,
-            additionalProperties,
-        )
+        Objects.hash(accountType, beneficiary, iban, paymentRails, swiftBic, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DkkExternalAccountInfo{accountType=$accountType, beneficiary=$beneficiary, countries=$countries, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, additionalProperties=$additionalProperties}"
+        "DkkExternalAccountInfo{accountType=$accountType, beneficiary=$beneficiary, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, additionalProperties=$additionalProperties}"
 }

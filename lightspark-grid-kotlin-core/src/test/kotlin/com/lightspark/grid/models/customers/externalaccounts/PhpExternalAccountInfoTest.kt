@@ -38,7 +38,6 @@ internal class PhpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(PhpExternalAccountInfo.Country.PH)
                 .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -71,8 +70,6 @@ internal class PhpExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(phpExternalAccountInfo.countries())
-            .containsExactly(PhpExternalAccountInfo.Country.PH)
         assertThat(phpExternalAccountInfo.paymentRails())
             .containsExactly(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -107,7 +104,6 @@ internal class PhpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(PhpExternalAccountInfo.Country.PH)
                 .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

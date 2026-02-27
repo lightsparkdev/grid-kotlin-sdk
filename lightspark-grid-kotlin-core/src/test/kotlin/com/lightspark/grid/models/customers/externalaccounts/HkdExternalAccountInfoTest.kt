@@ -38,7 +38,6 @@ internal class HkdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(HkdExternalAccountInfo.Country.HK)
                 .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -71,8 +70,6 @@ internal class HkdExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(hkdExternalAccountInfo.countries())
-            .containsExactly(HkdExternalAccountInfo.Country.HK)
         assertThat(hkdExternalAccountInfo.paymentRails())
             .containsExactly(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -107,7 +104,6 @@ internal class HkdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(HkdExternalAccountInfo.Country.HK)
                 .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

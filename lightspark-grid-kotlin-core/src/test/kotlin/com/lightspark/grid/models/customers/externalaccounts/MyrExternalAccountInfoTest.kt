@@ -38,7 +38,6 @@ internal class MyrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(MyrExternalAccountInfo.Country.MY)
                 .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -71,8 +70,6 @@ internal class MyrExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(myrExternalAccountInfo.countries())
-            .containsExactly(MyrExternalAccountInfo.Country.MY)
         assertThat(myrExternalAccountInfo.paymentRails())
             .containsExactly(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -107,7 +104,6 @@ internal class MyrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(MyrExternalAccountInfo.Country.MY)
                 .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
