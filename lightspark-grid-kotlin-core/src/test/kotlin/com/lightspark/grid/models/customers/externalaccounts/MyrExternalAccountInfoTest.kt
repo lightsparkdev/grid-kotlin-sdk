@@ -13,9 +13,9 @@ internal class MyrExternalAccountInfoTest {
     fun create() {
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Maybank")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -39,12 +39,13 @@ internal class MyrExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("MABORUMMYYY")
                 .build()
 
-        assertThat(myrExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(myrExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(myrExternalAccountInfo.accountType())
             .isEqualTo(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
-        assertThat(myrExternalAccountInfo.bankName()).isEqualTo("bankName")
+        assertThat(myrExternalAccountInfo.bankName()).isEqualTo("Maybank")
         assertThat(myrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 MyrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -72,6 +73,7 @@ internal class MyrExternalAccountInfoTest {
             )
         assertThat(myrExternalAccountInfo.paymentRails())
             .containsExactly(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(myrExternalAccountInfo.swiftCode()).isEqualTo("MABORUMMYYY")
     }
 
     @Test
@@ -79,9 +81,9 @@ internal class MyrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Maybank")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -105,6 +107,7 @@ internal class MyrExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("MABORUMMYYY")
                 .build()
 
         val roundtrippedMyrExternalAccountInfo =

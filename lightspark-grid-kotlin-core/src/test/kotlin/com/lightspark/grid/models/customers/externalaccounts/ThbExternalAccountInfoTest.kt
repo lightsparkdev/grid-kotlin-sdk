@@ -13,9 +13,9 @@ internal class ThbExternalAccountInfoTest {
     fun create() {
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Bangkok Bank")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -39,12 +39,13 @@ internal class ThbExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BKKBTHBK")
                 .build()
 
-        assertThat(thbExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(thbExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(thbExternalAccountInfo.accountType())
             .isEqualTo(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
-        assertThat(thbExternalAccountInfo.bankName()).isEqualTo("bankName")
+        assertThat(thbExternalAccountInfo.bankName()).isEqualTo("Bangkok Bank")
         assertThat(thbExternalAccountInfo.beneficiary())
             .isEqualTo(
                 ThbExternalAccountInfo.Beneficiary.ofIndividual(
@@ -72,6 +73,7 @@ internal class ThbExternalAccountInfoTest {
             )
         assertThat(thbExternalAccountInfo.paymentRails())
             .containsExactly(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(thbExternalAccountInfo.swiftCode()).isEqualTo("BKKBTHBK")
     }
 
     @Test
@@ -79,9 +81,9 @@ internal class ThbExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Bangkok Bank")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -105,6 +107,7 @@ internal class ThbExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BKKBTHBK")
                 .build()
 
         val roundtrippedThbExternalAccountInfo =

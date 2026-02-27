@@ -13,8 +13,9 @@ internal class IdrExternalAccountInfoTest {
     fun create() {
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .bankName("Bank Central Asia")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,12 +39,14 @@ internal class IdrExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .sortCode("sortCode")
+                .phoneNumber("+6281234567890")
+                .swiftCode("CENAIDJA")
                 .build()
 
-        assertThat(idrExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(idrExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(idrExternalAccountInfo.accountType())
             .isEqualTo(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+        assertThat(idrExternalAccountInfo.bankName()).isEqualTo("Bank Central Asia")
         assertThat(idrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 IdrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,7 +74,8 @@ internal class IdrExternalAccountInfoTest {
             )
         assertThat(idrExternalAccountInfo.paymentRails())
             .containsExactly(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(idrExternalAccountInfo.sortCode()).isEqualTo("sortCode")
+        assertThat(idrExternalAccountInfo.phoneNumber()).isEqualTo("+6281234567890")
+        assertThat(idrExternalAccountInfo.swiftCode()).isEqualTo("CENAIDJA")
     }
 
     @Test
@@ -79,8 +83,9 @@ internal class IdrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .bankName("Bank Central Asia")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -104,7 +109,8 @@ internal class IdrExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .sortCode("sortCode")
+                .phoneNumber("+6281234567890")
+                .swiftCode("CENAIDJA")
                 .build()
 
         val roundtrippedIdrExternalAccountInfo =
