@@ -13,9 +13,9 @@ internal class VndExternalAccountInfoTest {
     fun create() {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Vietcombank")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -39,12 +39,13 @@ internal class VndExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .build()
 
-        assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(vndExternalAccountInfo.accountType())
             .isEqualTo(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
-        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("bankName")
+        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("Vietcombank")
         assertThat(vndExternalAccountInfo.beneficiary())
             .isEqualTo(
                 VndExternalAccountInfo.Beneficiary.ofIndividual(
@@ -72,6 +73,7 @@ internal class VndExternalAccountInfoTest {
             )
         assertThat(vndExternalAccountInfo.paymentRails())
             .containsExactly(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(vndExternalAccountInfo.swiftCode()).isEqualTo("BFTVVNVX")
     }
 
     @Test
@@ -79,9 +81,9 @@ internal class VndExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("1234567890")
                 .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
-                .bankName("bankName")
+                .bankName("Vietcombank")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -105,6 +107,7 @@ internal class VndExternalAccountInfoTest {
                         .build()
                 )
                 .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .build()
 
         val roundtrippedVndExternalAccountInfo =
