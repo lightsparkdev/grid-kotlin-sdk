@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.8.0 (2026-02-27)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* Add ZAR KES TSZ ZMW RWF account beneficiary information for grid ([c49254f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c49254f80e29ad3b5d6c9a6fa27b62df68c78b2d))
+* **api:** add swiftCode to HKD/MYR/THB/VND, add bankName/phoneNumber to IDR accounts ([1a7a750](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1a7a7509da4896f4e26dab2d1bbeed20da43f275))
+
+
+### Bug Fixes
+
+* **types:** remove countries field from external account models ([6428485](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/642848508b7493e629046829298038e8c1a4828b))
+
+
+### Chores
+
+* **tests:** update external account test fixtures from BRL to USD ([6293cb6](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6293cb6a534a2eafa35ddab914efdd553a8f5976))
+
 ## 0.7.0 (2026-02-25)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.6.0...v0.7.0)
