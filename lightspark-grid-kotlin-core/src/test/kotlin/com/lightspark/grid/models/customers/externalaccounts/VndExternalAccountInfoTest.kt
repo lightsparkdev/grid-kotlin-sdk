@@ -38,7 +38,6 @@ internal class VndExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(VndExternalAccountInfo.Country.VN)
                 .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -71,8 +70,6 @@ internal class VndExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(vndExternalAccountInfo.countries())
-            .containsExactly(VndExternalAccountInfo.Country.VN)
         assertThat(vndExternalAccountInfo.paymentRails())
             .containsExactly(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -107,7 +104,6 @@ internal class VndExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(VndExternalAccountInfo.Country.VN)
                 .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

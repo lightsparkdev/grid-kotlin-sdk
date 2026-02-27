@@ -37,7 +37,6 @@ internal class MxnExternalAccountInfoTest {
                         .build()
                 )
                 .clabeNumber("123456789012345678")
-                .addCountry(MxnExternalAccountInfo.Country.MX)
                 .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
@@ -69,8 +68,6 @@ internal class MxnExternalAccountInfoTest {
                 )
             )
         assertThat(mxnExternalAccountInfo.clabeNumber()).isEqualTo("123456789012345678")
-        assertThat(mxnExternalAccountInfo.countries())
-            .containsExactly(MxnExternalAccountInfo.Country.MX)
         assertThat(mxnExternalAccountInfo.paymentRails())
             .containsExactly(MxnExternalAccountInfo.PaymentRail.SPEI)
     }
@@ -104,7 +101,6 @@ internal class MxnExternalAccountInfoTest {
                         .build()
                 )
                 .clabeNumber("123456789012345678")
-                .addCountry(MxnExternalAccountInfo.Country.MX)
                 .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
