@@ -3828,15 +3828,12 @@ private constructor(
 
                     val UPI = of("UPI")
 
-                    val IMPS = of("IMPS")
-
                     fun of(value: String) = PaymentRail(JsonField.of(value))
                 }
 
                 /** An enum containing [PaymentRail]'s known values. */
                 enum class Known {
-                    UPI,
-                    IMPS,
+                    UPI
                 }
 
                 /**
@@ -3850,7 +3847,6 @@ private constructor(
                  */
                 enum class Value {
                     UPI,
-                    IMPS,
                     /**
                      * An enum member indicating that [PaymentRail] was instantiated with an unknown
                      * value.
@@ -3868,7 +3864,6 @@ private constructor(
                 fun value(): Value =
                     when (this) {
                         UPI -> Value.UPI
-                        IMPS -> Value.IMPS
                         else -> Value._UNKNOWN
                     }
 
@@ -3884,7 +3879,6 @@ private constructor(
                 fun known(): Known =
                     when (this) {
                         UPI -> Known.UPI
-                        IMPS -> Known.IMPS
                         else ->
                             throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
                     }
