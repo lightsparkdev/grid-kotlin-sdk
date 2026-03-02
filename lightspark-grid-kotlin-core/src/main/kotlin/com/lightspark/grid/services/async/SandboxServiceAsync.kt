@@ -8,6 +8,8 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
+import com.lightspark.grid.models.sandbox.SandboxSendTestParams
+import com.lightspark.grid.models.sandbox.SandboxSendTestResponse
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
 
@@ -38,6 +40,16 @@ interface SandboxServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SandboxSendFundsResponse
 
+    /** Send a test webhook to the configured endpoint */
+    suspend fun sendTest(
+        params: SandboxSendTestParams = SandboxSendTestParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SandboxSendTestResponse
+
+    /** @see sendTest */
+    suspend fun sendTest(requestOptions: RequestOptions): SandboxSendTestResponse =
+        sendTest(SandboxSendTestParams.none(), requestOptions)
+
     /**
      * A view of [SandboxServiceAsync] that provides access to raw HTTP responses for each method.
      */
@@ -65,5 +77,22 @@ interface SandboxServiceAsync {
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SandboxSendFundsResponse>
+
+        /**
+         * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as
+         * [SandboxServiceAsync.sendTest].
+         */
+        @MustBeClosed
+        suspend fun sendTest(
+            params: SandboxSendTestParams = SandboxSendTestParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SandboxSendTestResponse>
+
+        /** @see sendTest */
+        @MustBeClosed
+        suspend fun sendTest(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<SandboxSendTestResponse> =
+            sendTest(SandboxSendTestParams.none(), requestOptions)
     }
 }
