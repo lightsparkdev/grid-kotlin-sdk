@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.webhooks
+package com.lightspark.grid.models.sandbox
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -15,7 +15,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class WebhookSendTestResponse
+class SandboxSendTestResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val responseStatus: JsonField<Long>,
@@ -99,7 +99,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [WebhookSendTestResponse].
+         * Returns a mutable builder for constructing an instance of [SandboxSendTestResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -109,7 +109,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [WebhookSendTestResponse]. */
+    /** A builder for [SandboxSendTestResponse]. */
     class Builder internal constructor() {
 
         private var responseStatus: JsonField<Long>? = null
@@ -117,11 +117,11 @@ private constructor(
         private var url: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(webhookSendTestResponse: WebhookSendTestResponse) = apply {
-            responseStatus = webhookSendTestResponse.responseStatus
-            responseBody = webhookSendTestResponse.responseBody
-            url = webhookSendTestResponse.url
-            additionalProperties = webhookSendTestResponse.additionalProperties.toMutableMap()
+        internal fun from(sandboxSendTestResponse: SandboxSendTestResponse) = apply {
+            responseStatus = sandboxSendTestResponse.responseStatus
+            responseBody = sandboxSendTestResponse.responseBody
+            url = sandboxSendTestResponse.url
+            additionalProperties = sandboxSendTestResponse.additionalProperties.toMutableMap()
         }
 
         /** The HTTP status code returned by the webhook endpoint */
@@ -183,7 +183,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [WebhookSendTestResponse].
+         * Returns an immutable instance of [SandboxSendTestResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -194,8 +194,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): WebhookSendTestResponse =
-            WebhookSendTestResponse(
+        fun build(): SandboxSendTestResponse =
+            SandboxSendTestResponse(
                 checkRequired("responseStatus", responseStatus),
                 responseBody,
                 url,
@@ -205,7 +205,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): WebhookSendTestResponse = apply {
+    fun validate(): SandboxSendTestResponse = apply {
         if (validated) {
             return@apply
         }
@@ -239,7 +239,7 @@ private constructor(
             return true
         }
 
-        return other is WebhookSendTestResponse &&
+        return other is SandboxSendTestResponse &&
             responseStatus == other.responseStatus &&
             responseBody == other.responseBody &&
             url == other.url &&
@@ -253,5 +253,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "WebhookSendTestResponse{responseStatus=$responseStatus, responseBody=$responseBody, url=$url, additionalProperties=$additionalProperties}"
+        "SandboxSendTestResponse{responseStatus=$responseStatus, responseBody=$responseBody, url=$url, additionalProperties=$additionalProperties}"
 }
