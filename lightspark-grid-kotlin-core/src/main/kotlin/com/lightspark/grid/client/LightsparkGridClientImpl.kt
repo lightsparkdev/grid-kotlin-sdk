@@ -84,8 +84,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         TransactionServiceImpl(clientOptionsWithUserAgent)
     }
 
-    private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptionsWithUserAgent) }
-
     private val invitations: InvitationService by lazy {
         InvitationServiceImpl(clientOptionsWithUserAgent)
     }
@@ -101,6 +99,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     private val exchangeRates: ExchangeRateService by lazy {
         ExchangeRateServiceImpl(clientOptionsWithUserAgent)
     }
+
+    private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptionsWithUserAgent) }
 
     override fun async(): LightsparkGridClientAsync = async
 
@@ -127,8 +127,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     override fun transactions(): TransactionService = transactions
 
-    override fun webhooks(): WebhookService = webhooks
-
     override fun invitations(): InvitationService = invitations
 
     override fun sandbox(): SandboxService = sandbox
@@ -138,6 +136,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     override fun tokens(): TokenService = tokens
 
     override fun exchangeRates(): ExchangeRateService = exchangeRates
+
+    override fun webhooks(): WebhookService = webhooks
 
     override fun close() = clientOptions.close()
 
@@ -180,10 +180,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
             TransactionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val webhooks: WebhookService.WithRawResponse by lazy {
-            WebhookServiceImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val invitations: InvitationService.WithRawResponse by lazy {
             InvitationServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -202,6 +198,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         private val exchangeRates: ExchangeRateService.WithRawResponse by lazy {
             ExchangeRateServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val webhooks: WebhookService.WithRawResponse by lazy {
+            WebhookServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -229,8 +229,6 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         override fun transactions(): TransactionService.WithRawResponse = transactions
 
-        override fun webhooks(): WebhookService.WithRawResponse = webhooks
-
         override fun invitations(): InvitationService.WithRawResponse = invitations
 
         override fun sandbox(): SandboxService.WithRawResponse = sandbox
@@ -240,5 +238,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         override fun tokens(): TokenService.WithRawResponse = tokens
 
         override fun exchangeRates(): ExchangeRateService.WithRawResponse = exchangeRates
+
+        override fun webhooks(): WebhookService.WithRawResponse = webhooks
     }
 }

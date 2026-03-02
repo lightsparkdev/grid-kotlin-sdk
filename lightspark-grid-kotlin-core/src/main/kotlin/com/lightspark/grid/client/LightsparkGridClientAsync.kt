@@ -73,8 +73,6 @@ interface LightsparkGridClientAsync {
 
     fun transactions(): TransactionServiceAsync
 
-    fun webhooks(): WebhookServiceAsync
-
     fun invitations(): InvitationServiceAsync
 
     fun sandbox(): SandboxServiceAsync
@@ -84,6 +82,8 @@ interface LightsparkGridClientAsync {
     fun tokens(): TokenServiceAsync
 
     fun exchangeRates(): ExchangeRateServiceAsync
+
+    fun webhooks(): WebhookServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -131,8 +131,6 @@ interface LightsparkGridClientAsync {
 
         fun transactions(): TransactionServiceAsync.WithRawResponse
 
-        fun webhooks(): WebhookServiceAsync.WithRawResponse
-
         fun invitations(): InvitationServiceAsync.WithRawResponse
 
         fun sandbox(): SandboxServiceAsync.WithRawResponse
@@ -142,5 +140,7 @@ interface LightsparkGridClientAsync {
         fun tokens(): TokenServiceAsync.WithRawResponse
 
         fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse
+
+        fun webhooks(): WebhookServiceAsync.WithRawResponse
     }
 }
