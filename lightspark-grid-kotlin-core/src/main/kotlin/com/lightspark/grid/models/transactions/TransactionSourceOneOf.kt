@@ -15,19 +15,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
-import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-/** Source account details */
 @JsonDeserialize(using = TransactionSourceOneOf.Deserializer::class)
 @JsonSerialize(using = TransactionSourceOneOf.Serializer::class)
 class TransactionSourceOneOf
@@ -38,16 +35,10 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
-    /** Source account details */
     fun account(): Account? = account
 
-    /** UMA address source details */
     fun umaAddress(): UmaAddress? = umaAddress
 
-    /**
-     * Transaction was funded using a real-time funding source (RTP, SEPA Instant, Spark, Stables,
-     * etc.).
-     */
     fun realtimeFunding(): RealtimeFunding? = realtimeFunding
 
     fun isAccount(): Boolean = account != null
@@ -56,16 +47,10 @@ private constructor(
 
     fun isRealtimeFunding(): Boolean = realtimeFunding != null
 
-    /** Source account details */
     fun asAccount(): Account = account.getOrThrow("account")
 
-    /** UMA address source details */
     fun asUmaAddress(): UmaAddress = umaAddress.getOrThrow("umaAddress")
 
-    /**
-     * Transaction was funded using a real-time funding source (RTP, SEPA Instant, Spark, Stables,
-     * etc.).
-     */
     fun asRealtimeFunding(): RealtimeFunding = realtimeFunding.getOrThrow("realtimeFunding")
 
     fun _json(): JsonValue? = _json
@@ -154,16 +139,10 @@ private constructor(
 
     companion object {
 
-        /** Source account details */
         fun ofAccount(account: Account) = TransactionSourceOneOf(account = account)
 
-        /** UMA address source details */
         fun ofUmaAddress(umaAddress: UmaAddress) = TransactionSourceOneOf(umaAddress = umaAddress)
 
-        /**
-         * Transaction was funded using a real-time funding source (RTP, SEPA Instant, Spark,
-         * Stables, etc.).
-         */
         fun ofRealtimeFunding(realtimeFunding: RealtimeFunding) =
             TransactionSourceOneOf(realtimeFunding = realtimeFunding)
     }
@@ -174,16 +153,10 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        /** Source account details */
         fun visitAccount(account: Account): T
 
-        /** UMA address source details */
         fun visitUmaAddress(umaAddress: UmaAddress): T
 
-        /**
-         * Transaction was funded using a real-time funding source (RTP, SEPA Instant, Spark,
-         * Stables, etc.).
-         */
         fun visitRealtimeFunding(realtimeFunding: RealtimeFunding): T
 
         /**
@@ -206,31 +179,27 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): TransactionSourceOneOf {
             val json = JsonValue.fromJsonNode(node)
+            val sourceType = json.asObject()?.get("sourceType")?.asString()
 
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<Account>())?.let {
-                            TransactionSourceOneOf(account = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<UmaAddress>())?.let {
-                            TransactionSourceOneOf(umaAddress = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<RealtimeFunding>())?.let {
-                            TransactionSourceOneOf(realtimeFunding = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> TransactionSourceOneOf(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (sourceType) {
+                "ACCOUNT" -> {
+                    return tryDeserialize(node, jacksonTypeRef<Account>())?.let {
+                        TransactionSourceOneOf(account = it, _json = json)
+                    } ?: TransactionSourceOneOf(_json = json)
+                }
+                "UMA_ADDRESS" -> {
+                    return tryDeserialize(node, jacksonTypeRef<UmaAddress>())?.let {
+                        TransactionSourceOneOf(umaAddress = it, _json = json)
+                    } ?: TransactionSourceOneOf(_json = json)
+                }
+                "REALTIME_FUNDING" -> {
+                    return tryDeserialize(node, jacksonTypeRef<RealtimeFunding>())?.let {
+                        TransactionSourceOneOf(realtimeFunding = it, _json = json)
+                    } ?: TransactionSourceOneOf(_json = json)
+                }
             }
+
+            return TransactionSourceOneOf(_json = json)
         }
     }
 
@@ -252,39 +221,23 @@ private constructor(
         }
     }
 
-    /** Source account details */
     class Account
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val currency: JsonField<String>,
         private val accountId: JsonField<String>,
-        private val sourceType: JsonField<SourceType>,
+        private val sourceType: JsonValue,
+        private val currency: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("currency")
-            @ExcludeMissing
-            currency: JsonField<String> = JsonMissing.of(),
             @JsonProperty("accountId")
             @ExcludeMissing
             accountId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("sourceType")
-            @ExcludeMissing
-            sourceType: JsonField<SourceType> = JsonMissing.of(),
-        ) : this(currency, accountId, sourceType, mutableMapOf())
-
-        fun toBaseTransactionSource(): BaseTransactionSource =
-            BaseTransactionSource.builder().currency(currency).build()
-
-        /**
-         * Currency code for the source
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun currency(): String? = currency.getNullable("currency")
+            @JsonProperty("sourceType") @ExcludeMissing sourceType: JsonValue = JsonMissing.of(),
+            @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+        ) : this(accountId, sourceType, currency, mutableMapOf())
 
         /**
          * Source account identifier
@@ -295,17 +248,23 @@ private constructor(
         fun accountId(): String = accountId.getRequired("accountId")
 
         /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * Expected to always return the following:
+         * ```kotlin
+         * JsonValue.from("ACCOUNT")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
          */
-        fun sourceType(): SourceType = sourceType.getRequired("sourceType")
+        @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
 
         /**
-         * Returns the raw JSON value of [currency].
+         * Currency code for the source
          *
-         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
          */
-        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+        fun currency(): String? = currency.getNullable("currency")
 
         /**
          * Returns the raw JSON value of [accountId].
@@ -315,13 +274,11 @@ private constructor(
         @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
 
         /**
-         * Returns the raw JSON value of [sourceType].
+         * Returns the raw JSON value of [currency].
          *
-         * Unlike [sourceType], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("sourceType")
-        @ExcludeMissing
-        fun _sourceType(): JsonField<SourceType> = sourceType
+        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -343,7 +300,6 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountId()
-             * .sourceType()
              * ```
              */
             fun builder() = Builder()
@@ -352,29 +308,17 @@ private constructor(
         /** A builder for [Account]. */
         class Builder internal constructor() {
 
-            private var currency: JsonField<String> = JsonMissing.of()
             private var accountId: JsonField<String>? = null
-            private var sourceType: JsonField<SourceType>? = null
+            private var sourceType: JsonValue = JsonValue.from("ACCOUNT")
+            private var currency: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(account: Account) = apply {
-                currency = account.currency
                 accountId = account.accountId
                 sourceType = account.sourceType
+                currency = account.currency
                 additionalProperties = account.additionalProperties.toMutableMap()
             }
-
-            /** Currency code for the source */
-            fun currency(currency: String) = currency(JsonField.of(currency))
-
-            /**
-             * Sets [Builder.currency] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.currency] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
             /** Source account identifier */
             fun accountId(accountId: String) = accountId(JsonField.of(accountId))
@@ -388,18 +332,31 @@ private constructor(
              */
             fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
-            fun sourceType(sourceType: SourceType) = sourceType(JsonField.of(sourceType))
-
             /**
-             * Sets [Builder.sourceType] to an arbitrary JSON value.
+             * Sets the field to an arbitrary JSON value.
              *
-             * You should usually call [Builder.sourceType] with a well-typed [SourceType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```kotlin
+             * JsonValue.from("ACCOUNT")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun sourceType(sourceType: JsonField<SourceType>) = apply {
-                this.sourceType = sourceType
-            }
+            fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
+
+            /** Currency code for the source */
+            fun currency(currency: String) = currency(JsonField.of(currency))
+
+            /**
+             * Sets [Builder.currency] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currency] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -428,16 +385,15 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountId()
-             * .sourceType()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Account =
                 Account(
-                    currency,
                     checkRequired("accountId", accountId),
-                    checkRequired("sourceType", sourceType),
+                    sourceType,
+                    currency,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -449,9 +405,15 @@ private constructor(
                 return@apply
             }
 
-            currency()
             accountId()
-            sourceType().validate()
+            _sourceType().let {
+                if (it != JsonValue.from("ACCOUNT")) {
+                    throw LightsparkGridInvalidDataException(
+                        "'sourceType' is invalid, received $it"
+                    )
+                }
+            }
+            currency()
             validated = true
         }
 
@@ -470,133 +432,9 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (currency.asKnown() == null) 0 else 1) +
-                (if (accountId.asKnown() == null) 0 else 1) +
-                (sourceType.asKnown()?.validity() ?: 0)
-
-        class SourceType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val ACCOUNT = of("ACCOUNT")
-
-                fun of(value: String) = SourceType(JsonField.of(value))
-            }
-
-            /** An enum containing [SourceType]'s known values. */
-            enum class Known {
-                ACCOUNT
-            }
-
-            /**
-             * An enum containing [SourceType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [SourceType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                ACCOUNT,
-                /**
-                 * An enum member indicating that [SourceType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    ACCOUNT -> Value.ACCOUNT
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    ACCOUNT -> Known.ACCOUNT
-                    else -> throw LightsparkGridInvalidDataException("Unknown SourceType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): SourceType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is SourceType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
+            (if (accountId.asKnown() == null) 0 else 1) +
+                sourceType.let { if (it == JsonValue.from("ACCOUNT")) 1 else 0 } +
+                (if (currency.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -604,61 +442,50 @@ private constructor(
             }
 
             return other is Account &&
-                currency == other.currency &&
                 accountId == other.accountId &&
                 sourceType == other.sourceType &&
+                currency == other.currency &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(currency, accountId, sourceType, additionalProperties)
+            Objects.hash(accountId, sourceType, currency, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Account{currency=$currency, accountId=$accountId, sourceType=$sourceType, additionalProperties=$additionalProperties}"
+            "Account{accountId=$accountId, sourceType=$sourceType, currency=$currency, additionalProperties=$additionalProperties}"
     }
 
-    /** UMA address source details */
     class UmaAddress
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val currency: JsonField<String>,
-        private val sourceType: JsonField<SourceType>,
+        private val sourceType: JsonValue,
         private val umaAddress: JsonField<String>,
+        private val currency: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("currency")
-            @ExcludeMissing
-            currency: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("sourceType")
-            @ExcludeMissing
-            sourceType: JsonField<SourceType> = JsonMissing.of(),
+            @JsonProperty("sourceType") @ExcludeMissing sourceType: JsonValue = JsonMissing.of(),
             @JsonProperty("umaAddress")
             @ExcludeMissing
             umaAddress: JsonField<String> = JsonMissing.of(),
-        ) : this(currency, sourceType, umaAddress, mutableMapOf())
-
-        fun toBaseTransactionSource(): BaseTransactionSource =
-            BaseTransactionSource.builder().currency(currency).build()
+            @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+        ) : this(sourceType, umaAddress, currency, mutableMapOf())
 
         /**
-         * Currency code for the source
+         * Expected to always return the following:
+         * ```kotlin
+         * JsonValue.from("UMA_ADDRESS")
+         * ```
          *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
          */
-        fun currency(): String? = currency.getNullable("currency")
-
-        /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun sourceType(): SourceType = sourceType.getRequired("sourceType")
+        @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
 
         /**
          * UMA address of the sender
@@ -669,20 +496,12 @@ private constructor(
         fun umaAddress(): String = umaAddress.getRequired("umaAddress")
 
         /**
-         * Returns the raw JSON value of [currency].
+         * Currency code for the source
          *
-         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
          */
-        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
-
-        /**
-         * Returns the raw JSON value of [sourceType].
-         *
-         * Unlike [sourceType], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("sourceType")
-        @ExcludeMissing
-        fun _sourceType(): JsonField<SourceType> = sourceType
+        fun currency(): String? = currency.getNullable("currency")
 
         /**
          * Returns the raw JSON value of [umaAddress].
@@ -692,6 +511,13 @@ private constructor(
         @JsonProperty("umaAddress")
         @ExcludeMissing
         fun _umaAddress(): JsonField<String> = umaAddress
+
+        /**
+         * Returns the raw JSON value of [currency].
+         *
+         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -712,7 +538,6 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .sourceType()
              * .umaAddress()
              * ```
              */
@@ -722,42 +547,31 @@ private constructor(
         /** A builder for [UmaAddress]. */
         class Builder internal constructor() {
 
-            private var currency: JsonField<String> = JsonMissing.of()
-            private var sourceType: JsonField<SourceType>? = null
+            private var sourceType: JsonValue = JsonValue.from("UMA_ADDRESS")
             private var umaAddress: JsonField<String>? = null
+            private var currency: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(umaAddress: UmaAddress) = apply {
-                currency = umaAddress.currency
                 sourceType = umaAddress.sourceType
                 this.umaAddress = umaAddress.umaAddress
+                currency = umaAddress.currency
                 additionalProperties = umaAddress.additionalProperties.toMutableMap()
             }
 
-            /** Currency code for the source */
-            fun currency(currency: String) = currency(JsonField.of(currency))
-
             /**
-             * Sets [Builder.currency] to an arbitrary JSON value.
+             * Sets the field to an arbitrary JSON value.
              *
-             * You should usually call [Builder.currency] with a well-typed [String] value instead.
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```kotlin
+             * JsonValue.from("UMA_ADDRESS")
+             * ```
+             *
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
-
-            fun sourceType(sourceType: SourceType) = sourceType(JsonField.of(sourceType))
-
-            /**
-             * Sets [Builder.sourceType] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.sourceType] with a well-typed [SourceType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun sourceType(sourceType: JsonField<SourceType>) = apply {
-                this.sourceType = sourceType
-            }
+            fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
 
             /** UMA address of the sender */
             fun umaAddress(umaAddress: String) = umaAddress(JsonField.of(umaAddress))
@@ -770,6 +584,18 @@ private constructor(
              * supported value.
              */
             fun umaAddress(umaAddress: JsonField<String>) = apply { this.umaAddress = umaAddress }
+
+            /** Currency code for the source */
+            fun currency(currency: String) = currency(JsonField.of(currency))
+
+            /**
+             * Sets [Builder.currency] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currency] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -797,7 +623,6 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .sourceType()
              * .umaAddress()
              * ```
              *
@@ -805,9 +630,9 @@ private constructor(
              */
             fun build(): UmaAddress =
                 UmaAddress(
-                    currency,
-                    checkRequired("sourceType", sourceType),
+                    sourceType,
                     checkRequired("umaAddress", umaAddress),
+                    currency,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -819,9 +644,15 @@ private constructor(
                 return@apply
             }
 
-            currency()
-            sourceType().validate()
+            _sourceType().let {
+                if (it != JsonValue.from("UMA_ADDRESS")) {
+                    throw LightsparkGridInvalidDataException(
+                        "'sourceType' is invalid, received $it"
+                    )
+                }
+            }
             umaAddress()
+            currency()
             validated = true
         }
 
@@ -840,133 +671,9 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (currency.asKnown() == null) 0 else 1) +
-                (sourceType.asKnown()?.validity() ?: 0) +
-                (if (umaAddress.asKnown() == null) 0 else 1)
-
-        class SourceType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val UMA_ADDRESS = of("UMA_ADDRESS")
-
-                fun of(value: String) = SourceType(JsonField.of(value))
-            }
-
-            /** An enum containing [SourceType]'s known values. */
-            enum class Known {
-                UMA_ADDRESS
-            }
-
-            /**
-             * An enum containing [SourceType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [SourceType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                UMA_ADDRESS,
-                /**
-                 * An enum member indicating that [SourceType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    UMA_ADDRESS -> Value.UMA_ADDRESS
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    UMA_ADDRESS -> Known.UMA_ADDRESS
-                    else -> throw LightsparkGridInvalidDataException("Unknown SourceType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): SourceType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is SourceType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
+            sourceType.let { if (it == JsonValue.from("UMA_ADDRESS")) 1 else 0 } +
+                (if (umaAddress.asKnown() == null) 0 else 1) +
+                (if (currency.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -974,31 +681,27 @@ private constructor(
             }
 
             return other is UmaAddress &&
-                currency == other.currency &&
                 sourceType == other.sourceType &&
                 umaAddress == other.umaAddress &&
+                currency == other.currency &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(currency, sourceType, umaAddress, additionalProperties)
+            Objects.hash(sourceType, umaAddress, currency, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UmaAddress{currency=$currency, sourceType=$sourceType, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+            "UmaAddress{sourceType=$sourceType, umaAddress=$umaAddress, currency=$currency, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * Transaction was funded using a real-time funding source (RTP, SEPA Instant, Spark, Stables,
-     * etc.).
-     */
     class RealtimeFunding
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val currency: JsonField<String>,
-        private val sourceType: JsonField<SourceType>,
+        private val sourceType: JsonValue,
         private val customerId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -1008,30 +711,30 @@ private constructor(
             @JsonProperty("currency")
             @ExcludeMissing
             currency: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("sourceType")
-            @ExcludeMissing
-            sourceType: JsonField<SourceType> = JsonMissing.of(),
+            @JsonProperty("sourceType") @ExcludeMissing sourceType: JsonValue = JsonMissing.of(),
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
         ) : this(currency, sourceType, customerId, mutableMapOf())
 
-        fun toBaseTransactionSource(): BaseTransactionSource =
-            BaseTransactionSource.builder().currency(currency).build()
-
         /**
-         * Currency code for the source
+         * Currency code for the funding source
          *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun currency(): String? = currency.getNullable("currency")
-
-        /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun sourceType(): SourceType = sourceType.getRequired("sourceType")
+        fun currency(): String = currency.getRequired("currency")
+
+        /**
+         * Expected to always return the following:
+         * ```kotlin
+         * JsonValue.from("REALTIME_FUNDING")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
+         */
+        @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
 
         /**
          * The customer on whose behalf the transaction was initiated.
@@ -1047,15 +750,6 @@ private constructor(
          * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
-
-        /**
-         * Returns the raw JSON value of [sourceType].
-         *
-         * Unlike [sourceType], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("sourceType")
-        @ExcludeMissing
-        fun _sourceType(): JsonField<SourceType> = sourceType
 
         /**
          * Returns the raw JSON value of [customerId].
@@ -1085,7 +779,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .sourceType()
+             * .currency()
              * ```
              */
             fun builder() = Builder()
@@ -1094,8 +788,8 @@ private constructor(
         /** A builder for [RealtimeFunding]. */
         class Builder internal constructor() {
 
-            private var currency: JsonField<String> = JsonMissing.of()
-            private var sourceType: JsonField<SourceType>? = null
+            private var currency: JsonField<String>? = null
+            private var sourceType: JsonValue = JsonValue.from("REALTIME_FUNDING")
             private var customerId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1106,7 +800,7 @@ private constructor(
                 additionalProperties = realtimeFunding.additionalProperties.toMutableMap()
             }
 
-            /** Currency code for the source */
+            /** Currency code for the funding source */
             fun currency(currency: String) = currency(JsonField.of(currency))
 
             /**
@@ -1118,18 +812,19 @@ private constructor(
              */
             fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
-            fun sourceType(sourceType: SourceType) = sourceType(JsonField.of(sourceType))
-
             /**
-             * Sets [Builder.sourceType] to an arbitrary JSON value.
+             * Sets the field to an arbitrary JSON value.
              *
-             * You should usually call [Builder.sourceType] with a well-typed [SourceType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```kotlin
+             * JsonValue.from("REALTIME_FUNDING")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun sourceType(sourceType: JsonField<SourceType>) = apply {
-                this.sourceType = sourceType
-            }
+            fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
 
             /** The customer on whose behalf the transaction was initiated. */
             fun customerId(customerId: String) = customerId(JsonField.of(customerId))
@@ -1169,15 +864,15 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .sourceType()
+             * .currency()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): RealtimeFunding =
                 RealtimeFunding(
-                    currency,
-                    checkRequired("sourceType", sourceType),
+                    checkRequired("currency", currency),
+                    sourceType,
                     customerId,
                     additionalProperties.toMutableMap(),
                 )
@@ -1191,7 +886,13 @@ private constructor(
             }
 
             currency()
-            sourceType().validate()
+            _sourceType().let {
+                if (it != JsonValue.from("REALTIME_FUNDING")) {
+                    throw LightsparkGridInvalidDataException(
+                        "'sourceType' is invalid, received $it"
+                    )
+                }
+            }
             customerId()
             validated = true
         }
@@ -1212,132 +913,8 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (currency.asKnown() == null) 0 else 1) +
-                (sourceType.asKnown()?.validity() ?: 0) +
+                sourceType.let { if (it == JsonValue.from("REALTIME_FUNDING")) 1 else 0 } +
                 (if (customerId.asKnown() == null) 0 else 1)
-
-        class SourceType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val REALTIME_FUNDING = of("REALTIME_FUNDING")
-
-                fun of(value: String) = SourceType(JsonField.of(value))
-            }
-
-            /** An enum containing [SourceType]'s known values. */
-            enum class Known {
-                REALTIME_FUNDING
-            }
-
-            /**
-             * An enum containing [SourceType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [SourceType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                REALTIME_FUNDING,
-                /**
-                 * An enum member indicating that [SourceType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    REALTIME_FUNDING -> Value.REALTIME_FUNDING
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    REALTIME_FUNDING -> Known.REALTIME_FUNDING
-                    else -> throw LightsparkGridInvalidDataException("Unknown SourceType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): SourceType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is SourceType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {

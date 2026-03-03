@@ -69,9 +69,8 @@ internal class IncomingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .currency("USD")
                         .build()
                 )
                 .build()
@@ -142,9 +141,8 @@ internal class IncomingTransactionTest {
             .isEqualTo(
                 TransactionSourceOneOf.ofAccount(
                     TransactionSourceOneOf.Account.builder()
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .currency("USD")
                         .build()
                 )
             )
@@ -206,9 +204,8 @@ internal class IncomingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .currency("USD")
                         .build()
                 )
                 .build()

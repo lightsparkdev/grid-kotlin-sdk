@@ -181,7 +181,7 @@ private constructor(
          * Alias for calling [addData] with
          * `TransactionListResponse.ofOutgoingTransaction(outgoingTransaction)`.
          */
-        fun addData(outgoingTransaction: TransactionListResponse.OutgoingTransaction) =
+        fun addData(outgoingTransaction: OutgoingTransaction) =
             addData(TransactionListResponse.ofOutgoingTransaction(outgoingTransaction))
 
         /** Indicates if more results are available beyond this page */

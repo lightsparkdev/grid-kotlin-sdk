@@ -19,7 +19,7 @@ internal class SandboxServiceAsyncTest {
                 .build()
         val sandboxServiceAsync = client.sandbox()
 
-        val response =
+        val outgoingTransaction =
             sandboxServiceAsync.sendFunds(
                 SandboxSendFundsParams.builder()
                     .currencyCode("USD")
@@ -28,7 +28,7 @@ internal class SandboxServiceAsyncTest {
                     .build()
             )
 
-        response.validate()
+        outgoingTransaction.validate()
     }
 
     @Disabled("Mock server tests are disabled")

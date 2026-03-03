@@ -257,8 +257,6 @@ private constructor(
         reconciliationInstructions.getNullable("reconciliationInstructions")
 
     /**
-     * Source account details
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
@@ -745,7 +743,6 @@ private constructor(
             reconciliationInstructions: JsonField<ReconciliationInstructions>
         ) = apply { this.reconciliationInstructions = reconciliationInstructions }
 
-        /** Source account details */
         fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -765,18 +762,12 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.Account.builder()
-         *     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountSource(accountId: String) =
-            source(
-                TransactionSourceOneOf.Account.builder()
-                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
-                    .accountId(accountId)
-                    .build()
-            )
+            source(TransactionSourceOneOf.Account.builder().accountId(accountId).build())
 
         /** Alias for calling [source] with `TransactionSourceOneOf.ofUmaAddress(umaAddress)`. */
         fun source(umaAddress: TransactionSourceOneOf.UmaAddress) =
@@ -786,18 +777,12 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.UmaAddress.builder()
-         *     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressSource(umaAddress: String) =
-            source(
-                TransactionSourceOneOf.UmaAddress.builder()
-                    .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
-                    .umaAddress(umaAddress)
-                    .build()
-            )
+            source(TransactionSourceOneOf.UmaAddress.builder().umaAddress(umaAddress).build())
 
         /**
          * Alias for calling [source] with
@@ -810,18 +795,12 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.RealtimeFunding.builder()
-         *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
          *     .currency(currency)
          *     .build()
          * ```
          */
         fun realtimeFundingSource(currency: String) =
-            source(
-                TransactionSourceOneOf.RealtimeFunding.builder()
-                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
-                    .currency(currency)
-                    .build()
-            )
+            source(TransactionSourceOneOf.RealtimeFunding.builder().currency(currency).build())
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
