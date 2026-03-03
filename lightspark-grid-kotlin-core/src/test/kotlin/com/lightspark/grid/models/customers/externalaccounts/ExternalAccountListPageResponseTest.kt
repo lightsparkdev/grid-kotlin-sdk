@@ -53,9 +53,7 @@ internal class ExternalAccountListPageResponseTest {
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )
                         .beneficiaryVerifiedData(
-                            ExternalAccount.BeneficiaryVerifiedData.builder()
-                                .fullName("John Doe")
-                                .build()
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
@@ -108,9 +106,7 @@ internal class ExternalAccountListPageResponseTest {
                         ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                     )
                     .beneficiaryVerifiedData(
-                        ExternalAccount.BeneficiaryVerifiedData.builder()
-                            .fullName("John Doe")
-                            .build()
+                        BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                     )
                     .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                     .defaultUmaDepositAccount(false)
@@ -167,9 +163,7 @@ internal class ExternalAccountListPageResponseTest {
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )
                         .beneficiaryVerifiedData(
-                            ExternalAccount.BeneficiaryVerifiedData.builder()
-                                .fullName("John Doe")
-                                .build()
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
