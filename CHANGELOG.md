@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0 (2026-03-03)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** manual updates ([cd338d7](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/cd338d7a2303ca5810324918f4e89d6b5c3b6353))
+* **api:** manual updates ([b82c77f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b82c77fbb75abe9fb12535b59fbe371cd5bb628b))
+* **api:** manual updates ([8828272](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/882827280a7b762c191cb738824666c3eec8801b))
+* **api:** manual updates ([fbedc3a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fbedc3a94355c408cc77a3eaf78786e4e7d537db))
+* **types:** remove IMPS payment rail from InrExternalAccountInfo and PaymentInstructions ([1a8cea2](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1a8cea20e685832c9a6051f024575505f7c61264))
+
 ## 0.8.0 (2026-02-27)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.7.0...v0.8.0)
