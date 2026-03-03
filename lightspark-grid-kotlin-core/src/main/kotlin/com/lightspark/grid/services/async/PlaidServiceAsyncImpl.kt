@@ -21,6 +21,7 @@ import com.lightspark.grid.models.plaid.PlaidCreateLinkTokenParams
 import com.lightspark.grid.models.plaid.PlaidCreateLinkTokenResponse
 import com.lightspark.grid.models.plaid.PlaidSubmitPublicTokenParams
 
+/** External account management endpoints for creating and managing external bank accounts */
 class PlaidServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     PlaidServiceAsync {
 

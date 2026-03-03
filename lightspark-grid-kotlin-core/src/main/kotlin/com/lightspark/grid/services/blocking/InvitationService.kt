@@ -12,6 +12,7 @@ import com.lightspark.grid.models.invitations.InvitationCreateParams
 import com.lightspark.grid.models.invitations.InvitationRetrieveParams
 import com.lightspark.grid.models.invitations.UmaInvitation
 
+/** Endpoints for creating, claiming and managing UMA invitations */
 interface InvitationService {
 
     /**

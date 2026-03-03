@@ -34,8 +34,10 @@ interface CustomerServiceAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CustomerServiceAsync
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun externalAccounts(): ExternalAccountServiceAsync
 
+    /** Customer management endpoints for creating and updating customer information */
     fun bulk(): BulkServiceAsync
 
     /**
@@ -169,8 +171,12 @@ interface CustomerServiceAsync {
             modifier: (ClientOptions.Builder) -> Unit
         ): CustomerServiceAsync.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse
 
+        /** Customer management endpoints for creating and updating customer information */
         fun bulk(): BulkServiceAsync.WithRawResponse
 
         /**

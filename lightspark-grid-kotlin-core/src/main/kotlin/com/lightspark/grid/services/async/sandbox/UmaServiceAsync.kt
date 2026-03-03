@@ -9,6 +9,7 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.uma.UmaReceivePaymentParams
 import com.lightspark.grid.models.transactions.IncomingTransaction
 
+/** Endpoints to trigger test cases in sandbox */
 interface UmaServiceAsync {
 
     /**

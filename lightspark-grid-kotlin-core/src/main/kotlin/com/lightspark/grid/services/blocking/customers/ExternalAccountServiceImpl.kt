@@ -21,6 +21,7 @@ import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountList
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListParams
 
+/** External account management endpoints for creating and managing external bank accounts */
 class ExternalAccountServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     ExternalAccountService {
 

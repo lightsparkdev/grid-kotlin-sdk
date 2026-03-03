@@ -25,6 +25,7 @@ import com.lightspark.grid.models.transactions.TransactionRejectParams
 import com.lightspark.grid.models.transactions.TransactionRetrieveParams
 import com.lightspark.grid.models.transactions.TransactionRetrieveResponse
 
+/** Endpoints for retrieving transaction information */
 class TransactionServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     TransactionServiceAsync {
 

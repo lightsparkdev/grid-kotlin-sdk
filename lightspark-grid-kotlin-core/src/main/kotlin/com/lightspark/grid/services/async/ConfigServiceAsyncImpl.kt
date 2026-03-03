@@ -19,6 +19,10 @@ import com.lightspark.grid.models.config.ConfigRetrieveParams
 import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.PlatformConfig
 
+/**
+ * Platform configuration endpoints for managing global settings. You can also configure these
+ * settings in the Grid dashboard.
+ */
 class ConfigServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     ConfigServiceAsync {
 

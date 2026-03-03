@@ -18,6 +18,7 @@ import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.sandbox.uma.UmaReceivePaymentParams
 import com.lightspark.grid.models.transactions.IncomingTransaction
 
+/** Endpoints to trigger test cases in sandbox */
 class UmaServiceImpl internal constructor(private val clientOptions: ClientOptions) : UmaService {
 
     private val withRawResponse: UmaService.WithRawResponse by lazy {

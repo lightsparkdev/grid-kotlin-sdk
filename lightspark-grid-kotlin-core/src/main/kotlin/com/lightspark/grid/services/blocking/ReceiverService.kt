@@ -11,6 +11,7 @@ import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountResponse
 import com.lightspark.grid.models.receiver.ReceiverLookupUmaParams
 import com.lightspark.grid.models.receiver.ReceiverLookupUmaResponse
 
+/** Endpoints for creating and confirming quotes for cross-currency transfers */
 interface ReceiverService {
 
     /**

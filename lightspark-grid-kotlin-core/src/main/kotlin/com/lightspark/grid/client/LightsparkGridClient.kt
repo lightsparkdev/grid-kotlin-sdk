@@ -55,32 +55,55 @@ interface LightsparkGridClient {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): LightsparkGridClient
 
+    /**
+     * Platform configuration endpoints for managing global settings. You can also configure these
+     * settings in the Grid dashboard.
+     */
     fun config(): ConfigService
 
     fun customers(): CustomerService
 
+    /** Internal account management endpoints for creating and managing internal accounts */
     fun platform(): PlatformService
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun plaid(): PlaidService
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     fun transferIn(): TransferInService
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     fun transferOut(): TransferOutService
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     fun receiver(): ReceiverService
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     fun quotes(): QuoteService
 
+    /** Endpoints for retrieving transaction information */
     fun transactions(): TransactionService
 
+    /** Endpoints for creating, claiming and managing UMA invitations */
     fun invitations(): InvitationService
 
     fun sandbox(): SandboxService
 
     fun umaProviders(): UmaProviderService
 
+    /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenService
 
+    /**
+     * Endpoints for retrieving cached foreign exchange rates. Rates are cached for approximately 5
+     * minutes and include platform-specific fees.
+     */
     fun exchangeRates(): ExchangeRateService
 
     fun webhooks(): WebhookService
@@ -112,32 +135,57 @@ interface LightsparkGridClient {
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClient.WithRawResponse
 
+        /**
+         * Platform configuration endpoints for managing global settings. You can also configure
+         * these settings in the Grid dashboard.
+         */
         fun config(): ConfigService.WithRawResponse
 
         fun customers(): CustomerService.WithRawResponse
 
+        /** Internal account management endpoints for creating and managing internal accounts */
         fun platform(): PlatformService.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun plaid(): PlaidService.WithRawResponse
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         fun transferIn(): TransferInService.WithRawResponse
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         fun transferOut(): TransferOutService.WithRawResponse
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun receiver(): ReceiverService.WithRawResponse
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun quotes(): QuoteService.WithRawResponse
 
+        /** Endpoints for retrieving transaction information */
         fun transactions(): TransactionService.WithRawResponse
 
+        /** Endpoints for creating, claiming and managing UMA invitations */
         fun invitations(): InvitationService.WithRawResponse
 
         fun sandbox(): SandboxService.WithRawResponse
 
         fun umaProviders(): UmaProviderService.WithRawResponse
 
+        /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenService.WithRawResponse
 
+        /**
+         * Endpoints for retrieving cached foreign exchange rates. Rates are cached for
+         * approximately 5 minutes and include platform-specific fees.
+         */
         fun exchangeRates(): ExchangeRateService.WithRawResponse
 
         fun webhooks(): WebhookService.WithRawResponse

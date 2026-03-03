@@ -18,6 +18,9 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.transferin.TransferInCreateParams
 import com.lightspark.grid.models.transferin.TransferInCreateResponse
 
+/**
+ * Endpoints for transferring funds between internal and external accounts with the same currency
+ */
 class TransferInServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     TransferInServiceAsync {
 

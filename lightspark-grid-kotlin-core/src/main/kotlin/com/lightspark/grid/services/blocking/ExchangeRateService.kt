@@ -9,6 +9,10 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.exchangerates.ExchangeRateListParams
 import com.lightspark.grid.models.exchangerates.ExchangeRateListResponse
 
+/**
+ * Endpoints for retrieving cached foreign exchange rates. Rates are cached for approximately 5
+ * minutes and include platform-specific fees.
+ */
 interface ExchangeRateService {
 
     /**

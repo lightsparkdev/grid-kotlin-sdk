@@ -9,6 +9,7 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccountFundParams
 
+/** Endpoints to trigger test cases in sandbox */
 interface InternalAccountServiceAsync {
 
     /**
