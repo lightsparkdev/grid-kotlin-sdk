@@ -52,8 +52,10 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CustomerServiceAsync =
         CustomerServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /** External account management endpoints for creating and managing external bank accounts */
     override fun externalAccounts(): ExternalAccountServiceAsync = externalAccounts
 
+    /** Customer management endpoints for creating and updating customer information */
     override fun bulk(): BulkServiceAsync = bulk
 
     override suspend fun create(
@@ -126,9 +128,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         override fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse =
             externalAccounts
 
+        /** Customer management endpoints for creating and updating customer information */
         override fun bulk(): BulkServiceAsync.WithRawResponse = bulk
 
         private val createHandler: Handler<CustomerOneOf> =

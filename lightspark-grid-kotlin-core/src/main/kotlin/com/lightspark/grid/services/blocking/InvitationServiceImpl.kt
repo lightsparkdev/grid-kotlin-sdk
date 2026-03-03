@@ -22,6 +22,7 @@ import com.lightspark.grid.models.invitations.InvitationCreateParams
 import com.lightspark.grid.models.invitations.InvitationRetrieveParams
 import com.lightspark.grid.models.invitations.UmaInvitation
 
+/** Endpoints for creating, claiming and managing UMA invitations */
 class InvitationServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     InvitationService {
 

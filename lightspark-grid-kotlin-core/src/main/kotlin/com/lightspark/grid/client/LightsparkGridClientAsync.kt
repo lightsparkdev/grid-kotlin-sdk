@@ -55,32 +55,55 @@ interface LightsparkGridClientAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): LightsparkGridClientAsync
 
+    /**
+     * Platform configuration endpoints for managing global settings. You can also configure these
+     * settings in the Grid dashboard.
+     */
     fun config(): ConfigServiceAsync
 
     fun customers(): CustomerServiceAsync
 
+    /** Internal account management endpoints for creating and managing internal accounts */
     fun platform(): PlatformServiceAsync
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun plaid(): PlaidServiceAsync
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     fun transferIn(): TransferInServiceAsync
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     fun transferOut(): TransferOutServiceAsync
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     fun receiver(): ReceiverServiceAsync
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     fun quotes(): QuoteServiceAsync
 
+    /** Endpoints for retrieving transaction information */
     fun transactions(): TransactionServiceAsync
 
+    /** Endpoints for creating, claiming and managing UMA invitations */
     fun invitations(): InvitationServiceAsync
 
     fun sandbox(): SandboxServiceAsync
 
     fun umaProviders(): UmaProviderServiceAsync
 
+    /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenServiceAsync
 
+    /**
+     * Endpoints for retrieving cached foreign exchange rates. Rates are cached for approximately 5
+     * minutes and include platform-specific fees.
+     */
     fun exchangeRates(): ExchangeRateServiceAsync
 
     fun webhooks(): WebhookServiceAsync
@@ -113,32 +136,57 @@ interface LightsparkGridClientAsync {
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClientAsync.WithRawResponse
 
+        /**
+         * Platform configuration endpoints for managing global settings. You can also configure
+         * these settings in the Grid dashboard.
+         */
         fun config(): ConfigServiceAsync.WithRawResponse
 
         fun customers(): CustomerServiceAsync.WithRawResponse
 
+        /** Internal account management endpoints for creating and managing internal accounts */
         fun platform(): PlatformServiceAsync.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun plaid(): PlaidServiceAsync.WithRawResponse
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         fun transferIn(): TransferInServiceAsync.WithRawResponse
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         fun transferOut(): TransferOutServiceAsync.WithRawResponse
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun receiver(): ReceiverServiceAsync.WithRawResponse
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun quotes(): QuoteServiceAsync.WithRawResponse
 
+        /** Endpoints for retrieving transaction information */
         fun transactions(): TransactionServiceAsync.WithRawResponse
 
+        /** Endpoints for creating, claiming and managing UMA invitations */
         fun invitations(): InvitationServiceAsync.WithRawResponse
 
         fun sandbox(): SandboxServiceAsync.WithRawResponse
 
         fun umaProviders(): UmaProviderServiceAsync.WithRawResponse
 
+        /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenServiceAsync.WithRawResponse
 
+        /**
+         * Endpoints for retrieving cached foreign exchange rates. Rates are cached for
+         * approximately 5 minutes and include platform-specific fees.
+         */
         fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse
 
         fun webhooks(): WebhookServiceAsync.WithRawResponse

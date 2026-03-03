@@ -9,6 +9,9 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.transferin.TransferInCreateParams
 import com.lightspark.grid.models.transferin.TransferInCreateResponse
 
+/**
+ * Endpoints for transferring funds between internal and external accounts with the same currency
+ */
 interface TransferInService {
 
     /**

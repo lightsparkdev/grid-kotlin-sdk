@@ -19,6 +19,7 @@ import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.blocking.platform.ExternalAccountService
 import com.lightspark.grid.services.blocking.platform.ExternalAccountServiceImpl
 
+/** Internal account management endpoints for creating and managing internal accounts */
 class PlatformServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     PlatformService {
 
@@ -35,6 +36,7 @@ class PlatformServiceImpl internal constructor(private val clientOptions: Client
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): PlatformService =
         PlatformServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /** External account management endpoints for creating and managing external bank accounts */
     override fun externalAccounts(): ExternalAccountService = externalAccounts
 
     override fun listInternalAccounts(
@@ -61,6 +63,9 @@ class PlatformServiceImpl internal constructor(private val clientOptions: Client
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         override fun externalAccounts(): ExternalAccountService.WithRawResponse = externalAccounts
 
         private val listInternalAccountsHandler: Handler<PlatformListInternalAccountsResponse> =

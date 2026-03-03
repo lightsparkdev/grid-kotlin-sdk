@@ -9,6 +9,9 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
 import com.lightspark.grid.models.transferout.TransferOutCreateResponse
 
+/**
+ * Endpoints for transferring funds between internal and external accounts with the same currency
+ */
 interface TransferOutServiceAsync {
 
     /**

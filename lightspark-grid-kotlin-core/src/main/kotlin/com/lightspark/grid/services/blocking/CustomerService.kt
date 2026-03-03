@@ -34,8 +34,10 @@ interface CustomerService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CustomerService
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun externalAccounts(): ExternalAccountService
 
+    /** Customer management endpoints for creating and updating customer information */
     fun bulk(): BulkService
 
     /**
@@ -163,8 +165,12 @@ interface CustomerService {
          */
         fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CustomerService.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun externalAccounts(): ExternalAccountService.WithRawResponse
 
+        /** Customer management endpoints for creating and updating customer information */
         fun bulk(): BulkService.WithRawResponse
 
         /**

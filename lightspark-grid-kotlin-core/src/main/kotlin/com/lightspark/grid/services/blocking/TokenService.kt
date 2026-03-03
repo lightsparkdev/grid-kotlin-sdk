@@ -14,6 +14,7 @@ import com.lightspark.grid.models.tokens.TokenListPage
 import com.lightspark.grid.models.tokens.TokenListParams
 import com.lightspark.grid.models.tokens.TokenRetrieveParams
 
+/** Endpoints to programmatically manage API tokens */
 interface TokenService {
 
     /**

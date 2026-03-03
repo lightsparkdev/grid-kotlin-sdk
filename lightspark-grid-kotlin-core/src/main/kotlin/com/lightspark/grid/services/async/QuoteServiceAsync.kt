@@ -13,6 +13,7 @@ import com.lightspark.grid.models.quotes.QuoteListPageAsync
 import com.lightspark.grid.models.quotes.QuoteListParams
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
+/** Endpoints for creating and confirming quotes for cross-currency transfers */
 interface QuoteServiceAsync {
 
     /**

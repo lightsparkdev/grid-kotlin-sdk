@@ -27,8 +27,10 @@ interface SandboxService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxService
 
+    /** Endpoints to trigger test cases in sandbox */
     fun uma(): UmaService
 
+    /** Endpoints to trigger test cases in sandbox */
     fun internalAccounts(): InternalAccountService
 
     /**
@@ -60,8 +62,10 @@ interface SandboxService {
          */
         fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxService.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
         fun uma(): UmaService.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
         fun internalAccounts(): InternalAccountService.WithRawResponse
 
         /**

@@ -12,6 +12,7 @@ import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCrea
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListPageAsync
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListParams
 
+/** External account management endpoints for creating and managing external bank accounts */
 interface ExternalAccountServiceAsync {
 
     /**

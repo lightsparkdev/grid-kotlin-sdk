@@ -11,6 +11,7 @@ import com.lightspark.grid.models.customers.bulk.BulkGetJobStatusResponse
 import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
 import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 
+/** Customer management endpoints for creating and updating customer information */
 interface BulkService {
 
     /**
