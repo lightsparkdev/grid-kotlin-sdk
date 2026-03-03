@@ -140,8 +140,6 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
-     * Destination account details
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -502,7 +500,6 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-        /** Destination account details */
         fun destination(destination: Transaction.Destination) =
             destination(JsonField.of(destination))
 
@@ -525,18 +522,12 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.Account.builder()
-         *     .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountDestination(accountId: String) =
-            destination(
-                Transaction.Destination.Account.builder()
-                    .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
-                    .accountId(accountId)
-                    .build()
-            )
+            destination(Transaction.Destination.Account.builder().accountId(accountId).build())
 
         /**
          * Alias for calling [destination] with `Transaction.Destination.ofUmaAddress(umaAddress)`.
@@ -548,18 +539,12 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.UmaAddress.builder()
-         *     .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressDestination(umaAddress: String) =
-            destination(
-                Transaction.Destination.UmaAddress.builder()
-                    .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
-                    .umaAddress(umaAddress)
-                    .build()
-            )
+            destination(Transaction.Destination.UmaAddress.builder().umaAddress(umaAddress).build())
 
         /**
          * Alias for calling [destination] with
@@ -572,7 +557,6 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.ExternalAccountDetails.builder()
-         *     .destinationType(Transaction.Destination.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
          *     .externalAccountDetails(externalAccountDetails)
          *     .build()
          * ```
@@ -580,10 +564,6 @@ private constructor(
         fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
             destination(
                 Transaction.Destination.ExternalAccountDetails.builder()
-                    .destinationType(
-                        Transaction.Destination.ExternalAccountDetails.DestinationType
-                            .EXTERNAL_ACCOUNT_DETAILS
-                    )
                     .externalAccountDetails(externalAccountDetails)
                     .build()
             )
