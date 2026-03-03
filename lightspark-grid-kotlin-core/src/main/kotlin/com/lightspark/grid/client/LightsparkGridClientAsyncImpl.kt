@@ -120,32 +120,55 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): LightsparkGridClientAsync =
         LightsparkGridClientAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /**
+     * Platform configuration endpoints for managing global settings. You can also configure these
+     * settings in the Grid dashboard.
+     */
     override fun config(): ConfigServiceAsync = config
 
     override fun customers(): CustomerServiceAsync = customers
 
+    /** Internal account management endpoints for creating and managing internal accounts */
     override fun platform(): PlatformServiceAsync = platform
 
+    /** External account management endpoints for creating and managing external bank accounts */
     override fun plaid(): PlaidServiceAsync = plaid
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     override fun transferIn(): TransferInServiceAsync = transferIn
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     override fun transferOut(): TransferOutServiceAsync = transferOut
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     override fun receiver(): ReceiverServiceAsync = receiver
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     override fun quotes(): QuoteServiceAsync = quotes
 
+    /** Endpoints for retrieving transaction information */
     override fun transactions(): TransactionServiceAsync = transactions
 
+    /** Endpoints for creating, claiming and managing UMA invitations */
     override fun invitations(): InvitationServiceAsync = invitations
 
     override fun sandbox(): SandboxServiceAsync = sandbox
 
     override fun umaProviders(): UmaProviderServiceAsync = umaProviders
 
+    /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenServiceAsync = tokens
 
+    /**
+     * Endpoints for retrieving cached foreign exchange rates. Rates are cached for approximately 5
+     * minutes and include platform-specific fees.
+     */
     override fun exchangeRates(): ExchangeRateServiceAsync = exchangeRates
 
     override fun webhooks(): WebhookServiceAsync = webhooks
@@ -222,32 +245,57 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /**
+         * Platform configuration endpoints for managing global settings. You can also configure
+         * these settings in the Grid dashboard.
+         */
         override fun config(): ConfigServiceAsync.WithRawResponse = config
 
         override fun customers(): CustomerServiceAsync.WithRawResponse = customers
 
+        /** Internal account management endpoints for creating and managing internal accounts */
         override fun platform(): PlatformServiceAsync.WithRawResponse = platform
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         override fun plaid(): PlaidServiceAsync.WithRawResponse = plaid
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         override fun transferIn(): TransferInServiceAsync.WithRawResponse = transferIn
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         override fun transferOut(): TransferOutServiceAsync.WithRawResponse = transferOut
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         override fun receiver(): ReceiverServiceAsync.WithRawResponse = receiver
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         override fun quotes(): QuoteServiceAsync.WithRawResponse = quotes
 
+        /** Endpoints for retrieving transaction information */
         override fun transactions(): TransactionServiceAsync.WithRawResponse = transactions
 
+        /** Endpoints for creating, claiming and managing UMA invitations */
         override fun invitations(): InvitationServiceAsync.WithRawResponse = invitations
 
         override fun sandbox(): SandboxServiceAsync.WithRawResponse = sandbox
 
         override fun umaProviders(): UmaProviderServiceAsync.WithRawResponse = umaProviders
 
+        /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenServiceAsync.WithRawResponse = tokens
 
+        /**
+         * Endpoints for retrieving cached foreign exchange rates. Rates are cached for
+         * approximately 5 minutes and include platform-specific fees.
+         */
         override fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse = exchangeRates
 
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks

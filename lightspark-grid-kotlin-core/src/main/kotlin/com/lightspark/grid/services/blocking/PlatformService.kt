@@ -10,6 +10,7 @@ import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.blocking.platform.ExternalAccountService
 
+/** Internal account management endpoints for creating and managing internal accounts */
 interface PlatformService {
 
     /**
@@ -24,6 +25,7 @@ interface PlatformService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): PlatformService
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun externalAccounts(): ExternalAccountService
 
     /**
@@ -53,6 +55,9 @@ interface PlatformService {
          */
         fun withOptions(modifier: (ClientOptions.Builder) -> Unit): PlatformService.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun externalAccounts(): ExternalAccountService.WithRawResponse
 
         /**

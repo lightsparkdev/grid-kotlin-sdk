@@ -21,6 +21,7 @@ import com.lightspark.grid.models.customers.bulk.BulkGetJobStatusResponse
 import com.lightspark.grid.models.customers.bulk.BulkUploadCsvParams
 import com.lightspark.grid.models.customers.bulk.BulkUploadCsvResponse
 
+/** Customer management endpoints for creating and updating customer information */
 class BulkServiceImpl internal constructor(private val clientOptions: ClientOptions) : BulkService {
 
     private val withRawResponse: BulkService.WithRawResponse by lazy {

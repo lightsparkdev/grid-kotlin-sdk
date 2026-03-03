@@ -18,6 +18,7 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.sandbox.uma.UmaReceivePaymentParams
 import com.lightspark.grid.models.transactions.IncomingTransaction
 
+/** Endpoints to trigger test cases in sandbox */
 class UmaServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     UmaServiceAsync {
 

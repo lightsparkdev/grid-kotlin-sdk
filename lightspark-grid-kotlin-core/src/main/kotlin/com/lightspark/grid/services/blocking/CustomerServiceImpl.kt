@@ -52,8 +52,10 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CustomerService =
         CustomerServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /** External account management endpoints for creating and managing external bank accounts */
     override fun externalAccounts(): ExternalAccountService = externalAccounts
 
+    /** Customer management endpoints for creating and updating customer information */
     override fun bulk(): BulkService = bulk
 
     override fun create(
@@ -126,8 +128,12 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         override fun externalAccounts(): ExternalAccountService.WithRawResponse = externalAccounts
 
+        /** Customer management endpoints for creating and updating customer information */
         override fun bulk(): BulkService.WithRawResponse = bulk
 
         private val createHandler: Handler<CustomerOneOf> =

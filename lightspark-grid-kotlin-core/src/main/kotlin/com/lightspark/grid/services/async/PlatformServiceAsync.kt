@@ -10,6 +10,7 @@ import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.async.platform.ExternalAccountServiceAsync
 
+/** Internal account management endpoints for creating and managing internal accounts */
 interface PlatformServiceAsync {
 
     /**
@@ -24,6 +25,7 @@ interface PlatformServiceAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): PlatformServiceAsync
 
+    /** External account management endpoints for creating and managing external bank accounts */
     fun externalAccounts(): ExternalAccountServiceAsync
 
     /**
@@ -59,6 +61,9 @@ interface PlatformServiceAsync {
             modifier: (ClientOptions.Builder) -> Unit
         ): PlatformServiceAsync.WithRawResponse
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse
 
         /**

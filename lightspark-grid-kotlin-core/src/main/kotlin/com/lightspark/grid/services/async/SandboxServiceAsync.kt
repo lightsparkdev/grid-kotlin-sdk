@@ -27,8 +27,10 @@ interface SandboxServiceAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxServiceAsync
 
+    /** Endpoints to trigger test cases in sandbox */
     fun uma(): UmaServiceAsync
 
+    /** Endpoints to trigger test cases in sandbox */
     fun internalAccounts(): InternalAccountServiceAsync
 
     /**
@@ -64,8 +66,10 @@ interface SandboxServiceAsync {
             modifier: (ClientOptions.Builder) -> Unit
         ): SandboxServiceAsync.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
         fun uma(): UmaServiceAsync.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
         fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse
 
         /**

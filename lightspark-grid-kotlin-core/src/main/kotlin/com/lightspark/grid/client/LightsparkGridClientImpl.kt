@@ -109,32 +109,55 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): LightsparkGridClient =
         LightsparkGridClientImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /**
+     * Platform configuration endpoints for managing global settings. You can also configure these
+     * settings in the Grid dashboard.
+     */
     override fun config(): ConfigService = config
 
     override fun customers(): CustomerService = customers
 
+    /** Internal account management endpoints for creating and managing internal accounts */
     override fun platform(): PlatformService = platform
 
+    /** External account management endpoints for creating and managing external bank accounts */
     override fun plaid(): PlaidService = plaid
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     override fun transferIn(): TransferInService = transferIn
 
+    /**
+     * Endpoints for transferring funds between internal and external accounts with the same
+     * currency
+     */
     override fun transferOut(): TransferOutService = transferOut
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     override fun receiver(): ReceiverService = receiver
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
     override fun quotes(): QuoteService = quotes
 
+    /** Endpoints for retrieving transaction information */
     override fun transactions(): TransactionService = transactions
 
+    /** Endpoints for creating, claiming and managing UMA invitations */
     override fun invitations(): InvitationService = invitations
 
     override fun sandbox(): SandboxService = sandbox
 
     override fun umaProviders(): UmaProviderService = umaProviders
 
+    /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenService = tokens
 
+    /**
+     * Endpoints for retrieving cached foreign exchange rates. Rates are cached for approximately 5
+     * minutes and include platform-specific fees.
+     */
     override fun exchangeRates(): ExchangeRateService = exchangeRates
 
     override fun webhooks(): WebhookService = webhooks
@@ -211,32 +234,57 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /**
+         * Platform configuration endpoints for managing global settings. You can also configure
+         * these settings in the Grid dashboard.
+         */
         override fun config(): ConfigService.WithRawResponse = config
 
         override fun customers(): CustomerService.WithRawResponse = customers
 
+        /** Internal account management endpoints for creating and managing internal accounts */
         override fun platform(): PlatformService.WithRawResponse = platform
 
+        /**
+         * External account management endpoints for creating and managing external bank accounts
+         */
         override fun plaid(): PlaidService.WithRawResponse = plaid
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         override fun transferIn(): TransferInService.WithRawResponse = transferIn
 
+        /**
+         * Endpoints for transferring funds between internal and external accounts with the same
+         * currency
+         */
         override fun transferOut(): TransferOutService.WithRawResponse = transferOut
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         override fun receiver(): ReceiverService.WithRawResponse = receiver
 
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
         override fun quotes(): QuoteService.WithRawResponse = quotes
 
+        /** Endpoints for retrieving transaction information */
         override fun transactions(): TransactionService.WithRawResponse = transactions
 
+        /** Endpoints for creating, claiming and managing UMA invitations */
         override fun invitations(): InvitationService.WithRawResponse = invitations
 
         override fun sandbox(): SandboxService.WithRawResponse = sandbox
 
         override fun umaProviders(): UmaProviderService.WithRawResponse = umaProviders
 
+        /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenService.WithRawResponse = tokens
 
+        /**
+         * Endpoints for retrieving cached foreign exchange rates. Rates are cached for
+         * approximately 5 minutes and include platform-specific fees.
+         */
         override fun exchangeRates(): ExchangeRateService.WithRawResponse = exchangeRates
 
         override fun webhooks(): WebhookService.WithRawResponse = webhooks

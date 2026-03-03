@@ -19,6 +19,7 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccountFundParams
 
+/** Endpoints to trigger test cases in sandbox */
 class InternalAccountServiceAsyncImpl
 internal constructor(private val clientOptions: ClientOptions) : InternalAccountServiceAsync {
 

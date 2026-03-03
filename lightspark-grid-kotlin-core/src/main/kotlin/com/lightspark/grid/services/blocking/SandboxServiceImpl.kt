@@ -42,8 +42,10 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxService =
         SandboxServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /** Endpoints to trigger test cases in sandbox */
     override fun uma(): UmaService = uma
 
+    /** Endpoints to trigger test cases in sandbox */
     override fun internalAccounts(): InternalAccountService = internalAccounts
 
     override fun sendFunds(
@@ -81,8 +83,10 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /** Endpoints to trigger test cases in sandbox */
         override fun uma(): UmaService.WithRawResponse = uma
 
+        /** Endpoints to trigger test cases in sandbox */
         override fun internalAccounts(): InternalAccountService.WithRawResponse = internalAccounts
 
         private val sendFundsHandler: Handler<OutgoingTransaction> =

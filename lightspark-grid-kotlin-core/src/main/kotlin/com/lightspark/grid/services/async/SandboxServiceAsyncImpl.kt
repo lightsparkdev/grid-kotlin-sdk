@@ -42,8 +42,10 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxServiceAsync =
         SandboxServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    /** Endpoints to trigger test cases in sandbox */
     override fun uma(): UmaServiceAsync = uma
 
+    /** Endpoints to trigger test cases in sandbox */
     override fun internalAccounts(): InternalAccountServiceAsync = internalAccounts
 
     override suspend fun sendFunds(
@@ -81,8 +83,10 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
+        /** Endpoints to trigger test cases in sandbox */
         override fun uma(): UmaServiceAsync.WithRawResponse = uma
 
+        /** Endpoints to trigger test cases in sandbox */
         override fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse =
             internalAccounts
 
