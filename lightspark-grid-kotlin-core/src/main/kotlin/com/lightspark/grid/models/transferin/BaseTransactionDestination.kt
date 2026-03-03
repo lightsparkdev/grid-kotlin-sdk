@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.customers.externalaccounts
+package com.lightspark.grid.models.transferin
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -14,32 +14,32 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class BeneficiaryVerifiedData
+class BaseTransactionDestination
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val fullName: JsonField<String>,
+    private val currency: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of()
-    ) : this(fullName, mutableMapOf())
+        @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of()
+    ) : this(currency, mutableMapOf())
 
     /**
-     * The verified full name of the account holder as returned by the payment rail
+     * Currency code for the destination
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun fullName(): String? = fullName.getNullable("fullName")
+    fun currency(): String? = currency.getNullable("currency")
 
     /**
-     * Returns the raw JSON value of [fullName].
+     * Returns the raw JSON value of [currency].
      *
-     * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
+    @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -55,31 +55,33 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [BeneficiaryVerifiedData]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [BaseTransactionDestination].
+         */
         fun builder() = Builder()
     }
 
-    /** A builder for [BeneficiaryVerifiedData]. */
+    /** A builder for [BaseTransactionDestination]. */
     class Builder internal constructor() {
 
-        private var fullName: JsonField<String> = JsonMissing.of()
+        private var currency: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(beneficiaryVerifiedData: BeneficiaryVerifiedData) = apply {
-            fullName = beneficiaryVerifiedData.fullName
-            additionalProperties = beneficiaryVerifiedData.additionalProperties.toMutableMap()
+        internal fun from(baseTransactionDestination: BaseTransactionDestination) = apply {
+            currency = baseTransactionDestination.currency
+            additionalProperties = baseTransactionDestination.additionalProperties.toMutableMap()
         }
 
-        /** The verified full name of the account holder as returned by the payment rail */
-        fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+        /** Currency code for the destination */
+        fun currency(currency: String) = currency(JsonField.of(currency))
 
         /**
-         * Sets [Builder.fullName] to an arbitrary JSON value.
+         * Sets [Builder.currency] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fullName] with a well-typed [String] value instead. This
+         * You should usually call [Builder.currency] with a well-typed [String] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
+        fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -101,22 +103,22 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [BeneficiaryVerifiedData].
+         * Returns an immutable instance of [BaseTransactionDestination].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): BeneficiaryVerifiedData =
-            BeneficiaryVerifiedData(fullName, additionalProperties.toMutableMap())
+        fun build(): BaseTransactionDestination =
+            BaseTransactionDestination(currency, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
 
-    fun validate(): BeneficiaryVerifiedData = apply {
+    fun validate(): BaseTransactionDestination = apply {
         if (validated) {
             return@apply
         }
 
-        fullName()
+        currency()
         validated = true
     }
 
@@ -133,22 +135,22 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (if (fullName.asKnown() == null) 0 else 1)
+    internal fun validity(): Int = (if (currency.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is BeneficiaryVerifiedData &&
-            fullName == other.fullName &&
+        return other is BaseTransactionDestination &&
+            currency == other.currency &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(fullName, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(currency, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BeneficiaryVerifiedData{fullName=$fullName, additionalProperties=$additionalProperties}"
+        "BaseTransactionDestination{currency=$currency, additionalProperties=$additionalProperties}"
 }

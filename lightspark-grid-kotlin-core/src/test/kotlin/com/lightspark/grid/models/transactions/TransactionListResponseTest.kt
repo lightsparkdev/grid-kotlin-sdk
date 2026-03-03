@@ -28,8 +28,9 @@ internal class TransactionListResponseTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -75,8 +76,9 @@ internal class TransactionListResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .build()
@@ -98,8 +100,11 @@ internal class TransactionListResponseTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         Transaction.Destination.Account.builder()
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                Transaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -145,8 +150,9 @@ internal class TransactionListResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .build()
                     )
                     .build()
@@ -164,13 +170,14 @@ internal class TransactionListResponseTest {
     @Test
     fun ofOutgoingTransaction() {
         val outgoingTransaction =
-            OutgoingTransaction.builder()
+            TransactionListResponse.OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -202,12 +209,15 @@ internal class TransactionListResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(
+                    TransactionListResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
+                )
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -272,7 +282,7 @@ internal class TransactionListResponseTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    TransactionListResponse.OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -292,13 +302,16 @@ internal class TransactionListResponseTest {
         val jsonMapper = jsonMapper()
         val transactionListResponse =
             TransactionListResponse.ofOutgoingTransaction(
-                OutgoingTransaction.builder()
+                TransactionListResponse.OutgoingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         Transaction.Destination.Account.builder()
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                Transaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -330,12 +343,15 @@ internal class TransactionListResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .build()
                     )
                     .exchangeRate(1.08)
-                    .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                    .failureReason(
+                        TransactionListResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
+                    )
                     .fees(10L)
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
@@ -402,7 +418,7 @@ internal class TransactionListResponseTest {
                             .build()
                     )
                     .refund(
-                        OutgoingTransaction.Refund.builder()
+                        TransactionListResponse.OutgoingTransaction.Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
