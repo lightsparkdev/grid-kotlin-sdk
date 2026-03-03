@@ -75,9 +75,8 @@ internal class TransactionRetrieveResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .currency("USD")
                         .build()
                 )
                 .build()
@@ -146,9 +145,8 @@ internal class TransactionRetrieveResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                            .currency("USD")
                             .build()
                     )
                     .build()
@@ -166,7 +164,7 @@ internal class TransactionRetrieveResponseTest {
     @Test
     fun ofOutgoingTransaction() {
         val outgoingTransaction =
-            TransactionRetrieveResponse.OutgoingTransaction.builder()
+            OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
@@ -204,15 +202,12 @@ internal class TransactionRetrieveResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                        .currency("USD")
                         .build()
                 )
                 .exchangeRate(1.08)
-                .failureReason(
-                    TransactionRetrieveResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
-                )
+                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -277,7 +272,7 @@ internal class TransactionRetrieveResponseTest {
                         .build()
                 )
                 .refund(
-                    TransactionRetrieveResponse.OutgoingTransaction.Refund.builder()
+                    OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -297,7 +292,7 @@ internal class TransactionRetrieveResponseTest {
         val jsonMapper = jsonMapper()
         val transactionRetrieveResponse =
             TransactionRetrieveResponse.ofOutgoingTransaction(
-                TransactionRetrieveResponse.OutgoingTransaction.builder()
+                OutgoingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
@@ -335,15 +330,12 @@ internal class TransactionRetrieveResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                            .currency("USD")
                             .build()
                     )
                     .exchangeRate(1.08)
-                    .failureReason(
-                        TransactionRetrieveResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
-                    )
+                    .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                     .fees(10L)
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
@@ -410,7 +402,7 @@ internal class TransactionRetrieveResponseTest {
                             .build()
                     )
                     .refund(
-                        TransactionRetrieveResponse.OutgoingTransaction.Refund.builder()
+                        OutgoingTransaction.Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
