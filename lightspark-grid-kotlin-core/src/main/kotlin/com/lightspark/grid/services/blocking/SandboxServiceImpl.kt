@@ -16,9 +16,9 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
+import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
 import com.lightspark.grid.models.sandbox.SandboxSendTestParams
 import com.lightspark.grid.models.sandbox.SandboxSendTestResponse
-import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountServiceImpl
 import com.lightspark.grid.services.blocking.sandbox.UmaService
@@ -51,7 +51,7 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
     override fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions,
-    ): OutgoingTransaction =
+    ): SandboxSendFundsResponse =
         // post /sandbox/send
         withRawResponse().sendFunds(params, requestOptions).parse()
 
@@ -89,13 +89,13 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
         /** Endpoints to trigger test cases in sandbox */
         override fun internalAccounts(): InternalAccountService.WithRawResponse = internalAccounts
 
-        private val sendFundsHandler: Handler<OutgoingTransaction> =
-            jsonHandler<OutgoingTransaction>(clientOptions.jsonMapper)
+        private val sendFundsHandler: Handler<SandboxSendFundsResponse> =
+            jsonHandler<SandboxSendFundsResponse>(clientOptions.jsonMapper)
 
         override fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<OutgoingTransaction> {
+        ): HttpResponseFor<SandboxSendFundsResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

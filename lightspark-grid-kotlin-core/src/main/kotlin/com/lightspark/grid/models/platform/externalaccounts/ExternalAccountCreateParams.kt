@@ -218,6 +218,13 @@ private constructor(
         }
 
         /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount)`.
+         */
+        fun accountInfo(mwkAccount: ExternalAccountInfoOneOf.MwkAccount) = apply {
+            body.accountInfo(mwkAccount)
+        }
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)`.
          */
         fun accountInfo(mxnAccount: MxnExternalAccountInfo) = apply { body.accountInfo(mxnAccount) }
@@ -264,6 +271,13 @@ private constructor(
         }
 
         /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount)`.
+         */
+        fun accountInfo(ugxAccount: ExternalAccountInfoOneOf.UgxAccount) = apply {
+            body.accountInfo(ugxAccount)
+        }
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)`.
          */
         fun accountInfo(usdAccount: UsdExternalAccountInfo) = apply { body.accountInfo(usdAccount) }
@@ -272,6 +286,13 @@ private constructor(
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofVndAccount(vndAccount)`.
          */
         fun accountInfo(vndAccount: VndExternalAccountInfo) = apply { body.accountInfo(vndAccount) }
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofXofAccount(xofAccount)`.
+         */
+        fun accountInfo(xofAccount: ExternalAccountInfoOneOf.XofAccount) = apply {
+            body.accountInfo(xofAccount)
+        }
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofZarAccount(zarAccount)`.
@@ -746,6 +767,13 @@ private constructor(
 
             /**
              * Alias for calling [accountInfo] with
+             * `ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount)`.
+             */
+            fun accountInfo(mwkAccount: ExternalAccountInfoOneOf.MwkAccount) =
+                accountInfo(ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount))
+
+            /**
+             * Alias for calling [accountInfo] with
              * `ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)`.
              */
             fun accountInfo(mxnAccount: MxnExternalAccountInfo) =
@@ -802,6 +830,13 @@ private constructor(
 
             /**
              * Alias for calling [accountInfo] with
+             * `ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount)`.
+             */
+            fun accountInfo(ugxAccount: ExternalAccountInfoOneOf.UgxAccount) =
+                accountInfo(ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount))
+
+            /**
+             * Alias for calling [accountInfo] with
              * `ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)`.
              */
             fun accountInfo(usdAccount: UsdExternalAccountInfo) =
@@ -813,6 +848,13 @@ private constructor(
              */
             fun accountInfo(vndAccount: VndExternalAccountInfo) =
                 accountInfo(ExternalAccountInfoOneOf.ofVndAccount(vndAccount))
+
+            /**
+             * Alias for calling [accountInfo] with
+             * `ExternalAccountInfoOneOf.ofXofAccount(xofAccount)`.
+             */
+            fun accountInfo(xofAccount: ExternalAccountInfoOneOf.XofAccount) =
+                accountInfo(ExternalAccountInfoOneOf.ofXofAccount(xofAccount))
 
             /**
              * Alias for calling [accountInfo] with

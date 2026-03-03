@@ -5,7 +5,6 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -31,11 +30,12 @@ internal class BulkUploadWebhookEventTest {
                         .status(BulkUploadWebhookEvent.BulkCustomerImportJob.Status.PROCESSING)
                         .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                         .addError(
-                            BulkCustomerImportErrorEntry.builder()
+                            BulkUploadWebhookEvent.BulkCustomerImportJob.Error.builder()
                                 .correlationId("biz456")
                                 .code("code")
                                 .details(
-                                    BulkCustomerImportErrorEntry.Details.builder()
+                                    BulkUploadWebhookEvent.BulkCustomerImportJob.Error.Details
+                                        .builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -65,11 +65,11 @@ internal class BulkUploadWebhookEventTest {
                     .status(BulkUploadWebhookEvent.BulkCustomerImportJob.Status.PROCESSING)
                     .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .addError(
-                        BulkCustomerImportErrorEntry.builder()
+                        BulkUploadWebhookEvent.BulkCustomerImportJob.Error.builder()
                             .correlationId("biz456")
                             .code("code")
                             .details(
-                                BulkCustomerImportErrorEntry.Details.builder()
+                                BulkUploadWebhookEvent.BulkCustomerImportJob.Error.Details.builder()
                                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                                     .build()
                             )
@@ -103,11 +103,12 @@ internal class BulkUploadWebhookEventTest {
                         .status(BulkUploadWebhookEvent.BulkCustomerImportJob.Status.PROCESSING)
                         .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                         .addError(
-                            BulkCustomerImportErrorEntry.builder()
+                            BulkUploadWebhookEvent.BulkCustomerImportJob.Error.builder()
                                 .correlationId("biz456")
                                 .code("code")
                                 .details(
-                                    BulkCustomerImportErrorEntry.Details.builder()
+                                    BulkUploadWebhookEvent.BulkCustomerImportJob.Error.Details
+                                        .builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )

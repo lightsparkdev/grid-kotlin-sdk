@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.transactions
+package com.lightspark.grid.models.sandbox
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
@@ -9,23 +9,27 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.transactions.TransactionSourceOneOf
+import com.lightspark.grid.models.transactions.TransactionStatus
+import com.lightspark.grid.models.transactions.TransactionType
 import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class OutgoingTransactionTest {
+internal class SandboxSendFundsResponseTest {
 
     @Test
     fun create() {
-        val outgoingTransaction =
-            OutgoingTransaction.builder()
+        val sandboxSendFundsResponse =
+            SandboxSendFundsResponse.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -57,12 +61,13 @@ internal class OutgoingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -127,7 +132,7 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    SandboxSendFundsResponse.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -135,23 +140,24 @@ internal class OutgoingTransactionTest {
                 )
                 .build()
 
-        assertThat(outgoingTransaction.id())
+        assertThat(sandboxSendFundsResponse.id())
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
-        assertThat(outgoingTransaction.customerId())
+        assertThat(sandboxSendFundsResponse.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(outgoingTransaction.destination())
+        assertThat(sandboxSendFundsResponse.destination())
             .isEqualTo(
                 Transaction.Destination.ofAccount(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
             )
-        assertThat(outgoingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
-        assertThat(outgoingTransaction.status()).isEqualTo(TransactionStatus.CREATED)
-        assertThat(outgoingTransaction.type()).isEqualTo(TransactionType.OUTGOING)
-        assertThat(outgoingTransaction.counterpartyInformation())
+        assertThat(sandboxSendFundsResponse.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
+        assertThat(sandboxSendFundsResponse.status()).isEqualTo(TransactionStatus.CREATED)
+        assertThat(sandboxSendFundsResponse.type()).isEqualTo(TransactionType.OUTGOING)
+        assertThat(sandboxSendFundsResponse.counterpartyInformation())
             .isEqualTo(
                 Transaction.CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -159,14 +165,14 @@ internal class OutgoingTransactionTest {
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                     .build()
             )
-        assertThat(outgoingTransaction.createdAt())
+        assertThat(sandboxSendFundsResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-        assertThat(outgoingTransaction.description()).isEqualTo("Payment for invoice #1234")
-        assertThat(outgoingTransaction.settledAt())
+        assertThat(sandboxSendFundsResponse.description()).isEqualTo("Payment for invoice #1234")
+        assertThat(sandboxSendFundsResponse.settledAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(outgoingTransaction.updatedAt())
+        assertThat(sandboxSendFundsResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(outgoingTransaction.sentAmount())
+        assertThat(sandboxSendFundsResponse.sentAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -180,20 +186,21 @@ internal class OutgoingTransactionTest {
                     )
                     .build()
             )
-        assertThat(outgoingTransaction.source())
+        assertThat(sandboxSendFundsResponse.source())
             .isEqualTo(
                 TransactionSourceOneOf.ofAccount(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
             )
-        assertThat(outgoingTransaction.exchangeRate()).isEqualTo(1.08)
-        assertThat(outgoingTransaction.failureReason())
-            .isEqualTo(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
-        assertThat(outgoingTransaction.fees()).isEqualTo(10L)
-        assertThat(outgoingTransaction.paymentInstructions())
+        assertThat(sandboxSendFundsResponse.exchangeRate()).isEqualTo(1.08)
+        assertThat(sandboxSendFundsResponse.failureReason())
+            .isEqualTo(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
+        assertThat(sandboxSendFundsResponse.fees()).isEqualTo(10L)
+        assertThat(sandboxSendFundsResponse.paymentInstructions())
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
@@ -228,9 +235,9 @@ internal class OutgoingTransactionTest {
                     .isPlatformAccount(true)
                     .build(),
             )
-        assertThat(outgoingTransaction.quoteId())
+        assertThat(sandboxSendFundsResponse.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
-        assertThat(outgoingTransaction.rateDetails())
+        assertThat(sandboxSendFundsResponse.rateDetails())
             .isEqualTo(
                 OutgoingRateDetails.builder()
                     .counterpartyFixedFee(10L)
@@ -241,7 +248,7 @@ internal class OutgoingTransactionTest {
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
-        assertThat(outgoingTransaction.receivedAmount())
+        assertThat(sandboxSendFundsResponse.receivedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -255,9 +262,9 @@ internal class OutgoingTransactionTest {
                     )
                     .build()
             )
-        assertThat(outgoingTransaction.refund())
+        assertThat(sandboxSendFundsResponse.refund())
             .isEqualTo(
-                OutgoingTransaction.Refund.builder()
+                SandboxSendFundsResponse.Refund.builder()
                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .reference("UMA-Q12345-REFUND")
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -268,14 +275,15 @@ internal class OutgoingTransactionTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val outgoingTransaction =
-            OutgoingTransaction.builder()
+        val sandboxSendFundsResponse =
+            SandboxSendFundsResponse.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -307,12 +315,13 @@ internal class OutgoingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -377,7 +386,7 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    SandboxSendFundsResponse.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -385,12 +394,12 @@ internal class OutgoingTransactionTest {
                 )
                 .build()
 
-        val roundtrippedOutgoingTransaction =
+        val roundtrippedSandboxSendFundsResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(outgoingTransaction),
-                jacksonTypeRef<OutgoingTransaction>(),
+                jsonMapper.writeValueAsString(sandboxSendFundsResponse),
+                jacksonTypeRef<SandboxSendFundsResponse>(),
             )
 
-        assertThat(roundtrippedOutgoingTransaction).isEqualTo(outgoingTransaction)
+        assertThat(roundtrippedSandboxSendFundsResponse).isEqualTo(sandboxSendFundsResponse)
     }
 }
