@@ -31,11 +31,8 @@ internal class OutgoingPaymentWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             Transaction.Destination.Account.builder()
-                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
-                                )
+                                .currency("EUR")
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
@@ -164,11 +161,8 @@ internal class OutgoingPaymentWebhookEventTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         Transaction.Destination.Account.builder()
-                            .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                            .destinationType(
-                                Transaction.Destination.Account.DestinationType.ACCOUNT
-                            )
+                            .currency("EUR")
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -300,11 +294,8 @@ internal class OutgoingPaymentWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             Transaction.Destination.Account.builder()
-                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
-                                )
+                                .currency("EUR")
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
