@@ -18,8 +18,9 @@ internal class TransactionSourceOneOfTest {
     fun ofAccount() {
         val account =
             TransactionSourceOneOf.Account.builder()
-                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .currency("USD")
+                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                 .build()
 
         val transactionSourceOneOf = TransactionSourceOneOf.ofAccount(account)
@@ -35,8 +36,9 @@ internal class TransactionSourceOneOfTest {
         val transactionSourceOneOf =
             TransactionSourceOneOf.ofAccount(
                 TransactionSourceOneOf.Account.builder()
-                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .currency("USD")
+                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                     .build()
             )
 
@@ -53,8 +55,9 @@ internal class TransactionSourceOneOfTest {
     fun ofUmaAddress() {
         val umaAddress =
             TransactionSourceOneOf.UmaAddress.builder()
-                .umaAddress("\$sender@uma.domain.com")
                 .currency("USD")
+                .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+                .umaAddress("\$sender@uma.domain.com")
                 .build()
 
         val transactionSourceOneOf = TransactionSourceOneOf.ofUmaAddress(umaAddress)
@@ -70,8 +73,9 @@ internal class TransactionSourceOneOfTest {
         val transactionSourceOneOf =
             TransactionSourceOneOf.ofUmaAddress(
                 TransactionSourceOneOf.UmaAddress.builder()
-                    .umaAddress("\$sender@uma.domain.com")
                     .currency("USD")
+                    .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+                    .umaAddress("\$sender@uma.domain.com")
                     .build()
             )
 
@@ -89,6 +93,7 @@ internal class TransactionSourceOneOfTest {
         val realtimeFunding =
             TransactionSourceOneOf.RealtimeFunding.builder()
                 .currency("USDC")
+                .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                 .build()
 
@@ -106,6 +111,7 @@ internal class TransactionSourceOneOfTest {
             TransactionSourceOneOf.ofRealtimeFunding(
                 TransactionSourceOneOf.RealtimeFunding.builder()
                     .currency("USDC")
+                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                     .build()
             )

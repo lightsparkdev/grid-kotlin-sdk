@@ -7,9 +7,9 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
+import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
 import com.lightspark.grid.models.sandbox.SandboxSendTestParams
 import com.lightspark.grid.models.sandbox.SandboxSendTestResponse
-import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.UmaService
 
@@ -40,7 +40,7 @@ interface SandboxService {
     fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OutgoingTransaction
+    ): SandboxSendFundsResponse
 
     /** Send a test webhook to the configured endpoint */
     fun sendTest(
@@ -76,7 +76,7 @@ interface SandboxService {
         fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OutgoingTransaction>
+        ): HttpResponseFor<SandboxSendFundsResponse>
 
         /**
          * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as

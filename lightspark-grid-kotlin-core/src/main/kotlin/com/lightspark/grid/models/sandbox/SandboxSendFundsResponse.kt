@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.transactions
+package com.lightspark.grid.models.sandbox
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -19,12 +19,15 @@ import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCrea
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.transactions.TransactionSourceOneOf
+import com.lightspark.grid.models.transactions.TransactionStatus
+import com.lightspark.grid.models.transactions.TransactionType
 import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class OutgoingTransaction
+class SandboxSendFundsResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -163,6 +166,8 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
+     * Destination account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -255,6 +260,8 @@ private constructor(
     fun sentAmount(): CurrencyAmount = sentAmount.getRequired("sentAmount")
 
     /**
+     * Source account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -517,7 +524,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [OutgoingTransaction].
+         * Returns a mutable builder for constructing an instance of [SandboxSendFundsResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -534,7 +541,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [OutgoingTransaction]. */
+    /** A builder for [SandboxSendFundsResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -561,29 +568,30 @@ private constructor(
         private var refund: JsonField<Refund> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(outgoingTransaction: OutgoingTransaction) = apply {
-            id = outgoingTransaction.id
-            customerId = outgoingTransaction.customerId
-            destination = outgoingTransaction.destination
-            platformCustomerId = outgoingTransaction.platformCustomerId
-            status = outgoingTransaction.status
-            type = outgoingTransaction.type
-            counterpartyInformation = outgoingTransaction.counterpartyInformation
-            createdAt = outgoingTransaction.createdAt
-            description = outgoingTransaction.description
-            settledAt = outgoingTransaction.settledAt
-            updatedAt = outgoingTransaction.updatedAt
-            sentAmount = outgoingTransaction.sentAmount
-            source = outgoingTransaction.source
-            exchangeRate = outgoingTransaction.exchangeRate
-            failureReason = outgoingTransaction.failureReason
-            fees = outgoingTransaction.fees
-            paymentInstructions = outgoingTransaction.paymentInstructions.map { it.toMutableList() }
-            quoteId = outgoingTransaction.quoteId
-            rateDetails = outgoingTransaction.rateDetails
-            receivedAmount = outgoingTransaction.receivedAmount
-            refund = outgoingTransaction.refund
-            additionalProperties = outgoingTransaction.additionalProperties.toMutableMap()
+        internal fun from(sandboxSendFundsResponse: SandboxSendFundsResponse) = apply {
+            id = sandboxSendFundsResponse.id
+            customerId = sandboxSendFundsResponse.customerId
+            destination = sandboxSendFundsResponse.destination
+            platformCustomerId = sandboxSendFundsResponse.platformCustomerId
+            status = sandboxSendFundsResponse.status
+            type = sandboxSendFundsResponse.type
+            counterpartyInformation = sandboxSendFundsResponse.counterpartyInformation
+            createdAt = sandboxSendFundsResponse.createdAt
+            description = sandboxSendFundsResponse.description
+            settledAt = sandboxSendFundsResponse.settledAt
+            updatedAt = sandboxSendFundsResponse.updatedAt
+            sentAmount = sandboxSendFundsResponse.sentAmount
+            source = sandboxSendFundsResponse.source
+            exchangeRate = sandboxSendFundsResponse.exchangeRate
+            failureReason = sandboxSendFundsResponse.failureReason
+            fees = sandboxSendFundsResponse.fees
+            paymentInstructions =
+                sandboxSendFundsResponse.paymentInstructions.map { it.toMutableList() }
+            quoteId = sandboxSendFundsResponse.quoteId
+            rateDetails = sandboxSendFundsResponse.rateDetails
+            receivedAmount = sandboxSendFundsResponse.receivedAmount
+            refund = sandboxSendFundsResponse.refund
+            additionalProperties = sandboxSendFundsResponse.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for the transaction */
@@ -609,6 +617,7 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
+        /** Destination account details */
         fun destination(destination: Transaction.Destination) =
             destination(JsonField.of(destination))
 
@@ -631,12 +640,18 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.Account.builder()
+         *     .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountDestination(accountId: String) =
-            destination(Transaction.Destination.Account.builder().accountId(accountId).build())
+            destination(
+                Transaction.Destination.Account.builder()
+                    .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
+                    .accountId(accountId)
+                    .build()
+            )
 
         /**
          * Alias for calling [destination] with `Transaction.Destination.ofUmaAddress(umaAddress)`.
@@ -648,12 +663,18 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.UmaAddress.builder()
+         *     .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressDestination(umaAddress: String) =
-            destination(Transaction.Destination.UmaAddress.builder().umaAddress(umaAddress).build())
+            destination(
+                Transaction.Destination.UmaAddress.builder()
+                    .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
+                    .umaAddress(umaAddress)
+                    .build()
+            )
 
         /**
          * Alias for calling [destination] with
@@ -666,6 +687,7 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.ExternalAccountDetails.builder()
+         *     .destinationType(Transaction.Destination.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
          *     .externalAccountDetails(externalAccountDetails)
          *     .build()
          * ```
@@ -673,6 +695,10 @@ private constructor(
         fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
             destination(
                 Transaction.Destination.ExternalAccountDetails.builder()
+                    .destinationType(
+                        Transaction.Destination.ExternalAccountDetails.DestinationType
+                            .EXTERNAL_ACCOUNT_DETAILS
+                    )
                     .externalAccountDetails(externalAccountDetails)
                     .build()
             )
@@ -810,6 +836,7 @@ private constructor(
             this.sentAmount = sentAmount
         }
 
+        /** Source account details */
         fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -829,12 +856,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.Account.builder()
+         *     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountSource(accountId: String) =
-            source(TransactionSourceOneOf.Account.builder().accountId(accountId).build())
+            source(
+                TransactionSourceOneOf.Account.builder()
+                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                    .accountId(accountId)
+                    .build()
+            )
 
         /** Alias for calling [source] with `TransactionSourceOneOf.ofUmaAddress(umaAddress)`. */
         fun source(umaAddress: TransactionSourceOneOf.UmaAddress) =
@@ -844,12 +877,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.UmaAddress.builder()
+         *     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressSource(umaAddress: String) =
-            source(TransactionSourceOneOf.UmaAddress.builder().umaAddress(umaAddress).build())
+            source(
+                TransactionSourceOneOf.UmaAddress.builder()
+                    .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+                    .umaAddress(umaAddress)
+                    .build()
+            )
 
         /**
          * Alias for calling [source] with
@@ -862,12 +901,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.RealtimeFunding.builder()
+         *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
          *     .currency(currency)
          *     .build()
          * ```
          */
         fun realtimeFundingSource(currency: String) =
-            source(TransactionSourceOneOf.RealtimeFunding.builder().currency(currency).build())
+            source(
+                TransactionSourceOneOf.RealtimeFunding.builder()
+                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+                    .currency(currency)
+                    .build()
+            )
 
         /** Number of sending currency units per receiving currency unit. */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
@@ -1009,7 +1054,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [OutgoingTransaction].
+         * Returns an immutable instance of [SandboxSendFundsResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -1027,8 +1072,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): OutgoingTransaction =
-            OutgoingTransaction(
+        fun build(): SandboxSendFundsResponse =
+            SandboxSendFundsResponse(
                 checkRequired("id", id),
                 checkRequired("customerId", customerId),
                 checkRequired("destination", destination),
@@ -1056,7 +1101,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): OutgoingTransaction = apply {
+    fun validate(): SandboxSendFundsResponse = apply {
         if (validated) {
             return@apply
         }
@@ -1647,7 +1692,7 @@ private constructor(
             return true
         }
 
-        return other is OutgoingTransaction &&
+        return other is SandboxSendFundsResponse &&
             id == other.id &&
             customerId == other.customerId &&
             destination == other.destination &&
@@ -1702,5 +1747,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
+        "SandboxSendFundsResponse{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, settledAt=$settledAt, updatedAt=$updatedAt, sentAmount=$sentAmount, source=$source, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, additionalProperties=$additionalProperties}"
 }

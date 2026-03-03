@@ -140,6 +140,8 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
+     * Destination account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -257,6 +259,8 @@ private constructor(
         reconciliationInstructions.getNullable("reconciliationInstructions")
 
     /**
+     * Source account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
@@ -498,6 +502,7 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
+        /** Destination account details */
         fun destination(destination: Transaction.Destination) =
             destination(JsonField.of(destination))
 
@@ -520,12 +525,18 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.Account.builder()
+         *     .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountDestination(accountId: String) =
-            destination(Transaction.Destination.Account.builder().accountId(accountId).build())
+            destination(
+                Transaction.Destination.Account.builder()
+                    .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
+                    .accountId(accountId)
+                    .build()
+            )
 
         /**
          * Alias for calling [destination] with `Transaction.Destination.ofUmaAddress(umaAddress)`.
@@ -537,12 +548,18 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.UmaAddress.builder()
+         *     .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressDestination(umaAddress: String) =
-            destination(Transaction.Destination.UmaAddress.builder().umaAddress(umaAddress).build())
+            destination(
+                Transaction.Destination.UmaAddress.builder()
+                    .destinationType(Transaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
+                    .umaAddress(umaAddress)
+                    .build()
+            )
 
         /**
          * Alias for calling [destination] with
@@ -555,6 +572,7 @@ private constructor(
          * Alias for calling [destination] with the following:
          * ```kotlin
          * Transaction.Destination.ExternalAccountDetails.builder()
+         *     .destinationType(Transaction.Destination.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
          *     .externalAccountDetails(externalAccountDetails)
          *     .build()
          * ```
@@ -562,6 +580,10 @@ private constructor(
         fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
             destination(
                 Transaction.Destination.ExternalAccountDetails.builder()
+                    .destinationType(
+                        Transaction.Destination.ExternalAccountDetails.DestinationType
+                            .EXTERNAL_ACCOUNT_DETAILS
+                    )
                     .externalAccountDetails(externalAccountDetails)
                     .build()
             )
@@ -743,6 +765,7 @@ private constructor(
             reconciliationInstructions: JsonField<ReconciliationInstructions>
         ) = apply { this.reconciliationInstructions = reconciliationInstructions }
 
+        /** Source account details */
         fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -762,12 +785,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.Account.builder()
+         *     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
          *     .accountId(accountId)
          *     .build()
          * ```
          */
         fun accountSource(accountId: String) =
-            source(TransactionSourceOneOf.Account.builder().accountId(accountId).build())
+            source(
+                TransactionSourceOneOf.Account.builder()
+                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                    .accountId(accountId)
+                    .build()
+            )
 
         /** Alias for calling [source] with `TransactionSourceOneOf.ofUmaAddress(umaAddress)`. */
         fun source(umaAddress: TransactionSourceOneOf.UmaAddress) =
@@ -777,12 +806,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.UmaAddress.builder()
+         *     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
          *     .umaAddress(umaAddress)
          *     .build()
          * ```
          */
         fun umaAddressSource(umaAddress: String) =
-            source(TransactionSourceOneOf.UmaAddress.builder().umaAddress(umaAddress).build())
+            source(
+                TransactionSourceOneOf.UmaAddress.builder()
+                    .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
+                    .umaAddress(umaAddress)
+                    .build()
+            )
 
         /**
          * Alias for calling [source] with
@@ -795,12 +830,18 @@ private constructor(
          * Alias for calling [source] with the following:
          * ```kotlin
          * TransactionSourceOneOf.RealtimeFunding.builder()
+         *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
          *     .currency(currency)
          *     .build()
          * ```
          */
         fun realtimeFundingSource(currency: String) =
-            source(TransactionSourceOneOf.RealtimeFunding.builder().currency(currency).build())
+            source(
+                TransactionSourceOneOf.RealtimeFunding.builder()
+                    .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
+                    .currency(currency)
+                    .build()
+            )
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()

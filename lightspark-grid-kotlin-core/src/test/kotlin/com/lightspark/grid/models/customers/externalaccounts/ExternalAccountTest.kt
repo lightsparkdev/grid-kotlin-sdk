@@ -51,7 +51,7 @@ internal class ExternalAccountTest {
                     ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                 )
                 .beneficiaryVerifiedData(
-                    BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                    ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
@@ -99,7 +99,9 @@ internal class ExternalAccountTest {
         assertThat(externalAccount.beneficiaryVerificationStatus())
             .isEqualTo(ExternalAccount.BeneficiaryVerificationStatus.MATCHED)
         assertThat(externalAccount.beneficiaryVerifiedData())
-            .isEqualTo(BeneficiaryVerifiedData.builder().fullName("John Doe").build())
+            .isEqualTo(
+                ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+            )
         assertThat(externalAccount.customerId())
             .isEqualTo("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
         assertThat(externalAccount.defaultUmaDepositAccount()).isEqualTo(false)
@@ -149,7 +151,7 @@ internal class ExternalAccountTest {
                     ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                 )
                 .beneficiaryVerifiedData(
-                    BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                    ExternalAccount.BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)

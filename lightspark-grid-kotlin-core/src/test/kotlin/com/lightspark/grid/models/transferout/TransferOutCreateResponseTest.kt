@@ -11,7 +11,6 @@ import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.transactions.IncomingTransaction
-import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
@@ -33,8 +32,9 @@ internal class TransferOutCreateResponseTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -80,8 +80,9 @@ internal class TransferOutCreateResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .build()
@@ -103,8 +104,11 @@ internal class TransferOutCreateResponseTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         Transaction.Destination.Account.builder()
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                Transaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -150,8 +154,9 @@ internal class TransferOutCreateResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .build()
                     )
                     .build()
@@ -169,13 +174,14 @@ internal class TransferOutCreateResponseTest {
     @Test
     fun ofOutgoingTransaction() {
         val outgoingTransaction =
-            OutgoingTransaction.builder()
+            TransferOutCreateResponse.OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     Transaction.Destination.Account.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .currency("EUR")
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
@@ -207,12 +213,15 @@ internal class TransferOutCreateResponseTest {
                 )
                 .source(
                     TransactionSourceOneOf.Account.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .currency("USD")
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(
+                    TransferOutCreateResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
+                )
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -277,7 +286,7 @@ internal class TransferOutCreateResponseTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    TransferOutCreateResponse.OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -297,13 +306,16 @@ internal class TransferOutCreateResponseTest {
         val jsonMapper = jsonMapper()
         val transferOutCreateResponse =
             TransferOutCreateResponse.ofOutgoingTransaction(
-                OutgoingTransaction.builder()
+                TransferOutCreateResponse.OutgoingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         Transaction.Destination.Account.builder()
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .currency("EUR")
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .destinationType(
+                                Transaction.Destination.Account.DestinationType.ACCOUNT
+                            )
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -335,12 +347,15 @@ internal class TransferOutCreateResponseTest {
                     )
                     .source(
                         TransactionSourceOneOf.Account.builder()
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .currency("USD")
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                             .build()
                     )
                     .exchangeRate(1.08)
-                    .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                    .failureReason(
+                        TransferOutCreateResponse.OutgoingTransaction.FailureReason.QUOTE_EXPIRED
+                    )
                     .fees(10L)
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
@@ -407,7 +422,7 @@ internal class TransferOutCreateResponseTest {
                             .build()
                     )
                     .refund(
-                        OutgoingTransaction.Refund.builder()
+                        TransferOutCreateResponse.OutgoingTransaction.Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
