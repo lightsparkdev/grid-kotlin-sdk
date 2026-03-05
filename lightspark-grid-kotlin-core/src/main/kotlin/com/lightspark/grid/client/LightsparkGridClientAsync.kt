@@ -17,6 +17,7 @@ import com.lightspark.grid.services.async.TransactionServiceAsync
 import com.lightspark.grid.services.async.TransferInServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
+import com.lightspark.grid.services.async.WebhookServiceAsync
 
 /**
  * A client for interacting with the Lightspark Grid REST API asynchronously. You can also switch to
@@ -106,6 +107,8 @@ interface LightsparkGridClientAsync {
      */
     fun exchangeRates(): ExchangeRateServiceAsync
 
+    fun webhooks(): WebhookServiceAsync
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -187,5 +190,7 @@ interface LightsparkGridClientAsync {
          * approximately 5 minutes and include platform-specific fees.
          */
         fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse
+
+        fun webhooks(): WebhookServiceAsync.WithRawResponse
     }
 }
