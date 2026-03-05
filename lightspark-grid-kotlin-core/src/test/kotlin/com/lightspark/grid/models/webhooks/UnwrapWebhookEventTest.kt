@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.externalaccounts.Address
@@ -473,11 +474,11 @@ internal class UnwrapWebhookEventTest {
                         .status(BulkUploadWebhookEvent.Data.Status.PROCESSING)
                         .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                         .addError(
-                            BulkUploadWebhookEvent.Data.Error.builder()
+                            BulkCustomerImportErrorEntry.builder()
                                 .correlationId("biz456")
                                 .code("code")
                                 .details(
-                                    BulkUploadWebhookEvent.Data.Error.Details.builder()
+                                    BulkCustomerImportErrorEntry.Details.builder()
                                         .putAdditionalProperty("foo", JsonValue.from("bar"))
                                         .build()
                                 )
@@ -522,11 +523,11 @@ internal class UnwrapWebhookEventTest {
                             .status(BulkUploadWebhookEvent.Data.Status.PROCESSING)
                             .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                             .addError(
-                                BulkUploadWebhookEvent.Data.Error.builder()
+                                BulkCustomerImportErrorEntry.builder()
                                     .correlationId("biz456")
                                     .code("code")
                                     .details(
-                                        BulkUploadWebhookEvent.Data.Error.Details.builder()
+                                        BulkCustomerImportErrorEntry.Details.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("bar"))
                                             .build()
                                     )
