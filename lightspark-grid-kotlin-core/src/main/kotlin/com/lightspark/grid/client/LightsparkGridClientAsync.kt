@@ -17,7 +17,6 @@ import com.lightspark.grid.services.async.TransactionServiceAsync
 import com.lightspark.grid.services.async.TransferInServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
-import com.lightspark.grid.services.async.WebhookServiceAsync
 
 /**
  * A client for interacting with the Lightspark Grid REST API asynchronously. You can also switch to
@@ -93,6 +92,7 @@ interface LightsparkGridClientAsync {
     /** Endpoints for creating, claiming and managing UMA invitations */
     fun invitations(): InvitationServiceAsync
 
+    /** Endpoints to trigger test cases in sandbox */
     fun sandbox(): SandboxServiceAsync
 
     fun umaProviders(): UmaProviderServiceAsync
@@ -105,8 +105,6 @@ interface LightsparkGridClientAsync {
      * minutes and include platform-specific fees.
      */
     fun exchangeRates(): ExchangeRateServiceAsync
-
-    fun webhooks(): WebhookServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -176,6 +174,7 @@ interface LightsparkGridClientAsync {
         /** Endpoints for creating, claiming and managing UMA invitations */
         fun invitations(): InvitationServiceAsync.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
         fun sandbox(): SandboxServiceAsync.WithRawResponse
 
         fun umaProviders(): UmaProviderServiceAsync.WithRawResponse
@@ -188,7 +187,5 @@ interface LightsparkGridClientAsync {
          * approximately 5 minutes and include platform-specific fees.
          */
         fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse
-
-        fun webhooks(): WebhookServiceAsync.WithRawResponse
     }
 }

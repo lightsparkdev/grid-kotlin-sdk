@@ -32,8 +32,6 @@ import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsyncImpl
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsyncImpl
-import com.lightspark.grid.services.async.WebhookServiceAsync
-import com.lightspark.grid.services.async.WebhookServiceAsyncImpl
 
 class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     LightsparkGridClientAsync {
@@ -109,10 +107,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         ExchangeRateServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
-    private val webhooks: WebhookServiceAsync by lazy {
-        WebhookServiceAsyncImpl(clientOptionsWithUserAgent)
-    }
-
     override fun sync(): LightsparkGridClient = sync
 
     override fun withRawResponse(): LightsparkGridClientAsync.WithRawResponse = withRawResponse
@@ -158,6 +152,7 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     /** Endpoints for creating, claiming and managing UMA invitations */
     override fun invitations(): InvitationServiceAsync = invitations
 
+    /** Endpoints to trigger test cases in sandbox */
     override fun sandbox(): SandboxServiceAsync = sandbox
 
     override fun umaProviders(): UmaProviderServiceAsync = umaProviders
@@ -170,8 +165,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
      * minutes and include platform-specific fees.
      */
     override fun exchangeRates(): ExchangeRateServiceAsync = exchangeRates
-
-    override fun webhooks(): WebhookServiceAsync = webhooks
 
     override fun close() = clientOptions.close()
 
@@ -234,10 +227,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
             ExchangeRateServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val webhooks: WebhookServiceAsync.WithRawResponse by lazy {
-            WebhookServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClientAsync.WithRawResponse =
@@ -285,6 +274,7 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         /** Endpoints for creating, claiming and managing UMA invitations */
         override fun invitations(): InvitationServiceAsync.WithRawResponse = invitations
 
+        /** Endpoints to trigger test cases in sandbox */
         override fun sandbox(): SandboxServiceAsync.WithRawResponse = sandbox
 
         override fun umaProviders(): UmaProviderServiceAsync.WithRawResponse = umaProviders
@@ -297,7 +287,5 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
          * approximately 5 minutes and include platform-specific fees.
          */
         override fun exchangeRates(): ExchangeRateServiceAsync.WithRawResponse = exchangeRates
-
-        override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
     }
 }

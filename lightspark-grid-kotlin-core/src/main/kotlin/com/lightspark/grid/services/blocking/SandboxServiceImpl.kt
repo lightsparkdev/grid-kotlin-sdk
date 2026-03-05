@@ -17,13 +17,14 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
-import com.lightspark.grid.models.sandbox.SandboxSendTestParams
-import com.lightspark.grid.models.sandbox.SandboxSendTestResponse
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountServiceImpl
 import com.lightspark.grid.services.blocking.sandbox.UmaService
 import com.lightspark.grid.services.blocking.sandbox.UmaServiceImpl
+import com.lightspark.grid.services.blocking.sandbox.WebhookService
+import com.lightspark.grid.services.blocking.sandbox.WebhookServiceImpl
 
+/** Endpoints to trigger test cases in sandbox */
 class SandboxServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     SandboxService {
 
@@ -37,6 +38,8 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
         InternalAccountServiceImpl(clientOptions)
     }
 
+    private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptions) }
+
     override fun withRawResponse(): SandboxService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxService =
@@ -48,19 +51,15 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
     /** Endpoints to trigger test cases in sandbox */
     override fun internalAccounts(): InternalAccountService = internalAccounts
 
+    /** Endpoints to trigger test cases in sandbox */
+    override fun webhooks(): WebhookService = webhooks
+
     override fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions,
     ): SandboxSendFundsResponse =
         // post /sandbox/send
         withRawResponse().sendFunds(params, requestOptions).parse()
-
-    override fun sendTest(
-        params: SandboxSendTestParams,
-        requestOptions: RequestOptions,
-    ): SandboxSendTestResponse =
-        // post /webhooks/test
-        withRawResponse().sendTest(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SandboxService.WithRawResponse {
@@ -76,6 +75,10 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
             InternalAccountServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val webhooks: WebhookService.WithRawResponse by lazy {
+            WebhookServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): SandboxService.WithRawResponse =
@@ -88,6 +91,9 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
 
         /** Endpoints to trigger test cases in sandbox */
         override fun internalAccounts(): InternalAccountService.WithRawResponse = internalAccounts
+
+        /** Endpoints to trigger test cases in sandbox */
+        override fun webhooks(): WebhookService.WithRawResponse = webhooks
 
         private val sendFundsHandler: Handler<SandboxSendFundsResponse> =
             jsonHandler<SandboxSendFundsResponse>(clientOptions.jsonMapper)
@@ -109,34 +115,6 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
             return errorHandler.handle(response).parseable {
                 response
                     .use { sendFundsHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val sendTestHandler: Handler<SandboxSendTestResponse> =
-            jsonHandler<SandboxSendTestResponse>(clientOptions.jsonMapper)
-
-        override fun sendTest(
-            params: SandboxSendTestParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SandboxSendTestResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("webhooks", "test")
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { sendTestHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

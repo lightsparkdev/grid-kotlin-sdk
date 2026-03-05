@@ -1,45 +1,45 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.sandbox
+package com.lightspark.grid.models.sandbox.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SandboxSendTestResponseTest {
+internal class WebhookSendTestResponseTest {
 
     @Test
     fun create() {
-        val sandboxSendTestResponse =
-            SandboxSendTestResponse.builder()
+        val webhookSendTestResponse =
+            WebhookSendTestResponse.builder()
                 .responseStatus(200L)
                 .responseBody("response_body")
                 .url("https://api.mycompany.com/webhooks/uma")
                 .build()
 
-        assertThat(sandboxSendTestResponse.responseStatus()).isEqualTo(200L)
-        assertThat(sandboxSendTestResponse.responseBody()).isEqualTo("response_body")
-        assertThat(sandboxSendTestResponse.url())
+        assertThat(webhookSendTestResponse.responseStatus()).isEqualTo(200L)
+        assertThat(webhookSendTestResponse.responseBody()).isEqualTo("response_body")
+        assertThat(webhookSendTestResponse.url())
             .isEqualTo("https://api.mycompany.com/webhooks/uma")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sandboxSendTestResponse =
-            SandboxSendTestResponse.builder()
+        val webhookSendTestResponse =
+            WebhookSendTestResponse.builder()
                 .responseStatus(200L)
                 .responseBody("response_body")
                 .url("https://api.mycompany.com/webhooks/uma")
                 .build()
 
-        val roundtrippedSandboxSendTestResponse =
+        val roundtrippedWebhookSendTestResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(sandboxSendTestResponse),
-                jacksonTypeRef<SandboxSendTestResponse>(),
+                jsonMapper.writeValueAsString(webhookSendTestResponse),
+                jacksonTypeRef<WebhookSendTestResponse>(),
             )
 
-        assertThat(roundtrippedSandboxSendTestResponse).isEqualTo(sandboxSendTestResponse)
+        assertThat(roundtrippedWebhookSendTestResponse).isEqualTo(webhookSendTestResponse)
     }
 }
