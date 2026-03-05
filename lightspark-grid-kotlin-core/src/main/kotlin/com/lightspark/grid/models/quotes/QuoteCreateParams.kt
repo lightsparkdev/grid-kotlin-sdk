@@ -139,8 +139,8 @@ private constructor(
     fun lookupId(): String? = body.lookupId()
 
     /**
-     * The purpose of the payment. This may be required when sending to certain geographies such as
-     * India.
+     * The purpose of the payment. This may be required when sending to certain geographies (e.g.
+     * India).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -437,8 +437,8 @@ private constructor(
         fun lookupId(lookupId: JsonField<String>) = apply { body.lookupId(lookupId) }
 
         /**
-         * The purpose of the payment. This may be required when sending to certain geographies such
-         * as India.
+         * The purpose of the payment. This may be required when sending to certain geographies
+         * (e.g. India).
          */
         fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) = apply {
             body.purposeOfPayment(purposeOfPayment)
@@ -750,8 +750,8 @@ private constructor(
         fun lookupId(): String? = lookupId.getNullable("lookupId")
 
         /**
-         * The purpose of the payment. This may be required when sending to certain geographies such
-         * as India.
+         * The purpose of the payment. This may be required when sending to certain geographies
+         * (e.g. India).
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1069,7 +1069,7 @@ private constructor(
 
             /**
              * The purpose of the payment. This may be required when sending to certain geographies
-             * such as India.
+             * (e.g. India).
              */
             fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
                 purposeOfPayment(JsonField.of(purposeOfPayment))
@@ -2123,8 +2123,8 @@ private constructor(
     }
 
     /**
-     * The purpose of the payment. This may be required when sending to certain geographies such as
-     * India.
+     * The purpose of the payment. This may be required when sending to certain geographies (e.g.
+     * India).
      */
     class PurposeOfPayment @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {

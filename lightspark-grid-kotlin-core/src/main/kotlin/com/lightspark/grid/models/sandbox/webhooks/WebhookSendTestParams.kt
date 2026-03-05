@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.sandbox
+package com.lightspark.grid.models.sandbox.webhooks
 
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
@@ -10,7 +10,7 @@ import com.lightspark.grid.core.toImmutable
 import java.util.Objects
 
 /** Send a test webhook to the configured endpoint */
-class SandboxSendTestParams
+class WebhookSendTestParams
 private constructor(
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -30,23 +30,23 @@ private constructor(
 
     companion object {
 
-        fun none(): SandboxSendTestParams = builder().build()
+        fun none(): WebhookSendTestParams = builder().build()
 
-        /** Returns a mutable builder for constructing an instance of [SandboxSendTestParams]. */
+        /** Returns a mutable builder for constructing an instance of [WebhookSendTestParams]. */
         fun builder() = Builder()
     }
 
-    /** A builder for [SandboxSendTestParams]. */
+    /** A builder for [WebhookSendTestParams]. */
     class Builder internal constructor() {
 
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sandboxSendTestParams: SandboxSendTestParams) = apply {
-            additionalHeaders = sandboxSendTestParams.additionalHeaders.toBuilder()
-            additionalQueryParams = sandboxSendTestParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = sandboxSendTestParams.additionalBodyProperties.toMutableMap()
+        internal fun from(webhookSendTestParams: WebhookSendTestParams) = apply {
+            additionalHeaders = webhookSendTestParams.additionalHeaders.toBuilder()
+            additionalQueryParams = webhookSendTestParams.additionalQueryParams.toBuilder()
+            additionalBodyProperties = webhookSendTestParams.additionalBodyProperties.toMutableMap()
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -170,12 +170,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SandboxSendTestParams].
+         * Returns an immutable instance of [WebhookSendTestParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): SandboxSendTestParams =
-            SandboxSendTestParams(
+        fun build(): WebhookSendTestParams =
+            WebhookSendTestParams(
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
                 additionalBodyProperties.toImmutable(),
@@ -193,7 +193,7 @@ private constructor(
             return true
         }
 
-        return other is SandboxSendTestParams &&
+        return other is WebhookSendTestParams &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
             additionalBodyProperties == other.additionalBodyProperties
@@ -203,5 +203,5 @@ private constructor(
         Objects.hash(additionalHeaders, additionalQueryParams, additionalBodyProperties)
 
     override fun toString() =
-        "SandboxSendTestParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "WebhookSendTestParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

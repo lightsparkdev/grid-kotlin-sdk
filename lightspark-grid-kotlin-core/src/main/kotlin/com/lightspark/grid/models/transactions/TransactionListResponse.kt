@@ -1683,6 +1683,8 @@ private constructor(
         private constructor(
             private val initiatedAt: JsonField<OffsetDateTime>,
             private val reference: JsonField<String>,
+            private val status: JsonField<Status>,
+            private val reason: JsonField<Reason>,
             private val settledAt: JsonField<OffsetDateTime>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
@@ -1695,10 +1697,16 @@ private constructor(
                 @JsonProperty("reference")
                 @ExcludeMissing
                 reference: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("status")
+                @ExcludeMissing
+                status: JsonField<Status> = JsonMissing.of(),
+                @JsonProperty("reason")
+                @ExcludeMissing
+                reason: JsonField<Reason> = JsonMissing.of(),
                 @JsonProperty("settledAt")
                 @ExcludeMissing
                 settledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-            ) : this(initiatedAt, reference, settledAt, mutableMapOf())
+            ) : this(initiatedAt, reference, status, reason, settledAt, mutableMapOf())
 
             /**
              * When the refund was initiated
@@ -1710,7 +1718,7 @@ private constructor(
             fun initiatedAt(): OffsetDateTime = initiatedAt.getRequired("initiatedAt")
 
             /**
-             * The unique reference code of the refund
+             * The unique reference ID of the refund
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -1719,7 +1727,24 @@ private constructor(
             fun reference(): String = reference.getRequired("reference")
 
             /**
-             * When the refund was or will be settled
+             * Current status of the refund
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun status(): Status = status.getRequired("status")
+
+            /**
+             * Reason for the refund
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun reason(): Reason? = reason.getNullable("reason")
+
+            /**
+             * When the refund was settled
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1745,6 +1770,20 @@ private constructor(
             @JsonProperty("reference")
             @ExcludeMissing
             fun _reference(): JsonField<String> = reference
+
+            /**
+             * Returns the raw JSON value of [status].
+             *
+             * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+            /**
+             * Returns the raw JSON value of [reason].
+             *
+             * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<Reason> = reason
 
             /**
              * Returns the raw JSON value of [settledAt].
@@ -1777,6 +1816,7 @@ private constructor(
                  * ```kotlin
                  * .initiatedAt()
                  * .reference()
+                 * .status()
                  * ```
                  */
                 fun builder() = Builder()
@@ -1787,12 +1827,16 @@ private constructor(
 
                 private var initiatedAt: JsonField<OffsetDateTime>? = null
                 private var reference: JsonField<String>? = null
+                private var status: JsonField<Status>? = null
+                private var reason: JsonField<Reason> = JsonMissing.of()
                 private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(refund: Refund) = apply {
                     initiatedAt = refund.initiatedAt
                     reference = refund.reference
+                    status = refund.status
+                    reason = refund.reason
                     settledAt = refund.settledAt
                     additionalProperties = refund.additionalProperties.toMutableMap()
                 }
@@ -1812,7 +1856,7 @@ private constructor(
                     this.initiatedAt = initiatedAt
                 }
 
-                /** The unique reference code of the refund */
+                /** The unique reference ID of the refund */
                 fun reference(reference: String) = reference(JsonField.of(reference))
 
                 /**
@@ -1824,7 +1868,31 @@ private constructor(
                  */
                 fun reference(reference: JsonField<String>) = apply { this.reference = reference }
 
-                /** When the refund was or will be settled */
+                /** Current status of the refund */
+                fun status(status: Status) = status(JsonField.of(status))
+
+                /**
+                 * Sets [Builder.status] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.status] with a well-typed [Status] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun status(status: JsonField<Status>) = apply { this.status = status }
+
+                /** Reason for the refund */
+                fun reason(reason: Reason) = reason(JsonField.of(reason))
+
+                /**
+                 * Sets [Builder.reason] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.reason] with a well-typed [Reason] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun reason(reason: JsonField<Reason>) = apply { this.reason = reason }
+
+                /** When the refund was settled */
                 fun settledAt(settledAt: OffsetDateTime) = settledAt(JsonField.of(settledAt))
 
                 /**
@@ -1869,6 +1937,7 @@ private constructor(
                  * ```kotlin
                  * .initiatedAt()
                  * .reference()
+                 * .status()
                  * ```
                  *
                  * @throws IllegalStateException if any required field is unset.
@@ -1877,6 +1946,8 @@ private constructor(
                     Refund(
                         checkRequired("initiatedAt", initiatedAt),
                         checkRequired("reference", reference),
+                        checkRequired("status", status),
+                        reason,
                         settledAt,
                         additionalProperties.toMutableMap(),
                     )
@@ -1891,6 +1962,8 @@ private constructor(
 
                 initiatedAt()
                 reference()
+                status().validate()
+                reason()?.validate()
                 settledAt()
                 validated = true
             }
@@ -1912,7 +1985,277 @@ private constructor(
             internal fun validity(): Int =
                 (if (initiatedAt.asKnown() == null) 0 else 1) +
                     (if (reference.asKnown() == null) 0 else 1) +
+                    (status.asKnown()?.validity() ?: 0) +
+                    (reason.asKnown()?.validity() ?: 0) +
                     (if (settledAt.asKnown() == null) 0 else 1)
+
+            /** Current status of the refund */
+            class Status @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val PENDING = of("PENDING")
+
+                    val COMPLETED = of("COMPLETED")
+
+                    val FAILED = of("FAILED")
+
+                    fun of(value: String) = Status(JsonField.of(value))
+                }
+
+                /** An enum containing [Status]'s known values. */
+                enum class Known {
+                    PENDING,
+                    COMPLETED,
+                    FAILED,
+                }
+
+                /**
+                 * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Status] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    PENDING,
+                    COMPLETED,
+                    FAILED,
+                    /**
+                     * An enum member indicating that [Status] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        PENDING -> Value.PENDING
+                        COMPLETED -> Value.COMPLETED
+                        FAILED -> Value.FAILED
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        PENDING -> Known.PENDING
+                        COMPLETED -> Known.COMPLETED
+                        FAILED -> Known.FAILED
+                        else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): Status = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Status && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            /** Reason for the refund */
+            class Reason @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val TRANSACTION_FAILED = of("TRANSACTION_FAILED")
+
+                    val USER_CANCELLATION = of("USER_CANCELLATION")
+
+                    fun of(value: String) = Reason(JsonField.of(value))
+                }
+
+                /** An enum containing [Reason]'s known values. */
+                enum class Known {
+                    TRANSACTION_FAILED,
+                    USER_CANCELLATION,
+                }
+
+                /**
+                 * An enum containing [Reason]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Reason] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    TRANSACTION_FAILED,
+                    USER_CANCELLATION,
+                    /**
+                     * An enum member indicating that [Reason] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        TRANSACTION_FAILED -> Value.TRANSACTION_FAILED
+                        USER_CANCELLATION -> Value.USER_CANCELLATION
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        TRANSACTION_FAILED -> Known.TRANSACTION_FAILED
+                        USER_CANCELLATION -> Known.USER_CANCELLATION
+                        else -> throw LightsparkGridInvalidDataException("Unknown Reason: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): Reason = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Reason && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
@@ -1922,18 +2265,184 @@ private constructor(
                 return other is Refund &&
                     initiatedAt == other.initiatedAt &&
                     reference == other.reference &&
+                    status == other.status &&
+                    reason == other.reason &&
                     settledAt == other.settledAt &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(initiatedAt, reference, settledAt, additionalProperties)
+                Objects.hash(
+                    initiatedAt,
+                    reference,
+                    status,
+                    reason,
+                    settledAt,
+                    additionalProperties,
+                )
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Refund{initiatedAt=$initiatedAt, reference=$reference, settledAt=$settledAt, additionalProperties=$additionalProperties}"
+                "Refund{initiatedAt=$initiatedAt, reference=$reference, status=$status, reason=$reason, settledAt=$settledAt, additionalProperties=$additionalProperties}"
+        }
+
+        /**
+         * Status of an outgoing payment transaction.
+         *
+         * | Status       | Description                                             |
+         * |--------------|---------------------------------------------------------|
+         * | `PENDING`    | Quote is pending confirmation                           |
+         * | `EXPIRED`    | Quote wasn't executed before expiry window              |
+         * | `PROCESSING` | Executing the quote after receiving funds               |
+         * | `COMPLETED`  | Payout successfully reached the destination             |
+         * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+         */
+        class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val PENDING = of("PENDING")
+
+                val EXPIRED = of("EXPIRED")
+
+                val PROCESSING = of("PROCESSING")
+
+                val COMPLETED = of("COMPLETED")
+
+                val FAILED = of("FAILED")
+
+                fun of(value: String) = Status(JsonField.of(value))
+            }
+
+            /** An enum containing [Status]'s known values. */
+            enum class Known {
+                PENDING,
+                EXPIRED,
+                PROCESSING,
+                COMPLETED,
+                FAILED,
+            }
+
+            /**
+             * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Status] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                PENDING,
+                EXPIRED,
+                PROCESSING,
+                COMPLETED,
+                FAILED,
+                /**
+                 * An enum member indicating that [Status] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    PENDING -> Value.PENDING
+                    EXPIRED -> Value.EXPIRED
+                    PROCESSING -> Value.PROCESSING
+                    COMPLETED -> Value.COMPLETED
+                    FAILED -> Value.FAILED
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    PENDING -> Known.PENDING
+                    EXPIRED -> Known.EXPIRED
+                    PROCESSING -> Known.PROCESSING
+                    COMPLETED -> Known.COMPLETED
+                    FAILED -> Known.FAILED
+                    else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): Status = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Status && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
         }
 
         override fun equals(other: Any?): Boolean {

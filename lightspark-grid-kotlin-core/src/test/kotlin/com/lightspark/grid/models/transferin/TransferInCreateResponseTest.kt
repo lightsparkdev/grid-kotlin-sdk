@@ -184,7 +184,7 @@ internal class TransferInCreateResponseTest {
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
-                .status(TransactionStatus.CREATED)
+                .status(TransactionStatus.PENDING)
                 .type(TransactionType.OUTGOING)
                 .counterpartyInformation(
                     Transaction.CounterpartyInformation.builder()
@@ -226,32 +226,38 @@ internal class TransferInCreateResponseTest {
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("accountNumber")
+                                .accountNumber("1234567890")
                                 .addPaymentRail(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
                                         .ACH
                                 )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
+                                        .WIRE
+                                )
                                 .reference("UMA-Q12345-REF")
-                                .routingNumber("routingNumber")
+                                .routingNumber("021000021")
                                 .build()
                         )
-                        .instructionsNotes(
-                            "Please ensure the reference code is included in the payment memo/description field"
-                        )
+                        .instructionsNotes("Include reference UMA-Q12345-REF in memo")
                         .isPlatformAccount(true)
                         .build()
                 )
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("accountNumber")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .ACH
+                            PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo.builder()
+                                .address(
+                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                 )
-                                .reference("UMA-Q12345-REF")
-                                .routingNumber("routingNumber")
+                                .assetType(
+                                    PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo
+                                        .AssetType
+                                        .BTC
+                                )
+                                .invoice(
+                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                )
                                 .build()
                         )
                         .instructionsNotes(
@@ -288,7 +294,14 @@ internal class TransferInCreateResponseTest {
                     TransferInCreateResponse.OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .status(
+                            TransferInCreateResponse.OutgoingTransaction.Refund.Status.COMPLETED
+                        )
+                        .reason(
+                            TransferInCreateResponse.OutgoingTransaction.Refund.Reason
+                                .TRANSACTION_FAILED
+                        )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                         .build()
                 )
                 .build()
@@ -318,7 +331,7 @@ internal class TransferInCreateResponseTest {
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
-                    .status(TransactionStatus.CREATED)
+                    .status(TransactionStatus.PENDING)
                     .type(TransactionType.OUTGOING)
                     .counterpartyInformation(
                         Transaction.CounterpartyInformation.builder()
@@ -360,34 +373,42 @@ internal class TransferInCreateResponseTest {
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                    .accountNumber("accountNumber")
+                                    .accountNumber("1234567890")
                                     .addPaymentRail(
                                         PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                             .PaymentRail
                                             .ACH
                                     )
+                                    .addPaymentRail(
+                                        PaymentInstructions.AccountOrWalletInfo.UsdAccount
+                                            .PaymentRail
+                                            .WIRE
+                                    )
                                     .reference("UMA-Q12345-REF")
-                                    .routingNumber("routingNumber")
+                                    .routingNumber("021000021")
                                     .build()
                             )
-                            .instructionsNotes(
-                                "Please ensure the reference code is included in the payment memo/description field"
-                            )
+                            .instructionsNotes("Include reference UMA-Q12345-REF in memo")
                             .isPlatformAccount(true)
                             .build()
                     )
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                    .accountNumber("accountNumber")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                            .PaymentRail
-                                            .ACH
+                                PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo
+                                    .builder()
+                                    .address(
+                                        "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                     )
-                                    .reference("UMA-Q12345-REF")
-                                    .routingNumber("routingNumber")
+                                    .assetType(
+                                        PaymentInstructions.AccountOrWalletInfo
+                                            .PaymentSparkWalletInfo
+                                            .AssetType
+                                            .BTC
+                                    )
+                                    .invoice(
+                                        "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                    )
                                     .build()
                             )
                             .instructionsNotes(
@@ -424,7 +445,14 @@ internal class TransferInCreateResponseTest {
                         TransferInCreateResponse.OutgoingTransaction.Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
-                            .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                            .status(
+                                TransferInCreateResponse.OutgoingTransaction.Refund.Status.COMPLETED
+                            )
+                            .reason(
+                                TransferInCreateResponse.OutgoingTransaction.Refund.Reason
+                                    .TRANSACTION_FAILED
+                            )
+                            .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                             .build()
                     )
                     .build()

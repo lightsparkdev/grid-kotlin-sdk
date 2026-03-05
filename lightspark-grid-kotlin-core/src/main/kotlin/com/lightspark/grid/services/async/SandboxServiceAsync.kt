@@ -8,11 +8,11 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
-import com.lightspark.grid.models.sandbox.SandboxSendTestParams
-import com.lightspark.grid.models.sandbox.SandboxSendTestResponse
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
+import com.lightspark.grid.services.async.sandbox.WebhookServiceAsync
 
+/** Endpoints to trigger test cases in sandbox */
 interface SandboxServiceAsync {
 
     /**
@@ -33,6 +33,9 @@ interface SandboxServiceAsync {
     /** Endpoints to trigger test cases in sandbox */
     fun internalAccounts(): InternalAccountServiceAsync
 
+    /** Endpoints to trigger test cases in sandbox */
+    fun webhooks(): WebhookServiceAsync
+
     /**
      * Simulate sending funds to the bank account as instructed in the quote. This endpoint is only
      * for the sandbox environment and will fail for production platforms/keys.
@@ -41,16 +44,6 @@ interface SandboxServiceAsync {
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SandboxSendFundsResponse
-
-    /** Send a test webhook to the configured endpoint */
-    suspend fun sendTest(
-        params: SandboxSendTestParams = SandboxSendTestParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): SandboxSendTestResponse
-
-    /** @see sendTest */
-    suspend fun sendTest(requestOptions: RequestOptions): SandboxSendTestResponse =
-        sendTest(SandboxSendTestParams.none(), requestOptions)
 
     /**
      * A view of [SandboxServiceAsync] that provides access to raw HTTP responses for each method.
@@ -72,6 +65,9 @@ interface SandboxServiceAsync {
         /** Endpoints to trigger test cases in sandbox */
         fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse
 
+        /** Endpoints to trigger test cases in sandbox */
+        fun webhooks(): WebhookServiceAsync.WithRawResponse
+
         /**
          * Returns a raw HTTP response for `post /sandbox/send`, but is otherwise the same as
          * [SandboxServiceAsync.sendFunds].
@@ -81,22 +77,5 @@ interface SandboxServiceAsync {
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SandboxSendFundsResponse>
-
-        /**
-         * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as
-         * [SandboxServiceAsync.sendTest].
-         */
-        @MustBeClosed
-        suspend fun sendTest(
-            params: SandboxSendTestParams = SandboxSendTestParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SandboxSendTestResponse>
-
-        /** @see sendTest */
-        @MustBeClosed
-        suspend fun sendTest(
-            requestOptions: RequestOptions
-        ): HttpResponseFor<SandboxSendTestResponse> =
-            sendTest(SandboxSendTestParams.none(), requestOptions)
     }
 }
