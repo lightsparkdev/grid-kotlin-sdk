@@ -14,6 +14,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.Customer
+import com.lightspark.grid.models.customers.CustomerType
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -267,13 +268,13 @@ private constructor(
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val customerType: JsonField<CustomerType>,
         private val platformCustomerId: JsonField<String>,
         private val umaAddress: JsonField<String>,
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val isDeleted: JsonField<Boolean>,
         private val updatedAt: JsonField<OffsetDateTime>,
-        private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
         private val birthDate: JsonField<LocalDate>,
         private val fullName: JsonField<String>,
@@ -284,6 +285,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("customerType")
+            @ExcludeMissing
+            customerType: JsonField<CustomerType> = JsonMissing.of(),
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -300,9 +304,6 @@ private constructor(
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("customerType")
-            @ExcludeMissing
-            customerType: JsonField<IndividualCustomerFields.CustomerType> = JsonMissing.of(),
             @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
             @JsonProperty("birthDate")
             @ExcludeMissing
@@ -317,13 +318,13 @@ private constructor(
             @ExcludeMissing
             nationality: JsonField<String> = JsonMissing.of(),
         ) : this(
+            customerType,
             platformCustomerId,
             umaAddress,
             id,
             createdAt,
             isDeleted,
             updatedAt,
-            customerType,
             address,
             birthDate,
             fullName,
@@ -334,6 +335,7 @@ private constructor(
 
         fun toCustomer(): Customer =
             Customer.builder()
+                .customerType(customerType)
                 .platformCustomerId(platformCustomerId)
                 .umaAddress(umaAddress)
                 .id(id)
@@ -351,6 +353,14 @@ private constructor(
                 .kycStatus(kycStatus)
                 .nationality(nationality)
                 .build()
+
+        /**
+         * Whether the customer is an individual or a business entity
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun customerType(): CustomerType = customerType.getRequired("customerType")
 
         /**
          * Platform-specific customer identifier
@@ -402,13 +412,6 @@ private constructor(
         fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
 
         /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun customerType(): IndividualCustomerFields.CustomerType =
-            customerType.getRequired("customerType")
-
-        /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
@@ -445,6 +448,16 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun nationality(): String? = nationality.getNullable("nationality")
+
+        /**
+         * Returns the raw JSON value of [customerType].
+         *
+         * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("customerType")
+        @ExcludeMissing
+        fun _customerType(): JsonField<CustomerType> = customerType
 
         /**
          * Returns the raw JSON value of [platformCustomerId].
@@ -496,16 +509,6 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
-
-        /**
-         * Returns the raw JSON value of [customerType].
-         *
-         * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("customerType")
-        @ExcludeMissing
-        fun _customerType(): JsonField<IndividualCustomerFields.CustomerType> = customerType
 
         /**
          * Returns the raw JSON value of [address].
@@ -567,9 +570,9 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .customerType()
              * .platformCustomerId()
              * .umaAddress()
-             * .customerType()
              * ```
              */
             fun builder() = Builder()
@@ -578,13 +581,13 @@ private constructor(
         /** A builder for [Data]. */
         class Builder internal constructor() {
 
+            private var customerType: JsonField<CustomerType>? = null
             private var platformCustomerId: JsonField<String>? = null
             private var umaAddress: JsonField<String>? = null
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
-            private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
             private var birthDate: JsonField<LocalDate> = JsonMissing.of()
             private var fullName: JsonField<String> = JsonMissing.of()
@@ -593,19 +596,33 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
+                customerType = data.customerType
                 platformCustomerId = data.platformCustomerId
                 umaAddress = data.umaAddress
                 id = data.id
                 createdAt = data.createdAt
                 isDeleted = data.isDeleted
                 updatedAt = data.updatedAt
-                customerType = data.customerType
                 address = data.address
                 birthDate = data.birthDate
                 fullName = data.fullName
                 kycStatus = data.kycStatus
                 nationality = data.nationality
                 additionalProperties = data.additionalProperties.toMutableMap()
+            }
+
+            /** Whether the customer is an individual or a business entity */
+            fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
+
+            /**
+             * Sets [Builder.customerType] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.customerType] with a well-typed [CustomerType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun customerType(customerType: JsonField<CustomerType>) = apply {
+                this.customerType = customerType
             }
 
             /** Platform-specific customer identifier */
@@ -689,21 +706,6 @@ private constructor(
             fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
                 this.updatedAt = updatedAt
             }
-
-            fun customerType(customerType: IndividualCustomerFields.CustomerType) =
-                customerType(JsonField.of(customerType))
-
-            /**
-             * Sets [Builder.customerType] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.customerType] with a well-typed
-             * [IndividualCustomerFields.CustomerType] value instead. This method is primarily for
-             * setting the field to an undocumented or not yet supported value.
-             */
-            fun customerType(customerType: JsonField<IndividualCustomerFields.CustomerType>) =
-                apply {
-                    this.customerType = customerType
-                }
 
             fun address(address: Address) = address(JsonField.of(address))
 
@@ -795,22 +797,22 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .customerType()
              * .platformCustomerId()
              * .umaAddress()
-             * .customerType()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Data =
                 Data(
+                    checkRequired("customerType", customerType),
                     checkRequired("platformCustomerId", platformCustomerId),
                     checkRequired("umaAddress", umaAddress),
                     id,
                     createdAt,
                     isDeleted,
                     updatedAt,
-                    checkRequired("customerType", customerType),
                     address,
                     birthDate,
                     fullName,
@@ -827,13 +829,13 @@ private constructor(
                 return@apply
             }
 
+            customerType().validate()
             platformCustomerId()
             umaAddress()
             id()
             createdAt()
             isDeleted()
             updatedAt()
-            customerType().validate()
             address()?.validate()
             birthDate()
             fullName()
@@ -857,13 +859,13 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (platformCustomerId.asKnown() == null) 0 else 1) +
+            (customerType.asKnown()?.validity() ?: 0) +
+                (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (if (umaAddress.asKnown() == null) 0 else 1) +
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
-                (customerType.asKnown()?.validity() ?: 0) +
                 (address.asKnown()?.validity() ?: 0) +
                 (if (birthDate.asKnown() == null) 0 else 1) +
                 (if (fullName.asKnown() == null) 0 else 1) +
@@ -876,13 +878,13 @@ private constructor(
             }
 
             return other is Data &&
+                customerType == other.customerType &&
                 platformCustomerId == other.platformCustomerId &&
                 umaAddress == other.umaAddress &&
                 id == other.id &&
                 createdAt == other.createdAt &&
                 isDeleted == other.isDeleted &&
                 updatedAt == other.updatedAt &&
-                customerType == other.customerType &&
                 address == other.address &&
                 birthDate == other.birthDate &&
                 fullName == other.fullName &&
@@ -893,13 +895,13 @@ private constructor(
 
         private val hashCode: Int by lazy {
             Objects.hash(
+                customerType,
                 platformCustomerId,
                 umaAddress,
                 id,
                 createdAt,
                 isDeleted,
                 updatedAt,
-                customerType,
                 address,
                 birthDate,
                 fullName,
@@ -912,7 +914,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+            "Data{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

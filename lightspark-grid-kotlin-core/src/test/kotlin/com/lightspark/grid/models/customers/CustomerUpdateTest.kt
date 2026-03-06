@@ -12,8 +12,12 @@ internal class CustomerUpdateTest {
     @Test
     fun create() {
         val customerUpdate =
-            CustomerUpdate.builder().umaAddress("\$john.doe@uma.domain.com").build()
+            CustomerUpdate.builder()
+                .customerType(CustomerType.INDIVIDUAL)
+                .umaAddress("\$john.doe@uma.domain.com")
+                .build()
 
+        assertThat(customerUpdate.customerType()).isEqualTo(CustomerType.INDIVIDUAL)
         assertThat(customerUpdate.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
     }
 
@@ -21,7 +25,10 @@ internal class CustomerUpdateTest {
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val customerUpdate =
-            CustomerUpdate.builder().umaAddress("\$john.doe@uma.domain.com").build()
+            CustomerUpdate.builder()
+                .customerType(CustomerType.INDIVIDUAL)
+                .umaAddress("\$john.doe@uma.domain.com")
+                .build()
 
         val roundtrippedCustomerUpdate =
             jsonMapper.readValue(

@@ -5,6 +5,7 @@ package com.lightspark.grid.services.async
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
+import com.lightspark.grid.models.customers.CustomerType
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
@@ -26,10 +27,10 @@ internal class CustomerServiceAsyncTest {
 
         val customerOneOf =
             customerServiceAsync.create(
-                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest.builder()
+                    .customerType(CustomerType.INDIVIDUAL)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -80,9 +81,10 @@ internal class CustomerServiceAsyncTest {
                 CustomerUpdateParams.builder()
                     .customerId("customerId")
                     .updateCustomerRequest(
-                        CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                        CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                            .builder()
+                            .customerType(CustomerType.INDIVIDUAL)
                             .umaAddress("\$john.doe@uma.domain.com")
-                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")

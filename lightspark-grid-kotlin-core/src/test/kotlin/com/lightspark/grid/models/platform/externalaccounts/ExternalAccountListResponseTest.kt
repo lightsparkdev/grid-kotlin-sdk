@@ -5,6 +5,7 @@ package com.lightspark.grid.models.platform.externalaccounts
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryVerifiedData
 import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
@@ -57,9 +58,7 @@ internal class ExternalAccountListResponseTest {
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )
                         .beneficiaryVerifiedData(
-                            ExternalAccount.BeneficiaryVerifiedData.builder()
-                                .fullName("John Doe")
-                                .build()
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
@@ -109,9 +108,7 @@ internal class ExternalAccountListResponseTest {
                         ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                     )
                     .beneficiaryVerifiedData(
-                        ExternalAccount.BeneficiaryVerifiedData.builder()
-                            .fullName("John Doe")
-                            .build()
+                        BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                     )
                     .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                     .defaultUmaDepositAccount(false)
@@ -165,9 +162,7 @@ internal class ExternalAccountListResponseTest {
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )
                         .beneficiaryVerifiedData(
-                            ExternalAccount.BeneficiaryVerifiedData.builder()
-                                .fullName("John Doe")
-                                .build()
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)

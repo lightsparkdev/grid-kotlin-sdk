@@ -13,10 +13,10 @@ internal class CustomerCreateParamsTest {
     fun create() {
         CustomerCreateParams.builder()
             .createCustomerRequest(
-                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest.builder()
+                    .customerType(CustomerType.INDIVIDUAL)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -41,10 +41,11 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -67,11 +68,12 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -95,17 +97,24 @@ internal class CustomerCreateParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             CustomerCreateParams.builder()
-                .individualCreateCustomerRequest("9f84e0c2a72c4fa")
+                .createCustomerRequest(
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
+                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .platformCustomerId("9f84e0c2a72c4fa")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
             )

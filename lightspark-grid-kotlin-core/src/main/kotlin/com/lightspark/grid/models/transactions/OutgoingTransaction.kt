@@ -21,35 +21,43 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.allMaxBy
+import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.quotes.OutgoingRateDetails
+import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class IncomingTransaction
+class OutgoingTransaction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val customerId: JsonField<String>,
     private val destination: JsonField<Destination>,
     private val platformCustomerId: JsonField<String>,
-    private val receivedAmount: JsonField<CurrencyAmount>,
-    private val status: JsonField<TransactionStatus>,
+    private val sentAmount: JsonField<CurrencyAmount>,
+    private val source: JsonField<TransactionSourceOneOf>,
+    private val status: JsonField<OutgoingTransactionStatus>,
     private val type: JsonField<Type>,
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val description: JsonField<String>,
+    private val exchangeRate: JsonField<Double>,
     private val failureReason: JsonField<FailureReason>,
-    private val rateDetails: JsonField<IncomingRateDetails>,
-    private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
+    private val fees: JsonField<Long>,
+    private val paymentInstructions: JsonField<List<PaymentInstructions>>,
+    private val quoteId: JsonField<String>,
+    private val rateDetails: JsonField<OutgoingRateDetails>,
+    private val receivedAmount: JsonField<CurrencyAmount>,
+    private val refund: JsonField<Refund>,
     private val settledAt: JsonField<OffsetDateTime>,
-    private val source: JsonField<TransactionSourceOneOf>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -66,12 +74,15 @@ private constructor(
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("receivedAmount")
+        @JsonProperty("sentAmount")
         @ExcludeMissing
-        receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        sentAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        @JsonProperty("source")
+        @ExcludeMissing
+        source: JsonField<TransactionSourceOneOf> = JsonMissing.of(),
         @JsonProperty("status")
         @ExcludeMissing
-        status: JsonField<TransactionStatus> = JsonMissing.of(),
+        status: JsonField<OutgoingTransactionStatus> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("counterpartyInformation")
         @ExcludeMissing
@@ -82,21 +93,27 @@ private constructor(
         @JsonProperty("description")
         @ExcludeMissing
         description: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("exchangeRate")
+        @ExcludeMissing
+        exchangeRate: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("failureReason")
         @ExcludeMissing
         failureReason: JsonField<FailureReason> = JsonMissing.of(),
+        @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("paymentInstructions")
+        @ExcludeMissing
+        paymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
+        @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("rateDetails")
         @ExcludeMissing
-        rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of(),
-        @JsonProperty("reconciliationInstructions")
+        rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
+        @JsonProperty("receivedAmount")
         @ExcludeMissing
-        reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
+        receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        @JsonProperty("refund") @ExcludeMissing refund: JsonField<Refund> = JsonMissing.of(),
         @JsonProperty("settledAt")
         @ExcludeMissing
         settledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("source")
-        @ExcludeMissing
-        source: JsonField<TransactionSourceOneOf> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -105,17 +122,22 @@ private constructor(
         customerId,
         destination,
         platformCustomerId,
-        receivedAmount,
+        sentAmount,
+        source,
         status,
         type,
         counterpartyInformation,
         createdAt,
         description,
+        exchangeRate,
         failureReason,
+        fees,
+        paymentInstructions,
+        quoteId,
         rateDetails,
-        reconciliationInstructions,
+        receivedAmount,
+        refund,
         settledAt,
-        source,
         updatedAt,
         mutableMapOf(),
     )
@@ -153,32 +175,36 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Amount received in the recipient's currency
+     * Amount sent in the sender's currency
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun receivedAmount(): CurrencyAmount = receivedAmount.getRequired("receivedAmount")
+    fun sentAmount(): CurrencyAmount = sentAmount.getRequired("sentAmount")
 
     /**
-     * Status of a payment transaction.
-     *
-     * |Status      |Description                                                                                       |
-     * |------------|--------------------------------------------------------------------------------------------------|
-     * |`CREATED`   |Initial lookup has been created                                                                   |
-     * |`PENDING`   |Quote has been created                                                                            |
-     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-     * |`SENT`      |Cross border settlement has been initiated                                                        |
-     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-     * |`FAILED`    |An error occurred during payment                                                                  |
-     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-     * |`EXPIRED`   |Quote has expired                                                                                 |
+     * Source account details
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun status(): TransactionStatus = status.getRequired("status")
+    fun source(): TransactionSourceOneOf = source.getRequired("source")
+
+    /**
+     * Status of an outgoing payment transaction.
+     *
+     * | Status       | Description                                             |
+     * |--------------|---------------------------------------------------------|
+     * | `PENDING`    | Quote is pending confirmation                           |
+     * | `EXPIRED`    | Quote wasn't executed before expiry window              |
+     * | `PROCESSING` | Executing the quote after receiving funds               |
+     * | `COMPLETED`  | Payout successfully reached the destination             |
+     * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun status(): OutgoingTransactionStatus = status.getRequired("status")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -213,6 +239,14 @@ private constructor(
     fun description(): String? = description.getNullable("description")
 
     /**
+     * Number of sending currency units per receiving currency unit.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun exchangeRate(): Double? = exchangeRate.getNullable("exchangeRate")
+
+    /**
      * If the transaction failed, this field provides the reason for failure.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -221,21 +255,53 @@ private constructor(
     fun failureReason(): FailureReason? = failureReason.getNullable("failureReason")
 
     /**
+     * The fees associated with the quote in the smallest unit of the sending currency (eg. cents).
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun fees(): Long? = fees.getNullable("fees")
+
+    /**
+     * Payment instructions for executing the payment.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun paymentInstructions(): List<PaymentInstructions>? =
+        paymentInstructions.getNullable("paymentInstructions")
+
+    /**
+     * The ID of the quote that was used to trigger this payment
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun quoteId(): String? = quoteId.getNullable("quoteId")
+
+    /**
      * Details about the rate and fees for the transaction.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun rateDetails(): IncomingRateDetails? = rateDetails.getNullable("rateDetails")
+    fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
 
     /**
-     * Included for all transactions except those with "CREATED" status
+     * Amount to be received by recipient in the recipient's currency
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun reconciliationInstructions(): ReconciliationInstructions? =
-        reconciliationInstructions.getNullable("reconciliationInstructions")
+    fun receivedAmount(): CurrencyAmount? = receivedAmount.getNullable("receivedAmount")
+
+    /**
+     * The refund if transaction was refunded.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun refund(): Refund? = refund.getNullable("refund")
 
     /**
      * When the payment was or will be settled
@@ -244,14 +310,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
-
-    /**
-     * Source account details
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun source(): TransactionSourceOneOf? = source.getNullable("source")
 
     /**
      * When the transaction was last updated
@@ -295,20 +353,31 @@ private constructor(
     fun _platformCustomerId(): JsonField<String> = platformCustomerId
 
     /**
-     * Returns the raw JSON value of [receivedAmount].
+     * Returns the raw JSON value of [sentAmount].
      *
-     * Unlike [receivedAmount], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [sentAmount], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("receivedAmount")
+    @JsonProperty("sentAmount")
     @ExcludeMissing
-    fun _receivedAmount(): JsonField<CurrencyAmount> = receivedAmount
+    fun _sentAmount(): JsonField<CurrencyAmount> = sentAmount
+
+    /**
+     * Returns the raw JSON value of [source].
+     *
+     * Unlike [source], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("source")
+    @ExcludeMissing
+    fun _source(): JsonField<TransactionSourceOneOf> = source
 
     /**
      * Returns the raw JSON value of [status].
      *
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<TransactionStatus> = status
+    @JsonProperty("status")
+    @ExcludeMissing
+    fun _status(): JsonField<OutgoingTransactionStatus> = status
 
     /**
      * Returns the raw JSON value of [type].
@@ -344,6 +413,15 @@ private constructor(
     @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
 
     /**
+     * Returns the raw JSON value of [exchangeRate].
+     *
+     * Unlike [exchangeRate], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("exchangeRate")
+    @ExcludeMissing
+    fun _exchangeRate(): JsonField<Double> = exchangeRate
+
+    /**
      * Returns the raw JSON value of [failureReason].
      *
      * Unlike [failureReason], this method doesn't throw if the JSON field has an unexpected type.
@@ -353,24 +431,53 @@ private constructor(
     fun _failureReason(): JsonField<FailureReason> = failureReason
 
     /**
+     * Returns the raw JSON value of [fees].
+     *
+     * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
+
+    /**
+     * Returns the raw JSON value of [paymentInstructions].
+     *
+     * Unlike [paymentInstructions], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("paymentInstructions")
+    @ExcludeMissing
+    fun _paymentInstructions(): JsonField<List<PaymentInstructions>> = paymentInstructions
+
+    /**
+     * Returns the raw JSON value of [quoteId].
+     *
+     * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("quoteId") @ExcludeMissing fun _quoteId(): JsonField<String> = quoteId
+
+    /**
      * Returns the raw JSON value of [rateDetails].
      *
      * Unlike [rateDetails], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("rateDetails")
     @ExcludeMissing
-    fun _rateDetails(): JsonField<IncomingRateDetails> = rateDetails
+    fun _rateDetails(): JsonField<OutgoingRateDetails> = rateDetails
 
     /**
-     * Returns the raw JSON value of [reconciliationInstructions].
+     * Returns the raw JSON value of [receivedAmount].
      *
-     * Unlike [reconciliationInstructions], this method doesn't throw if the JSON field has an
-     * unexpected type.
+     * Unlike [receivedAmount], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("reconciliationInstructions")
+    @JsonProperty("receivedAmount")
     @ExcludeMissing
-    fun _reconciliationInstructions(): JsonField<ReconciliationInstructions> =
-        reconciliationInstructions
+    fun _receivedAmount(): JsonField<CurrencyAmount> = receivedAmount
+
+    /**
+     * Returns the raw JSON value of [refund].
+     *
+     * Unlike [refund], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("refund") @ExcludeMissing fun _refund(): JsonField<Refund> = refund
 
     /**
      * Returns the raw JSON value of [settledAt].
@@ -380,15 +487,6 @@ private constructor(
     @JsonProperty("settledAt")
     @ExcludeMissing
     fun _settledAt(): JsonField<OffsetDateTime> = settledAt
-
-    /**
-     * Returns the raw JSON value of [source].
-     *
-     * Unlike [source], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("source")
-    @ExcludeMissing
-    fun _source(): JsonField<TransactionSourceOneOf> = source
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -414,7 +512,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [IncomingTransaction].
+         * Returns a mutable builder for constructing an instance of [OutgoingTransaction].
          *
          * The following fields are required:
          * ```kotlin
@@ -422,7 +520,8 @@ private constructor(
          * .customerId()
          * .destination()
          * .platformCustomerId()
-         * .receivedAmount()
+         * .sentAmount()
+         * .source()
          * .status()
          * .type()
          * ```
@@ -430,46 +529,55 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [IncomingTransaction]. */
+    /** A builder for [OutgoingTransaction]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
         private var customerId: JsonField<String>? = null
         private var destination: JsonField<Destination>? = null
         private var platformCustomerId: JsonField<String>? = null
-        private var receivedAmount: JsonField<CurrencyAmount>? = null
-        private var status: JsonField<TransactionStatus>? = null
+        private var sentAmount: JsonField<CurrencyAmount>? = null
+        private var source: JsonField<TransactionSourceOneOf>? = null
+        private var status: JsonField<OutgoingTransactionStatus>? = null
         private var type: JsonField<Type>? = null
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
+        private var exchangeRate: JsonField<Double> = JsonMissing.of()
         private var failureReason: JsonField<FailureReason> = JsonMissing.of()
-        private var rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of()
-        private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
-            JsonMissing.of()
+        private var fees: JsonField<Long> = JsonMissing.of()
+        private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
+        private var quoteId: JsonField<String> = JsonMissing.of()
+        private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
+        private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
+        private var refund: JsonField<Refund> = JsonMissing.of()
         private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
-        private var source: JsonField<TransactionSourceOneOf> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(incomingTransaction: IncomingTransaction) = apply {
-            id = incomingTransaction.id
-            customerId = incomingTransaction.customerId
-            destination = incomingTransaction.destination
-            platformCustomerId = incomingTransaction.platformCustomerId
-            receivedAmount = incomingTransaction.receivedAmount
-            status = incomingTransaction.status
-            type = incomingTransaction.type
-            counterpartyInformation = incomingTransaction.counterpartyInformation
-            createdAt = incomingTransaction.createdAt
-            description = incomingTransaction.description
-            failureReason = incomingTransaction.failureReason
-            rateDetails = incomingTransaction.rateDetails
-            reconciliationInstructions = incomingTransaction.reconciliationInstructions
-            settledAt = incomingTransaction.settledAt
-            source = incomingTransaction.source
-            updatedAt = incomingTransaction.updatedAt
-            additionalProperties = incomingTransaction.additionalProperties.toMutableMap()
+        internal fun from(outgoingTransaction: OutgoingTransaction) = apply {
+            id = outgoingTransaction.id
+            customerId = outgoingTransaction.customerId
+            destination = outgoingTransaction.destination
+            platformCustomerId = outgoingTransaction.platformCustomerId
+            sentAmount = outgoingTransaction.sentAmount
+            source = outgoingTransaction.source
+            status = outgoingTransaction.status
+            type = outgoingTransaction.type
+            counterpartyInformation = outgoingTransaction.counterpartyInformation
+            createdAt = outgoingTransaction.createdAt
+            description = outgoingTransaction.description
+            exchangeRate = outgoingTransaction.exchangeRate
+            failureReason = outgoingTransaction.failureReason
+            fees = outgoingTransaction.fees
+            paymentInstructions = outgoingTransaction.paymentInstructions.map { it.toMutableList() }
+            quoteId = outgoingTransaction.quoteId
+            rateDetails = outgoingTransaction.rateDetails
+            receivedAmount = outgoingTransaction.receivedAmount
+            refund = outgoingTransaction.refund
+            settledAt = outgoingTransaction.settledAt
+            updatedAt = outgoingTransaction.updatedAt
+            additionalProperties = outgoingTransaction.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for the transaction */
@@ -550,46 +658,85 @@ private constructor(
             this.platformCustomerId = platformCustomerId
         }
 
-        /** Amount received in the recipient's currency */
-        fun receivedAmount(receivedAmount: CurrencyAmount) =
-            receivedAmount(JsonField.of(receivedAmount))
+        /** Amount sent in the sender's currency */
+        fun sentAmount(sentAmount: CurrencyAmount) = sentAmount(JsonField.of(sentAmount))
 
         /**
-         * Sets [Builder.receivedAmount] to an arbitrary JSON value.
+         * Sets [Builder.sentAmount] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.receivedAmount] with a well-typed [CurrencyAmount] value
+         * You should usually call [Builder.sentAmount] with a well-typed [CurrencyAmount] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun receivedAmount(receivedAmount: JsonField<CurrencyAmount>) = apply {
-            this.receivedAmount = receivedAmount
+        fun sentAmount(sentAmount: JsonField<CurrencyAmount>) = apply {
+            this.sentAmount = sentAmount
         }
 
+        /** Source account details */
+        fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
+
         /**
-         * Status of a payment transaction.
+         * Sets [Builder.source] to an arbitrary JSON value.
          *
-         * |Status      |Description                                                                                       |
-         * |------------|--------------------------------------------------------------------------------------------------|
-         * |`CREATED`   |Initial lookup has been created                                                                   |
-         * |`PENDING`   |Quote has been created                                                                            |
-         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-         * |`SENT`      |Cross border settlement has been initiated                                                        |
-         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-         * |`FAILED`    |An error occurred during payment                                                                  |
-         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-         * |`EXPIRED`   |Quote has expired                                                                                 |
+         * You should usually call [Builder.source] with a well-typed [TransactionSourceOneOf] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun status(status: TransactionStatus) = status(JsonField.of(status))
+        fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
+
+        /**
+         * Alias for calling [source] with
+         * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
+         */
+        fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
+            source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
+
+        /**
+         * Alias for calling [source] with
+         * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
+         */
+        fun source(
+            umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
+        ) =
+            source(
+                TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)
+            )
+
+        /**
+         * Alias for calling [source] with
+         * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
+         */
+        fun source(
+            realtimeFundingTransactionSource:
+                TransactionSourceOneOf.RealtimeFundingTransactionSource
+        ) =
+            source(
+                TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
+                    realtimeFundingTransactionSource
+                )
+            )
+
+        /**
+         * Status of an outgoing payment transaction.
+         *
+         * | Status       | Description                                             |
+         * |--------------|---------------------------------------------------------|
+         * | `PENDING`    | Quote is pending confirmation                           |
+         * | `EXPIRED`    | Quote wasn't executed before expiry window              |
+         * | `PROCESSING` | Executing the quote after receiving funds               |
+         * | `COMPLETED`  | Payout successfully reached the destination             |
+         * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+         */
+        fun status(status: OutgoingTransactionStatus) = status(JsonField.of(status))
 
         /**
          * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.status] with a well-typed [TransactionStatus] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.status] with a well-typed [OutgoingTransactionStatus]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
+        fun status(status: JsonField<OutgoingTransactionStatus>) = apply { this.status = status }
 
         fun type(type: Type) = type(JsonField.of(type))
 
@@ -644,6 +791,20 @@ private constructor(
          */
         fun description(description: JsonField<String>) = apply { this.description = description }
 
+        /** Number of sending currency units per receiving currency unit. */
+        fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
+
+        /**
+         * Sets [Builder.exchangeRate] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.exchangeRate] with a well-typed [Double] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun exchangeRate(exchangeRate: JsonField<Double>) = apply {
+            this.exchangeRate = exchangeRate
+        }
+
         /** If the transaction failed, this field provides the reason for failure. */
         fun failureReason(failureReason: FailureReason) = failureReason(JsonField.of(failureReason))
 
@@ -658,34 +819,97 @@ private constructor(
             this.failureReason = failureReason
         }
 
+        /**
+         * The fees associated with the quote in the smallest unit of the sending currency (eg.
+         * cents).
+         */
+        fun fees(fees: Long) = fees(JsonField.of(fees))
+
+        /**
+         * Sets [Builder.fees] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.fees] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
+
+        /** Payment instructions for executing the payment. */
+        fun paymentInstructions(paymentInstructions: List<PaymentInstructions>) =
+            paymentInstructions(JsonField.of(paymentInstructions))
+
+        /**
+         * Sets [Builder.paymentInstructions] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.paymentInstructions] with a well-typed
+         * `List<PaymentInstructions>` value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun paymentInstructions(paymentInstructions: JsonField<List<PaymentInstructions>>) = apply {
+            this.paymentInstructions = paymentInstructions.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [PaymentInstructions] to [paymentInstructions].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addPaymentInstruction(paymentInstruction: PaymentInstructions) = apply {
+            paymentInstructions =
+                (paymentInstructions ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("paymentInstructions", it).add(paymentInstruction)
+                }
+        }
+
+        /** The ID of the quote that was used to trigger this payment */
+        fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
+
+        /**
+         * Sets [Builder.quoteId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.quoteId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun quoteId(quoteId: JsonField<String>) = apply { this.quoteId = quoteId }
+
         /** Details about the rate and fees for the transaction. */
-        fun rateDetails(rateDetails: IncomingRateDetails) = rateDetails(JsonField.of(rateDetails))
+        fun rateDetails(rateDetails: OutgoingRateDetails) = rateDetails(JsonField.of(rateDetails))
 
         /**
          * Sets [Builder.rateDetails] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.rateDetails] with a well-typed [IncomingRateDetails]
+         * You should usually call [Builder.rateDetails] with a well-typed [OutgoingRateDetails]
          * value instead. This method is primarily for setting the field to an undocumented or not
          * yet supported value.
          */
-        fun rateDetails(rateDetails: JsonField<IncomingRateDetails>) = apply {
+        fun rateDetails(rateDetails: JsonField<OutgoingRateDetails>) = apply {
             this.rateDetails = rateDetails
         }
 
-        /** Included for all transactions except those with "CREATED" status */
-        fun reconciliationInstructions(reconciliationInstructions: ReconciliationInstructions) =
-            reconciliationInstructions(JsonField.of(reconciliationInstructions))
+        /** Amount to be received by recipient in the recipient's currency */
+        fun receivedAmount(receivedAmount: CurrencyAmount) =
+            receivedAmount(JsonField.of(receivedAmount))
 
         /**
-         * Sets [Builder.reconciliationInstructions] to an arbitrary JSON value.
+         * Sets [Builder.receivedAmount] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.reconciliationInstructions] with a well-typed
-         * [ReconciliationInstructions] value instead. This method is primarily for setting the
-         * field to an undocumented or not yet supported value.
+         * You should usually call [Builder.receivedAmount] with a well-typed [CurrencyAmount] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun reconciliationInstructions(
-            reconciliationInstructions: JsonField<ReconciliationInstructions>
-        ) = apply { this.reconciliationInstructions = reconciliationInstructions }
+        fun receivedAmount(receivedAmount: JsonField<CurrencyAmount>) = apply {
+            this.receivedAmount = receivedAmount
+        }
+
+        /** The refund if transaction was refunded. */
+        fun refund(refund: Refund) = refund(JsonField.of(refund))
+
+        /**
+         * Sets [Builder.refund] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.refund] with a well-typed [Refund] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun refund(refund: JsonField<Refund>) = apply { this.refund = refund }
 
         /** When the payment was or will be settled */
         fun settledAt(settledAt: OffsetDateTime) = settledAt(JsonField.of(settledAt))
@@ -698,50 +922,6 @@ private constructor(
          * supported value.
          */
         fun settledAt(settledAt: JsonField<OffsetDateTime>) = apply { this.settledAt = settledAt }
-
-        /** Source account details */
-        fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
-
-        /**
-         * Sets [Builder.source] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.source] with a well-typed [TransactionSourceOneOf] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
-
-        /**
-         * Alias for calling [source] with
-         * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
-         */
-        fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
-            source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
-
-        /**
-         * Alias for calling [source] with
-         * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
-         */
-        fun source(
-            umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
-        ) =
-            source(
-                TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)
-            )
-
-        /**
-         * Alias for calling [source] with
-         * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
-         */
-        fun source(
-            realtimeFundingTransactionSource:
-                TransactionSourceOneOf.RealtimeFundingTransactionSource
-        ) =
-            source(
-                TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
-                    realtimeFundingTransactionSource
-                )
-            )
 
         /** When the transaction was last updated */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -775,7 +955,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [IncomingTransaction].
+         * Returns an immutable instance of [OutgoingTransaction].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -785,30 +965,36 @@ private constructor(
          * .customerId()
          * .destination()
          * .platformCustomerId()
-         * .receivedAmount()
+         * .sentAmount()
+         * .source()
          * .status()
          * .type()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): IncomingTransaction =
-            IncomingTransaction(
+        fun build(): OutgoingTransaction =
+            OutgoingTransaction(
                 checkRequired("id", id),
                 checkRequired("customerId", customerId),
                 checkRequired("destination", destination),
                 checkRequired("platformCustomerId", platformCustomerId),
-                checkRequired("receivedAmount", receivedAmount),
+                checkRequired("sentAmount", sentAmount),
+                checkRequired("source", source),
                 checkRequired("status", status),
                 checkRequired("type", type),
                 counterpartyInformation,
                 createdAt,
                 description,
+                exchangeRate,
                 failureReason,
+                fees,
+                (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
+                quoteId,
                 rateDetails,
-                reconciliationInstructions,
+                receivedAmount,
+                refund,
                 settledAt,
-                source,
                 updatedAt,
                 additionalProperties.toMutableMap(),
             )
@@ -816,7 +1002,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): IncomingTransaction = apply {
+    fun validate(): OutgoingTransaction = apply {
         if (validated) {
             return@apply
         }
@@ -825,17 +1011,22 @@ private constructor(
         customerId()
         destination().validate()
         platformCustomerId()
-        receivedAmount().validate()
+        sentAmount().validate()
+        source().validate()
         status().validate()
         type().validate()
         counterpartyInformation()?.validate()
         createdAt()
         description()
+        exchangeRate()
         failureReason()?.validate()
+        fees()
+        paymentInstructions()?.forEach { it.validate() }
+        quoteId()
         rateDetails()?.validate()
-        reconciliationInstructions()?.validate()
+        receivedAmount()?.validate()
+        refund()?.validate()
         settledAt()
-        source()?.validate()
         updatedAt()
         validated = true
     }
@@ -858,17 +1049,22 @@ private constructor(
             (if (customerId.asKnown() == null) 0 else 1) +
             (destination.asKnown()?.validity() ?: 0) +
             (if (platformCustomerId.asKnown() == null) 0 else 1) +
-            (receivedAmount.asKnown()?.validity() ?: 0) +
+            (sentAmount.asKnown()?.validity() ?: 0) +
+            (source.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (if (description.asKnown() == null) 0 else 1) +
+            (if (exchangeRate.asKnown() == null) 0 else 1) +
             (failureReason.asKnown()?.validity() ?: 0) +
+            (if (fees.asKnown() == null) 0 else 1) +
+            (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (quoteId.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
-            (reconciliationInstructions.asKnown()?.validity() ?: 0) +
+            (receivedAmount.asKnown()?.validity() ?: 0) +
+            (refund.asKnown()?.validity() ?: 0) +
             (if (settledAt.asKnown() == null) 0 else 1) +
-            (source.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1)
 
     /** Destination account details */
@@ -2370,17 +2566,17 @@ private constructor(
 
         companion object {
 
-            val INCOMING = of("INCOMING")
-
             val OUTGOING = of("OUTGOING")
+
+            val INCOMING = of("INCOMING")
 
             fun of(value: String) = Type(JsonField.of(value))
         }
 
         /** An enum containing [Type]'s known values. */
         enum class Known {
-            INCOMING,
             OUTGOING,
+            INCOMING,
         }
 
         /**
@@ -2393,8 +2589,8 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            INCOMING,
             OUTGOING,
+            INCOMING,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -2408,8 +2604,8 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                INCOMING -> Value.INCOMING
                 OUTGOING -> Value.OUTGOING
+                INCOMING -> Value.INCOMING
                 else -> Value._UNKNOWN
             }
 
@@ -2424,8 +2620,8 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                INCOMING -> Known.INCOMING
                 OUTGOING -> Known.OUTGOING
+                INCOMING -> Known.INCOMING
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
@@ -2603,35 +2799,29 @@ private constructor(
 
         companion object {
 
-            val LNURLP_FAILED = of("LNURLP_FAILED")
-
-            val PAY_REQUEST_FAILED = of("PAY_REQUEST_FAILED")
-
-            val PAYMENT_APPROVAL_WEBHOOK_ERROR = of("PAYMENT_APPROVAL_WEBHOOK_ERROR")
-
-            val PAYMENT_APPROVAL_TIMED_OUT = of("PAYMENT_APPROVAL_TIMED_OUT")
-
-            val OFFRAMP_FAILED = of("OFFRAMP_FAILED")
-
-            val MISSING_MANDATORY_PAYEE_DATA = of("MISSING_MANDATORY_PAYEE_DATA")
-
             val QUOTE_EXPIRED = of("QUOTE_EXPIRED")
 
             val QUOTE_EXECUTION_FAILED = of("QUOTE_EXECUTION_FAILED")
+
+            val LIGHTNING_PAYMENT_FAILED = of("LIGHTNING_PAYMENT_FAILED")
+
+            val FUNDING_AMOUNT_MISMATCH = of("FUNDING_AMOUNT_MISMATCH")
+
+            val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
+
+            val TIMEOUT = of("TIMEOUT")
 
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
         /** An enum containing [FailureReason]'s known values. */
         enum class Known {
-            LNURLP_FAILED,
-            PAY_REQUEST_FAILED,
-            PAYMENT_APPROVAL_WEBHOOK_ERROR,
-            PAYMENT_APPROVAL_TIMED_OUT,
-            OFFRAMP_FAILED,
-            MISSING_MANDATORY_PAYEE_DATA,
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
+            LIGHTNING_PAYMENT_FAILED,
+            FUNDING_AMOUNT_MISMATCH,
+            COUNTERPARTY_POST_TX_FAILED,
+            TIMEOUT,
         }
 
         /**
@@ -2644,14 +2834,12 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            LNURLP_FAILED,
-            PAY_REQUEST_FAILED,
-            PAYMENT_APPROVAL_WEBHOOK_ERROR,
-            PAYMENT_APPROVAL_TIMED_OUT,
-            OFFRAMP_FAILED,
-            MISSING_MANDATORY_PAYEE_DATA,
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
+            LIGHTNING_PAYMENT_FAILED,
+            FUNDING_AMOUNT_MISMATCH,
+            COUNTERPARTY_POST_TX_FAILED,
+            TIMEOUT,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2668,14 +2856,12 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                LNURLP_FAILED -> Value.LNURLP_FAILED
-                PAY_REQUEST_FAILED -> Value.PAY_REQUEST_FAILED
-                PAYMENT_APPROVAL_WEBHOOK_ERROR -> Value.PAYMENT_APPROVAL_WEBHOOK_ERROR
-                PAYMENT_APPROVAL_TIMED_OUT -> Value.PAYMENT_APPROVAL_TIMED_OUT
-                OFFRAMP_FAILED -> Value.OFFRAMP_FAILED
-                MISSING_MANDATORY_PAYEE_DATA -> Value.MISSING_MANDATORY_PAYEE_DATA
                 QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
+                LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
+                FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
+                COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
+                TIMEOUT -> Value.TIMEOUT
                 else -> Value._UNKNOWN
             }
 
@@ -2690,14 +2876,12 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                LNURLP_FAILED -> Known.LNURLP_FAILED
-                PAY_REQUEST_FAILED -> Known.PAY_REQUEST_FAILED
-                PAYMENT_APPROVAL_WEBHOOK_ERROR -> Known.PAYMENT_APPROVAL_WEBHOOK_ERROR
-                PAYMENT_APPROVAL_TIMED_OUT -> Known.PAYMENT_APPROVAL_TIMED_OUT
-                OFFRAMP_FAILED -> Known.OFFRAMP_FAILED
-                MISSING_MANDATORY_PAYEE_DATA -> Known.MISSING_MANDATORY_PAYEE_DATA
                 QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
+                LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
+                FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
+                COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
+                TIMEOUT -> Known.TIMEOUT
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
@@ -2753,27 +2937,616 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** The refund if transaction was refunded. */
+    class Refund
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val initiatedAt: JsonField<OffsetDateTime>,
+        private val reference: JsonField<String>,
+        private val status: JsonField<Status>,
+        private val reason: JsonField<Reason>,
+        private val settledAt: JsonField<OffsetDateTime>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("initiatedAt")
+            @ExcludeMissing
+            initiatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("reference")
+            @ExcludeMissing
+            reference: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+            @JsonProperty("reason") @ExcludeMissing reason: JsonField<Reason> = JsonMissing.of(),
+            @JsonProperty("settledAt")
+            @ExcludeMissing
+            settledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        ) : this(initiatedAt, reference, status, reason, settledAt, mutableMapOf())
+
+        /**
+         * When the refund was initiated
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun initiatedAt(): OffsetDateTime = initiatedAt.getRequired("initiatedAt")
+
+        /**
+         * The unique reference ID of the refund
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun reference(): String = reference.getRequired("reference")
+
+        /**
+         * Current status of the refund
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun status(): Status = status.getRequired("status")
+
+        /**
+         * Reason for the refund
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun reason(): Reason? = reason.getNullable("reason")
+
+        /**
+         * When the refund was settled
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
+
+        /**
+         * Returns the raw JSON value of [initiatedAt].
+         *
+         * Unlike [initiatedAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("initiatedAt")
+        @ExcludeMissing
+        fun _initiatedAt(): JsonField<OffsetDateTime> = initiatedAt
+
+        /**
+         * Returns the raw JSON value of [reference].
+         *
+         * Unlike [reference], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("reference") @ExcludeMissing fun _reference(): JsonField<String> = reference
+
+        /**
+         * Returns the raw JSON value of [status].
+         *
+         * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+        /**
+         * Returns the raw JSON value of [reason].
+         *
+         * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<Reason> = reason
+
+        /**
+         * Returns the raw JSON value of [settledAt].
+         *
+         * Unlike [settledAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("settledAt")
+        @ExcludeMissing
+        fun _settledAt(): JsonField<OffsetDateTime> = settledAt
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Refund].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .initiatedAt()
+             * .reference()
+             * .status()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Refund]. */
+        class Builder internal constructor() {
+
+            private var initiatedAt: JsonField<OffsetDateTime>? = null
+            private var reference: JsonField<String>? = null
+            private var status: JsonField<Status>? = null
+            private var reason: JsonField<Reason> = JsonMissing.of()
+            private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(refund: Refund) = apply {
+                initiatedAt = refund.initiatedAt
+                reference = refund.reference
+                status = refund.status
+                reason = refund.reason
+                settledAt = refund.settledAt
+                additionalProperties = refund.additionalProperties.toMutableMap()
+            }
+
+            /** When the refund was initiated */
+            fun initiatedAt(initiatedAt: OffsetDateTime) = initiatedAt(JsonField.of(initiatedAt))
+
+            /**
+             * Sets [Builder.initiatedAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.initiatedAt] with a well-typed [OffsetDateTime]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun initiatedAt(initiatedAt: JsonField<OffsetDateTime>) = apply {
+                this.initiatedAt = initiatedAt
+            }
+
+            /** The unique reference ID of the refund */
+            fun reference(reference: String) = reference(JsonField.of(reference))
+
+            /**
+             * Sets [Builder.reference] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.reference] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun reference(reference: JsonField<String>) = apply { this.reference = reference }
+
+            /** Current status of the refund */
+            fun status(status: Status) = status(JsonField.of(status))
+
+            /**
+             * Sets [Builder.status] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.status] with a well-typed [Status] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun status(status: JsonField<Status>) = apply { this.status = status }
+
+            /** Reason for the refund */
+            fun reason(reason: Reason) = reason(JsonField.of(reason))
+
+            /**
+             * Sets [Builder.reason] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.reason] with a well-typed [Reason] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun reason(reason: JsonField<Reason>) = apply { this.reason = reason }
+
+            /** When the refund was settled */
+            fun settledAt(settledAt: OffsetDateTime) = settledAt(JsonField.of(settledAt))
+
+            /**
+             * Sets [Builder.settledAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.settledAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun settledAt(settledAt: JsonField<OffsetDateTime>) = apply {
+                this.settledAt = settledAt
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Refund].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .initiatedAt()
+             * .reference()
+             * .status()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Refund =
+                Refund(
+                    checkRequired("initiatedAt", initiatedAt),
+                    checkRequired("reference", reference),
+                    checkRequired("status", status),
+                    reason,
+                    settledAt,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Refund = apply {
+            if (validated) {
+                return@apply
+            }
+
+            initiatedAt()
+            reference()
+            status().validate()
+            reason()?.validate()
+            settledAt()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (initiatedAt.asKnown() == null) 0 else 1) +
+                (if (reference.asKnown() == null) 0 else 1) +
+                (status.asKnown()?.validity() ?: 0) +
+                (reason.asKnown()?.validity() ?: 0) +
+                (if (settledAt.asKnown() == null) 0 else 1)
+
+        /** Current status of the refund */
+        class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val PENDING = of("PENDING")
+
+                val COMPLETED = of("COMPLETED")
+
+                val FAILED = of("FAILED")
+
+                fun of(value: String) = Status(JsonField.of(value))
+            }
+
+            /** An enum containing [Status]'s known values. */
+            enum class Known {
+                PENDING,
+                COMPLETED,
+                FAILED,
+            }
+
+            /**
+             * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Status] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                PENDING,
+                COMPLETED,
+                FAILED,
+                /**
+                 * An enum member indicating that [Status] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    PENDING -> Value.PENDING
+                    COMPLETED -> Value.COMPLETED
+                    FAILED -> Value.FAILED
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    PENDING -> Known.PENDING
+                    COMPLETED -> Known.COMPLETED
+                    FAILED -> Known.FAILED
+                    else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): Status = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Status && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Reason for the refund */
+        class Reason @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val TRANSACTION_FAILED = of("TRANSACTION_FAILED")
+
+                val USER_CANCELLATION = of("USER_CANCELLATION")
+
+                fun of(value: String) = Reason(JsonField.of(value))
+            }
+
+            /** An enum containing [Reason]'s known values. */
+            enum class Known {
+                TRANSACTION_FAILED,
+                USER_CANCELLATION,
+            }
+
+            /**
+             * An enum containing [Reason]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Reason] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                TRANSACTION_FAILED,
+                USER_CANCELLATION,
+                /**
+                 * An enum member indicating that [Reason] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    TRANSACTION_FAILED -> Value.TRANSACTION_FAILED
+                    USER_CANCELLATION -> Value.USER_CANCELLATION
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    TRANSACTION_FAILED -> Known.TRANSACTION_FAILED
+                    USER_CANCELLATION -> Known.USER_CANCELLATION
+                    else -> throw LightsparkGridInvalidDataException("Unknown Reason: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): Reason = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Reason && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Refund &&
+                initiatedAt == other.initiatedAt &&
+                reference == other.reference &&
+                status == other.status &&
+                reason == other.reason &&
+                settledAt == other.settledAt &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(initiatedAt, reference, status, reason, settledAt, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Refund{initiatedAt=$initiatedAt, reference=$reference, status=$status, reason=$reason, settledAt=$settledAt, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is IncomingTransaction &&
+        return other is OutgoingTransaction &&
             id == other.id &&
             customerId == other.customerId &&
             destination == other.destination &&
             platformCustomerId == other.platformCustomerId &&
-            receivedAmount == other.receivedAmount &&
+            sentAmount == other.sentAmount &&
+            source == other.source &&
             status == other.status &&
             type == other.type &&
             counterpartyInformation == other.counterpartyInformation &&
             createdAt == other.createdAt &&
             description == other.description &&
+            exchangeRate == other.exchangeRate &&
             failureReason == other.failureReason &&
+            fees == other.fees &&
+            paymentInstructions == other.paymentInstructions &&
+            quoteId == other.quoteId &&
             rateDetails == other.rateDetails &&
-            reconciliationInstructions == other.reconciliationInstructions &&
+            receivedAmount == other.receivedAmount &&
+            refund == other.refund &&
             settledAt == other.settledAt &&
-            source == other.source &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
     }
@@ -2784,17 +3557,22 @@ private constructor(
             customerId,
             destination,
             platformCustomerId,
-            receivedAmount,
+            sentAmount,
+            source,
             status,
             type,
             counterpartyInformation,
             createdAt,
             description,
+            exchangeRate,
             failureReason,
+            fees,
+            paymentInstructions,
+            quoteId,
             rateDetails,
-            reconciliationInstructions,
+            receivedAmount,
+            refund,
             settledAt,
-            source,
             updatedAt,
             additionalProperties,
         )
@@ -2803,5 +3581,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, settledAt=$settledAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
