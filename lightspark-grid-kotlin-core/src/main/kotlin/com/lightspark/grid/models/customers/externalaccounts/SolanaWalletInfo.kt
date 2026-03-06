@@ -13,7 +13,6 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.platform.externalaccounts.BaseExternalAccountInfo
 import java.util.Collections
 import java.util.Objects
 
@@ -32,9 +31,6 @@ private constructor(
         accountType: JsonField<AccountType> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<String> = JsonMissing.of(),
     ) : this(accountType, address, mutableMapOf())
-
-    fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
-        BaseExternalAccountInfo.builder().build()
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
