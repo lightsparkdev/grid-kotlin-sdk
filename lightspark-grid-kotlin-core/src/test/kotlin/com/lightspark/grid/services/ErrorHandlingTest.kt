@@ -22,6 +22,8 @@ import com.lightspark.grid.errors.RateLimitException
 import com.lightspark.grid.errors.UnauthorizedException
 import com.lightspark.grid.errors.UnexpectedStatusCodeException
 import com.lightspark.grid.errors.UnprocessableEntityException
+import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.BaseQuoteSource
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
@@ -77,6 +79,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -84,6 +87,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -123,6 +127,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -130,6 +135,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -169,6 +175,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -176,6 +183,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -215,6 +223,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -222,6 +231,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -261,6 +271,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -268,6 +279,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -307,6 +319,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -314,6 +327,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -353,6 +367,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -360,6 +375,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -399,6 +415,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -406,6 +423,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -445,6 +463,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -452,6 +471,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -491,6 +511,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -498,6 +519,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -537,6 +559,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -544,6 +567,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -583,6 +607,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -590,6 +615,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -629,6 +655,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -636,6 +663,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -675,6 +703,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -682,6 +711,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -721,6 +751,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -728,6 +759,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -767,6 +799,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -774,6 +807,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
@@ -811,6 +845,7 @@ internal class ErrorHandlingTest {
                     QuoteCreateParams.builder()
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
+                                .destinationType(BaseDestination.DestinationType.ACCOUNT)
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -818,6 +853,7 @@ internal class ErrorHandlingTest {
                         .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                         .source(
                             QuoteSourceOneOf.AccountQuoteSource.builder()
+                                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()

@@ -12,8 +12,13 @@ internal class BaseTransactionDestinationTest {
     @Test
     fun create() {
         val baseTransactionDestination =
-            BaseTransactionDestination.builder().currency("EUR").build()
+            BaseTransactionDestination.builder()
+                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                .currency("EUR")
+                .build()
 
+        assertThat(baseTransactionDestination.destinationType())
+            .isEqualTo(BaseTransactionDestination.DestinationType.ACCOUNT)
         assertThat(baseTransactionDestination.currency()).isEqualTo("EUR")
     }
 
@@ -21,7 +26,10 @@ internal class BaseTransactionDestinationTest {
     fun roundtrip() {
         val jsonMapper = jsonMapper()
         val baseTransactionDestination =
-            BaseTransactionDestination.builder().currency("EUR").build()
+            BaseTransactionDestination.builder()
+                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                .currency("EUR")
+                .build()
 
         val roundtrippedBaseTransactionDestination =
             jsonMapper.readValue(

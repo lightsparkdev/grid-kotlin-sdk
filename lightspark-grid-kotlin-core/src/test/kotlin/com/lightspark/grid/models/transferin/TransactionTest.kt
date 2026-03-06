@@ -12,8 +12,10 @@ import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.sandbox.OutgoingTransaction
+import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
@@ -34,6 +36,8 @@ internal class TransactionTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -77,6 +81,8 @@ internal class TransactionTest {
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(
                     TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
@@ -99,6 +105,8 @@ internal class TransactionTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
@@ -142,6 +150,8 @@ internal class TransactionTest {
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .source(
                         TransactionSourceOneOf.AccountTransactionSource.builder()
+                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )
@@ -166,6 +176,8 @@ internal class TransactionTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     OutgoingTransaction.Destination.AccountTransactionDestination.builder()
+                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -185,10 +197,12 @@ internal class TransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
-                .status(OutgoingTransaction.Status.PENDING)
+                .status(OutgoingTransactionStatus.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .counterpartyInformation(
                     OutgoingTransaction.CounterpartyInformation.builder()
@@ -294,6 +308,8 @@ internal class TransactionTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         OutgoingTransaction.Destination.AccountTransactionDestination.builder()
+                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                            .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
@@ -313,10 +329,12 @@ internal class TransactionTest {
                     )
                     .source(
                         TransactionSourceOneOf.AccountTransactionSource.builder()
+                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                            .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )
-                    .status(OutgoingTransaction.Status.PENDING)
+                    .status(OutgoingTransactionStatus.PENDING)
                     .type(OutgoingTransaction.Type.OUTGOING)
                     .counterpartyInformation(
                         OutgoingTransaction.CounterpartyInformation.builder()

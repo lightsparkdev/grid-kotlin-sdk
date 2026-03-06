@@ -18,6 +18,8 @@ internal class TransactionSourceOneOfTest {
     fun ofAccountTransactionSource() {
         val accountTransactionSource =
             TransactionSourceOneOf.AccountTransactionSource.builder()
+                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                .currency("USD")
                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .build()
 
@@ -36,6 +38,8 @@ internal class TransactionSourceOneOfTest {
         val transactionSourceOneOf =
             TransactionSourceOneOf.ofAccountTransactionSource(
                 TransactionSourceOneOf.AccountTransactionSource.builder()
+                    .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                    .currency("USD")
                     .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .build()
             )
@@ -53,6 +57,8 @@ internal class TransactionSourceOneOfTest {
     fun ofUmaAddressTransactionSource() {
         val umaAddressTransactionSource =
             TransactionSourceOneOf.UmaAddressTransactionSource.builder()
+                .sourceType(BaseTransactionSource.SourceType.UMA_ADDRESS)
+                .currency("USD")
                 .umaAddress("\$sender@uma.domain.com")
                 .build()
 
@@ -71,6 +77,8 @@ internal class TransactionSourceOneOfTest {
         val transactionSourceOneOf =
             TransactionSourceOneOf.ofUmaAddressTransactionSource(
                 TransactionSourceOneOf.UmaAddressTransactionSource.builder()
+                    .sourceType(BaseTransactionSource.SourceType.UMA_ADDRESS)
+                    .currency("USD")
                     .umaAddress("\$sender@uma.domain.com")
                     .build()
             )
@@ -88,6 +96,7 @@ internal class TransactionSourceOneOfTest {
     fun ofRealtimeFundingTransactionSource() {
         val realtimeFundingTransactionSource =
             TransactionSourceOneOf.RealtimeFundingTransactionSource.builder()
+                .sourceType(BaseTransactionSource.SourceType.REALTIME_FUNDING)
                 .currency("USDC")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                 .build()
@@ -109,6 +118,7 @@ internal class TransactionSourceOneOfTest {
         val transactionSourceOneOf =
             TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
                 TransactionSourceOneOf.RealtimeFundingTransactionSource.builder()
+                    .sourceType(BaseTransactionSource.SourceType.REALTIME_FUNDING)
                     .currency("USDC")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                     .build()
