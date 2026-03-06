@@ -23,6 +23,7 @@ internal class CustomerListPageResponseTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
+                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -37,7 +38,6 @@ internal class CustomerListPageResponseTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -55,6 +55,7 @@ internal class CustomerListPageResponseTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
+                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -69,7 +70,6 @@ internal class CustomerListPageResponseTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -91,6 +91,7 @@ internal class CustomerListPageResponseTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
+                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -105,7 +106,6 @@ internal class CustomerListPageResponseTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
