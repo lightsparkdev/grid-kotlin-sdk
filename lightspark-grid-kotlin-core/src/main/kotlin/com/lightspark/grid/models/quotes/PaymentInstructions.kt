@@ -185,7 +185,7 @@ private constructor(
          * Alias for calling [accountOrWalletInfo] with
          * `AccountOrWalletInfo.ofBrlAccount(brlAccount)`.
          */
-        fun accountOrWalletInfo(brlAccount: AccountOrWalletInfo.BrlAccount) =
+        fun accountOrWalletInfo(brlAccount: BrlAccountInfo) =
             accountOrWalletInfo(AccountOrWalletInfo.ofBrlAccount(brlAccount))
 
         /**
@@ -213,7 +213,7 @@ private constructor(
          * Alias for calling [accountOrWalletInfo] with
          * `AccountOrWalletInfo.ofInrAccount(inrAccount)`.
          */
-        fun accountOrWalletInfo(inrAccount: AccountOrWalletInfo.InrAccount) =
+        fun accountOrWalletInfo(inrAccount: InrAccountInfo) =
             accountOrWalletInfo(AccountOrWalletInfo.ofInrAccount(inrAccount))
 
         /**
@@ -438,11 +438,11 @@ private constructor(
     class AccountOrWalletInfo
     private constructor(
         private val usdAccount: UsdAccount? = null,
-        private val brlAccount: BrlAccount? = null,
+        private val brlAccount: BrlAccountInfo? = null,
         private val mxnAccount: MxnAccount? = null,
         private val dkkAccount: DkkAccount? = null,
         private val eurAccount: EurAccount? = null,
-        private val inrAccount: InrAccount? = null,
+        private val inrAccount: InrAccountInfo? = null,
         private val ngnAccount: NgnAccount? = null,
         private val cadAccount: CadAccount? = null,
         private val gbpAccount: GbpAccount? = null,
@@ -464,7 +464,7 @@ private constructor(
 
         fun usdAccount(): UsdAccount? = usdAccount
 
-        fun brlAccount(): BrlAccount? = brlAccount
+        fun brlAccount(): BrlAccountInfo? = brlAccount
 
         fun mxnAccount(): MxnAccount? = mxnAccount
 
@@ -472,7 +472,7 @@ private constructor(
 
         fun eurAccount(): EurAccount? = eurAccount
 
-        fun inrAccount(): InrAccount? = inrAccount
+        fun inrAccount(): InrAccountInfo? = inrAccount
 
         fun ngnAccount(): NgnAccount? = ngnAccount
 
@@ -552,7 +552,7 @@ private constructor(
 
         fun asUsdAccount(): UsdAccount = usdAccount.getOrThrow("usdAccount")
 
-        fun asBrlAccount(): BrlAccount = brlAccount.getOrThrow("brlAccount")
+        fun asBrlAccount(): BrlAccountInfo = brlAccount.getOrThrow("brlAccount")
 
         fun asMxnAccount(): MxnAccount = mxnAccount.getOrThrow("mxnAccount")
 
@@ -560,7 +560,7 @@ private constructor(
 
         fun asEurAccount(): EurAccount = eurAccount.getOrThrow("eurAccount")
 
-        fun asInrAccount(): InrAccount = inrAccount.getOrThrow("inrAccount")
+        fun asInrAccount(): InrAccountInfo = inrAccount.getOrThrow("inrAccount")
 
         fun asNgnAccount(): NgnAccount = ngnAccount.getOrThrow("ngnAccount")
 
@@ -639,7 +639,7 @@ private constructor(
                         usdAccount.validate()
                     }
 
-                    override fun visitBrlAccount(brlAccount: BrlAccount) {
+                    override fun visitBrlAccount(brlAccount: BrlAccountInfo) {
                         brlAccount.validate()
                     }
 
@@ -655,7 +655,7 @@ private constructor(
                         eurAccount.validate()
                     }
 
-                    override fun visitInrAccount(inrAccount: InrAccount) {
+                    override fun visitInrAccount(inrAccount: InrAccountInfo) {
                         inrAccount.validate()
                     }
 
@@ -748,7 +748,7 @@ private constructor(
                 object : Visitor<Int> {
                     override fun visitUsdAccount(usdAccount: UsdAccount) = usdAccount.validity()
 
-                    override fun visitBrlAccount(brlAccount: BrlAccount) = brlAccount.validity()
+                    override fun visitBrlAccount(brlAccount: BrlAccountInfo) = brlAccount.validity()
 
                     override fun visitMxnAccount(mxnAccount: MxnAccount) = mxnAccount.validity()
 
@@ -756,7 +756,7 @@ private constructor(
 
                     override fun visitEurAccount(eurAccount: EurAccount) = eurAccount.validity()
 
-                    override fun visitInrAccount(inrAccount: InrAccount) = inrAccount.validity()
+                    override fun visitInrAccount(inrAccount: InrAccountInfo) = inrAccount.validity()
 
                     override fun visitNgnAccount(ngnAccount: NgnAccount) = ngnAccount.validity()
 
@@ -890,7 +890,8 @@ private constructor(
 
             fun ofUsdAccount(usdAccount: UsdAccount) = AccountOrWalletInfo(usdAccount = usdAccount)
 
-            fun ofBrlAccount(brlAccount: BrlAccount) = AccountOrWalletInfo(brlAccount = brlAccount)
+            fun ofBrlAccount(brlAccount: BrlAccountInfo) =
+                AccountOrWalletInfo(brlAccount = brlAccount)
 
             fun ofMxnAccount(mxnAccount: MxnAccount) = AccountOrWalletInfo(mxnAccount = mxnAccount)
 
@@ -898,7 +899,8 @@ private constructor(
 
             fun ofEurAccount(eurAccount: EurAccount) = AccountOrWalletInfo(eurAccount = eurAccount)
 
-            fun ofInrAccount(inrAccount: InrAccount) = AccountOrWalletInfo(inrAccount = inrAccount)
+            fun ofInrAccount(inrAccount: InrAccountInfo) =
+                AccountOrWalletInfo(inrAccount = inrAccount)
 
             fun ofNgnAccount(ngnAccount: NgnAccount) = AccountOrWalletInfo(ngnAccount = ngnAccount)
 
@@ -947,7 +949,7 @@ private constructor(
 
             fun visitUsdAccount(usdAccount: UsdAccount): T
 
-            fun visitBrlAccount(brlAccount: BrlAccount): T
+            fun visitBrlAccount(brlAccount: BrlAccountInfo): T
 
             fun visitMxnAccount(mxnAccount: MxnAccount): T
 
@@ -955,7 +957,7 @@ private constructor(
 
             fun visitEurAccount(eurAccount: EurAccount): T
 
-            fun visitInrAccount(inrAccount: InrAccount): T
+            fun visitInrAccount(inrAccount: InrAccountInfo): T
 
             fun visitNgnAccount(ngnAccount: NgnAccount): T
 
@@ -1019,11 +1021,6 @@ private constructor(
                             AccountOrWalletInfo(usdAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
-                    "BRL_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<BrlAccount>())?.let {
-                            AccountOrWalletInfo(brlAccount = it, _json = json)
-                        } ?: AccountOrWalletInfo(_json = json)
-                    }
                     "MXN_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<MxnAccount>())?.let {
                             AccountOrWalletInfo(mxnAccount = it, _json = json)
@@ -1037,11 +1034,6 @@ private constructor(
                     "EUR_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<EurAccount>())?.let {
                             AccountOrWalletInfo(eurAccount = it, _json = json)
-                        } ?: AccountOrWalletInfo(_json = json)
-                    }
-                    "INR_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<InrAccount>())?.let {
-                            AccountOrWalletInfo(inrAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
                     "NGN_ACCOUNT" -> {
@@ -1098,6 +1090,12 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
+                            tryDeserialize(node, jacksonTypeRef<BrlAccountInfo>())?.let {
+                                AccountOrWalletInfo(brlAccount = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<InrAccountInfo>())?.let {
+                                AccountOrWalletInfo(inrAccount = it, _json = json)
+                            },
                             tryDeserialize(node, jacksonTypeRef<PaymentSparkWalletInfo>())?.let {
                                 AccountOrWalletInfo(paymentSpark = it, _json = json)
                             },
@@ -1208,9 +1206,6 @@ private constructor(
                 reference,
                 mutableMapOf(),
             )
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toUsdAccountInfo(): UsdAccountInfo =
                 UsdAccountInfo.builder()
@@ -1562,375 +1557,6 @@ private constructor(
                 "UsdAccount{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, routingNumber=$routingNumber, reference=$reference, additionalProperties=$additionalProperties}"
         }
 
-        class BrlAccount
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val accountType: JsonField<BrlAccountInfo.AccountType>,
-            private val paymentRails: JsonField<List<BrlAccountInfo.PaymentRail>>,
-            private val pixKey: JsonField<String>,
-            private val pixKeyType: JsonField<String>,
-            private val taxId: JsonField<String>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("accountType")
-                @ExcludeMissing
-                accountType: JsonField<BrlAccountInfo.AccountType> = JsonMissing.of(),
-                @JsonProperty("paymentRails")
-                @ExcludeMissing
-                paymentRails: JsonField<List<BrlAccountInfo.PaymentRail>> = JsonMissing.of(),
-                @JsonProperty("pixKey")
-                @ExcludeMissing
-                pixKey: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("pixKeyType")
-                @ExcludeMissing
-                pixKeyType: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("taxId") @ExcludeMissing taxId: JsonField<String> = JsonMissing.of(),
-            ) : this(accountType, paymentRails, pixKey, pixKeyType, taxId, mutableMapOf())
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
-            fun toBrlAccountInfo(): BrlAccountInfo =
-                BrlAccountInfo.builder()
-                    .accountType(accountType)
-                    .paymentRails(paymentRails)
-                    .pixKey(pixKey)
-                    .pixKeyType(pixKeyType)
-                    .taxId(taxId)
-                    .build()
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun accountType(): BrlAccountInfo.AccountType = accountType.getRequired("accountType")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun paymentRails(): List<BrlAccountInfo.PaymentRail> =
-                paymentRails.getRequired("paymentRails")
-
-            /**
-             * The PIX key of the bank
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun pixKey(): String = pixKey.getRequired("pixKey")
-
-            /**
-             * The type of PIX key of the bank
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun pixKeyType(): String = pixKeyType.getRequired("pixKeyType")
-
-            /**
-             * The tax ID of the bank account
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun taxId(): String = taxId.getRequired("taxId")
-
-            /**
-             * Returns the raw JSON value of [accountType].
-             *
-             * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("accountType")
-            @ExcludeMissing
-            fun _accountType(): JsonField<BrlAccountInfo.AccountType> = accountType
-
-            /**
-             * Returns the raw JSON value of [paymentRails].
-             *
-             * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("paymentRails")
-            @ExcludeMissing
-            fun _paymentRails(): JsonField<List<BrlAccountInfo.PaymentRail>> = paymentRails
-
-            /**
-             * Returns the raw JSON value of [pixKey].
-             *
-             * Unlike [pixKey], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("pixKey") @ExcludeMissing fun _pixKey(): JsonField<String> = pixKey
-
-            /**
-             * Returns the raw JSON value of [pixKeyType].
-             *
-             * Unlike [pixKeyType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("pixKeyType")
-            @ExcludeMissing
-            fun _pixKeyType(): JsonField<String> = pixKeyType
-
-            /**
-             * Returns the raw JSON value of [taxId].
-             *
-             * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of [BrlAccount].
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .accountType()
-                 * .paymentRails()
-                 * .pixKey()
-                 * .pixKeyType()
-                 * .taxId()
-                 * ```
-                 */
-                fun builder() = Builder()
-            }
-
-            /** A builder for [BrlAccount]. */
-            class Builder internal constructor() {
-
-                private var accountType: JsonField<BrlAccountInfo.AccountType>? = null
-                private var paymentRails: JsonField<MutableList<BrlAccountInfo.PaymentRail>>? = null
-                private var pixKey: JsonField<String>? = null
-                private var pixKeyType: JsonField<String>? = null
-                private var taxId: JsonField<String>? = null
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                internal fun from(brlAccount: BrlAccount) = apply {
-                    accountType = brlAccount.accountType
-                    paymentRails = brlAccount.paymentRails.map { it.toMutableList() }
-                    pixKey = brlAccount.pixKey
-                    pixKeyType = brlAccount.pixKeyType
-                    taxId = brlAccount.taxId
-                    additionalProperties = brlAccount.additionalProperties.toMutableMap()
-                }
-
-                fun accountType(accountType: BrlAccountInfo.AccountType) =
-                    accountType(JsonField.of(accountType))
-
-                /**
-                 * Sets [Builder.accountType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.accountType] with a well-typed
-                 * [BrlAccountInfo.AccountType] value instead. This method is primarily for setting
-                 * the field to an undocumented or not yet supported value.
-                 */
-                fun accountType(accountType: JsonField<BrlAccountInfo.AccountType>) = apply {
-                    this.accountType = accountType
-                }
-
-                fun paymentRails(paymentRails: List<BrlAccountInfo.PaymentRail>) =
-                    paymentRails(JsonField.of(paymentRails))
-
-                /**
-                 * Sets [Builder.paymentRails] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.paymentRails] with a well-typed
-                 * `List<BrlAccountInfo.PaymentRail>` value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun paymentRails(paymentRails: JsonField<List<BrlAccountInfo.PaymentRail>>) =
-                    apply {
-                        this.paymentRails = paymentRails.map { it.toMutableList() }
-                    }
-
-                /**
-                 * Adds a single [BrlAccountInfo.PaymentRail] to [paymentRails].
-                 *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addPaymentRail(paymentRail: BrlAccountInfo.PaymentRail) = apply {
-                    paymentRails =
-                        (paymentRails ?: JsonField.of(mutableListOf())).also {
-                            checkKnown("paymentRails", it).add(paymentRail)
-                        }
-                }
-
-                /** The PIX key of the bank */
-                fun pixKey(pixKey: String) = pixKey(JsonField.of(pixKey))
-
-                /**
-                 * Sets [Builder.pixKey] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.pixKey] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun pixKey(pixKey: JsonField<String>) = apply { this.pixKey = pixKey }
-
-                /** The type of PIX key of the bank */
-                fun pixKeyType(pixKeyType: String) = pixKeyType(JsonField.of(pixKeyType))
-
-                /**
-                 * Sets [Builder.pixKeyType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.pixKeyType] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun pixKeyType(pixKeyType: JsonField<String>) = apply {
-                    this.pixKeyType = pixKeyType
-                }
-
-                /** The tax ID of the bank account */
-                fun taxId(taxId: String) = taxId(JsonField.of(taxId))
-
-                /**
-                 * Sets [Builder.taxId] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.taxId] with a well-typed [String] value instead.
-                 * This method is primarily for setting the field to an undocumented or not yet
-                 * supported value.
-                 */
-                fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [BrlAccount].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .accountType()
-                 * .paymentRails()
-                 * .pixKey()
-                 * .pixKeyType()
-                 * .taxId()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
-                 */
-                fun build(): BrlAccount =
-                    BrlAccount(
-                        checkRequired("accountType", accountType),
-                        checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                        checkRequired("pixKey", pixKey),
-                        checkRequired("pixKeyType", pixKeyType),
-                        checkRequired("taxId", taxId),
-                        additionalProperties.toMutableMap(),
-                    )
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): BrlAccount = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                accountType().validate()
-                paymentRails().forEach { it.validate() }
-                pixKey()
-                pixKeyType()
-                taxId()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                (accountType.asKnown()?.validity() ?: 0) +
-                    (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (if (pixKey.asKnown() == null) 0 else 1) +
-                    (if (pixKeyType.asKnown() == null) 0 else 1) +
-                    (if (taxId.asKnown() == null) 0 else 1)
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is BrlAccount &&
-                    accountType == other.accountType &&
-                    paymentRails == other.paymentRails &&
-                    pixKey == other.pixKey &&
-                    pixKeyType == other.pixKeyType &&
-                    taxId == other.taxId &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(
-                    accountType,
-                    paymentRails,
-                    pixKey,
-                    pixKeyType,
-                    taxId,
-                    additionalProperties,
-                )
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "BrlAccount{accountType=$accountType, paymentRails=$paymentRails, pixKey=$pixKey, pixKeyType=$pixKeyType, taxId=$taxId, additionalProperties=$additionalProperties}"
-        }
-
         class MxnAccount
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -1956,9 +1582,6 @@ private constructor(
                 @ExcludeMissing
                 reference: JsonField<String> = JsonMissing.of(),
             ) : this(accountType, clabeNumber, paymentRails, reference, mutableMapOf())
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toMxnAccountInfo(): MxnAccountInfo =
                 MxnAccountInfo.builder()
@@ -2292,9 +1915,6 @@ private constructor(
                 @ExcludeMissing
                 reference: JsonField<String> = JsonMissing.of(),
             ) : this(accountType, iban, paymentRails, swiftBic, reference, mutableMapOf())
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toDkkAccountInfo(): DkkAccountInfo =
                 DkkAccountInfo.builder()
@@ -2660,9 +2280,6 @@ private constructor(
                 reference: JsonField<String> = JsonMissing.of(),
             ) : this(accountType, iban, paymentRails, swiftBic, reference, mutableMapOf())
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toEurAccountInfo(): EurAccountInfo =
                 EurAccountInfo.builder()
                     .accountType(accountType)
@@ -2997,281 +2614,6 @@ private constructor(
 
             override fun toString() =
                 "EurAccount{accountType=$accountType, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, reference=$reference, additionalProperties=$additionalProperties}"
-        }
-
-        class InrAccount
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val accountType: JsonField<InrAccountInfo.AccountType>,
-            private val paymentRails: JsonField<List<InrAccountInfo.PaymentRail>>,
-            private val vpa: JsonField<String>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("accountType")
-                @ExcludeMissing
-                accountType: JsonField<InrAccountInfo.AccountType> = JsonMissing.of(),
-                @JsonProperty("paymentRails")
-                @ExcludeMissing
-                paymentRails: JsonField<List<InrAccountInfo.PaymentRail>> = JsonMissing.of(),
-                @JsonProperty("vpa") @ExcludeMissing vpa: JsonField<String> = JsonMissing.of(),
-            ) : this(accountType, paymentRails, vpa, mutableMapOf())
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
-            fun toInrAccountInfo(): InrAccountInfo =
-                InrAccountInfo.builder()
-                    .accountType(accountType)
-                    .paymentRails(paymentRails)
-                    .vpa(vpa)
-                    .build()
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun accountType(): InrAccountInfo.AccountType = accountType.getRequired("accountType")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun paymentRails(): List<InrAccountInfo.PaymentRail> =
-                paymentRails.getRequired("paymentRails")
-
-            /**
-             * The VPA of the bank
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun vpa(): String = vpa.getRequired("vpa")
-
-            /**
-             * Returns the raw JSON value of [accountType].
-             *
-             * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("accountType")
-            @ExcludeMissing
-            fun _accountType(): JsonField<InrAccountInfo.AccountType> = accountType
-
-            /**
-             * Returns the raw JSON value of [paymentRails].
-             *
-             * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("paymentRails")
-            @ExcludeMissing
-            fun _paymentRails(): JsonField<List<InrAccountInfo.PaymentRail>> = paymentRails
-
-            /**
-             * Returns the raw JSON value of [vpa].
-             *
-             * Unlike [vpa], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("vpa") @ExcludeMissing fun _vpa(): JsonField<String> = vpa
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of [InrAccount].
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .accountType()
-                 * .paymentRails()
-                 * .vpa()
-                 * ```
-                 */
-                fun builder() = Builder()
-            }
-
-            /** A builder for [InrAccount]. */
-            class Builder internal constructor() {
-
-                private var accountType: JsonField<InrAccountInfo.AccountType>? = null
-                private var paymentRails: JsonField<MutableList<InrAccountInfo.PaymentRail>>? = null
-                private var vpa: JsonField<String>? = null
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                internal fun from(inrAccount: InrAccount) = apply {
-                    accountType = inrAccount.accountType
-                    paymentRails = inrAccount.paymentRails.map { it.toMutableList() }
-                    vpa = inrAccount.vpa
-                    additionalProperties = inrAccount.additionalProperties.toMutableMap()
-                }
-
-                fun accountType(accountType: InrAccountInfo.AccountType) =
-                    accountType(JsonField.of(accountType))
-
-                /**
-                 * Sets [Builder.accountType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.accountType] with a well-typed
-                 * [InrAccountInfo.AccountType] value instead. This method is primarily for setting
-                 * the field to an undocumented or not yet supported value.
-                 */
-                fun accountType(accountType: JsonField<InrAccountInfo.AccountType>) = apply {
-                    this.accountType = accountType
-                }
-
-                fun paymentRails(paymentRails: List<InrAccountInfo.PaymentRail>) =
-                    paymentRails(JsonField.of(paymentRails))
-
-                /**
-                 * Sets [Builder.paymentRails] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.paymentRails] with a well-typed
-                 * `List<InrAccountInfo.PaymentRail>` value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun paymentRails(paymentRails: JsonField<List<InrAccountInfo.PaymentRail>>) =
-                    apply {
-                        this.paymentRails = paymentRails.map { it.toMutableList() }
-                    }
-
-                /**
-                 * Adds a single [InrAccountInfo.PaymentRail] to [paymentRails].
-                 *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addPaymentRail(paymentRail: InrAccountInfo.PaymentRail) = apply {
-                    paymentRails =
-                        (paymentRails ?: JsonField.of(mutableListOf())).also {
-                            checkKnown("paymentRails", it).add(paymentRail)
-                        }
-                }
-
-                /** The VPA of the bank */
-                fun vpa(vpa: String) = vpa(JsonField.of(vpa))
-
-                /**
-                 * Sets [Builder.vpa] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.vpa] with a well-typed [String] value instead.
-                 * This method is primarily for setting the field to an undocumented or not yet
-                 * supported value.
-                 */
-                fun vpa(vpa: JsonField<String>) = apply { this.vpa = vpa }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [InrAccount].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .accountType()
-                 * .paymentRails()
-                 * .vpa()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
-                 */
-                fun build(): InrAccount =
-                    InrAccount(
-                        checkRequired("accountType", accountType),
-                        checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                        checkRequired("vpa", vpa),
-                        additionalProperties.toMutableMap(),
-                    )
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): InrAccount = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                accountType().validate()
-                paymentRails().forEach { it.validate() }
-                vpa()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                (accountType.asKnown()?.validity() ?: 0) +
-                    (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (if (vpa.asKnown() == null) 0 else 1)
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is InrAccount &&
-                    accountType == other.accountType &&
-                    paymentRails == other.paymentRails &&
-                    vpa == other.vpa &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(accountType, paymentRails, vpa, additionalProperties)
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "InrAccount{accountType=$accountType, paymentRails=$paymentRails, vpa=$vpa, additionalProperties=$additionalProperties}"
         }
 
         class NgnAccount
@@ -3691,9 +3033,6 @@ private constructor(
                 mutableMapOf(),
             )
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toCadAccountInfo(): CadAccountInfo =
                 CadAccountInfo.builder()
                     .accountNumber(accountNumber)
@@ -4112,9 +3451,6 @@ private constructor(
                 reference: JsonField<String> = JsonMissing.of(),
             ) : this(accountNumber, accountType, paymentRails, sortCode, reference, mutableMapOf())
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toGbpAccountInfo(): GbpAccountInfo =
                 GbpAccountInfo.builder()
                     .accountNumber(accountNumber)
@@ -4501,9 +3837,6 @@ private constructor(
                 reference,
                 mutableMapOf(),
             )
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toHkdAccountInfo(): HkdAccountInfo =
                 HkdAccountInfo.builder()
@@ -4937,9 +4270,6 @@ private constructor(
                 reference,
                 mutableMapOf(),
             )
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toIdrAccountInfo(): IdrAccountInfo =
                 IdrAccountInfo.builder()
@@ -5412,9 +4742,6 @@ private constructor(
                 mutableMapOf(),
             )
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toMyrAccountInfo(): MyrAccountInfo =
                 MyrAccountInfo.builder()
                     .accountNumber(accountNumber)
@@ -5831,9 +5158,6 @@ private constructor(
                 reference: JsonField<String> = JsonMissing.of(),
             ) : this(accountNumber, accountType, bankName, paymentRails, reference, mutableMapOf())
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toPhpAccountInfo(): PhpAccountInfo =
                 PhpAccountInfo.builder()
                     .accountNumber(accountNumber)
@@ -6220,9 +5544,6 @@ private constructor(
                 reference,
                 mutableMapOf(),
             )
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toSgdAccountInfo(): SgdAccountInfo =
                 SgdAccountInfo.builder()
@@ -6652,9 +5973,6 @@ private constructor(
                 mutableMapOf(),
             )
 
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
-
             fun toThbAccountInfo(): ThbAccountInfo =
                 ThbAccountInfo.builder()
                     .accountNumber(accountNumber)
@@ -7082,9 +6400,6 @@ private constructor(
                 reference,
                 mutableMapOf(),
             )
-
-            fun toBasePaymentAccountInfo(): BasePaymentAccountInfo =
-                BasePaymentAccountInfo.builder().build()
 
             fun toVndAccountInfo(): VndAccountInfo =
                 VndAccountInfo.builder()

@@ -73,28 +73,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -184,28 +184,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -294,28 +294,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -403,28 +403,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -512,28 +512,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -623,28 +623,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isEqualTo(hkdAccount)
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -736,28 +736,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isEqualTo(idrAccount)
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -847,28 +847,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isEqualTo(inrAccount)
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -915,12 +915,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofKesAccount() {
-        val kesAccount =
-            ExternalAccountInfoOneOf.KesAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.KesAccount.AccountType.KES_ACCOUNT)
+    fun ofKesExternalAccountInfo() {
+        val kesExternalAccountInfo =
+            ExternalAccountInfoOneOf.KesExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.KesAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.KesExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -940,12 +939,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.KesAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.KesExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+254712345678")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofKesAccount(kesAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofKesExternalAccountInfo(kesExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -955,39 +957,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isEqualTo(kesAccount)
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo())
+            .isEqualTo(kesExternalAccountInfo)
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofKesAccountRoundtrip() {
+    fun ofKesExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofKesAccount(
-                ExternalAccountInfoOneOf.KesAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.KesAccount.AccountType.KES_ACCOUNT)
+            ExternalAccountInfoOneOf.ofKesExternalAccountInfo(
+                ExternalAccountInfoOneOf.KesExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.KesAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.KesExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1007,7 +1010,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.KesAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.KesExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+254712345678")
                     .provider("provider")
                     .build()
@@ -1023,12 +1028,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofMwkAccount() {
-        val mwkAccount =
-            ExternalAccountInfoOneOf.MwkAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.MwkAccount.AccountType.MWK_ACCOUNT)
+    fun ofMwkExternalAccountInfo() {
+        val mwkExternalAccountInfo =
+            ExternalAccountInfoOneOf.MwkExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.MwkAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.MwkExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1048,13 +1052,16 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.MwkAccount.Country.MW)
-                .addPaymentRail(ExternalAccountInfoOneOf.MwkAccount.PaymentRail.MOBILE_MONEY)
+                .addCountry(ExternalAccountInfoOneOf.MwkExternalAccountInfo.Country.MW)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.MwkExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+265991234567")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofMwkExternalAccountInfo(mwkExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -1064,39 +1071,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isEqualTo(mwkAccount)
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo())
+            .isEqualTo(mwkExternalAccountInfo)
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofMwkAccountRoundtrip() {
+    fun ofMwkExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofMwkAccount(
-                ExternalAccountInfoOneOf.MwkAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.MwkAccount.AccountType.MWK_ACCOUNT)
+            ExternalAccountInfoOneOf.ofMwkExternalAccountInfo(
+                ExternalAccountInfoOneOf.MwkExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.MwkAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.MwkExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1116,8 +1124,10 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.MwkAccount.Country.MW)
-                    .addPaymentRail(ExternalAccountInfoOneOf.MwkAccount.PaymentRail.MOBILE_MONEY)
+                    .addCountry(ExternalAccountInfoOneOf.MwkExternalAccountInfo.Country.MW)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.MwkExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+265991234567")
                     .provider("provider")
                     .build()
@@ -1173,28 +1183,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isEqualTo(mxnAccount)
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1283,28 +1293,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isEqualTo(myrAccount)
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1393,28 +1403,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isEqualTo(ngnAccount)
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1502,28 +1512,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isEqualTo(phpAccount)
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1571,12 +1581,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofRwfAccount() {
-        val rwfAccount =
-            ExternalAccountInfoOneOf.RwfAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.RwfAccount.AccountType.RWF_ACCOUNT)
+    fun ofRwfExternalAccountInfo() {
+        val rwfExternalAccountInfo =
+            ExternalAccountInfoOneOf.RwfExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.RwfAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.RwfExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1596,12 +1605,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.RwfAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.RwfExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+250781234567")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofRwfAccount(rwfAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofRwfExternalAccountInfo(rwfExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -1611,39 +1623,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isEqualTo(rwfAccount)
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo())
+            .isEqualTo(rwfExternalAccountInfo)
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofRwfAccountRoundtrip() {
+    fun ofRwfExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofRwfAccount(
-                ExternalAccountInfoOneOf.RwfAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.RwfAccount.AccountType.RWF_ACCOUNT)
+            ExternalAccountInfoOneOf.ofRwfExternalAccountInfo(
+                ExternalAccountInfoOneOf.RwfExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.RwfAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.RwfExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1663,7 +1676,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.RwfAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.RwfExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+250781234567")
                     .provider("provider")
                     .build()
@@ -1721,28 +1736,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isEqualTo(sgdAccount)
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1833,28 +1848,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isEqualTo(thbAccount)
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -1903,12 +1918,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofTzsAccount() {
-        val tzsAccount =
-            ExternalAccountInfoOneOf.TzsAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.TzsAccount.AccountType.TZS_ACCOUNT)
+    fun ofTzsExternalAccountInfo() {
+        val tzsExternalAccountInfo =
+            ExternalAccountInfoOneOf.TzsExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.TzsAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.TzsExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1928,12 +1942,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.TzsAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.TzsExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+255712345678")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTzsAccount(tzsAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofTzsExternalAccountInfo(tzsExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -1943,39 +1960,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isEqualTo(tzsAccount)
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo())
+            .isEqualTo(tzsExternalAccountInfo)
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofTzsAccountRoundtrip() {
+    fun ofTzsExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofTzsAccount(
-                ExternalAccountInfoOneOf.TzsAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.TzsAccount.AccountType.TZS_ACCOUNT)
+            ExternalAccountInfoOneOf.ofTzsExternalAccountInfo(
+                ExternalAccountInfoOneOf.TzsExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.TzsAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.TzsExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1995,7 +2013,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.TzsAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.TzsExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+255712345678")
                     .provider("provider")
                     .build()
@@ -2011,12 +2031,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofUgxAccount() {
-        val ugxAccount =
-            ExternalAccountInfoOneOf.UgxAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.UgxAccount.AccountType.UGX_ACCOUNT)
+    fun ofUgxExternalAccountInfo() {
+        val ugxExternalAccountInfo =
+            ExternalAccountInfoOneOf.UgxExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.UgxAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.UgxExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2036,13 +2055,16 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.UgxAccount.Country.UG)
-                .addPaymentRail(ExternalAccountInfoOneOf.UgxAccount.PaymentRail.MOBILE_MONEY)
+                .addCountry(ExternalAccountInfoOneOf.UgxExternalAccountInfo.Country.UG)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.UgxExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+256701234567")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofUgxExternalAccountInfo(ugxExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2052,39 +2074,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isEqualTo(ugxAccount)
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo())
+            .isEqualTo(ugxExternalAccountInfo)
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofUgxAccountRoundtrip() {
+    fun ofUgxExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofUgxAccount(
-                ExternalAccountInfoOneOf.UgxAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.UgxAccount.AccountType.UGX_ACCOUNT)
+            ExternalAccountInfoOneOf.ofUgxExternalAccountInfo(
+                ExternalAccountInfoOneOf.UgxExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.UgxAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.UgxExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2104,8 +2127,10 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.UgxAccount.Country.UG)
-                    .addPaymentRail(ExternalAccountInfoOneOf.UgxAccount.PaymentRail.MOBILE_MONEY)
+                    .addCountry(ExternalAccountInfoOneOf.UgxExternalAccountInfo.Country.UG)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.UgxExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+256701234567")
                     .provider("provider")
                     .build()
@@ -2162,28 +2187,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isEqualTo(usdAccount)
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -2273,28 +2298,28 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isEqualTo(vndAccount)
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
@@ -2343,12 +2368,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofXofAccount() {
-        val xofAccount =
-            ExternalAccountInfoOneOf.XofAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.XofAccount.AccountType.XOF_ACCOUNT)
+    fun ofXofExternalAccountInfo() {
+        val xofExternalAccountInfo =
+            ExternalAccountInfoOneOf.XofExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.XofAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.XofExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2368,13 +2392,16 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.XofAccount.Country.SN)
-                .addPaymentRail(ExternalAccountInfoOneOf.XofAccount.PaymentRail.MOBILE_MONEY)
+                .addCountry(ExternalAccountInfoOneOf.XofExternalAccountInfo.Country.SN)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.XofExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+221781234567")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofXofAccount(xofAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofXofExternalAccountInfo(xofExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2384,39 +2411,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isEqualTo(xofAccount)
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo())
+            .isEqualTo(xofExternalAccountInfo)
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofXofAccountRoundtrip() {
+    fun ofXofExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofXofAccount(
-                ExternalAccountInfoOneOf.XofAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.XofAccount.AccountType.XOF_ACCOUNT)
+            ExternalAccountInfoOneOf.ofXofExternalAccountInfo(
+                ExternalAccountInfoOneOf.XofExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.XofAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.XofExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2436,8 +2464,10 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.XofAccount.Country.SN)
-                    .addPaymentRail(ExternalAccountInfoOneOf.XofAccount.PaymentRail.MOBILE_MONEY)
+                    .addCountry(ExternalAccountInfoOneOf.XofExternalAccountInfo.Country.SN)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.XofExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+221781234567")
                     .provider("provider")
                     .build()
@@ -2453,14 +2483,13 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofZarAccount() {
-        val zarAccount =
-            ExternalAccountInfoOneOf.ZarAccount.builder()
+    fun ofZarExternalAccountInfo() {
+        val zarExternalAccountInfo =
+            ExternalAccountInfoOneOf.ZarExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(ExternalAccountInfoOneOf.ZarAccount.AccountType.ZAR_ACCOUNT)
                 .bankName("Standard Bank")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.ZarAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.ZarExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2480,10 +2509,13 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.ZarAccount.PaymentRail.BANK_TRANSFER)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.ZarExternalAccountInfo.PaymentRail.BANK_TRANSFER
+                )
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofZarAccount(zarAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofZarExternalAccountInfo(zarExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2493,41 +2525,42 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isEqualTo(zarAccount)
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo())
+            .isEqualTo(zarExternalAccountInfo)
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofZarAccountRoundtrip() {
+    fun ofZarExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofZarAccount(
-                ExternalAccountInfoOneOf.ZarAccount.builder()
+            ExternalAccountInfoOneOf.ofZarExternalAccountInfo(
+                ExternalAccountInfoOneOf.ZarExternalAccountInfo.builder()
                     .accountNumber("1234567890")
-                    .accountType(ExternalAccountInfoOneOf.ZarAccount.AccountType.ZAR_ACCOUNT)
                     .bankName("Standard Bank")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.ZarAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.ZarExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2547,7 +2580,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.ZarAccount.PaymentRail.BANK_TRANSFER)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.ZarExternalAccountInfo.PaymentRail.BANK_TRANSFER
+                    )
                     .build()
             )
 
@@ -2561,12 +2596,11 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofZmwAccount() {
-        val zmwAccount =
-            ExternalAccountInfoOneOf.ZmwAccount.builder()
-                .accountType(ExternalAccountInfoOneOf.ZmwAccount.AccountType.ZMW_ACCOUNT)
+    fun ofZmwExternalAccountInfo() {
+        val zmwExternalAccountInfo =
+            ExternalAccountInfoOneOf.ZmwExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.ZmwAccount.Beneficiary.Individual.builder()
+                    ExternalAccountInfoOneOf.ZmwExternalAccountInfo.Beneficiary.Individual.builder()
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2586,12 +2620,15 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.ZmwAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(
+                    ExternalAccountInfoOneOf.ZmwExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                )
                 .phoneNumber("+260971234567")
                 .provider("provider")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofZmwAccount(zmwAccount)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofZmwExternalAccountInfo(zmwExternalAccountInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2601,39 +2638,40 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isEqualTo(zmwAccount)
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo())
+            .isEqualTo(zmwExternalAccountInfo)
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofZmwAccountRoundtrip() {
+    fun ofZmwExternalAccountInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofZmwAccount(
-                ExternalAccountInfoOneOf.ZmwAccount.builder()
-                    .accountType(ExternalAccountInfoOneOf.ZmwAccount.AccountType.ZMW_ACCOUNT)
+            ExternalAccountInfoOneOf.ofZmwExternalAccountInfo(
+                ExternalAccountInfoOneOf.ZmwExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.ZmwAccount.Beneficiary.Individual.builder()
+                        ExternalAccountInfoOneOf.ZmwExternalAccountInfo.Beneficiary.Individual
+                            .builder()
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2653,7 +2691,9 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.ZmwAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(
+                        ExternalAccountInfoOneOf.ZmwExternalAccountInfo.PaymentRail.MOBILE_MONEY
+                    )
                     .phoneNumber("+260971234567")
                     .provider("provider")
                     .build()
@@ -2669,14 +2709,14 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofSparkWallet() {
-        val sparkWallet =
+    fun ofSparkWalletInfo() {
+        val sparkWalletInfo =
             SparkWalletInfo.builder()
                 .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
                 .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSparkWallet(sparkWallet)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSparkWalletInfo(sparkWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2686,35 +2726,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isEqualTo(sparkWallet)
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isEqualTo(sparkWalletInfo)
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofSparkWalletRoundtrip() {
+    fun ofSparkWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofSparkWallet(
+            ExternalAccountInfoOneOf.ofSparkWalletInfo(
                 SparkWalletInfo.builder()
                     .accountType(SparkWalletInfo.AccountType.SPARK_WALLET)
                     .address("spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu")
@@ -2731,8 +2771,8 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofLightning() {
-        val lightning =
+    fun ofLightningWalletInfo() {
+        val lightningWalletInfo =
             LightningWalletInfo.builder()
                 .accountType(LightningWalletInfo.AccountType.LIGHTNING)
                 .bolt12(
@@ -2744,7 +2784,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .lightningAddress("john.doe@lightningwallet.com")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofLightning(lightning)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofLightningWalletInfo(lightningWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2754,35 +2795,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isEqualTo(lightning)
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isEqualTo(lightningWalletInfo)
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofLightningRoundtrip() {
+    fun ofLightningWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofLightning(
+            ExternalAccountInfoOneOf.ofLightningWalletInfo(
                 LightningWalletInfo.builder()
                     .accountType(LightningWalletInfo.AccountType.LIGHTNING)
                     .bolt12(
@@ -2805,14 +2846,14 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofSolanaWallet() {
-        val solanaWallet =
+    fun ofSolanaWalletInfo() {
+        val solanaWalletInfo =
             SolanaWalletInfo.builder()
                 .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
                 .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSolanaWallet(solanaWallet)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSolanaWalletInfo(solanaWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2822,35 +2863,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isEqualTo(solanaWallet)
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isEqualTo(solanaWalletInfo)
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofSolanaWalletRoundtrip() {
+    fun ofSolanaWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofSolanaWallet(
+            ExternalAccountInfoOneOf.ofSolanaWalletInfo(
                 SolanaWalletInfo.builder()
                     .accountType(SolanaWalletInfo.AccountType.SOLANA_WALLET)
                     .address("4Nd1m6Qkq7RfKuE5vQ9qP9Tn6H94Ueqb4xXHzsAbd8Wg")
@@ -2867,14 +2908,14 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofTronWallet() {
-        val tronWallet =
+    fun ofTronWalletInfo() {
+        val tronWalletInfo =
             TronWalletInfo.builder()
                 .accountType(TronWalletInfo.AccountType.TRON_WALLET)
                 .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTronWallet(tronWallet)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTronWalletInfo(tronWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2884,35 +2925,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isEqualTo(tronWallet)
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isEqualTo(tronWalletInfo)
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofTronWalletRoundtrip() {
+    fun ofTronWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofTronWallet(
+            ExternalAccountInfoOneOf.ofTronWalletInfo(
                 TronWalletInfo.builder()
                     .accountType(TronWalletInfo.AccountType.TRON_WALLET)
                     .address("TNPeeaaFB7K9cmo4uQpcU32zGK8G1NYqeL")
@@ -2929,14 +2970,15 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofPolygonWallet() {
-        val polygonWallet =
+    fun ofPolygonWalletInfo() {
+        val polygonWalletInfo =
             PolygonWalletInfo.builder()
                 .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
                 .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPolygonWallet(polygonWallet)
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofPolygonWalletInfo(polygonWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -2946,35 +2988,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isEqualTo(polygonWallet)
-        assertThat(externalAccountInfoOneOf.baseWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isEqualTo(polygonWalletInfo)
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
     }
 
     @Test
-    fun ofPolygonWalletRoundtrip() {
+    fun ofPolygonWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofPolygonWallet(
+            ExternalAccountInfoOneOf.ofPolygonWalletInfo(
                 PolygonWalletInfo.builder()
                     .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
                     .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
@@ -2991,14 +3033,14 @@ internal class ExternalAccountInfoOneOfTest {
     }
 
     @Test
-    fun ofBaseWallet() {
-        val baseWallet =
+    fun ofBaseWalletInfo() {
+        val baseWalletInfo =
             BaseWalletInfo.builder()
                 .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
                 .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                 .build()
 
-        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBaseWallet(baseWallet)
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBaseWalletInfo(baseWalletInfo)
 
         assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
@@ -3008,35 +3050,35 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
         assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
         assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
         assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
-        assertThat(externalAccountInfoOneOf.sparkWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.lightning()).isNull()
-        assertThat(externalAccountInfoOneOf.solanaWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.tronWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.polygonWallet()).isNull()
-        assertThat(externalAccountInfoOneOf.baseWallet()).isEqualTo(baseWallet)
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isEqualTo(baseWalletInfo)
     }
 
     @Test
-    fun ofBaseWalletRoundtrip() {
+    fun ofBaseWalletInfoRoundtrip() {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
-            ExternalAccountInfoOneOf.ofBaseWallet(
+            ExternalAccountInfoOneOf.ofBaseWalletInfo(
                 BaseWalletInfo.builder()
                     .accountType(BaseWalletInfo.AccountType.BASE_WALLET)
                     .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
