@@ -18,16 +18,16 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class CustomerOneOfTest {
 
     @Test
-    fun ofIndividual() {
-        val individual =
-            CustomerOneOf.Individual.builder()
+    fun ofIndividualCustomer() {
+        val individualCustomer =
+            CustomerOneOf.IndividualCustomer.builder()
+                .customerType(CustomerType.INDIVIDUAL)
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                 .address(
                     Address.builder()
                         .country("US")
@@ -44,25 +44,25 @@ internal class CustomerOneOfTest {
                 .nationality("US")
                 .build()
 
-        val customerOneOf = CustomerOneOf.ofIndividual(individual)
+        val customerOneOf = CustomerOneOf.ofIndividualCustomer(individualCustomer)
 
-        assertThat(customerOneOf.individual()).isEqualTo(individual)
-        assertThat(customerOneOf.business()).isNull()
+        assertThat(customerOneOf.individualCustomer()).isEqualTo(individualCustomer)
+        assertThat(customerOneOf.businessCustomer()).isNull()
     }
 
     @Test
-    fun ofIndividualRoundtrip() {
+    fun ofIndividualCustomerRoundtrip() {
         val jsonMapper = jsonMapper()
         val customerOneOf =
-            CustomerOneOf.ofIndividual(
-                CustomerOneOf.Individual.builder()
+            CustomerOneOf.ofIndividualCustomer(
+                CustomerOneOf.IndividualCustomer.builder()
+                    .customerType(CustomerType.INDIVIDUAL)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -90,16 +90,16 @@ internal class CustomerOneOfTest {
     }
 
     @Test
-    fun ofBusiness() {
-        val business =
-            CustomerOneOf.Business.builder()
+    fun ofBusinessCustomer() {
+        val businessCustomer =
+            CustomerOneOf.BusinessCustomer.builder()
+                .customerType(CustomerType.BUSINESS)
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                 .address(
                     Address.builder()
                         .country("US")
@@ -145,25 +145,25 @@ internal class CustomerOneOfTest {
                 .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .build()
 
-        val customerOneOf = CustomerOneOf.ofBusiness(business)
+        val customerOneOf = CustomerOneOf.ofBusinessCustomer(businessCustomer)
 
-        assertThat(customerOneOf.individual()).isNull()
-        assertThat(customerOneOf.business()).isEqualTo(business)
+        assertThat(customerOneOf.individualCustomer()).isNull()
+        assertThat(customerOneOf.businessCustomer()).isEqualTo(businessCustomer)
     }
 
     @Test
-    fun ofBusinessRoundtrip() {
+    fun ofBusinessCustomerRoundtrip() {
         val jsonMapper = jsonMapper()
         val customerOneOf =
-            CustomerOneOf.ofBusiness(
-                CustomerOneOf.Business.builder()
+            CustomerOneOf.ofBusinessCustomer(
+                CustomerOneOf.BusinessCustomer.builder()
+                    .customerType(CustomerType.BUSINESS)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                     .address(
                         Address.builder()
                             .country("US")

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.sandbox
+package com.lightspark.grid.models.transactions
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
@@ -10,9 +10,6 @@ import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
-import com.lightspark.grid.models.transactions.BaseTransactionSource
-import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
-import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat

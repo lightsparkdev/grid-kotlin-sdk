@@ -14,9 +14,9 @@ internal class CustomerUpdateParamsTest {
         CustomerUpdateParams.builder()
             .customerId("customerId")
             .updateCustomerRequest(
-                CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest.builder()
+                    .customerType(CustomerType.INDIVIDUAL)
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -42,8 +42,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .build()
                 )
                 .build()
@@ -59,9 +60,10 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -84,10 +86,11 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                CustomerUpdateParams.UpdateCustomerRequest.ofIndividualCustomerUpdate(
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -113,8 +116,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .build()
                 )
                 .build()
@@ -123,9 +127,10 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                CustomerUpdateParams.UpdateCustomerRequest.ofIndividualCustomerUpdate(
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .build()
                 )
             )

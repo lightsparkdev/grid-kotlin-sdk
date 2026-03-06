@@ -11,13 +11,22 @@ internal class BaseDestinationTest {
 
     @Test
     fun create() {
-        val baseDestination = BaseDestination.builder().build()
+        val baseDestination =
+            BaseDestination.builder()
+                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                .build()
+
+        assertThat(baseDestination.destinationType())
+            .isEqualTo(BaseDestination.DestinationType.ACCOUNT)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val baseDestination = BaseDestination.builder().build()
+        val baseDestination =
+            BaseDestination.builder()
+                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+                .build()
 
         val roundtrippedBaseDestination =
             jsonMapper.readValue(

@@ -19,6 +19,7 @@ import java.util.Objects
 class Customer
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val customerType: JsonField<CustomerType>,
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
@@ -30,6 +31,9 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("customerType")
+        @ExcludeMissing
+        customerType: JsonField<CustomerType> = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -44,7 +48,24 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-    ) : this(platformCustomerId, umaAddress, id, createdAt, isDeleted, updatedAt, mutableMapOf())
+    ) : this(
+        customerType,
+        platformCustomerId,
+        umaAddress,
+        id,
+        createdAt,
+        isDeleted,
+        updatedAt,
+        mutableMapOf(),
+    )
+
+    /**
+     * Whether the customer is an individual or a business entity
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerType(): CustomerType = customerType.getRequired("customerType")
 
     /**
      * Platform-specific customer identifier
@@ -94,6 +115,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
+
+    /**
+     * Returns the raw JSON value of [customerType].
+     *
+     * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerType")
+    @ExcludeMissing
+    fun _customerType(): JsonField<CustomerType> = customerType
 
     /**
      * Returns the raw JSON value of [platformCustomerId].
@@ -163,6 +193,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -173,6 +204,7 @@ private constructor(
     /** A builder for [Customer]. */
     class Builder internal constructor() {
 
+        private var customerType: JsonField<CustomerType>? = null
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
@@ -182,6 +214,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customer: Customer) = apply {
+            customerType = customer.customerType
             platformCustomerId = customer.platformCustomerId
             umaAddress = customer.umaAddress
             id = customer.id
@@ -189,6 +222,20 @@ private constructor(
             isDeleted = customer.isDeleted
             updatedAt = customer.updatedAt
             additionalProperties = customer.additionalProperties.toMutableMap()
+        }
+
+        /** Whether the customer is an individual or a business entity */
+        fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
+
+        /**
+         * Sets [Builder.customerType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerType] with a well-typed [CustomerType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun customerType(customerType: JsonField<CustomerType>) = apply {
+            this.customerType = customerType
         }
 
         /** Platform-specific customer identifier */
@@ -294,6 +341,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -302,6 +350,7 @@ private constructor(
          */
         fun build(): Customer =
             Customer(
+                checkRequired("customerType", customerType),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
@@ -319,6 +368,7 @@ private constructor(
             return@apply
         }
 
+        customerType().validate()
         platformCustomerId()
         umaAddress()
         id()
@@ -342,7 +392,8 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (platformCustomerId.asKnown() == null) 0 else 1) +
+        (customerType.asKnown()?.validity() ?: 0) +
+            (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1) +
             (if (id.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
@@ -355,6 +406,7 @@ private constructor(
         }
 
         return other is Customer &&
+            customerType == other.customerType &&
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
@@ -366,6 +418,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            customerType,
             platformCustomerId,
             umaAddress,
             id,
@@ -379,5 +432,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Customer{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "Customer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

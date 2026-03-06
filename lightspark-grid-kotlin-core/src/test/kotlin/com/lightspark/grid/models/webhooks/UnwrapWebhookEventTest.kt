@@ -9,6 +9,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.BusinessCustomerFields
+import com.lightspark.grid.models.customers.CustomerType
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.invitations.CurrencyAmount
@@ -20,11 +21,14 @@ import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
+import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
+import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -46,6 +50,8 @@ internal class UnwrapWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -89,6 +95,8 @@ internal class UnwrapWebhookEventTest {
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.AccountTransactionSource.builder()
+                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -131,6 +139,10 @@ internal class UnwrapWebhookEventTest {
                             .destination(
                                 IncomingTransaction.Destination.AccountTransactionDestination
                                     .builder()
+                                    .destinationType(
+                                        BaseTransactionDestination.DestinationType.ACCOUNT
+                                    )
+                                    .currency("EUR")
                                     .accountId(
                                         "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                     )
@@ -178,6 +190,8 @@ internal class UnwrapWebhookEventTest {
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .source(
                                 TransactionSourceOneOf.AccountTransactionSource.builder()
+                                    .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                    .currency("USD")
                                     .accountId(
                                         "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
                                     )
@@ -217,6 +231,8 @@ internal class UnwrapWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             OutgoingTransaction.Destination.AccountTransactionDestination.builder()
+                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
+                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -236,10 +252,12 @@ internal class UnwrapWebhookEventTest {
                         )
                         .source(
                             TransactionSourceOneOf.AccountTransactionSource.builder()
+                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
-                        .status(OutgoingTransaction.Status.PENDING)
+                        .status(OutgoingTransactionStatus.PENDING)
                         .type(OutgoingTransaction.Type.OUTGOING)
                         .counterpartyInformation(
                             OutgoingTransaction.CounterpartyInformation.builder()
@@ -361,6 +379,10 @@ internal class UnwrapWebhookEventTest {
                             .destination(
                                 OutgoingTransaction.Destination.AccountTransactionDestination
                                     .builder()
+                                    .destinationType(
+                                        BaseTransactionDestination.DestinationType.ACCOUNT
+                                    )
+                                    .currency("EUR")
                                     .accountId(
                                         "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                     )
@@ -382,12 +404,14 @@ internal class UnwrapWebhookEventTest {
                             )
                             .source(
                                 TransactionSourceOneOf.AccountTransactionSource.builder()
+                                    .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
+                                    .currency("USD")
                                     .accountId(
                                         "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
                                     )
                                     .build()
                             )
-                            .status(OutgoingTransaction.Status.PENDING)
+                            .status(OutgoingTransactionStatus.PENDING)
                             .type(OutgoingTransaction.Type.OUTGOING)
                             .counterpartyInformation(
                                 OutgoingTransaction.CounterpartyInformation.builder()
@@ -733,13 +757,13 @@ internal class UnwrapWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     KycStatusWebhookEvent.Data.builder()
+                        .customerType(CustomerType.INDIVIDUAL)
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -781,13 +805,13 @@ internal class UnwrapWebhookEventTest {
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         KycStatusWebhookEvent.Data.builder()
+                            .customerType(CustomerType.INDIVIDUAL)
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -825,13 +849,13 @@ internal class UnwrapWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     KybStatusWebhookEvent.Data.builder()
+                        .customerType(CustomerType.BUSINESS)
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -902,13 +926,13 @@ internal class UnwrapWebhookEventTest {
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         KybStatusWebhookEvent.Data.builder()
+                            .customerType(CustomerType.BUSINESS)
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                            .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                             .address(
                                 Address.builder()
                                     .country("US")
