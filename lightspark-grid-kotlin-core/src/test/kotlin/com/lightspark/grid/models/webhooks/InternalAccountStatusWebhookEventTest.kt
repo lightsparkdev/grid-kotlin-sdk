@@ -8,6 +8,7 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +21,7 @@ internal class InternalAccountStatusWebhookEventTest {
             InternalAccountStatusWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InternalAccountStatusWebhookEvent.Data.builder()
+                    InternalAccount.builder()
                         .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .balance(
                             CurrencyAmount.builder()
@@ -65,7 +66,7 @@ internal class InternalAccountStatusWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(internalAccountStatusWebhookEvent.data())
             .isEqualTo(
-                InternalAccountStatusWebhookEvent.Data.builder()
+                InternalAccount.builder()
                     .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .balance(
                         CurrencyAmount.builder()
@@ -115,7 +116,7 @@ internal class InternalAccountStatusWebhookEventTest {
             InternalAccountStatusWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InternalAccountStatusWebhookEvent.Data.builder()
+                    InternalAccount.builder()
                         .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .balance(
                             CurrencyAmount.builder()

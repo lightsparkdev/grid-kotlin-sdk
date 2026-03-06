@@ -209,12 +209,12 @@ private constructor(
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val isDeleted: JsonField<Boolean>,
-        private val kycStatus: JsonField<Customer.KycStatus>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
         private val birthDate: JsonField<LocalDate>,
         private val fullName: JsonField<String>,
+        private val kycStatus: JsonField<IndividualCustomerFields.KycStatus>,
         private val nationality: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -234,9 +234,6 @@ private constructor(
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("kycStatus")
-            @ExcludeMissing
-            kycStatus: JsonField<Customer.KycStatus> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -250,6 +247,9 @@ private constructor(
             @JsonProperty("fullName")
             @ExcludeMissing
             fullName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("kycStatus")
+            @ExcludeMissing
+            kycStatus: JsonField<IndividualCustomerFields.KycStatus> = JsonMissing.of(),
             @JsonProperty("nationality")
             @ExcludeMissing
             nationality: JsonField<String> = JsonMissing.of(),
@@ -259,12 +259,12 @@ private constructor(
             id,
             createdAt,
             isDeleted,
-            kycStatus,
             updatedAt,
             customerType,
             address,
             birthDate,
             fullName,
+            kycStatus,
             nationality,
             mutableMapOf(),
         )
@@ -276,7 +276,6 @@ private constructor(
                 .id(id)
                 .createdAt(createdAt)
                 .isDeleted(isDeleted)
-                .kycStatus(kycStatus)
                 .updatedAt(updatedAt)
                 .build()
 
@@ -286,6 +285,7 @@ private constructor(
                 .address(address)
                 .birthDate(birthDate)
                 .fullName(fullName)
+                .kycStatus(kycStatus)
                 .nationality(nationality)
                 .build()
 
@@ -331,14 +331,6 @@ private constructor(
         fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
 
         /**
-         * The current KYC status of a customer
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun kycStatus(): Customer.KycStatus? = kycStatus.getNullable("kycStatus")
-
-        /**
          * Last update timestamp
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -374,6 +366,14 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun fullName(): String? = fullName.getNullable("fullName")
+
+        /**
+         * The current KYC status of a customer
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun kycStatus(): IndividualCustomerFields.KycStatus? = kycStatus.getNullable("kycStatus")
 
         /**
          * Country code (ISO 3166-1 alpha-2)
@@ -426,15 +426,6 @@ private constructor(
         @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
 
         /**
-         * Returns the raw JSON value of [kycStatus].
-         *
-         * Unlike [kycStatus], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("kycStatus")
-        @ExcludeMissing
-        fun _kycStatus(): JsonField<Customer.KycStatus> = kycStatus
-
-        /**
          * Returns the raw JSON value of [updatedAt].
          *
          * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -475,6 +466,15 @@ private constructor(
          * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
+
+        /**
+         * Returns the raw JSON value of [kycStatus].
+         *
+         * Unlike [kycStatus], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("kycStatus")
+        @ExcludeMissing
+        fun _kycStatus(): JsonField<IndividualCustomerFields.KycStatus> = kycStatus
 
         /**
          * Returns the raw JSON value of [nationality].
@@ -520,12 +520,12 @@ private constructor(
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
-            private var kycStatus: JsonField<Customer.KycStatus> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
             private var birthDate: JsonField<LocalDate> = JsonMissing.of()
             private var fullName: JsonField<String> = JsonMissing.of()
+            private var kycStatus: JsonField<IndividualCustomerFields.KycStatus> = JsonMissing.of()
             private var nationality: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -535,12 +535,12 @@ private constructor(
                 id = individual.id
                 createdAt = individual.createdAt
                 isDeleted = individual.isDeleted
-                kycStatus = individual.kycStatus
                 updatedAt = individual.updatedAt
                 customerType = individual.customerType
                 address = individual.address
                 birthDate = individual.birthDate
                 fullName = individual.fullName
+                kycStatus = individual.kycStatus
                 nationality = individual.nationality
                 additionalProperties = individual.additionalProperties.toMutableMap()
             }
@@ -613,20 +613,6 @@ private constructor(
              */
             fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
 
-            /** The current KYC status of a customer */
-            fun kycStatus(kycStatus: Customer.KycStatus) = kycStatus(JsonField.of(kycStatus))
-
-            /**
-             * Sets [Builder.kycStatus] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.kycStatus] with a well-typed [Customer.KycStatus]
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun kycStatus(kycStatus: JsonField<Customer.KycStatus>) = apply {
-                this.kycStatus = kycStatus
-            }
-
             /** Last update timestamp */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -691,6 +677,21 @@ private constructor(
              */
             fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
 
+            /** The current KYC status of a customer */
+            fun kycStatus(kycStatus: IndividualCustomerFields.KycStatus) =
+                kycStatus(JsonField.of(kycStatus))
+
+            /**
+             * Sets [Builder.kycStatus] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.kycStatus] with a well-typed
+             * [IndividualCustomerFields.KycStatus] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun kycStatus(kycStatus: JsonField<IndividualCustomerFields.KycStatus>) = apply {
+                this.kycStatus = kycStatus
+            }
+
             /** Country code (ISO 3166-1 alpha-2) */
             fun nationality(nationality: String) = nationality(JsonField.of(nationality))
 
@@ -745,12 +746,12 @@ private constructor(
                     id,
                     createdAt,
                     isDeleted,
-                    kycStatus,
                     updatedAt,
                     checkRequired("customerType", customerType),
                     address,
                     birthDate,
                     fullName,
+                    kycStatus,
                     nationality,
                     additionalProperties.toMutableMap(),
                 )
@@ -768,12 +769,12 @@ private constructor(
             id()
             createdAt()
             isDeleted()
-            kycStatus()?.validate()
             updatedAt()
             customerType().validate()
             address()?.validate()
             birthDate()
             fullName()
+            kycStatus()?.validate()
             nationality()
             validated = true
         }
@@ -798,12 +799,12 @@ private constructor(
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
-                (kycStatus.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (customerType.asKnown()?.validity() ?: 0) +
                 (address.asKnown()?.validity() ?: 0) +
                 (if (birthDate.asKnown() == null) 0 else 1) +
                 (if (fullName.asKnown() == null) 0 else 1) +
+                (kycStatus.asKnown()?.validity() ?: 0) +
                 (if (nationality.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
@@ -817,12 +818,12 @@ private constructor(
                 id == other.id &&
                 createdAt == other.createdAt &&
                 isDeleted == other.isDeleted &&
-                kycStatus == other.kycStatus &&
                 updatedAt == other.updatedAt &&
                 customerType == other.customerType &&
                 address == other.address &&
                 birthDate == other.birthDate &&
                 fullName == other.fullName &&
+                kycStatus == other.kycStatus &&
                 nationality == other.nationality &&
                 additionalProperties == other.additionalProperties
         }
@@ -834,12 +835,12 @@ private constructor(
                 id,
                 createdAt,
                 isDeleted,
-                kycStatus,
                 updatedAt,
                 customerType,
                 address,
                 birthDate,
                 fullName,
+                kycStatus,
                 nationality,
                 additionalProperties,
             )
@@ -848,7 +849,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, kycStatus=$kycStatus, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, nationality=$nationality, additionalProperties=$additionalProperties}"
+            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
     }
 
     class Business
@@ -859,12 +860,12 @@ private constructor(
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val isDeleted: JsonField<Boolean>,
-        private val kycStatus: JsonField<Customer.KycStatus>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
         private val beneficialOwners: JsonField<List<BusinessCustomerFields.BeneficialOwner>>,
         private val businessInfo: JsonField<BusinessCustomerFields.BusinessInfo>,
+        private val kybStatus: JsonField<BusinessCustomerFields.KybStatus>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -883,9 +884,6 @@ private constructor(
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("kycStatus")
-            @ExcludeMissing
-            kycStatus: JsonField<Customer.KycStatus> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -900,18 +898,21 @@ private constructor(
             @JsonProperty("businessInfo")
             @ExcludeMissing
             businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> = JsonMissing.of(),
+            @JsonProperty("kybStatus")
+            @ExcludeMissing
+            kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
         ) : this(
             platformCustomerId,
             umaAddress,
             id,
             createdAt,
             isDeleted,
-            kycStatus,
             updatedAt,
             customerType,
             address,
             beneficialOwners,
             businessInfo,
+            kybStatus,
             mutableMapOf(),
         )
 
@@ -922,7 +923,6 @@ private constructor(
                 .id(id)
                 .createdAt(createdAt)
                 .isDeleted(isDeleted)
-                .kycStatus(kycStatus)
                 .updatedAt(updatedAt)
                 .build()
 
@@ -932,6 +932,7 @@ private constructor(
                 .address(address)
                 .beneficialOwners(beneficialOwners)
                 .businessInfo(businessInfo)
+                .kybStatus(kybStatus)
                 .build()
 
         /**
@@ -976,14 +977,6 @@ private constructor(
         fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
 
         /**
-         * The current KYC status of a customer
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun kycStatus(): Customer.KycStatus? = kycStatus.getNullable("kycStatus")
-
-        /**
          * Last update timestamp
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -1019,6 +1012,14 @@ private constructor(
          */
         fun businessInfo(): BusinessCustomerFields.BusinessInfo? =
             businessInfo.getNullable("businessInfo")
+
+        /**
+         * The current KYB status of a business customer
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun kybStatus(): BusinessCustomerFields.KybStatus? = kybStatus.getNullable("kybStatus")
 
         /**
          * Returns the raw JSON value of [platformCustomerId].
@@ -1061,15 +1062,6 @@ private constructor(
          * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
-
-        /**
-         * Returns the raw JSON value of [kycStatus].
-         *
-         * Unlike [kycStatus], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("kycStatus")
-        @ExcludeMissing
-        fun _kycStatus(): JsonField<Customer.KycStatus> = kycStatus
 
         /**
          * Returns the raw JSON value of [updatedAt].
@@ -1118,6 +1110,15 @@ private constructor(
         @ExcludeMissing
         fun _businessInfo(): JsonField<BusinessCustomerFields.BusinessInfo> = businessInfo
 
+        /**
+         * Returns the raw JSON value of [kybStatus].
+         *
+         * Unlike [kybStatus], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("kybStatus")
+        @ExcludeMissing
+        fun _kybStatus(): JsonField<BusinessCustomerFields.KybStatus> = kybStatus
+
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -1153,7 +1154,6 @@ private constructor(
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
-            private var kycStatus: JsonField<Customer.KycStatus> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
@@ -1162,6 +1162,7 @@ private constructor(
                 null
             private var businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> =
                 JsonMissing.of()
+            private var kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(business: Business) = apply {
@@ -1170,12 +1171,12 @@ private constructor(
                 id = business.id
                 createdAt = business.createdAt
                 isDeleted = business.isDeleted
-                kycStatus = business.kycStatus
                 updatedAt = business.updatedAt
                 customerType = business.customerType
                 address = business.address
                 beneficialOwners = business.beneficialOwners.map { it.toMutableList() }
                 businessInfo = business.businessInfo
+                kybStatus = business.kybStatus
                 additionalProperties = business.additionalProperties.toMutableMap()
             }
 
@@ -1246,20 +1247,6 @@ private constructor(
              * supported value.
              */
             fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
-
-            /** The current KYC status of a customer */
-            fun kycStatus(kycStatus: Customer.KycStatus) = kycStatus(JsonField.of(kycStatus))
-
-            /**
-             * Sets [Builder.kycStatus] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.kycStatus] with a well-typed [Customer.KycStatus]
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun kycStatus(kycStatus: JsonField<Customer.KycStatus>) = apply {
-                this.kycStatus = kycStatus
-            }
 
             /** Last update timestamp */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1342,6 +1329,21 @@ private constructor(
                 this.businessInfo = businessInfo
             }
 
+            /** The current KYB status of a business customer */
+            fun kybStatus(kybStatus: BusinessCustomerFields.KybStatus) =
+                kybStatus(JsonField.of(kybStatus))
+
+            /**
+             * Sets [Builder.kybStatus] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.kybStatus] with a well-typed
+             * [BusinessCustomerFields.KybStatus] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun kybStatus(kybStatus: JsonField<BusinessCustomerFields.KybStatus>) = apply {
+                this.kybStatus = kybStatus
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1382,12 +1384,12 @@ private constructor(
                     id,
                     createdAt,
                     isDeleted,
-                    kycStatus,
                     updatedAt,
                     checkRequired("customerType", customerType),
                     address,
                     (beneficialOwners ?: JsonMissing.of()).map { it.toImmutable() },
                     businessInfo,
+                    kybStatus,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1404,12 +1406,12 @@ private constructor(
             id()
             createdAt()
             isDeleted()
-            kycStatus()?.validate()
             updatedAt()
             customerType().validate()
             address()?.validate()
             beneficialOwners()?.forEach { it.validate() }
             businessInfo()?.validate()
+            kybStatus()?.validate()
             validated = true
         }
 
@@ -1433,12 +1435,12 @@ private constructor(
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
-                (kycStatus.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (customerType.asKnown()?.validity() ?: 0) +
                 (address.asKnown()?.validity() ?: 0) +
                 (beneficialOwners.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                (businessInfo.asKnown()?.validity() ?: 0)
+                (businessInfo.asKnown()?.validity() ?: 0) +
+                (kybStatus.asKnown()?.validity() ?: 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1451,12 +1453,12 @@ private constructor(
                 id == other.id &&
                 createdAt == other.createdAt &&
                 isDeleted == other.isDeleted &&
-                kycStatus == other.kycStatus &&
                 updatedAt == other.updatedAt &&
                 customerType == other.customerType &&
                 address == other.address &&
                 beneficialOwners == other.beneficialOwners &&
                 businessInfo == other.businessInfo &&
+                kybStatus == other.kybStatus &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -1467,12 +1469,12 @@ private constructor(
                 id,
                 createdAt,
                 isDeleted,
-                kycStatus,
                 updatedAt,
                 customerType,
                 address,
                 beneficialOwners,
                 businessInfo,
+                kybStatus,
                 additionalProperties,
             )
         }
@@ -1480,6 +1482,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, kycStatus=$kycStatus, updatedAt=$updatedAt, customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, additionalProperties=$additionalProperties}"
+            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
     }
 }

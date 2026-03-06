@@ -58,6 +58,7 @@ internal class BusinessCustomerFieldsTest {
                         .taxId("EIN-987654321")
                         .build()
                 )
+                .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .build()
 
         assertThat(businessCustomerFields.customerType())
@@ -105,6 +106,8 @@ internal class BusinessCustomerFieldsTest {
                     .taxId("EIN-987654321")
                     .build()
             )
+        assertThat(businessCustomerFields.kybStatus())
+            .isEqualTo(BusinessCustomerFields.KybStatus.APPROVED)
     }
 
     @Test
@@ -155,6 +158,7 @@ internal class BusinessCustomerFieldsTest {
                         .taxId("EIN-987654321")
                         .build()
                 )
+                .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .build()
 
         val roundtrippedBusinessCustomerFields =

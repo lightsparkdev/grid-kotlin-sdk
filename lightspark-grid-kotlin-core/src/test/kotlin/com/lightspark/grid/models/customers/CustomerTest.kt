@@ -19,7 +19,6 @@ internal class CustomerTest {
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
-                .kycStatus(Customer.KycStatus.APPROVED)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 
@@ -28,7 +27,6 @@ internal class CustomerTest {
         assertThat(customer.id()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(customer.createdAt()).isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
         assertThat(customer.isDeleted()).isEqualTo(false)
-        assertThat(customer.kycStatus()).isEqualTo(Customer.KycStatus.APPROVED)
         assertThat(customer.updatedAt()).isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
     }
 
@@ -42,7 +40,6 @@ internal class CustomerTest {
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
-                .kycStatus(Customer.KycStatus.APPROVED)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 

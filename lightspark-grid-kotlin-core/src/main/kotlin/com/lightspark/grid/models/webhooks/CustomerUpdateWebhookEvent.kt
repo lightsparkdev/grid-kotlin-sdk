@@ -13,16 +13,16 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.models.customers.CustomerOneOf
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class OutgoingPaymentWebhookEvent
+class CustomerUpdateWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val data: JsonField<OutgoingTransaction>,
+    private val data: JsonField<CustomerOneOf>,
     private val timestamp: JsonField<OffsetDateTime>,
     private val type: JsonField<Type>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -31,9 +31,7 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("data")
-        @ExcludeMissing
-        data: JsonField<OutgoingTransaction> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonField<CustomerOneOf> = JsonMissing.of(),
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -52,7 +50,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): OutgoingTransaction = data.getRequired("data")
+    fun data(): CustomerOneOf = data.getRequired("data")
 
     /**
      * ISO 8601 timestamp of when the webhook was sent
@@ -80,7 +78,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<OutgoingTransaction> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<CustomerOneOf> = data
 
     /**
      * Returns the raw JSON value of [timestamp].
@@ -113,7 +111,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [OutgoingPaymentWebhookEvent].
+         * Returns a mutable builder for constructing an instance of [CustomerUpdateWebhookEvent].
          *
          * The following fields are required:
          * ```kotlin
@@ -126,21 +124,21 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [OutgoingPaymentWebhookEvent]. */
+    /** A builder for [CustomerUpdateWebhookEvent]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var data: JsonField<OutgoingTransaction>? = null
+        private var data: JsonField<CustomerOneOf>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var type: JsonField<Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(outgoingPaymentWebhookEvent: OutgoingPaymentWebhookEvent) = apply {
-            id = outgoingPaymentWebhookEvent.id
-            data = outgoingPaymentWebhookEvent.data
-            timestamp = outgoingPaymentWebhookEvent.timestamp
-            type = outgoingPaymentWebhookEvent.type
-            additionalProperties = outgoingPaymentWebhookEvent.additionalProperties.toMutableMap()
+        internal fun from(customerUpdateWebhookEvent: CustomerUpdateWebhookEvent) = apply {
+            id = customerUpdateWebhookEvent.id
+            data = customerUpdateWebhookEvent.data
+            timestamp = customerUpdateWebhookEvent.timestamp
+            type = customerUpdateWebhookEvent.type
+            additionalProperties = customerUpdateWebhookEvent.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for this webhook delivery (can be used for idempotency) */
@@ -154,16 +152,23 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        fun data(data: OutgoingTransaction) = data(JsonField.of(data))
+        fun data(data: CustomerOneOf) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed [OutgoingTransaction] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.data] with a well-typed [CustomerOneOf] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun data(data: JsonField<OutgoingTransaction>) = apply { this.data = data }
+        fun data(data: JsonField<CustomerOneOf>) = apply { this.data = data }
+
+        /** Alias for calling [data] with `CustomerOneOf.ofIndividual(individual)`. */
+        fun data(individual: CustomerOneOf.Individual) =
+            data(CustomerOneOf.ofIndividual(individual))
+
+        /** Alias for calling [data] with `CustomerOneOf.ofBusiness(business)`. */
+        fun data(business: CustomerOneOf.Business) = data(CustomerOneOf.ofBusiness(business))
 
         /** ISO 8601 timestamp of when the webhook was sent */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
@@ -207,7 +212,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [OutgoingPaymentWebhookEvent].
+         * Returns an immutable instance of [CustomerUpdateWebhookEvent].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -221,8 +226,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): OutgoingPaymentWebhookEvent =
-            OutgoingPaymentWebhookEvent(
+        fun build(): CustomerUpdateWebhookEvent =
+            CustomerUpdateWebhookEvent(
                 checkRequired("id", id),
                 checkRequired("data", data),
                 checkRequired("timestamp", timestamp),
@@ -233,7 +238,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): OutgoingPaymentWebhookEvent = apply {
+    fun validate(): CustomerUpdateWebhookEvent = apply {
         if (validated) {
             return@apply
         }
@@ -278,6 +283,26 @@ private constructor(
 
         companion object {
 
+            val CUSTOMER_KYC_APPROVED = of("CUSTOMER.KYC_APPROVED")
+
+            val CUSTOMER_KYC_REJECTED = of("CUSTOMER.KYC_REJECTED")
+
+            val CUSTOMER_KYC_SUBMITTED = of("CUSTOMER.KYC_SUBMITTED")
+
+            val CUSTOMER_KYC_MANUALLY_APPROVED = of("CUSTOMER.KYC_MANUALLY_APPROVED")
+
+            val CUSTOMER_KYC_MANUALLY_REJECTED = of("CUSTOMER.KYC_MANUALLY_REJECTED")
+
+            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
+
+            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
+
+            val CUSTOMER_KYB_SUBMITTED = of("CUSTOMER.KYB_SUBMITTED")
+
+            val CUSTOMER_KYB_MANUALLY_APPROVED = of("CUSTOMER.KYB_MANUALLY_APPROVED")
+
+            val CUSTOMER_KYB_MANUALLY_REJECTED = of("CUSTOMER.KYB_MANUALLY_REJECTED")
+
             val OUTGOING_PAYMENT_PENDING = of("OUTGOING_PAYMENT.PENDING")
 
             val OUTGOING_PAYMENT_PROCESSING = of("OUTGOING_PAYMENT.PROCESSING")
@@ -300,26 +325,6 @@ private constructor(
 
             val INCOMING_PAYMENT_FAILED = of("INCOMING_PAYMENT.FAILED")
 
-            val CUSTOMER_KYC_APPROVED = of("CUSTOMER.KYC_APPROVED")
-
-            val CUSTOMER_KYC_REJECTED = of("CUSTOMER.KYC_REJECTED")
-
-            val CUSTOMER_KYC_SUBMITTED = of("CUSTOMER.KYC_SUBMITTED")
-
-            val CUSTOMER_KYC_MANUALLY_APPROVED = of("CUSTOMER.KYC_MANUALLY_APPROVED")
-
-            val CUSTOMER_KYC_MANUALLY_REJECTED = of("CUSTOMER.KYC_MANUALLY_REJECTED")
-
-            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
-
-            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
-
-            val CUSTOMER_KYB_SUBMITTED = of("CUSTOMER.KYB_SUBMITTED")
-
-            val CUSTOMER_KYB_MANUALLY_APPROVED = of("CUSTOMER.KYB_MANUALLY_APPROVED")
-
-            val CUSTOMER_KYB_MANUALLY_REJECTED = of("CUSTOMER.KYB_MANUALLY_REJECTED")
-
             val INTERNAL_ACCOUNT_BALANCE_UPDATED = of("INTERNAL_ACCOUNT.BALANCE_UPDATED")
 
             val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
@@ -335,6 +340,16 @@ private constructor(
 
         /** An enum containing [Type]'s known values. */
         enum class Known {
+            CUSTOMER_KYC_APPROVED,
+            CUSTOMER_KYC_REJECTED,
+            CUSTOMER_KYC_SUBMITTED,
+            CUSTOMER_KYC_MANUALLY_APPROVED,
+            CUSTOMER_KYC_MANUALLY_REJECTED,
+            CUSTOMER_KYB_APPROVED,
+            CUSTOMER_KYB_REJECTED,
+            CUSTOMER_KYB_SUBMITTED,
+            CUSTOMER_KYB_MANUALLY_APPROVED,
+            CUSTOMER_KYB_MANUALLY_REJECTED,
             OUTGOING_PAYMENT_PENDING,
             OUTGOING_PAYMENT_PROCESSING,
             OUTGOING_PAYMENT_COMPLETED,
@@ -346,16 +361,6 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
-            CUSTOMER_KYC_APPROVED,
-            CUSTOMER_KYC_REJECTED,
-            CUSTOMER_KYC_SUBMITTED,
-            CUSTOMER_KYC_MANUALLY_APPROVED,
-            CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -373,6 +378,16 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
+            CUSTOMER_KYC_APPROVED,
+            CUSTOMER_KYC_REJECTED,
+            CUSTOMER_KYC_SUBMITTED,
+            CUSTOMER_KYC_MANUALLY_APPROVED,
+            CUSTOMER_KYC_MANUALLY_REJECTED,
+            CUSTOMER_KYB_APPROVED,
+            CUSTOMER_KYB_REJECTED,
+            CUSTOMER_KYB_SUBMITTED,
+            CUSTOMER_KYB_MANUALLY_APPROVED,
+            CUSTOMER_KYB_MANUALLY_REJECTED,
             OUTGOING_PAYMENT_PENDING,
             OUTGOING_PAYMENT_PROCESSING,
             OUTGOING_PAYMENT_COMPLETED,
@@ -384,16 +399,6 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
-            CUSTOMER_KYC_APPROVED,
-            CUSTOMER_KYC_REJECTED,
-            CUSTOMER_KYC_SUBMITTED,
-            CUSTOMER_KYC_MANUALLY_APPROVED,
-            CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -412,6 +417,16 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
+                CUSTOMER_KYC_APPROVED -> Value.CUSTOMER_KYC_APPROVED
+                CUSTOMER_KYC_REJECTED -> Value.CUSTOMER_KYC_REJECTED
+                CUSTOMER_KYC_SUBMITTED -> Value.CUSTOMER_KYC_SUBMITTED
+                CUSTOMER_KYC_MANUALLY_APPROVED -> Value.CUSTOMER_KYC_MANUALLY_APPROVED
+                CUSTOMER_KYC_MANUALLY_REJECTED -> Value.CUSTOMER_KYC_MANUALLY_REJECTED
+                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
+                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
+                CUSTOMER_KYB_SUBMITTED -> Value.CUSTOMER_KYB_SUBMITTED
+                CUSTOMER_KYB_MANUALLY_APPROVED -> Value.CUSTOMER_KYB_MANUALLY_APPROVED
+                CUSTOMER_KYB_MANUALLY_REJECTED -> Value.CUSTOMER_KYB_MANUALLY_REJECTED
                 OUTGOING_PAYMENT_PENDING -> Value.OUTGOING_PAYMENT_PENDING
                 OUTGOING_PAYMENT_PROCESSING -> Value.OUTGOING_PAYMENT_PROCESSING
                 OUTGOING_PAYMENT_COMPLETED -> Value.OUTGOING_PAYMENT_COMPLETED
@@ -423,16 +438,6 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Value.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Value.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Value.INCOMING_PAYMENT_FAILED
-                CUSTOMER_KYC_APPROVED -> Value.CUSTOMER_KYC_APPROVED
-                CUSTOMER_KYC_REJECTED -> Value.CUSTOMER_KYC_REJECTED
-                CUSTOMER_KYC_SUBMITTED -> Value.CUSTOMER_KYC_SUBMITTED
-                CUSTOMER_KYC_MANUALLY_APPROVED -> Value.CUSTOMER_KYC_MANUALLY_APPROVED
-                CUSTOMER_KYC_MANUALLY_REJECTED -> Value.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Value.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Value.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Value.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
@@ -452,6 +457,16 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
+                CUSTOMER_KYC_APPROVED -> Known.CUSTOMER_KYC_APPROVED
+                CUSTOMER_KYC_REJECTED -> Known.CUSTOMER_KYC_REJECTED
+                CUSTOMER_KYC_SUBMITTED -> Known.CUSTOMER_KYC_SUBMITTED
+                CUSTOMER_KYC_MANUALLY_APPROVED -> Known.CUSTOMER_KYC_MANUALLY_APPROVED
+                CUSTOMER_KYC_MANUALLY_REJECTED -> Known.CUSTOMER_KYC_MANUALLY_REJECTED
+                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
+                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
+                CUSTOMER_KYB_SUBMITTED -> Known.CUSTOMER_KYB_SUBMITTED
+                CUSTOMER_KYB_MANUALLY_APPROVED -> Known.CUSTOMER_KYB_MANUALLY_APPROVED
+                CUSTOMER_KYB_MANUALLY_REJECTED -> Known.CUSTOMER_KYB_MANUALLY_REJECTED
                 OUTGOING_PAYMENT_PENDING -> Known.OUTGOING_PAYMENT_PENDING
                 OUTGOING_PAYMENT_PROCESSING -> Known.OUTGOING_PAYMENT_PROCESSING
                 OUTGOING_PAYMENT_COMPLETED -> Known.OUTGOING_PAYMENT_COMPLETED
@@ -463,16 +478,6 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Known.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Known.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Known.INCOMING_PAYMENT_FAILED
-                CUSTOMER_KYC_APPROVED -> Known.CUSTOMER_KYC_APPROVED
-                CUSTOMER_KYC_REJECTED -> Known.CUSTOMER_KYC_REJECTED
-                CUSTOMER_KYC_SUBMITTED -> Known.CUSTOMER_KYC_SUBMITTED
-                CUSTOMER_KYC_MANUALLY_APPROVED -> Known.CUSTOMER_KYC_MANUALLY_APPROVED
-                CUSTOMER_KYC_MANUALLY_REJECTED -> Known.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Known.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Known.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Known.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
@@ -538,7 +543,7 @@ private constructor(
             return true
         }
 
-        return other is OutgoingPaymentWebhookEvent &&
+        return other is CustomerUpdateWebhookEvent &&
             id == other.id &&
             data == other.data &&
             timestamp == other.timestamp &&
@@ -553,5 +558,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingPaymentWebhookEvent{id=$id, data=$data, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
+        "CustomerUpdateWebhookEvent{id=$id, data=$data, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
 }

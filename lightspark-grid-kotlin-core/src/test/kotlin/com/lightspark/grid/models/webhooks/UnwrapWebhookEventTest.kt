@@ -8,17 +8,20 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.config.CustomerInfoFieldName
-import com.lightspark.grid.models.customers.Customer
+import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -110,7 +113,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -209,13 +212,11 @@ internal class UnwrapWebhookEventTest {
             OutgoingPaymentWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    OutgoingPaymentWebhookEvent.Data.builder()
+                    OutgoingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            OutgoingPaymentWebhookEvent.Data.Destination
-                                .AccountTransactionDestination
-                                .builder()
+                            OutgoingTransaction.Destination.AccountTransactionDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -239,9 +240,9 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .status(OutgoingTransactionStatus.PENDING)
-                        .type(OutgoingPaymentWebhookEvent.Data.Type.OUTGOING)
+                        .type(OutgoingTransaction.Type.OUTGOING)
                         .counterpartyInformation(
-                            OutgoingPaymentWebhookEvent.Data.CounterpartyInformation.builder()
+                            OutgoingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -250,7 +251,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
-                        .failureReason(OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED)
+                        .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
@@ -318,14 +319,11 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                            OutgoingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED)
-                                .reason(
-                                    OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                        .TRANSACTION_FAILED
-                                )
+                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -344,7 +342,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -356,12 +354,11 @@ internal class UnwrapWebhookEventTest {
                 OutgoingPaymentWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        OutgoingPaymentWebhookEvent.Data.builder()
+                        OutgoingTransaction.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(
-                                OutgoingPaymentWebhookEvent.Data.Destination
-                                    .AccountTransactionDestination
+                                OutgoingTransaction.Destination.AccountTransactionDestination
                                     .builder()
                                     .accountId(
                                         "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
@@ -390,9 +387,9 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .status(OutgoingTransactionStatus.PENDING)
-                            .type(OutgoingPaymentWebhookEvent.Data.Type.OUTGOING)
+                            .type(OutgoingTransaction.Type.OUTGOING)
                             .counterpartyInformation(
-                                OutgoingPaymentWebhookEvent.Data.CounterpartyInformation.builder()
+                                OutgoingTransaction.CounterpartyInformation.builder()
                                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -401,9 +398,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                             .description("Payment for invoice #1234")
                             .exchangeRate(1.08)
-                            .failureReason(
-                                OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED
-                            )
+                            .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                             .fees(10L)
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
@@ -472,16 +467,11 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .refund(
-                                OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                                OutgoingTransaction.Refund.builder()
                                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                     .reference("UMA-Q12345-REFUND")
-                                    .status(
-                                        OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED
-                                    )
-                                    .reason(
-                                        OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                            .TRANSACTION_FAILED
-                                    )
+                                    .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                    .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                     .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                     .build()
                             )
@@ -508,7 +498,6 @@ internal class UnwrapWebhookEventTest {
         val testWebhook =
             TestWebhookWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
-                .data(JsonValue.from(mapOf<String, Any>()))
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
                 .build()
@@ -520,7 +509,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isEqualTo(testWebhook)
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -531,7 +520,6 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofTestWebhook(
                 TestWebhookWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
-                    .data(JsonValue.from(mapOf<String, Any>()))
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(TestWebhookWebhookEvent.Type.TEST)
                     .build()
@@ -589,7 +577,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isEqualTo(bulkUpload)
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -647,11 +635,11 @@ internal class UnwrapWebhookEventTest {
             InvitationClaimedWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InvitationClaimedWebhookEvent.Data.builder()
+                    UmaInvitation.builder()
                         .code("019542f5")
                         .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                         .inviterUma("\$inviter@uma.domain")
-                        .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
+                        .status(UmaInvitation.Status.PENDING)
                         .url("https://uma.me/i/019542f5")
                         .amountToSend(
                             CurrencyAmount.builder()
@@ -683,7 +671,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -695,11 +683,11 @@ internal class UnwrapWebhookEventTest {
                 InvitationClaimedWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        InvitationClaimedWebhookEvent.Data.builder()
+                        UmaInvitation.builder()
                             .code("019542f5")
                             .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                             .inviterUma("\$inviter@uma.domain")
-                            .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
+                            .status(UmaInvitation.Status.PENDING)
                             .url("https://uma.me/i/019542f5")
                             .amountToSend(
                                 CurrencyAmount.builder()
@@ -735,18 +723,17 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofKycStatus() {
-        val kycStatus =
-            KycStatusWebhookEvent.builder()
+    fun ofCustomerUpdate() {
+        val customerUpdate =
+            CustomerUpdateWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    KycStatusWebhookEvent.Data.builder()
+                    CustomerOneOf.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
-                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -761,39 +748,39 @@ internal class UnwrapWebhookEventTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(KycStatusWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
+                .type(CustomerUpdateWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofKycStatus(kycStatus)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCustomerUpdate(customerUpdate)
 
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isEqualTo(kycStatus)
+        assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
     @Test
-    fun ofKycStatusRoundtrip() {
+    fun ofCustomerUpdateRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofKycStatus(
-                KycStatusWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCustomerUpdate(
+                CustomerUpdateWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        KycStatusWebhookEvent.Data.builder()
+                        CustomerOneOf.Individual.builder()
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
-                            .kycStatus(Customer.KycStatus.APPROVED)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
@@ -808,11 +795,12 @@ internal class UnwrapWebhookEventTest {
                             )
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
+                            .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                             .nationality("US")
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(KycStatusWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
+                    .type(CustomerUpdateWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
                     .build()
             )
 
@@ -831,7 +819,7 @@ internal class UnwrapWebhookEventTest {
             InternalAccountStatusWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InternalAccountStatusWebhookEvent.Data.builder()
+                    InternalAccount.builder()
                         .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .balance(
                             CurrencyAmount.builder()
@@ -879,7 +867,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
     }
 
@@ -891,7 +879,7 @@ internal class UnwrapWebhookEventTest {
                 InternalAccountStatusWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        InternalAccountStatusWebhookEvent.Data.builder()
+                        InternalAccount.builder()
                             .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .balance(
                                 CurrencyAmount.builder()
