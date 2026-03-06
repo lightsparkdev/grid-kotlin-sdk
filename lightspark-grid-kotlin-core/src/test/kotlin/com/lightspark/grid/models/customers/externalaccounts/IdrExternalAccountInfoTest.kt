@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.IdrAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,11 @@ internal class IdrExternalAccountInfoTest {
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .accountType(IdrAccountInfo.AccountType.IDR_ACCOUNT)
                 .bankName("Bank Central Asia")
+                .addPaymentRail(IdrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+6281234567890")
+                .swiftCode("CENAIDJA")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,15 +42,16 @@ internal class IdrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+6281234567890")
-                .swiftCode("CENAIDJA")
                 .build()
 
         assertThat(idrExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(idrExternalAccountInfo.accountType())
-            .isEqualTo(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+            .isEqualTo(IdrAccountInfo.AccountType.IDR_ACCOUNT)
         assertThat(idrExternalAccountInfo.bankName()).isEqualTo("Bank Central Asia")
+        assertThat(idrExternalAccountInfo.paymentRails())
+            .containsExactly(IdrAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(idrExternalAccountInfo.phoneNumber()).isEqualTo("+6281234567890")
+        assertThat(idrExternalAccountInfo.swiftCode()).isEqualTo("CENAIDJA")
         assertThat(idrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 IdrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -72,10 +77,6 @@ internal class IdrExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(idrExternalAccountInfo.paymentRails())
-            .containsExactly(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(idrExternalAccountInfo.phoneNumber()).isEqualTo("+6281234567890")
-        assertThat(idrExternalAccountInfo.swiftCode()).isEqualTo("CENAIDJA")
     }
 
     @Test
@@ -84,8 +85,11 @@ internal class IdrExternalAccountInfoTest {
         val idrExternalAccountInfo =
             IdrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .accountType(IdrAccountInfo.AccountType.IDR_ACCOUNT)
                 .bankName("Bank Central Asia")
+                .addPaymentRail(IdrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+6281234567890")
+                .swiftCode("CENAIDJA")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -108,9 +112,6 @@ internal class IdrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+6281234567890")
-                .swiftCode("CENAIDJA")
                 .build()
 
         val roundtrippedIdrExternalAccountInfo =

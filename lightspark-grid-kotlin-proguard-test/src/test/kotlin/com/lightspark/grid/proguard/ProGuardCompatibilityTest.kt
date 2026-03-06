@@ -5,7 +5,7 @@ package com.lightspark.grid.proguard
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.CustomerType
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import kotlin.reflect.full.memberFunctions
@@ -112,16 +112,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun customerInfoFieldNameRoundtrip() {
+    fun customerTypeRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
+        val customerType = CustomerType.INDIVIDUAL
 
-        val roundtrippedCustomerInfoFieldName =
+        val roundtrippedCustomerType =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerInfoFieldName),
-                jacksonTypeRef<CustomerInfoFieldName>(),
+                jsonMapper.writeValueAsString(customerType),
+                jacksonTypeRef<CustomerType>(),
             )
 
-        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
+        assertThat(roundtrippedCustomerType).isEqualTo(customerType)
     }
 }

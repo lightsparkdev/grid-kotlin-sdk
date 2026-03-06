@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.GbpAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,7 +15,9 @@ internal class GbpExternalAccountInfoTest {
         val gbpExternalAccountInfo =
             GbpExternalAccountInfo.builder()
                 .accountNumber("12345678")
-                .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
+                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
+                .sortCode("20-00-00")
                 .beneficiary(
                     GbpBeneficiary.builder()
                         .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -37,13 +40,14 @@ internal class GbpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("20-00-00")
                 .build()
 
         assertThat(gbpExternalAccountInfo.accountNumber()).isEqualTo("12345678")
         assertThat(gbpExternalAccountInfo.accountType())
-            .isEqualTo(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
+            .isEqualTo(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+        assertThat(gbpExternalAccountInfo.paymentRails())
+            .containsExactly(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
+        assertThat(gbpExternalAccountInfo.sortCode()).isEqualTo("20-00-00")
         assertThat(gbpExternalAccountInfo.beneficiary())
             .isEqualTo(
                 GbpExternalAccountInfo.Beneficiary.ofIndividual(
@@ -69,9 +73,6 @@ internal class GbpExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(gbpExternalAccountInfo.paymentRails())
-            .containsExactly(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
-        assertThat(gbpExternalAccountInfo.sortCode()).isEqualTo("20-00-00")
     }
 
     @Test
@@ -80,7 +81,9 @@ internal class GbpExternalAccountInfoTest {
         val gbpExternalAccountInfo =
             GbpExternalAccountInfo.builder()
                 .accountNumber("12345678")
-                .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
+                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
+                .sortCode("20-00-00")
                 .beneficiary(
                     GbpBeneficiary.builder()
                         .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -103,8 +106,6 @@ internal class GbpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("20-00-00")
                 .build()
 
         val roundtrippedGbpExternalAccountInfo =

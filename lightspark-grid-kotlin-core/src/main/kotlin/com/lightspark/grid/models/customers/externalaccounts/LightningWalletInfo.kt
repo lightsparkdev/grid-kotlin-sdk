@@ -13,9 +13,14 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.platform.externalaccounts.BaseExternalAccountInfo
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must be
+ * provided.
+ */
 class LightningWalletInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -37,6 +42,9 @@ private constructor(
         @ExcludeMissing
         lightningAddress: JsonField<String> = JsonMissing.of(),
     ) : this(accountType, bolt12, invoice, lightningAddress, mutableMapOf())
+
+    fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+        BaseExternalAccountInfo.builder().build()
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is

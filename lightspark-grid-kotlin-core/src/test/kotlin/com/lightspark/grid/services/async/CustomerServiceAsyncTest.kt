@@ -6,6 +6,7 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -28,10 +29,7 @@ internal class CustomerServiceAsyncTest {
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                            .INDIVIDUAL
-                    )
+                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -44,9 +42,7 @@ internal class CustomerServiceAsyncTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
-                    .kycStatus(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
             )
@@ -86,10 +82,7 @@ internal class CustomerServiceAsyncTest {
                     .updateCustomerRequest(
                         CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                             .umaAddress("\$john.doe@uma.domain.com")
-                            .customerType(
-                                CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                    .INDIVIDUAL
-                            )
+                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -102,10 +95,7 @@ internal class CustomerServiceAsyncTest {
                             )
                             .birthDate(LocalDate.parse("1985-06-15"))
                             .fullName("John Smith")
-                            .kycStatus(
-                                CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus
-                                    .APPROVED
-                            )
+                            .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                             .nationality("US")
                             .build()
                     )

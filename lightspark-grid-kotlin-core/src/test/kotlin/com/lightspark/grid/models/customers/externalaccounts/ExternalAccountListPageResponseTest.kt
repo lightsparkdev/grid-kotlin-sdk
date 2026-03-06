@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,7 +19,11 @@ internal class ExternalAccountListPageResponseTest {
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
                             BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                                .pixKey("pixKey")
+                                .pixKeyType("pixKeyType")
+                                .taxId("taxId")
                                 .beneficiary(
                                     BrlBeneficiary.builder()
                                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -41,10 +46,6 @@ internal class ExternalAccountListPageResponseTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
                                 .build()
                         )
                         .currency("USD")
@@ -73,7 +74,11 @@ internal class ExternalAccountListPageResponseTest {
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
                         BrlExternalAccountInfo.builder()
-                            .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                            .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                            .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                            .pixKey("pixKey")
+                            .pixKeyType("pixKeyType")
+                            .taxId("taxId")
                             .beneficiary(
                                 BrlBeneficiary.builder()
                                     .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -96,10 +101,6 @@ internal class ExternalAccountListPageResponseTest {
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                            .pixKey("pixKey")
-                            .pixKeyType("pixKeyType")
-                            .taxId("taxId")
                             .build()
                     )
                     .currency("USD")
@@ -132,7 +133,11 @@ internal class ExternalAccountListPageResponseTest {
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
                             BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                                .pixKey("pixKey")
+                                .pixKeyType("pixKeyType")
+                                .taxId("taxId")
                                 .beneficiary(
                                     BrlBeneficiary.builder()
                                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -155,10 +160,6 @@ internal class ExternalAccountListPageResponseTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
                                 .build()
                         )
                         .currency("USD")

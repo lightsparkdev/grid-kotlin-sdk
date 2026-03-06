@@ -16,10 +16,7 @@ internal class CustomerUpdateParamsTest {
             .updateCustomerRequest(
                 CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(
-                        CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                            .INDIVIDUAL
-                    )
+                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -32,9 +29,7 @@ internal class CustomerUpdateParamsTest {
                     )
                     .birthDate(LocalDate.parse("1985-06-15"))
                     .fullName("John Smith")
-                    .kycStatus(
-                        CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
             )
@@ -48,10 +43,7 @@ internal class CustomerUpdateParamsTest {
                 .customerId("customerId")
                 .updateCustomerRequest(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
                 .build()
@@ -69,10 +61,7 @@ internal class CustomerUpdateParamsTest {
                 .updateCustomerRequest(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -85,9 +74,7 @@ internal class CustomerUpdateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1985-06-15"))
                         .fullName("John Smith")
-                        .kycStatus(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -100,10 +87,7 @@ internal class CustomerUpdateParamsTest {
                 CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -116,9 +100,7 @@ internal class CustomerUpdateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1985-06-15"))
                         .fullName("John Smith")
-                        .kycStatus(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -132,10 +114,7 @@ internal class CustomerUpdateParamsTest {
                 .customerId("customerId")
                 .updateCustomerRequest(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
                 .build()
@@ -146,10 +125,7 @@ internal class CustomerUpdateParamsTest {
             .isEqualTo(
                 CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
             )

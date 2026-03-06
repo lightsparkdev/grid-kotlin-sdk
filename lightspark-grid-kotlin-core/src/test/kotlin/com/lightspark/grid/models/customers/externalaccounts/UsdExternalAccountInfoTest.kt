@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,7 +15,9 @@ internal class UsdExternalAccountInfoTest {
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
-                .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                .routingNumber("routingNumber")
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -37,13 +40,14 @@ internal class UsdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
                 .build()
 
         assertThat(usdExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
         assertThat(usdExternalAccountInfo.accountType())
-            .isEqualTo(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+            .isEqualTo(UsdAccountInfo.AccountType.USD_ACCOUNT)
+        assertThat(usdExternalAccountInfo.paymentRails())
+            .containsExactly(UsdAccountInfo.PaymentRail.ACH)
+        assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("routingNumber")
         assertThat(usdExternalAccountInfo.beneficiary())
             .isEqualTo(
                 UsdExternalAccountInfo.Beneficiary.ofIndividual(
@@ -69,9 +73,6 @@ internal class UsdExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(usdExternalAccountInfo.paymentRails())
-            .containsExactly(UsdExternalAccountInfo.PaymentRail.ACH)
-        assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("routingNumber")
     }
 
     @Test
@@ -80,7 +81,9 @@ internal class UsdExternalAccountInfoTest {
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
-                .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                .routingNumber("routingNumber")
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -103,8 +106,6 @@ internal class UsdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
                 .build()
 
         val roundtrippedUsdExternalAccountInfo =

@@ -5,6 +5,7 @@ package com.lightspark.grid.models.transactions
 import com.lightspark.grid.core.AutoPagerAsync
 import com.lightspark.grid.core.PageAsync
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.services.async.TransactionServiceAsync
 import java.util.Objects
 
@@ -14,14 +15,14 @@ private constructor(
     private val service: TransactionServiceAsync,
     private val params: TransactionListParams,
     private val response: TransactionListPageResponse,
-) : PageAsync<TransactionListResponse> {
+) : PageAsync<Transaction> {
 
     /**
      * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
      *
      * @see TransactionListPageResponse.data
      */
-    fun data(): List<TransactionListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<Transaction> = response._data().getNullable("data") ?: emptyList()
 
     /**
      * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
@@ -44,7 +45,7 @@ private constructor(
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<TransactionListResponse> = data()
+    override fun items(): List<Transaction> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,7 +57,7 @@ private constructor(
 
     override suspend fun nextPage(): TransactionListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<TransactionListResponse> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<Transaction> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): TransactionListParams = params

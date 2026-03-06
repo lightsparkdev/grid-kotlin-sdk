@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,10 @@ internal class DkkExternalAccountInfoTest {
     fun create() {
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
-                .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+                .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                .iban("iban")
+                .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -36,13 +40,14 @@ internal class DkkExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .iban("iban")
-                .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
                 .build()
 
         assertThat(dkkExternalAccountInfo.accountType())
-            .isEqualTo(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+            .isEqualTo(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+        assertThat(dkkExternalAccountInfo.iban()).isEqualTo("iban")
+        assertThat(dkkExternalAccountInfo.paymentRails())
+            .containsExactly(DkkAccountInfo.PaymentRail.SEPA)
+        assertThat(dkkExternalAccountInfo.swiftBic()).isEqualTo("swiftBic")
         assertThat(dkkExternalAccountInfo.beneficiary())
             .isEqualTo(
                 DkkExternalAccountInfo.Beneficiary.ofIndividual(
@@ -68,10 +73,6 @@ internal class DkkExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(dkkExternalAccountInfo.iban()).isEqualTo("iban")
-        assertThat(dkkExternalAccountInfo.paymentRails())
-            .containsExactly(DkkExternalAccountInfo.PaymentRail.SEPA)
-        assertThat(dkkExternalAccountInfo.swiftBic()).isEqualTo("swiftBic")
     }
 
     @Test
@@ -79,7 +80,10 @@ internal class DkkExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
-                .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+                .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                .iban("iban")
+                .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -102,9 +106,6 @@ internal class DkkExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .iban("iban")
-                .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
                 .build()
 
         val roundtrippedDkkExternalAccountInfo =

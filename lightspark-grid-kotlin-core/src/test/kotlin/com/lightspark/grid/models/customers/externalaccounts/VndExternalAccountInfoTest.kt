@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.VndAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,10 @@ internal class VndExternalAccountInfoTest {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
                 .bankName("Vietcombank")
+                .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +41,15 @@ internal class VndExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BFTVVNVX")
                 .build()
 
         assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(vndExternalAccountInfo.accountType())
-            .isEqualTo(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+            .isEqualTo(VndAccountInfo.AccountType.VND_ACCOUNT)
         assertThat(vndExternalAccountInfo.bankName()).isEqualTo("Vietcombank")
+        assertThat(vndExternalAccountInfo.paymentRails())
+            .containsExactly(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(vndExternalAccountInfo.swiftCode()).isEqualTo("BFTVVNVX")
         assertThat(vndExternalAccountInfo.beneficiary())
             .isEqualTo(
                 VndExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,9 +75,6 @@ internal class VndExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(vndExternalAccountInfo.paymentRails())
-            .containsExactly(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(vndExternalAccountInfo.swiftCode()).isEqualTo("BFTVVNVX")
     }
 
     @Test
@@ -82,8 +83,10 @@ internal class VndExternalAccountInfoTest {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
                 .bankName("Vietcombank")
+                .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -106,8 +109,6 @@ internal class VndExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BFTVVNVX")
                 .build()
 
         val roundtrippedVndExternalAccountInfo =

@@ -3,6 +3,8 @@
 package com.lightspark.grid.models.transferout
 
 import com.lightspark.grid.core.http.Headers
+import com.lightspark.grid.models.transferin.ExternalAccountReference
+import com.lightspark.grid.models.transferin.InternalAccountReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,12 +15,12 @@ internal class TransferOutCreateParamsTest {
         TransferOutCreateParams.builder()
             .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
             .destination(
-                TransferOutCreateParams.Destination.builder()
+                ExternalAccountReference.builder()
                     .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .build()
             )
             .source(
-                TransferOutCreateParams.Source.builder()
+                InternalAccountReference.builder()
                     .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .build()
             )
@@ -32,12 +34,12 @@ internal class TransferOutCreateParamsTest {
             TransferOutCreateParams.builder()
                 .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                 .destination(
-                    TransferOutCreateParams.Destination.builder()
+                    ExternalAccountReference.builder()
                         .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .source(
-                    TransferOutCreateParams.Source.builder()
+                    InternalAccountReference.builder()
                         .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -59,12 +61,12 @@ internal class TransferOutCreateParamsTest {
         val params =
             TransferOutCreateParams.builder()
                 .destination(
-                    TransferOutCreateParams.Destination.builder()
+                    ExternalAccountReference.builder()
                         .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .source(
-                    TransferOutCreateParams.Source.builder()
+                    InternalAccountReference.builder()
                         .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -81,12 +83,12 @@ internal class TransferOutCreateParamsTest {
             TransferOutCreateParams.builder()
                 .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                 .destination(
-                    TransferOutCreateParams.Destination.builder()
+                    ExternalAccountReference.builder()
                         .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .source(
-                    TransferOutCreateParams.Source.builder()
+                    InternalAccountReference.builder()
                         .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -97,13 +99,13 @@ internal class TransferOutCreateParamsTest {
 
         assertThat(body.destination())
             .isEqualTo(
-                TransferOutCreateParams.Destination.builder()
+                ExternalAccountReference.builder()
                     .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .build()
             )
         assertThat(body.source())
             .isEqualTo(
-                TransferOutCreateParams.Source.builder()
+                InternalAccountReference.builder()
                     .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .build()
             )
@@ -115,12 +117,12 @@ internal class TransferOutCreateParamsTest {
         val params =
             TransferOutCreateParams.builder()
                 .destination(
-                    TransferOutCreateParams.Destination.builder()
+                    ExternalAccountReference.builder()
                         .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
                 .source(
-                    TransferOutCreateParams.Source.builder()
+                    InternalAccountReference.builder()
                         .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -130,13 +132,13 @@ internal class TransferOutCreateParamsTest {
 
         assertThat(body.destination())
             .isEqualTo(
-                TransferOutCreateParams.Destination.builder()
+                ExternalAccountReference.builder()
                     .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .build()
             )
         assertThat(body.source())
             .isEqualTo(
-                TransferOutCreateParams.Source.builder()
+                InternalAccountReference.builder()
                     .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .build()
             )

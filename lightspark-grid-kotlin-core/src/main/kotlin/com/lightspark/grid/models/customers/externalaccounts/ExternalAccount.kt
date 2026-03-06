@@ -76,6 +76,9 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
+     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
+     * be provided.
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -290,6 +293,10 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
         fun accountInfo(accountInfo: ExternalAccountInfoOneOf) =
             accountInfo(JsonField.of(accountInfo))
 

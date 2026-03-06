@@ -15,8 +15,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
-import com.lightspark.grid.models.transferout.TransferOutCreateResponse
 
 /**
  * Endpoints for transferring funds between internal and external accounts with the same currency
@@ -36,7 +36,7 @@ class TransferOutServiceImpl internal constructor(private val clientOptions: Cli
     override fun create(
         params: TransferOutCreateParams,
         requestOptions: RequestOptions,
-    ): TransferOutCreateResponse =
+    ): Transaction =
         // post /transfer-out
         withRawResponse().create(params, requestOptions).parse()
 
@@ -53,13 +53,13 @@ class TransferOutServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createHandler: Handler<TransferOutCreateResponse> =
-            jsonHandler<TransferOutCreateResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<Transaction> =
+            jsonHandler<Transaction>(clientOptions.jsonMapper)
 
         override fun create(
             params: TransferOutCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<TransferOutCreateResponse> {
+        ): HttpResponseFor<Transaction> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

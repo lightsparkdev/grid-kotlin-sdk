@@ -20,14 +20,23 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.platform.externalaccounts.BaseExternalAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.CadAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.EurAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.NgnAccountInfo
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must be
+ * provided.
+ */
 @JsonDeserialize(using = ExternalAccountInfoOneOf.Deserializer::class)
 @JsonSerialize(using = ExternalAccountInfoOneOf.Serializer::class)
 class ExternalAccountInfoOneOf
@@ -115,6 +124,10 @@ private constructor(
 
     fun sparkWallet(): SparkWalletInfo? = sparkWallet
 
+    /**
+     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
+     * be provided.
+     */
     fun lightning(): LightningWalletInfo? = lightning
 
     fun solanaWallet(): SolanaWalletInfo? = solanaWallet
@@ -235,6 +248,10 @@ private constructor(
 
     fun asSparkWallet(): SparkWalletInfo = sparkWallet.getOrThrow("sparkWallet")
 
+    /**
+     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
+     * be provided.
+     */
     fun asLightning(): LightningWalletInfo = lightning.getOrThrow("lightning")
 
     fun asSolanaWallet(): SolanaWalletInfo = solanaWallet.getOrThrow("solanaWallet")
@@ -684,6 +701,10 @@ private constructor(
         fun ofSparkWallet(sparkWallet: SparkWalletInfo) =
             ExternalAccountInfoOneOf(sparkWallet = sparkWallet)
 
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
         fun ofLightning(lightning: LightningWalletInfo) =
             ExternalAccountInfoOneOf(lightning = lightning)
 
@@ -756,6 +777,10 @@ private constructor(
 
         fun visitSparkWallet(sparkWallet: SparkWalletInfo): T
 
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
         fun visitLightning(lightning: LightningWalletInfo): T
 
         fun visitSolanaWallet(solanaWallet: SolanaWalletInfo): T
@@ -786,162 +811,112 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): ExternalAccountInfoOneOf {
             val json = JsonValue.fromJsonNode(node)
-            val accountType = json.asObject()?.get("accountType")?.asString()
 
-            when (accountType) {
-                "BRL_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BrlExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(brlAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "CAD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<CadAccount>())?.let {
-                        ExternalAccountInfoOneOf(cadAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "DKK_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<DkkExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(dkkAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "EUR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<EurAccount>())?.let {
-                        ExternalAccountInfoOneOf(eurAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "GBP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<GbpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(gbpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "HKD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<HkdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(hkdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "IDR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<IdrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(idrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "INR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<InrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(inrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "KES_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<KesAccount>())?.let {
-                        ExternalAccountInfoOneOf(kesAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MWK_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MwkAccount>())?.let {
-                        ExternalAccountInfoOneOf(mwkAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MXN_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MxnExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(mxnAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MYR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MyrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(myrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "NGN_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<NgnAccount>())?.let {
-                        ExternalAccountInfoOneOf(ngnAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "PHP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PhpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(phpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "RWF_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<RwfAccount>())?.let {
-                        ExternalAccountInfoOneOf(rwfAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "SGD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<SgdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(sgdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "THB_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ThbExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(thbAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "TZS_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<TzsAccount>())?.let {
-                        ExternalAccountInfoOneOf(tzsAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "UGX_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UgxAccount>())?.let {
-                        ExternalAccountInfoOneOf(ugxAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "USD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UsdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(usdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "VND_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<VndExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(vndAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "XOF_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<XofAccount>())?.let {
-                        ExternalAccountInfoOneOf(xofAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "ZAR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ZarAccount>())?.let {
-                        ExternalAccountInfoOneOf(zarAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "ZMW_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ZmwAccount>())?.let {
-                        ExternalAccountInfoOneOf(zmwAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "SPARK_WALLET" -> {
-                    return tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(sparkWallet = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "LIGHTNING" -> {
-                    return tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(lightning = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "SOLANA_WALLET" -> {
-                    return tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(solanaWallet = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "TRON_WALLET" -> {
-                    return tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(tronWallet = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "POLYGON_WALLET" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(polygonWallet = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "BASE_WALLET" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
-                        ExternalAccountInfoOneOf(baseWallet = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
+            val bestMatches =
+                sequenceOf(
+                        tryDeserialize(node, jacksonTypeRef<BrlExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(brlAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<CadAccount>())?.let {
+                            ExternalAccountInfoOneOf(cadAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<DkkExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(dkkAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<EurAccount>())?.let {
+                            ExternalAccountInfoOneOf(eurAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<GbpExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(gbpAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<HkdExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(hkdAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<IdrExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(idrAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<InrExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(inrAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<KesAccount>())?.let {
+                            ExternalAccountInfoOneOf(kesAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<MwkAccount>())?.let {
+                            ExternalAccountInfoOneOf(mwkAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<MxnExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(mxnAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<MyrExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(myrAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<NgnAccount>())?.let {
+                            ExternalAccountInfoOneOf(ngnAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<PhpExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(phpAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<RwfAccount>())?.let {
+                            ExternalAccountInfoOneOf(rwfAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<SgdExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(sgdAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<ThbExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(thbAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<TzsAccount>())?.let {
+                            ExternalAccountInfoOneOf(tzsAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<UgxAccount>())?.let {
+                            ExternalAccountInfoOneOf(ugxAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<UsdExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(usdAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<VndExternalAccountInfo>())?.let {
+                            ExternalAccountInfoOneOf(vndAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<XofAccount>())?.let {
+                            ExternalAccountInfoOneOf(xofAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<ZarAccount>())?.let {
+                            ExternalAccountInfoOneOf(zarAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<ZmwAccount>())?.let {
+                            ExternalAccountInfoOneOf(zmwAccount = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(sparkWallet = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(lightning = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(solanaWallet = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(tronWallet = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(polygonWallet = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
+                            ExternalAccountInfoOneOf(baseWallet = it, _json = json)
+                        },
+                    )
+                    .filterNotNull()
+                    .allMaxBy { it.validity() }
+                    .toList()
+            return when (bestMatches.size) {
+                // This can happen if what we're deserializing is completely incompatible with all
+                // the possible variants (e.g. deserializing from boolean).
+                0 -> ExternalAccountInfoOneOf(_json = json)
+                1 -> bestMatches.single()
+                // If there's more than one match with the highest validity, then use the first
+                // completely valid match, or simply the first match if none are completely valid.
+                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
             }
-
-            return ExternalAccountInfoOneOf(_json = json)
         }
     }
 
@@ -994,11 +969,11 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val accountNumber: JsonField<String>,
-        private val accountType: JsonValue,
+        private val accountType: JsonField<CadAccountInfo.AccountType>,
         private val bankCode: JsonField<String>,
-        private val beneficiary: JsonField<Beneficiary>,
         private val branchCode: JsonField<String>,
-        private val paymentRails: JsonField<List<PaymentRail>>,
+        private val paymentRails: JsonField<List<CadAccountInfo.PaymentRail>>,
+        private val beneficiary: JsonField<Beneficiary>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -1007,28 +982,42 @@ private constructor(
             @JsonProperty("accountNumber")
             @ExcludeMissing
             accountNumber: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<CadAccountInfo.AccountType> = JsonMissing.of(),
             @JsonProperty("bankCode")
             @ExcludeMissing
             bankCode: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("beneficiary")
-            @ExcludeMissing
-            beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
             @JsonProperty("branchCode")
             @ExcludeMissing
             branchCode: JsonField<String> = JsonMissing.of(),
             @JsonProperty("paymentRails")
             @ExcludeMissing
-            paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
+            paymentRails: JsonField<List<CadAccountInfo.PaymentRail>> = JsonMissing.of(),
+            @JsonProperty("beneficiary")
+            @ExcludeMissing
+            beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
         ) : this(
             accountNumber,
             accountType,
             bankCode,
-            beneficiary,
             branchCode,
             paymentRails,
+            beneficiary,
             mutableMapOf(),
         )
+
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
+        fun toCadAccountInfo(): CadAccountInfo =
+            CadAccountInfo.builder()
+                .accountNumber(accountNumber)
+                .accountType(accountType)
+                .bankCode(bankCode)
+                .branchCode(branchCode)
+                .paymentRails(paymentRails)
+                .build()
 
         /**
          * Bank account number (7-12 digits)
@@ -1039,15 +1028,10 @@ private constructor(
         fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("CAD_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): CadAccountInfo.AccountType = accountType.getRequired("accountType")
 
         /**
          * Canadian financial institution number (3 digits)
@@ -1056,12 +1040,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun bankCode(): String = bankCode.getRequired("bankCode")
-
-        /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
         /**
          * Transit number identifying the branch (5 digits)
@@ -1075,7 +1053,14 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
+        fun paymentRails(): List<CadAccountInfo.PaymentRail> =
+            paymentRails.getRequired("paymentRails")
+
+        /**
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
         /**
          * Returns the raw JSON value of [accountNumber].
@@ -1088,20 +1073,20 @@ private constructor(
         fun _accountNumber(): JsonField<String> = accountNumber
 
         /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<CadAccountInfo.AccountType> = accountType
+
+        /**
          * Returns the raw JSON value of [bankCode].
          *
          * Unlike [bankCode], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("bankCode") @ExcludeMissing fun _bankCode(): JsonField<String> = bankCode
-
-        /**
-         * Returns the raw JSON value of [beneficiary].
-         *
-         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("beneficiary")
-        @ExcludeMissing
-        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
 
         /**
          * Returns the raw JSON value of [branchCode].
@@ -1120,7 +1105,16 @@ private constructor(
          */
         @JsonProperty("paymentRails")
         @ExcludeMissing
-        fun _paymentRails(): JsonField<List<PaymentRail>> = paymentRails
+        fun _paymentRails(): JsonField<List<CadAccountInfo.PaymentRail>> = paymentRails
+
+        /**
+         * Returns the raw JSON value of [beneficiary].
+         *
+         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("beneficiary")
+        @ExcludeMissing
+        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1142,10 +1136,11 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankCode()
-             * .beneficiary()
              * .branchCode()
              * .paymentRails()
+             * .beneficiary()
              * ```
              */
             fun builder() = Builder()
@@ -1155,20 +1150,20 @@ private constructor(
         class Builder internal constructor() {
 
             private var accountNumber: JsonField<String>? = null
-            private var accountType: JsonValue = JsonValue.from("CAD_ACCOUNT")
+            private var accountType: JsonField<CadAccountInfo.AccountType>? = null
             private var bankCode: JsonField<String>? = null
-            private var beneficiary: JsonField<Beneficiary>? = null
             private var branchCode: JsonField<String>? = null
-            private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
+            private var paymentRails: JsonField<MutableList<CadAccountInfo.PaymentRail>>? = null
+            private var beneficiary: JsonField<Beneficiary>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(cadAccount: CadAccount) = apply {
                 accountNumber = cadAccount.accountNumber
                 accountType = cadAccount.accountType
                 bankCode = cadAccount.bankCode
-                beneficiary = cadAccount.beneficiary
                 branchCode = cadAccount.branchCode
                 paymentRails = cadAccount.paymentRails.map { it.toMutableList() }
+                beneficiary = cadAccount.beneficiary
                 additionalProperties = cadAccount.additionalProperties.toMutableMap()
             }
 
@@ -1186,19 +1181,19 @@ private constructor(
                 this.accountNumber = accountNumber
             }
 
+            fun accountType(accountType: CadAccountInfo.AccountType) =
+                accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("CAD_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.accountType] with a well-typed
+             * [CadAccountInfo.AccountType] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<CadAccountInfo.AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             /** Canadian financial institution number (3 digits) */
             fun bankCode(bankCode: String) = bankCode(JsonField.of(bankCode))
@@ -1211,6 +1206,44 @@ private constructor(
              * supported value.
              */
             fun bankCode(bankCode: JsonField<String>) = apply { this.bankCode = bankCode }
+
+            /** Transit number identifying the branch (5 digits) */
+            fun branchCode(branchCode: String) = branchCode(JsonField.of(branchCode))
+
+            /**
+             * Sets [Builder.branchCode] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.branchCode] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun branchCode(branchCode: JsonField<String>) = apply { this.branchCode = branchCode }
+
+            fun paymentRails(paymentRails: List<CadAccountInfo.PaymentRail>) =
+                paymentRails(JsonField.of(paymentRails))
+
+            /**
+             * Sets [Builder.paymentRails] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.paymentRails] with a well-typed
+             * `List<CadAccountInfo.PaymentRail>` value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun paymentRails(paymentRails: JsonField<List<CadAccountInfo.PaymentRail>>) = apply {
+                this.paymentRails = paymentRails.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [CadAccountInfo.PaymentRail] to [paymentRails].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addPaymentRail(paymentRail: CadAccountInfo.PaymentRail) = apply {
+                paymentRails =
+                    (paymentRails ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("paymentRails", it).add(paymentRail)
+                    }
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -1260,44 +1293,6 @@ private constructor(
                         .legalName(legalName)
                         .build()
                 )
-
-            /** Transit number identifying the branch (5 digits) */
-            fun branchCode(branchCode: String) = branchCode(JsonField.of(branchCode))
-
-            /**
-             * Sets [Builder.branchCode] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.branchCode] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun branchCode(branchCode: JsonField<String>) = apply { this.branchCode = branchCode }
-
-            fun paymentRails(paymentRails: List<PaymentRail>) =
-                paymentRails(JsonField.of(paymentRails))
-
-            /**
-             * Sets [Builder.paymentRails] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.paymentRails] with a well-typed `List<PaymentRail>`
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun paymentRails(paymentRails: JsonField<List<PaymentRail>>) = apply {
-                this.paymentRails = paymentRails.map { it.toMutableList() }
-            }
-
-            /**
-             * Adds a single [PaymentRail] to [paymentRails].
-             *
-             * @throws IllegalStateException if the field was previously set to a non-list.
-             */
-            fun addPaymentRail(paymentRail: PaymentRail) = apply {
-                paymentRails =
-                    (paymentRails ?: JsonField.of(mutableListOf())).also {
-                        checkKnown("paymentRails", it).add(paymentRail)
-                    }
-            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1326,10 +1321,11 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankCode()
-             * .beneficiary()
              * .branchCode()
              * .paymentRails()
+             * .beneficiary()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -1337,11 +1333,11 @@ private constructor(
             fun build(): CadAccount =
                 CadAccount(
                     checkRequired("accountNumber", accountNumber),
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("bankCode", bankCode),
-                    checkRequired("beneficiary", beneficiary),
                     checkRequired("branchCode", branchCode),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
+                    checkRequired("beneficiary", beneficiary),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1354,17 +1350,11 @@ private constructor(
             }
 
             accountNumber()
-            _accountType().let {
-                if (it != JsonValue.from("CAD_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             bankCode()
-            beneficiary().validate()
             branchCode()
             paymentRails().forEach { it.validate() }
+            beneficiary().validate()
             validated = true
         }
 
@@ -1384,11 +1374,11 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (accountNumber.asKnown() == null) 0 else 1) +
-                accountType.let { if (it == JsonValue.from("CAD_ACCOUNT")) 1 else 0 } +
+                (accountType.asKnown()?.validity() ?: 0) +
                 (if (bankCode.asKnown() == null) 0 else 1) +
-                (beneficiary.asKnown()?.validity() ?: 0) +
                 (if (branchCode.asKnown() == null) 0 else 1) +
-                (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+                (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+                (beneficiary.asKnown()?.validity() ?: 0)
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -2085,130 +2075,6 @@ private constructor(
             }
         }
 
-        class PaymentRail @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val BANK_TRANSFER = of("BANK_TRANSFER")
-
-                fun of(value: String) = PaymentRail(JsonField.of(value))
-            }
-
-            /** An enum containing [PaymentRail]'s known values. */
-            enum class Known {
-                BANK_TRANSFER
-            }
-
-            /**
-             * An enum containing [PaymentRail]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [PaymentRail] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                BANK_TRANSFER,
-                /**
-                 * An enum member indicating that [PaymentRail] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    BANK_TRANSFER -> Value.BANK_TRANSFER
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    BANK_TRANSFER -> Known.BANK_TRANSFER
-                    else -> throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): PaymentRail = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is PaymentRail && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -2218,9 +2084,9 @@ private constructor(
                 accountNumber == other.accountNumber &&
                 accountType == other.accountType &&
                 bankCode == other.bankCode &&
-                beneficiary == other.beneficiary &&
                 branchCode == other.branchCode &&
                 paymentRails == other.paymentRails &&
+                beneficiary == other.beneficiary &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -2229,9 +2095,9 @@ private constructor(
                 accountNumber,
                 accountType,
                 bankCode,
-                beneficiary,
                 branchCode,
                 paymentRails,
+                beneficiary,
                 additionalProperties,
             )
         }
@@ -2239,49 +2105,53 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "CadAccount{accountNumber=$accountNumber, accountType=$accountType, bankCode=$bankCode, beneficiary=$beneficiary, branchCode=$branchCode, paymentRails=$paymentRails, additionalProperties=$additionalProperties}"
+            "CadAccount{accountNumber=$accountNumber, accountType=$accountType, bankCode=$bankCode, branchCode=$branchCode, paymentRails=$paymentRails, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
     }
 
     class EurAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
-        private val beneficiary: JsonField<Beneficiary>,
+        private val accountType: JsonField<EurAccountInfo.AccountType>,
         private val iban: JsonField<String>,
-        private val paymentRails: JsonField<List<PaymentRail>>,
+        private val paymentRails: JsonField<List<EurAccountInfo.PaymentRail>>,
         private val swiftBic: JsonField<String>,
+        private val beneficiary: JsonField<Beneficiary>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
-            @JsonProperty("beneficiary")
+            @JsonProperty("accountType")
             @ExcludeMissing
-            beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+            accountType: JsonField<EurAccountInfo.AccountType> = JsonMissing.of(),
             @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
             @JsonProperty("paymentRails")
             @ExcludeMissing
-            paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
-            @JsonProperty("swiftBic") @ExcludeMissing swiftBic: JsonField<String> = JsonMissing.of(),
-        ) : this(accountType, beneficiary, iban, paymentRails, swiftBic, mutableMapOf())
+            paymentRails: JsonField<List<EurAccountInfo.PaymentRail>> = JsonMissing.of(),
+            @JsonProperty("swiftBic")
+            @ExcludeMissing
+            swiftBic: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("beneficiary")
+            @ExcludeMissing
+            beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+        ) : this(accountType, iban, paymentRails, swiftBic, beneficiary, mutableMapOf())
 
-        /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("EUR_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
-         */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
+        fun toEurAccountInfo(): EurAccountInfo =
+            EurAccountInfo.builder()
+                .accountType(accountType)
+                .iban(iban)
+                .paymentRails(paymentRails)
+                .swiftBic(swiftBic)
+                .build()
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+        fun accountType(): EurAccountInfo.AccountType = accountType.getRequired("accountType")
 
         /**
          * The IBAN of the bank
@@ -2295,7 +2165,8 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
+        fun paymentRails(): List<EurAccountInfo.PaymentRail> =
+            paymentRails.getRequired("paymentRails")
 
         /**
          * The SWIFT BIC of the bank
@@ -2306,13 +2177,19 @@ private constructor(
         fun swiftBic(): String? = swiftBic.getNullable("swiftBic")
 
         /**
-         * Returns the raw JSON value of [beneficiary].
-         *
-         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("beneficiary")
+        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
         @ExcludeMissing
-        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+        fun _accountType(): JsonField<EurAccountInfo.AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [iban].
@@ -2329,7 +2206,7 @@ private constructor(
          */
         @JsonProperty("paymentRails")
         @ExcludeMissing
-        fun _paymentRails(): JsonField<List<PaymentRail>> = paymentRails
+        fun _paymentRails(): JsonField<List<EurAccountInfo.PaymentRail>> = paymentRails
 
         /**
          * Returns the raw JSON value of [swiftBic].
@@ -2337,6 +2214,15 @@ private constructor(
          * Unlike [swiftBic], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("swiftBic") @ExcludeMissing fun _swiftBic(): JsonField<String> = swiftBic
+
+        /**
+         * Returns the raw JSON value of [beneficiary].
+         *
+         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("beneficiary")
+        @ExcludeMissing
+        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -2357,9 +2243,10 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .beneficiary()
+             * .accountType()
              * .iban()
              * .paymentRails()
+             * .beneficiary()
              * ```
              */
             fun builder() = Builder()
@@ -2368,35 +2255,85 @@ private constructor(
         /** A builder for [EurAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("EUR_ACCOUNT")
-            private var beneficiary: JsonField<Beneficiary>? = null
+            private var accountType: JsonField<EurAccountInfo.AccountType>? = null
             private var iban: JsonField<String>? = null
-            private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
+            private var paymentRails: JsonField<MutableList<EurAccountInfo.PaymentRail>>? = null
             private var swiftBic: JsonField<String> = JsonMissing.of()
+            private var beneficiary: JsonField<Beneficiary>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(eurAccount: EurAccount) = apply {
                 accountType = eurAccount.accountType
-                beneficiary = eurAccount.beneficiary
                 iban = eurAccount.iban
                 paymentRails = eurAccount.paymentRails.map { it.toMutableList() }
                 swiftBic = eurAccount.swiftBic
+                beneficiary = eurAccount.beneficiary
                 additionalProperties = eurAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: EurAccountInfo.AccountType) =
+                accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("EUR_ACCOUNT")
-             * ```
+             * You should usually call [Builder.accountType] with a well-typed
+             * [EurAccountInfo.AccountType] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
+             */
+            fun accountType(accountType: JsonField<EurAccountInfo.AccountType>) = apply {
+                this.accountType = accountType
+            }
+
+            /** The IBAN of the bank */
+            fun iban(iban: String) = iban(JsonField.of(iban))
+
+            /**
+             * Sets [Builder.iban] to an arbitrary JSON value.
              *
+             * You should usually call [Builder.iban] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun iban(iban: JsonField<String>) = apply { this.iban = iban }
+
+            fun paymentRails(paymentRails: List<EurAccountInfo.PaymentRail>) =
+                paymentRails(JsonField.of(paymentRails))
+
+            /**
+             * Sets [Builder.paymentRails] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.paymentRails] with a well-typed
+             * `List<EurAccountInfo.PaymentRail>` value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun paymentRails(paymentRails: JsonField<List<EurAccountInfo.PaymentRail>>) = apply {
+                this.paymentRails = paymentRails.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [EurAccountInfo.PaymentRail] to [paymentRails].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addPaymentRail(paymentRail: EurAccountInfo.PaymentRail) = apply {
+                paymentRails =
+                    (paymentRails ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("paymentRails", it).add(paymentRail)
+                    }
+            }
+
+            /** The SWIFT BIC of the bank */
+            fun swiftBic(swiftBic: String) = swiftBic(JsonField.of(swiftBic))
+
+            /**
+             * Sets [Builder.swiftBic] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.swiftBic] with a well-typed [String] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun swiftBic(swiftBic: JsonField<String>) = apply { this.swiftBic = swiftBic }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -2447,56 +2384,6 @@ private constructor(
                         .build()
                 )
 
-            /** The IBAN of the bank */
-            fun iban(iban: String) = iban(JsonField.of(iban))
-
-            /**
-             * Sets [Builder.iban] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.iban] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun iban(iban: JsonField<String>) = apply { this.iban = iban }
-
-            fun paymentRails(paymentRails: List<PaymentRail>) =
-                paymentRails(JsonField.of(paymentRails))
-
-            /**
-             * Sets [Builder.paymentRails] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.paymentRails] with a well-typed `List<PaymentRail>`
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun paymentRails(paymentRails: JsonField<List<PaymentRail>>) = apply {
-                this.paymentRails = paymentRails.map { it.toMutableList() }
-            }
-
-            /**
-             * Adds a single [PaymentRail] to [paymentRails].
-             *
-             * @throws IllegalStateException if the field was previously set to a non-list.
-             */
-            fun addPaymentRail(paymentRail: PaymentRail) = apply {
-                paymentRails =
-                    (paymentRails ?: JsonField.of(mutableListOf())).also {
-                        checkKnown("paymentRails", it).add(paymentRail)
-                    }
-            }
-
-            /** The SWIFT BIC of the bank */
-            fun swiftBic(swiftBic: String) = swiftBic(JsonField.of(swiftBic))
-
-            /**
-             * Sets [Builder.swiftBic] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.swiftBic] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun swiftBic(swiftBic: JsonField<String>) = apply { this.swiftBic = swiftBic }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -2523,20 +2410,21 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .beneficiary()
+             * .accountType()
              * .iban()
              * .paymentRails()
+             * .beneficiary()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): EurAccount =
                 EurAccount(
-                    accountType,
-                    checkRequired("beneficiary", beneficiary),
+                    checkRequired("accountType", accountType),
                     checkRequired("iban", iban),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                     swiftBic,
+                    checkRequired("beneficiary", beneficiary),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -2548,17 +2436,11 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("EUR_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
-            beneficiary().validate()
+            accountType().validate()
             iban()
             paymentRails().forEach { it.validate() }
             swiftBic()
+            beneficiary().validate()
             validated = true
         }
 
@@ -2577,11 +2459,11 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("EUR_ACCOUNT")) 1 else 0 } +
-                (beneficiary.asKnown()?.validity() ?: 0) +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (if (iban.asKnown() == null) 0 else 1) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                (if (swiftBic.asKnown() == null) 0 else 1)
+                (if (swiftBic.asKnown() == null) 0 else 1) +
+                (beneficiary.asKnown()?.validity() ?: 0)
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -3278,136 +3160,6 @@ private constructor(
             }
         }
 
-        class PaymentRail @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val SEPA = of("SEPA")
-
-                val SEPA_INSTANT = of("SEPA_INSTANT")
-
-                fun of(value: String) = PaymentRail(JsonField.of(value))
-            }
-
-            /** An enum containing [PaymentRail]'s known values. */
-            enum class Known {
-                SEPA,
-                SEPA_INSTANT,
-            }
-
-            /**
-             * An enum containing [PaymentRail]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [PaymentRail] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                SEPA,
-                SEPA_INSTANT,
-                /**
-                 * An enum member indicating that [PaymentRail] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    SEPA -> Value.SEPA
-                    SEPA_INSTANT -> Value.SEPA_INSTANT
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    SEPA -> Known.SEPA
-                    SEPA_INSTANT -> Known.SEPA_INSTANT
-                    else -> throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): PaymentRail = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is PaymentRail && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -3415,20 +3167,20 @@ private constructor(
 
             return other is EurAccount &&
                 accountType == other.accountType &&
-                beneficiary == other.beneficiary &&
                 iban == other.iban &&
                 paymentRails == other.paymentRails &&
                 swiftBic == other.swiftBic &&
+                beneficiary == other.beneficiary &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
             Objects.hash(
                 accountType,
-                beneficiary,
                 iban,
                 paymentRails,
                 swiftBic,
+                beneficiary,
                 additionalProperties,
             )
         }
@@ -3436,13 +3188,13 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "EurAccount{accountType=$accountType, beneficiary=$beneficiary, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, additionalProperties=$additionalProperties}"
+            "EurAccount{accountType=$accountType, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
     }
 
     class KesAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val paymentRails: JsonField<List<PaymentRail>>,
         private val phoneNumber: JsonField<String>,
@@ -3452,7 +3204,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -3465,16 +3219,14 @@ private constructor(
             @JsonProperty("provider") @ExcludeMissing provider: JsonField<String> = JsonMissing.of(),
         ) : this(accountType, beneficiary, paymentRails, phoneNumber, provider, mutableMapOf())
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("KES_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -3503,6 +3255,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -3558,6 +3319,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -3570,7 +3332,7 @@ private constructor(
         /** A builder for [KesAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("KES_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
             private var phoneNumber: JsonField<String>? = null
@@ -3586,19 +3348,18 @@ private constructor(
                 additionalProperties = kesAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("KES_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -3727,6 +3488,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -3737,7 +3499,7 @@ private constructor(
              */
             fun build(): KesAccount =
                 KesAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                     checkRequired("phoneNumber", phoneNumber),
@@ -3753,13 +3515,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("KES_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             paymentRails().forEach { it.validate() }
             phoneNumber()
@@ -3782,11 +3538,135 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("KES_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val KES_ACCOUNT = of("KES_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                KES_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                KES_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    KES_ACCOUNT -> Value.KES_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    KES_ACCOUNT -> Known.KES_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -4641,7 +4521,7 @@ private constructor(
     class MwkAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val countries: JsonField<List<Country>>,
         private val paymentRails: JsonField<List<PaymentRail>>,
@@ -4652,7 +4532,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -4676,16 +4558,14 @@ private constructor(
             mutableMapOf(),
         )
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("MWK_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -4720,6 +4600,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -4784,6 +4673,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -4797,7 +4687,7 @@ private constructor(
         /** A builder for [MwkAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("MWK_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var countries: JsonField<MutableList<Country>>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
@@ -4815,19 +4705,18 @@ private constructor(
                 additionalProperties = mwkAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("MWK_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -4981,6 +4870,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -4992,7 +4882,7 @@ private constructor(
              */
             fun build(): MwkAccount =
                 MwkAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("countries", countries).map { it.toImmutable() },
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
@@ -5009,13 +4899,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("MWK_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             countries().forEach { it.validate() }
             paymentRails().forEach { it.validate() }
@@ -5039,12 +4923,136 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("MWK_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (countries.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val MWK_ACCOUNT = of("MWK_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                MWK_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                MWK_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    MWK_ACCOUNT -> Value.MWK_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    MWK_ACCOUNT -> Known.MWK_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -6025,10 +6033,10 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val accountNumber: JsonField<String>,
-        private val accountType: JsonValue,
+        private val accountType: JsonField<NgnAccountInfo.AccountType>,
         private val bankName: JsonField<String>,
+        private val paymentRails: JsonField<List<NgnAccountInfo.PaymentRail>>,
         private val beneficiary: JsonField<Beneficiary>,
-        private val paymentRails: JsonField<List<PaymentRail>>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -6037,17 +6045,30 @@ private constructor(
             @JsonProperty("accountNumber")
             @ExcludeMissing
             accountNumber: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<NgnAccountInfo.AccountType> = JsonMissing.of(),
             @JsonProperty("bankName")
             @ExcludeMissing
             bankName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("paymentRails")
+            @ExcludeMissing
+            paymentRails: JsonField<List<NgnAccountInfo.PaymentRail>> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-            @JsonProperty("paymentRails")
-            @ExcludeMissing
-            paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
-        ) : this(accountNumber, accountType, bankName, beneficiary, paymentRails, mutableMapOf())
+        ) : this(accountNumber, accountType, bankName, paymentRails, beneficiary, mutableMapOf())
+
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
+        fun toNgnAccountInfo(): NgnAccountInfo =
+            NgnAccountInfo.builder()
+                .accountNumber(accountNumber)
+                .accountType(accountType)
+                .bankName(bankName)
+                .paymentRails(paymentRails)
+                .build()
 
         /**
          * Nigerian bank account number
@@ -6058,15 +6079,10 @@ private constructor(
         fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("NGN_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): NgnAccountInfo.AccountType = accountType.getRequired("accountType")
 
         /**
          * Name of the bank
@@ -6080,13 +6096,14 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
+        fun paymentRails(): List<NgnAccountInfo.PaymentRail> =
+            paymentRails.getRequired("paymentRails")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
+        fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
         /**
          * Returns the raw JSON value of [accountNumber].
@@ -6099,20 +6116,20 @@ private constructor(
         fun _accountNumber(): JsonField<String> = accountNumber
 
         /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<NgnAccountInfo.AccountType> = accountType
+
+        /**
          * Returns the raw JSON value of [bankName].
          *
          * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-        /**
-         * Returns the raw JSON value of [beneficiary].
-         *
-         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("beneficiary")
-        @ExcludeMissing
-        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
 
         /**
          * Returns the raw JSON value of [paymentRails].
@@ -6122,7 +6139,16 @@ private constructor(
          */
         @JsonProperty("paymentRails")
         @ExcludeMissing
-        fun _paymentRails(): JsonField<List<PaymentRail>> = paymentRails
+        fun _paymentRails(): JsonField<List<NgnAccountInfo.PaymentRail>> = paymentRails
+
+        /**
+         * Returns the raw JSON value of [beneficiary].
+         *
+         * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("beneficiary")
+        @ExcludeMissing
+        fun _beneficiary(): JsonField<Beneficiary> = beneficiary
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -6144,9 +6170,10 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankName()
-             * .beneficiary()
              * .paymentRails()
+             * .beneficiary()
              * ```
              */
             fun builder() = Builder()
@@ -6156,18 +6183,18 @@ private constructor(
         class Builder internal constructor() {
 
             private var accountNumber: JsonField<String>? = null
-            private var accountType: JsonValue = JsonValue.from("NGN_ACCOUNT")
+            private var accountType: JsonField<NgnAccountInfo.AccountType>? = null
             private var bankName: JsonField<String>? = null
+            private var paymentRails: JsonField<MutableList<NgnAccountInfo.PaymentRail>>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
-            private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(ngnAccount: NgnAccount) = apply {
                 accountNumber = ngnAccount.accountNumber
                 accountType = ngnAccount.accountType
                 bankName = ngnAccount.bankName
-                beneficiary = ngnAccount.beneficiary
                 paymentRails = ngnAccount.paymentRails.map { it.toMutableList() }
+                beneficiary = ngnAccount.beneficiary
                 additionalProperties = ngnAccount.additionalProperties.toMutableMap()
             }
 
@@ -6185,19 +6212,19 @@ private constructor(
                 this.accountNumber = accountNumber
             }
 
+            fun accountType(accountType: NgnAccountInfo.AccountType) =
+                accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("NGN_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.accountType] with a well-typed
+             * [NgnAccountInfo.AccountType] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<NgnAccountInfo.AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             /** Name of the bank */
             fun bankName(bankName: String) = bankName(JsonField.of(bankName))
@@ -6210,6 +6237,32 @@ private constructor(
              * supported value.
              */
             fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
+
+            fun paymentRails(paymentRails: List<NgnAccountInfo.PaymentRail>) =
+                paymentRails(JsonField.of(paymentRails))
+
+            /**
+             * Sets [Builder.paymentRails] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.paymentRails] with a well-typed
+             * `List<NgnAccountInfo.PaymentRail>` value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun paymentRails(paymentRails: JsonField<List<NgnAccountInfo.PaymentRail>>) = apply {
+                this.paymentRails = paymentRails.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [NgnAccountInfo.PaymentRail] to [paymentRails].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addPaymentRail(paymentRail: NgnAccountInfo.PaymentRail) = apply {
+                paymentRails =
+                    (paymentRails ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("paymentRails", it).add(paymentRail)
+                    }
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -6260,32 +6313,6 @@ private constructor(
                         .build()
                 )
 
-            fun paymentRails(paymentRails: List<PaymentRail>) =
-                paymentRails(JsonField.of(paymentRails))
-
-            /**
-             * Sets [Builder.paymentRails] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.paymentRails] with a well-typed `List<PaymentRail>`
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun paymentRails(paymentRails: JsonField<List<PaymentRail>>) = apply {
-                this.paymentRails = paymentRails.map { it.toMutableList() }
-            }
-
-            /**
-             * Adds a single [PaymentRail] to [paymentRails].
-             *
-             * @throws IllegalStateException if the field was previously set to a non-list.
-             */
-            fun addPaymentRail(paymentRail: PaymentRail) = apply {
-                paymentRails =
-                    (paymentRails ?: JsonField.of(mutableListOf())).also {
-                        checkKnown("paymentRails", it).add(paymentRail)
-                    }
-            }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -6313,9 +6340,10 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankName()
-             * .beneficiary()
              * .paymentRails()
+             * .beneficiary()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -6323,10 +6351,10 @@ private constructor(
             fun build(): NgnAccount =
                 NgnAccount(
                     checkRequired("accountNumber", accountNumber),
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("bankName", bankName),
-                    checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
+                    checkRequired("beneficiary", beneficiary),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -6339,16 +6367,10 @@ private constructor(
             }
 
             accountNumber()
-            _accountType().let {
-                if (it != JsonValue.from("NGN_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             bankName()
-            beneficiary().validate()
             paymentRails().forEach { it.validate() }
+            beneficiary().validate()
             validated = true
         }
 
@@ -6368,10 +6390,10 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (accountNumber.asKnown() == null) 0 else 1) +
-                accountType.let { if (it == JsonValue.from("NGN_ACCOUNT")) 1 else 0 } +
+                (accountType.asKnown()?.validity() ?: 0) +
                 (if (bankName.asKnown() == null) 0 else 1) +
-                (beneficiary.asKnown()?.validity() ?: 0) +
-                (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+                (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+                (beneficiary.asKnown()?.validity() ?: 0)
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -7068,130 +7090,6 @@ private constructor(
             }
         }
 
-        class PaymentRail @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val BANK_TRANSFER = of("BANK_TRANSFER")
-
-                fun of(value: String) = PaymentRail(JsonField.of(value))
-            }
-
-            /** An enum containing [PaymentRail]'s known values. */
-            enum class Known {
-                BANK_TRANSFER
-            }
-
-            /**
-             * An enum containing [PaymentRail]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [PaymentRail] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                BANK_TRANSFER,
-                /**
-                 * An enum member indicating that [PaymentRail] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    BANK_TRANSFER -> Value.BANK_TRANSFER
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    BANK_TRANSFER -> Known.BANK_TRANSFER
-                    else -> throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): PaymentRail = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is PaymentRail && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -7201,8 +7099,8 @@ private constructor(
                 accountNumber == other.accountNumber &&
                 accountType == other.accountType &&
                 bankName == other.bankName &&
-                beneficiary == other.beneficiary &&
                 paymentRails == other.paymentRails &&
+                beneficiary == other.beneficiary &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -7211,8 +7109,8 @@ private constructor(
                 accountNumber,
                 accountType,
                 bankName,
-                beneficiary,
                 paymentRails,
+                beneficiary,
                 additionalProperties,
             )
         }
@@ -7220,13 +7118,13 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "NgnAccount{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, paymentRails=$paymentRails, additionalProperties=$additionalProperties}"
+            "NgnAccount{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
     }
 
     class RwfAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val paymentRails: JsonField<List<PaymentRail>>,
         private val phoneNumber: JsonField<String>,
@@ -7236,7 +7134,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -7249,16 +7149,14 @@ private constructor(
             @JsonProperty("provider") @ExcludeMissing provider: JsonField<String> = JsonMissing.of(),
         ) : this(accountType, beneficiary, paymentRails, phoneNumber, provider, mutableMapOf())
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("RWF_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -7287,6 +7185,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -7342,6 +7249,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -7354,7 +7262,7 @@ private constructor(
         /** A builder for [RwfAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("RWF_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
             private var phoneNumber: JsonField<String>? = null
@@ -7370,19 +7278,18 @@ private constructor(
                 additionalProperties = rwfAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("RWF_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -7511,6 +7418,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -7521,7 +7429,7 @@ private constructor(
              */
             fun build(): RwfAccount =
                 RwfAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                     checkRequired("phoneNumber", phoneNumber),
@@ -7537,13 +7445,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("RWF_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             paymentRails().forEach { it.validate() }
             phoneNumber()
@@ -7566,11 +7468,135 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("RWF_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val RWF_ACCOUNT = of("RWF_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                RWF_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                RWF_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    RWF_ACCOUNT -> Value.RWF_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    RWF_ACCOUNT -> Known.RWF_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -8425,7 +8451,7 @@ private constructor(
     class TzsAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val paymentRails: JsonField<List<PaymentRail>>,
         private val phoneNumber: JsonField<String>,
@@ -8435,7 +8461,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -8448,16 +8476,14 @@ private constructor(
             @JsonProperty("provider") @ExcludeMissing provider: JsonField<String> = JsonMissing.of(),
         ) : this(accountType, beneficiary, paymentRails, phoneNumber, provider, mutableMapOf())
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("TZS_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -8486,6 +8512,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -8541,6 +8576,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -8553,7 +8589,7 @@ private constructor(
         /** A builder for [TzsAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("TZS_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
             private var phoneNumber: JsonField<String>? = null
@@ -8569,19 +8605,18 @@ private constructor(
                 additionalProperties = tzsAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("TZS_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -8710,6 +8745,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -8720,7 +8756,7 @@ private constructor(
              */
             fun build(): TzsAccount =
                 TzsAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                     checkRequired("phoneNumber", phoneNumber),
@@ -8736,13 +8772,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("TZS_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             paymentRails().forEach { it.validate() }
             phoneNumber()
@@ -8765,11 +8795,135 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("TZS_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val TZS_ACCOUNT = of("TZS_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                TZS_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                TZS_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    TZS_ACCOUNT -> Value.TZS_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    TZS_ACCOUNT -> Known.TZS_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -9624,7 +9778,7 @@ private constructor(
     class UgxAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val countries: JsonField<List<Country>>,
         private val paymentRails: JsonField<List<PaymentRail>>,
@@ -9635,7 +9789,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -9659,16 +9815,14 @@ private constructor(
             mutableMapOf(),
         )
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("UGX_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -9703,6 +9857,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -9767,6 +9930,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -9780,7 +9944,7 @@ private constructor(
         /** A builder for [UgxAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("UGX_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var countries: JsonField<MutableList<Country>>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
@@ -9798,19 +9962,18 @@ private constructor(
                 additionalProperties = ugxAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("UGX_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -9964,6 +10127,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -9975,7 +10139,7 @@ private constructor(
              */
             fun build(): UgxAccount =
                 UgxAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("countries", countries).map { it.toImmutable() },
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
@@ -9992,13 +10156,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("UGX_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             countries().forEach { it.validate() }
             paymentRails().forEach { it.validate() }
@@ -10022,12 +10180,136 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("UGX_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (countries.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val UGX_ACCOUNT = of("UGX_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                UGX_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                UGX_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    UGX_ACCOUNT -> Value.UGX_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    UGX_ACCOUNT -> Known.UGX_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -11007,7 +11289,7 @@ private constructor(
     class XofAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val countries: JsonField<List<Country>>,
         private val paymentRails: JsonField<List<PaymentRail>>,
@@ -11018,7 +11300,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -11042,16 +11326,14 @@ private constructor(
             mutableMapOf(),
         )
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("XOF_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -11086,6 +11368,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -11150,6 +11441,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -11163,7 +11455,7 @@ private constructor(
         /** A builder for [XofAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("XOF_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var countries: JsonField<MutableList<Country>>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
@@ -11181,19 +11473,18 @@ private constructor(
                 additionalProperties = xofAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("XOF_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -11347,6 +11638,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .countries()
              * .paymentRails()
@@ -11358,7 +11650,7 @@ private constructor(
              */
             fun build(): XofAccount =
                 XofAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("countries", countries).map { it.toImmutable() },
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
@@ -11375,13 +11667,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("XOF_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             countries().forEach { it.validate() }
             paymentRails().forEach { it.validate() }
@@ -11405,12 +11691,136 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("XOF_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (countries.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val XOF_ACCOUNT = of("XOF_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                XOF_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                XOF_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    XOF_ACCOUNT -> Value.XOF_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    XOF_ACCOUNT -> Known.XOF_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -12403,7 +12813,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val accountNumber: JsonField<String>,
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val bankName: JsonField<String>,
         private val beneficiary: JsonField<Beneficiary>,
         private val paymentRails: JsonField<List<PaymentRail>>,
@@ -12415,7 +12825,9 @@ private constructor(
             @JsonProperty("accountNumber")
             @ExcludeMissing
             accountNumber: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("bankName")
             @ExcludeMissing
             bankName: JsonField<String> = JsonMissing.of(),
@@ -12427,6 +12839,9 @@ private constructor(
             paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
         ) : this(accountNumber, accountType, bankName, beneficiary, paymentRails, mutableMapOf())
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
          * South African bank account number
          *
@@ -12436,15 +12851,10 @@ private constructor(
         fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("ZAR_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * Name of the bank
@@ -12475,6 +12885,15 @@ private constructor(
         @JsonProperty("accountNumber")
         @ExcludeMissing
         fun _accountNumber(): JsonField<String> = accountNumber
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [bankName].
@@ -12522,6 +12941,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankName()
              * .beneficiary()
              * .paymentRails()
@@ -12534,7 +12954,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var accountNumber: JsonField<String>? = null
-            private var accountType: JsonValue = JsonValue.from("ZAR_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var bankName: JsonField<String>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
@@ -12563,19 +12983,18 @@ private constructor(
                 this.accountNumber = accountNumber
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("ZAR_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             /** Name of the bank */
             fun bankName(bankName: String) = bankName(JsonField.of(bankName))
@@ -12691,6 +13110,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .accountNumber()
+             * .accountType()
              * .bankName()
              * .beneficiary()
              * .paymentRails()
@@ -12701,7 +13121,7 @@ private constructor(
             fun build(): ZarAccount =
                 ZarAccount(
                     checkRequired("accountNumber", accountNumber),
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("bankName", bankName),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
@@ -12717,13 +13137,7 @@ private constructor(
             }
 
             accountNumber()
-            _accountType().let {
-                if (it != JsonValue.from("ZAR_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             bankName()
             beneficiary().validate()
             paymentRails().forEach { it.validate() }
@@ -12746,10 +13160,134 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (accountNumber.asKnown() == null) 0 else 1) +
-                accountType.let { if (it == JsonValue.from("ZAR_ACCOUNT")) 1 else 0 } +
+                (accountType.asKnown()?.validity() ?: 0) +
                 (if (bankName.asKnown() == null) 0 else 1) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val ZAR_ACCOUNT = of("ZAR_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                ZAR_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                ZAR_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    ZAR_ACCOUNT -> Value.ZAR_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    ZAR_ACCOUNT -> Known.ZAR_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)
@@ -13604,7 +14142,7 @@ private constructor(
     class ZmwAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val accountType: JsonValue,
+        private val accountType: JsonField<AccountType>,
         private val beneficiary: JsonField<Beneficiary>,
         private val paymentRails: JsonField<List<PaymentRail>>,
         private val phoneNumber: JsonField<String>,
@@ -13614,7 +14152,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            accountType: JsonField<AccountType> = JsonMissing.of(),
             @JsonProperty("beneficiary")
             @ExcludeMissing
             beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -13627,16 +14167,14 @@ private constructor(
             @JsonProperty("provider") @ExcludeMissing provider: JsonField<String> = JsonMissing.of(),
         ) : this(accountType, beneficiary, paymentRails, phoneNumber, provider, mutableMapOf())
 
+        fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
+            BaseExternalAccountInfo.builder().build()
+
         /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("ZMW_ACCOUNT")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+        fun accountType(): AccountType = accountType.getRequired("accountType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -13665,6 +14203,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun provider(): String = provider.getRequired("provider")
+
+        /**
+         * Returns the raw JSON value of [accountType].
+         *
+         * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("accountType")
+        @ExcludeMissing
+        fun _accountType(): JsonField<AccountType> = accountType
 
         /**
          * Returns the raw JSON value of [beneficiary].
@@ -13720,6 +14267,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -13732,7 +14280,7 @@ private constructor(
         /** A builder for [ZmwAccount]. */
         class Builder internal constructor() {
 
-            private var accountType: JsonValue = JsonValue.from("ZMW_ACCOUNT")
+            private var accountType: JsonField<AccountType>? = null
             private var beneficiary: JsonField<Beneficiary>? = null
             private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
             private var phoneNumber: JsonField<String>? = null
@@ -13748,19 +14296,18 @@ private constructor(
                 additionalProperties = zmwAccount.additionalProperties.toMutableMap()
             }
 
+            fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
             /**
-             * Sets the field to an arbitrary JSON value.
+             * Sets [Builder.accountType] to an arbitrary JSON value.
              *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("ZMW_ACCOUNT")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.accountType] with a well-typed [AccountType] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+            fun accountType(accountType: JsonField<AccountType>) = apply {
+                this.accountType = accountType
+            }
 
             fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -13889,6 +14436,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .accountType()
              * .beneficiary()
              * .paymentRails()
              * .phoneNumber()
@@ -13899,7 +14447,7 @@ private constructor(
              */
             fun build(): ZmwAccount =
                 ZmwAccount(
-                    accountType,
+                    checkRequired("accountType", accountType),
                     checkRequired("beneficiary", beneficiary),
                     checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                     checkRequired("phoneNumber", phoneNumber),
@@ -13915,13 +14463,7 @@ private constructor(
                 return@apply
             }
 
-            _accountType().let {
-                if (it != JsonValue.from("ZMW_ACCOUNT")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'accountType' is invalid, received $it"
-                    )
-                }
-            }
+            accountType().validate()
             beneficiary().validate()
             paymentRails().forEach { it.validate() }
             phoneNumber()
@@ -13944,11 +14486,135 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            accountType.let { if (it == JsonValue.from("ZMW_ACCOUNT")) 1 else 0 } +
+            (accountType.asKnown()?.validity() ?: 0) +
                 (beneficiary.asKnown()?.validity() ?: 0) +
                 (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (phoneNumber.asKnown() == null) 0 else 1) +
                 (if (provider.asKnown() == null) 0 else 1)
+
+        class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val ZMW_ACCOUNT = of("ZMW_ACCOUNT")
+
+                fun of(value: String) = AccountType(JsonField.of(value))
+            }
+
+            /** An enum containing [AccountType]'s known values. */
+            enum class Known {
+                ZMW_ACCOUNT
+            }
+
+            /**
+             * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [AccountType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                ZMW_ACCOUNT,
+                /**
+                 * An enum member indicating that [AccountType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    ZMW_ACCOUNT -> Value.ZMW_ACCOUNT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    ZMW_ACCOUNT -> Known.ZMW_ACCOUNT
+                    else -> throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): AccountType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is AccountType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         @JsonDeserialize(using = Beneficiary.Deserializer::class)
         @JsonSerialize(using = Beneficiary.Serializer::class)

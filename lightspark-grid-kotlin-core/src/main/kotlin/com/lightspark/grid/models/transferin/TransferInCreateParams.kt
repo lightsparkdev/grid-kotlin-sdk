@@ -39,7 +39,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun destination(): Destination = body.destination()
+    fun destination(): InternalAccountReference = body.destination()
 
     /**
      * Source external account details
@@ -47,7 +47,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun source(): Source = body.source()
+    fun source(): ExternalAccountReference = body.source()
 
     /**
      * Amount in the smallest unit of the currency (e.g., cents for USD/EUR, satoshis for BTC)
@@ -62,14 +62,14 @@ private constructor(
      *
      * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _destination(): JsonField<Destination> = body._destination()
+    fun _destination(): JsonField<InternalAccountReference> = body._destination()
 
     /**
      * Returns the raw JSON value of [source].
      *
      * Unlike [source], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _source(): JsonField<Source> = body._source()
+    fun _source(): JsonField<ExternalAccountReference> = body._source()
 
     /**
      * Returns the raw JSON value of [amount].
@@ -131,29 +131,32 @@ private constructor(
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /** Destination internal account details */
-        fun destination(destination: Destination) = apply { body.destination(destination) }
+        fun destination(destination: InternalAccountReference) = apply {
+            body.destination(destination)
+        }
 
         /**
          * Sets [Builder.destination] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.destination] with a well-typed [Destination] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.destination] with a well-typed
+         * [InternalAccountReference] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
          */
-        fun destination(destination: JsonField<Destination>) = apply {
+        fun destination(destination: JsonField<InternalAccountReference>) = apply {
             body.destination(destination)
         }
 
         /** Source external account details */
-        fun source(source: Source) = apply { body.source(source) }
+        fun source(source: ExternalAccountReference) = apply { body.source(source) }
 
         /**
          * Sets [Builder.source] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.source] with a well-typed [Source] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.source] with a well-typed [ExternalAccountReference]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun source(source: JsonField<Source>) = apply { body.source(source) }
+        fun source(source: JsonField<ExternalAccountReference>) = apply { body.source(source) }
 
         /**
          * Amount in the smallest unit of the currency (e.g., cents for USD/EUR, satoshis for BTC)
@@ -322,8 +325,8 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val destination: JsonField<Destination>,
-        private val source: JsonField<Source>,
+        private val destination: JsonField<InternalAccountReference>,
+        private val source: JsonField<ExternalAccountReference>,
         private val amount: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -332,8 +335,10 @@ private constructor(
         private constructor(
             @JsonProperty("destination")
             @ExcludeMissing
-            destination: JsonField<Destination> = JsonMissing.of(),
-            @JsonProperty("source") @ExcludeMissing source: JsonField<Source> = JsonMissing.of(),
+            destination: JsonField<InternalAccountReference> = JsonMissing.of(),
+            @JsonProperty("source")
+            @ExcludeMissing
+            source: JsonField<ExternalAccountReference> = JsonMissing.of(),
             @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
         ) : this(destination, source, amount, mutableMapOf())
 
@@ -343,7 +348,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun destination(): Destination = destination.getRequired("destination")
+        fun destination(): InternalAccountReference = destination.getRequired("destination")
 
         /**
          * Source external account details
@@ -351,7 +356,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun source(): Source = source.getRequired("source")
+        fun source(): ExternalAccountReference = source.getRequired("source")
 
         /**
          * Amount in the smallest unit of the currency (e.g., cents for USD/EUR, satoshis for BTC)
@@ -368,14 +373,16 @@ private constructor(
          */
         @JsonProperty("destination")
         @ExcludeMissing
-        fun _destination(): JsonField<Destination> = destination
+        fun _destination(): JsonField<InternalAccountReference> = destination
 
         /**
          * Returns the raw JSON value of [source].
          *
          * Unlike [source], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("source") @ExcludeMissing fun _source(): JsonField<Source> = source
+        @JsonProperty("source")
+        @ExcludeMissing
+        fun _source(): JsonField<ExternalAccountReference> = source
 
         /**
          * Returns the raw JSON value of [amount].
@@ -413,8 +420,8 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var destination: JsonField<Destination>? = null
-            private var source: JsonField<Source>? = null
+            private var destination: JsonField<InternalAccountReference>? = null
+            private var source: JsonField<ExternalAccountReference>? = null
             private var amount: JsonField<Long> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -426,30 +433,31 @@ private constructor(
             }
 
             /** Destination internal account details */
-            fun destination(destination: Destination) = destination(JsonField.of(destination))
+            fun destination(destination: InternalAccountReference) =
+                destination(JsonField.of(destination))
 
             /**
              * Sets [Builder.destination] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.destination] with a well-typed [Destination] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.destination] with a well-typed
+             * [InternalAccountReference] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
-            fun destination(destination: JsonField<Destination>) = apply {
+            fun destination(destination: JsonField<InternalAccountReference>) = apply {
                 this.destination = destination
             }
 
             /** Source external account details */
-            fun source(source: Source) = source(JsonField.of(source))
+            fun source(source: ExternalAccountReference) = source(JsonField.of(source))
 
             /**
              * Sets [Builder.source] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.source] with a well-typed [Source] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.source] with a well-typed [ExternalAccountReference]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
              */
-            fun source(source: JsonField<Source>) = apply { this.source = source }
+            fun source(source: JsonField<ExternalAccountReference>) = apply { this.source = source }
 
             /**
              * Amount in the smallest unit of the currency (e.g., cents for USD/EUR, satoshis for
@@ -559,325 +567,6 @@ private constructor(
 
         override fun toString() =
             "Body{destination=$destination, source=$source, amount=$amount, additionalProperties=$additionalProperties}"
-    }
-
-    /** Destination internal account details */
-    class Destination
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val accountId: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("accountId")
-            @ExcludeMissing
-            accountId: JsonField<String> = JsonMissing.of()
-        ) : this(accountId, mutableMapOf())
-
-        /**
-         * Reference to an internal account ID
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun accountId(): String = accountId.getRequired("accountId")
-
-        /**
-         * Returns the raw JSON value of [accountId].
-         *
-         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Destination].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .accountId()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Destination]. */
-        class Builder internal constructor() {
-
-            private var accountId: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(destination: Destination) = apply {
-                accountId = destination.accountId
-                additionalProperties = destination.additionalProperties.toMutableMap()
-            }
-
-            /** Reference to an internal account ID */
-            fun accountId(accountId: String) = accountId(JsonField.of(accountId))
-
-            /**
-             * Sets [Builder.accountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.accountId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Destination].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .accountId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Destination =
-                Destination(
-                    checkRequired("accountId", accountId),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): Destination = apply {
-            if (validated) {
-                return@apply
-            }
-
-            accountId()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = (if (accountId.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Destination &&
-                accountId == other.accountId &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(accountId, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Destination{accountId=$accountId, additionalProperties=$additionalProperties}"
-    }
-
-    /** Source external account details */
-    class Source
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val accountId: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("accountId")
-            @ExcludeMissing
-            accountId: JsonField<String> = JsonMissing.of()
-        ) : this(accountId, mutableMapOf())
-
-        /**
-         * Reference to an external account ID
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun accountId(): String = accountId.getRequired("accountId")
-
-        /**
-         * Returns the raw JSON value of [accountId].
-         *
-         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Source].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .accountId()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Source]. */
-        class Builder internal constructor() {
-
-            private var accountId: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(source: Source) = apply {
-                accountId = source.accountId
-                additionalProperties = source.additionalProperties.toMutableMap()
-            }
-
-            /** Reference to an external account ID */
-            fun accountId(accountId: String) = accountId(JsonField.of(accountId))
-
-            /**
-             * Sets [Builder.accountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.accountId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Source].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .accountId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Source =
-                Source(checkRequired("accountId", accountId), additionalProperties.toMutableMap())
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): Source = apply {
-            if (validated) {
-                return@apply
-            }
-
-            accountId()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = (if (accountId.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Source &&
-                accountId == other.accountId &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(accountId, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Source{accountId=$accountId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

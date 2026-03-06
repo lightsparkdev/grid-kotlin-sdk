@@ -59,6 +59,9 @@ private constructor(
 ) : Params {
 
     /**
+     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
+     * be provided.
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -151,6 +154,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
+        /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         */
         fun accountInfo(accountInfo: ExternalAccountInfoOneOf) = apply {
             body.accountInfo(accountInfo)
         }
@@ -599,6 +606,9 @@ private constructor(
         ) : this(accountInfo, currency, platformAccountId, mutableMapOf())
 
         /**
+         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
+         * must be provided.
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -688,6 +698,10 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
+            /**
+             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
+             * `lightningAddress` must be provided.
+             */
             fun accountInfo(accountInfo: ExternalAccountInfoOneOf) =
                 accountInfo(JsonField.of(accountInfo))
 
