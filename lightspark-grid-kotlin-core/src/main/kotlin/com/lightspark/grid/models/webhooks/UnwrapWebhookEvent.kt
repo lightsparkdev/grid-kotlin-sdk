@@ -27,6 +27,7 @@ private constructor(
     private val bulkUpload: BulkUploadWebhookEvent? = null,
     private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
     private val kycStatus: KycStatusWebhookEvent? = null,
+    private val kybStatus: KybStatusWebhookEvent? = null,
     private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
@@ -43,6 +44,8 @@ private constructor(
 
     fun kycStatus(): KycStatusWebhookEvent? = kycStatus
 
+    fun kybStatus(): KybStatusWebhookEvent? = kybStatus
+
     fun internalAccountStatus(): InternalAccountStatusWebhookEvent? = internalAccountStatus
 
     fun isIncomingPayment(): Boolean = incomingPayment != null
@@ -56,6 +59,8 @@ private constructor(
     fun isInvitationClaimed(): Boolean = invitationClaimed != null
 
     fun isKycStatus(): Boolean = kycStatus != null
+
+    fun isKybStatus(): Boolean = kybStatus != null
 
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
 
@@ -74,6 +79,8 @@ private constructor(
 
     fun asKycStatus(): KycStatusWebhookEvent = kycStatus.getOrThrow("kycStatus")
 
+    fun asKybStatus(): KybStatusWebhookEvent = kybStatus.getOrThrow("kybStatus")
+
     fun asInternalAccountStatus(): InternalAccountStatusWebhookEvent =
         internalAccountStatus.getOrThrow("internalAccountStatus")
 
@@ -87,6 +94,7 @@ private constructor(
             bulkUpload != null -> visitor.visitBulkUpload(bulkUpload)
             invitationClaimed != null -> visitor.visitInvitationClaimed(invitationClaimed)
             kycStatus != null -> visitor.visitKycStatus(kycStatus)
+            kybStatus != null -> visitor.visitKybStatus(kybStatus)
             internalAccountStatus != null ->
                 visitor.visitInternalAccountStatus(internalAccountStatus)
             else -> visitor.unknown(_json)
@@ -125,6 +133,10 @@ private constructor(
 
                 override fun visitKycStatus(kycStatus: KycStatusWebhookEvent) {
                     kycStatus.validate()
+                }
+
+                override fun visitKybStatus(kybStatus: KybStatusWebhookEvent) {
+                    kybStatus.validate()
                 }
 
                 override fun visitInternalAccountStatus(
@@ -171,6 +183,8 @@ private constructor(
 
                 override fun visitKycStatus(kycStatus: KycStatusWebhookEvent) = kycStatus.validity()
 
+                override fun visitKybStatus(kybStatus: KybStatusWebhookEvent) = kybStatus.validity()
+
                 override fun visitInternalAccountStatus(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) = internalAccountStatus.validity()
@@ -191,6 +205,7 @@ private constructor(
             bulkUpload == other.bulkUpload &&
             invitationClaimed == other.invitationClaimed &&
             kycStatus == other.kycStatus &&
+            kybStatus == other.kybStatus &&
             internalAccountStatus == other.internalAccountStatus
     }
 
@@ -202,6 +217,7 @@ private constructor(
             bulkUpload,
             invitationClaimed,
             kycStatus,
+            kybStatus,
             internalAccountStatus,
         )
 
@@ -213,6 +229,7 @@ private constructor(
             bulkUpload != null -> "UnwrapWebhookEvent{bulkUpload=$bulkUpload}"
             invitationClaimed != null -> "UnwrapWebhookEvent{invitationClaimed=$invitationClaimed}"
             kycStatus != null -> "UnwrapWebhookEvent{kycStatus=$kycStatus}"
+            kybStatus != null -> "UnwrapWebhookEvent{kybStatus=$kybStatus}"
             internalAccountStatus != null ->
                 "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
@@ -239,6 +256,9 @@ private constructor(
         fun ofKycStatus(kycStatus: KycStatusWebhookEvent) =
             UnwrapWebhookEvent(kycStatus = kycStatus)
 
+        fun ofKybStatus(kybStatus: KybStatusWebhookEvent) =
+            UnwrapWebhookEvent(kybStatus = kybStatus)
+
         fun ofInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent) =
             UnwrapWebhookEvent(internalAccountStatus = internalAccountStatus)
     }
@@ -260,6 +280,8 @@ private constructor(
         fun visitInvitationClaimed(invitationClaimed: InvitationClaimedWebhookEvent): T
 
         fun visitKycStatus(kycStatus: KycStatusWebhookEvent): T
+
+        fun visitKybStatus(kybStatus: KybStatusWebhookEvent): T
 
         fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
 
@@ -303,6 +325,9 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<KycStatusWebhookEvent>())?.let {
                             UnwrapWebhookEvent(kycStatus = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<KybStatusWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(kybStatus = it, _json = json)
+                        },
                         tryDeserialize(node, jacksonTypeRef<InternalAccountStatusWebhookEvent>())
                             ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
                     )
@@ -335,6 +360,7 @@ private constructor(
                 value.bulkUpload != null -> generator.writeObject(value.bulkUpload)
                 value.invitationClaimed != null -> generator.writeObject(value.invitationClaimed)
                 value.kycStatus != null -> generator.writeObject(value.kycStatus)
+                value.kybStatus != null -> generator.writeObject(value.kybStatus)
                 value.internalAccountStatus != null ->
                     generator.writeObject(value.internalAccountStatus)
                 value._json != null -> generator.writeObject(value._json)
