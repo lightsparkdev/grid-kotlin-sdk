@@ -24,7 +24,6 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.platform.externalaccounts.BaseExternalAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.MyrAccountInfo
 import java.util.Collections
 import java.util.Objects
@@ -66,9 +65,6 @@ private constructor(
         beneficiary,
         mutableMapOf(),
     )
-
-    fun toBaseExternalAccountInfo(): BaseExternalAccountInfo =
-        BaseExternalAccountInfo.builder().build()
 
     fun toMyrAccountInfo(): MyrAccountInfo =
         MyrAccountInfo.builder()

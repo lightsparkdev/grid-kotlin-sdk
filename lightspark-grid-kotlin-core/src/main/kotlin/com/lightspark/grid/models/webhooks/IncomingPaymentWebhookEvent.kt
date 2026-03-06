@@ -15,10 +15,11 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import java.time.OffsetDateTime
@@ -282,9 +283,8 @@ private constructor(
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
         private val failureReason: JsonField<IncomingTransaction.FailureReason>,
-        private val rateDetails: JsonField<IncomingTransaction.RateDetails>,
-        private val reconciliationInstructions:
-            JsonField<IncomingTransaction.ReconciliationInstructions>,
+        private val rateDetails: JsonField<IncomingRateDetails>,
+        private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
         private val settledAt: JsonField<OffsetDateTime>,
         private val source: JsonField<TransactionSourceOneOf>,
         private val updatedAt: JsonField<OffsetDateTime>,
@@ -329,11 +329,10 @@ private constructor(
             failureReason: JsonField<IncomingTransaction.FailureReason> = JsonMissing.of(),
             @JsonProperty("rateDetails")
             @ExcludeMissing
-            rateDetails: JsonField<IncomingTransaction.RateDetails> = JsonMissing.of(),
+            rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of(),
             @JsonProperty("reconciliationInstructions")
             @ExcludeMissing
-            reconciliationInstructions: JsonField<IncomingTransaction.ReconciliationInstructions> =
-                JsonMissing.of(),
+            reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
             @JsonProperty("settledAt")
             @ExcludeMissing
             settledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -495,7 +494,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun rateDetails(): IncomingTransaction.RateDetails? = rateDetails.getNullable("rateDetails")
+        fun rateDetails(): IncomingRateDetails? = rateDetails.getNullable("rateDetails")
 
         /**
          * Included for all transactions except those with "CREATED" status
@@ -503,7 +502,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun reconciliationInstructions(): IncomingTransaction.ReconciliationInstructions? =
+        fun reconciliationInstructions(): ReconciliationInstructions? =
             reconciliationInstructions.getNullable("reconciliationInstructions")
 
         /**
@@ -648,7 +647,7 @@ private constructor(
          */
         @JsonProperty("rateDetails")
         @ExcludeMissing
-        fun _rateDetails(): JsonField<IncomingTransaction.RateDetails> = rateDetails
+        fun _rateDetails(): JsonField<IncomingRateDetails> = rateDetails
 
         /**
          * Returns the raw JSON value of [reconciliationInstructions].
@@ -658,8 +657,8 @@ private constructor(
          */
         @JsonProperty("reconciliationInstructions")
         @ExcludeMissing
-        fun _reconciliationInstructions():
-            JsonField<IncomingTransaction.ReconciliationInstructions> = reconciliationInstructions
+        fun _reconciliationInstructions(): JsonField<ReconciliationInstructions> =
+            reconciliationInstructions
 
         /**
          * Returns the raw JSON value of [settledAt].
@@ -747,9 +746,8 @@ private constructor(
             private var description: JsonField<String> = JsonMissing.of()
             private var failureReason: JsonField<IncomingTransaction.FailureReason> =
                 JsonMissing.of()
-            private var rateDetails: JsonField<IncomingTransaction.RateDetails> = JsonMissing.of()
-            private var reconciliationInstructions:
-                JsonField<IncomingTransaction.ReconciliationInstructions> =
+            private var rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of()
+            private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
                 JsonMissing.of()
             private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var source: JsonField<TransactionSourceOneOf> = JsonMissing.of()
@@ -822,85 +820,39 @@ private constructor(
 
             /**
              * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofAccount(account)`.
-             */
-            fun destination(account: IncomingTransaction.Destination.Account) =
-                destination(IncomingTransaction.Destination.ofAccount(account))
-
-            /**
-             * Alias for calling [destination] with the following:
-             * ```kotlin
-             * IncomingTransaction.Destination.Account.builder()
-             *     .destinationType(IncomingTransaction.Destination.Account.DestinationType.ACCOUNT)
-             *     .accountId(accountId)
-             *     .build()
-             * ```
-             */
-            fun accountDestination(accountId: String) =
-                destination(
-                    IncomingTransaction.Destination.Account.builder()
-                        .destinationType(
-                            IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
-                        )
-                        .accountId(accountId)
-                        .build()
-                )
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofUmaAddress(umaAddress)`.
-             */
-            fun destination(umaAddress: IncomingTransaction.Destination.UmaAddress) =
-                destination(IncomingTransaction.Destination.ofUmaAddress(umaAddress))
-
-            /**
-             * Alias for calling [destination] with the following:
-             * ```kotlin
-             * IncomingTransaction.Destination.UmaAddress.builder()
-             *     .destinationType(IncomingTransaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS)
-             *     .umaAddress(umaAddress)
-             *     .build()
-             * ```
-             */
-            fun umaAddressDestination(umaAddress: String) =
-                destination(
-                    IncomingTransaction.Destination.UmaAddress.builder()
-                        .destinationType(
-                            IncomingTransaction.Destination.UmaAddress.DestinationType.UMA_ADDRESS
-                        )
-                        .umaAddress(umaAddress)
-                        .build()
-                )
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofExternalAccountDetails(externalAccountDetails)`.
+             * `IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)`.
              */
             fun destination(
-                externalAccountDetails: IncomingTransaction.Destination.ExternalAccountDetails
+                accountTransaction: IncomingTransaction.Destination.AccountTransactionDestination
             ) =
                 destination(
-                    IncomingTransaction.Destination.ofExternalAccountDetails(externalAccountDetails)
+                    IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)
                 )
 
             /**
-             * Alias for calling [destination] with the following:
-             * ```kotlin
-             * IncomingTransaction.Destination.ExternalAccountDetails.builder()
-             *     .destinationType(IncomingTransaction.Destination.ExternalAccountDetails.DestinationType.EXTERNAL_ACCOUNT_DETAILS)
-             *     .externalAccountDetails(externalAccountDetails)
-             *     .build()
-             * ```
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)`.
              */
-            fun externalAccountDetailsDestination(externalAccountDetails: ExternalAccountCreate) =
+            fun destination(
+                umaAddressTransaction:
+                    IncomingTransaction.Destination.UmaAddressTransactionDestination
+            ) =
                 destination(
-                    IncomingTransaction.Destination.ExternalAccountDetails.builder()
-                        .destinationType(
-                            IncomingTransaction.Destination.ExternalAccountDetails.DestinationType
-                                .EXTERNAL_ACCOUNT_DETAILS
-                        )
-                        .externalAccountDetails(externalAccountDetails)
-                        .build()
+                    IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)
+                )
+
+            /**
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofExternalAccountDetailsTransaction(externalAccountDetailsTransaction)`.
+             */
+            fun destination(
+                externalAccountDetailsTransaction:
+                    IncomingTransaction.Destination.ExternalAccountDetailsTransactionDestination
+            ) =
+                destination(
+                    IncomingTransaction.Destination.ofExternalAccountDetailsTransaction(
+                        externalAccountDetailsTransaction
+                    )
                 )
 
             /**
@@ -1035,35 +987,33 @@ private constructor(
             }
 
             /** Details about the rate and fees for the transaction. */
-            fun rateDetails(rateDetails: IncomingTransaction.RateDetails) =
+            fun rateDetails(rateDetails: IncomingRateDetails) =
                 rateDetails(JsonField.of(rateDetails))
 
             /**
              * Sets [Builder.rateDetails] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.rateDetails] with a well-typed
-             * [IncomingTransaction.RateDetails] value instead. This method is primarily for setting
-             * the field to an undocumented or not yet supported value.
+             * You should usually call [Builder.rateDetails] with a well-typed [IncomingRateDetails]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
              */
-            fun rateDetails(rateDetails: JsonField<IncomingTransaction.RateDetails>) = apply {
+            fun rateDetails(rateDetails: JsonField<IncomingRateDetails>) = apply {
                 this.rateDetails = rateDetails
             }
 
             /** Included for all transactions except those with "CREATED" status */
-            fun reconciliationInstructions(
-                reconciliationInstructions: IncomingTransaction.ReconciliationInstructions
-            ) = reconciliationInstructions(JsonField.of(reconciliationInstructions))
+            fun reconciliationInstructions(reconciliationInstructions: ReconciliationInstructions) =
+                reconciliationInstructions(JsonField.of(reconciliationInstructions))
 
             /**
              * Sets [Builder.reconciliationInstructions] to an arbitrary JSON value.
              *
              * You should usually call [Builder.reconciliationInstructions] with a well-typed
-             * [IncomingTransaction.ReconciliationInstructions] value instead. This method is
-             * primarily for setting the field to an undocumented or not yet supported value.
+             * [ReconciliationInstructions] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
              */
             fun reconciliationInstructions(
-                reconciliationInstructions:
-                    JsonField<IncomingTransaction.ReconciliationInstructions>
+                reconciliationInstructions: JsonField<ReconciliationInstructions>
             ) = apply { this.reconciliationInstructions = reconciliationInstructions }
 
             /** When the payment was or will be settled */
@@ -1092,74 +1042,38 @@ private constructor(
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
 
-            /** Alias for calling [source] with `TransactionSourceOneOf.ofAccount(account)`. */
-            fun source(account: TransactionSourceOneOf.Account) =
-                source(TransactionSourceOneOf.ofAccount(account))
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
+             */
+            fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
+                source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
 
             /**
-             * Alias for calling [source] with the following:
-             * ```kotlin
-             * TransactionSourceOneOf.Account.builder()
-             *     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
-             *     .accountId(accountId)
-             *     .build()
-             * ```
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
              */
-            fun accountSource(accountId: String) =
+            fun source(
+                umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
+            ) =
                 source(
-                    TransactionSourceOneOf.Account.builder()
-                        .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
-                        .accountId(accountId)
-                        .build()
-                )
-
-            /**
-             * Alias for calling [source] with `TransactionSourceOneOf.ofUmaAddress(umaAddress)`.
-             */
-            fun source(umaAddress: TransactionSourceOneOf.UmaAddress) =
-                source(TransactionSourceOneOf.ofUmaAddress(umaAddress))
-
-            /**
-             * Alias for calling [source] with the following:
-             * ```kotlin
-             * TransactionSourceOneOf.UmaAddress.builder()
-             *     .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
-             *     .umaAddress(umaAddress)
-             *     .build()
-             * ```
-             */
-            fun umaAddressSource(umaAddress: String) =
-                source(
-                    TransactionSourceOneOf.UmaAddress.builder()
-                        .sourceType(TransactionSourceOneOf.UmaAddress.SourceType.UMA_ADDRESS)
-                        .umaAddress(umaAddress)
-                        .build()
+                    TransactionSourceOneOf.ofUmaAddressTransactionSource(
+                        umaAddressTransactionSource
+                    )
                 )
 
             /**
              * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding)`.
+             * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
              */
-            fun source(realtimeFunding: TransactionSourceOneOf.RealtimeFunding) =
-                source(TransactionSourceOneOf.ofRealtimeFunding(realtimeFunding))
-
-            /**
-             * Alias for calling [source] with the following:
-             * ```kotlin
-             * TransactionSourceOneOf.RealtimeFunding.builder()
-             *     .sourceType(TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING)
-             *     .currency(currency)
-             *     .build()
-             * ```
-             */
-            fun realtimeFundingSource(currency: String) =
+            fun source(
+                realtimeFundingTransactionSource:
+                    TransactionSourceOneOf.RealtimeFundingTransactionSource
+            ) =
                 source(
-                    TransactionSourceOneOf.RealtimeFunding.builder()
-                        .sourceType(
-                            TransactionSourceOneOf.RealtimeFunding.SourceType.REALTIME_FUNDING
-                        )
-                        .currency(currency)
-                        .build()
+                    TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
+                        realtimeFundingTransactionSource
+                    )
                 )
 
             /** When the transaction was last updated */
