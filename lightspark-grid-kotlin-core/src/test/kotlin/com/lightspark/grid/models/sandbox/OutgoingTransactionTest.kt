@@ -6,46 +6,33 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
-import com.lightspark.grid.models.transactions.TransactionStatus
-import com.lightspark.grid.models.transactions.TransactionType
-import com.lightspark.grid.models.transferin.Transaction
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SandboxSendFundsResponseTest {
+internal class OutgoingTransactionTest {
 
     @Test
     fun create() {
-        val sandboxSendFundsResponse =
-            SandboxSendFundsResponse.builder()
+        val outgoingTransaction =
+            OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    Transaction.Destination.Account.builder()
+                    OutgoingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
+                        .destinationType(
+                            OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
-                .status(TransactionStatus.PENDING)
-                .type(TransactionType.OUTGOING)
-                .counterpartyInformation(
-                    Transaction.CounterpartyInformation.builder()
-                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                        .build()
-                )
-                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                .description("Payment for invoice #1234")
-                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .sentAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -66,24 +53,30 @@ internal class SandboxSendFundsResponseTest {
                         .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
+                .status(OutgoingTransaction.Status.PENDING)
+                .type(OutgoingTransaction.Type.OUTGOING)
+                .counterpartyInformation(
+                    OutgoingTransaction.CounterpartyInformation.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
+                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                .description("Payment for invoice #1234")
                 .exchangeRate(1.08)
-                .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
+                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("1234567890")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .ACH
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .WIRE
-                                )
-                                .reference("UMA-Q12345-REF")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                 .routingNumber("021000021")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -138,49 +131,36 @@ internal class SandboxSendFundsResponseTest {
                         .build()
                 )
                 .refund(
-                    SandboxSendFundsResponse.Refund.builder()
+                    OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
-                        .status(SandboxSendFundsResponse.Refund.Status.COMPLETED)
-                        .reason(SandboxSendFundsResponse.Refund.Reason.TRANSACTION_FAILED)
+                        .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                        .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                         .build()
                 )
+                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
-        assertThat(sandboxSendFundsResponse.id())
+        assertThat(outgoingTransaction.id())
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
-        assertThat(sandboxSendFundsResponse.customerId())
+        assertThat(outgoingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(sandboxSendFundsResponse.destination())
+        assertThat(outgoingTransaction.destination())
             .isEqualTo(
-                Transaction.Destination.ofAccount(
-                    Transaction.Destination.Account.builder()
+                OutgoingTransaction.Destination.ofAccount(
+                    OutgoingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
+                        .destinationType(
+                            OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .build()
                 )
             )
-        assertThat(sandboxSendFundsResponse.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
-        assertThat(sandboxSendFundsResponse.status()).isEqualTo(TransactionStatus.PENDING)
-        assertThat(sandboxSendFundsResponse.type()).isEqualTo(TransactionType.OUTGOING)
-        assertThat(sandboxSendFundsResponse.counterpartyInformation())
-            .isEqualTo(
-                Transaction.CounterpartyInformation.builder()
-                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                    .build()
-            )
-        assertThat(sandboxSendFundsResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-        assertThat(sandboxSendFundsResponse.description()).isEqualTo("Payment for invoice #1234")
-        assertThat(sandboxSendFundsResponse.settledAt())
-            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(sandboxSendFundsResponse.updatedAt())
-            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(sandboxSendFundsResponse.sentAmount())
+        assertThat(outgoingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
+        assertThat(outgoingTransaction.sentAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -194,7 +174,7 @@ internal class SandboxSendFundsResponseTest {
                     )
                     .build()
             )
-        assertThat(sandboxSendFundsResponse.source())
+        assertThat(outgoingTransaction.source())
             .isEqualTo(
                 TransactionSourceOneOf.ofAccount(
                     TransactionSourceOneOf.Account.builder()
@@ -204,24 +184,34 @@ internal class SandboxSendFundsResponseTest {
                         .build()
                 )
             )
-        assertThat(sandboxSendFundsResponse.exchangeRate()).isEqualTo(1.08)
-        assertThat(sandboxSendFundsResponse.failureReason())
-            .isEqualTo(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
-        assertThat(sandboxSendFundsResponse.fees()).isEqualTo(10L)
-        assertThat(sandboxSendFundsResponse.paymentInstructions())
+        assertThat(outgoingTransaction.status()).isEqualTo(OutgoingTransaction.Status.PENDING)
+        assertThat(outgoingTransaction.type()).isEqualTo(OutgoingTransaction.Type.OUTGOING)
+        assertThat(outgoingTransaction.counterpartyInformation())
+            .isEqualTo(
+                OutgoingTransaction.CounterpartyInformation.builder()
+                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                    .build()
+            )
+        assertThat(outgoingTransaction.createdAt())
+            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+        assertThat(outgoingTransaction.description()).isEqualTo("Payment for invoice #1234")
+        assertThat(outgoingTransaction.exchangeRate()).isEqualTo(1.08)
+        assertThat(outgoingTransaction.failureReason())
+            .isEqualTo(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+        assertThat(outgoingTransaction.fees()).isEqualTo(10L)
+        assertThat(outgoingTransaction.paymentInstructions())
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("1234567890")
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
-                            )
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.WIRE
-                            )
-                            .reference("UMA-Q12345-REF")
+                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                             .routingNumber("021000021")
+                            .reference("UMA-Q12345-REF")
                             .build()
                     )
                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -249,9 +239,9 @@ internal class SandboxSendFundsResponseTest {
                     .isPlatformAccount(true)
                     .build(),
             )
-        assertThat(sandboxSendFundsResponse.quoteId())
+        assertThat(outgoingTransaction.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
-        assertThat(sandboxSendFundsResponse.rateDetails())
+        assertThat(outgoingTransaction.rateDetails())
             .isEqualTo(
                 OutgoingRateDetails.builder()
                     .counterpartyFixedFee(10L)
@@ -262,7 +252,7 @@ internal class SandboxSendFundsResponseTest {
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
-        assertThat(sandboxSendFundsResponse.receivedAmount())
+        assertThat(outgoingTransaction.receivedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -276,46 +266,39 @@ internal class SandboxSendFundsResponseTest {
                     )
                     .build()
             )
-        assertThat(sandboxSendFundsResponse.refund())
+        assertThat(outgoingTransaction.refund())
             .isEqualTo(
-                SandboxSendFundsResponse.Refund.builder()
+                OutgoingTransaction.Refund.builder()
                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .reference("UMA-Q12345-REFUND")
-                    .status(SandboxSendFundsResponse.Refund.Status.COMPLETED)
-                    .reason(SandboxSendFundsResponse.Refund.Reason.TRANSACTION_FAILED)
+                    .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                    .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                     .build()
             )
+        assertThat(outgoingTransaction.settledAt())
+            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+        assertThat(outgoingTransaction.updatedAt())
+            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sandboxSendFundsResponse =
-            SandboxSendFundsResponse.builder()
+        val outgoingTransaction =
+            OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
-                    Transaction.Destination.Account.builder()
+                    OutgoingTransaction.Destination.Account.builder()
                         .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .destinationType(Transaction.Destination.Account.DestinationType.ACCOUNT)
+                        .destinationType(
+                            OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
+                        )
                         .build()
                 )
                 .platformCustomerId("18d3e5f7b4a9c2")
-                .status(TransactionStatus.PENDING)
-                .type(TransactionType.OUTGOING)
-                .counterpartyInformation(
-                    Transaction.CounterpartyInformation.builder()
-                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                        .build()
-                )
-                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                .description("Payment for invoice #1234")
-                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .sentAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -336,24 +319,30 @@ internal class SandboxSendFundsResponseTest {
                         .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                         .build()
                 )
+                .status(OutgoingTransaction.Status.PENDING)
+                .type(OutgoingTransaction.Type.OUTGOING)
+                .counterpartyInformation(
+                    OutgoingTransaction.CounterpartyInformation.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
+                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                .description("Payment for invoice #1234")
                 .exchangeRate(1.08)
-                .failureReason(SandboxSendFundsResponse.FailureReason.QUOTE_EXPIRED)
+                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("1234567890")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .ACH
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .WIRE
-                                )
-                                .reference("UMA-Q12345-REF")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                 .routingNumber("021000021")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -408,22 +397,24 @@ internal class SandboxSendFundsResponseTest {
                         .build()
                 )
                 .refund(
-                    SandboxSendFundsResponse.Refund.builder()
+                    OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
-                        .status(SandboxSendFundsResponse.Refund.Status.COMPLETED)
-                        .reason(SandboxSendFundsResponse.Refund.Reason.TRANSACTION_FAILED)
+                        .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                        .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                         .build()
                 )
+                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
-        val roundtrippedSandboxSendFundsResponse =
+        val roundtrippedOutgoingTransaction =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(sandboxSendFundsResponse),
-                jacksonTypeRef<SandboxSendFundsResponse>(),
+                jsonMapper.writeValueAsString(outgoingTransaction),
+                jacksonTypeRef<OutgoingTransaction>(),
             )
 
-        assertThat(roundtrippedSandboxSendFundsResponse).isEqualTo(sandboxSendFundsResponse)
+        assertThat(roundtrippedOutgoingTransaction).isEqualTo(outgoingTransaction)
     }
 }

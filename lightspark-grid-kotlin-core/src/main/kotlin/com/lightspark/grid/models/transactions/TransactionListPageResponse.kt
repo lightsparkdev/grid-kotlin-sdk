@@ -14,13 +14,15 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.sandbox.OutgoingTransaction
+import com.lightspark.grid.models.transferin.Transaction
 import java.util.Collections
 import java.util.Objects
 
 class TransactionListPageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val data: JsonField<List<TransactionListResponse>>,
+    private val data: JsonField<List<Transaction>>,
     private val hasMore: JsonField<Boolean>,
     private val nextCursor: JsonField<String>,
     private val totalCount: JsonField<Long>,
@@ -29,9 +31,7 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("data")
-        @ExcludeMissing
-        data: JsonField<List<TransactionListResponse>> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonField<List<Transaction>> = JsonMissing.of(),
         @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("nextCursor")
         @ExcludeMissing
@@ -45,7 +45,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): List<TransactionListResponse> = data.getRequired("data")
+    fun data(): List<Transaction> = data.getRequired("data")
 
     /**
      * Indicates if more results are available beyond this page
@@ -76,9 +76,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data")
-    @ExcludeMissing
-    fun _data(): JsonField<List<TransactionListResponse>> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<Transaction>> = data
 
     /**
      * Returns the raw JSON value of [hasMore].
@@ -130,7 +128,7 @@ private constructor(
     /** A builder for [TransactionListPageResponse]. */
     class Builder internal constructor() {
 
-        private var data: JsonField<MutableList<TransactionListResponse>>? = null
+        private var data: JsonField<MutableList<Transaction>>? = null
         private var hasMore: JsonField<Boolean>? = null
         private var nextCursor: JsonField<String> = JsonMissing.of()
         private var totalCount: JsonField<Long> = JsonMissing.of()
@@ -145,44 +143,36 @@ private constructor(
         }
 
         /** List of transactions matching the criteria */
-        fun data(data: List<TransactionListResponse>) = data(JsonField.of(data))
+        fun data(data: List<Transaction>) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed `List<TransactionListResponse>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.data] with a well-typed `List<Transaction>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun data(data: JsonField<List<TransactionListResponse>>) = apply {
+        fun data(data: JsonField<List<Transaction>>) = apply {
             this.data = data.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [TransactionListResponse] to [Builder.data].
+         * Adds a single [Transaction] to [Builder.data].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addData(data: TransactionListResponse) = apply {
+        fun addData(data: Transaction) = apply {
             this.data =
                 (this.data ?: JsonField.of(mutableListOf())).also {
                     checkKnown("data", it).add(data)
                 }
         }
 
-        /**
-         * Alias for calling [addData] with
-         * `TransactionListResponse.ofIncomingTransaction(incomingTransaction)`.
-         */
-        fun addData(incomingTransaction: IncomingTransaction) =
-            addData(TransactionListResponse.ofIncomingTransaction(incomingTransaction))
+        /** Alias for calling [addData] with `Transaction.ofIncoming(incoming)`. */
+        fun addData(incoming: IncomingTransaction) = addData(Transaction.ofIncoming(incoming))
 
-        /**
-         * Alias for calling [addData] with
-         * `TransactionListResponse.ofOutgoingTransaction(outgoingTransaction)`.
-         */
-        fun addData(outgoingTransaction: TransactionListResponse.OutgoingTransaction) =
-            addData(TransactionListResponse.ofOutgoingTransaction(outgoingTransaction))
+        /** Alias for calling [addData] with `Transaction.ofOutgoing(outgoing)`. */
+        fun addData(outgoing: OutgoingTransaction) = addData(Transaction.ofOutgoing(outgoing))
 
         /** Indicates if more results are available beyond this page */
         fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))

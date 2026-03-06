@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.ThbAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,10 @@ internal class ThbExternalAccountInfoTest {
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
                 .bankName("Bangkok Bank")
+                .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BKKBTHBK")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +41,15 @@ internal class ThbExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BKKBTHBK")
                 .build()
 
         assertThat(thbExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(thbExternalAccountInfo.accountType())
-            .isEqualTo(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+            .isEqualTo(ThbAccountInfo.AccountType.THB_ACCOUNT)
         assertThat(thbExternalAccountInfo.bankName()).isEqualTo("Bangkok Bank")
+        assertThat(thbExternalAccountInfo.paymentRails())
+            .containsExactly(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(thbExternalAccountInfo.swiftCode()).isEqualTo("BKKBTHBK")
         assertThat(thbExternalAccountInfo.beneficiary())
             .isEqualTo(
                 ThbExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,9 +75,6 @@ internal class ThbExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(thbExternalAccountInfo.paymentRails())
-            .containsExactly(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(thbExternalAccountInfo.swiftCode()).isEqualTo("BKKBTHBK")
     }
 
     @Test
@@ -82,8 +83,10 @@ internal class ThbExternalAccountInfoTest {
         val thbExternalAccountInfo =
             ThbExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
                 .bankName("Bangkok Bank")
+                .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BKKBTHBK")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -106,8 +109,6 @@ internal class ThbExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BKKBTHBK")
                 .build()
 
         val roundtrippedThbExternalAccountInfo =

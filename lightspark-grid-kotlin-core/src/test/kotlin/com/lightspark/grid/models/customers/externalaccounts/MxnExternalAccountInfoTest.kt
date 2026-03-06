@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.MxnAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,9 @@ internal class MxnExternalAccountInfoTest {
     fun create() {
         val mxnExternalAccountInfo =
             MxnExternalAccountInfo.builder()
-                .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                .clabeNumber("123456789012345678")
+                .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
                 .beneficiary(
                     MxnBeneficiary.builder()
                         .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -36,12 +39,13 @@ internal class MxnExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .clabeNumber("123456789012345678")
-                .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
         assertThat(mxnExternalAccountInfo.accountType())
-            .isEqualTo(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+            .isEqualTo(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+        assertThat(mxnExternalAccountInfo.clabeNumber()).isEqualTo("123456789012345678")
+        assertThat(mxnExternalAccountInfo.paymentRails())
+            .containsExactly(MxnAccountInfo.PaymentRail.SPEI)
         assertThat(mxnExternalAccountInfo.beneficiary())
             .isEqualTo(
                 MxnExternalAccountInfo.Beneficiary.ofIndividual(
@@ -67,9 +71,6 @@ internal class MxnExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(mxnExternalAccountInfo.clabeNumber()).isEqualTo("123456789012345678")
-        assertThat(mxnExternalAccountInfo.paymentRails())
-            .containsExactly(MxnExternalAccountInfo.PaymentRail.SPEI)
     }
 
     @Test
@@ -77,7 +78,9 @@ internal class MxnExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val mxnExternalAccountInfo =
             MxnExternalAccountInfo.builder()
-                .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                .clabeNumber("123456789012345678")
+                .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
                 .beneficiary(
                     MxnBeneficiary.builder()
                         .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -100,8 +103,6 @@ internal class MxnExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .clabeNumber("123456789012345678")
-                .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
         val roundtrippedMxnExternalAccountInfo =

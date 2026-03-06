@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.HkdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,10 @@ internal class HkdExternalAccountInfoTest {
         val hkdExternalAccountInfo =
             HkdExternalAccountInfo.builder()
                 .accountNumber("123456789012")
-                .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
                 .bankName("HSBC Hong Kong")
+                .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("HSBCHKHHHKH")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +41,15 @@ internal class HkdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("HSBCHKHHHKH")
                 .build()
 
         assertThat(hkdExternalAccountInfo.accountNumber()).isEqualTo("123456789012")
         assertThat(hkdExternalAccountInfo.accountType())
-            .isEqualTo(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+            .isEqualTo(HkdAccountInfo.AccountType.HKD_ACCOUNT)
         assertThat(hkdExternalAccountInfo.bankName()).isEqualTo("HSBC Hong Kong")
+        assertThat(hkdExternalAccountInfo.paymentRails())
+            .containsExactly(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(hkdExternalAccountInfo.swiftCode()).isEqualTo("HSBCHKHHHKH")
         assertThat(hkdExternalAccountInfo.beneficiary())
             .isEqualTo(
                 HkdExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,9 +75,6 @@ internal class HkdExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(hkdExternalAccountInfo.paymentRails())
-            .containsExactly(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(hkdExternalAccountInfo.swiftCode()).isEqualTo("HSBCHKHHHKH")
     }
 
     @Test
@@ -82,8 +83,10 @@ internal class HkdExternalAccountInfoTest {
         val hkdExternalAccountInfo =
             HkdExternalAccountInfo.builder()
                 .accountNumber("123456789012")
-                .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
                 .bankName("HSBC Hong Kong")
+                .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("HSBCHKHHHKH")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -106,8 +109,6 @@ internal class HkdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("HSBCHKHHHKH")
                 .build()
 
         val roundtrippedHkdExternalAccountInfo =

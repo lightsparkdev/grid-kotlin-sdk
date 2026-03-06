@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.InrAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,9 @@ internal class InrExternalAccountInfoTest {
     fun create() {
         val inrExternalAccountInfo =
             InrExternalAccountInfo.builder()
-                .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
+                .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
+                .vpa("vpa")
                 .beneficiary(
                     InrBeneficiary.builder()
                         .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -36,12 +39,13 @@ internal class InrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
                 .build()
 
         assertThat(inrExternalAccountInfo.accountType())
-            .isEqualTo(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+            .isEqualTo(InrAccountInfo.AccountType.INR_ACCOUNT)
+        assertThat(inrExternalAccountInfo.paymentRails())
+            .containsExactly(InrAccountInfo.PaymentRail.UPI)
+        assertThat(inrExternalAccountInfo.vpa()).isEqualTo("vpa")
         assertThat(inrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 InrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -67,9 +71,6 @@ internal class InrExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(inrExternalAccountInfo.paymentRails())
-            .containsExactly(InrExternalAccountInfo.PaymentRail.UPI)
-        assertThat(inrExternalAccountInfo.vpa()).isEqualTo("vpa")
     }
 
     @Test
@@ -77,7 +78,9 @@ internal class InrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val inrExternalAccountInfo =
             InrExternalAccountInfo.builder()
-                .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
+                .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
+                .vpa("vpa")
                 .beneficiary(
                     InrBeneficiary.builder()
                         .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -100,8 +103,6 @@ internal class InrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
                 .build()
 
         val roundtrippedInrExternalAccountInfo =

@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
-import com.lightspark.grid.models.transferout.TransferOutCreateResponse
 
 /**
  * Endpoints for transferring funds between internal and external accounts with the same currency
@@ -30,7 +30,7 @@ interface TransferOutServiceAsync {
     suspend fun create(
         params: TransferOutCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): TransferOutCreateResponse
+    ): Transaction
 
     /**
      * A view of [TransferOutServiceAsync] that provides access to raw HTTP responses for each
@@ -55,6 +55,6 @@ interface TransferOutServiceAsync {
         suspend fun create(
             params: TransferOutCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<TransferOutCreateResponse>
+        ): HttpResponseFor<Transaction>
     }
 }

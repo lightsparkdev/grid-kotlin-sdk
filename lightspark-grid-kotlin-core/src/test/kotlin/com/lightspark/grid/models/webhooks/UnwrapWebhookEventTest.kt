@@ -8,18 +8,21 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.BusinessCustomerFields
+import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
+import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
-import com.lightspark.grid.models.transactions.TransactionType
-import com.lightspark.grid.models.transferin.Transaction
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -37,6 +40,65 @@ internal class UnwrapWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     IncomingPaymentWebhookEvent.Data.builder()
+                        .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .destination(
+                            IncomingTransaction.Destination.Account.builder()
+                                .currency("EUR")
+                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .destinationType(
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
+                                )
+                                .build()
+                        )
+                        .platformCustomerId("18d3e5f7b4a9c2")
+                        .receivedAmount(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .status(TransactionStatus.CREATED)
+                        .type(IncomingTransaction.Type.INCOMING)
+                        .counterpartyInformation(
+                            IncomingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
+                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .rateDetails(
+                            IncomingTransaction.RateDetails.builder()
+                                .gridApiFixedFee(10L)
+                                .gridApiMultiplier(0.925)
+                                .gridApiVariableFeeAmount(30.0)
+                                .gridApiVariableFeeRate(0.003)
+                                .build()
+                        )
+                        .reconciliationInstructions(
+                            IncomingTransaction.ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .build()
+                        )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .source(
+                            TransactionSourceOneOf.Account.builder()
+                                .currency("USD")
+                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                                .build()
+                        )
+                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .addRequestedReceiverCustomerInfoField(
                             CounterpartyFieldDefinition.builder()
                                 .mandatory(true)
@@ -70,6 +132,70 @@ internal class UnwrapWebhookEventTest {
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         IncomingPaymentWebhookEvent.Data.builder()
+                            .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .destination(
+                                IncomingTransaction.Destination.Account.builder()
+                                    .currency("EUR")
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .destinationType(
+                                        IncomingTransaction.Destination.Account.DestinationType
+                                            .ACCOUNT
+                                    )
+                                    .build()
+                            )
+                            .platformCustomerId("18d3e5f7b4a9c2")
+                            .receivedAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .status(TransactionStatus.CREATED)
+                            .type(IncomingTransaction.Type.INCOMING)
+                            .counterpartyInformation(
+                                IncomingTransaction.CounterpartyInformation.builder()
+                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                            .description("Payment for invoice #1234")
+                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                            .rateDetails(
+                                IncomingTransaction.RateDetails.builder()
+                                    .gridApiFixedFee(10L)
+                                    .gridApiMultiplier(0.925)
+                                    .gridApiVariableFeeAmount(30.0)
+                                    .gridApiVariableFeeRate(0.003)
+                                    .build()
+                            )
+                            .reconciliationInstructions(
+                                IncomingTransaction.ReconciliationInstructions.builder()
+                                    .reference("UMA-Q12345-REF")
+                                    .build()
+                            )
+                            .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                            .source(
+                                TransactionSourceOneOf.Account.builder()
+                                    .currency("USD")
+                                    .accountId(
+                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
+                                    .build()
+                            )
+                            .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .addRequestedReceiverCustomerInfoField(
                                 CounterpartyFieldDefinition.builder()
                                     .mandatory(true)
@@ -98,32 +224,19 @@ internal class UnwrapWebhookEventTest {
             OutgoingPaymentWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    OutgoingPaymentWebhookEvent.Data.builder()
+                    OutgoingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
+                            OutgoingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
+                                    OutgoingTransaction.Destination.Account.DestinationType.ACCOUNT
                                 )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
-                        .status(TransactionStatus.PENDING)
-                        .type(TransactionType.OUTGOING)
-                        .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                        .description("Payment for invoice #1234")
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .sentAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -144,26 +257,30 @@ internal class UnwrapWebhookEventTest {
                                 .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .build()
                         )
+                        .status(OutgoingTransaction.Status.PENDING)
+                        .type(OutgoingTransaction.Type.OUTGOING)
+                        .counterpartyInformation(
+                            OutgoingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
-                        .failureReason(OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED)
+                        .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("1234567890")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .PaymentRail
-                                                .ACH
-                                        )
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .PaymentRail
-                                                .WIRE
-                                        )
-                                        .reference("UMA-Q12345-REF")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                         .routingNumber("021000021")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -220,17 +337,16 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                            OutgoingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED)
-                                .reason(
-                                    OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                        .TRANSACTION_FAILED
-                                )
+                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -257,34 +373,22 @@ internal class UnwrapWebhookEventTest {
                 OutgoingPaymentWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        OutgoingPaymentWebhookEvent.Data.builder()
+                        OutgoingTransaction.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(
-                                Transaction.Destination.Account.builder()
+                                OutgoingTransaction.Destination.Account.builder()
                                     .currency("EUR")
                                     .accountId(
                                         "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
                                     )
                                     .destinationType(
-                                        Transaction.Destination.Account.DestinationType.ACCOUNT
+                                        OutgoingTransaction.Destination.Account.DestinationType
+                                            .ACCOUNT
                                     )
                                     .build()
                             )
                             .platformCustomerId("18d3e5f7b4a9c2")
-                            .status(TransactionStatus.PENDING)
-                            .type(TransactionType.OUTGOING)
-                            .counterpartyInformation(
-                                Transaction.CounterpartyInformation.builder()
-                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                    .build()
-                            )
-                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                            .description("Payment for invoice #1234")
-                            .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                            .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .sentAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -307,28 +411,30 @@ internal class UnwrapWebhookEventTest {
                                     .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                     .build()
                             )
-                            .exchangeRate(1.08)
-                            .failureReason(
-                                OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED
+                            .status(OutgoingTransaction.Status.PENDING)
+                            .type(OutgoingTransaction.Type.OUTGOING)
+                            .counterpartyInformation(
+                                OutgoingTransaction.CounterpartyInformation.builder()
+                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                    .build()
                             )
+                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                            .description("Payment for invoice #1234")
+                            .exchangeRate(1.08)
+                            .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                             .fees(10L)
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
                                     .accountOrWalletInfo(
                                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                             .accountNumber("1234567890")
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                    .PaymentRail
-                                                    .ACH
-                                            )
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                    .PaymentRail
-                                                    .WIRE
-                                            )
-                                            .reference("UMA-Q12345-REF")
+                                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                            .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                             .routingNumber("021000021")
+                                            .reference("UMA-Q12345-REF")
                                             .build()
                                     )
                                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -386,19 +492,16 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .refund(
-                                OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                                OutgoingTransaction.Refund.builder()
                                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                     .reference("UMA-Q12345-REFUND")
-                                    .status(
-                                        OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED
-                                    )
-                                    .reason(
-                                        OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                            .TRANSACTION_FAILED
-                                    )
+                                    .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                    .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                     .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                     .build()
                             )
+                            .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                            .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -660,7 +763,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(KycStatusWebhookEvent.Data.CustomerType.INDIVIDUAL)
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -673,7 +776,7 @@ internal class UnwrapWebhookEventTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(KycStatusWebhookEvent.Data.KycStatus.APPROVED)
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -708,7 +811,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                            .customerType(KycStatusWebhookEvent.Data.CustomerType.INDIVIDUAL)
+                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -721,7 +824,7 @@ internal class UnwrapWebhookEventTest {
                             )
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
-                            .kycStatus(KycStatusWebhookEvent.Data.KycStatus.APPROVED)
+                            .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                             .nationality("US")
                             .build()
                     )
@@ -752,7 +855,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                        .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -764,11 +867,10 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .addBeneficialOwner(
-                            KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                            BusinessCustomerFields.BeneficialOwner.builder()
                                 .fullName("John Michael Doe")
                                 .individualType(
-                                    KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
-                                        .DIRECTOR
+                                    BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                                 )
                                 .address(
                                     Address.builder()
@@ -790,13 +892,13 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .businessInfo(
-                            KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                            BusinessCustomerFields.BusinessInfo.builder()
                                 .legalName("Acme Corporation, Inc.")
                                 .registrationNumber("BRN-123456789")
                                 .taxId("EIN-987654321")
                                 .build()
                         )
-                        .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                        .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -830,7 +932,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                            .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                            .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -842,10 +944,10 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .addBeneficialOwner(
-                                KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                                BusinessCustomerFields.BeneficialOwner.builder()
                                     .fullName("John Michael Doe")
                                     .individualType(
-                                        KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
+                                        BusinessCustomerFields.BeneficialOwner.IndividualType
                                             .DIRECTOR
                                     )
                                     .address(
@@ -868,13 +970,13 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .businessInfo(
-                                KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                                BusinessCustomerFields.BusinessInfo.builder()
                                     .legalName("Acme Corporation, Inc.")
                                     .registrationNumber("BRN-123456789")
                                     .taxId("EIN-987654321")
                                     .build()
                             )
-                            .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                            .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -918,13 +1020,10 @@ internal class UnwrapWebhookEventTest {
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("accountNumber")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .PaymentRail
-                                                .ACH
-                                        )
-                                        .reference("UMA-Q12345-REF")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                         .routingNumber("routingNumber")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -982,13 +1081,10 @@ internal class UnwrapWebhookEventTest {
                                     .accountOrWalletInfo(
                                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                             .accountNumber("accountNumber")
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                    .PaymentRail
-                                                    .ACH
-                                            )
-                                            .reference("UMA-Q12345-REF")
+                                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                             .routingNumber("routingNumber")
+                                            .reference("UMA-Q12345-REF")
                                             .build()
                                     )
                                     .instructionsNotes(

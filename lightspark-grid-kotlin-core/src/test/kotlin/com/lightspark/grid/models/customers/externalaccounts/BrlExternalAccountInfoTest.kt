@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,11 @@ internal class BrlExternalAccountInfoTest {
     fun create() {
         val brlExternalAccountInfo =
             BrlExternalAccountInfo.builder()
-                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                .pixKey("pixKey")
+                .pixKeyType("pixKeyType")
+                .taxId("taxId")
                 .beneficiary(
                     BrlBeneficiary.builder()
                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -36,14 +41,15 @@ internal class BrlExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
                 .build()
 
         assertThat(brlExternalAccountInfo.accountType())
-            .isEqualTo(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+            .isEqualTo(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+        assertThat(brlExternalAccountInfo.paymentRails())
+            .containsExactly(BrlAccountInfo.PaymentRail.PIX)
+        assertThat(brlExternalAccountInfo.pixKey()).isEqualTo("pixKey")
+        assertThat(brlExternalAccountInfo.pixKeyType()).isEqualTo("pixKeyType")
+        assertThat(brlExternalAccountInfo.taxId()).isEqualTo("taxId")
         assertThat(brlExternalAccountInfo.beneficiary())
             .isEqualTo(
                 BrlExternalAccountInfo.Beneficiary.ofIndividual(
@@ -69,11 +75,6 @@ internal class BrlExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(brlExternalAccountInfo.paymentRails())
-            .containsExactly(BrlExternalAccountInfo.PaymentRail.PIX)
-        assertThat(brlExternalAccountInfo.pixKey()).isEqualTo("pixKey")
-        assertThat(brlExternalAccountInfo.pixKeyType()).isEqualTo("pixKeyType")
-        assertThat(brlExternalAccountInfo.taxId()).isEqualTo("taxId")
     }
 
     @Test
@@ -81,7 +82,11 @@ internal class BrlExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val brlExternalAccountInfo =
             BrlExternalAccountInfo.builder()
-                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                .pixKey("pixKey")
+                .pixKeyType("pixKeyType")
+                .taxId("taxId")
                 .beneficiary(
                     BrlBeneficiary.builder()
                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -104,10 +109,6 @@ internal class BrlExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
                 .build()
 
         val roundtrippedBrlExternalAccountInfo =
