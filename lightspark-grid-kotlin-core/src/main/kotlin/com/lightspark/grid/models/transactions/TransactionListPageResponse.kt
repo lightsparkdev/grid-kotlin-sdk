@@ -14,7 +14,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.transferin.Transaction
 import java.util.Collections
 import java.util.Objects
