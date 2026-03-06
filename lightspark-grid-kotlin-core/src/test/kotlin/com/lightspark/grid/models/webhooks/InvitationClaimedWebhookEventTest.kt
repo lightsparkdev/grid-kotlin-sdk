@@ -5,7 +5,6 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
-import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.quotes.Currency
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -19,11 +18,11 @@ internal class InvitationClaimedWebhookEventTest {
             InvitationClaimedWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    UmaInvitation.builder()
+                    InvitationClaimedWebhookEvent.Data.builder()
                         .code("019542f5")
                         .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                         .inviterUma("\$inviter@uma.domain")
-                        .status(UmaInvitation.Status.PENDING)
+                        .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
                         .url("https://uma.me/i/019542f5")
                         .amountToSend(
                             CurrencyAmount.builder()
@@ -52,11 +51,11 @@ internal class InvitationClaimedWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(invitationClaimedWebhookEvent.data())
             .isEqualTo(
-                UmaInvitation.builder()
+                InvitationClaimedWebhookEvent.Data.builder()
                     .code("019542f5")
                     .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                     .inviterUma("\$inviter@uma.domain")
-                    .status(UmaInvitation.Status.PENDING)
+                    .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
                     .url("https://uma.me/i/019542f5")
                     .amountToSend(
                         CurrencyAmount.builder()
@@ -90,11 +89,11 @@ internal class InvitationClaimedWebhookEventTest {
             InvitationClaimedWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    UmaInvitation.builder()
+                    InvitationClaimedWebhookEvent.Data.builder()
                         .code("019542f5")
                         .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                         .inviterUma("\$inviter@uma.domain")
-                        .status(UmaInvitation.Status.PENDING)
+                        .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
                         .url("https://uma.me/i/019542f5")
                         .amountToSend(
                             CurrencyAmount.builder()

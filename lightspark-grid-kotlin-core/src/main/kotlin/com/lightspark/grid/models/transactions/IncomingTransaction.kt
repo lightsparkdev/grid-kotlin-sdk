@@ -167,7 +167,6 @@ private constructor(
      * |`CREATED`   |Initial lookup has been created                                                                   |
      * |`PENDING`   |Quote has been created                                                                            |
      * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-     * |`SENT`      |Cross border settlement has been initiated                                                        |
      * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
      * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
      * |`FAILED`    |An error occurred during payment                                                                  |
@@ -572,7 +571,6 @@ private constructor(
          * |`CREATED`   |Initial lookup has been created                                                                   |
          * |`PENDING`   |Quote has been created                                                                            |
          * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-         * |`SENT`      |Cross border settlement has been initiated                                                        |
          * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
          * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
          * |`FAILED`    |An error occurred during payment                                                                  |

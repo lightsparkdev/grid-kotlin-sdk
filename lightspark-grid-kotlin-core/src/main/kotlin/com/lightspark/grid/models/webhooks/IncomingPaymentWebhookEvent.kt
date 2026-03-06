@@ -435,7 +435,6 @@ private constructor(
          * |`CREATED`   |Initial lookup has been created                                                                   |
          * |`PENDING`   |Quote has been created                                                                            |
          * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-         * |`SENT`      |Cross border settlement has been initiated                                                        |
          * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
          * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
          * |`FAILED`    |An error occurred during payment                                                                  |
@@ -895,7 +894,6 @@ private constructor(
              * |`CREATED`   |Initial lookup has been created                                                                   |
              * |`PENDING`   |Quote has been created                                                                            |
              * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-             * |`SENT`      |Cross border settlement has been initiated                                                        |
              * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
              * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
              * |`FAILED`    |An error occurred during payment                                                                  |
@@ -1355,16 +1353,6 @@ private constructor(
 
             val CUSTOMER_KYC_MANUALLY_REJECTED = of("CUSTOMER.KYC_MANUALLY_REJECTED")
 
-            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
-
-            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
-
-            val CUSTOMER_KYB_SUBMITTED = of("CUSTOMER.KYB_SUBMITTED")
-
-            val CUSTOMER_KYB_MANUALLY_APPROVED = of("CUSTOMER.KYB_MANUALLY_APPROVED")
-
-            val CUSTOMER_KYB_MANUALLY_REJECTED = of("CUSTOMER.KYB_MANUALLY_REJECTED")
-
             val INTERNAL_ACCOUNT_BALANCE_UPDATED = of("INTERNAL_ACCOUNT.BALANCE_UPDATED")
 
             val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
@@ -1396,11 +1384,6 @@ private constructor(
             CUSTOMER_KYC_SUBMITTED,
             CUSTOMER_KYC_MANUALLY_APPROVED,
             CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -1434,11 +1417,6 @@ private constructor(
             CUSTOMER_KYC_SUBMITTED,
             CUSTOMER_KYC_MANUALLY_APPROVED,
             CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -1473,11 +1451,6 @@ private constructor(
                 CUSTOMER_KYC_SUBMITTED -> Value.CUSTOMER_KYC_SUBMITTED
                 CUSTOMER_KYC_MANUALLY_APPROVED -> Value.CUSTOMER_KYC_MANUALLY_APPROVED
                 CUSTOMER_KYC_MANUALLY_REJECTED -> Value.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Value.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Value.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Value.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
@@ -1513,11 +1486,6 @@ private constructor(
                 CUSTOMER_KYC_SUBMITTED -> Known.CUSTOMER_KYC_SUBMITTED
                 CUSTOMER_KYC_MANUALLY_APPROVED -> Known.CUSTOMER_KYC_MANUALLY_APPROVED
                 CUSTOMER_KYC_MANUALLY_REJECTED -> Known.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Known.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Known.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Known.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED

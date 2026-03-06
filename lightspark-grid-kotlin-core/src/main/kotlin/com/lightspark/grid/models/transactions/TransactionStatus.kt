@@ -15,7 +15,6 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
  * |`CREATED`   |Initial lookup has been created                                                                   |
  * |`PENDING`   |Quote has been created                                                                            |
  * |`PROCESSING`|Funding has been received and payment initiated                                                   |
- * |`SENT`      |Cross border settlement has been initiated                                                        |
  * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
  * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
  * |`FAILED`    |An error occurred during payment                                                                  |
@@ -42,8 +41,6 @@ class TransactionStatus @JsonCreator private constructor(private val value: Json
 
         val PROCESSING = of("PROCESSING")
 
-        val SENT = of("SENT")
-
         val COMPLETED = of("COMPLETED")
 
         val REJECTED = of("REJECTED")
@@ -62,7 +59,6 @@ class TransactionStatus @JsonCreator private constructor(private val value: Json
         CREATED,
         PENDING,
         PROCESSING,
-        SENT,
         COMPLETED,
         REJECTED,
         FAILED,
@@ -83,7 +79,6 @@ class TransactionStatus @JsonCreator private constructor(private val value: Json
         CREATED,
         PENDING,
         PROCESSING,
-        SENT,
         COMPLETED,
         REJECTED,
         FAILED,
@@ -108,7 +103,6 @@ class TransactionStatus @JsonCreator private constructor(private val value: Json
             CREATED -> Value.CREATED
             PENDING -> Value.PENDING
             PROCESSING -> Value.PROCESSING
-            SENT -> Value.SENT
             COMPLETED -> Value.COMPLETED
             REJECTED -> Value.REJECTED
             FAILED -> Value.FAILED
@@ -131,7 +125,6 @@ class TransactionStatus @JsonCreator private constructor(private val value: Json
             CREATED -> Known.CREATED
             PENDING -> Known.PENDING
             PROCESSING -> Known.PROCESSING
-            SENT -> Known.SENT
             COMPLETED -> Known.COMPLETED
             REJECTED -> Known.REJECTED
             FAILED -> Known.FAILED
