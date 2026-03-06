@@ -27,7 +27,7 @@ internal class CustomerOneOfTest {
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
+                .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                 .address(
                     Address.builder()
                         .country("US")
@@ -40,7 +40,7 @@ internal class CustomerOneOfTest {
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .fullName("John Michael Doe")
-                .kycStatus(CustomerOneOf.Individual.KycStatus.APPROVED)
+                .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                 .nationality("US")
                 .build()
 
@@ -62,7 +62,7 @@ internal class CustomerOneOfTest {
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .customerType(CustomerOneOf.Individual.CustomerType.INDIVIDUAL)
+                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -75,7 +75,7 @@ internal class CustomerOneOfTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
-                    .kycStatus(CustomerOneOf.Individual.KycStatus.APPROVED)
+                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
             )
@@ -99,7 +99,7 @@ internal class CustomerOneOfTest {
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .isDeleted(false)
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .customerType(CustomerOneOf.Business.CustomerType.BUSINESS)
+                .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                 .address(
                     Address.builder()
                         .country("US")
@@ -111,10 +111,10 @@ internal class CustomerOneOfTest {
                         .build()
                 )
                 .addBeneficialOwner(
-                    CustomerOneOf.Business.BeneficialOwner.builder()
+                    BusinessCustomerFields.BeneficialOwner.builder()
                         .fullName("John Michael Doe")
                         .individualType(
-                            CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
+                            BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                         )
                         .address(
                             Address.builder()
@@ -136,13 +136,13 @@ internal class CustomerOneOfTest {
                         .build()
                 )
                 .businessInfo(
-                    CustomerOneOf.Business.BusinessInfo.builder()
+                    BusinessCustomerFields.BusinessInfo.builder()
                         .legalName("Acme Corporation, Inc.")
                         .registrationNumber("BRN-123456789")
                         .taxId("EIN-987654321")
                         .build()
                 )
-                .kybStatus(CustomerOneOf.Business.KybStatus.APPROVED)
+                .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .build()
 
         val customerOneOf = CustomerOneOf.ofBusiness(business)
@@ -163,7 +163,7 @@ internal class CustomerOneOfTest {
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .customerType(CustomerOneOf.Business.CustomerType.BUSINESS)
+                    .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                     .address(
                         Address.builder()
                             .country("US")
@@ -175,10 +175,10 @@ internal class CustomerOneOfTest {
                             .build()
                     )
                     .addBeneficialOwner(
-                        CustomerOneOf.Business.BeneficialOwner.builder()
+                        BusinessCustomerFields.BeneficialOwner.builder()
                             .fullName("John Michael Doe")
                             .individualType(
-                                CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
+                                BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                             )
                             .address(
                                 Address.builder()
@@ -200,13 +200,13 @@ internal class CustomerOneOfTest {
                             .build()
                     )
                     .businessInfo(
-                        CustomerOneOf.Business.BusinessInfo.builder()
+                        BusinessCustomerFields.BusinessInfo.builder()
                             .legalName("Acme Corporation, Inc.")
                             .registrationNumber("BRN-123456789")
                             .taxId("EIN-987654321")
                             .build()
                     )
-                    .kybStatus(CustomerOneOf.Business.KybStatus.APPROVED)
+                    .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                     .build()
             )
 

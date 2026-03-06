@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
-import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.UmaService
 import com.lightspark.grid.services.blocking.sandbox.WebhookService
@@ -43,7 +43,7 @@ interface SandboxService {
     fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SandboxSendFundsResponse
+    ): OutgoingTransaction
 
     /** A view of [SandboxService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -72,6 +72,6 @@ interface SandboxService {
         fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SandboxSendFundsResponse>
+        ): HttpResponseFor<OutgoingTransaction>
     }
 }

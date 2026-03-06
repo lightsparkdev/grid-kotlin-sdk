@@ -15,8 +15,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
-import com.lightspark.grid.models.sandbox.SandboxSendFundsResponse
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsyncImpl
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
@@ -57,7 +57,7 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override suspend fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions,
-    ): SandboxSendFundsResponse =
+    ): OutgoingTransaction =
         // post /sandbox/send
         withRawResponse().sendFunds(params, requestOptions).parse()
 
@@ -96,13 +96,13 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
         /** Endpoints to trigger test cases in sandbox */
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
 
-        private val sendFundsHandler: Handler<SandboxSendFundsResponse> =
-            jsonHandler<SandboxSendFundsResponse>(clientOptions.jsonMapper)
+        private val sendFundsHandler: Handler<OutgoingTransaction> =
+            jsonHandler<OutgoingTransaction>(clientOptions.jsonMapper)
 
         override suspend fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SandboxSendFundsResponse> {
+        ): HttpResponseFor<OutgoingTransaction> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

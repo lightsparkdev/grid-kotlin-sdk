@@ -6,6 +6,22 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.CadAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.EurAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.GbpAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.HkdAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.IdrAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.InrAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.MxnAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.MyrAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.NgnAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.PhpAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.SgdAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.ThbAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
+import com.lightspark.grid.models.platform.externalaccounts.VndAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -18,7 +34,11 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofBrlAccount() {
         val brlAccount =
             BrlExternalAccountInfo.builder()
-                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                .pixKey("pixKey")
+                .pixKeyType("pixKeyType")
+                .taxId("taxId")
                 .beneficiary(
                     BrlBeneficiary.builder()
                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -41,10 +61,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBrlAccount(brlAccount)
@@ -87,7 +103,11 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofBrlAccount(
                 BrlExternalAccountInfo.builder()
-                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                    .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                    .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                    .pixKey("pixKey")
+                    .pixKeyType("pixKeyType")
+                    .taxId("taxId")
                     .beneficiary(
                         BrlBeneficiary.builder()
                             .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -110,10 +130,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                    .pixKey("pixKey")
-                    .pixKeyType("pixKeyType")
-                    .taxId("taxId")
                     .build()
             )
 
@@ -131,7 +147,10 @@ internal class ExternalAccountInfoOneOfTest {
         val cadAccount =
             ExternalAccountInfoOneOf.CadAccount.builder()
                 .accountNumber("1234567")
+                .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                 .bankCode("001")
+                .branchCode("00012")
+                .addPaymentRail(CadAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -153,8 +172,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .branchCode("00012")
-                .addPaymentRail(ExternalAccountInfoOneOf.CadAccount.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofCadAccount(cadAccount)
@@ -198,7 +215,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofCadAccount(
                 ExternalAccountInfoOneOf.CadAccount.builder()
                     .accountNumber("1234567")
+                    .accountType(CadAccountInfo.AccountType.CAD_ACCOUNT)
                     .bankCode("001")
+                    .branchCode("00012")
+                    .addPaymentRail(CadAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
                         ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -220,8 +240,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .branchCode("00012")
-                    .addPaymentRail(ExternalAccountInfoOneOf.CadAccount.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -238,7 +256,10 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofDkkAccount() {
         val dkkAccount =
             DkkExternalAccountInfo.builder()
-                .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+                .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                .iban("iban")
+                .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -261,9 +282,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .iban("iban")
-                .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofDkkAccount(dkkAccount)
@@ -306,7 +324,10 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofDkkAccount(
                 DkkExternalAccountInfo.builder()
-                    .accountType(DkkExternalAccountInfo.AccountType.DKK_ACCOUNT)
+                    .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
+                    .iban("iban")
+                    .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
+                    .swiftBic("swiftBic")
                     .beneficiary(
                         DkkBeneficiary.builder()
                             .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -329,9 +350,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .iban("iban")
-                    .addPaymentRail(DkkExternalAccountInfo.PaymentRail.SEPA)
-                    .swiftBic("swiftBic")
                     .build()
             )
 
@@ -348,6 +366,10 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofEurAccount() {
         val eurAccount =
             ExternalAccountInfoOneOf.EurAccount.builder()
+                .accountType(EurAccountInfo.AccountType.EUR_ACCOUNT)
+                .iban("iban")
+                .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
+                .swiftBic("swiftBic")
                 .beneficiary(
                     ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -369,9 +391,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .iban("iban")
-                .addPaymentRail(ExternalAccountInfoOneOf.EurAccount.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofEurAccount(eurAccount)
@@ -414,6 +433,10 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofEurAccount(
                 ExternalAccountInfoOneOf.EurAccount.builder()
+                    .accountType(EurAccountInfo.AccountType.EUR_ACCOUNT)
+                    .iban("iban")
+                    .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
+                    .swiftBic("swiftBic")
                     .beneficiary(
                         ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -435,9 +458,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .iban("iban")
-                    .addPaymentRail(ExternalAccountInfoOneOf.EurAccount.PaymentRail.SEPA)
-                    .swiftBic("swiftBic")
                     .build()
             )
 
@@ -455,7 +475,9 @@ internal class ExternalAccountInfoOneOfTest {
         val gbpAccount =
             GbpExternalAccountInfo.builder()
                 .accountNumber("12345678")
-                .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
+                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
+                .sortCode("20-00-00")
                 .beneficiary(
                     GbpBeneficiary.builder()
                         .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -478,8 +500,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("20-00-00")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount)
@@ -523,7 +543,9 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofGbpAccount(
                 GbpExternalAccountInfo.builder()
                     .accountNumber("12345678")
-                    .accountType(GbpExternalAccountInfo.AccountType.GBP_ACCOUNT)
+                    .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
+                    .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
+                    .sortCode("20-00-00")
                     .beneficiary(
                         GbpBeneficiary.builder()
                             .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -546,8 +568,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(GbpExternalAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                    .sortCode("20-00-00")
                     .build()
             )
 
@@ -565,8 +585,10 @@ internal class ExternalAccountInfoOneOfTest {
         val hkdAccount =
             HkdExternalAccountInfo.builder()
                 .accountNumber("123456789012")
-                .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
                 .bankName("HSBC Hong Kong")
+                .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("HSBCHKHHHKH")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -589,8 +611,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("HSBCHKHHHKH")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofHkdAccount(hkdAccount)
@@ -634,8 +654,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofHkdAccount(
                 HkdExternalAccountInfo.builder()
                     .accountNumber("123456789012")
-                    .accountType(HkdExternalAccountInfo.AccountType.HKD_ACCOUNT)
+                    .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
                     .bankName("HSBC Hong Kong")
+                    .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .swiftCode("HSBCHKHHHKH")
                     .beneficiary(
                         HkdBeneficiary.builder()
                             .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -658,8 +680,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(HkdExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .swiftCode("HSBCHKHHHKH")
                     .build()
             )
 
@@ -677,8 +697,11 @@ internal class ExternalAccountInfoOneOfTest {
         val idrAccount =
             IdrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                .accountType(IdrAccountInfo.AccountType.IDR_ACCOUNT)
                 .bankName("Bank Central Asia")
+                .addPaymentRail(IdrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+6281234567890")
+                .swiftCode("CENAIDJA")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -701,9 +724,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+6281234567890")
-                .swiftCode("CENAIDJA")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofIdrAccount(idrAccount)
@@ -747,8 +767,11 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofIdrAccount(
                 IdrExternalAccountInfo.builder()
                     .accountNumber("1234567890")
-                    .accountType(IdrExternalAccountInfo.AccountType.IDR_ACCOUNT)
+                    .accountType(IdrAccountInfo.AccountType.IDR_ACCOUNT)
                     .bankName("Bank Central Asia")
+                    .addPaymentRail(IdrAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+6281234567890")
+                    .swiftCode("CENAIDJA")
                     .beneficiary(
                         IdrBeneficiary.builder()
                             .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -771,9 +794,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(IdrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .phoneNumber("+6281234567890")
-                    .swiftCode("CENAIDJA")
                     .build()
             )
 
@@ -790,7 +810,9 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofInrAccount() {
         val inrAccount =
             InrExternalAccountInfo.builder()
-                .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
+                .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
+                .vpa("vpa")
                 .beneficiary(
                     InrBeneficiary.builder()
                         .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -813,8 +835,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofInrAccount(inrAccount)
@@ -857,7 +877,9 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofInrAccount(
                 InrExternalAccountInfo.builder()
-                    .accountType(InrExternalAccountInfo.AccountType.INR_ACCOUNT)
+                    .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
+                    .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
+                    .vpa("vpa")
                     .beneficiary(
                         InrBeneficiary.builder()
                             .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -880,8 +902,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(InrExternalAccountInfo.PaymentRail.UPI)
-                    .vpa("vpa")
                     .build()
             )
 
@@ -898,6 +918,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofKesAccount() {
         val kesAccount =
             ExternalAccountInfoOneOf.KesAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.KesAccount.AccountType.KES_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.KesAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -964,6 +985,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofKesAccount(
                 ExternalAccountInfoOneOf.KesAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.KesAccount.AccountType.KES_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.KesAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -1004,6 +1026,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofMwkAccount() {
         val mwkAccount =
             ExternalAccountInfoOneOf.MwkAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.MwkAccount.AccountType.MWK_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.MwkAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -1071,6 +1094,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofMwkAccount(
                 ExternalAccountInfoOneOf.MwkAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.MwkAccount.AccountType.MWK_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.MwkAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -1112,7 +1136,9 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofMxnAccount() {
         val mxnAccount =
             MxnExternalAccountInfo.builder()
-                .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                .clabeNumber("123456789012345678")
+                .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
                 .beneficiary(
                     MxnBeneficiary.builder()
                         .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1135,8 +1161,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .clabeNumber("123456789012345678")
-                .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)
@@ -1179,7 +1203,9 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofMxnAccount(
                 MxnExternalAccountInfo.builder()
-                    .accountType(MxnExternalAccountInfo.AccountType.MXN_ACCOUNT)
+                    .accountType(MxnAccountInfo.AccountType.MXN_ACCOUNT)
+                    .clabeNumber("123456789012345678")
+                    .addPaymentRail(MxnAccountInfo.PaymentRail.SPEI)
                     .beneficiary(
                         MxnBeneficiary.builder()
                             .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1202,8 +1228,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .clabeNumber("123456789012345678")
-                    .addPaymentRail(MxnExternalAccountInfo.PaymentRail.SPEI)
                     .build()
             )
 
@@ -1221,8 +1245,10 @@ internal class ExternalAccountInfoOneOfTest {
         val myrAccount =
             MyrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
                 .bankName("Maybank")
+                .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("MABORUMMYYY")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1245,8 +1271,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("MABORUMMYYY")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofMyrAccount(myrAccount)
@@ -1290,8 +1314,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofMyrAccount(
                 MyrExternalAccountInfo.builder()
                     .accountNumber("1234567890")
-                    .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                    .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
                     .bankName("Maybank")
+                    .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .swiftCode("MABORUMMYYY")
                     .beneficiary(
                         MyrBeneficiary.builder()
                             .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1314,8 +1340,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .swiftCode("MABORUMMYYY")
                     .build()
             )
 
@@ -1333,7 +1357,9 @@ internal class ExternalAccountInfoOneOfTest {
         val ngnAccount =
             ExternalAccountInfoOneOf.NgnAccount.builder()
                 .accountNumber("0123456789")
+                .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                 .bankName("First Bank of Nigeria")
+                .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -1355,7 +1381,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.NgnAccount.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)
@@ -1399,7 +1424,9 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofNgnAccount(
                 ExternalAccountInfoOneOf.NgnAccount.builder()
                     .accountNumber("0123456789")
+                    .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                     .bankName("First Bank of Nigeria")
+                    .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
                         ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -1421,7 +1448,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.NgnAccount.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -1439,8 +1465,9 @@ internal class ExternalAccountInfoOneOfTest {
         val phpAccount =
             PhpExternalAccountInfo.builder()
                 .accountNumber("001234567890")
-                .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
+                .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     PhpBeneficiary.builder()
                         .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1463,7 +1490,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)
@@ -1507,8 +1533,9 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofPhpAccount(
                 PhpExternalAccountInfo.builder()
                     .accountNumber("001234567890")
-                    .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+                    .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
+                    .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
                         PhpBeneficiary.builder()
                             .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1531,7 +1558,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 
@@ -1548,6 +1574,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofRwfAccount() {
         val rwfAccount =
             ExternalAccountInfoOneOf.RwfAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.RwfAccount.AccountType.RWF_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.RwfAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -1614,6 +1641,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofRwfAccount(
                 ExternalAccountInfoOneOf.RwfAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.RwfAccount.AccountType.RWF_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.RwfAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -1655,8 +1683,10 @@ internal class ExternalAccountInfoOneOfTest {
         val sgdAccount =
             SgdExternalAccountInfo.builder()
                 .accountNumber("0123456789")
-                .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
+                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
+                .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
+                .swiftCode("DBSSSGSG")
                 .beneficiary(
                     SgdBeneficiary.builder()
                         .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1679,8 +1709,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
-                .swiftCode("DBSSSGSG")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)
@@ -1724,8 +1752,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofSgdAccount(
                 SgdExternalAccountInfo.builder()
                     .accountNumber("0123456789")
-                    .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
+                    .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
+                    .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
+                    .swiftCode("DBSSSGSG")
                     .beneficiary(
                         SgdBeneficiary.builder()
                             .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1748,8 +1778,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
-                    .swiftCode("DBSSSGSG")
                     .build()
             )
 
@@ -1767,8 +1795,10 @@ internal class ExternalAccountInfoOneOfTest {
         val thbAccount =
             ThbExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
                 .bankName("Bangkok Bank")
+                .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BKKBTHBK")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1791,8 +1821,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BKKBTHBK")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofThbAccount(thbAccount)
@@ -1836,8 +1864,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofThbAccount(
                 ThbExternalAccountInfo.builder()
                     .accountNumber("1234567890")
-                    .accountType(ThbExternalAccountInfo.AccountType.THB_ACCOUNT)
+                    .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
                     .bankName("Bangkok Bank")
+                    .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .swiftCode("BKKBTHBK")
                     .beneficiary(
                         ThbBeneficiary.builder()
                             .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -1860,8 +1890,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(ThbExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .swiftCode("BKKBTHBK")
                     .build()
             )
 
@@ -1878,6 +1906,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofTzsAccount() {
         val tzsAccount =
             ExternalAccountInfoOneOf.TzsAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.TzsAccount.AccountType.TZS_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.TzsAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -1944,6 +1973,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofTzsAccount(
                 ExternalAccountInfoOneOf.TzsAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.TzsAccount.AccountType.TZS_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.TzsAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -1984,6 +2014,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofUgxAccount() {
         val ugxAccount =
             ExternalAccountInfoOneOf.UgxAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.UgxAccount.AccountType.UGX_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.UgxAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -2051,6 +2082,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofUgxAccount(
                 ExternalAccountInfoOneOf.UgxAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.UgxAccount.AccountType.UGX_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.UgxAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -2093,7 +2125,9 @@ internal class ExternalAccountInfoOneOfTest {
         val usdAccount =
             UsdExternalAccountInfo.builder()
                 .accountNumber("accountNumber")
-                .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                .routingNumber("routingNumber")
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -2116,8 +2150,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)
@@ -2161,7 +2193,9 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofUsdAccount(
                 UsdExternalAccountInfo.builder()
                     .accountNumber("accountNumber")
-                    .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                    .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                    .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                    .routingNumber("routingNumber")
                     .beneficiary(
                         UsdBeneficiary.builder()
                             .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -2184,8 +2218,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
-                    .routingNumber("routingNumber")
                     .build()
             )
 
@@ -2203,8 +2235,10 @@ internal class ExternalAccountInfoOneOfTest {
         val vndAccount =
             VndExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
                 .bankName("Vietcombank")
+                .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("BFTVVNVX")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -2227,8 +2261,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("BFTVVNVX")
                 .build()
 
         val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofVndAccount(vndAccount)
@@ -2272,8 +2304,10 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofVndAccount(
                 VndExternalAccountInfo.builder()
                     .accountNumber("1234567890")
-                    .accountType(VndExternalAccountInfo.AccountType.VND_ACCOUNT)
+                    .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
                     .bankName("Vietcombank")
+                    .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .swiftCode("BFTVVNVX")
                     .beneficiary(
                         VndBeneficiary.builder()
                             .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -2296,8 +2330,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addPaymentRail(VndExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .swiftCode("BFTVVNVX")
                     .build()
             )
 
@@ -2314,6 +2346,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofXofAccount() {
         val xofAccount =
             ExternalAccountInfoOneOf.XofAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.XofAccount.AccountType.XOF_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.XofAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -2381,6 +2414,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofXofAccount(
                 ExternalAccountInfoOneOf.XofAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.XofAccount.AccountType.XOF_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.XofAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -2423,6 +2457,7 @@ internal class ExternalAccountInfoOneOfTest {
         val zarAccount =
             ExternalAccountInfoOneOf.ZarAccount.builder()
                 .accountNumber("1234567890")
+                .accountType(ExternalAccountInfoOneOf.ZarAccount.AccountType.ZAR_ACCOUNT)
                 .bankName("Standard Bank")
                 .beneficiary(
                     ExternalAccountInfoOneOf.ZarAccount.Beneficiary.Individual.builder()
@@ -2489,6 +2524,7 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofZarAccount(
                 ExternalAccountInfoOneOf.ZarAccount.builder()
                     .accountNumber("1234567890")
+                    .accountType(ExternalAccountInfoOneOf.ZarAccount.AccountType.ZAR_ACCOUNT)
                     .bankName("Standard Bank")
                     .beneficiary(
                         ExternalAccountInfoOneOf.ZarAccount.Beneficiary.Individual.builder()
@@ -2528,6 +2564,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofZmwAccount() {
         val zmwAccount =
             ExternalAccountInfoOneOf.ZmwAccount.builder()
+                .accountType(ExternalAccountInfoOneOf.ZmwAccount.AccountType.ZMW_ACCOUNT)
                 .beneficiary(
                     ExternalAccountInfoOneOf.ZmwAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -2594,6 +2631,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofZmwAccount(
                 ExternalAccountInfoOneOf.ZmwAccount.builder()
+                    .accountType(ExternalAccountInfoOneOf.ZmwAccount.AccountType.ZMW_ACCOUNT)
                     .beneficiary(
                         ExternalAccountInfoOneOf.ZmwAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")

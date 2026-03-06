@@ -8,6 +8,7 @@ import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.UsdExternalAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -29,7 +30,9 @@ internal class ExternalAccountServiceAsyncTest {
                     .accountInfo(
                         UsdExternalAccountInfo.builder()
                             .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountInfo.AccountType.USD_ACCOUNT)
+                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                            .routingNumber("123456789")
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -52,8 +55,6 @@ internal class ExternalAccountServiceAsyncTest {
                                     .registrationNumber("registrationNumber")
                                     .build()
                             )
-                            .addPaymentRail(UsdExternalAccountInfo.PaymentRail.ACH)
-                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")

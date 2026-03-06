@@ -23,28 +23,15 @@ internal class TransactionListPageResponseTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
+                            IncomingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
                                 )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
-                        .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
-                        .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                        .description("Payment for invoice #1234")
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .receivedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -58,6 +45,17 @@ internal class TransactionListPageResponseTest {
                                 )
                                 .build()
                         )
+                        .status(TransactionStatus.CREATED)
+                        .type(IncomingTransaction.Type.INCOMING)
+                        .counterpartyInformation(
+                            IncomingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .rateDetails(
                             IncomingTransaction.RateDetails.builder()
@@ -72,6 +70,7 @@ internal class TransactionListPageResponseTest {
                                 .reference("UMA-Q12345-REF")
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.Account.builder()
                                 .currency("USD")
@@ -79,6 +78,7 @@ internal class TransactionListPageResponseTest {
                                 .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .build()
                         )
+                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
                 .hasMore(true)
@@ -88,33 +88,20 @@ internal class TransactionListPageResponseTest {
 
         assertThat(transactionListPageResponse.data())
             .containsExactly(
-                TransactionListResponse.ofIncomingTransaction(
+                Transaction.ofIncoming(
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
+                            IncomingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
                                 )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
-                        .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
-                        .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                        .description("Payment for invoice #1234")
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .receivedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -128,6 +115,17 @@ internal class TransactionListPageResponseTest {
                                 )
                                 .build()
                         )
+                        .status(TransactionStatus.CREATED)
+                        .type(IncomingTransaction.Type.INCOMING)
+                        .counterpartyInformation(
+                            IncomingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .rateDetails(
                             IncomingTransaction.RateDetails.builder()
@@ -142,6 +140,7 @@ internal class TransactionListPageResponseTest {
                                 .reference("UMA-Q12345-REF")
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.Account.builder()
                                 .currency("USD")
@@ -149,6 +148,7 @@ internal class TransactionListPageResponseTest {
                                 .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .build()
                         )
+                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
             )
@@ -167,28 +167,15 @@ internal class TransactionListPageResponseTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            Transaction.Destination.Account.builder()
+                            IncomingTransaction.Destination.Account.builder()
                                 .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .destinationType(
-                                    Transaction.Destination.Account.DestinationType.ACCOUNT
+                                    IncomingTransaction.Destination.Account.DestinationType.ACCOUNT
                                 )
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
-                        .status(TransactionStatus.CREATED)
-                        .type(TransactionType.INCOMING)
-                        .counterpartyInformation(
-                            Transaction.CounterpartyInformation.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                .build()
-                        )
-                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                        .description("Payment for invoice #1234")
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .receivedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -202,6 +189,17 @@ internal class TransactionListPageResponseTest {
                                 )
                                 .build()
                         )
+                        .status(TransactionStatus.CREATED)
+                        .type(IncomingTransaction.Type.INCOMING)
+                        .counterpartyInformation(
+                            IncomingTransaction.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                        .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .rateDetails(
                             IncomingTransaction.RateDetails.builder()
@@ -216,6 +214,7 @@ internal class TransactionListPageResponseTest {
                                 .reference("UMA-Q12345-REF")
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.Account.builder()
                                 .currency("USD")
@@ -223,6 +222,7 @@ internal class TransactionListPageResponseTest {
                                 .sourceType(TransactionSourceOneOf.Account.SourceType.ACCOUNT)
                                 .build()
                         )
+                        .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
                 .hasMore(true)

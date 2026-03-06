@@ -4,6 +4,7 @@ package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -41,7 +42,7 @@ internal class QuoteTest {
                         .build()
                 )
                 .source(
-                    Quote.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -55,16 +56,11 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("1234567890")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .ACH
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .WIRE
-                                )
-                                .reference("UMA-Q12345-REF")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                 .routingNumber("021000021")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -139,8 +135,8 @@ internal class QuoteTest {
             )
         assertThat(quote.source())
             .isEqualTo(
-                Quote.Source.ofAccountQuote(
-                    Quote.Source.AccountQuoteSource.builder()
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -157,14 +153,11 @@ internal class QuoteTest {
                     .accountOrWalletInfo(
                         PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                             .accountNumber("1234567890")
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
-                            )
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.WIRE
-                            )
-                            .reference("UMA-Q12345-REF")
+                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                             .routingNumber("021000021")
+                            .reference("UMA-Q12345-REF")
                             .build()
                     )
                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -237,7 +230,7 @@ internal class QuoteTest {
                         .build()
                 )
                 .source(
-                    Quote.Source.AccountQuoteSource.builder()
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
@@ -251,16 +244,11 @@ internal class QuoteTest {
                         .accountOrWalletInfo(
                             PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                 .accountNumber("1234567890")
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .ACH
-                                )
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail
-                                        .WIRE
-                                )
-                                .reference("UMA-Q12345-REF")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                 .routingNumber("021000021")
+                                .reference("UMA-Q12345-REF")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")

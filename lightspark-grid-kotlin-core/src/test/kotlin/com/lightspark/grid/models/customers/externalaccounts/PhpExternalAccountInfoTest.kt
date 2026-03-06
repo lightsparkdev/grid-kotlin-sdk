@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.PhpAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,9 @@ internal class PhpExternalAccountInfoTest {
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
                 .accountNumber("001234567890")
-                .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
+                .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     PhpBeneficiary.builder()
                         .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,13 +40,14 @@ internal class PhpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         assertThat(phpExternalAccountInfo.accountNumber()).isEqualTo("001234567890")
         assertThat(phpExternalAccountInfo.accountType())
-            .isEqualTo(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+            .isEqualTo(PhpAccountInfo.AccountType.PHP_ACCOUNT)
         assertThat(phpExternalAccountInfo.bankName()).isEqualTo("BDO Unibank")
+        assertThat(phpExternalAccountInfo.paymentRails())
+            .containsExactly(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(phpExternalAccountInfo.beneficiary())
             .isEqualTo(
                 PhpExternalAccountInfo.Beneficiary.ofIndividual(
@@ -70,8 +73,6 @@ internal class PhpExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(phpExternalAccountInfo.paymentRails())
-            .containsExactly(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
     }
 
     @Test
@@ -80,8 +81,9 @@ internal class PhpExternalAccountInfoTest {
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
                 .accountNumber("001234567890")
-                .accountType(PhpExternalAccountInfo.AccountType.PHP_ACCOUNT)
+                .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
+                .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     PhpBeneficiary.builder()
                         .beneficiaryType(PhpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -104,7 +106,6 @@ internal class PhpExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(PhpExternalAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         val roundtrippedPhpExternalAccountInfo =

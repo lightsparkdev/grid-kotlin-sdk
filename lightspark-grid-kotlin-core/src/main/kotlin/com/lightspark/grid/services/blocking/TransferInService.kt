@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferin.TransferInCreateParams
-import com.lightspark.grid.models.transferin.TransferInCreateResponse
 
 /**
  * Endpoints for transferring funds between internal and external accounts with the same currency
@@ -34,7 +34,7 @@ interface TransferInService {
     fun create(
         params: TransferInCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): TransferInCreateResponse
+    ): Transaction
 
     /** A view of [TransferInService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -56,6 +56,6 @@ interface TransferInService {
         fun create(
             params: TransferInCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<TransferInCreateResponse>
+        ): HttpResponseFor<Transaction>
     }
 }

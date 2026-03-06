@@ -10,6 +10,7 @@ import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.BrlBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.BrlExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -110,7 +111,11 @@ internal class QuoteDestinationOneOfTest {
                     ExternalAccountCreate.builder()
                         .accountInfo(
                             BrlExternalAccountInfo.builder()
-                                .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                                .pixKey("pixKey")
+                                .pixKeyType("pixKeyType")
+                                .taxId("taxId")
                                 .beneficiary(
                                     BrlBeneficiary.builder()
                                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -133,10 +138,6 @@ internal class QuoteDestinationOneOfTest {
                                         .registrationNumber("registrationNumber")
                                         .build()
                                 )
-                                .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
                                 .build()
                         )
                         .currency("USD")
@@ -168,7 +169,11 @@ internal class QuoteDestinationOneOfTest {
                         ExternalAccountCreate.builder()
                             .accountInfo(
                                 BrlExternalAccountInfo.builder()
-                                    .accountType(BrlExternalAccountInfo.AccountType.BRL_ACCOUNT)
+                                    .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
+                                    .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
+                                    .pixKey("pixKey")
+                                    .pixKeyType("pixKeyType")
+                                    .taxId("taxId")
                                     .beneficiary(
                                         BrlBeneficiary.builder()
                                             .beneficiaryType(
@@ -193,10 +198,6 @@ internal class QuoteDestinationOneOfTest {
                                             .registrationNumber("registrationNumber")
                                             .build()
                                     )
-                                    .addPaymentRail(BrlExternalAccountInfo.PaymentRail.PIX)
-                                    .pixKey("pixKey")
-                                    .pixKeyType("pixKeyType")
-                                    .taxId("taxId")
                                     .build()
                             )
                             .currency("USD")

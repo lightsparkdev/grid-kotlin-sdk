@@ -4,6 +4,7 @@ package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -16,11 +17,10 @@ internal class PaymentInstructionsTest {
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
-                        )
-                        .reference("UMA-Q12345-REF")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                         .routingNumber("routingNumber")
+                        .reference("UMA-Q12345-REF")
                         .build()
                 )
                 .instructionsNotes(
@@ -34,11 +34,10 @@ internal class PaymentInstructionsTest {
                 PaymentInstructions.AccountOrWalletInfo.ofUsdAccount(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
-                        )
-                        .reference("UMA-Q12345-REF")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                         .routingNumber("routingNumber")
+                        .reference("UMA-Q12345-REF")
                         .build()
                 )
             )
@@ -57,11 +56,10 @@ internal class PaymentInstructionsTest {
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                         .accountNumber("accountNumber")
-                        .addPaymentRail(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.PaymentRail.ACH
-                        )
-                        .reference("UMA-Q12345-REF")
+                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                         .routingNumber("routingNumber")
+                        .reference("UMA-Q12345-REF")
                         .build()
                 )
                 .instructionsNotes(

@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.SgdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,10 @@ internal class SgdExternalAccountInfoTest {
         val sgdExternalAccountInfo =
             SgdExternalAccountInfo.builder()
                 .accountNumber("0123456789")
-                .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
+                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
+                .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
+                .swiftCode("DBSSSGSG")
                 .beneficiary(
                     SgdBeneficiary.builder()
                         .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +41,15 @@ internal class SgdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
-                .swiftCode("DBSSSGSG")
                 .build()
 
         assertThat(sgdExternalAccountInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(sgdExternalAccountInfo.accountType())
-            .isEqualTo(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
+            .isEqualTo(SgdAccountInfo.AccountType.SGD_ACCOUNT)
         assertThat(sgdExternalAccountInfo.bankName()).isEqualTo("DBS Bank Ltd")
+        assertThat(sgdExternalAccountInfo.paymentRails())
+            .containsExactly(SgdAccountInfo.PaymentRail.PAYNOW)
+        assertThat(sgdExternalAccountInfo.swiftCode()).isEqualTo("DBSSSGSG")
         assertThat(sgdExternalAccountInfo.beneficiary())
             .isEqualTo(
                 SgdExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,9 +75,6 @@ internal class SgdExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(sgdExternalAccountInfo.paymentRails())
-            .containsExactly(SgdExternalAccountInfo.PaymentRail.PAYNOW)
-        assertThat(sgdExternalAccountInfo.swiftCode()).isEqualTo("DBSSSGSG")
     }
 
     @Test
@@ -82,8 +83,10 @@ internal class SgdExternalAccountInfoTest {
         val sgdExternalAccountInfo =
             SgdExternalAccountInfo.builder()
                 .accountNumber("0123456789")
-                .accountType(SgdExternalAccountInfo.AccountType.SGD_ACCOUNT)
+                .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
+                .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
+                .swiftCode("DBSSSGSG")
                 .beneficiary(
                     SgdBeneficiary.builder()
                         .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -106,8 +109,6 @@ internal class SgdExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(SgdExternalAccountInfo.PaymentRail.PAYNOW)
-                .swiftCode("DBSSSGSG")
                 .build()
 
         val roundtrippedSgdExternalAccountInfo =

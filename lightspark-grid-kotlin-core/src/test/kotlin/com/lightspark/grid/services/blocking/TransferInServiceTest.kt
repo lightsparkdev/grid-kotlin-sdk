@@ -3,6 +3,8 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.transferin.ExternalAccountReference
+import com.lightspark.grid.models.transferin.InternalAccountReference
 import com.lightspark.grid.models.transferin.TransferInCreateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -19,17 +21,17 @@ internal class TransferInServiceTest {
                 .build()
         val transferInService = client.transferIn()
 
-        val transferIn =
+        val transaction =
             transferInService.create(
                 TransferInCreateParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                     .destination(
-                        TransferInCreateParams.Destination.builder()
+                        InternalAccountReference.builder()
                             .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
                     .source(
-                        TransferInCreateParams.Source.builder()
+                        ExternalAccountReference.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )
@@ -37,6 +39,6 @@ internal class TransferInServiceTest {
                     .build()
             )
 
-        transferIn.validate()
+        transaction.validate()
     }
 }

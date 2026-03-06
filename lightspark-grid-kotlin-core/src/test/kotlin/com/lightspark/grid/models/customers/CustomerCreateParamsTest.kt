@@ -16,10 +16,7 @@ internal class CustomerCreateParamsTest {
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                            .INDIVIDUAL
-                    )
+                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -32,9 +29,7 @@ internal class CustomerCreateParamsTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
-                    .kycStatus(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
             )
@@ -49,10 +44,7 @@ internal class CustomerCreateParamsTest {
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -65,9 +57,7 @@ internal class CustomerCreateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -81,10 +71,7 @@ internal class CustomerCreateParamsTest {
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -97,9 +84,7 @@ internal class CustomerCreateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -120,10 +105,7 @@ internal class CustomerCreateParamsTest {
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
-                        .customerType(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.CustomerType
-                                .INDIVIDUAL
-                        )
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
             )

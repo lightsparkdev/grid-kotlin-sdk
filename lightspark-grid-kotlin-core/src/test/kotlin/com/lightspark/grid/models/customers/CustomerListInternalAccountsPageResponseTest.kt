@@ -5,6 +5,7 @@ package com.lightspark.grid.models.customers
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
@@ -40,13 +41,10 @@ internal class CustomerListInternalAccountsPageResponseTest {
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("accountNumber")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .PaymentRail
-                                                .ACH
-                                        )
-                                        .reference("UMA-Q12345-REF")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                         .routingNumber("routingNumber")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes(
@@ -87,13 +85,10 @@ internal class CustomerListInternalAccountsPageResponseTest {
                             .accountOrWalletInfo(
                                 PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                     .accountNumber("accountNumber")
-                                    .addPaymentRail(
-                                        PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                            .PaymentRail
-                                            .ACH
-                                    )
-                                    .reference("UMA-Q12345-REF")
+                                    .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                    .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                     .routingNumber("routingNumber")
+                                    .reference("UMA-Q12345-REF")
                                     .build()
                             )
                             .instructionsNotes(
@@ -138,13 +133,10 @@ internal class CustomerListInternalAccountsPageResponseTest {
                                 .accountOrWalletInfo(
                                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                         .accountNumber("accountNumber")
-                                        .addPaymentRail(
-                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
-                                                .PaymentRail
-                                                .ACH
-                                        )
-                                        .reference("UMA-Q12345-REF")
+                                        .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                        .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                         .routingNumber("routingNumber")
+                                        .reference("UMA-Q12345-REF")
                                         .build()
                                 )
                                 .instructionsNotes(

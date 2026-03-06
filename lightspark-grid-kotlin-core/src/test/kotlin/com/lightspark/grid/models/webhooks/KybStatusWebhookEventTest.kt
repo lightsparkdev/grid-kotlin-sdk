@@ -4,6 +4,7 @@ package com.lightspark.grid.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.BusinessCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -25,7 +26,7 @@ internal class KybStatusWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                        .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -37,11 +38,10 @@ internal class KybStatusWebhookEventTest {
                                 .build()
                         )
                         .addBeneficialOwner(
-                            KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                            BusinessCustomerFields.BeneficialOwner.builder()
                                 .fullName("John Michael Doe")
                                 .individualType(
-                                    KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
-                                        .DIRECTOR
+                                    BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                                 )
                                 .address(
                                     Address.builder()
@@ -63,13 +63,13 @@ internal class KybStatusWebhookEventTest {
                                 .build()
                         )
                         .businessInfo(
-                            KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                            BusinessCustomerFields.BusinessInfo.builder()
                                 .legalName("Acme Corporation, Inc.")
                                 .registrationNumber("BRN-123456789")
                                 .taxId("EIN-987654321")
                                 .build()
                         )
-                        .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                        .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -87,7 +87,7 @@ internal class KybStatusWebhookEventTest {
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                    .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                     .address(
                         Address.builder()
                             .country("US")
@@ -99,10 +99,10 @@ internal class KybStatusWebhookEventTest {
                             .build()
                     )
                     .addBeneficialOwner(
-                        KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                        BusinessCustomerFields.BeneficialOwner.builder()
                             .fullName("John Michael Doe")
                             .individualType(
-                                KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType.DIRECTOR
+                                BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                             )
                             .address(
                                 Address.builder()
@@ -124,13 +124,13 @@ internal class KybStatusWebhookEventTest {
                             .build()
                     )
                     .businessInfo(
-                        KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                        BusinessCustomerFields.BusinessInfo.builder()
                             .legalName("Acme Corporation, Inc.")
                             .registrationNumber("BRN-123456789")
                             .taxId("EIN-987654321")
                             .build()
                     )
-                    .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                    .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                     .build()
             )
         assertThat(kybStatusWebhookEvent.timestamp())
@@ -153,7 +153,7 @@ internal class KybStatusWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                        .customerType(BusinessCustomerFields.CustomerType.BUSINESS)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -165,11 +165,10 @@ internal class KybStatusWebhookEventTest {
                                 .build()
                         )
                         .addBeneficialOwner(
-                            KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                            BusinessCustomerFields.BeneficialOwner.builder()
                                 .fullName("John Michael Doe")
                                 .individualType(
-                                    KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
-                                        .DIRECTOR
+                                    BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
                                 )
                                 .address(
                                     Address.builder()
@@ -191,13 +190,13 @@ internal class KybStatusWebhookEventTest {
                                 .build()
                         )
                         .businessInfo(
-                            KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                            BusinessCustomerFields.BusinessInfo.builder()
                                 .legalName("Acme Corporation, Inc.")
                                 .registrationNumber("BRN-123456789")
                                 .taxId("EIN-987654321")
                                 .build()
                         )
-                        .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                        .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))

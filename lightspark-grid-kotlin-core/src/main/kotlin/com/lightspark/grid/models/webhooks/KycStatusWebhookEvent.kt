@@ -14,6 +14,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.Customer
+import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -272,11 +273,11 @@ private constructor(
         private val createdAt: JsonField<OffsetDateTime>,
         private val isDeleted: JsonField<Boolean>,
         private val updatedAt: JsonField<OffsetDateTime>,
-        private val customerType: JsonField<CustomerType>,
+        private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
         private val birthDate: JsonField<LocalDate>,
         private val fullName: JsonField<String>,
-        private val kycStatus: JsonField<KycStatus>,
+        private val kycStatus: JsonField<IndividualCustomerFields.KycStatus>,
         private val nationality: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -301,7 +302,7 @@ private constructor(
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("customerType")
             @ExcludeMissing
-            customerType: JsonField<CustomerType> = JsonMissing.of(),
+            customerType: JsonField<IndividualCustomerFields.CustomerType> = JsonMissing.of(),
             @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
             @JsonProperty("birthDate")
             @ExcludeMissing
@@ -311,7 +312,7 @@ private constructor(
             fullName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("kycStatus")
             @ExcludeMissing
-            kycStatus: JsonField<KycStatus> = JsonMissing.of(),
+            kycStatus: JsonField<IndividualCustomerFields.KycStatus> = JsonMissing.of(),
             @JsonProperty("nationality")
             @ExcludeMissing
             nationality: JsonField<String> = JsonMissing.of(),
@@ -339,6 +340,16 @@ private constructor(
                 .createdAt(createdAt)
                 .isDeleted(isDeleted)
                 .updatedAt(updatedAt)
+                .build()
+
+        fun toIndividualCustomerFields(): IndividualCustomerFields =
+            IndividualCustomerFields.builder()
+                .customerType(customerType)
+                .address(address)
+                .birthDate(birthDate)
+                .fullName(fullName)
+                .kycStatus(kycStatus)
+                .nationality(nationality)
                 .build()
 
         /**
@@ -394,7 +405,8 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun customerType(): CustomerType = customerType.getRequired("customerType")
+        fun customerType(): IndividualCustomerFields.CustomerType =
+            customerType.getRequired("customerType")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -424,7 +436,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun kycStatus(): KycStatus? = kycStatus.getNullable("kycStatus")
+        fun kycStatus(): IndividualCustomerFields.KycStatus? = kycStatus.getNullable("kycStatus")
 
         /**
          * Country code (ISO 3166-1 alpha-2)
@@ -493,7 +505,7 @@ private constructor(
          */
         @JsonProperty("customerType")
         @ExcludeMissing
-        fun _customerType(): JsonField<CustomerType> = customerType
+        fun _customerType(): JsonField<IndividualCustomerFields.CustomerType> = customerType
 
         /**
          * Returns the raw JSON value of [address].
@@ -525,7 +537,7 @@ private constructor(
          */
         @JsonProperty("kycStatus")
         @ExcludeMissing
-        fun _kycStatus(): JsonField<KycStatus> = kycStatus
+        fun _kycStatus(): JsonField<IndividualCustomerFields.KycStatus> = kycStatus
 
         /**
          * Returns the raw JSON value of [nationality].
@@ -572,11 +584,11 @@ private constructor(
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
-            private var customerType: JsonField<CustomerType>? = null
+            private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
             private var birthDate: JsonField<LocalDate> = JsonMissing.of()
             private var fullName: JsonField<String> = JsonMissing.of()
-            private var kycStatus: JsonField<KycStatus> = JsonMissing.of()
+            private var kycStatus: JsonField<IndividualCustomerFields.KycStatus> = JsonMissing.of()
             private var nationality: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -678,18 +690,20 @@ private constructor(
                 this.updatedAt = updatedAt
             }
 
-            fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
+            fun customerType(customerType: IndividualCustomerFields.CustomerType) =
+                customerType(JsonField.of(customerType))
 
             /**
              * Sets [Builder.customerType] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.customerType] with a well-typed [CustomerType] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.customerType] with a well-typed
+             * [IndividualCustomerFields.CustomerType] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
              */
-            fun customerType(customerType: JsonField<CustomerType>) = apply {
-                this.customerType = customerType
-            }
+            fun customerType(customerType: JsonField<IndividualCustomerFields.CustomerType>) =
+                apply {
+                    this.customerType = customerType
+                }
 
             fun address(address: Address) = address(JsonField.of(address))
 
@@ -727,16 +741,19 @@ private constructor(
             fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
 
             /** The current KYC status of a customer */
-            fun kycStatus(kycStatus: KycStatus) = kycStatus(JsonField.of(kycStatus))
+            fun kycStatus(kycStatus: IndividualCustomerFields.KycStatus) =
+                kycStatus(JsonField.of(kycStatus))
 
             /**
              * Sets [Builder.kycStatus] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.kycStatus] with a well-typed [KycStatus] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.kycStatus] with a well-typed
+             * [IndividualCustomerFields.KycStatus] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
              */
-            fun kycStatus(kycStatus: JsonField<KycStatus>) = apply { this.kycStatus = kycStatus }
+            fun kycStatus(kycStatus: JsonField<IndividualCustomerFields.KycStatus>) = apply {
+                this.kycStatus = kycStatus
+            }
 
             /** Country code (ISO 3166-1 alpha-2) */
             fun nationality(nationality: String) = nationality(JsonField.of(nationality))
@@ -852,291 +869,6 @@ private constructor(
                 (if (fullName.asKnown() == null) 0 else 1) +
                 (kycStatus.asKnown()?.validity() ?: 0) +
                 (if (nationality.asKnown() == null) 0 else 1)
-
-        class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val INDIVIDUAL = of("INDIVIDUAL")
-
-                fun of(value: String) = CustomerType(JsonField.of(value))
-            }
-
-            /** An enum containing [CustomerType]'s known values. */
-            enum class Known {
-                INDIVIDUAL
-            }
-
-            /**
-             * An enum containing [CustomerType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [CustomerType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                INDIVIDUAL,
-                /**
-                 * An enum member indicating that [CustomerType] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    INDIVIDUAL -> Value.INDIVIDUAL
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    INDIVIDUAL -> Known.INDIVIDUAL
-                    else -> throw LightsparkGridInvalidDataException("Unknown CustomerType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): CustomerType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is CustomerType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
-        /** The current KYC status of a customer */
-        class KycStatus @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val APPROVED = of("APPROVED")
-
-                val REJECTED = of("REJECTED")
-
-                val PENDING_REVIEW = of("PENDING_REVIEW")
-
-                val EXPIRED = of("EXPIRED")
-
-                val CANCELED = of("CANCELED")
-
-                val MANUALLY_APPROVED = of("MANUALLY_APPROVED")
-
-                val MANUALLY_REJECTED = of("MANUALLY_REJECTED")
-
-                fun of(value: String) = KycStatus(JsonField.of(value))
-            }
-
-            /** An enum containing [KycStatus]'s known values. */
-            enum class Known {
-                APPROVED,
-                REJECTED,
-                PENDING_REVIEW,
-                EXPIRED,
-                CANCELED,
-                MANUALLY_APPROVED,
-                MANUALLY_REJECTED,
-            }
-
-            /**
-             * An enum containing [KycStatus]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [KycStatus] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                APPROVED,
-                REJECTED,
-                PENDING_REVIEW,
-                EXPIRED,
-                CANCELED,
-                MANUALLY_APPROVED,
-                MANUALLY_REJECTED,
-                /**
-                 * An enum member indicating that [KycStatus] was instantiated with an unknown
-                 * value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    APPROVED -> Value.APPROVED
-                    REJECTED -> Value.REJECTED
-                    PENDING_REVIEW -> Value.PENDING_REVIEW
-                    EXPIRED -> Value.EXPIRED
-                    CANCELED -> Value.CANCELED
-                    MANUALLY_APPROVED -> Value.MANUALLY_APPROVED
-                    MANUALLY_REJECTED -> Value.MANUALLY_REJECTED
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    APPROVED -> Known.APPROVED
-                    REJECTED -> Known.REJECTED
-                    PENDING_REVIEW -> Known.PENDING_REVIEW
-                    EXPIRED -> Known.EXPIRED
-                    CANCELED -> Known.CANCELED
-                    MANUALLY_APPROVED -> Known.MANUALLY_APPROVED
-                    MANUALLY_REJECTED -> Known.MANUALLY_REJECTED
-                    else -> throw LightsparkGridInvalidDataException("Unknown KycStatus: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): KycStatus = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is KycStatus && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {

@@ -4,6 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.platform.externalaccounts.MyrAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,8 +15,10 @@ internal class MyrExternalAccountInfoTest {
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
                 .bankName("Maybank")
+                .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("MABORUMMYYY")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +41,15 @@ internal class MyrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("MABORUMMYYY")
                 .build()
 
         assertThat(myrExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(myrExternalAccountInfo.accountType())
-            .isEqualTo(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+            .isEqualTo(MyrAccountInfo.AccountType.MYR_ACCOUNT)
         assertThat(myrExternalAccountInfo.bankName()).isEqualTo("Maybank")
+        assertThat(myrExternalAccountInfo.paymentRails())
+            .containsExactly(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(myrExternalAccountInfo.swiftCode()).isEqualTo("MABORUMMYYY")
         assertThat(myrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 MyrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -71,9 +75,6 @@ internal class MyrExternalAccountInfoTest {
                         .build()
                 )
             )
-        assertThat(myrExternalAccountInfo.paymentRails())
-            .containsExactly(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(myrExternalAccountInfo.swiftCode()).isEqualTo("MABORUMMYYY")
     }
 
     @Test
@@ -82,8 +83,10 @@ internal class MyrExternalAccountInfoTest {
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
-                .accountType(MyrExternalAccountInfo.AccountType.MYR_ACCOUNT)
+                .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
                 .bankName("Maybank")
+                .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
+                .swiftCode("MABORUMMYYY")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -106,8 +109,6 @@ internal class MyrExternalAccountInfoTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addPaymentRail(MyrExternalAccountInfo.PaymentRail.BANK_TRANSFER)
-                .swiftCode("MABORUMMYYY")
                 .build()
 
         val roundtrippedMyrExternalAccountInfo =
