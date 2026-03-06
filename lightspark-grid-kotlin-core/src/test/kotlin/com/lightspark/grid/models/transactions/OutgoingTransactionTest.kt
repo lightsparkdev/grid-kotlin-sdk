@@ -10,7 +10,6 @@ import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
-import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -25,8 +24,6 @@ internal class OutgoingTransactionTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -46,8 +43,6 @@ internal class OutgoingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
@@ -149,8 +144,6 @@ internal class OutgoingTransactionTest {
             .isEqualTo(
                 OutgoingTransaction.Destination.ofAccountTransaction(
                     OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -174,8 +167,6 @@ internal class OutgoingTransactionTest {
             .isEqualTo(
                 TransactionSourceOneOf.ofAccountTransactionSource(
                     TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )
@@ -287,8 +278,6 @@ internal class OutgoingTransactionTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(
                     OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                        .currency("EUR")
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
@@ -308,8 +297,6 @@ internal class OutgoingTransactionTest {
                 )
                 .source(
                     TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                        .currency("USD")
                         .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .build()
                 )

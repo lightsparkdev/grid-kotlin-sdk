@@ -18,7 +18,6 @@ internal class QuoteSourceOneOfTest {
     fun ofAccountQuoteSource() {
         val accountQuoteSource =
             QuoteSourceOneOf.AccountQuoteSource.builder()
-                .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .build()
@@ -35,7 +34,6 @@ internal class QuoteSourceOneOfTest {
         val quoteSourceOneOf =
             QuoteSourceOneOf.ofAccountQuoteSource(
                 QuoteSourceOneOf.AccountQuoteSource.builder()
-                    .sourceType(BaseQuoteSource.SourceType.ACCOUNT)
                     .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
@@ -54,7 +52,6 @@ internal class QuoteSourceOneOfTest {
     fun ofRealtimeFundingQuoteSource() {
         val realtimeFundingQuoteSource =
             QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
-                .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
                 .currency("USD")
                 .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
@@ -74,7 +71,6 @@ internal class QuoteSourceOneOfTest {
         val quoteSourceOneOf =
             QuoteSourceOneOf.ofRealtimeFundingQuoteSource(
                 QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
-                    .sourceType(BaseQuoteSource.SourceType.REALTIME_FUNDING)
                     .currency("USD")
                     .cryptoNetwork("SOLANA_MAINNET")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.CustomerType
-import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -73,20 +73,23 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun baseDestinationRoundtrip() {
+    fun currencyRoundtrip() {
         val jsonMapper = jsonMapper()
-        val baseDestination =
-            BaseDestination.builder()
-                .destinationType(BaseDestination.DestinationType.ACCOUNT)
+        val currency =
+            Currency.builder()
+                .code("USD")
+                .decimals(2L)
+                .name("United States Dollar")
+                .symbol("\$")
                 .build()
 
-        val roundtrippedBaseDestination =
+        val roundtrippedCurrency =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(baseDestination),
-                jacksonTypeRef<BaseDestination>(),
+                jsonMapper.writeValueAsString(currency),
+                jacksonTypeRef<Currency>(),
             )
 
-        assertThat(roundtrippedBaseDestination).isEqualTo(baseDestination)
+        assertThat(roundtrippedCurrency).isEqualTo(currency)
     }
 
     @Test
@@ -95,7 +98,6 @@ internal class ProGuardCompatibilityTest {
         val quoteDestinationOneOf =
             QuoteDestinationOneOf.ofAccountDestination(
                 QuoteDestinationOneOf.AccountDestination.builder()
-                    .destinationType(BaseDestination.DestinationType.ACCOUNT)
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                     .build()
             )
