@@ -15,8 +15,8 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransaction
 import java.util.Objects
 
 @JsonDeserialize(using = Transaction.Deserializer::class)
