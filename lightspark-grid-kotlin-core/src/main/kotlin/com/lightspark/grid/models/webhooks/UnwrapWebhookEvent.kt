@@ -26,7 +26,7 @@ private constructor(
     private val testWebhook: TestWebhookWebhookEvent? = null,
     private val bulkUpload: BulkUploadWebhookEvent? = null,
     private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
-    private val kycStatus: KycStatusWebhookEvent? = null,
+    private val customerUpdate: CustomerUpdateWebhookEvent? = null,
     private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
@@ -41,7 +41,7 @@ private constructor(
 
     fun invitationClaimed(): InvitationClaimedWebhookEvent? = invitationClaimed
 
-    fun kycStatus(): KycStatusWebhookEvent? = kycStatus
+    fun customerUpdate(): CustomerUpdateWebhookEvent? = customerUpdate
 
     fun internalAccountStatus(): InternalAccountStatusWebhookEvent? = internalAccountStatus
 
@@ -55,7 +55,7 @@ private constructor(
 
     fun isInvitationClaimed(): Boolean = invitationClaimed != null
 
-    fun isKycStatus(): Boolean = kycStatus != null
+    fun isCustomerUpdate(): Boolean = customerUpdate != null
 
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
 
@@ -72,7 +72,7 @@ private constructor(
     fun asInvitationClaimed(): InvitationClaimedWebhookEvent =
         invitationClaimed.getOrThrow("invitationClaimed")
 
-    fun asKycStatus(): KycStatusWebhookEvent = kycStatus.getOrThrow("kycStatus")
+    fun asCustomerUpdate(): CustomerUpdateWebhookEvent = customerUpdate.getOrThrow("customerUpdate")
 
     fun asInternalAccountStatus(): InternalAccountStatusWebhookEvent =
         internalAccountStatus.getOrThrow("internalAccountStatus")
@@ -86,7 +86,7 @@ private constructor(
             testWebhook != null -> visitor.visitTestWebhook(testWebhook)
             bulkUpload != null -> visitor.visitBulkUpload(bulkUpload)
             invitationClaimed != null -> visitor.visitInvitationClaimed(invitationClaimed)
-            kycStatus != null -> visitor.visitKycStatus(kycStatus)
+            customerUpdate != null -> visitor.visitCustomerUpdate(customerUpdate)
             internalAccountStatus != null ->
                 visitor.visitInternalAccountStatus(internalAccountStatus)
             else -> visitor.unknown(_json)
@@ -123,8 +123,8 @@ private constructor(
                     invitationClaimed.validate()
                 }
 
-                override fun visitKycStatus(kycStatus: KycStatusWebhookEvent) {
-                    kycStatus.validate()
+                override fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) {
+                    customerUpdate.validate()
                 }
 
                 override fun visitInternalAccountStatus(
@@ -169,7 +169,8 @@ private constructor(
                     invitationClaimed: InvitationClaimedWebhookEvent
                 ) = invitationClaimed.validity()
 
-                override fun visitKycStatus(kycStatus: KycStatusWebhookEvent) = kycStatus.validity()
+                override fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) =
+                    customerUpdate.validity()
 
                 override fun visitInternalAccountStatus(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
@@ -190,7 +191,7 @@ private constructor(
             testWebhook == other.testWebhook &&
             bulkUpload == other.bulkUpload &&
             invitationClaimed == other.invitationClaimed &&
-            kycStatus == other.kycStatus &&
+            customerUpdate == other.customerUpdate &&
             internalAccountStatus == other.internalAccountStatus
     }
 
@@ -201,7 +202,7 @@ private constructor(
             testWebhook,
             bulkUpload,
             invitationClaimed,
-            kycStatus,
+            customerUpdate,
             internalAccountStatus,
         )
 
@@ -212,7 +213,7 @@ private constructor(
             testWebhook != null -> "UnwrapWebhookEvent{testWebhook=$testWebhook}"
             bulkUpload != null -> "UnwrapWebhookEvent{bulkUpload=$bulkUpload}"
             invitationClaimed != null -> "UnwrapWebhookEvent{invitationClaimed=$invitationClaimed}"
-            kycStatus != null -> "UnwrapWebhookEvent{kycStatus=$kycStatus}"
+            customerUpdate != null -> "UnwrapWebhookEvent{customerUpdate=$customerUpdate}"
             internalAccountStatus != null ->
                 "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
@@ -236,8 +237,8 @@ private constructor(
         fun ofInvitationClaimed(invitationClaimed: InvitationClaimedWebhookEvent) =
             UnwrapWebhookEvent(invitationClaimed = invitationClaimed)
 
-        fun ofKycStatus(kycStatus: KycStatusWebhookEvent) =
-            UnwrapWebhookEvent(kycStatus = kycStatus)
+        fun ofCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) =
+            UnwrapWebhookEvent(customerUpdate = customerUpdate)
 
         fun ofInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent) =
             UnwrapWebhookEvent(internalAccountStatus = internalAccountStatus)
@@ -259,7 +260,7 @@ private constructor(
 
         fun visitInvitationClaimed(invitationClaimed: InvitationClaimedWebhookEvent): T
 
-        fun visitKycStatus(kycStatus: KycStatusWebhookEvent): T
+        fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent): T
 
         fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
 
@@ -300,8 +301,8 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhookEvent>())?.let {
                             UnwrapWebhookEvent(invitationClaimed = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<KycStatusWebhookEvent>())?.let {
-                            UnwrapWebhookEvent(kycStatus = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<CustomerUpdateWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(customerUpdate = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<InternalAccountStatusWebhookEvent>())
                             ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
@@ -334,7 +335,7 @@ private constructor(
                 value.testWebhook != null -> generator.writeObject(value.testWebhook)
                 value.bulkUpload != null -> generator.writeObject(value.bulkUpload)
                 value.invitationClaimed != null -> generator.writeObject(value.invitationClaimed)
-                value.kycStatus != null -> generator.writeObject(value.kycStatus)
+                value.customerUpdate != null -> generator.writeObject(value.customerUpdate)
                 value.internalAccountStatus != null ->
                     generator.writeObject(value.internalAccountStatus)
                 value._json != null -> generator.writeObject(value._json)

@@ -27,6 +27,7 @@ private constructor(
     private val address: JsonField<Address>,
     private val beneficialOwners: JsonField<List<BeneficialOwner>>,
     private val businessInfo: JsonField<BusinessInfo>,
+    private val kybStatus: JsonField<KybStatus>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -42,7 +43,10 @@ private constructor(
         @JsonProperty("businessInfo")
         @ExcludeMissing
         businessInfo: JsonField<BusinessInfo> = JsonMissing.of(),
-    ) : this(customerType, address, beneficialOwners, businessInfo, mutableMapOf())
+        @JsonProperty("kybStatus")
+        @ExcludeMissing
+        kybStatus: JsonField<KybStatus> = JsonMissing.of(),
+    ) : this(customerType, address, beneficialOwners, businessInfo, kybStatus, mutableMapOf())
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -70,6 +74,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun businessInfo(): BusinessInfo? = businessInfo.getNullable("businessInfo")
+
+    /**
+     * The current KYB status of a business customer
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun kybStatus(): KybStatus? = kybStatus.getNullable("kybStatus")
 
     /**
      * Returns the raw JSON value of [customerType].
@@ -106,6 +118,13 @@ private constructor(
     @ExcludeMissing
     fun _businessInfo(): JsonField<BusinessInfo> = businessInfo
 
+    /**
+     * Returns the raw JSON value of [kybStatus].
+     *
+     * Unlike [kybStatus], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("kybStatus") @ExcludeMissing fun _kybStatus(): JsonField<KybStatus> = kybStatus
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -138,6 +157,7 @@ private constructor(
         private var address: JsonField<Address> = JsonMissing.of()
         private var beneficialOwners: JsonField<MutableList<BeneficialOwner>>? = null
         private var businessInfo: JsonField<BusinessInfo> = JsonMissing.of()
+        private var kybStatus: JsonField<KybStatus> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(businessCustomerFields: BusinessCustomerFields) = apply {
@@ -145,6 +165,7 @@ private constructor(
             address = businessCustomerFields.address
             beneficialOwners = businessCustomerFields.beneficialOwners.map { it.toMutableList() }
             businessInfo = businessCustomerFields.businessInfo
+            kybStatus = businessCustomerFields.kybStatus
             additionalProperties = businessCustomerFields.additionalProperties.toMutableMap()
         }
 
@@ -211,6 +232,18 @@ private constructor(
             this.businessInfo = businessInfo
         }
 
+        /** The current KYB status of a business customer */
+        fun kybStatus(kybStatus: KybStatus) = kybStatus(JsonField.of(kybStatus))
+
+        /**
+         * Sets [Builder.kybStatus] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.kybStatus] with a well-typed [KybStatus] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun kybStatus(kybStatus: JsonField<KybStatus>) = apply { this.kybStatus = kybStatus }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -248,6 +281,7 @@ private constructor(
                 address,
                 (beneficialOwners ?: JsonMissing.of()).map { it.toImmutable() },
                 businessInfo,
+                kybStatus,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -263,6 +297,7 @@ private constructor(
         address()?.validate()
         beneficialOwners()?.forEach { it.validate() }
         businessInfo()?.validate()
+        kybStatus()?.validate()
         validated = true
     }
 
@@ -283,7 +318,8 @@ private constructor(
         (customerType.asKnown()?.validity() ?: 0) +
             (address.asKnown()?.validity() ?: 0) +
             (beneficialOwners.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (businessInfo.asKnown()?.validity() ?: 0)
+            (businessInfo.asKnown()?.validity() ?: 0) +
+            (kybStatus.asKnown()?.validity() ?: 0)
 
     class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -1338,6 +1374,170 @@ private constructor(
             "BusinessInfo{legalName=$legalName, registrationNumber=$registrationNumber, taxId=$taxId, additionalProperties=$additionalProperties}"
     }
 
+    /** The current KYB status of a business customer */
+    class KybStatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val AWAITING_SUBMISSION = of("AWAITING_SUBMISSION")
+
+            val APPROVED = of("APPROVED")
+
+            val REJECTED = of("REJECTED")
+
+            val PENDING_REVIEW = of("PENDING_REVIEW")
+
+            val EXPIRED = of("EXPIRED")
+
+            val CANCELED = of("CANCELED")
+
+            val MANUALLY_APPROVED = of("MANUALLY_APPROVED")
+
+            val MANUALLY_REJECTED = of("MANUALLY_REJECTED")
+
+            fun of(value: String) = KybStatus(JsonField.of(value))
+        }
+
+        /** An enum containing [KybStatus]'s known values. */
+        enum class Known {
+            AWAITING_SUBMISSION,
+            APPROVED,
+            REJECTED,
+            PENDING_REVIEW,
+            EXPIRED,
+            CANCELED,
+            MANUALLY_APPROVED,
+            MANUALLY_REJECTED,
+        }
+
+        /**
+         * An enum containing [KybStatus]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [KybStatus] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            AWAITING_SUBMISSION,
+            APPROVED,
+            REJECTED,
+            PENDING_REVIEW,
+            EXPIRED,
+            CANCELED,
+            MANUALLY_APPROVED,
+            MANUALLY_REJECTED,
+            /**
+             * An enum member indicating that [KybStatus] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                AWAITING_SUBMISSION -> Value.AWAITING_SUBMISSION
+                APPROVED -> Value.APPROVED
+                REJECTED -> Value.REJECTED
+                PENDING_REVIEW -> Value.PENDING_REVIEW
+                EXPIRED -> Value.EXPIRED
+                CANCELED -> Value.CANCELED
+                MANUALLY_APPROVED -> Value.MANUALLY_APPROVED
+                MANUALLY_REJECTED -> Value.MANUALLY_REJECTED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                AWAITING_SUBMISSION -> Known.AWAITING_SUBMISSION
+                APPROVED -> Known.APPROVED
+                REJECTED -> Known.REJECTED
+                PENDING_REVIEW -> Known.PENDING_REVIEW
+                EXPIRED -> Known.EXPIRED
+                CANCELED -> Known.CANCELED
+                MANUALLY_APPROVED -> Known.MANUALLY_APPROVED
+                MANUALLY_REJECTED -> Known.MANUALLY_REJECTED
+                else -> throw LightsparkGridInvalidDataException("Unknown KybStatus: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): KybStatus = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is KybStatus && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -1348,15 +1548,23 @@ private constructor(
             address == other.address &&
             beneficialOwners == other.beneficialOwners &&
             businessInfo == other.businessInfo &&
+            kybStatus == other.kybStatus &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(customerType, address, beneficialOwners, businessInfo, additionalProperties)
+        Objects.hash(
+            customerType,
+            address,
+            beneficialOwners,
+            businessInfo,
+            kybStatus,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BusinessCustomerFields{customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, additionalProperties=$additionalProperties}"
+        "BusinessCustomerFields{customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
 }

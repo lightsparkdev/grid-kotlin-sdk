@@ -10,6 +10,7 @@ import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import java.time.OffsetDateTime
@@ -24,13 +25,11 @@ internal class OutgoingPaymentWebhookEventTest {
             OutgoingPaymentWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    OutgoingPaymentWebhookEvent.Data.builder()
+                    OutgoingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            OutgoingPaymentWebhookEvent.Data.Destination
-                                .AccountTransactionDestination
-                                .builder()
+                            OutgoingTransaction.Destination.AccountTransactionDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -54,9 +53,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .status(OutgoingTransactionStatus.PENDING)
-                        .type(OutgoingPaymentWebhookEvent.Data.Type.OUTGOING)
+                        .type(OutgoingTransaction.Type.OUTGOING)
                         .counterpartyInformation(
-                            OutgoingPaymentWebhookEvent.Data.CounterpartyInformation.builder()
+                            OutgoingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -65,7 +64,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
-                        .failureReason(OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED)
+                        .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
@@ -133,14 +132,11 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                            OutgoingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED)
-                                .reason(
-                                    OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                        .TRANSACTION_FAILED
-                                )
+                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -156,12 +152,11 @@ internal class OutgoingPaymentWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(outgoingPaymentWebhookEvent.data())
             .isEqualTo(
-                OutgoingPaymentWebhookEvent.Data.builder()
+                OutgoingTransaction.builder()
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
-                        OutgoingPaymentWebhookEvent.Data.Destination.AccountTransactionDestination
-                            .builder()
+                        OutgoingTransaction.Destination.AccountTransactionDestination.builder()
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
@@ -185,9 +180,9 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .status(OutgoingTransactionStatus.PENDING)
-                    .type(OutgoingPaymentWebhookEvent.Data.Type.OUTGOING)
+                    .type(OutgoingTransaction.Type.OUTGOING)
                     .counterpartyInformation(
-                        OutgoingPaymentWebhookEvent.Data.CounterpartyInformation.builder()
+                        OutgoingTransaction.CounterpartyInformation.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                             .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                             .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -196,7 +191,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                     .description("Payment for invoice #1234")
                     .exchangeRate(1.08)
-                    .failureReason(OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED)
+                    .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                     .fees(10L)
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
@@ -264,13 +259,11 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .refund(
-                        OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                        OutgoingTransaction.Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
-                            .status(OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED)
-                            .reason(
-                                OutgoingPaymentWebhookEvent.Data.Refund.Reason.TRANSACTION_FAILED
-                            )
+                            .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                            .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                             .build()
                     )
@@ -291,13 +284,11 @@ internal class OutgoingPaymentWebhookEventTest {
             OutgoingPaymentWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    OutgoingPaymentWebhookEvent.Data.builder()
+                    OutgoingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
-                            OutgoingPaymentWebhookEvent.Data.Destination
-                                .AccountTransactionDestination
-                                .builder()
+                            OutgoingTransaction.Destination.AccountTransactionDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -321,9 +312,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .status(OutgoingTransactionStatus.PENDING)
-                        .type(OutgoingPaymentWebhookEvent.Data.Type.OUTGOING)
+                        .type(OutgoingTransaction.Type.OUTGOING)
                         .counterpartyInformation(
-                            OutgoingPaymentWebhookEvent.Data.CounterpartyInformation.builder()
+                            OutgoingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -332,7 +323,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
-                        .failureReason(OutgoingPaymentWebhookEvent.Data.FailureReason.QUOTE_EXPIRED)
+                        .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
@@ -400,14 +391,11 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingPaymentWebhookEvent.Data.Refund.builder()
+                            OutgoingTransaction.Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingPaymentWebhookEvent.Data.Refund.Status.COMPLETED)
-                                .reason(
-                                    OutgoingPaymentWebhookEvent.Data.Refund.Reason
-                                        .TRANSACTION_FAILED
-                                )
+                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
+                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
