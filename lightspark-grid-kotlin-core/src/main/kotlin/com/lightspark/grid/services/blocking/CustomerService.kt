@@ -60,29 +60,17 @@ interface CustomerService {
 
     /** @see create */
     fun create(
-        individualCustomerCreate:
-            CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest,
+        individual: CustomerCreateParams.CreateCustomerRequest.Individual,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerOneOf =
-        create(
-            CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                individualCustomerCreate
-            ),
-            requestOptions,
-        )
+        create(CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual), requestOptions)
 
     /** @see create */
     fun create(
-        businessCustomerCreate:
-            CustomerCreateParams.CreateCustomerRequest.BusinessCustomerCreateRequest,
+        business: CustomerCreateParams.CreateCustomerRequest.Business,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CustomerOneOf =
-        create(
-            CustomerCreateParams.CreateCustomerRequest.ofBusinessCustomerCreate(
-                businessCustomerCreate
-            ),
-            requestOptions,
-        )
+        create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
     /** Retrieve a customer by their system-generated ID */
     fun retrieve(
@@ -209,30 +197,21 @@ interface CustomerService {
         /** @see create */
         @MustBeClosed
         fun create(
-            individualCustomerCreate:
-                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest,
+            individual: CustomerCreateParams.CreateCustomerRequest.Individual,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerOneOf> =
             create(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                    individualCustomerCreate
-                ),
+                CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual),
                 requestOptions,
             )
 
         /** @see create */
         @MustBeClosed
         fun create(
-            businessCustomerCreate:
-                CustomerCreateParams.CreateCustomerRequest.BusinessCustomerCreateRequest,
+            business: CustomerCreateParams.CreateCustomerRequest.Business,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CustomerOneOf> =
-            create(
-                CustomerCreateParams.CreateCustomerRequest.ofBusinessCustomerCreate(
-                    businessCustomerCreate
-                ),
-                requestOptions,
-            )
+            create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /customers/{customerId}`, but is otherwise the same
