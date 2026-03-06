@@ -28,7 +28,6 @@ internal class IndividualCustomerFieldsTest {
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .fullName("John Michael Doe")
-                .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                 .nationality("US")
                 .build()
 
@@ -47,8 +46,6 @@ internal class IndividualCustomerFieldsTest {
             )
         assertThat(individualCustomerFields.birthDate()).isEqualTo(LocalDate.parse("1990-01-15"))
         assertThat(individualCustomerFields.fullName()).isEqualTo("John Michael Doe")
-        assertThat(individualCustomerFields.kycStatus())
-            .isEqualTo(IndividualCustomerFields.KycStatus.APPROVED)
         assertThat(individualCustomerFields.nationality()).isEqualTo("US")
     }
 
@@ -70,7 +67,6 @@ internal class IndividualCustomerFieldsTest {
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .fullName("John Michael Doe")
-                .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                 .nationality("US")
                 .build()
 

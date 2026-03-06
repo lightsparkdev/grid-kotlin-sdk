@@ -4,6 +4,7 @@ package com.lightspark.grid.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -25,6 +26,7 @@ internal class KycStatusWebhookEventTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
+                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -39,7 +41,6 @@ internal class KycStatusWebhookEventTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -57,6 +58,7 @@ internal class KycStatusWebhookEventTest {
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .isDeleted(false)
+                    .kycStatus(Customer.KycStatus.APPROVED)
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -71,7 +73,6 @@ internal class KycStatusWebhookEventTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
-                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
             )
@@ -94,6 +95,7 @@ internal class KycStatusWebhookEventTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
+                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -108,7 +110,6 @@ internal class KycStatusWebhookEventTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )

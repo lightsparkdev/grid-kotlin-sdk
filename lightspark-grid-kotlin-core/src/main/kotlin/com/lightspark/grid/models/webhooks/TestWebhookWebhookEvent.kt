@@ -21,6 +21,7 @@ class TestWebhookWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
+    private val data: JsonValue,
     private val timestamp: JsonField<OffsetDateTime>,
     private val type: JsonField<Type>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -29,11 +30,12 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("data") @ExcludeMissing data: JsonValue = JsonMissing.of(),
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-    ) : this(id, timestamp, type, mutableMapOf())
+    ) : this(id, data, timestamp, type, mutableMapOf())
 
     /**
      * Unique identifier for this webhook delivery (can be used for idempotency)
@@ -42,6 +44,17 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun id(): String = id.getRequired("id")
+
+    /**
+     * The resource object. Contains the full resource as the corresponding GET endpoint would
+     * return it.
+     *
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = testWebhookWebhookEvent.data().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonValue = data
 
     /**
      * ISO 8601 timestamp of when the webhook was sent
@@ -100,6 +113,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
+         * .data()
          * .timestamp()
          * .type()
          * ```
@@ -111,12 +125,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
+        private var data: JsonValue? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
         private var type: JsonField<Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(testWebhookWebhookEvent: TestWebhookWebhookEvent) = apply {
             id = testWebhookWebhookEvent.id
+            data = testWebhookWebhookEvent.data
             timestamp = testWebhookWebhookEvent.timestamp
             type = testWebhookWebhookEvent.type
             additionalProperties = testWebhookWebhookEvent.additionalProperties.toMutableMap()
@@ -132,6 +148,12 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /**
+         * The resource object. Contains the full resource as the corresponding GET endpoint would
+         * return it.
+         */
+        fun data(data: JsonValue) = apply { this.data = data }
 
         /** ISO 8601 timestamp of when the webhook was sent */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))
@@ -182,6 +204,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
+         * .data()
          * .timestamp()
          * .type()
          * ```
@@ -191,6 +214,7 @@ private constructor(
         fun build(): TestWebhookWebhookEvent =
             TestWebhookWebhookEvent(
                 checkRequired("id", id),
+                checkRequired("data", data),
                 checkRequired("timestamp", timestamp),
                 checkRequired("type", type),
                 additionalProperties.toMutableMap(),
@@ -276,16 +300,6 @@ private constructor(
 
             val CUSTOMER_KYC_MANUALLY_REJECTED = of("CUSTOMER.KYC_MANUALLY_REJECTED")
 
-            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
-
-            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
-
-            val CUSTOMER_KYB_SUBMITTED = of("CUSTOMER.KYB_SUBMITTED")
-
-            val CUSTOMER_KYB_MANUALLY_APPROVED = of("CUSTOMER.KYB_MANUALLY_APPROVED")
-
-            val CUSTOMER_KYB_MANUALLY_REJECTED = of("CUSTOMER.KYB_MANUALLY_REJECTED")
-
             val INTERNAL_ACCOUNT_BALANCE_UPDATED = of("INTERNAL_ACCOUNT.BALANCE_UPDATED")
 
             val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
@@ -316,11 +330,6 @@ private constructor(
             CUSTOMER_KYC_SUBMITTED,
             CUSTOMER_KYC_MANUALLY_APPROVED,
             CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -354,11 +363,6 @@ private constructor(
             CUSTOMER_KYC_SUBMITTED,
             CUSTOMER_KYC_MANUALLY_APPROVED,
             CUSTOMER_KYC_MANUALLY_REJECTED,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_SUBMITTED,
-            CUSTOMER_KYB_MANUALLY_APPROVED,
-            CUSTOMER_KYB_MANUALLY_REJECTED,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
@@ -393,11 +397,6 @@ private constructor(
                 CUSTOMER_KYC_SUBMITTED -> Value.CUSTOMER_KYC_SUBMITTED
                 CUSTOMER_KYC_MANUALLY_APPROVED -> Value.CUSTOMER_KYC_MANUALLY_APPROVED
                 CUSTOMER_KYC_MANUALLY_REJECTED -> Value.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Value.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Value.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Value.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
@@ -433,11 +432,6 @@ private constructor(
                 CUSTOMER_KYC_SUBMITTED -> Known.CUSTOMER_KYC_SUBMITTED
                 CUSTOMER_KYC_MANUALLY_APPROVED -> Known.CUSTOMER_KYC_MANUALLY_APPROVED
                 CUSTOMER_KYC_MANUALLY_REJECTED -> Known.CUSTOMER_KYC_MANUALLY_REJECTED
-                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_SUBMITTED -> Known.CUSTOMER_KYB_SUBMITTED
-                CUSTOMER_KYB_MANUALLY_APPROVED -> Known.CUSTOMER_KYB_MANUALLY_APPROVED
-                CUSTOMER_KYB_MANUALLY_REJECTED -> Known.CUSTOMER_KYB_MANUALLY_REJECTED
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
@@ -504,15 +498,18 @@ private constructor(
 
         return other is TestWebhookWebhookEvent &&
             id == other.id &&
+            data == other.data &&
             timestamp == other.timestamp &&
             type == other.type &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(id, timestamp, type, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(id, data, timestamp, type, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TestWebhookWebhookEvent{id=$id, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
+        "TestWebhookWebhookEvent{id=$id, data=$data, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
 }

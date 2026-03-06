@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -15,12 +16,14 @@ internal class TestWebhookWebhookEventTest {
         val testWebhookWebhookEvent =
             TestWebhookWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(JsonValue.from(mapOf<String, Any>()))
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
                 .build()
 
         assertThat(testWebhookWebhookEvent.id())
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+        assertThat(testWebhookWebhookEvent._data()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(testWebhookWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
         assertThat(testWebhookWebhookEvent.type()).isEqualTo(TestWebhookWebhookEvent.Type.TEST)
@@ -32,6 +35,7 @@ internal class TestWebhookWebhookEventTest {
         val testWebhookWebhookEvent =
             TestWebhookWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(JsonValue.from(mapOf<String, Any>()))
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
                 .build()
