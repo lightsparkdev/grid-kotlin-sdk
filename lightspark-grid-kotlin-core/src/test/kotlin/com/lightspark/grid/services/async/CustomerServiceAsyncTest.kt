@@ -44,6 +44,9 @@ internal class CustomerServiceAsyncTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
+                    .kycStatus(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                    )
                     .nationality("US")
                     .build()
             )
@@ -99,6 +102,10 @@ internal class CustomerServiceAsyncTest {
                             )
                             .birthDate(LocalDate.parse("1985-06-15"))
                             .fullName("John Smith")
+                            .kycStatus(
+                                CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus
+                                    .APPROVED
+                            )
                             .nationality("US")
                             .build()
                     )

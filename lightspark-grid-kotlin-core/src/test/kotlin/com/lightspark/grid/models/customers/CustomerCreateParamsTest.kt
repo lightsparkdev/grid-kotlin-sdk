@@ -32,6 +32,9 @@ internal class CustomerCreateParamsTest {
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .fullName("John Michael Doe")
+                    .kycStatus(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                    )
                     .nationality("US")
                     .build()
             )
@@ -62,6 +65,9 @@ internal class CustomerCreateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
                         .build()
                 )
@@ -91,6 +97,9 @@ internal class CustomerCreateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
                         .build()
                 )

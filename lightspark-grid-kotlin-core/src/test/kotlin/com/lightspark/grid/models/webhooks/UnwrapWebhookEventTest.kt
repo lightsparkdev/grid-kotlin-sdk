@@ -8,13 +8,14 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.config.CustomerInfoFieldName
-import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transactions.TransactionType
@@ -56,6 +57,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -243,6 +245,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -417,7 +420,6 @@ internal class UnwrapWebhookEventTest {
         val testWebhook =
             TestWebhookWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
-                .data(JsonValue.from(mapOf<String, Any>()))
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
                 .build()
@@ -430,6 +432,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -440,7 +443,6 @@ internal class UnwrapWebhookEventTest {
             UnwrapWebhookEvent.ofTestWebhook(
                 TestWebhookWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
-                    .data(JsonValue.from(mapOf<String, Any>()))
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(TestWebhookWebhookEvent.Type.TEST)
                     .build()
@@ -499,6 +501,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isEqualTo(bulkUpload)
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -556,11 +559,11 @@ internal class UnwrapWebhookEventTest {
             InvitationClaimedWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InvitationClaimedWebhookEvent.Data.builder()
+                    UmaInvitation.builder()
                         .code("019542f5")
                         .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                         .inviterUma("\$inviter@uma.domain")
-                        .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
+                        .status(UmaInvitation.Status.PENDING)
                         .url("https://uma.me/i/019542f5")
                         .amountToSend(
                             CurrencyAmount.builder()
@@ -593,6 +596,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -604,11 +608,11 @@ internal class UnwrapWebhookEventTest {
                 InvitationClaimedWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        InvitationClaimedWebhookEvent.Data.builder()
+                        UmaInvitation.builder()
                             .code("019542f5")
                             .createdAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
                             .inviterUma("\$inviter@uma.domain")
-                            .status(InvitationClaimedWebhookEvent.Data.Status.PENDING)
+                            .status(UmaInvitation.Status.PENDING)
                             .url("https://uma.me/i/019542f5")
                             .amountToSend(
                                 CurrencyAmount.builder()
@@ -655,7 +659,6 @@ internal class UnwrapWebhookEventTest {
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .isDeleted(false)
-                        .kycStatus(Customer.KycStatus.APPROVED)
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(KycStatusWebhookEvent.Data.CustomerType.INDIVIDUAL)
                         .address(
@@ -670,6 +673,7 @@ internal class UnwrapWebhookEventTest {
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .fullName("John Michael Doe")
+                        .kycStatus(KycStatusWebhookEvent.Data.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
                 )
@@ -685,6 +689,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isEqualTo(kycStatus)
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
     }
 
@@ -702,7 +707,6 @@ internal class UnwrapWebhookEventTest {
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .isDeleted(false)
-                            .kycStatus(Customer.KycStatus.APPROVED)
                             .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .customerType(KycStatusWebhookEvent.Data.CustomerType.INDIVIDUAL)
                             .address(
@@ -717,6 +721,7 @@ internal class UnwrapWebhookEventTest {
                             )
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .fullName("John Michael Doe")
+                            .kycStatus(KycStatusWebhookEvent.Data.KycStatus.APPROVED)
                             .nationality("US")
                             .build()
                     )
@@ -735,12 +740,164 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
+    fun ofKybStatus() {
+        val kybStatus =
+            KybStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    KybStatusWebhookEvent.Data.builder()
+                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .umaAddress("\$john.doe@uma.domain.com")
+                        .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .isDeleted(false)
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .addBeneficialOwner(
+                            KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                                .fullName("John Michael Doe")
+                                .individualType(
+                                    KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
+                                        .DIRECTOR
+                                )
+                                .address(
+                                    Address.builder()
+                                        .country("US")
+                                        .line1("123 Main Street")
+                                        .postalCode("94105")
+                                        .city("San Francisco")
+                                        .line2("Apt 4B")
+                                        .state("CA")
+                                        .build()
+                                )
+                                .birthDate(LocalDate.parse("1990-01-15"))
+                                .emailAddress("example@test.com")
+                                .nationality("US")
+                                .percentageOwnership(25.0)
+                                .phoneNumber("+5555555555")
+                                .taxId("EIN-987654321")
+                                .title("CEO, COO, President")
+                                .build()
+                        )
+                        .businessInfo(
+                            KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                                .legalName("Acme Corporation, Inc.")
+                                .registrationNumber("BRN-123456789")
+                                .taxId("EIN-987654321")
+                                .build()
+                        )
+                        .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(KybStatusWebhookEvent.Type.CUSTOMER_KYB_APPROVED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofKybStatus(kybStatus)
+
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isEqualTo(kybStatus)
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+    }
+
+    @Test
+    fun ofKybStatusRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofKybStatus(
+                KybStatusWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        KybStatusWebhookEvent.Data.builder()
+                            .platformCustomerId("9f84e0c2a72c4fa")
+                            .umaAddress("\$john.doe@uma.domain.com")
+                            .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                            .isDeleted(false)
+                            .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                            .customerType(KybStatusWebhookEvent.Data.CustomerType.BUSINESS)
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .addBeneficialOwner(
+                                KybStatusWebhookEvent.Data.BeneficialOwner.builder()
+                                    .fullName("John Michael Doe")
+                                    .individualType(
+                                        KybStatusWebhookEvent.Data.BeneficialOwner.IndividualType
+                                            .DIRECTOR
+                                    )
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .city("San Francisco")
+                                            .line2("Apt 4B")
+                                            .state("CA")
+                                            .build()
+                                    )
+                                    .birthDate(LocalDate.parse("1990-01-15"))
+                                    .emailAddress("example@test.com")
+                                    .nationality("US")
+                                    .percentageOwnership(25.0)
+                                    .phoneNumber("+5555555555")
+                                    .taxId("EIN-987654321")
+                                    .title("CEO, COO, President")
+                                    .build()
+                            )
+                            .businessInfo(
+                                KybStatusWebhookEvent.Data.BusinessInfo.builder()
+                                    .legalName("Acme Corporation, Inc.")
+                                    .registrationNumber("BRN-123456789")
+                                    .taxId("EIN-987654321")
+                                    .build()
+                            )
+                            .kybStatus(KybStatusWebhookEvent.Data.KybStatus.APPROVED)
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(KybStatusWebhookEvent.Type.CUSTOMER_KYB_APPROVED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
     fun ofInternalAccountStatus() {
         val internalAccountStatus =
             InternalAccountStatusWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    InternalAccountStatusWebhookEvent.Data.builder()
+                    InternalAccount.builder()
                         .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .balance(
                             CurrencyAmount.builder()
@@ -792,6 +949,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.kycStatus()).isNull()
+        assertThat(unwrapWebhookEvent.kybStatus()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
     }
 
@@ -803,7 +961,7 @@ internal class UnwrapWebhookEventTest {
                 InternalAccountStatusWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
-                        InternalAccountStatusWebhookEvent.Data.builder()
+                        InternalAccount.builder()
                             .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .balance(
                                 CurrencyAmount.builder()
