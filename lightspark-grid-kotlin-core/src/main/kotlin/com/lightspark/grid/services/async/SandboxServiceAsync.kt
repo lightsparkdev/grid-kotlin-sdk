@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.sandbox.OutgoingTransaction
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
+import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
 import com.lightspark.grid.services.async.sandbox.WebhookServiceAsync

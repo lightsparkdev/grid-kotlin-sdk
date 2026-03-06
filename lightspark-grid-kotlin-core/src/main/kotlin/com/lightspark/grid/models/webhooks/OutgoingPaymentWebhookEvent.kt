@@ -13,7 +13,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.sandbox.OutgoingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransaction
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
