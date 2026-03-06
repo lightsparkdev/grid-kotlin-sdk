@@ -9,13 +9,11 @@ import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
-import com.lightspark.grid.models.transactions.BaseTransactionSource
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
-import com.lightspark.grid.models.transferin.BaseTransactionDestination
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -33,8 +31,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -78,8 +74,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.AccountTransactionSource.builder()
-                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                                .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -105,8 +99,6 @@ internal class IncomingPaymentWebhookEventTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(
                         IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                            .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                            .currency("EUR")
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
@@ -150,8 +142,6 @@ internal class IncomingPaymentWebhookEventTest {
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .source(
                         TransactionSourceOneOf.AccountTransactionSource.builder()
-                            .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                            .currency("USD")
                             .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )
@@ -182,8 +172,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(
                             IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                                .destinationType(BaseTransactionDestination.DestinationType.ACCOUNT)
-                                .currency("EUR")
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                                 .build()
                         )
@@ -227,8 +215,6 @@ internal class IncomingPaymentWebhookEventTest {
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(
                             TransactionSourceOneOf.AccountTransactionSource.builder()
-                                .sourceType(BaseTransactionSource.SourceType.ACCOUNT)
-                                .currency("USD")
                                 .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
