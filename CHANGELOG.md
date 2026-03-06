@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.10.0 (2026-03-06)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* add cryptoNetwork field to RealtimeFundingQuoteSource ([e59a691](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e59a691cf416def6afd55ed1028606c313be0ec5))
+* Add support for MWK, UGX, and XOF currency accounts ([1877d74](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1877d7439f3f66da9440e3391b1ea4b622427f6d))
+* **api:** add kyb webhooks/status fields, remove kyc from response, update webhook data types ([df71de8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/df71de8c00a69422dde09d7e015506c4962dbd8e))
+* **api:** adding webhooks back in ([41235f5](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/41235f546886c3ec5b98bf4878fa15fd46d77708))
+* **api:** manual updates ([1c59bac](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1c59bac7b16ab9dc2f1bc45d66fcda886dad686b))
+* **api:** manual updates ([b90ab5f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b90ab5f29684f6e09b5a0175d8f0a58a9d12f42e))
+* **api:** manual updates ([d18b45f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d18b45f8c2d9407c0e578a7d546dd6f7150c654a))
+* **api:** manual updates ([d639af1](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d639af18be17f14c272dbd6fd145c7d7f9c778b8))
+* **api:** manual updates ([ddc9c97](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ddc9c97fa1de714d1b0167aee5560fd73dfadd59))
+* **api:** manual updates ([ee71f3c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ee71f3ca267fa194fc2889a78c6ebcb469c11fcd))
+* **api:** manual updates ([3dd9539](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3dd9539e2171c16395f86c470f93da7abac2c0bd))
+* **api:** manual updates ([71a3b7d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/71a3b7dfc284d3a199e2d926d758aa36ff942c9c))
+* cleaning up webhooks ([ac6bac0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ac6bac071cd287b68b823781194b4857fa085a11))
+
+
+### Bug Fixes
+
+* **types:** remove SENT status from TransactionStatus ([01ceda0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/01ceda067bebbccbc4e002fc8aecfa06dc98dd99))
+
+
+### Chores
+
+* **internal:** bump palantir-java-format ([5d51288](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5d51288256be3e4317e98e425e04b3dafd863e98))
+* **internal:** codegen related update ([d419945](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d41994522629078645040ef4b2f962858e6063b7))
+* **internal:** codegen related update ([3f825d9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3f825d931c7084b4b84e3b4cfa92b998f863806e))
+
 ## 0.9.0 (2026-03-03)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.8.0...v0.9.0)
