@@ -1861,6 +1861,7 @@ private constructor(
         private constructor(
             private val currency: JsonField<String>,
             private val sourceType: JsonValue,
+            private val cryptoNetwork: JsonField<String>,
             private val customerId: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
@@ -1873,10 +1874,13 @@ private constructor(
                 @JsonProperty("sourceType")
                 @ExcludeMissing
                 sourceType: JsonValue = JsonMissing.of(),
+                @JsonProperty("cryptoNetwork")
+                @ExcludeMissing
+                cryptoNetwork: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("customerId")
                 @ExcludeMissing
                 customerId: JsonField<String> = JsonMissing.of(),
-            ) : this(currency, sourceType, customerId, mutableMapOf())
+            ) : this(currency, sourceType, cryptoNetwork, customerId, mutableMapOf())
 
             /**
              * Currency code for the funding source. See
@@ -1901,6 +1905,17 @@ private constructor(
             @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
 
             /**
+             * The crypto network to use for the funding source. Required when `currency` is a
+             * stablecoin (e.g. USDC, USDT). Specifies which network the customer will deposit on,
+             * so the correct deposit address can be generated. Example values: `SOLANA_MAINNET`,
+             * `SOLANA_DEVNET`, `ETHEREUM_MAINNET`.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun cryptoNetwork(): String? = cryptoNetwork.getNullable("cryptoNetwork")
+
+            /**
              * Source customer ID. If this transaction is being initiated on behalf of a customer,
              * this is required. If customerId is not provided, the quote will be created on behalf
              * of the platform itself.
@@ -1917,6 +1932,16 @@ private constructor(
              * type.
              */
             @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+            /**
+             * Returns the raw JSON value of [cryptoNetwork].
+             *
+             * Unlike [cryptoNetwork], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("cryptoNetwork")
+            @ExcludeMissing
+            fun _cryptoNetwork(): JsonField<String> = cryptoNetwork
 
             /**
              * Returns the raw JSON value of [customerId].
@@ -1959,12 +1984,14 @@ private constructor(
 
                 private var currency: JsonField<String>? = null
                 private var sourceType: JsonValue = JsonValue.from("REALTIME_FUNDING")
+                private var cryptoNetwork: JsonField<String> = JsonMissing.of()
                 private var customerId: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(realtimeFundingQuoteSource: RealtimeFundingQuoteSource) = apply {
                     currency = realtimeFundingQuoteSource.currency
                     sourceType = realtimeFundingQuoteSource.sourceType
+                    cryptoNetwork = realtimeFundingQuoteSource.cryptoNetwork
                     customerId = realtimeFundingQuoteSource.customerId
                     additionalProperties =
                         realtimeFundingQuoteSource.additionalProperties.toMutableMap()
@@ -1999,6 +2026,26 @@ private constructor(
                  * supported value.
                  */
                 fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
+
+                /**
+                 * The crypto network to use for the funding source. Required when `currency` is a
+                 * stablecoin (e.g. USDC, USDT). Specifies which network the customer will deposit
+                 * on, so the correct deposit address can be generated. Example values:
+                 * `SOLANA_MAINNET`, `SOLANA_DEVNET`, `ETHEREUM_MAINNET`.
+                 */
+                fun cryptoNetwork(cryptoNetwork: String) =
+                    cryptoNetwork(JsonField.of(cryptoNetwork))
+
+                /**
+                 * Sets [Builder.cryptoNetwork] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.cryptoNetwork] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun cryptoNetwork(cryptoNetwork: JsonField<String>) = apply {
+                    this.cryptoNetwork = cryptoNetwork
+                }
 
                 /**
                  * Source customer ID. If this transaction is being initiated on behalf of a
@@ -2056,6 +2103,7 @@ private constructor(
                     RealtimeFundingQuoteSource(
                         checkRequired("currency", currency),
                         sourceType,
+                        cryptoNetwork,
                         customerId,
                         additionalProperties.toMutableMap(),
                     )
@@ -2076,6 +2124,7 @@ private constructor(
                         )
                     }
                 }
+                cryptoNetwork()
                 customerId()
                 validated = true
             }
@@ -2097,6 +2146,7 @@ private constructor(
             internal fun validity(): Int =
                 (if (currency.asKnown() == null) 0 else 1) +
                     sourceType.let { if (it == JsonValue.from("REALTIME_FUNDING")) 1 else 0 } +
+                    (if (cryptoNetwork.asKnown() == null) 0 else 1) +
                     (if (customerId.asKnown() == null) 0 else 1)
 
             override fun equals(other: Any?): Boolean {
@@ -2107,18 +2157,19 @@ private constructor(
                 return other is RealtimeFundingQuoteSource &&
                     currency == other.currency &&
                     sourceType == other.sourceType &&
+                    cryptoNetwork == other.cryptoNetwork &&
                     customerId == other.customerId &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(currency, sourceType, customerId, additionalProperties)
+                Objects.hash(currency, sourceType, cryptoNetwork, customerId, additionalProperties)
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "RealtimeFundingQuoteSource{currency=$currency, sourceType=$sourceType, customerId=$customerId, additionalProperties=$additionalProperties}"
+                "RealtimeFundingQuoteSource{currency=$currency, sourceType=$sourceType, cryptoNetwork=$cryptoNetwork, customerId=$customerId, additionalProperties=$additionalProperties}"
         }
     }
 
