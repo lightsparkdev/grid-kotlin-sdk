@@ -32,6 +32,9 @@ internal class CustomerUpdateParamsTest {
                     )
                     .birthDate(LocalDate.parse("1985-06-15"))
                     .fullName("John Smith")
+                    .kycStatus(
+                        CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
+                    )
                     .nationality("US")
                     .build()
             )
@@ -82,6 +85,9 @@ internal class CustomerUpdateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1985-06-15"))
                         .fullName("John Smith")
+                        .kycStatus(
+                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
                         .build()
                 )
@@ -110,6 +116,9 @@ internal class CustomerUpdateParamsTest {
                         )
                         .birthDate(LocalDate.parse("1985-06-15"))
                         .fullName("John Smith")
+                        .kycStatus(
+                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
                         .build()
                 )
