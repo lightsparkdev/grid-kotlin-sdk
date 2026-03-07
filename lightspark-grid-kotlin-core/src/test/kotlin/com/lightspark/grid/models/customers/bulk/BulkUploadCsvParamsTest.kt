@@ -11,12 +11,12 @@ internal class BulkUploadCsvParamsTest {
 
     @Test
     fun create() {
-        BulkUploadCsvParams.builder().file("some content".byteInputStream()).build()
+        BulkUploadCsvParams.builder().file("Example data".byteInputStream()).build()
     }
 
     @Test
     fun body() {
-        val params = BulkUploadCsvParams.builder().file("some content".byteInputStream()).build()
+        val params = BulkUploadCsvParams.builder().file("Example data".byteInputStream()).build()
 
         val body = params._body()
 
@@ -29,7 +29,7 @@ internal class BulkUploadCsvParamsTest {
                 InputStream::class.java,
             )
             .isEqualTo(
-                mapOf("file" to MultipartField.of("some content".byteInputStream())).mapValues {
+                mapOf("file" to MultipartField.of("Example data".byteInputStream())).mapValues {
                     (_, field) ->
                     field.map { (it as? ByteArray)?.inputStream() ?: it }
                 }
