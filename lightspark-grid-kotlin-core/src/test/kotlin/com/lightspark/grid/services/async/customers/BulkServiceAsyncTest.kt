@@ -36,7 +36,7 @@ internal class BulkServiceAsyncTest {
 
         val response =
             bulkServiceAsync.uploadCsv(
-                BulkUploadCsvParams.builder().file("some content".byteInputStream()).build()
+                BulkUploadCsvParams.builder().file("Example data".byteInputStream()).build()
             )
 
         response.validate()
