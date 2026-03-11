@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.0 (2026-03-11)
+
+Full Changelog: [v1.0.0...v1.1.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.0.0...v1.1.0)
+
+### Features
+
+* **api:** add crypto service, cryptoNetwork to external accounts ([414443f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/414443fabcdaf9bee5077142701893f83bdc4d57))
+
+
+### Bug Fixes
+
+* **client:** incorrect `Retry-After` parsing ([373ed84](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/373ed8488b434c9de1eaf0a6d3aa96b788da22e6))
+
+
+### Chores
+
+* update placeholder string ([6563a30](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6563a308b4fad12fc31f7f174d4f71f761f64cb8))
+
 ## 1.0.0 (2026-03-07)
 
 Full Changelog: [v0.10.0...v1.0.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v0.10.0...v1.0.0)
