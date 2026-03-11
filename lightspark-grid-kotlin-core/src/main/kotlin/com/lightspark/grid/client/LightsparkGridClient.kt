@@ -4,6 +4,7 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.services.blocking.ConfigService
+import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CustomerService
 import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.InvitationService
@@ -109,6 +110,9 @@ interface LightsparkGridClient {
 
     fun webhooks(): WebhookService
 
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    fun crypto(): CryptoService
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -191,5 +195,8 @@ interface LightsparkGridClient {
         fun exchangeRates(): ExchangeRateService.WithRawResponse
 
         fun webhooks(): WebhookService.WithRawResponse
+
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        fun crypto(): CryptoService.WithRawResponse
     }
 }
