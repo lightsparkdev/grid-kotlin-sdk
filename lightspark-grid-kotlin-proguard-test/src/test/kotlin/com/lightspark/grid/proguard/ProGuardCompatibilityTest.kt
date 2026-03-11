@@ -70,6 +70,7 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.tokens()).isNotNull()
         assertThat(client.exchangeRates()).isNotNull()
         assertThat(client.webhooks()).isNotNull()
+        assertThat(client.crypto()).isNotNull()
     }
 
     @Test

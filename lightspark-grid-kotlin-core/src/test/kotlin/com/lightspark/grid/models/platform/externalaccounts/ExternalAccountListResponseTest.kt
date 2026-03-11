@@ -60,6 +60,7 @@ internal class ExternalAccountListResponseTest {
                         .beneficiaryVerifiedData(
                             BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
+                        .cryptoNetwork("SOLANA_MAINNET")
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")
@@ -110,6 +111,7 @@ internal class ExternalAccountListResponseTest {
                     .beneficiaryVerifiedData(
                         BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                     )
+                    .cryptoNetwork("SOLANA_MAINNET")
                     .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                     .defaultUmaDepositAccount(false)
                     .platformAccountId("acc_123456789")
@@ -164,6 +166,7 @@ internal class ExternalAccountListResponseTest {
                         .beneficiaryVerifiedData(
                             BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
+                        .cryptoNetwork("SOLANA_MAINNET")
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")
