@@ -6,6 +6,8 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.ConfigServiceImpl
+import com.lightspark.grid.services.blocking.CryptoService
+import com.lightspark.grid.services.blocking.CryptoServiceImpl
 import com.lightspark.grid.services.blocking.CustomerService
 import com.lightspark.grid.services.blocking.CustomerServiceImpl
 import com.lightspark.grid.services.blocking.ExchangeRateService
@@ -102,6 +104,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptionsWithUserAgent) }
 
+    private val crypto: CryptoService by lazy { CryptoServiceImpl(clientOptionsWithUserAgent) }
+
     override fun async(): LightsparkGridClientAsync = async
 
     override fun withRawResponse(): LightsparkGridClient.WithRawResponse = withRawResponse
@@ -162,6 +166,9 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     override fun exchangeRates(): ExchangeRateService = exchangeRates
 
     override fun webhooks(): WebhookService = webhooks
+
+    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    override fun crypto(): CryptoService = crypto
 
     override fun close() = clientOptions.close()
 
@@ -228,6 +235,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
             WebhookServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val crypto: CryptoService.WithRawResponse by lazy {
+            CryptoServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClient.WithRawResponse =
@@ -290,5 +301,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         override fun exchangeRates(): ExchangeRateService.WithRawResponse = exchangeRates
 
         override fun webhooks(): WebhookService.WithRawResponse = webhooks
+
+        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        override fun crypto(): CryptoService.WithRawResponse = crypto
     }
 }

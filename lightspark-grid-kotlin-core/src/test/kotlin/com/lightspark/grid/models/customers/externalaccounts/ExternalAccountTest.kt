@@ -54,6 +54,7 @@ internal class ExternalAccountTest {
                 .beneficiaryVerifiedData(
                     BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
+                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")
@@ -101,6 +102,7 @@ internal class ExternalAccountTest {
             .isEqualTo(ExternalAccount.BeneficiaryVerificationStatus.MATCHED)
         assertThat(externalAccount.beneficiaryVerifiedData())
             .isEqualTo(BeneficiaryVerifiedData.builder().fullName("John Doe").build())
+        assertThat(externalAccount.cryptoNetwork()).isEqualTo("SOLANA_MAINNET")
         assertThat(externalAccount.customerId())
             .isEqualTo("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
         assertThat(externalAccount.defaultUmaDepositAccount()).isEqualTo(false)
@@ -152,6 +154,7 @@ internal class ExternalAccountTest {
                 .beneficiaryVerifiedData(
                     BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
+                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")
