@@ -137,11 +137,13 @@ private constructor(
     fun purposeOfPayment(): PurposeOfPayment? = body.purposeOfPayment()
 
     /**
-     * Only relevant for UMA destinations. Key-value pairs of information about the sender which was
-     * requested by the counterparty (recipient) institution. Any fields specified in
-     * `requiredPayerDataFields` from the response of the `/receiver/uma/{receiverUmaAddress}`
-     * (lookupUma) endpoint MUST be provided here if they were requested. If the counterparty
-     * (recipient) institution did not request any information, this field can be omitted.
+     * Key-value pairs of additional information about the sender which was requested by the
+     * destination. This is relevant when the destination requires more sender info than was
+     * provided during customer creation. Any fields specified in `requiredPayerDataFields` from the
+     * response of the `/receiver/uma/{receiverUmaAddress}` (lookupUma) or
+     * `/receiver/external-account/{accountId}` (lookupExternalAccount) endpoints MUST be provided
+     * here if they were requested. If the destination did not request any additional information,
+     * this field can be omitted.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -453,11 +455,13 @@ private constructor(
         }
 
         /**
-         * Only relevant for UMA destinations. Key-value pairs of information about the sender which
-         * was requested by the counterparty (recipient) institution. Any fields specified in
-         * `requiredPayerDataFields` from the response of the `/receiver/uma/{receiverUmaAddress}`
-         * (lookupUma) endpoint MUST be provided here if they were requested. If the counterparty
-         * (recipient) institution did not request any information, this field can be omitted.
+         * Key-value pairs of additional information about the sender which was requested by the
+         * destination. This is relevant when the destination requires more sender info than was
+         * provided during customer creation. Any fields specified in `requiredPayerDataFields` from
+         * the response of the `/receiver/uma/{receiverUmaAddress}` (lookupUma) or
+         * `/receiver/external-account/{accountId}` (lookupExternalAccount) endpoints MUST be
+         * provided here if they were requested. If the destination did not request any additional
+         * information, this field can be omitted.
          */
         fun senderCustomerInfo(senderCustomerInfo: SenderCustomerInfo) = apply {
             body.senderCustomerInfo(senderCustomerInfo)
@@ -758,11 +762,13 @@ private constructor(
         fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
 
         /**
-         * Only relevant for UMA destinations. Key-value pairs of information about the sender which
-         * was requested by the counterparty (recipient) institution. Any fields specified in
-         * `requiredPayerDataFields` from the response of the `/receiver/uma/{receiverUmaAddress}`
-         * (lookupUma) endpoint MUST be provided here if they were requested. If the counterparty
-         * (recipient) institution did not request any information, this field can be omitted.
+         * Key-value pairs of additional information about the sender which was requested by the
+         * destination. This is relevant when the destination requires more sender info than was
+         * provided during customer creation. Any fields specified in `requiredPayerDataFields` from
+         * the response of the `/receiver/uma/{receiverUmaAddress}` (lookupUma) or
+         * `/receiver/external-account/{accountId}` (lookupExternalAccount) endpoints MUST be
+         * provided here if they were requested. If the destination did not request any additional
+         * information, this field can be omitted.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1088,12 +1094,13 @@ private constructor(
             }
 
             /**
-             * Only relevant for UMA destinations. Key-value pairs of information about the sender
-             * which was requested by the counterparty (recipient) institution. Any fields specified
-             * in `requiredPayerDataFields` from the response of the
-             * `/receiver/uma/{receiverUmaAddress}` (lookupUma) endpoint MUST be provided here if
-             * they were requested. If the counterparty (recipient) institution did not request any
-             * information, this field can be omitted.
+             * Key-value pairs of additional information about the sender which was requested by the
+             * destination. This is relevant when the destination requires more sender info than was
+             * provided during customer creation. Any fields specified in `requiredPayerDataFields`
+             * from the response of the `/receiver/uma/{receiverUmaAddress}` (lookupUma) or
+             * `/receiver/external-account/{accountId}` (lookupExternalAccount) endpoints MUST be
+             * provided here if they were requested. If the destination did not request any
+             * additional information, this field can be omitted.
              */
             fun senderCustomerInfo(senderCustomerInfo: SenderCustomerInfo) =
                 senderCustomerInfo(JsonField.of(senderCustomerInfo))
@@ -1572,11 +1579,13 @@ private constructor(
     }
 
     /**
-     * Only relevant for UMA destinations. Key-value pairs of information about the sender which was
-     * requested by the counterparty (recipient) institution. Any fields specified in
-     * `requiredPayerDataFields` from the response of the `/receiver/uma/{receiverUmaAddress}`
-     * (lookupUma) endpoint MUST be provided here if they were requested. If the counterparty
-     * (recipient) institution did not request any information, this field can be omitted.
+     * Key-value pairs of additional information about the sender which was requested by the
+     * destination. This is relevant when the destination requires more sender info than was
+     * provided during customer creation. Any fields specified in `requiredPayerDataFields` from the
+     * response of the `/receiver/uma/{receiverUmaAddress}` (lookupUma) or
+     * `/receiver/external-account/{accountId}` (lookupExternalAccount) endpoints MUST be provided
+     * here if they were requested. If the destination did not request any additional information,
+     * this field can be omitted.
      */
     class SenderCustomerInfo
     @JsonCreator
