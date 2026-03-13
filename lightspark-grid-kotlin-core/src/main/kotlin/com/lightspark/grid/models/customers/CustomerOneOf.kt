@@ -19,7 +19,6 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
@@ -160,28 +159,22 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): CustomerOneOf {
             val json = JsonValue.fromJsonNode(node)
+            val customerType = json.asObject()?.get("customerType")?.asString()
 
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
-                            CustomerOneOf(individual = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<Business>())?.let {
-                            CustomerOneOf(business = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> CustomerOneOf(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (customerType) {
+                "INDIVIDUAL" -> {
+                    return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
+                        CustomerOneOf(individual = it, _json = json)
+                    } ?: CustomerOneOf(_json = json)
+                }
+                "BUSINESS" -> {
+                    return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
+                        CustomerOneOf(business = it, _json = json)
+                    } ?: CustomerOneOf(_json = json)
+                }
             }
+
+            return CustomerOneOf(_json = json)
         }
     }
 
