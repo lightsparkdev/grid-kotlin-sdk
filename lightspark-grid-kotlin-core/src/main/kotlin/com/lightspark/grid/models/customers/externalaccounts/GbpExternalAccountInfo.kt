@@ -85,7 +85,7 @@ private constructor(
     fun paymentRails(): List<GbpAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * UK bank sort code (6 digits, may include hyphens)
+     * The UK sort code
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -243,7 +243,7 @@ private constructor(
                 }
         }
 
-        /** UK bank sort code (6 digits, may include hyphens) */
+        /** The UK sort code */
         fun sortCode(sortCode: String) = sortCode(JsonField.of(sortCode))
 
         /**

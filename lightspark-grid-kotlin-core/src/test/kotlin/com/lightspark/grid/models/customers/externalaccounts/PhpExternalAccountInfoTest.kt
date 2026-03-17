@@ -14,7 +14,7 @@ internal class PhpExternalAccountInfoTest {
     fun create() {
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
-                .accountNumber("001234567890")
+                .accountNumber("x")
                 .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -42,7 +42,7 @@ internal class PhpExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(phpExternalAccountInfo.accountNumber()).isEqualTo("001234567890")
+        assertThat(phpExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(phpExternalAccountInfo.accountType())
             .isEqualTo(PhpAccountInfo.AccountType.PHP_ACCOUNT)
         assertThat(phpExternalAccountInfo.bankName()).isEqualTo("BDO Unibank")
@@ -80,7 +80,7 @@ internal class PhpExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
-                .accountNumber("001234567890")
+                .accountNumber("x")
                 .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)

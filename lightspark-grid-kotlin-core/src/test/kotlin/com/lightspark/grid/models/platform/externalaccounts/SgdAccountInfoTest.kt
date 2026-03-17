@@ -13,14 +13,14 @@ internal class SgdAccountInfoTest {
     fun create() {
         val sgdAccountInfo =
             SgdAccountInfo.builder()
-                .accountNumber("0123456789")
+                .accountNumber("x")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
                 .swiftCode("DBSSSGSG")
                 .build()
 
-        assertThat(sgdAccountInfo.accountNumber()).isEqualTo("0123456789")
+        assertThat(sgdAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(sgdAccountInfo.accountType()).isEqualTo(SgdAccountInfo.AccountType.SGD_ACCOUNT)
         assertThat(sgdAccountInfo.bankName()).isEqualTo("DBS Bank Ltd")
         assertThat(sgdAccountInfo.paymentRails()).containsExactly(SgdAccountInfo.PaymentRail.PAYNOW)
@@ -32,7 +32,7 @@ internal class SgdAccountInfoTest {
         val jsonMapper = jsonMapper()
         val sgdAccountInfo =
             SgdAccountInfo.builder()
-                .accountNumber("0123456789")
+                .accountNumber("x")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)

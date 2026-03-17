@@ -531,6 +531,12 @@ private constructor(
         fun accountInfo(baseWalletInfo: BaseWalletInfo) =
             accountInfo(ExternalAccountInfoOneOf.ofBaseWalletInfo(baseWalletInfo))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofAedAccount(aedAccount)`.
+         */
+        fun accountInfo(aedAccount: ExternalAccountInfoOneOf.AedAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofAedAccount(aedAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 

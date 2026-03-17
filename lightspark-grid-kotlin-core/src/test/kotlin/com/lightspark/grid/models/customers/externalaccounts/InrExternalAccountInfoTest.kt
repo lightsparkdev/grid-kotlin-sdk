@@ -16,7 +16,7 @@ internal class InrExternalAccountInfoTest {
             InrExternalAccountInfo.builder()
                 .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
                 .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
+                .vpa("user@upi")
                 .beneficiary(
                     InrBeneficiary.builder()
                         .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class InrExternalAccountInfoTest {
             .isEqualTo(InrAccountInfo.AccountType.INR_ACCOUNT)
         assertThat(inrExternalAccountInfo.paymentRails())
             .containsExactly(InrAccountInfo.PaymentRail.UPI)
-        assertThat(inrExternalAccountInfo.vpa()).isEqualTo("vpa")
+        assertThat(inrExternalAccountInfo.vpa()).isEqualTo("user@upi")
         assertThat(inrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 InrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class InrExternalAccountInfoTest {
             InrExternalAccountInfo.builder()
                 .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
                 .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
+                .vpa("user@upi")
                 .beneficiary(
                     InrBeneficiary.builder()
                         .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)

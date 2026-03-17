@@ -17,7 +17,7 @@ internal class GbpExternalAccountInfoTest {
                 .accountNumber("12345678")
                 .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                 .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("20-00-00")
+                .sortCode("123456")
                 .beneficiary(
                     GbpBeneficiary.builder()
                         .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -47,7 +47,7 @@ internal class GbpExternalAccountInfoTest {
             .isEqualTo(GbpAccountInfo.AccountType.GBP_ACCOUNT)
         assertThat(gbpExternalAccountInfo.paymentRails())
             .containsExactly(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-        assertThat(gbpExternalAccountInfo.sortCode()).isEqualTo("20-00-00")
+        assertThat(gbpExternalAccountInfo.sortCode()).isEqualTo("123456")
         assertThat(gbpExternalAccountInfo.beneficiary())
             .isEqualTo(
                 GbpExternalAccountInfo.Beneficiary.ofIndividual(
@@ -83,7 +83,7 @@ internal class GbpExternalAccountInfoTest {
                 .accountNumber("12345678")
                 .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
                 .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("20-00-00")
+                .sortCode("123456")
                 .beneficiary(
                     GbpBeneficiary.builder()
                         .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)

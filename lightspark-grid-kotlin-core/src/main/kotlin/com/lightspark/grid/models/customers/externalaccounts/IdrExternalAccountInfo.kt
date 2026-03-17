@@ -96,7 +96,7 @@ private constructor(
     fun accountType(): IdrAccountInfo.AccountType = accountType.getRequired("accountType")
 
     /**
-     * Name of the bank
+     * The name of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -118,7 +118,7 @@ private constructor(
     fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
 
     /**
-     * SWIFT/BIC code (8 or 11 characters)
+     * The SWIFT/BIC code of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -270,7 +270,7 @@ private constructor(
             this.accountType = accountType
         }
 
-        /** Name of the bank */
+        /** The name of the bank */
         fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
         /**
@@ -319,7 +319,7 @@ private constructor(
          */
         fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
-        /** SWIFT/BIC code (8 or 11 characters) */
+        /** The SWIFT/BIC code of the bank */
         fun swiftCode(swiftCode: String) = swiftCode(JsonField.of(swiftCode))
 
         /**

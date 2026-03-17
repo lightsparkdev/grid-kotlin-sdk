@@ -34,7 +34,7 @@ private constructor(
     private val accountType: JsonField<BrlAccountInfo.AccountType>,
     private val paymentRails: JsonField<List<BrlAccountInfo.PaymentRail>>,
     private val pixKey: JsonField<String>,
-    private val pixKeyType: JsonField<String>,
+    private val pixKeyType: JsonField<BrlAccountInfo.PixKeyType>,
     private val taxId: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -51,7 +51,7 @@ private constructor(
         @JsonProperty("pixKey") @ExcludeMissing pixKey: JsonField<String> = JsonMissing.of(),
         @JsonProperty("pixKeyType")
         @ExcludeMissing
-        pixKeyType: JsonField<String> = JsonMissing.of(),
+        pixKeyType: JsonField<BrlAccountInfo.PixKeyType> = JsonMissing.of(),
         @JsonProperty("taxId") @ExcludeMissing taxId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
@@ -80,7 +80,7 @@ private constructor(
     fun paymentRails(): List<BrlAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The PIX key of the bank
+     * The PIX key (email, phone, CPF, CNPJ, or random)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -88,15 +88,15 @@ private constructor(
     fun pixKey(): String = pixKey.getRequired("pixKey")
 
     /**
-     * The type of PIX key of the bank
+     * The type of PIX key
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun pixKeyType(): String = pixKeyType.getRequired("pixKeyType")
+    fun pixKeyType(): BrlAccountInfo.PixKeyType = pixKeyType.getRequired("pixKeyType")
 
     /**
-     * The tax ID of the bank account
+     * The tax ID (CPF or CNPJ)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -139,7 +139,9 @@ private constructor(
      *
      * Unlike [pixKeyType], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("pixKeyType") @ExcludeMissing fun _pixKeyType(): JsonField<String> = pixKeyType
+    @JsonProperty("pixKeyType")
+    @ExcludeMissing
+    fun _pixKeyType(): JsonField<BrlAccountInfo.PixKeyType> = pixKeyType
 
     /**
      * Returns the raw JSON value of [taxId].
@@ -193,7 +195,7 @@ private constructor(
         private var accountType: JsonField<BrlAccountInfo.AccountType>? = null
         private var paymentRails: JsonField<MutableList<BrlAccountInfo.PaymentRail>>? = null
         private var pixKey: JsonField<String>? = null
-        private var pixKeyType: JsonField<String>? = null
+        private var pixKeyType: JsonField<BrlAccountInfo.PixKeyType>? = null
         private var taxId: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -248,7 +250,7 @@ private constructor(
                 }
         }
 
-        /** The PIX key of the bank */
+        /** The PIX key (email, phone, CPF, CNPJ, or random) */
         fun pixKey(pixKey: String) = pixKey(JsonField.of(pixKey))
 
         /**
@@ -259,19 +261,21 @@ private constructor(
          */
         fun pixKey(pixKey: JsonField<String>) = apply { this.pixKey = pixKey }
 
-        /** The type of PIX key of the bank */
-        fun pixKeyType(pixKeyType: String) = pixKeyType(JsonField.of(pixKeyType))
+        /** The type of PIX key */
+        fun pixKeyType(pixKeyType: BrlAccountInfo.PixKeyType) = pixKeyType(JsonField.of(pixKeyType))
 
         /**
          * Sets [Builder.pixKeyType] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.pixKeyType] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.pixKeyType] with a well-typed
+         * [BrlAccountInfo.PixKeyType] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
          */
-        fun pixKeyType(pixKeyType: JsonField<String>) = apply { this.pixKeyType = pixKeyType }
+        fun pixKeyType(pixKeyType: JsonField<BrlAccountInfo.PixKeyType>) = apply {
+            this.pixKeyType = pixKeyType
+        }
 
-        /** The tax ID of the bank account */
+        /** The tax ID (CPF or CNPJ) */
         fun taxId(taxId: String) = taxId(JsonField.of(taxId))
 
         /**
@@ -395,7 +399,7 @@ private constructor(
         accountType().validate()
         paymentRails().forEach { it.validate() }
         pixKey()
-        pixKeyType()
+        pixKeyType().validate()
         taxId()
         beneficiary().validate()
         validated = true
@@ -418,7 +422,7 @@ private constructor(
         (accountType.asKnown()?.validity() ?: 0) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (pixKey.asKnown() == null) 0 else 1) +
-            (if (pixKeyType.asKnown() == null) 0 else 1) +
+            (pixKeyType.asKnown()?.validity() ?: 0) +
             (if (taxId.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0)
 

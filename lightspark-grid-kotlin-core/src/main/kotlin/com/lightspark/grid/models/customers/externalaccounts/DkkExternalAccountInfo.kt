@@ -34,7 +34,7 @@ private constructor(
     private val accountType: JsonField<DkkAccountInfo.AccountType>,
     private val iban: JsonField<String>,
     private val paymentRails: JsonField<List<DkkAccountInfo.PaymentRail>>,
-    private val swiftBic: JsonField<String>,
+    private val swiftCode: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -48,18 +48,18 @@ private constructor(
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<DkkAccountInfo.PaymentRail>> = JsonMissing.of(),
-        @JsonProperty("swiftBic") @ExcludeMissing swiftBic: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("swiftCode") @ExcludeMissing swiftCode: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-    ) : this(accountType, iban, paymentRails, swiftBic, beneficiary, mutableMapOf())
+    ) : this(accountType, iban, paymentRails, swiftCode, beneficiary, mutableMapOf())
 
     fun toDkkAccountInfo(): DkkAccountInfo =
         DkkAccountInfo.builder()
             .accountType(accountType)
             .iban(iban)
             .paymentRails(paymentRails)
-            .swiftBic(swiftBic)
+            .swiftCode(swiftCode)
             .build()
 
     /**
@@ -69,7 +69,7 @@ private constructor(
     fun accountType(): DkkAccountInfo.AccountType = accountType.getRequired("accountType")
 
     /**
-     * The IBAN of the bank
+     * The IBAN of the bank account
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -83,12 +83,12 @@ private constructor(
     fun paymentRails(): List<DkkAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The SWIFT BIC of the bank
+     * The SWIFT/BIC code of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun swiftBic(): String? = swiftBic.getNullable("swiftBic")
+    fun swiftCode(): String? = swiftCode.getNullable("swiftCode")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -122,11 +122,11 @@ private constructor(
     fun _paymentRails(): JsonField<List<DkkAccountInfo.PaymentRail>> = paymentRails
 
     /**
-     * Returns the raw JSON value of [swiftBic].
+     * Returns the raw JSON value of [swiftCode].
      *
-     * Unlike [swiftBic], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [swiftCode], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("swiftBic") @ExcludeMissing fun _swiftBic(): JsonField<String> = swiftBic
+    @JsonProperty("swiftCode") @ExcludeMissing fun _swiftCode(): JsonField<String> = swiftCode
 
     /**
      * Returns the raw JSON value of [beneficiary].
@@ -171,7 +171,7 @@ private constructor(
         private var accountType: JsonField<DkkAccountInfo.AccountType>? = null
         private var iban: JsonField<String>? = null
         private var paymentRails: JsonField<MutableList<DkkAccountInfo.PaymentRail>>? = null
-        private var swiftBic: JsonField<String> = JsonMissing.of()
+        private var swiftCode: JsonField<String> = JsonMissing.of()
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -179,7 +179,7 @@ private constructor(
             accountType = dkkExternalAccountInfo.accountType
             iban = dkkExternalAccountInfo.iban
             paymentRails = dkkExternalAccountInfo.paymentRails.map { it.toMutableList() }
-            swiftBic = dkkExternalAccountInfo.swiftBic
+            swiftCode = dkkExternalAccountInfo.swiftCode
             beneficiary = dkkExternalAccountInfo.beneficiary
             additionalProperties = dkkExternalAccountInfo.additionalProperties.toMutableMap()
         }
@@ -198,7 +198,7 @@ private constructor(
             this.accountType = accountType
         }
 
-        /** The IBAN of the bank */
+        /** The IBAN of the bank account */
         fun iban(iban: String) = iban(JsonField.of(iban))
 
         /**
@@ -235,16 +235,17 @@ private constructor(
                 }
         }
 
-        /** The SWIFT BIC of the bank */
-        fun swiftBic(swiftBic: String) = swiftBic(JsonField.of(swiftBic))
+        /** The SWIFT/BIC code of the bank */
+        fun swiftCode(swiftCode: String) = swiftCode(JsonField.of(swiftCode))
 
         /**
-         * Sets [Builder.swiftBic] to an arbitrary JSON value.
+         * Sets [Builder.swiftCode] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.swiftBic] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.swiftCode] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun swiftBic(swiftBic: JsonField<String>) = apply { this.swiftBic = swiftBic }
+        fun swiftCode(swiftCode: JsonField<String>) = apply { this.swiftCode = swiftCode }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -340,7 +341,7 @@ private constructor(
                 checkRequired("accountType", accountType),
                 checkRequired("iban", iban),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                swiftBic,
+                swiftCode,
                 checkRequired("beneficiary", beneficiary),
                 additionalProperties.toMutableMap(),
             )
@@ -356,7 +357,7 @@ private constructor(
         accountType().validate()
         iban()
         paymentRails().forEach { it.validate() }
-        swiftBic()
+        swiftCode()
         beneficiary().validate()
         validated = true
     }
@@ -378,7 +379,7 @@ private constructor(
         (accountType.asKnown()?.validity() ?: 0) +
             (if (iban.asKnown() == null) 0 else 1) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (swiftBic.asKnown() == null) 0 else 1) +
+            (if (swiftCode.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0)
 
     @JsonDeserialize(using = Beneficiary.Deserializer::class)
@@ -558,17 +559,17 @@ private constructor(
             accountType == other.accountType &&
             iban == other.iban &&
             paymentRails == other.paymentRails &&
-            swiftBic == other.swiftBic &&
+            swiftCode == other.swiftCode &&
             beneficiary == other.beneficiary &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountType, iban, paymentRails, swiftBic, beneficiary, additionalProperties)
+        Objects.hash(accountType, iban, paymentRails, swiftCode, beneficiary, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DkkExternalAccountInfo{accountType=$accountType, iban=$iban, paymentRails=$paymentRails, swiftBic=$swiftBic, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+        "DkkExternalAccountInfo{accountType=$accountType, iban=$iban, paymentRails=$paymentRails, swiftCode=$swiftCode, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
 }
