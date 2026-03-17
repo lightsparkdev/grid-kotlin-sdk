@@ -48,8 +48,8 @@ private constructor(
     /**
      * A convenient destination option which adds the external account and creates the quote in one
      * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the external accounts endpoints for test values in
-     * sandbox mode.
+     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
+     * test values.
      */
     fun externalAccountDetailsDestination(): ExternalAccountDetailsDestination? =
         externalAccountDetailsDestination
@@ -71,8 +71,8 @@ private constructor(
     /**
      * A convenient destination option which adds the external account and creates the quote in one
      * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the external accounts endpoints for test values in
-     * sandbox mode.
+     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
+     * test values.
      */
     fun asExternalAccountDetailsDestination(): ExternalAccountDetailsDestination =
         externalAccountDetailsDestination.getOrThrow("externalAccountDetailsDestination")
@@ -188,8 +188,8 @@ private constructor(
         /**
          * A convenient destination option which adds the external account and creates the quote in
          * one step rather than first needing to call /external-accounts to add the account. Useful
-         * for one-off payments to some destination. See the external accounts endpoints for test
-         * values in sandbox mode.
+         * for one-off payments to some destination. See the Sandbox Testing guide in the API
+         * reference for test values.
          */
         fun ofExternalAccountDetailsDestination(
             externalAccountDetailsDestination: ExternalAccountDetailsDestination
@@ -214,8 +214,8 @@ private constructor(
         /**
          * A convenient destination option which adds the external account and creates the quote in
          * one step rather than first needing to call /external-accounts to add the account. Useful
-         * for one-off payments to some destination. See the external accounts endpoints for test
-         * values in sandbox mode.
+         * for one-off payments to some destination. See the Sandbox Testing guide in the API
+         * reference for test values.
          */
         fun visitExternalAccountDetailsDestination(
             externalAccountDetailsDestination: ExternalAccountDetailsDestination
@@ -921,8 +921,8 @@ private constructor(
     /**
      * A convenient destination option which adds the external account and creates the quote in one
      * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the external accounts endpoints for test values in
-     * sandbox mode.
+     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
+     * test values.
      */
     class ExternalAccountDetailsDestination
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
