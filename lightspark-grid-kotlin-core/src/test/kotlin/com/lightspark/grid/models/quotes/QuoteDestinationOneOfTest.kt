@@ -113,9 +113,9 @@ internal class QuoteDestinationOneOfTest {
                             BrlExternalAccountInfo.builder()
                                 .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                                 .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                .pixKey("pixKey")
-                                .pixKeyType("pixKeyType")
-                                .taxId("taxId")
+                                .pixKey("x")
+                                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                                .taxId("26912511571360")
                                 .beneficiary(
                                     BrlBeneficiary.builder()
                                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -172,9 +172,9 @@ internal class QuoteDestinationOneOfTest {
                                 BrlExternalAccountInfo.builder()
                                     .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                                     .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                    .pixKey("pixKey")
-                                    .pixKeyType("pixKeyType")
-                                    .taxId("taxId")
+                                    .pixKey("x")
+                                    .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                                    .taxId("26912511571360")
                                     .beneficiary(
                                         BrlBeneficiary.builder()
                                             .beneficiaryType(

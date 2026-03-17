@@ -16,10 +16,10 @@ internal class PaymentInstructionsTest {
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                        .accountNumber("accountNumber")
+                        .accountNumber("x")
                         .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                         .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                        .routingNumber("routingNumber")
+                        .routingNumber("021000021")
                         .reference("UMA-Q12345-REF")
                         .build()
                 )
@@ -33,10 +33,10 @@ internal class PaymentInstructionsTest {
             .isEqualTo(
                 PaymentInstructions.AccountOrWalletInfo.ofUsdAccount(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                        .accountNumber("accountNumber")
+                        .accountNumber("x")
                         .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                         .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                        .routingNumber("routingNumber")
+                        .routingNumber("021000021")
                         .reference("UMA-Q12345-REF")
                         .build()
                 )
@@ -55,10 +55,10 @@ internal class PaymentInstructionsTest {
             PaymentInstructions.builder()
                 .accountOrWalletInfo(
                     PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                        .accountNumber("accountNumber")
+                        .accountNumber("x")
                         .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                         .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                        .routingNumber("routingNumber")
+                        .routingNumber("021000021")
                         .reference("UMA-Q12345-REF")
                         .build()
                 )

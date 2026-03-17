@@ -15,16 +15,16 @@ internal class BrlAccountInfoTest {
             BrlAccountInfo.builder()
                 .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                 .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
+                .pixKey("x")
+                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                .taxId("26912511571360")
                 .build()
 
         assertThat(brlAccountInfo.accountType()).isEqualTo(BrlAccountInfo.AccountType.BRL_ACCOUNT)
         assertThat(brlAccountInfo.paymentRails()).containsExactly(BrlAccountInfo.PaymentRail.PIX)
-        assertThat(brlAccountInfo.pixKey()).isEqualTo("pixKey")
-        assertThat(brlAccountInfo.pixKeyType()).isEqualTo("pixKeyType")
-        assertThat(brlAccountInfo.taxId()).isEqualTo("taxId")
+        assertThat(brlAccountInfo.pixKey()).isEqualTo("x")
+        assertThat(brlAccountInfo.pixKeyType()).isEqualTo(BrlAccountInfo.PixKeyType.CPF)
+        assertThat(brlAccountInfo.taxId()).isEqualTo("26912511571360")
     }
 
     @Test
@@ -34,9 +34,9 @@ internal class BrlAccountInfoTest {
             BrlAccountInfo.builder()
                 .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                 .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
+                .pixKey("x")
+                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                .taxId("26912511571360")
                 .build()
 
         val roundtrippedBrlAccountInfo =

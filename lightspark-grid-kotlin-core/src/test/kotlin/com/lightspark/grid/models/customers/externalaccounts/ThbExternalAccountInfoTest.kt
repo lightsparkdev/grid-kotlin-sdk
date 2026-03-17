@@ -16,7 +16,7 @@ internal class ThbExternalAccountInfoTest {
             ThbExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
-                .bankName("Bangkok Bank")
+                .bankName("x")
                 .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("BKKBTHBK")
                 .beneficiary(
@@ -46,7 +46,7 @@ internal class ThbExternalAccountInfoTest {
         assertThat(thbExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(thbExternalAccountInfo.accountType())
             .isEqualTo(ThbAccountInfo.AccountType.THB_ACCOUNT)
-        assertThat(thbExternalAccountInfo.bankName()).isEqualTo("Bangkok Bank")
+        assertThat(thbExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(thbExternalAccountInfo.paymentRails())
             .containsExactly(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(thbExternalAccountInfo.swiftCode()).isEqualTo("BKKBTHBK")
@@ -84,7 +84,7 @@ internal class ThbExternalAccountInfoTest {
             ThbExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ThbAccountInfo.AccountType.THB_ACCOUNT)
-                .bankName("Bangkok Bank")
+                .bankName("x")
                 .addPaymentRail(ThbAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("BKKBTHBK")
                 .beneficiary(

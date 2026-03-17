@@ -13,16 +13,16 @@ internal class UsdAccountInfoTest {
     fun create() {
         val usdAccountInfo =
             UsdAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("x")
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
+                .routingNumber("021000021")
                 .build()
 
-        assertThat(usdAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(usdAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(usdAccountInfo.accountType()).isEqualTo(UsdAccountInfo.AccountType.USD_ACCOUNT)
         assertThat(usdAccountInfo.paymentRails()).containsExactly(UsdAccountInfo.PaymentRail.ACH)
-        assertThat(usdAccountInfo.routingNumber()).isEqualTo("routingNumber")
+        assertThat(usdAccountInfo.routingNumber()).isEqualTo("021000021")
     }
 
     @Test
@@ -30,10 +30,10 @@ internal class UsdAccountInfoTest {
         val jsonMapper = jsonMapper()
         val usdAccountInfo =
             UsdAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("x")
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
+                .routingNumber("021000021")
                 .build()
 
         val roundtrippedUsdAccountInfo =

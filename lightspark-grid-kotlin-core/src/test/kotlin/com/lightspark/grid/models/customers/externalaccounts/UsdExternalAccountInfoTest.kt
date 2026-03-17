@@ -14,10 +14,10 @@ internal class UsdExternalAccountInfoTest {
     fun create() {
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("x")
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
+                .routingNumber("021000021")
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -42,12 +42,12 @@ internal class UsdExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(usdExternalAccountInfo.accountNumber()).isEqualTo("accountNumber")
+        assertThat(usdExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(usdExternalAccountInfo.accountType())
             .isEqualTo(UsdAccountInfo.AccountType.USD_ACCOUNT)
         assertThat(usdExternalAccountInfo.paymentRails())
             .containsExactly(UsdAccountInfo.PaymentRail.ACH)
-        assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("routingNumber")
+        assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("021000021")
         assertThat(usdExternalAccountInfo.beneficiary())
             .isEqualTo(
                 UsdExternalAccountInfo.Beneficiary.ofIndividual(
@@ -80,10 +80,10 @@ internal class UsdExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val usdExternalAccountInfo =
             UsdExternalAccountInfo.builder()
-                .accountNumber("accountNumber")
+                .accountNumber("x")
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                .routingNumber("routingNumber")
+                .routingNumber("021000021")
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)

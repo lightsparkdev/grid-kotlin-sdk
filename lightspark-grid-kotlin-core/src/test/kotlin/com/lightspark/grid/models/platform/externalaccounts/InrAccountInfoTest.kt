@@ -15,12 +15,12 @@ internal class InrAccountInfoTest {
             InrAccountInfo.builder()
                 .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
                 .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
+                .vpa("user@upi")
                 .build()
 
         assertThat(inrAccountInfo.accountType()).isEqualTo(InrAccountInfo.AccountType.INR_ACCOUNT)
         assertThat(inrAccountInfo.paymentRails()).containsExactly(InrAccountInfo.PaymentRail.UPI)
-        assertThat(inrAccountInfo.vpa()).isEqualTo("vpa")
+        assertThat(inrAccountInfo.vpa()).isEqualTo("user@upi")
     }
 
     @Test
@@ -30,7 +30,7 @@ internal class InrAccountInfoTest {
             InrAccountInfo.builder()
                 .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
                 .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("vpa")
+                .vpa("user@upi")
                 .build()
 
         val roundtrippedInrAccountInfo =

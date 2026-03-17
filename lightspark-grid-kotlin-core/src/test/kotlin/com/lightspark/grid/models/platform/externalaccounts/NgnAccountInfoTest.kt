@@ -13,15 +13,15 @@ internal class NgnAccountInfoTest {
     fun create() {
         val ngnAccountInfo =
             NgnAccountInfo.builder()
-                .accountNumber("0123456789")
+                .accountNumber("2102979809")
                 .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                .bankName("First Bank of Nigeria")
+                .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
-        assertThat(ngnAccountInfo.accountNumber()).isEqualTo("0123456789")
+        assertThat(ngnAccountInfo.accountNumber()).isEqualTo("2102979809")
         assertThat(ngnAccountInfo.accountType()).isEqualTo(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-        assertThat(ngnAccountInfo.bankName()).isEqualTo("First Bank of Nigeria")
+        assertThat(ngnAccountInfo.bankName()).isEqualTo("x")
         assertThat(ngnAccountInfo.paymentRails())
             .containsExactly(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -31,9 +31,9 @@ internal class NgnAccountInfoTest {
         val jsonMapper = jsonMapper()
         val ngnAccountInfo =
             NgnAccountInfo.builder()
-                .accountNumber("0123456789")
+                .accountNumber("2102979809")
                 .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                .bankName("First Bank of Nigeria")
+                .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
