@@ -16,7 +16,7 @@ internal class HkdExternalAccountInfoTest {
             HkdExternalAccountInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-                .bankName("HSBC Hong Kong")
+                .bankName("x")
                 .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("HSBCHKHHHKH")
                 .beneficiary(
@@ -46,7 +46,7 @@ internal class HkdExternalAccountInfoTest {
         assertThat(hkdExternalAccountInfo.accountNumber()).isEqualTo("123456789012")
         assertThat(hkdExternalAccountInfo.accountType())
             .isEqualTo(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-        assertThat(hkdExternalAccountInfo.bankName()).isEqualTo("HSBC Hong Kong")
+        assertThat(hkdExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(hkdExternalAccountInfo.paymentRails())
             .containsExactly(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(hkdExternalAccountInfo.swiftCode()).isEqualTo("HSBCHKHHHKH")
@@ -84,7 +84,7 @@ internal class HkdExternalAccountInfoTest {
             HkdExternalAccountInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-                .bankName("HSBC Hong Kong")
+                .bankName("x")
                 .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("HSBCHKHHHKH")
                 .beneficiary(

@@ -16,7 +16,7 @@ internal class MyrExternalAccountInfoTest {
             MyrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
-                .bankName("Maybank")
+                .bankName("x")
                 .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("MABORUMMYYY")
                 .beneficiary(
@@ -46,7 +46,7 @@ internal class MyrExternalAccountInfoTest {
         assertThat(myrExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(myrExternalAccountInfo.accountType())
             .isEqualTo(MyrAccountInfo.AccountType.MYR_ACCOUNT)
-        assertThat(myrExternalAccountInfo.bankName()).isEqualTo("Maybank")
+        assertThat(myrExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(myrExternalAccountInfo.paymentRails())
             .containsExactly(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(myrExternalAccountInfo.swiftCode()).isEqualTo("MABORUMMYYY")
@@ -84,7 +84,7 @@ internal class MyrExternalAccountInfoTest {
             MyrExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(MyrAccountInfo.AccountType.MYR_ACCOUNT)
-                .bankName("Maybank")
+                .bankName("x")
                 .addPaymentRail(MyrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("MABORUMMYYY")
                 .beneficiary(

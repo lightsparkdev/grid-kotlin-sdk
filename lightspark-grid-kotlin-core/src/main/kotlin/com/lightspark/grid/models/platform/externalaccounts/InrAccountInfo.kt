@@ -51,7 +51,7 @@ private constructor(
     fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The VPA of the bank
+     * The UPI Virtual Payment Address
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -163,7 +163,7 @@ private constructor(
                 }
         }
 
-        /** The VPA of the bank */
+        /** The UPI Virtual Payment Address */
         fun vpa(vpa: String) = vpa(JsonField.of(vpa))
 
         /**

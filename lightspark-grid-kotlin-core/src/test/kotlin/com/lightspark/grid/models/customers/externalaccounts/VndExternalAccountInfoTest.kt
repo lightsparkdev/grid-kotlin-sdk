@@ -16,7 +16,7 @@ internal class VndExternalAccountInfoTest {
             VndExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
-                .bankName("Vietcombank")
+                .bankName("x")
                 .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("BFTVVNVX")
                 .beneficiary(
@@ -46,7 +46,7 @@ internal class VndExternalAccountInfoTest {
         assertThat(vndExternalAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(vndExternalAccountInfo.accountType())
             .isEqualTo(VndAccountInfo.AccountType.VND_ACCOUNT)
-        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("Vietcombank")
+        assertThat(vndExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(vndExternalAccountInfo.paymentRails())
             .containsExactly(VndAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(vndExternalAccountInfo.swiftCode()).isEqualTo("BFTVVNVX")
@@ -84,7 +84,7 @@ internal class VndExternalAccountInfoTest {
             VndExternalAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(VndAccountInfo.AccountType.VND_ACCOUNT)
-                .bankName("Vietcombank")
+                .bankName("x")
                 .addPaymentRail(VndAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("BFTVVNVX")
                 .beneficiary(

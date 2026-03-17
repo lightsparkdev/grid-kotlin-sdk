@@ -87,7 +87,7 @@ private constructor(
     fun paymentRails(): List<UsdAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The routing number of the bank
+     * The ABA routing number
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -247,7 +247,7 @@ private constructor(
                 }
         }
 
-        /** The routing number of the bank */
+        /** The ABA routing number */
         fun routingNumber(routingNumber: String) = routingNumber(JsonField.of(routingNumber))
 
         /**

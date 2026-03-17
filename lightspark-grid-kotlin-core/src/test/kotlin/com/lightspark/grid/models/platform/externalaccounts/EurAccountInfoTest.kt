@@ -14,15 +14,15 @@ internal class EurAccountInfoTest {
         val eurAccountInfo =
             EurAccountInfo.builder()
                 .accountType(EurAccountInfo.AccountType.EUR_ACCOUNT)
-                .iban("iban")
+                .iban("DE89370400440532013000")
                 .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
+                .swiftCode("DEUTDEFF")
                 .build()
 
         assertThat(eurAccountInfo.accountType()).isEqualTo(EurAccountInfo.AccountType.EUR_ACCOUNT)
-        assertThat(eurAccountInfo.iban()).isEqualTo("iban")
+        assertThat(eurAccountInfo.iban()).isEqualTo("DE89370400440532013000")
         assertThat(eurAccountInfo.paymentRails()).containsExactly(EurAccountInfo.PaymentRail.SEPA)
-        assertThat(eurAccountInfo.swiftBic()).isEqualTo("swiftBic")
+        assertThat(eurAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
     }
 
     @Test
@@ -31,9 +31,9 @@ internal class EurAccountInfoTest {
         val eurAccountInfo =
             EurAccountInfo.builder()
                 .accountType(EurAccountInfo.AccountType.EUR_ACCOUNT)
-                .iban("iban")
+                .iban("DE89370400440532013000")
                 .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
+                .swiftCode("DEUTDEFF")
                 .build()
 
         val roundtrippedEurAccountInfo =

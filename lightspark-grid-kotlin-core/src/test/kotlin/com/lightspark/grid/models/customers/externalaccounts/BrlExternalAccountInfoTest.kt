@@ -16,9 +16,9 @@ internal class BrlExternalAccountInfoTest {
             BrlExternalAccountInfo.builder()
                 .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                 .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
+                .pixKey("x")
+                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                .taxId("26912511571360")
                 .beneficiary(
                     BrlBeneficiary.builder()
                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -47,9 +47,9 @@ internal class BrlExternalAccountInfoTest {
             .isEqualTo(BrlAccountInfo.AccountType.BRL_ACCOUNT)
         assertThat(brlExternalAccountInfo.paymentRails())
             .containsExactly(BrlAccountInfo.PaymentRail.PIX)
-        assertThat(brlExternalAccountInfo.pixKey()).isEqualTo("pixKey")
-        assertThat(brlExternalAccountInfo.pixKeyType()).isEqualTo("pixKeyType")
-        assertThat(brlExternalAccountInfo.taxId()).isEqualTo("taxId")
+        assertThat(brlExternalAccountInfo.pixKey()).isEqualTo("x")
+        assertThat(brlExternalAccountInfo.pixKeyType()).isEqualTo(BrlAccountInfo.PixKeyType.CPF)
+        assertThat(brlExternalAccountInfo.taxId()).isEqualTo("26912511571360")
         assertThat(brlExternalAccountInfo.beneficiary())
             .isEqualTo(
                 BrlExternalAccountInfo.Beneficiary.ofIndividual(
@@ -84,9 +84,9 @@ internal class BrlExternalAccountInfoTest {
             BrlExternalAccountInfo.builder()
                 .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
                 .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("pixKey")
-                .pixKeyType("pixKeyType")
-                .taxId("taxId")
+                .pixKey("x")
+                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
+                .taxId("26912511571360")
                 .beneficiary(
                     BrlBeneficiary.builder()
                         .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)

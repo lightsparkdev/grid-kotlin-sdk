@@ -59,7 +59,7 @@ private constructor(
     fun accountType(): AccountType = accountType.getRequired("accountType")
 
     /**
-     * Name of the bank
+     * The name of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -73,7 +73,7 @@ private constructor(
     fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * SWIFT/BIC code (8 or 11 characters)
+     * The SWIFT/BIC code of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -196,7 +196,7 @@ private constructor(
             this.accountType = accountType
         }
 
-        /** Name of the bank */
+        /** The name of the bank */
         fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
         /**
@@ -232,7 +232,7 @@ private constructor(
                 }
         }
 
-        /** SWIFT/BIC code (8 or 11 characters) */
+        /** The SWIFT/BIC code of the bank */
         fun swiftCode(swiftCode: String) = swiftCode(JsonField.of(swiftCode))
 
         /**

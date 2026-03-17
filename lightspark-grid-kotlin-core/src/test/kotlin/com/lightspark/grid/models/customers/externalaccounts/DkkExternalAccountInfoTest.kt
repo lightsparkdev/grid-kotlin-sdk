@@ -15,9 +15,9 @@ internal class DkkExternalAccountInfoTest {
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
                 .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                .iban("iban")
+                .iban("DE89370400440532013000")
                 .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
+                .swiftCode("DEUTDEFF")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -44,10 +44,10 @@ internal class DkkExternalAccountInfoTest {
 
         assertThat(dkkExternalAccountInfo.accountType())
             .isEqualTo(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-        assertThat(dkkExternalAccountInfo.iban()).isEqualTo("iban")
+        assertThat(dkkExternalAccountInfo.iban()).isEqualTo("DE89370400440532013000")
         assertThat(dkkExternalAccountInfo.paymentRails())
             .containsExactly(DkkAccountInfo.PaymentRail.SEPA)
-        assertThat(dkkExternalAccountInfo.swiftBic()).isEqualTo("swiftBic")
+        assertThat(dkkExternalAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
         assertThat(dkkExternalAccountInfo.beneficiary())
             .isEqualTo(
                 DkkExternalAccountInfo.Beneficiary.ofIndividual(
@@ -81,9 +81,9 @@ internal class DkkExternalAccountInfoTest {
         val dkkExternalAccountInfo =
             DkkExternalAccountInfo.builder()
                 .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                .iban("iban")
+                .iban("DE89370400440532013000")
                 .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                .swiftBic("swiftBic")
+                .swiftCode("DEUTDEFF")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
