@@ -96,6 +96,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -208,6 +210,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -319,6 +323,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -429,6 +435,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -539,6 +547,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -651,6 +661,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -765,6 +777,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -877,6 +891,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -989,6 +1005,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1061,12 +1079,11 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.MwkExternalAccountInfo.Country.MW)
                 .addPaymentRail(
                     ExternalAccountInfoOneOf.MwkExternalAccountInfo.PaymentRail.MOBILE_MONEY
                 )
-                .phoneNumber("+265991234567")
-                .provider("provider")
+                .phoneNumber("+1234567890")
+                .provider("x")
                 .build()
 
         val externalAccountInfoOneOf =
@@ -1104,6 +1121,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1134,12 +1153,11 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.MwkExternalAccountInfo.Country.MW)
                     .addPaymentRail(
                         ExternalAccountInfoOneOf.MwkExternalAccountInfo.PaymentRail.MOBILE_MONEY
                     )
-                    .phoneNumber("+265991234567")
-                    .provider("provider")
+                    .phoneNumber("+1234567890")
+                    .provider("x")
                     .build()
             )
 
@@ -1216,6 +1234,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1327,6 +1347,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1438,6 +1460,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1548,6 +1572,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1661,6 +1687,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1774,6 +1802,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -1887,6 +1917,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2001,6 +2033,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2073,12 +2107,11 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.UgxExternalAccountInfo.Country.UG)
                 .addPaymentRail(
                     ExternalAccountInfoOneOf.UgxExternalAccountInfo.PaymentRail.MOBILE_MONEY
                 )
-                .phoneNumber("+256701234567")
-                .provider("provider")
+                .phoneNumber("+1234567890")
+                .provider("x")
                 .build()
 
         val externalAccountInfoOneOf =
@@ -2116,6 +2149,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2146,12 +2181,11 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.UgxExternalAccountInfo.Country.UG)
                     .addPaymentRail(
                         ExternalAccountInfoOneOf.UgxExternalAccountInfo.PaymentRail.MOBILE_MONEY
                     )
-                    .phoneNumber("+256701234567")
-                    .provider("provider")
+                    .phoneNumber("+1234567890")
+                    .provider("x")
                     .build()
             )
 
@@ -2229,6 +2263,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2341,6 +2377,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2413,12 +2451,12 @@ internal class ExternalAccountInfoOneOfTest {
                         .registrationNumber("registrationNumber")
                         .build()
                 )
-                .addCountry(ExternalAccountInfoOneOf.XofExternalAccountInfo.Country.SN)
                 .addPaymentRail(
                     ExternalAccountInfoOneOf.XofExternalAccountInfo.PaymentRail.MOBILE_MONEY
                 )
-                .phoneNumber("+221781234567")
-                .provider("provider")
+                .phoneNumber("+1234567890")
+                .provider("x")
+                .region(ExternalAccountInfoOneOf.XofExternalAccountInfo.Region.BJ)
                 .build()
 
         val externalAccountInfoOneOf =
@@ -2456,6 +2494,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2486,12 +2526,12 @@ internal class ExternalAccountInfoOneOfTest {
                             .registrationNumber("registrationNumber")
                             .build()
                     )
-                    .addCountry(ExternalAccountInfoOneOf.XofExternalAccountInfo.Country.SN)
                     .addPaymentRail(
                         ExternalAccountInfoOneOf.XofExternalAccountInfo.PaymentRail.MOBILE_MONEY
                     )
-                    .phoneNumber("+221781234567")
-                    .provider("provider")
+                    .phoneNumber("+1234567890")
+                    .provider("x")
+                    .region(ExternalAccountInfoOneOf.XofExternalAccountInfo.Region.BJ)
                     .build()
             )
 
@@ -2571,6 +2611,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2685,6 +2727,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2773,6 +2817,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2843,6 +2889,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2912,6 +2960,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -2975,6 +3025,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -3039,6 +3091,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isEqualTo(polygonWalletInfo)
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -3102,6 +3156,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isEqualTo(baseWalletInfo)
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -3187,6 +3243,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
         assertThat(externalAccountInfoOneOf.aedAccount()).isEqualTo(aedAccount)
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
     }
 
     @Test
@@ -3219,6 +3277,226 @@ internal class ExternalAccountInfoOneOfTest {
                     .iban("AE070331234567890123456")
                     .addPaymentRail(ExternalAccountInfoOneOf.AedAccount.PaymentRail.BANK_TRANSFER)
                     .swiftCode("EBILAEAD")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofBwpAccount() {
+        val bwpAccount =
+            ExternalAccountInfoOneOf.BwpAccount.builder()
+                .beneficiary(
+                    ExternalAccountInfoOneOf.BwpAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.BwpAccount.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .provider("x")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBwpAccount(bwpAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isEqualTo(bwpAccount)
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+    }
+
+    @Test
+    fun ofBwpAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofBwpAccount(
+                ExternalAccountInfoOneOf.BwpAccount.builder()
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.BwpAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.BwpAccount.PaymentRail.MOBILE_MONEY)
+                    .phoneNumber("+1234567890")
+                    .provider("x")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofXafAccount() {
+        val xafAccount =
+            ExternalAccountInfoOneOf.XafAccount.builder()
+                .beneficiary(
+                    ExternalAccountInfoOneOf.XafAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .registrationNumber("registrationNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.XafAccount.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .provider("x")
+                .region(ExternalAccountInfoOneOf.XafAccount.Region.CM)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofXafAccount(xafAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isEqualTo(xafAccount)
+    }
+
+    @Test
+    fun ofXafAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofXafAccount(
+                ExternalAccountInfoOneOf.XafAccount.builder()
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.XafAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .registrationNumber("registrationNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.XafAccount.PaymentRail.MOBILE_MONEY)
+                    .phoneNumber("+1234567890")
+                    .provider("x")
+                    .region(ExternalAccountInfoOneOf.XafAccount.Region.CM)
                     .build()
             )
 
