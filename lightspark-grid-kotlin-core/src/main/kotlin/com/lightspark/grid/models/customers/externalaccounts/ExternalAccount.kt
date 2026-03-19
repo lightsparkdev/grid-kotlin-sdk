@@ -537,6 +537,18 @@ private constructor(
         fun accountInfo(aedAccount: ExternalAccountInfoOneOf.AedAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofAedAccount(aedAccount))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofBwpAccount(bwpAccount)`.
+         */
+        fun accountInfo(bwpAccount: ExternalAccountInfoOneOf.BwpAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofBwpAccount(bwpAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofXafAccount(xafAccount)`.
+         */
+        fun accountInfo(xafAccount: ExternalAccountInfoOneOf.XafAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofXafAccount(xafAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
