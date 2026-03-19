@@ -1,5 +1,34 @@
 # Changelog
 
+## 1.2.0 (2026-03-19)
+
+Full Changelog: [v1.1.0...v1.2.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.1.0...v1.2.0)
+
+### Features
+
+* **api:** add AED account, fix BRL pixKeyType enum, rename swiftBic to swiftCode ([c624a8b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c624a8bc07bbed3296f0c94a285a0d857bb4d2c5))
+* **api:** add BWP/XAF accounts, remove countries from MWK/UGX/XOF, add region to XOF ([60a0875](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/60a087501ef1970ddd657413a1d9868dab75a9e8))
+* **api:** add counterpartyInformation to Quote, remove from UmaAddressDestination ([7bc8f5e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7bc8f5eca99953c8b77cd9feefb760b94867fa24))
+* **api:** add paymentRail field to AccountDestination in quotes ([5ba332e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5ba332e43e39f5c251f4812d703082d66e4aa625))
+
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([9c80bef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9c80bef065e35888619c2e630ec93d0a6e78636d))
+
+
+### Chores
+
+* **internal:** codegen related update ([5051a7f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5051a7f0de20065d13f6b9d21399ddb4fc040673))
+* **internal:** tweak CI branches ([6e09328](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6e09328b8e8a4138d5499623b133225fdd2c540d))
+* **internal:** update retry delay tests ([4b82d70](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4b82d70ddfcd36d3e45377945b42c381b20515df))
+
+
+### Documentation
+
+* **api:** remove sandbox testing details from external accounts and quotes ([690fedd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/690fedd88a4fa4ecaf56813e0fb4715c1377a876))
+* **api:** update senderCustomerInfo parameter documentation in quotes ([9fd4115](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9fd4115ba002ada89663384b386f9504079a7db2))
+
 ## 1.1.0 (2026-03-11)
 
 Full Changelog: [v1.0.0...v1.1.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.0.0...v1.1.0)
