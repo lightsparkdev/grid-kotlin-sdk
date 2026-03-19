@@ -24,6 +24,7 @@ internal class QuoteDestinationOneOfTest {
         val accountDestination =
             QuoteDestinationOneOf.AccountDestination.builder()
                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .paymentRail("ACH")
                 .build()
 
         val quoteDestinationOneOf = QuoteDestinationOneOf.ofAccountDestination(accountDestination)
@@ -40,6 +41,7 @@ internal class QuoteDestinationOneOfTest {
             QuoteDestinationOneOf.ofAccountDestination(
                 QuoteDestinationOneOf.AccountDestination.builder()
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .paymentRail("ACH")
                     .build()
             )
 

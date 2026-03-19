@@ -302,6 +302,7 @@ private constructor(
     private constructor(
         private val accountId: JsonField<String>,
         private val destinationType: JsonValue,
+        private val paymentRail: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -313,7 +314,10 @@ private constructor(
             @JsonProperty("destinationType")
             @ExcludeMissing
             destinationType: JsonValue = JsonMissing.of(),
-        ) : this(accountId, destinationType, mutableMapOf())
+            @JsonProperty("paymentRail")
+            @ExcludeMissing
+            paymentRail: JsonField<String> = JsonMissing.of(),
+        ) : this(accountId, destinationType, paymentRail, mutableMapOf())
 
         /**
          * Destination account identifier
@@ -337,11 +341,29 @@ private constructor(
         fun _destinationType(): JsonValue = destinationType
 
         /**
+         * The payment rail to use for the transfer. Must be one of the rails supported by the
+         * destination account. If not specified, the system will select a default rail.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun paymentRail(): String? = paymentRail.getNullable("paymentRail")
+
+        /**
          * Returns the raw JSON value of [accountId].
          *
          * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
+
+        /**
+         * Returns the raw JSON value of [paymentRail].
+         *
+         * Unlike [paymentRail], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("paymentRail")
+        @ExcludeMissing
+        fun _paymentRail(): JsonField<String> = paymentRail
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -373,11 +395,13 @@ private constructor(
 
             private var accountId: JsonField<String>? = null
             private var destinationType: JsonValue = JsonValue.from("ACCOUNT")
+            private var paymentRail: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(accountDestination: AccountDestination) = apply {
                 accountId = accountDestination.accountId
                 destinationType = accountDestination.destinationType
+                paymentRail = accountDestination.paymentRail
                 additionalProperties = accountDestination.additionalProperties.toMutableMap()
             }
 
@@ -407,6 +431,23 @@ private constructor(
              */
             fun destinationType(destinationType: JsonValue) = apply {
                 this.destinationType = destinationType
+            }
+
+            /**
+             * The payment rail to use for the transfer. Must be one of the rails supported by the
+             * destination account. If not specified, the system will select a default rail.
+             */
+            fun paymentRail(paymentRail: String) = paymentRail(JsonField.of(paymentRail))
+
+            /**
+             * Sets [Builder.paymentRail] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.paymentRail] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun paymentRail(paymentRail: JsonField<String>) = apply {
+                this.paymentRail = paymentRail
             }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -444,6 +485,7 @@ private constructor(
                 AccountDestination(
                     checkRequired("accountId", accountId),
                     destinationType,
+                    paymentRail,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -463,6 +505,7 @@ private constructor(
                     )
                 }
             }
+            paymentRail()
             validated = true
         }
 
@@ -482,7 +525,8 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (accountId.asKnown() == null) 0 else 1) +
-                destinationType.let { if (it == JsonValue.from("ACCOUNT")) 1 else 0 }
+                destinationType.let { if (it == JsonValue.from("ACCOUNT")) 1 else 0 } +
+                (if (paymentRail.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -492,17 +536,18 @@ private constructor(
             return other is AccountDestination &&
                 accountId == other.accountId &&
                 destinationType == other.destinationType &&
+                paymentRail == other.paymentRail &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(accountId, destinationType, additionalProperties)
+            Objects.hash(accountId, destinationType, paymentRail, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "AccountDestination{accountId=$accountId, destinationType=$destinationType, additionalProperties=$additionalProperties}"
+            "AccountDestination{accountId=$accountId, destinationType=$destinationType, paymentRail=$paymentRail, additionalProperties=$additionalProperties}"
     }
 
     /** UMA address destination details */
