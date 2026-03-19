@@ -59,13 +59,6 @@ internal class QuoteDestinationOneOfTest {
         val umaAddressDestination =
             QuoteDestinationOneOf.UmaAddressDestination.builder()
                 .umaAddress("\$receiver@uma.domain.com")
-                .counterpartyInformation(
-                    QuoteDestinationOneOf.UmaAddressDestination.CounterpartyInformation.builder()
-                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                        .build()
-                )
                 .currency("EUR")
                 .build()
 
@@ -84,14 +77,6 @@ internal class QuoteDestinationOneOfTest {
             QuoteDestinationOneOf.ofUmaAddressDestination(
                 QuoteDestinationOneOf.UmaAddressDestination.builder()
                     .umaAddress("\$receiver@uma.domain.com")
-                    .counterpartyInformation(
-                        QuoteDestinationOneOf.UmaAddressDestination.CounterpartyInformation
-                            .builder()
-                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                            .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                            .build()
-                    )
                     .currency("EUR")
                     .build()
             )

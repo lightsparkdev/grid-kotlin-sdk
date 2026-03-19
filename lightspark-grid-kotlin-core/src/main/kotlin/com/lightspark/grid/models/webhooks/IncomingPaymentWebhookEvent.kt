@@ -454,7 +454,7 @@ private constructor(
 
         /**
          * Additional information about the counterparty, if available and relevant to the
-         * transaction and platform. Only applicable for transactions to/from UMA addresses.
+         * transaction and platform.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -924,7 +924,7 @@ private constructor(
 
             /**
              * Additional information about the counterparty, if available and relevant to the
-             * transaction and platform. Only applicable for transactions to/from UMA addresses.
+             * transaction and platform.
              */
             fun counterpartyInformation(
                 counterpartyInformation: IncomingTransaction.CounterpartyInformation
