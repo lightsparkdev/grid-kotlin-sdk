@@ -35,6 +35,7 @@ private constructor(
     private val totalReceivingAmount: JsonField<Long>,
     private val totalSendingAmount: JsonField<Long>,
     private val transactionId: JsonField<String>,
+    private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -77,6 +78,9 @@ private constructor(
         @JsonProperty("transactionId")
         @ExcludeMissing
         transactionId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("counterpartyInformation")
+        @ExcludeMissing
+        counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of(),
         @JsonProperty("paymentInstructions")
         @ExcludeMissing
         paymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
@@ -97,6 +101,7 @@ private constructor(
         totalReceivingAmount,
         totalSendingAmount,
         transactionId,
+        counterpartyInformation,
         paymentInstructions,
         rateDetails,
         mutableMapOf(),
@@ -206,6 +211,16 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun transactionId(): String = transactionId.getRequired("transactionId")
+
+    /**
+     * Additional information about the counterparty, if available and required by the platform in
+     * their configuration.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun counterpartyInformation(): CounterpartyInformation? =
+        counterpartyInformation.getNullable("counterpartyInformation")
 
     /**
      * Payment instructions for executing the payment. This is not required when using an internal
@@ -340,6 +355,16 @@ private constructor(
     fun _transactionId(): JsonField<String> = transactionId
 
     /**
+     * Returns the raw JSON value of [counterpartyInformation].
+     *
+     * Unlike [counterpartyInformation], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("counterpartyInformation")
+    @ExcludeMissing
+    fun _counterpartyInformation(): JsonField<CounterpartyInformation> = counterpartyInformation
+
+    /**
      * Returns the raw JSON value of [paymentInstructions].
      *
      * Unlike [paymentInstructions], this method doesn't throw if the JSON field has an unexpected
@@ -411,6 +436,7 @@ private constructor(
         private var totalReceivingAmount: JsonField<Long>? = null
         private var totalSendingAmount: JsonField<Long>? = null
         private var transactionId: JsonField<String>? = null
+        private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -429,6 +455,7 @@ private constructor(
             totalReceivingAmount = quote.totalReceivingAmount
             totalSendingAmount = quote.totalSendingAmount
             transactionId = quote.transactionId
+            counterpartyInformation = quote.counterpartyInformation
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
             rateDetails = quote.rateDetails
             additionalProperties = quote.additionalProperties.toMutableMap()
@@ -658,6 +685,25 @@ private constructor(
         }
 
         /**
+         * Additional information about the counterparty, if available and required by the platform
+         * in their configuration.
+         */
+        fun counterpartyInformation(counterpartyInformation: CounterpartyInformation) =
+            counterpartyInformation(JsonField.of(counterpartyInformation))
+
+        /**
+         * Sets [Builder.counterpartyInformation] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.counterpartyInformation] with a well-typed
+         * [CounterpartyInformation] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun counterpartyInformation(counterpartyInformation: JsonField<CounterpartyInformation>) =
+            apply {
+                this.counterpartyInformation = counterpartyInformation
+            }
+
+        /**
          * Payment instructions for executing the payment. This is not required when using an
          * internal account source.
          */
@@ -759,6 +805,7 @@ private constructor(
                 checkRequired("totalReceivingAmount", totalReceivingAmount),
                 checkRequired("totalSendingAmount", totalSendingAmount),
                 checkRequired("transactionId", transactionId),
+                counterpartyInformation,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 rateDetails,
                 additionalProperties.toMutableMap(),
@@ -785,6 +832,7 @@ private constructor(
         totalReceivingAmount()
         totalSendingAmount()
         transactionId()
+        counterpartyInformation()?.validate()
         paymentInstructions()?.forEach { it.validate() }
         rateDetails()?.validate()
         validated = true
@@ -817,6 +865,7 @@ private constructor(
             (if (totalReceivingAmount.asKnown() == null) 0 else 1) +
             (if (totalSendingAmount.asKnown() == null) 0 else 1) +
             (if (transactionId.asKnown() == null) 0 else 1) +
+            (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (rateDetails.asKnown()?.validity() ?: 0)
 
@@ -964,6 +1013,112 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /**
+     * Additional information about the counterparty, if available and required by the platform in
+     * their configuration.
+     */
+    class CounterpartyInformation
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [CounterpartyInformation].
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CounterpartyInformation]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(counterpartyInformation: CounterpartyInformation) = apply {
+                additionalProperties = counterpartyInformation.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CounterpartyInformation].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): CounterpartyInformation =
+                CounterpartyInformation(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): CounterpartyInformation = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CounterpartyInformation &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CounterpartyInformation{additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -983,6 +1138,7 @@ private constructor(
             totalReceivingAmount == other.totalReceivingAmount &&
             totalSendingAmount == other.totalSendingAmount &&
             transactionId == other.transactionId &&
+            counterpartyInformation == other.counterpartyInformation &&
             paymentInstructions == other.paymentInstructions &&
             rateDetails == other.rateDetails &&
             additionalProperties == other.additionalProperties
@@ -1003,6 +1159,7 @@ private constructor(
             totalReceivingAmount,
             totalSendingAmount,
             transactionId,
+            counterpartyInformation,
             paymentInstructions,
             rateDetails,
             additionalProperties,
@@ -1012,5 +1169,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
 }

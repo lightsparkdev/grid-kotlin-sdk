@@ -22,7 +22,6 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import java.util.Collections
@@ -556,7 +555,6 @@ private constructor(
     private constructor(
         private val destinationType: JsonValue,
         private val umaAddress: JsonField<String>,
-        private val counterpartyInformation: JsonField<CounterpartyInformation>,
         private val currency: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -569,11 +567,8 @@ private constructor(
             @JsonProperty("umaAddress")
             @ExcludeMissing
             umaAddress: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("counterpartyInformation")
-            @ExcludeMissing
-            counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of(),
             @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
-        ) : this(destinationType, umaAddress, counterpartyInformation, currency, mutableMapOf())
+        ) : this(destinationType, umaAddress, currency, mutableMapOf())
 
         /**
          * Expected to always return the following:
@@ -597,15 +592,6 @@ private constructor(
         fun umaAddress(): String = umaAddress.getRequired("umaAddress")
 
         /**
-         * Information about the recipient, as required by the platform in their configuration.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun counterpartyInformation(): CounterpartyInformation? =
-            counterpartyInformation.getNullable("counterpartyInformation")
-
-        /**
          * Currency code for the destination. See
          * [Supported Currencies](https://grid.lightspark.com/platform-overview/core-concepts/currencies-and-rails)
          * for the full list of supported fiat and crypto currencies.
@@ -623,16 +609,6 @@ private constructor(
         @JsonProperty("umaAddress")
         @ExcludeMissing
         fun _umaAddress(): JsonField<String> = umaAddress
-
-        /**
-         * Returns the raw JSON value of [counterpartyInformation].
-         *
-         * Unlike [counterpartyInformation], this method doesn't throw if the JSON field has an
-         * unexpected type.
-         */
-        @JsonProperty("counterpartyInformation")
-        @ExcludeMissing
-        fun _counterpartyInformation(): JsonField<CounterpartyInformation> = counterpartyInformation
 
         /**
          * Returns the raw JSON value of [currency].
@@ -671,15 +647,12 @@ private constructor(
 
             private var destinationType: JsonValue = JsonValue.from("UMA_ADDRESS")
             private var umaAddress: JsonField<String>? = null
-            private var counterpartyInformation: JsonField<CounterpartyInformation> =
-                JsonMissing.of()
             private var currency: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(umaAddressDestination: UmaAddressDestination) = apply {
                 destinationType = umaAddressDestination.destinationType
                 umaAddress = umaAddressDestination.umaAddress
-                counterpartyInformation = umaAddressDestination.counterpartyInformation
                 currency = umaAddressDestination.currency
                 additionalProperties = umaAddressDestination.additionalProperties.toMutableMap()
             }
@@ -711,23 +684,6 @@ private constructor(
              * supported value.
              */
             fun umaAddress(umaAddress: JsonField<String>) = apply { this.umaAddress = umaAddress }
-
-            /**
-             * Information about the recipient, as required by the platform in their configuration.
-             */
-            fun counterpartyInformation(counterpartyInformation: CounterpartyInformation) =
-                counterpartyInformation(JsonField.of(counterpartyInformation))
-
-            /**
-             * Sets [Builder.counterpartyInformation] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.counterpartyInformation] with a well-typed
-             * [CounterpartyInformation] value instead. This method is primarily for setting the
-             * field to an undocumented or not yet supported value.
-             */
-            fun counterpartyInformation(
-                counterpartyInformation: JsonField<CounterpartyInformation>
-            ) = apply { this.counterpartyInformation = counterpartyInformation }
 
             /**
              * Currency code for the destination. See
@@ -780,7 +736,6 @@ private constructor(
                 UmaAddressDestination(
                     destinationType,
                     checkRequired("umaAddress", umaAddress),
-                    counterpartyInformation,
                     currency,
                     additionalProperties.toMutableMap(),
                 )
@@ -801,7 +756,6 @@ private constructor(
                 }
             }
             umaAddress()
-            counterpartyInformation()?.validate()
             currency()
             validated = true
         }
@@ -823,116 +777,7 @@ private constructor(
         internal fun validity(): Int =
             destinationType.let { if (it == JsonValue.from("UMA_ADDRESS")) 1 else 0 } +
                 (if (umaAddress.asKnown() == null) 0 else 1) +
-                (counterpartyInformation.asKnown()?.validity() ?: 0) +
                 (if (currency.asKnown() == null) 0 else 1)
-
-        /** Information about the recipient, as required by the platform in their configuration. */
-        class CounterpartyInformation
-        @JsonCreator
-        private constructor(
-            @com.fasterxml.jackson.annotation.JsonValue
-            private val additionalProperties: Map<String, JsonValue>
-        ) {
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of
-                 * [CounterpartyInformation].
-                 */
-                fun builder() = Builder()
-            }
-
-            /** A builder for [CounterpartyInformation]. */
-            class Builder internal constructor() {
-
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                internal fun from(counterpartyInformation: CounterpartyInformation) = apply {
-                    additionalProperties =
-                        counterpartyInformation.additionalProperties.toMutableMap()
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [CounterpartyInformation].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 */
-                fun build(): CounterpartyInformation =
-                    CounterpartyInformation(additionalProperties.toImmutable())
-            }
-
-            private var validated: Boolean = false
-
-            fun validate(): CounterpartyInformation = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is CounterpartyInformation &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "CounterpartyInformation{additionalProperties=$additionalProperties}"
-        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -942,25 +787,18 @@ private constructor(
             return other is UmaAddressDestination &&
                 destinationType == other.destinationType &&
                 umaAddress == other.umaAddress &&
-                counterpartyInformation == other.counterpartyInformation &&
                 currency == other.currency &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(
-                destinationType,
-                umaAddress,
-                counterpartyInformation,
-                currency,
-                additionalProperties,
-            )
+            Objects.hash(destinationType, umaAddress, currency, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UmaAddressDestination{destinationType=$destinationType, umaAddress=$umaAddress, counterpartyInformation=$counterpartyInformation, currency=$currency, additionalProperties=$additionalProperties}"
+            "UmaAddressDestination{destinationType=$destinationType, umaAddress=$umaAddress, currency=$currency, additionalProperties=$additionalProperties}"
     }
 
     /**

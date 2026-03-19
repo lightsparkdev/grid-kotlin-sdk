@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import java.time.OffsetDateTime
@@ -52,6 +53,13 @@ internal class QuoteTest {
                 .totalReceivingAmount(1000L)
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+                .counterpartyInformation(
+                    Quote.CounterpartyInformation.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
@@ -149,6 +157,14 @@ internal class QuoteTest {
         assertThat(quote.totalSendingAmount()).isEqualTo(123010L)
         assertThat(quote.transactionId())
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+        assertThat(quote.counterpartyInformation())
+            .isEqualTo(
+                Quote.CounterpartyInformation.builder()
+                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                    .build()
+            )
         assertThat(quote.paymentInstructions())
             .containsExactly(
                 PaymentInstructions.builder()
@@ -242,6 +258,13 @@ internal class QuoteTest {
                 .totalReceivingAmount(1000L)
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+                .counterpartyInformation(
+                    Quote.CounterpartyInformation.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
