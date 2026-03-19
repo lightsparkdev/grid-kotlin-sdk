@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.quotes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import java.time.OffsetDateTime
@@ -54,6 +55,13 @@ internal class QuoteListPageResponseTest {
                         .totalReceivingAmount(1000L)
                         .totalSendingAmount(123010L)
                         .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+                        .counterpartyInformation(
+                            Quote.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
@@ -152,6 +160,13 @@ internal class QuoteListPageResponseTest {
                     .totalReceivingAmount(1000L)
                     .totalSendingAmount(123010L)
                     .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+                    .counterpartyInformation(
+                        Quote.CounterpartyInformation.builder()
+                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                            .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                            .build()
+                    )
                     .addPaymentInstruction(
                         PaymentInstructions.builder()
                             .accountOrWalletInfo(
@@ -254,6 +269,13 @@ internal class QuoteListPageResponseTest {
                         .totalReceivingAmount(1000L)
                         .totalSendingAmount(123010L)
                         .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
+                        .counterpartyInformation(
+                            Quote.CounterpartyInformation.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
+                        )
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
                                 .accountOrWalletInfo(
