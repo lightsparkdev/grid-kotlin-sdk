@@ -53,6 +53,10 @@ internal class BusinessCustomerFieldsTest {
                 )
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
+                        .businessType(
+                            BusinessCustomerFields.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .legalName("Acme Corporation, Inc.")
                         .registrationNumber("BRN-123456789")
                         .taxId("EIN-987654321")
@@ -101,6 +105,10 @@ internal class BusinessCustomerFieldsTest {
         assertThat(businessCustomerFields.businessInfo())
             .isEqualTo(
                 BusinessCustomerFields.BusinessInfo.builder()
+                    .businessType(
+                        BusinessCustomerFields.BusinessInfo.BusinessType
+                            .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                    )
                     .legalName("Acme Corporation, Inc.")
                     .registrationNumber("BRN-123456789")
                     .taxId("EIN-987654321")
@@ -153,6 +161,10 @@ internal class BusinessCustomerFieldsTest {
                 )
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
+                        .businessType(
+                            BusinessCustomerFields.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .legalName("Acme Corporation, Inc.")
                         .registrationNumber("BRN-123456789")
                         .taxId("EIN-987654321")
