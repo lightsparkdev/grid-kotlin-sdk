@@ -28,6 +28,7 @@ private constructor(
     private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
     private val customerUpdate: CustomerUpdateWebhookEvent? = null,
     private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
+    private val verificationUpdate: VerificationUpdateWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -45,6 +46,8 @@ private constructor(
 
     fun internalAccountStatus(): InternalAccountStatusWebhookEvent? = internalAccountStatus
 
+    fun verificationUpdate(): VerificationUpdateWebhookEvent? = verificationUpdate
+
     fun isIncomingPayment(): Boolean = incomingPayment != null
 
     fun isOutgoingPayment(): Boolean = outgoingPayment != null
@@ -58,6 +61,8 @@ private constructor(
     fun isCustomerUpdate(): Boolean = customerUpdate != null
 
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
+
+    fun isVerificationUpdate(): Boolean = verificationUpdate != null
 
     fun asIncomingPayment(): IncomingPaymentWebhookEvent =
         incomingPayment.getOrThrow("incomingPayment")
@@ -77,6 +82,9 @@ private constructor(
     fun asInternalAccountStatus(): InternalAccountStatusWebhookEvent =
         internalAccountStatus.getOrThrow("internalAccountStatus")
 
+    fun asVerificationUpdate(): VerificationUpdateWebhookEvent =
+        verificationUpdate.getOrThrow("verificationUpdate")
+
     fun _json(): JsonValue? = _json
 
     fun <T> accept(visitor: Visitor<T>): T =
@@ -89,6 +97,7 @@ private constructor(
             customerUpdate != null -> visitor.visitCustomerUpdate(customerUpdate)
             internalAccountStatus != null ->
                 visitor.visitInternalAccountStatus(internalAccountStatus)
+            verificationUpdate != null -> visitor.visitVerificationUpdate(verificationUpdate)
             else -> visitor.unknown(_json)
         }
 
@@ -131,6 +140,12 @@ private constructor(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) {
                     internalAccountStatus.validate()
+                }
+
+                override fun visitVerificationUpdate(
+                    verificationUpdate: VerificationUpdateWebhookEvent
+                ) {
+                    verificationUpdate.validate()
                 }
             }
         )
@@ -176,6 +191,10 @@ private constructor(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) = internalAccountStatus.validity()
 
+                override fun visitVerificationUpdate(
+                    verificationUpdate: VerificationUpdateWebhookEvent
+                ) = verificationUpdate.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -192,7 +211,8 @@ private constructor(
             bulkUpload == other.bulkUpload &&
             invitationClaimed == other.invitationClaimed &&
             customerUpdate == other.customerUpdate &&
-            internalAccountStatus == other.internalAccountStatus
+            internalAccountStatus == other.internalAccountStatus &&
+            verificationUpdate == other.verificationUpdate
     }
 
     override fun hashCode(): Int =
@@ -204,6 +224,7 @@ private constructor(
             invitationClaimed,
             customerUpdate,
             internalAccountStatus,
+            verificationUpdate,
         )
 
     override fun toString(): String =
@@ -216,6 +237,8 @@ private constructor(
             customerUpdate != null -> "UnwrapWebhookEvent{customerUpdate=$customerUpdate}"
             internalAccountStatus != null ->
                 "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
+            verificationUpdate != null ->
+                "UnwrapWebhookEvent{verificationUpdate=$verificationUpdate}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
         }
@@ -242,6 +265,9 @@ private constructor(
 
         fun ofInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent) =
             UnwrapWebhookEvent(internalAccountStatus = internalAccountStatus)
+
+        fun ofVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent) =
+            UnwrapWebhookEvent(verificationUpdate = verificationUpdate)
     }
 
     /**
@@ -263,6 +289,8 @@ private constructor(
         fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent): T
 
         fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
+
+        fun visitVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent): T
 
         /**
          * Maps an unknown variant of [UnwrapWebhookEvent] to a value of type [T].
@@ -306,6 +334,8 @@ private constructor(
                         },
                         tryDeserialize(node, jacksonTypeRef<InternalAccountStatusWebhookEvent>())
                             ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
+                        tryDeserialize(node, jacksonTypeRef<VerificationUpdateWebhookEvent>())
+                            ?.let { UnwrapWebhookEvent(verificationUpdate = it, _json = json) },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -338,6 +368,7 @@ private constructor(
                 value.customerUpdate != null -> generator.writeObject(value.customerUpdate)
                 value.internalAccountStatus != null ->
                     generator.writeObject(value.internalAccountStatus)
+                value.verificationUpdate != null -> generator.writeObject(value.verificationUpdate)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
             }

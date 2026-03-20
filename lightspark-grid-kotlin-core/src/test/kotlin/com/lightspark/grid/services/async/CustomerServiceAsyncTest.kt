@@ -27,7 +27,7 @@ internal class CustomerServiceAsyncTest {
         val customerOneOf =
             customerServiceAsync.create(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .platformCustomerId("ind-9f84e0c2")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -41,7 +41,7 @@ internal class CustomerServiceAsyncTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
-                    .fullName("John Michael Doe")
+                    .fullName("Jane Smith")
                     .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()

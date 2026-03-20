@@ -3,9 +3,11 @@
 package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.services.blocking.BeneficialOwnerService
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CustomerService
+import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.InvitationService
 import com.lightspark.grid.services.blocking.PlaidService
@@ -18,6 +20,7 @@ import com.lightspark.grid.services.blocking.TransactionService
 import com.lightspark.grid.services.blocking.TransferInService
 import com.lightspark.grid.services.blocking.TransferOutService
 import com.lightspark.grid.services.blocking.UmaProviderService
+import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.WebhookService
 
 /**
@@ -114,6 +117,24 @@ interface LightsparkGridClient {
     fun crypto(): CryptoService
 
     /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    fun beneficialOwners(): BeneficialOwnerService
+
+    /**
+     * Endpoints for uploading and managing verification documents for customers and beneficial
+     * owners. Supports KYC and KYB document requirements.
+     */
+    fun documents(): DocumentService
+
+    /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    fun verifications(): VerificationService
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -198,5 +219,23 @@ interface LightsparkGridClient {
 
         /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun crypto(): CryptoService.WithRawResponse
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        fun beneficialOwners(): BeneficialOwnerService.WithRawResponse
+
+        /**
+         * Endpoints for uploading and managing verification documents for customers and beneficial
+         * owners. Supports KYC and KYB document requirements.
+         */
+        fun documents(): DocumentService.WithRawResponse
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        fun verifications(): VerificationService.WithRawResponse
     }
 }

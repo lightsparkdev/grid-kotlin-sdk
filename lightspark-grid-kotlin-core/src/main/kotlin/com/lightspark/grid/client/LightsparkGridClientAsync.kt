@@ -3,9 +3,11 @@
 package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.CryptoServiceAsync
 import com.lightspark.grid.services.async.CustomerServiceAsync
+import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.PlaidServiceAsync
@@ -18,6 +20,7 @@ import com.lightspark.grid.services.async.TransactionServiceAsync
 import com.lightspark.grid.services.async.TransferInServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
+import com.lightspark.grid.services.async.VerificationServiceAsync
 import com.lightspark.grid.services.async.WebhookServiceAsync
 
 /**
@@ -114,6 +117,24 @@ interface LightsparkGridClientAsync {
     fun crypto(): CryptoServiceAsync
 
     /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    fun beneficialOwners(): BeneficialOwnerServiceAsync
+
+    /**
+     * Endpoints for uploading and managing verification documents for customers and beneficial
+     * owners. Supports KYC and KYB document requirements.
+     */
+    fun documents(): DocumentServiceAsync
+
+    /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    fun verifications(): VerificationServiceAsync
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -199,5 +220,23 @@ interface LightsparkGridClientAsync {
 
         /** Endpoints for creating and confirming quotes for cross-currency transfers */
         fun crypto(): CryptoServiceAsync.WithRawResponse
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        fun beneficialOwners(): BeneficialOwnerServiceAsync.WithRawResponse
+
+        /**
+         * Endpoints for uploading and managing verification documents for customers and beneficial
+         * owners. Supports KYC and KYB document requirements.
+         */
+        fun documents(): DocumentServiceAsync.WithRawResponse
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        fun verifications(): VerificationServiceAsync.WithRawResponse
     }
 }

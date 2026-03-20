@@ -469,32 +469,23 @@ private constructor(
 
         companion object {
 
+            val UNVERIFIED = of("UNVERIFIED")
+
+            val PENDING = of("PENDING")
+
             val APPROVED = of("APPROVED")
 
             val REJECTED = of("REJECTED")
-
-            val PENDING_REVIEW = of("PENDING_REVIEW")
-
-            val EXPIRED = of("EXPIRED")
-
-            val CANCELED = of("CANCELED")
-
-            val MANUALLY_APPROVED = of("MANUALLY_APPROVED")
-
-            val MANUALLY_REJECTED = of("MANUALLY_REJECTED")
 
             fun of(value: String) = KycStatus(JsonField.of(value))
         }
 
         /** An enum containing [KycStatus]'s known values. */
         enum class Known {
+            UNVERIFIED,
+            PENDING,
             APPROVED,
             REJECTED,
-            PENDING_REVIEW,
-            EXPIRED,
-            CANCELED,
-            MANUALLY_APPROVED,
-            MANUALLY_REJECTED,
         }
 
         /**
@@ -507,13 +498,10 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
+            UNVERIFIED,
+            PENDING,
             APPROVED,
             REJECTED,
-            PENDING_REVIEW,
-            EXPIRED,
-            CANCELED,
-            MANUALLY_APPROVED,
-            MANUALLY_REJECTED,
             /**
              * An enum member indicating that [KycStatus] was instantiated with an unknown value.
              */
@@ -529,13 +517,10 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
+                UNVERIFIED -> Value.UNVERIFIED
+                PENDING -> Value.PENDING
                 APPROVED -> Value.APPROVED
                 REJECTED -> Value.REJECTED
-                PENDING_REVIEW -> Value.PENDING_REVIEW
-                EXPIRED -> Value.EXPIRED
-                CANCELED -> Value.CANCELED
-                MANUALLY_APPROVED -> Value.MANUALLY_APPROVED
-                MANUALLY_REJECTED -> Value.MANUALLY_REJECTED
                 else -> Value._UNKNOWN
             }
 
@@ -550,13 +535,10 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
+                UNVERIFIED -> Known.UNVERIFIED
+                PENDING -> Known.PENDING
                 APPROVED -> Known.APPROVED
                 REJECTED -> Known.REJECTED
-                PENDING_REVIEW -> Known.PENDING_REVIEW
-                EXPIRED -> Known.EXPIRED
-                CANCELED -> Known.CANCELED
-                MANUALLY_APPROVED -> Known.MANUALLY_APPROVED
-                MANUALLY_REJECTED -> Known.MANUALLY_REJECTED
                 else -> throw LightsparkGridInvalidDataException("Unknown KycStatus: $value")
             }
 

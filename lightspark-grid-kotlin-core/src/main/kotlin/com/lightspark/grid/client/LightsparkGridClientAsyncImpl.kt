@@ -4,12 +4,16 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
+import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
+import com.lightspark.grid.services.async.BeneficialOwnerServiceAsyncImpl
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsyncImpl
 import com.lightspark.grid.services.async.CryptoServiceAsync
 import com.lightspark.grid.services.async.CryptoServiceAsyncImpl
 import com.lightspark.grid.services.async.CustomerServiceAsync
 import com.lightspark.grid.services.async.CustomerServiceAsyncImpl
+import com.lightspark.grid.services.async.DocumentServiceAsync
+import com.lightspark.grid.services.async.DocumentServiceAsyncImpl
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsyncImpl
 import com.lightspark.grid.services.async.InvitationServiceAsync
@@ -34,6 +38,8 @@ import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsyncImpl
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsyncImpl
+import com.lightspark.grid.services.async.VerificationServiceAsync
+import com.lightspark.grid.services.async.VerificationServiceAsyncImpl
 import com.lightspark.grid.services.async.WebhookServiceAsync
 import com.lightspark.grid.services.async.WebhookServiceAsyncImpl
 
@@ -119,6 +125,18 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         CryptoServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val beneficialOwners: BeneficialOwnerServiceAsync by lazy {
+        BeneficialOwnerServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
+    private val documents: DocumentServiceAsync by lazy {
+        DocumentServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
+    private val verifications: VerificationServiceAsync by lazy {
+        VerificationServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     override fun sync(): LightsparkGridClient = sync
 
     override fun withRawResponse(): LightsparkGridClientAsync.WithRawResponse = withRawResponse
@@ -182,6 +200,24 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     /** Endpoints for creating and confirming quotes for cross-currency transfers */
     override fun crypto(): CryptoServiceAsync = crypto
+
+    /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    override fun beneficialOwners(): BeneficialOwnerServiceAsync = beneficialOwners
+
+    /**
+     * Endpoints for uploading and managing verification documents for customers and beneficial
+     * owners. Supports KYC and KYB document requirements.
+     */
+    override fun documents(): DocumentServiceAsync = documents
+
+    /**
+     * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
+     * managing beneficial owners and triggering verification for customers.
+     */
+    override fun verifications(): VerificationServiceAsync = verifications
 
     override fun close() = clientOptions.close()
 
@@ -252,6 +288,18 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
             CryptoServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val beneficialOwners: BeneficialOwnerServiceAsync.WithRawResponse by lazy {
+            BeneficialOwnerServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val documents: DocumentServiceAsync.WithRawResponse by lazy {
+            DocumentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val verifications: VerificationServiceAsync.WithRawResponse by lazy {
+            VerificationServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClientAsync.WithRawResponse =
@@ -317,5 +365,24 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         /** Endpoints for creating and confirming quotes for cross-currency transfers */
         override fun crypto(): CryptoServiceAsync.WithRawResponse = crypto
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        override fun beneficialOwners(): BeneficialOwnerServiceAsync.WithRawResponse =
+            beneficialOwners
+
+        /**
+         * Endpoints for uploading and managing verification documents for customers and beneficial
+         * owners. Supports KYC and KYB document requirements.
+         */
+        override fun documents(): DocumentServiceAsync.WithRawResponse = documents
+
+        /**
+         * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification,
+         * including managing beneficial owners and triggering verification for customers.
+         */
+        override fun verifications(): VerificationServiceAsync.WithRawResponse = verifications
     }
 }
