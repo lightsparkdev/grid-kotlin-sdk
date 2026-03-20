@@ -26,7 +26,6 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.CadAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.EurAccountInfo
@@ -183,10 +182,10 @@ private constructor(
 
         /**
          * Alias for calling [accountOrWalletInfo] with
-         * `AccountOrWalletInfo.ofBrlAccount(brlAccount)`.
+         * `AccountOrWalletInfo.ofPaymentBrlAccount(paymentBrlAccount)`.
          */
-        fun accountOrWalletInfo(brlAccount: BrlAccountInfo) =
-            accountOrWalletInfo(AccountOrWalletInfo.ofBrlAccount(brlAccount))
+        fun accountOrWalletInfo(paymentBrlAccount: AccountOrWalletInfo.PaymentBrlAccountInfo) =
+            accountOrWalletInfo(AccountOrWalletInfo.ofPaymentBrlAccount(paymentBrlAccount))
 
         /**
          * Alias for calling [accountOrWalletInfo] with
@@ -515,7 +514,7 @@ private constructor(
     class AccountOrWalletInfo
     private constructor(
         private val usdAccount: UsdAccount? = null,
-        private val brlAccount: BrlAccountInfo? = null,
+        private val paymentBrlAccount: PaymentBrlAccountInfo? = null,
         private val mxnAccount: MxnAccount? = null,
         private val dkkAccount: DkkAccount? = null,
         private val eurAccount: EurAccount? = null,
@@ -552,7 +551,7 @@ private constructor(
 
         fun usdAccount(): UsdAccount? = usdAccount
 
-        fun brlAccount(): BrlAccountInfo? = brlAccount
+        fun paymentBrlAccount(): PaymentBrlAccountInfo? = paymentBrlAccount
 
         fun mxnAccount(): MxnAccount? = mxnAccount
 
@@ -618,7 +617,7 @@ private constructor(
 
         fun isUsdAccount(): Boolean = usdAccount != null
 
-        fun isBrlAccount(): Boolean = brlAccount != null
+        fun isPaymentBrlAccount(): Boolean = paymentBrlAccount != null
 
         fun isMxnAccount(): Boolean = mxnAccount != null
 
@@ -684,7 +683,8 @@ private constructor(
 
         fun asUsdAccount(): UsdAccount = usdAccount.getOrThrow("usdAccount")
 
-        fun asBrlAccount(): BrlAccountInfo = brlAccount.getOrThrow("brlAccount")
+        fun asPaymentBrlAccount(): PaymentBrlAccountInfo =
+            paymentBrlAccount.getOrThrow("paymentBrlAccount")
 
         fun asMxnAccount(): MxnAccount = mxnAccount.getOrThrow("mxnAccount")
 
@@ -755,7 +755,7 @@ private constructor(
         fun <T> accept(visitor: Visitor<T>): T =
             when {
                 usdAccount != null -> visitor.visitUsdAccount(usdAccount)
-                brlAccount != null -> visitor.visitBrlAccount(brlAccount)
+                paymentBrlAccount != null -> visitor.visitPaymentBrlAccount(paymentBrlAccount)
                 mxnAccount != null -> visitor.visitMxnAccount(mxnAccount)
                 dkkAccount != null -> visitor.visitDkkAccount(dkkAccount)
                 eurAccount != null -> visitor.visitEurAccount(eurAccount)
@@ -804,8 +804,8 @@ private constructor(
                         usdAccount.validate()
                     }
 
-                    override fun visitBrlAccount(brlAccount: BrlAccountInfo) {
-                        brlAccount.validate()
+                    override fun visitPaymentBrlAccount(paymentBrlAccount: PaymentBrlAccountInfo) {
+                        paymentBrlAccount.validate()
                     }
 
                     override fun visitMxnAccount(mxnAccount: MxnAccount) {
@@ -957,7 +957,8 @@ private constructor(
                 object : Visitor<Int> {
                     override fun visitUsdAccount(usdAccount: UsdAccount) = usdAccount.validity()
 
-                    override fun visitBrlAccount(brlAccount: BrlAccountInfo) = brlAccount.validity()
+                    override fun visitPaymentBrlAccount(paymentBrlAccount: PaymentBrlAccountInfo) =
+                        paymentBrlAccount.validity()
 
                     override fun visitMxnAccount(mxnAccount: MxnAccount) = mxnAccount.validity()
 
@@ -1039,7 +1040,7 @@ private constructor(
 
             return other is AccountOrWalletInfo &&
                 usdAccount == other.usdAccount &&
-                brlAccount == other.brlAccount &&
+                paymentBrlAccount == other.paymentBrlAccount &&
                 mxnAccount == other.mxnAccount &&
                 dkkAccount == other.dkkAccount &&
                 eurAccount == other.eurAccount &&
@@ -1076,7 +1077,7 @@ private constructor(
         override fun hashCode(): Int =
             Objects.hash(
                 usdAccount,
-                brlAccount,
+                paymentBrlAccount,
                 mxnAccount,
                 dkkAccount,
                 eurAccount,
@@ -1113,7 +1114,8 @@ private constructor(
         override fun toString(): String =
             when {
                 usdAccount != null -> "AccountOrWalletInfo{usdAccount=$usdAccount}"
-                brlAccount != null -> "AccountOrWalletInfo{brlAccount=$brlAccount}"
+                paymentBrlAccount != null ->
+                    "AccountOrWalletInfo{paymentBrlAccount=$paymentBrlAccount}"
                 mxnAccount != null -> "AccountOrWalletInfo{mxnAccount=$mxnAccount}"
                 dkkAccount != null -> "AccountOrWalletInfo{dkkAccount=$dkkAccount}"
                 eurAccount != null -> "AccountOrWalletInfo{eurAccount=$eurAccount}"
@@ -1154,8 +1156,8 @@ private constructor(
 
             fun ofUsdAccount(usdAccount: UsdAccount) = AccountOrWalletInfo(usdAccount = usdAccount)
 
-            fun ofBrlAccount(brlAccount: BrlAccountInfo) =
-                AccountOrWalletInfo(brlAccount = brlAccount)
+            fun ofPaymentBrlAccount(paymentBrlAccount: PaymentBrlAccountInfo) =
+                AccountOrWalletInfo(paymentBrlAccount = paymentBrlAccount)
 
             fun ofMxnAccount(mxnAccount: MxnAccount) = AccountOrWalletInfo(mxnAccount = mxnAccount)
 
@@ -1235,7 +1237,7 @@ private constructor(
 
             fun visitUsdAccount(usdAccount: UsdAccount): T
 
-            fun visitBrlAccount(brlAccount: BrlAccountInfo): T
+            fun visitPaymentBrlAccount(paymentBrlAccount: PaymentBrlAccountInfo): T
 
             fun visitMxnAccount(mxnAccount: MxnAccount): T
 
@@ -1453,8 +1455,8 @@ private constructor(
 
                 val bestMatches =
                     sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<BrlAccountInfo>())?.let {
-                                AccountOrWalletInfo(brlAccount = it, _json = json)
+                            tryDeserialize(node, jacksonTypeRef<PaymentBrlAccountInfo>())?.let {
+                                AccountOrWalletInfo(paymentBrlAccount = it, _json = json)
                             },
                             tryDeserialize(node, jacksonTypeRef<InrAccountInfo>())?.let {
                                 AccountOrWalletInfo(inrAccount = it, _json = json)
@@ -1505,7 +1507,8 @@ private constructor(
             ) {
                 when {
                     value.usdAccount != null -> generator.writeObject(value.usdAccount)
-                    value.brlAccount != null -> generator.writeObject(value.brlAccount)
+                    value.paymentBrlAccount != null ->
+                        generator.writeObject(value.paymentBrlAccount)
                     value.mxnAccount != null -> generator.writeObject(value.mxnAccount)
                     value.dkkAccount != null -> generator.writeObject(value.dkkAccount)
                     value.eurAccount != null -> generator.writeObject(value.eurAccount)
@@ -1929,6 +1932,342 @@ private constructor(
 
             override fun toString() =
                 "UsdAccount{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, routingNumber=$routingNumber, reference=$reference, additionalProperties=$additionalProperties}"
+        }
+
+        class PaymentBrlAccountInfo
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val qrCode: JsonField<String>,
+            private val accountType: JsonField<AccountType>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("qrCode")
+                @ExcludeMissing
+                qrCode: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonField<AccountType> = JsonMissing.of(),
+            ) : this(qrCode, accountType, mutableMapOf())
+
+            /**
+             * A PIX QR code payload that can be used to fund the transaction. This can be rendered
+             * as a QR code image or pasted into a PIX-compatible banking app.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun qrCode(): String = qrCode.getRequired("qrCode")
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun accountType(): AccountType? = accountType.getNullable("accountType")
+
+            /**
+             * Returns the raw JSON value of [qrCode].
+             *
+             * Unlike [qrCode], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("qrCode") @ExcludeMissing fun _qrCode(): JsonField<String> = qrCode
+
+            /**
+             * Returns the raw JSON value of [accountType].
+             *
+             * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("accountType")
+            @ExcludeMissing
+            fun _accountType(): JsonField<AccountType> = accountType
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [PaymentBrlAccountInfo].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .qrCode()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [PaymentBrlAccountInfo]. */
+            class Builder internal constructor() {
+
+                private var qrCode: JsonField<String>? = null
+                private var accountType: JsonField<AccountType> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(paymentBrlAccountInfo: PaymentBrlAccountInfo) = apply {
+                    qrCode = paymentBrlAccountInfo.qrCode
+                    accountType = paymentBrlAccountInfo.accountType
+                    additionalProperties = paymentBrlAccountInfo.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * A PIX QR code payload that can be used to fund the transaction. This can be
+                 * rendered as a QR code image or pasted into a PIX-compatible banking app.
+                 */
+                fun qrCode(qrCode: String) = qrCode(JsonField.of(qrCode))
+
+                /**
+                 * Sets [Builder.qrCode] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.qrCode] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun qrCode(qrCode: JsonField<String>) = apply { this.qrCode = qrCode }
+
+                fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
+
+                /**
+                 * Sets [Builder.accountType] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.accountType] with a well-typed [AccountType]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun accountType(accountType: JsonField<AccountType>) = apply {
+                    this.accountType = accountType
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [PaymentBrlAccountInfo].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .qrCode()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): PaymentBrlAccountInfo =
+                    PaymentBrlAccountInfo(
+                        checkRequired("qrCode", qrCode),
+                        accountType,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): PaymentBrlAccountInfo = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                qrCode()
+                accountType()?.validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (qrCode.asKnown() == null) 0 else 1) + (accountType.asKnown()?.validity() ?: 0)
+
+            class AccountType
+            @JsonCreator
+            private constructor(private val value: JsonField<String>) : Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val BRL_ACCOUNT = of("BRL_ACCOUNT")
+
+                    fun of(value: String) = AccountType(JsonField.of(value))
+                }
+
+                /** An enum containing [AccountType]'s known values. */
+                enum class Known {
+                    BRL_ACCOUNT
+                }
+
+                /**
+                 * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [AccountType] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    BRL_ACCOUNT,
+                    /**
+                     * An enum member indicating that [AccountType] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        BRL_ACCOUNT -> Value.BRL_ACCOUNT
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        BRL_ACCOUNT -> Known.BRL_ACCOUNT
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): AccountType = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is AccountType && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PaymentBrlAccountInfo &&
+                    qrCode == other.qrCode &&
+                    accountType == other.accountType &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(qrCode, accountType, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "PaymentBrlAccountInfo{qrCode=$qrCode, accountType=$accountType, additionalProperties=$additionalProperties}"
         }
 
         class MxnAccount
