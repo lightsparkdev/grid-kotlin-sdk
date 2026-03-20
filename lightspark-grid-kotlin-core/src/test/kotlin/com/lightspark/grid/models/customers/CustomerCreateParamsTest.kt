@@ -14,7 +14,7 @@ internal class CustomerCreateParamsTest {
         CustomerCreateParams.builder()
             .createCustomerRequest(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                    .platformCustomerId("9f84e0c2a72c4fa")
+                    .platformCustomerId("ind-9f84e0c2")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -28,7 +28,7 @@ internal class CustomerCreateParamsTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
-                    .fullName("John Michael Doe")
+                    .fullName("Jane Smith")
                     .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
                     .build()
@@ -42,7 +42,7 @@ internal class CustomerCreateParamsTest {
             CustomerCreateParams.builder()
                 .createCustomerRequest(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .platformCustomerId("ind-9f84e0c2")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -56,7 +56,7 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
+                        .fullName("Jane Smith")
                         .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
@@ -69,7 +69,7 @@ internal class CustomerCreateParamsTest {
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .platformCustomerId("ind-9f84e0c2")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -83,7 +83,7 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .fullName("John Michael Doe")
+                        .fullName("Jane Smith")
                         .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
                         .build()
@@ -94,9 +94,7 @@ internal class CustomerCreateParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            CustomerCreateParams.builder()
-                .individualCreateCustomerRequest("9f84e0c2a72c4fa")
-                .build()
+            CustomerCreateParams.builder().individualCreateCustomerRequest("ind-9f84e0c2").build()
 
         val body = params._body()
 
@@ -104,7 +102,7 @@ internal class CustomerCreateParamsTest {
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("9f84e0c2a72c4fa")
+                        .platformCustomerId("ind-9f84e0c2")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )

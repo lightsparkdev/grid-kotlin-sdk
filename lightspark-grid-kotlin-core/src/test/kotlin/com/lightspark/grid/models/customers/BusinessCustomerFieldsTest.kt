@@ -57,9 +57,35 @@ internal class BusinessCustomerFieldsTest {
                             BusinessCustomerFields.BusinessInfo.BusinessType
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
+                        .addCountriesOfOperation("US")
+                        .country("US")
+                        .doingBusinessAs("Acme")
+                        .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                        .expectedActivityVolumes(
+                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
+                                .monthlyTransactionCount(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionCount
+                                        ._100_TO_500
+                                )
+                                .monthlyTransactionVolume(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionVolume
+                                        ._100_K_TO_1_M
+                                )
+                                .build()
+                        )
+                        .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .registrationNumber("BRN-123456789")
-                        .taxId("EIN-987654321")
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
+                        )
+                        .registrationNumber("5523041")
+                        .sourceOfFunds(
+                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
+                        )
+                        .taxId("47-1234567")
                         .build()
                 )
                 .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
@@ -109,9 +135,33 @@ internal class BusinessCustomerFieldsTest {
                         BusinessCustomerFields.BusinessInfo.BusinessType
                             .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                     )
+                    .addCountriesOfOperation("US")
+                    .country("US")
+                    .doingBusinessAs("Acme")
+                    .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                    .expectedActivityVolumes(
+                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
+                            .monthlyTransactionCount(
+                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                    .MonthlyTransactionCount
+                                    ._100_TO_500
+                            )
+                            .monthlyTransactionVolume(
+                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                    .MonthlyTransactionVolume
+                                    ._100_K_TO_1_M
+                            )
+                            .build()
+                    )
+                    .addExpectedRecipientJurisdiction("US")
+                    .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
-                    .registrationNumber("BRN-123456789")
-                    .taxId("EIN-987654321")
+                    .purposeOfAccount(BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS)
+                    .registrationNumber("5523041")
+                    .sourceOfFunds(
+                        BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
+                    )
+                    .taxId("47-1234567")
                     .build()
             )
         assertThat(businessCustomerFields.kybStatus())
@@ -165,9 +215,35 @@ internal class BusinessCustomerFieldsTest {
                             BusinessCustomerFields.BusinessInfo.BusinessType
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
+                        .addCountriesOfOperation("US")
+                        .country("US")
+                        .doingBusinessAs("Acme")
+                        .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                        .expectedActivityVolumes(
+                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
+                                .monthlyTransactionCount(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionCount
+                                        ._100_TO_500
+                                )
+                                .monthlyTransactionVolume(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionVolume
+                                        ._100_K_TO_1_M
+                                )
+                                .build()
+                        )
+                        .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .registrationNumber("BRN-123456789")
-                        .taxId("EIN-987654321")
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
+                        )
+                        .registrationNumber("5523041")
+                        .sourceOfFunds(
+                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
+                        )
+                        .taxId("47-1234567")
                         .build()
                 )
                 .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
