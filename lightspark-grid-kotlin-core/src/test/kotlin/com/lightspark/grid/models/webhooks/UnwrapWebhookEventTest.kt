@@ -115,6 +115,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -344,6 +345,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -511,6 +513,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -579,6 +582,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -673,6 +677,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -765,6 +770,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -869,6 +875,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
     }
 
     @Test
@@ -918,6 +925,98 @@ internal class UnwrapWebhookEventTest {
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(InternalAccountStatusWebhookEvent.Type.INTERNAL_ACCOUNT_BALANCE_UPDATED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofVerificationUpdate() {
+        val verificationUpdate =
+            VerificationUpdateWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    VerificationUpdateWebhookEvent.Data.builder()
+                        .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addError(
+                            VerificationUpdateWebhookEvent.Data.Error.builder()
+                                .reason("Business address line 1 is required")
+                                .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .type(VerificationUpdateWebhookEvent.Data.Error.Type.MISSING_FIELD)
+                                .addAcceptedDocumentType(
+                                    VerificationUpdateWebhookEvent.Data.Error.AcceptedDocumentType
+                                        .PASSPORT
+                                )
+                                .field("customer.address.line1")
+                                .build()
+                        )
+                        .verificationStatus(
+                            VerificationUpdateWebhookEvent.Data.VerificationStatus.RESOLVE_ERRORS
+                        )
+                        .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(VerificationUpdateWebhookEvent.Type.VERIFICATION_APPROVED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofVerificationUpdate(verificationUpdate)
+
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
+    }
+
+    @Test
+    fun ofVerificationUpdateRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofVerificationUpdate(
+                VerificationUpdateWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        VerificationUpdateWebhookEvent.Data.builder()
+                            .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .addError(
+                                VerificationUpdateWebhookEvent.Data.Error.builder()
+                                    .reason("Business address line 1 is required")
+                                    .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                    .type(
+                                        VerificationUpdateWebhookEvent.Data.Error.Type.MISSING_FIELD
+                                    )
+                                    .addAcceptedDocumentType(
+                                        VerificationUpdateWebhookEvent.Data.Error
+                                            .AcceptedDocumentType
+                                            .PASSPORT
+                                    )
+                                    .field("customer.address.line1")
+                                    .build()
+                            )
+                            .verificationStatus(
+                                VerificationUpdateWebhookEvent.Data.VerificationStatus
+                                    .RESOLVE_ERRORS
+                            )
+                            .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(VerificationUpdateWebhookEvent.Type.VERIFICATION_APPROVED)
                     .build()
             )
 

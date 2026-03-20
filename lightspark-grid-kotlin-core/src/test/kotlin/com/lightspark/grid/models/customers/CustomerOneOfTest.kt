@@ -142,8 +142,34 @@ internal class CustomerOneOfTest {
                             BusinessCustomerFields.BusinessInfo.BusinessType
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
-                        .registrationNumber("BRN-123456789")
-                        .taxId("EIN-987654321")
+                        .addCountriesOfOperation("US")
+                        .country("US")
+                        .doingBusinessAs("Acme")
+                        .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                        .expectedActivityVolumes(
+                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
+                                .monthlyTransactionCount(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionCount
+                                        ._100_TO_500
+                                )
+                                .monthlyTransactionVolume(
+                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                        .MonthlyTransactionVolume
+                                        ._100_K_TO_1_M
+                                )
+                                .build()
+                        )
+                        .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
+                        )
+                        .registrationNumber("5523041")
+                        .sourceOfFunds(
+                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
+                        )
+                        .taxId("47-1234567")
                         .build()
                 )
                 .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
@@ -210,8 +236,35 @@ internal class CustomerOneOfTest {
                                 BusinessCustomerFields.BusinessInfo.BusinessType
                                     .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                             )
-                            .registrationNumber("BRN-123456789")
-                            .taxId("EIN-987654321")
+                            .addCountriesOfOperation("US")
+                            .country("US")
+                            .doingBusinessAs("Acme")
+                            .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                            .expectedActivityVolumes(
+                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                    .builder()
+                                    .monthlyTransactionCount(
+                                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                            .MonthlyTransactionCount
+                                            ._100_TO_500
+                                    )
+                                    .monthlyTransactionVolume(
+                                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
+                                            .MonthlyTransactionVolume
+                                            ._100_K_TO_1_M
+                                    )
+                                    .build()
+                            )
+                            .addExpectedRecipientJurisdiction("US")
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
+                            .purposeOfAccount(
+                                BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
+                            )
+                            .registrationNumber("5523041")
+                            .sourceOfFunds(
+                                BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
+                            )
+                            .taxId("47-1234567")
                             .build()
                     )
                     .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)

@@ -71,6 +71,9 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.exchangeRates()).isNotNull()
         assertThat(client.webhooks()).isNotNull()
         assertThat(client.crypto()).isNotNull()
+        assertThat(client.beneficialOwners()).isNotNull()
+        assertThat(client.documents()).isNotNull()
+        assertThat(client.verifications()).isNotNull()
     }
 
     @Test
