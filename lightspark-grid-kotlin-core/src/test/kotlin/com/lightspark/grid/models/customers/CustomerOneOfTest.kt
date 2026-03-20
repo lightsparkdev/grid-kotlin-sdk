@@ -138,6 +138,10 @@ internal class CustomerOneOfTest {
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
                         .legalName("Acme Corporation, Inc.")
+                        .businessType(
+                            BusinessCustomerFields.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .registrationNumber("BRN-123456789")
                         .taxId("EIN-987654321")
                         .build()
@@ -202,6 +206,10 @@ internal class CustomerOneOfTest {
                     .businessInfo(
                         BusinessCustomerFields.BusinessInfo.builder()
                             .legalName("Acme Corporation, Inc.")
+                            .businessType(
+                                BusinessCustomerFields.BusinessInfo.BusinessType
+                                    .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            )
                             .registrationNumber("BRN-123456789")
                             .taxId("EIN-987654321")
                             .build()

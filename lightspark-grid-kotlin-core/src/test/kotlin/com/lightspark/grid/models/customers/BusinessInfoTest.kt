@@ -14,11 +14,14 @@ internal class BusinessInfoTest {
         val businessInfo =
             BusinessInfo.builder()
                 .legalName("Acme Corporation, Inc.")
+                .businessType(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .registrationNumber("BRN-123456789")
                 .taxId("EIN-987654321")
                 .build()
 
         assertThat(businessInfo.legalName()).isEqualTo("Acme Corporation, Inc.")
+        assertThat(businessInfo.businessType())
+            .isEqualTo(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
         assertThat(businessInfo.registrationNumber()).isEqualTo("BRN-123456789")
         assertThat(businessInfo.taxId()).isEqualTo("EIN-987654321")
     }
@@ -29,6 +32,7 @@ internal class BusinessInfoTest {
         val businessInfo =
             BusinessInfo.builder()
                 .legalName("Acme Corporation, Inc.")
+                .businessType(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .registrationNumber("BRN-123456789")
                 .taxId("EIN-987654321")
                 .build()
