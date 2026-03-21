@@ -26,31 +26,6 @@ internal class BusinessCustomerFieldsTest {
                         .state("CA")
                         .build()
                 )
-                .addBeneficialOwner(
-                    BusinessCustomerFields.BeneficialOwner.builder()
-                        .fullName("John Michael Doe")
-                        .individualType(
-                            BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
-                        )
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .emailAddress("example@test.com")
-                        .nationality("US")
-                        .percentageOwnership(25.0)
-                        .phoneNumber("+5555555555")
-                        .taxId("EIN-987654321")
-                        .title("CEO, COO, President")
-                        .build()
-                )
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
                         .businessType(
@@ -61,30 +36,14 @@ internal class BusinessCustomerFieldsTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                        .expectedActivityVolumes(
-                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
-                                .monthlyTransactionCount(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionCount
-                                        ._100_TO_500
-                                )
-                                .monthlyTransactionVolume(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionVolume
-                                        ._100_K_TO_1_M
-                                )
-                                .build()
-                        )
+                        .expectedMonthlyTransactionCount("100_TO_500")
+                        .expectedMonthlyTransactionVolume("100K_TO_1M")
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(
-                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
-                        )
+                        .purposeOfAccount("Payout to contractors")
                         .registrationNumber("5523041")
-                        .sourceOfFunds(
-                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
-                        )
+                        .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
@@ -104,30 +63,6 @@ internal class BusinessCustomerFieldsTest {
                     .state("CA")
                     .build()
             )
-        assertThat(businessCustomerFields.beneficialOwners())
-            .containsExactly(
-                BusinessCustomerFields.BeneficialOwner.builder()
-                    .fullName("John Michael Doe")
-                    .individualType(BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR)
-                    .address(
-                        Address.builder()
-                            .country("US")
-                            .line1("123 Main Street")
-                            .postalCode("94105")
-                            .city("San Francisco")
-                            .line2("Apt 4B")
-                            .state("CA")
-                            .build()
-                    )
-                    .birthDate(LocalDate.parse("1990-01-15"))
-                    .emailAddress("example@test.com")
-                    .nationality("US")
-                    .percentageOwnership(25.0)
-                    .phoneNumber("+5555555555")
-                    .taxId("EIN-987654321")
-                    .title("CEO, COO, President")
-                    .build()
-            )
         assertThat(businessCustomerFields.businessInfo())
             .isEqualTo(
                 BusinessCustomerFields.BusinessInfo.builder()
@@ -139,28 +74,14 @@ internal class BusinessCustomerFieldsTest {
                     .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                    .expectedActivityVolumes(
-                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
-                            .monthlyTransactionCount(
-                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                    .MonthlyTransactionCount
-                                    ._100_TO_500
-                            )
-                            .monthlyTransactionVolume(
-                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                    .MonthlyTransactionVolume
-                                    ._100_K_TO_1_M
-                            )
-                            .build()
-                    )
+                    .expectedMonthlyTransactionCount("100_TO_500")
+                    .expectedMonthlyTransactionVolume("100K_TO_1M")
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
-                    .purposeOfAccount(BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS)
+                    .purposeOfAccount("Payout to contractors")
                     .registrationNumber("5523041")
-                    .sourceOfFunds(
-                        BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
-                    )
+                    .sourceOfFunds("Funds derived from customer payments for software services")
                     .taxId("47-1234567")
                     .build()
             )
@@ -184,31 +105,6 @@ internal class BusinessCustomerFieldsTest {
                         .state("CA")
                         .build()
                 )
-                .addBeneficialOwner(
-                    BusinessCustomerFields.BeneficialOwner.builder()
-                        .fullName("John Michael Doe")
-                        .individualType(
-                            BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
-                        )
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate(LocalDate.parse("1990-01-15"))
-                        .emailAddress("example@test.com")
-                        .nationality("US")
-                        .percentageOwnership(25.0)
-                        .phoneNumber("+5555555555")
-                        .taxId("EIN-987654321")
-                        .title("CEO, COO, President")
-                        .build()
-                )
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
                         .businessType(
@@ -219,30 +115,14 @@ internal class BusinessCustomerFieldsTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                        .expectedActivityVolumes(
-                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
-                                .monthlyTransactionCount(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionCount
-                                        ._100_TO_500
-                                )
-                                .monthlyTransactionVolume(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionVolume
-                                        ._100_K_TO_1_M
-                                )
-                                .build()
-                        )
+                        .expectedMonthlyTransactionCount("100_TO_500")
+                        .expectedMonthlyTransactionVolume("100K_TO_1M")
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(
-                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
-                        )
+                        .purposeOfAccount("Payout to contractors")
                         .registrationNumber("5523041")
-                        .sourceOfFunds(
-                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
-                        )
+                        .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
