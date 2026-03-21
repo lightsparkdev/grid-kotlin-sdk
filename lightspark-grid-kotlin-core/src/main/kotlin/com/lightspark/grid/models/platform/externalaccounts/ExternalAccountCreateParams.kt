@@ -364,6 +364,26 @@ private constructor(
         fun accountInfo(baseWalletInfo: BaseWalletInfo) = apply { body.accountInfo(baseWalletInfo) }
 
         /**
+         * Alias for calling [accountInfo] with
+         * `ExternalAccountInfoOneOf.ofEthereumWallet(ethereumWallet)`.
+         */
+        fun accountInfo(ethereumWallet: ExternalAccountInfoOneOf.EthereumWallet) = apply {
+            body.accountInfo(ethereumWallet)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * ExternalAccountInfoOneOf.EthereumWallet.builder()
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun ethereumWalletAccountInfo(address: String) = apply {
+            body.ethereumWalletAccountInfo(address)
+        }
+
+        /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofAedAccount(aedAccount)`.
          */
         fun accountInfo(aedAccount: ExternalAccountInfoOneOf.AedAccount) = apply {
@@ -932,6 +952,26 @@ private constructor(
              */
             fun accountInfo(baseWalletInfo: BaseWalletInfo) =
                 accountInfo(ExternalAccountInfoOneOf.ofBaseWalletInfo(baseWalletInfo))
+
+            /**
+             * Alias for calling [accountInfo] with
+             * `ExternalAccountInfoOneOf.ofEthereumWallet(ethereumWallet)`.
+             */
+            fun accountInfo(ethereumWallet: ExternalAccountInfoOneOf.EthereumWallet) =
+                accountInfo(ExternalAccountInfoOneOf.ofEthereumWallet(ethereumWallet))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * ExternalAccountInfoOneOf.EthereumWallet.builder()
+             *     .address(address)
+             *     .build()
+             * ```
+             */
+            fun ethereumWalletAccountInfo(address: String) =
+                accountInfo(
+                    ExternalAccountInfoOneOf.EthereumWallet.builder().address(address).build()
+                )
 
             /**
              * Alias for calling [accountInfo] with
