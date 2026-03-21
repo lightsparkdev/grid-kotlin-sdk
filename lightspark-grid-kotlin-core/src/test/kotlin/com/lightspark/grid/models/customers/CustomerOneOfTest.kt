@@ -110,11 +110,33 @@ internal class CustomerOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .businessInfo(
+                    BusinessCustomerFields.BusinessInfo.builder()
+                        .legalName("Acme Corporation, Inc.")
+                        .businessType(
+                            BusinessCustomerFields.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
+                        .addCountriesOfOperation("US")
+                        .country("US")
+                        .doingBusinessAs("Acme")
+                        .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                        .expectedMonthlyTransactionCount("100_TO_500")
+                        .expectedMonthlyTransactionVolume("100K_TO_1M")
+                        .addExpectedRecipientJurisdiction("US")
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .purposeOfAccount("Payout to contractors")
+                        .registrationNumber("5523041")
+                        .sourceOfFunds("Funds derived from customer payments for software services")
+                        .taxId("47-1234567")
+                        .build()
+                )
+                .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .addBeneficialOwner(
-                    BusinessCustomerFields.BeneficialOwner.builder()
+                    CustomerOneOf.Business.BeneficialOwner.builder()
                         .fullName("John Michael Doe")
                         .individualType(
-                            BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
+                            CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
                         )
                         .address(
                             Address.builder()
@@ -135,44 +157,6 @@ internal class CustomerOneOfTest {
                         .title("CEO, COO, President")
                         .build()
                 )
-                .businessInfo(
-                    BusinessCustomerFields.BusinessInfo.builder()
-                        .legalName("Acme Corporation, Inc.")
-                        .businessType(
-                            BusinessCustomerFields.BusinessInfo.BusinessType
-                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
-                        )
-                        .addCountriesOfOperation("US")
-                        .country("US")
-                        .doingBusinessAs("Acme")
-                        .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                        .expectedActivityVolumes(
-                            BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes.builder()
-                                .monthlyTransactionCount(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionCount
-                                        ._100_TO_500
-                                )
-                                .monthlyTransactionVolume(
-                                    BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                        .MonthlyTransactionVolume
-                                        ._100_K_TO_1_M
-                                )
-                                .build()
-                        )
-                        .addExpectedRecipientJurisdiction("US")
-                        .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .purposeOfAccount(
-                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
-                        )
-                        .registrationNumber("5523041")
-                        .sourceOfFunds(
-                            BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
-                        )
-                        .taxId("47-1234567")
-                        .build()
-                )
-                .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                 .build()
 
         val customerOneOf = CustomerOneOf.ofBusiness(business)
@@ -204,11 +188,35 @@ internal class CustomerOneOfTest {
                             .state("CA")
                             .build()
                     )
+                    .businessInfo(
+                        BusinessCustomerFields.BusinessInfo.builder()
+                            .legalName("Acme Corporation, Inc.")
+                            .businessType(
+                                BusinessCustomerFields.BusinessInfo.BusinessType
+                                    .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            )
+                            .addCountriesOfOperation("US")
+                            .country("US")
+                            .doingBusinessAs("Acme")
+                            .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
+                            .expectedMonthlyTransactionCount("100_TO_500")
+                            .expectedMonthlyTransactionVolume("100K_TO_1M")
+                            .addExpectedRecipientJurisdiction("US")
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
+                            .purposeOfAccount("Payout to contractors")
+                            .registrationNumber("5523041")
+                            .sourceOfFunds(
+                                "Funds derived from customer payments for software services"
+                            )
+                            .taxId("47-1234567")
+                            .build()
+                    )
+                    .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                     .addBeneficialOwner(
-                        BusinessCustomerFields.BeneficialOwner.builder()
+                        CustomerOneOf.Business.BeneficialOwner.builder()
                             .fullName("John Michael Doe")
                             .individualType(
-                                BusinessCustomerFields.BeneficialOwner.IndividualType.DIRECTOR
+                                CustomerOneOf.Business.BeneficialOwner.IndividualType.DIRECTOR
                             )
                             .address(
                                 Address.builder()
@@ -229,45 +237,6 @@ internal class CustomerOneOfTest {
                             .title("CEO, COO, President")
                             .build()
                     )
-                    .businessInfo(
-                        BusinessCustomerFields.BusinessInfo.builder()
-                            .legalName("Acme Corporation, Inc.")
-                            .businessType(
-                                BusinessCustomerFields.BusinessInfo.BusinessType
-                                    .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
-                            )
-                            .addCountriesOfOperation("US")
-                            .country("US")
-                            .doingBusinessAs("Acme")
-                            .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                            .expectedActivityVolumes(
-                                BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                    .builder()
-                                    .monthlyTransactionCount(
-                                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                            .MonthlyTransactionCount
-                                            ._100_TO_500
-                                    )
-                                    .monthlyTransactionVolume(
-                                        BusinessCustomerFields.BusinessInfo.ExpectedActivityVolumes
-                                            .MonthlyTransactionVolume
-                                            ._100_K_TO_1_M
-                                    )
-                                    .build()
-                            )
-                            .addExpectedRecipientJurisdiction("US")
-                            .incorporatedOn(LocalDate.parse("2018-03-14"))
-                            .purposeOfAccount(
-                                BusinessCustomerFields.BusinessInfo.PurposeOfAccount.PAYMENTS
-                            )
-                            .registrationNumber("5523041")
-                            .sourceOfFunds(
-                                BusinessCustomerFields.BusinessInfo.SourceOfFunds.OPERATING_REVENUE
-                            )
-                            .taxId("47-1234567")
-                            .build()
-                    )
-                    .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
                     .build()
             )
 
