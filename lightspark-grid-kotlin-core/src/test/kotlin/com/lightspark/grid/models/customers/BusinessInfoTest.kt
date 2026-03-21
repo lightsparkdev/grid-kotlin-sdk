@@ -20,22 +20,13 @@ internal class BusinessInfoTest {
                 .country("US")
                 .doingBusinessAs("Acme")
                 .entityType(BusinessInfo.EntityType.LLC)
-                .expectedActivityVolumes(
-                    BusinessInfo.ExpectedActivityVolumes.builder()
-                        .monthlyTransactionCount(
-                            BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionCount._100_TO_500
-                        )
-                        .monthlyTransactionVolume(
-                            BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionVolume
-                                ._100_K_TO_1_M
-                        )
-                        .build()
-                )
+                .expectedMonthlyTransactionCount("100_TO_500")
+                .expectedMonthlyTransactionVolume("100K_TO_1M")
                 .addExpectedRecipientJurisdiction("US")
                 .incorporatedOn(LocalDate.parse("2018-03-14"))
-                .purposeOfAccount(BusinessInfo.PurposeOfAccount.PAYMENTS)
+                .purposeOfAccount("Payout to contractors")
                 .registrationNumber("5523041")
-                .sourceOfFunds(BusinessInfo.SourceOfFunds.OPERATING_REVENUE)
+                .sourceOfFunds("Funds derived from customer payments for software services")
                 .taxId("47-1234567")
                 .build()
 
@@ -46,24 +37,14 @@ internal class BusinessInfoTest {
         assertThat(businessInfo.country()).isEqualTo("US")
         assertThat(businessInfo.doingBusinessAs()).isEqualTo("Acme")
         assertThat(businessInfo.entityType()).isEqualTo(BusinessInfo.EntityType.LLC)
-        assertThat(businessInfo.expectedActivityVolumes())
-            .isEqualTo(
-                BusinessInfo.ExpectedActivityVolumes.builder()
-                    .monthlyTransactionCount(
-                        BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionCount._100_TO_500
-                    )
-                    .monthlyTransactionVolume(
-                        BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionVolume._100_K_TO_1_M
-                    )
-                    .build()
-            )
+        assertThat(businessInfo.expectedMonthlyTransactionCount()).isEqualTo("100_TO_500")
+        assertThat(businessInfo.expectedMonthlyTransactionVolume()).isEqualTo("100K_TO_1M")
         assertThat(businessInfo.expectedRecipientJurisdictions()).containsExactly("US")
         assertThat(businessInfo.incorporatedOn()).isEqualTo(LocalDate.parse("2018-03-14"))
-        assertThat(businessInfo.purposeOfAccount())
-            .isEqualTo(BusinessInfo.PurposeOfAccount.PAYMENTS)
+        assertThat(businessInfo.purposeOfAccount()).isEqualTo("Payout to contractors")
         assertThat(businessInfo.registrationNumber()).isEqualTo("5523041")
         assertThat(businessInfo.sourceOfFunds())
-            .isEqualTo(BusinessInfo.SourceOfFunds.OPERATING_REVENUE)
+            .isEqualTo("Funds derived from customer payments for software services")
         assertThat(businessInfo.taxId()).isEqualTo("47-1234567")
     }
 
@@ -78,22 +59,13 @@ internal class BusinessInfoTest {
                 .country("US")
                 .doingBusinessAs("Acme")
                 .entityType(BusinessInfo.EntityType.LLC)
-                .expectedActivityVolumes(
-                    BusinessInfo.ExpectedActivityVolumes.builder()
-                        .monthlyTransactionCount(
-                            BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionCount._100_TO_500
-                        )
-                        .monthlyTransactionVolume(
-                            BusinessInfo.ExpectedActivityVolumes.MonthlyTransactionVolume
-                                ._100_K_TO_1_M
-                        )
-                        .build()
-                )
+                .expectedMonthlyTransactionCount("100_TO_500")
+                .expectedMonthlyTransactionVolume("100K_TO_1M")
                 .addExpectedRecipientJurisdiction("US")
                 .incorporatedOn(LocalDate.parse("2018-03-14"))
-                .purposeOfAccount(BusinessInfo.PurposeOfAccount.PAYMENTS)
+                .purposeOfAccount("Payout to contractors")
                 .registrationNumber("5523041")
-                .sourceOfFunds(BusinessInfo.SourceOfFunds.OPERATING_REVENUE)
+                .sourceOfFunds("Funds derived from customer payments for software services")
                 .taxId("47-1234567")
                 .build()
 

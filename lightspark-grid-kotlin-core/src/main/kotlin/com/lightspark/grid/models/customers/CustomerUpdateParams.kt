@@ -20,12 +20,10 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
-import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -858,7 +856,6 @@ private constructor(
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
-            private val beneficialOwners: JsonField<List<BusinessCustomerFields.BeneficialOwner>>,
             private val businessInfo: JsonField<BusinessCustomerFields.BusinessInfo>,
             private val kybStatus: JsonField<BusinessCustomerFields.KybStatus>,
             private val additionalProperties: MutableMap<String, JsonValue>,
@@ -875,25 +872,13 @@ private constructor(
                 @JsonProperty("address")
                 @ExcludeMissing
                 address: JsonField<Address> = JsonMissing.of(),
-                @JsonProperty("beneficialOwners")
-                @ExcludeMissing
-                beneficialOwners: JsonField<List<BusinessCustomerFields.BeneficialOwner>> =
-                    JsonMissing.of(),
                 @JsonProperty("businessInfo")
                 @ExcludeMissing
                 businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> = JsonMissing.of(),
                 @JsonProperty("kybStatus")
                 @ExcludeMissing
                 kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
-            ) : this(
-                umaAddress,
-                customerType,
-                address,
-                beneficialOwners,
-                businessInfo,
-                kybStatus,
-                mutableMapOf(),
-            )
+            ) : this(umaAddress, customerType, address, businessInfo, kybStatus, mutableMapOf())
 
             fun toCustomerUpdate(): CustomerUpdate =
                 CustomerUpdate.builder().umaAddress(umaAddress).build()
@@ -902,7 +887,6 @@ private constructor(
                 BusinessCustomerFields.builder()
                     .customerType(customerType)
                     .address(address)
-                    .beneficialOwners(beneficialOwners)
                     .businessInfo(businessInfo)
                     .kybStatus(kybStatus)
                     .build()
@@ -929,13 +913,6 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun address(): Address? = address.getNullable("address")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun beneficialOwners(): List<BusinessCustomerFields.BeneficialOwner>? =
-                beneficialOwners.getNullable("beneficialOwners")
 
             /**
              * Additional information for business entities
@@ -980,17 +957,6 @@ private constructor(
              * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
-
-            /**
-             * Returns the raw JSON value of [beneficialOwners].
-             *
-             * Unlike [beneficialOwners], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("beneficialOwners")
-            @ExcludeMissing
-            fun _beneficialOwners(): JsonField<List<BusinessCustomerFields.BeneficialOwner>> =
-                beneficialOwners
 
             /**
              * Returns the raw JSON value of [businessInfo].
@@ -1043,9 +1009,6 @@ private constructor(
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
-                private var beneficialOwners:
-                    JsonField<MutableList<BusinessCustomerFields.BeneficialOwner>>? =
-                    null
                 private var businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> =
                     JsonMissing.of()
                 private var kybStatus: JsonField<BusinessCustomerFields.KybStatus> =
@@ -1056,7 +1019,6 @@ private constructor(
                     umaAddress = business.umaAddress
                     customerType = business.customerType
                     address = business.address
-                    beneficialOwners = business.beneficialOwners.map { it.toMutableList() }
                     businessInfo = business.businessInfo
                     kybStatus = business.kybStatus
                     additionalProperties = business.additionalProperties.toMutableMap()
@@ -1104,34 +1066,6 @@ private constructor(
                  * yet supported value.
                  */
                 fun address(address: JsonField<Address>) = apply { this.address = address }
-
-                fun beneficialOwners(
-                    beneficialOwners: List<BusinessCustomerFields.BeneficialOwner>
-                ) = beneficialOwners(JsonField.of(beneficialOwners))
-
-                /**
-                 * Sets [Builder.beneficialOwners] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.beneficialOwners] with a well-typed
-                 * `List<BusinessCustomerFields.BeneficialOwner>` value instead. This method is
-                 * primarily for setting the field to an undocumented or not yet supported value.
-                 */
-                fun beneficialOwners(
-                    beneficialOwners: JsonField<List<BusinessCustomerFields.BeneficialOwner>>
-                ) = apply { this.beneficialOwners = beneficialOwners.map { it.toMutableList() } }
-
-                /**
-                 * Adds a single [BusinessCustomerFields.BeneficialOwner] to [beneficialOwners].
-                 *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addBeneficialOwner(beneficialOwner: BusinessCustomerFields.BeneficialOwner) =
-                    apply {
-                        beneficialOwners =
-                            (beneficialOwners ?: JsonField.of(mutableListOf())).also {
-                                checkKnown("beneficialOwners", it).add(beneficialOwner)
-                            }
-                    }
 
                 /** Additional information for business entities */
                 fun businessInfo(businessInfo: BusinessCustomerFields.BusinessInfo) =
@@ -1203,7 +1137,6 @@ private constructor(
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
-                        (beneficialOwners ?: JsonMissing.of()).map { it.toImmutable() },
                         businessInfo,
                         kybStatus,
                         additionalProperties.toMutableMap(),
@@ -1220,7 +1153,6 @@ private constructor(
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
-                beneficialOwners()?.forEach { it.validate() }
                 businessInfo()?.validate()
                 kybStatus()?.validate()
                 validated = true
@@ -1244,7 +1176,6 @@ private constructor(
                 (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
-                    (beneficialOwners.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                     (businessInfo.asKnown()?.validity() ?: 0) +
                     (kybStatus.asKnown()?.validity() ?: 0)
 
@@ -1257,7 +1188,6 @@ private constructor(
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
-                    beneficialOwners == other.beneficialOwners &&
                     businessInfo == other.businessInfo &&
                     kybStatus == other.kybStatus &&
                     additionalProperties == other.additionalProperties
@@ -1268,7 +1198,6 @@ private constructor(
                     umaAddress,
                     customerType,
                     address,
-                    beneficialOwners,
                     businessInfo,
                     kybStatus,
                     additionalProperties,
@@ -1278,7 +1207,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Business{umaAddress=$umaAddress, customerType=$customerType, address=$address, beneficialOwners=$beneficialOwners, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "Business{umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
         }
     }
 
