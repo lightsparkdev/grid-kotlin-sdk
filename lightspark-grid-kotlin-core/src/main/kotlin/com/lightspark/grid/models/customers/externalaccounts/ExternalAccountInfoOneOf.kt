@@ -70,6 +70,7 @@ private constructor(
     private val tronWalletInfo: TronWalletInfo? = null,
     private val polygonWalletInfo: PolygonWalletInfo? = null,
     private val baseWalletInfo: BaseWalletInfo? = null,
+    private val ethereumWallet: EthereumWallet? = null,
     private val aedAccount: AedAccount? = null,
     private val bwpAccount: BwpAccount? = null,
     private val xafAccount: XafAccount? = null,
@@ -140,6 +141,8 @@ private constructor(
 
     fun baseWalletInfo(): BaseWalletInfo? = baseWalletInfo
 
+    fun ethereumWallet(): EthereumWallet? = ethereumWallet
+
     fun aedAccount(): AedAccount? = aedAccount
 
     fun bwpAccount(): BwpAccount? = bwpAccount
@@ -205,6 +208,8 @@ private constructor(
     fun isPolygonWalletInfo(): Boolean = polygonWalletInfo != null
 
     fun isBaseWalletInfo(): Boolean = baseWalletInfo != null
+
+    fun isEthereumWallet(): Boolean = ethereumWallet != null
 
     fun isAedAccount(): Boolean = aedAccount != null
 
@@ -285,6 +290,8 @@ private constructor(
 
     fun asBaseWalletInfo(): BaseWalletInfo = baseWalletInfo.getOrThrow("baseWalletInfo")
 
+    fun asEthereumWallet(): EthereumWallet = ethereumWallet.getOrThrow("ethereumWallet")
+
     fun asAedAccount(): AedAccount = aedAccount.getOrThrow("aedAccount")
 
     fun asBwpAccount(): BwpAccount = bwpAccount.getOrThrow("bwpAccount")
@@ -333,6 +340,7 @@ private constructor(
             tronWalletInfo != null -> visitor.visitTronWalletInfo(tronWalletInfo)
             polygonWalletInfo != null -> visitor.visitPolygonWalletInfo(polygonWalletInfo)
             baseWalletInfo != null -> visitor.visitBaseWalletInfo(baseWalletInfo)
+            ethereumWallet != null -> visitor.visitEthereumWallet(ethereumWallet)
             aedAccount != null -> visitor.visitAedAccount(aedAccount)
             bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
             xafAccount != null -> visitor.visitXafAccount(xafAccount)
@@ -484,6 +492,10 @@ private constructor(
                     baseWalletInfo.validate()
                 }
 
+                override fun visitEthereumWallet(ethereumWallet: EthereumWallet) {
+                    ethereumWallet.validate()
+                }
+
                 override fun visitAedAccount(aedAccount: AedAccount) {
                     aedAccount.validate()
                 }
@@ -611,6 +623,9 @@ private constructor(
                 override fun visitBaseWalletInfo(baseWalletInfo: BaseWalletInfo) =
                     baseWalletInfo.validity()
 
+                override fun visitEthereumWallet(ethereumWallet: EthereumWallet) =
+                    ethereumWallet.validity()
+
                 override fun visitAedAccount(aedAccount: AedAccount) = aedAccount.validity()
 
                 override fun visitBwpAccount(bwpAccount: BwpAccount) = bwpAccount.validity()
@@ -657,6 +672,7 @@ private constructor(
             tronWalletInfo == other.tronWalletInfo &&
             polygonWalletInfo == other.polygonWalletInfo &&
             baseWalletInfo == other.baseWalletInfo &&
+            ethereumWallet == other.ethereumWallet &&
             aedAccount == other.aedAccount &&
             bwpAccount == other.bwpAccount &&
             xafAccount == other.xafAccount
@@ -694,6 +710,7 @@ private constructor(
             tronWalletInfo,
             polygonWalletInfo,
             baseWalletInfo,
+            ethereumWallet,
             aedAccount,
             bwpAccount,
             xafAccount,
@@ -742,6 +759,7 @@ private constructor(
             polygonWalletInfo != null ->
                 "ExternalAccountInfoOneOf{polygonWalletInfo=$polygonWalletInfo}"
             baseWalletInfo != null -> "ExternalAccountInfoOneOf{baseWalletInfo=$baseWalletInfo}"
+            ethereumWallet != null -> "ExternalAccountInfoOneOf{ethereumWallet=$ethereumWallet}"
             aedAccount != null -> "ExternalAccountInfoOneOf{aedAccount=$aedAccount}"
             bwpAccount != null -> "ExternalAccountInfoOneOf{bwpAccount=$bwpAccount}"
             xafAccount != null -> "ExternalAccountInfoOneOf{xafAccount=$xafAccount}"
@@ -842,6 +860,9 @@ private constructor(
         fun ofBaseWalletInfo(baseWalletInfo: BaseWalletInfo) =
             ExternalAccountInfoOneOf(baseWalletInfo = baseWalletInfo)
 
+        fun ofEthereumWallet(ethereumWallet: EthereumWallet) =
+            ExternalAccountInfoOneOf(ethereumWallet = ethereumWallet)
+
         fun ofAedAccount(aedAccount: AedAccount) = ExternalAccountInfoOneOf(aedAccount = aedAccount)
 
         fun ofBwpAccount(bwpAccount: BwpAccount) = ExternalAccountInfoOneOf(bwpAccount = bwpAccount)
@@ -918,6 +939,8 @@ private constructor(
         fun visitPolygonWalletInfo(polygonWalletInfo: PolygonWalletInfo): T
 
         fun visitBaseWalletInfo(baseWalletInfo: BaseWalletInfo): T
+
+        fun visitEthereumWallet(ethereumWallet: EthereumWallet): T
 
         fun visitAedAccount(aedAccount: AedAccount): T
 
@@ -1026,6 +1049,11 @@ private constructor(
                 "VND_ACCOUNT" -> {
                     return tryDeserialize(node, jacksonTypeRef<VndExternalAccountInfo>())?.let {
                         ExternalAccountInfoOneOf(vndAccount = it, _json = json)
+                    } ?: ExternalAccountInfoOneOf(_json = json)
+                }
+                "ETHEREUM_WALLET" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EthereumWallet>())?.let {
+                        ExternalAccountInfoOneOf(ethereumWallet = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
                 "AED_ACCOUNT" -> {
@@ -1153,6 +1181,7 @@ private constructor(
                 value.tronWalletInfo != null -> generator.writeObject(value.tronWalletInfo)
                 value.polygonWalletInfo != null -> generator.writeObject(value.polygonWalletInfo)
                 value.baseWalletInfo != null -> generator.writeObject(value.baseWalletInfo)
+                value.ethereumWallet != null -> generator.writeObject(value.ethereumWallet)
                 value.aedAccount != null -> generator.writeObject(value.aedAccount)
                 value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
                 value.xafAccount != null -> generator.writeObject(value.xafAccount)
@@ -14253,6 +14282,206 @@ private constructor(
 
         override fun toString() =
             "ZmwExternalAccountInfo{accountType=$accountType, beneficiary=$beneficiary, paymentRails=$paymentRails, phoneNumber=$phoneNumber, provider=$provider, additionalProperties=$additionalProperties}"
+    }
+
+    class EthereumWallet
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val accountType: JsonValue,
+        private val address: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("accountType") @ExcludeMissing accountType: JsonValue = JsonMissing.of(),
+            @JsonProperty("address") @ExcludeMissing address: JsonField<String> = JsonMissing.of(),
+        ) : this(accountType, address, mutableMapOf())
+
+        /**
+         * Expected to always return the following:
+         * ```kotlin
+         * JsonValue.from("ETHEREUM_WALLET")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
+         */
+        @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+        /**
+         * Ethereum L1 wallet address
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun address(): String = address.getRequired("address")
+
+        /**
+         * Returns the raw JSON value of [address].
+         *
+         * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<String> = address
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [EthereumWallet].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .address()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [EthereumWallet]. */
+        class Builder internal constructor() {
+
+            private var accountType: JsonValue = JsonValue.from("ETHEREUM_WALLET")
+            private var address: JsonField<String>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(ethereumWallet: EthereumWallet) = apply {
+                accountType = ethereumWallet.accountType
+                address = ethereumWallet.address
+                additionalProperties = ethereumWallet.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Sets the field to an arbitrary JSON value.
+             *
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```kotlin
+             * JsonValue.from("ETHEREUM_WALLET")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+            /** Ethereum L1 wallet address */
+            fun address(address: String) = address(JsonField.of(address))
+
+            /**
+             * Sets [Builder.address] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.address] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun address(address: JsonField<String>) = apply { this.address = address }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [EthereumWallet].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .address()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): EthereumWallet =
+                EthereumWallet(
+                    accountType,
+                    checkRequired("address", address),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): EthereumWallet = apply {
+            if (validated) {
+                return@apply
+            }
+
+            _accountType().let {
+                if (it != JsonValue.from("ETHEREUM_WALLET")) {
+                    throw LightsparkGridInvalidDataException(
+                        "'accountType' is invalid, received $it"
+                    )
+                }
+            }
+            address()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            accountType.let { if (it == JsonValue.from("ETHEREUM_WALLET")) 1 else 0 } +
+                (if (address.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is EthereumWallet &&
+                accountType == other.accountType &&
+                address == other.address &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(accountType, address, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "EthereumWallet{accountType=$accountType, address=$address, additionalProperties=$additionalProperties}"
     }
 
     class AedAccount
