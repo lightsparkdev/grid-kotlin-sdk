@@ -34,18 +34,11 @@ internal class BeneficialOwnerUpdateResponseTest {
                         )
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
+                        .identifier("123-45-6789")
+                        .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
-                        .personalIds(
-                            BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.builder()
-                                .identifier("123-45-6789")
-                                .idType(
-                                    BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.IdType
-                                        .SSN
-                                )
-                                .countryOfIssuance("US")
-                                .build()
-                        )
+                        .countryOfIssuance("US")
                         .email("jane.smith@acmecorp.com")
                         .middleName("Marie")
                         .phoneNumber("+14155550192")
@@ -53,7 +46,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 )
                 .addRole(BeneficialOwnerUpdateResponse.Role.UBO)
                 .addRole(BeneficialOwnerUpdateResponse.Role.DIRECTOR)
-                .ownershipPercentage(51.0f)
+                .ownershipPercentage(51L)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
@@ -80,17 +73,11 @@ internal class BeneficialOwnerUpdateResponseTest {
                     )
                     .birthDate(LocalDate.parse("1978-06-15"))
                     .firstName("Jane")
+                    .identifier("123-45-6789")
+                    .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .nationality("US")
-                    .personalIds(
-                        BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.builder()
-                            .identifier("123-45-6789")
-                            .idType(
-                                BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.IdType.SSN
-                            )
-                            .countryOfIssuance("US")
-                            .build()
-                    )
+                    .countryOfIssuance("US")
                     .email("jane.smith@acmecorp.com")
                     .middleName("Marie")
                     .phoneNumber("+14155550192")
@@ -101,7 +88,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 BeneficialOwnerUpdateResponse.Role.UBO,
                 BeneficialOwnerUpdateResponse.Role.DIRECTOR,
             )
-        assertThat(beneficialOwnerUpdateResponse.ownershipPercentage()).isEqualTo(51.0f)
+        assertThat(beneficialOwnerUpdateResponse.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwnerUpdateResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
     }
@@ -129,18 +116,11 @@ internal class BeneficialOwnerUpdateResponseTest {
                         )
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
+                        .identifier("123-45-6789")
+                        .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
-                        .personalIds(
-                            BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.builder()
-                                .identifier("123-45-6789")
-                                .idType(
-                                    BeneficialOwnerUpdateResponse.PersonalInfo.PersonalIds.IdType
-                                        .SSN
-                                )
-                                .countryOfIssuance("US")
-                                .build()
-                        )
+                        .countryOfIssuance("US")
                         .email("jane.smith@acmecorp.com")
                         .middleName("Marie")
                         .phoneNumber("+14155550192")
@@ -148,7 +128,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 )
                 .addRole(BeneficialOwnerUpdateResponse.Role.UBO)
                 .addRole(BeneficialOwnerUpdateResponse.Role.DIRECTOR)
-                .ownershipPercentage(51.0f)
+                .ownershipPercentage(51L)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
