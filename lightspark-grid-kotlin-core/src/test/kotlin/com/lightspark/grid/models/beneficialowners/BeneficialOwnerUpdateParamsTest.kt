@@ -13,7 +13,7 @@ internal class BeneficialOwnerUpdateParamsTest {
     fun create() {
         BeneficialOwnerUpdateParams.builder()
             .beneficialOwnerId("beneficialOwnerId")
-            .ownershipPercentage(51.0f)
+            .ownershipPercentage(51L)
             .personalInfo(
                 BeneficialOwnerUpdateParams.PersonalInfo.builder()
                     .address(
@@ -27,18 +27,14 @@ internal class BeneficialOwnerUpdateParamsTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1978-06-15"))
+                    .countryOfIssuance("US")
                     .email("jane.smith@acmecorp.com")
                     .firstName("Jane")
+                    .identifier("123-45-6789")
+                    .idType(BeneficialOwnerUpdateParams.PersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .middleName("Marie")
                     .nationality("US")
-                    .personalIds(
-                        BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.builder()
-                            .identifier("123-45-6789")
-                            .idType(BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.IdType.SSN)
-                            .countryOfIssuance("US")
-                            .build()
-                    )
                     .phoneNumber("+14155550192")
                     .build()
             )
@@ -62,7 +58,7 @@ internal class BeneficialOwnerUpdateParamsTest {
         val params =
             BeneficialOwnerUpdateParams.builder()
                 .beneficialOwnerId("beneficialOwnerId")
-                .ownershipPercentage(51.0f)
+                .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerUpdateParams.PersonalInfo.builder()
                         .address(
@@ -76,20 +72,14 @@ internal class BeneficialOwnerUpdateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1978-06-15"))
+                        .countryOfIssuance("US")
                         .email("jane.smith@acmecorp.com")
                         .firstName("Jane")
+                        .identifier("123-45-6789")
+                        .idType(BeneficialOwnerUpdateParams.PersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .middleName("Marie")
                         .nationality("US")
-                        .personalIds(
-                            BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.builder()
-                                .identifier("123-45-6789")
-                                .idType(
-                                    BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.IdType.SSN
-                                )
-                                .countryOfIssuance("US")
-                                .build()
-                        )
                         .phoneNumber("+14155550192")
                         .build()
                 )
@@ -99,7 +89,7 @@ internal class BeneficialOwnerUpdateParamsTest {
 
         val body = params._body()
 
-        assertThat(body.ownershipPercentage()).isEqualTo(51.0f)
+        assertThat(body.ownershipPercentage()).isEqualTo(51L)
         assertThat(body.personalInfo())
             .isEqualTo(
                 BeneficialOwnerUpdateParams.PersonalInfo.builder()
@@ -114,18 +104,14 @@ internal class BeneficialOwnerUpdateParamsTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1978-06-15"))
+                    .countryOfIssuance("US")
                     .email("jane.smith@acmecorp.com")
                     .firstName("Jane")
+                    .identifier("123-45-6789")
+                    .idType(BeneficialOwnerUpdateParams.PersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .middleName("Marie")
                     .nationality("US")
-                    .personalIds(
-                        BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.builder()
-                            .identifier("123-45-6789")
-                            .idType(BeneficialOwnerUpdateParams.PersonalInfo.PersonalIds.IdType.SSN)
-                            .countryOfIssuance("US")
-                            .build()
-                    )
                     .phoneNumber("+14155550192")
                     .build()
             )
