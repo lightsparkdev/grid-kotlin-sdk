@@ -36,8 +36,14 @@ internal class BusinessCustomerFieldsTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                        .expectedMonthlyTransactionCount("100_TO_500")
-                        .expectedMonthlyTransactionVolume("100K_TO_1M")
+                        .expectedMonthlyTransactionCount(
+                            BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
+                        )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
@@ -74,8 +80,14 @@ internal class BusinessCustomerFieldsTest {
                     .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                    .expectedMonthlyTransactionCount("100_TO_500")
-                    .expectedMonthlyTransactionVolume("100K_TO_1M")
+                    .expectedMonthlyTransactionCount(
+                        BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
@@ -115,8 +127,14 @@ internal class BusinessCustomerFieldsTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerFields.BusinessInfo.EntityType.LLC)
-                        .expectedMonthlyTransactionCount("100_TO_500")
-                        .expectedMonthlyTransactionVolume("100K_TO_1M")
+                        .expectedMonthlyTransactionCount(
+                            BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            BusinessCustomerFields.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
+                        )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")

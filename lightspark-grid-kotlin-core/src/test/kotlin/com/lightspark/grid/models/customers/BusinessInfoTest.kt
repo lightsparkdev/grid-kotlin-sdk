@@ -20,8 +20,12 @@ internal class BusinessInfoTest {
                 .country("US")
                 .doingBusinessAs("Acme")
                 .entityType(BusinessInfo.EntityType.LLC)
-                .expectedMonthlyTransactionCount("100_TO_500")
-                .expectedMonthlyTransactionVolume("100K_TO_1M")
+                .expectedMonthlyTransactionCount(
+                    BusinessInfo.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                )
                 .addExpectedRecipientJurisdiction("US")
                 .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .purposeOfAccount("Payout to contractors")
@@ -37,8 +41,10 @@ internal class BusinessInfoTest {
         assertThat(businessInfo.country()).isEqualTo("US")
         assertThat(businessInfo.doingBusinessAs()).isEqualTo("Acme")
         assertThat(businessInfo.entityType()).isEqualTo(BusinessInfo.EntityType.LLC)
-        assertThat(businessInfo.expectedMonthlyTransactionCount()).isEqualTo("100_TO_500")
-        assertThat(businessInfo.expectedMonthlyTransactionVolume()).isEqualTo("100K_TO_1M")
+        assertThat(businessInfo.expectedMonthlyTransactionCount())
+            .isEqualTo(BusinessInfo.ExpectedMonthlyTransactionCount.COUNT_100_TO_500)
+        assertThat(businessInfo.expectedMonthlyTransactionVolume())
+            .isEqualTo(BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M)
         assertThat(businessInfo.expectedRecipientJurisdictions()).containsExactly("US")
         assertThat(businessInfo.incorporatedOn()).isEqualTo(LocalDate.parse("2018-03-14"))
         assertThat(businessInfo.purposeOfAccount()).isEqualTo("Payout to contractors")
@@ -59,8 +65,12 @@ internal class BusinessInfoTest {
                 .country("US")
                 .doingBusinessAs("Acme")
                 .entityType(BusinessInfo.EntityType.LLC)
-                .expectedMonthlyTransactionCount("100_TO_500")
-                .expectedMonthlyTransactionVolume("100K_TO_1M")
+                .expectedMonthlyTransactionCount(
+                    BusinessInfo.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                )
                 .addExpectedRecipientJurisdiction("US")
                 .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .purposeOfAccount("Payout to contractors")
