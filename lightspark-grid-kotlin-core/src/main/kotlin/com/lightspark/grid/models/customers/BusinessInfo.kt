@@ -29,8 +29,8 @@ private constructor(
     private val country: JsonField<String>,
     private val doingBusinessAs: JsonField<String>,
     private val entityType: JsonField<EntityType>,
-    private val expectedMonthlyTransactionCount: JsonField<String>,
-    private val expectedMonthlyTransactionVolume: JsonField<String>,
+    private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
+    private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
     private val expectedRecipientJurisdictions: JsonField<List<String>>,
     private val incorporatedOn: JsonField<LocalDate>,
     private val purposeOfAccount: JsonField<String>,
@@ -58,10 +58,12 @@ private constructor(
         entityType: JsonField<EntityType> = JsonMissing.of(),
         @JsonProperty("expectedMonthlyTransactionCount")
         @ExcludeMissing
-        expectedMonthlyTransactionCount: JsonField<String> = JsonMissing.of(),
+        expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
+            JsonMissing.of(),
         @JsonProperty("expectedMonthlyTransactionVolume")
         @ExcludeMissing
-        expectedMonthlyTransactionVolume: JsonField<String> = JsonMissing.of(),
+        expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
+            JsonMissing.of(),
         @JsonProperty("expectedRecipientJurisdictions")
         @ExcludeMissing
         expectedRecipientJurisdictions: JsonField<List<String>> = JsonMissing.of(),
@@ -151,7 +153,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun expectedMonthlyTransactionCount(): String? =
+    fun expectedMonthlyTransactionCount(): ExpectedMonthlyTransactionCount? =
         expectedMonthlyTransactionCount.getNullable("expectedMonthlyTransactionCount")
 
     /**
@@ -160,7 +162,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun expectedMonthlyTransactionVolume(): String? =
+    fun expectedMonthlyTransactionVolume(): ExpectedMonthlyTransactionVolume? =
         expectedMonthlyTransactionVolume.getNullable("expectedMonthlyTransactionVolume")
 
     /**
@@ -271,7 +273,8 @@ private constructor(
      */
     @JsonProperty("expectedMonthlyTransactionCount")
     @ExcludeMissing
-    fun _expectedMonthlyTransactionCount(): JsonField<String> = expectedMonthlyTransactionCount
+    fun _expectedMonthlyTransactionCount(): JsonField<ExpectedMonthlyTransactionCount> =
+        expectedMonthlyTransactionCount
 
     /**
      * Returns the raw JSON value of [expectedMonthlyTransactionVolume].
@@ -281,7 +284,8 @@ private constructor(
      */
     @JsonProperty("expectedMonthlyTransactionVolume")
     @ExcludeMissing
-    fun _expectedMonthlyTransactionVolume(): JsonField<String> = expectedMonthlyTransactionVolume
+    fun _expectedMonthlyTransactionVolume(): JsonField<ExpectedMonthlyTransactionVolume> =
+        expectedMonthlyTransactionVolume
 
     /**
      * Returns the raw JSON value of [expectedRecipientJurisdictions].
@@ -372,8 +376,10 @@ private constructor(
         private var country: JsonField<String> = JsonMissing.of()
         private var doingBusinessAs: JsonField<String> = JsonMissing.of()
         private var entityType: JsonField<EntityType> = JsonMissing.of()
-        private var expectedMonthlyTransactionCount: JsonField<String> = JsonMissing.of()
-        private var expectedMonthlyTransactionVolume: JsonField<String> = JsonMissing.of()
+        private var expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
+            JsonMissing.of()
+        private var expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
+            JsonMissing.of()
         private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? = null
         private var incorporatedOn: JsonField<LocalDate> = JsonMissing.of()
         private var purposeOfAccount: JsonField<String> = JsonMissing.of()
@@ -493,36 +499,36 @@ private constructor(
         fun entityType(entityType: JsonField<EntityType>) = apply { this.entityType = entityType }
 
         /** Expected number of transactions per month */
-        fun expectedMonthlyTransactionCount(expectedMonthlyTransactionCount: String) =
-            expectedMonthlyTransactionCount(JsonField.of(expectedMonthlyTransactionCount))
+        fun expectedMonthlyTransactionCount(
+            expectedMonthlyTransactionCount: ExpectedMonthlyTransactionCount
+        ) = expectedMonthlyTransactionCount(JsonField.of(expectedMonthlyTransactionCount))
 
         /**
          * Sets [Builder.expectedMonthlyTransactionCount] to an arbitrary JSON value.
          *
          * You should usually call [Builder.expectedMonthlyTransactionCount] with a well-typed
-         * [String] value instead. This method is primarily for setting the field to an undocumented
-         * or not yet supported value.
+         * [ExpectedMonthlyTransactionCount] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
          */
-        fun expectedMonthlyTransactionCount(expectedMonthlyTransactionCount: JsonField<String>) =
-            apply {
-                this.expectedMonthlyTransactionCount = expectedMonthlyTransactionCount
-            }
+        fun expectedMonthlyTransactionCount(
+            expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>
+        ) = apply { this.expectedMonthlyTransactionCount = expectedMonthlyTransactionCount }
 
         /** Expected total transaction volume per month in USD equivalent */
-        fun expectedMonthlyTransactionVolume(expectedMonthlyTransactionVolume: String) =
-            expectedMonthlyTransactionVolume(JsonField.of(expectedMonthlyTransactionVolume))
+        fun expectedMonthlyTransactionVolume(
+            expectedMonthlyTransactionVolume: ExpectedMonthlyTransactionVolume
+        ) = expectedMonthlyTransactionVolume(JsonField.of(expectedMonthlyTransactionVolume))
 
         /**
          * Sets [Builder.expectedMonthlyTransactionVolume] to an arbitrary JSON value.
          *
          * You should usually call [Builder.expectedMonthlyTransactionVolume] with a well-typed
-         * [String] value instead. This method is primarily for setting the field to an undocumented
-         * or not yet supported value.
+         * [ExpectedMonthlyTransactionVolume] value instead. This method is primarily for setting
+         * the field to an undocumented or not yet supported value.
          */
-        fun expectedMonthlyTransactionVolume(expectedMonthlyTransactionVolume: JsonField<String>) =
-            apply {
-                this.expectedMonthlyTransactionVolume = expectedMonthlyTransactionVolume
-            }
+        fun expectedMonthlyTransactionVolume(
+            expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>
+        ) = apply { this.expectedMonthlyTransactionVolume = expectedMonthlyTransactionVolume }
 
         /** List of countries where the business expects to send payments (ISO 3166-1 alpha-2) */
         fun expectedRecipientJurisdictions(expectedRecipientJurisdictions: List<String>) =
@@ -688,8 +694,8 @@ private constructor(
         country()
         doingBusinessAs()
         entityType()?.validate()
-        expectedMonthlyTransactionCount()
-        expectedMonthlyTransactionVolume()
+        expectedMonthlyTransactionCount()?.validate()
+        expectedMonthlyTransactionVolume()?.validate()
         expectedRecipientJurisdictions()
         incorporatedOn()
         purposeOfAccount()
@@ -719,8 +725,8 @@ private constructor(
             (if (country.asKnown() == null) 0 else 1) +
             (if (doingBusinessAs.asKnown() == null) 0 else 1) +
             (entityType.asKnown()?.validity() ?: 0) +
-            (if (expectedMonthlyTransactionCount.asKnown() == null) 0 else 1) +
-            (if (expectedMonthlyTransactionVolume.asKnown() == null) 0 else 1) +
+            (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
+            (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
             (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
             (if (incorporatedOn.asKnown() == null) 0 else 1) +
             (if (purposeOfAccount.asKnown() == null) 0 else 1) +
@@ -1131,6 +1137,314 @@ private constructor(
             }
 
             return other is EntityType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Expected number of transactions per month */
+    class ExpectedMonthlyTransactionCount
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val COUNT_UNDER_10 = of("COUNT_UNDER_10")
+
+            val COUNT_10_TO_100 = of("COUNT_10_TO_100")
+
+            val COUNT_100_TO_500 = of("COUNT_100_TO_500")
+
+            val COUNT_500_TO_1000 = of("COUNT_500_TO_1000")
+
+            val COUNT_OVER_1000 = of("COUNT_OVER_1000")
+
+            fun of(value: String) = ExpectedMonthlyTransactionCount(JsonField.of(value))
+        }
+
+        /** An enum containing [ExpectedMonthlyTransactionCount]'s known values. */
+        enum class Known {
+            COUNT_UNDER_10,
+            COUNT_10_TO_100,
+            COUNT_100_TO_500,
+            COUNT_500_TO_1000,
+            COUNT_OVER_1000,
+        }
+
+        /**
+         * An enum containing [ExpectedMonthlyTransactionCount]'s known values, as well as an
+         * [_UNKNOWN] member.
+         *
+         * An instance of [ExpectedMonthlyTransactionCount] can contain an unknown value in a couple
+         * of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            COUNT_UNDER_10,
+            COUNT_10_TO_100,
+            COUNT_100_TO_500,
+            COUNT_500_TO_1000,
+            COUNT_OVER_1000,
+            /**
+             * An enum member indicating that [ExpectedMonthlyTransactionCount] was instantiated
+             * with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                COUNT_UNDER_10 -> Value.COUNT_UNDER_10
+                COUNT_10_TO_100 -> Value.COUNT_10_TO_100
+                COUNT_100_TO_500 -> Value.COUNT_100_TO_500
+                COUNT_500_TO_1000 -> Value.COUNT_500_TO_1000
+                COUNT_OVER_1000 -> Value.COUNT_OVER_1000
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                COUNT_UNDER_10 -> Known.COUNT_UNDER_10
+                COUNT_10_TO_100 -> Known.COUNT_10_TO_100
+                COUNT_100_TO_500 -> Known.COUNT_100_TO_500
+                COUNT_500_TO_1000 -> Known.COUNT_500_TO_1000
+                COUNT_OVER_1000 -> Known.COUNT_OVER_1000
+                else ->
+                    throw LightsparkGridInvalidDataException(
+                        "Unknown ExpectedMonthlyTransactionCount: $value"
+                    )
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): ExpectedMonthlyTransactionCount = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ExpectedMonthlyTransactionCount && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Expected total transaction volume per month in USD equivalent */
+    class ExpectedMonthlyTransactionVolume
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val VOLUME_UNDER_10_K = of("VOLUME_UNDER_10K")
+
+            val VOLUME_10_K_TO_100_K = of("VOLUME_10K_TO_100K")
+
+            val VOLUME_100_K_TO_1_M = of("VOLUME_100K_TO_1M")
+
+            val VOLUME_1_M_TO_10_M = of("VOLUME_1M_TO_10M")
+
+            val VOLUME_OVER_10_M = of("VOLUME_OVER_10M")
+
+            fun of(value: String) = ExpectedMonthlyTransactionVolume(JsonField.of(value))
+        }
+
+        /** An enum containing [ExpectedMonthlyTransactionVolume]'s known values. */
+        enum class Known {
+            VOLUME_UNDER_10_K,
+            VOLUME_10_K_TO_100_K,
+            VOLUME_100_K_TO_1_M,
+            VOLUME_1_M_TO_10_M,
+            VOLUME_OVER_10_M,
+        }
+
+        /**
+         * An enum containing [ExpectedMonthlyTransactionVolume]'s known values, as well as an
+         * [_UNKNOWN] member.
+         *
+         * An instance of [ExpectedMonthlyTransactionVolume] can contain an unknown value in a
+         * couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            VOLUME_UNDER_10_K,
+            VOLUME_10_K_TO_100_K,
+            VOLUME_100_K_TO_1_M,
+            VOLUME_1_M_TO_10_M,
+            VOLUME_OVER_10_M,
+            /**
+             * An enum member indicating that [ExpectedMonthlyTransactionVolume] was instantiated
+             * with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                VOLUME_UNDER_10_K -> Value.VOLUME_UNDER_10_K
+                VOLUME_10_K_TO_100_K -> Value.VOLUME_10_K_TO_100_K
+                VOLUME_100_K_TO_1_M -> Value.VOLUME_100_K_TO_1_M
+                VOLUME_1_M_TO_10_M -> Value.VOLUME_1_M_TO_10_M
+                VOLUME_OVER_10_M -> Value.VOLUME_OVER_10_M
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                VOLUME_UNDER_10_K -> Known.VOLUME_UNDER_10_K
+                VOLUME_10_K_TO_100_K -> Known.VOLUME_10_K_TO_100_K
+                VOLUME_100_K_TO_1_M -> Known.VOLUME_100_K_TO_1_M
+                VOLUME_1_M_TO_10_M -> Known.VOLUME_1_M_TO_10_M
+                VOLUME_OVER_10_M -> Known.VOLUME_OVER_10_M
+                else ->
+                    throw LightsparkGridInvalidDataException(
+                        "Unknown ExpectedMonthlyTransactionVolume: $value"
+                    )
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): ExpectedMonthlyTransactionVolume = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ExpectedMonthlyTransactionVolume && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
