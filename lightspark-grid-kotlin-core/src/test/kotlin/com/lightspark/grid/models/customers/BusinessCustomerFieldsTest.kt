@@ -47,7 +47,9 @@ internal class BusinessCustomerFieldsTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount("Payout to contractors")
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
@@ -91,7 +93,9 @@ internal class BusinessCustomerFieldsTest {
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
-                    .purposeOfAccount("Payout to contractors")
+                    .purposeOfAccount(
+                        BusinessCustomerFields.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
                     .taxId("47-1234567")
@@ -138,7 +142,9 @@ internal class BusinessCustomerFieldsTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount("Payout to contractors")
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")

@@ -405,7 +405,7 @@ private constructor(
         private val expectedRecipientJurisdictions: JsonField<List<String>>,
         private val incorporatedOn: JsonField<LocalDate>,
         private val legalName: JsonField<String>,
-        private val purposeOfAccount: JsonField<String>,
+        private val purposeOfAccount: JsonField<PurposeOfAccount>,
         private val registrationNumber: JsonField<String>,
         private val sourceOfFunds: JsonField<String>,
         private val taxId: JsonField<String>,
@@ -446,7 +446,7 @@ private constructor(
             legalName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("purposeOfAccount")
             @ExcludeMissing
-            purposeOfAccount: JsonField<String> = JsonMissing.of(),
+            purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of(),
             @JsonProperty("registrationNumber")
             @ExcludeMissing
             registrationNumber: JsonField<String> = JsonMissing.of(),
@@ -562,7 +562,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun purposeOfAccount(): String? = purposeOfAccount.getNullable("purposeOfAccount")
+        fun purposeOfAccount(): PurposeOfAccount? = purposeOfAccount.getNullable("purposeOfAccount")
 
         /**
          * Business registration number
@@ -692,7 +692,7 @@ private constructor(
          */
         @JsonProperty("purposeOfAccount")
         @ExcludeMissing
-        fun _purposeOfAccount(): JsonField<String> = purposeOfAccount
+        fun _purposeOfAccount(): JsonField<PurposeOfAccount> = purposeOfAccount
 
         /**
          * Returns the raw JSON value of [registrationNumber].
@@ -756,7 +756,7 @@ private constructor(
             private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? = null
             private var incorporatedOn: JsonField<LocalDate> = JsonMissing.of()
             private var legalName: JsonField<String> = JsonMissing.of()
-            private var purposeOfAccount: JsonField<String> = JsonMissing.of()
+            private var purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of()
             private var registrationNumber: JsonField<String> = JsonMissing.of()
             private var sourceOfFunds: JsonField<String> = JsonMissing.of()
             private var taxId: JsonField<String> = JsonMissing.of()
@@ -956,17 +956,17 @@ private constructor(
             fun legalName(legalName: JsonField<String>) = apply { this.legalName = legalName }
 
             /** The intended purpose for using the Grid account */
-            fun purposeOfAccount(purposeOfAccount: String) =
+            fun purposeOfAccount(purposeOfAccount: PurposeOfAccount) =
                 purposeOfAccount(JsonField.of(purposeOfAccount))
 
             /**
              * Sets [Builder.purposeOfAccount] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.purposeOfAccount] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.purposeOfAccount] with a well-typed
+             * [PurposeOfAccount] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
              */
-            fun purposeOfAccount(purposeOfAccount: JsonField<String>) = apply {
+            fun purposeOfAccount(purposeOfAccount: JsonField<PurposeOfAccount>) = apply {
                 this.purposeOfAccount = purposeOfAccount
             }
 
@@ -1072,7 +1072,7 @@ private constructor(
             expectedRecipientJurisdictions()
             incorporatedOn()
             legalName()
-            purposeOfAccount()
+            purposeOfAccount()?.validate()
             registrationNumber()
             sourceOfFunds()
             taxId()
@@ -1104,7 +1104,7 @@ private constructor(
                 (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
                 (if (incorporatedOn.asKnown() == null) 0 else 1) +
                 (if (legalName.asKnown() == null) 0 else 1) +
-                (if (purposeOfAccount.asKnown() == null) 0 else 1) +
+                (purposeOfAccount.asKnown()?.validity() ?: 0) +
                 (if (registrationNumber.asKnown() == null) 0 else 1) +
                 (if (sourceOfFunds.asKnown() == null) 0 else 1) +
                 (if (taxId.asKnown() == null) 0 else 1)
@@ -1829,6 +1829,206 @@ private constructor(
                 }
 
                 return other is ExpectedMonthlyTransactionVolume && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** The intended purpose for using the Grid account */
+        class PurposeOfAccount
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val CONTRACTOR_PAYOUTS = of("CONTRACTOR_PAYOUTS")
+
+                val CREATOR_PAYOUTS = of("CREATOR_PAYOUTS")
+
+                val EMPLOYEE_PAYOUTS = of("EMPLOYEE_PAYOUTS")
+
+                val MARKETPLACE_SELLER_PAYOUTS = of("MARKETPLACE_SELLER_PAYOUTS")
+
+                val SUPPLIER_PAYMENTS = of("SUPPLIER_PAYMENTS")
+
+                val CROSS_BORDER_B2_B = of("CROSS_BORDER_B2B")
+
+                val AR_AUTOMATION = of("AR_AUTOMATION")
+
+                val AP_AUTOMATION = of("AP_AUTOMATION")
+
+                val EMBEDDED_PAYMENTS = of("EMBEDDED_PAYMENTS")
+
+                val PLATFORM_FEE_COLLECTION = of("PLATFORM_FEE_COLLECTION")
+
+                val P2_P_TRANSFERS = of("P2P_TRANSFERS")
+
+                val CHARITABLE_DONATIONS = of("CHARITABLE_DONATIONS")
+
+                val OTHER = of("OTHER")
+
+                fun of(value: String) = PurposeOfAccount(JsonField.of(value))
+            }
+
+            /** An enum containing [PurposeOfAccount]'s known values. */
+            enum class Known {
+                CONTRACTOR_PAYOUTS,
+                CREATOR_PAYOUTS,
+                EMPLOYEE_PAYOUTS,
+                MARKETPLACE_SELLER_PAYOUTS,
+                SUPPLIER_PAYMENTS,
+                CROSS_BORDER_B2_B,
+                AR_AUTOMATION,
+                AP_AUTOMATION,
+                EMBEDDED_PAYMENTS,
+                PLATFORM_FEE_COLLECTION,
+                P2_P_TRANSFERS,
+                CHARITABLE_DONATIONS,
+                OTHER,
+            }
+
+            /**
+             * An enum containing [PurposeOfAccount]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [PurposeOfAccount] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                CONTRACTOR_PAYOUTS,
+                CREATOR_PAYOUTS,
+                EMPLOYEE_PAYOUTS,
+                MARKETPLACE_SELLER_PAYOUTS,
+                SUPPLIER_PAYMENTS,
+                CROSS_BORDER_B2_B,
+                AR_AUTOMATION,
+                AP_AUTOMATION,
+                EMBEDDED_PAYMENTS,
+                PLATFORM_FEE_COLLECTION,
+                P2_P_TRANSFERS,
+                CHARITABLE_DONATIONS,
+                OTHER,
+                /**
+                 * An enum member indicating that [PurposeOfAccount] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    CONTRACTOR_PAYOUTS -> Value.CONTRACTOR_PAYOUTS
+                    CREATOR_PAYOUTS -> Value.CREATOR_PAYOUTS
+                    EMPLOYEE_PAYOUTS -> Value.EMPLOYEE_PAYOUTS
+                    MARKETPLACE_SELLER_PAYOUTS -> Value.MARKETPLACE_SELLER_PAYOUTS
+                    SUPPLIER_PAYMENTS -> Value.SUPPLIER_PAYMENTS
+                    CROSS_BORDER_B2_B -> Value.CROSS_BORDER_B2_B
+                    AR_AUTOMATION -> Value.AR_AUTOMATION
+                    AP_AUTOMATION -> Value.AP_AUTOMATION
+                    EMBEDDED_PAYMENTS -> Value.EMBEDDED_PAYMENTS
+                    PLATFORM_FEE_COLLECTION -> Value.PLATFORM_FEE_COLLECTION
+                    P2_P_TRANSFERS -> Value.P2_P_TRANSFERS
+                    CHARITABLE_DONATIONS -> Value.CHARITABLE_DONATIONS
+                    OTHER -> Value.OTHER
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    CONTRACTOR_PAYOUTS -> Known.CONTRACTOR_PAYOUTS
+                    CREATOR_PAYOUTS -> Known.CREATOR_PAYOUTS
+                    EMPLOYEE_PAYOUTS -> Known.EMPLOYEE_PAYOUTS
+                    MARKETPLACE_SELLER_PAYOUTS -> Known.MARKETPLACE_SELLER_PAYOUTS
+                    SUPPLIER_PAYMENTS -> Known.SUPPLIER_PAYMENTS
+                    CROSS_BORDER_B2_B -> Known.CROSS_BORDER_B2_B
+                    AR_AUTOMATION -> Known.AR_AUTOMATION
+                    AP_AUTOMATION -> Known.AP_AUTOMATION
+                    EMBEDDED_PAYMENTS -> Known.EMBEDDED_PAYMENTS
+                    PLATFORM_FEE_COLLECTION -> Known.PLATFORM_FEE_COLLECTION
+                    P2_P_TRANSFERS -> Known.P2_P_TRANSFERS
+                    CHARITABLE_DONATIONS -> Known.CHARITABLE_DONATIONS
+                    OTHER -> Known.OTHER
+                    else ->
+                        throw LightsparkGridInvalidDataException("Unknown PurposeOfAccount: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            fun validate(): PurposeOfAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PurposeOfAccount && value == other.value
             }
 
             override fun hashCode() = value.hashCode()
