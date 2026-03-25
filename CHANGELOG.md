@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.3.0 (2026-03-25)
+
+Full Changelog: [v1.2.0...v1.3.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.2.0...v1.3.0)
+
+### Features
+
+* adding kyb schema ([b118a5c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b118a5c36445d096f20d5ac8efae990d130a12a2))
+* **api:** add ethereum wallet to external accounts and payment instructions ([df20d5b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/df20d5b7825439fd3fee57c67eec74dddd759ace))
+* **api:** add qrCode and reference fields to BRL payment instructions ([ac48125](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ac481255b13aaf1ae6f70553018b793a4c735f8d))
+* **api:** add VERTICAL to CustomerInfoFieldName enum ([ecf38f9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ecf38f9d8aa4292a769decb53c646b4506e6e501))
+* **api:** replace MISSING_DOCUMENT with category-specific error types in verifications ([4b0241a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4b0241adecda98946a18e381beefa3f98c865ea6))
+* **api:** restructure BeneficialOwner in customers with personalInfo, roles, kycStatus ([c0ef57b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c0ef57bf8cc2c4f65a35c5e2386c58857c72ea76))
+
+
+### Bug Fixes
+
+* **tests:** update transaction count/volume enum values in business customer tests ([c5480b8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c5480b882976d7bf93675a86bb049585d927dbe8))
+* **types:** change purposeOfAccount to enum in BusinessInfo/BusinessCustomerFields ([cbbb1a1](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/cbbb1a10a32a89ab806a38600469d0a400ffdf37))
+* **types:** make ownershipPercentage required/Long, flatten PersonalIds in beneficial_owners ([ab09a3a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ab09a3a41f566b2d1063f1afb4a17d75c4558223))
+* **types:** remove beneficialOwners field, flatten expectedActivityVolumes in BusinessInfo ([772768d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/772768de48bc99597d52dad902ae89ce7dbb325c))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([83f3f4a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/83f3f4a58cdbb87f6867a3037e370404ea32f412))
+* **internal:** bump ktfmt ([201b5a2](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/201b5a20fdcfa045f0495f179cef4f412e889f58))
+* **internal:** update gitignore ([6cea291](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6cea29138938d80d2057fb887fb528b4787e5c9b))
+
 ## 1.2.0 (2026-03-19)
 
 Full Changelog: [v1.1.0...v1.2.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.1.0...v1.2.0)
