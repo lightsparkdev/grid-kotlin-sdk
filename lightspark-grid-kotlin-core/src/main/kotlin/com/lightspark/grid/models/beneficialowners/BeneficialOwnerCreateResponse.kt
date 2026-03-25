@@ -28,9 +28,9 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val customerId: JsonField<String>,
     private val kycStatus: JsonField<KycStatus>,
+    private val ownershipPercentage: JsonField<Long>,
     private val personalInfo: JsonField<PersonalInfo>,
     private val roles: JsonField<List<Role>>,
-    private val ownershipPercentage: JsonField<Long>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -47,13 +47,13 @@ private constructor(
         @JsonProperty("kycStatus")
         @ExcludeMissing
         kycStatus: JsonField<KycStatus> = JsonMissing.of(),
+        @JsonProperty("ownershipPercentage")
+        @ExcludeMissing
+        ownershipPercentage: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("personalInfo")
         @ExcludeMissing
         personalInfo: JsonField<PersonalInfo> = JsonMissing.of(),
         @JsonProperty("roles") @ExcludeMissing roles: JsonField<List<Role>> = JsonMissing.of(),
-        @JsonProperty("ownershipPercentage")
-        @ExcludeMissing
-        ownershipPercentage: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -62,9 +62,9 @@ private constructor(
         createdAt,
         customerId,
         kycStatus,
+        ownershipPercentage,
         personalInfo,
         roles,
-        ownershipPercentage,
         updatedAt,
         mutableMapOf(),
     )
@@ -102,6 +102,14 @@ private constructor(
     fun kycStatus(): KycStatus = kycStatus.getRequired("kycStatus")
 
     /**
+     * Percentage of ownership in the business (0-100)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun ownershipPercentage(): Long = ownershipPercentage.getRequired("ownershipPercentage")
+
+    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -114,14 +122,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun roles(): List<Role> = roles.getRequired("roles")
-
-    /**
-     * Percentage of ownership in the business (0-100)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun ownershipPercentage(): Long? = ownershipPercentage.getNullable("ownershipPercentage")
 
     /**
      * When this beneficial owner was last updated
@@ -162,6 +162,16 @@ private constructor(
     @JsonProperty("kycStatus") @ExcludeMissing fun _kycStatus(): JsonField<KycStatus> = kycStatus
 
     /**
+     * Returns the raw JSON value of [ownershipPercentage].
+     *
+     * Unlike [ownershipPercentage], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("ownershipPercentage")
+    @ExcludeMissing
+    fun _ownershipPercentage(): JsonField<Long> = ownershipPercentage
+
+    /**
      * Returns the raw JSON value of [personalInfo].
      *
      * Unlike [personalInfo], this method doesn't throw if the JSON field has an unexpected type.
@@ -176,16 +186,6 @@ private constructor(
      * Unlike [roles], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("roles") @ExcludeMissing fun _roles(): JsonField<List<Role>> = roles
-
-    /**
-     * Returns the raw JSON value of [ownershipPercentage].
-     *
-     * Unlike [ownershipPercentage], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("ownershipPercentage")
-    @ExcludeMissing
-    fun _ownershipPercentage(): JsonField<Long> = ownershipPercentage
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -220,6 +220,7 @@ private constructor(
          * .createdAt()
          * .customerId()
          * .kycStatus()
+         * .ownershipPercentage()
          * .personalInfo()
          * .roles()
          * ```
@@ -234,9 +235,9 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var customerId: JsonField<String>? = null
         private var kycStatus: JsonField<KycStatus>? = null
+        private var ownershipPercentage: JsonField<Long>? = null
         private var personalInfo: JsonField<PersonalInfo>? = null
         private var roles: JsonField<MutableList<Role>>? = null
-        private var ownershipPercentage: JsonField<Long> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -245,9 +246,9 @@ private constructor(
             createdAt = beneficialOwnerCreateResponse.createdAt
             customerId = beneficialOwnerCreateResponse.customerId
             kycStatus = beneficialOwnerCreateResponse.kycStatus
+            ownershipPercentage = beneficialOwnerCreateResponse.ownershipPercentage
             personalInfo = beneficialOwnerCreateResponse.personalInfo
             roles = beneficialOwnerCreateResponse.roles.map { it.toMutableList() }
-            ownershipPercentage = beneficialOwnerCreateResponse.ownershipPercentage
             updatedAt = beneficialOwnerCreateResponse.updatedAt
             additionalProperties = beneficialOwnerCreateResponse.additionalProperties.toMutableMap()
         }
@@ -299,6 +300,21 @@ private constructor(
          */
         fun kycStatus(kycStatus: JsonField<KycStatus>) = apply { this.kycStatus = kycStatus }
 
+        /** Percentage of ownership in the business (0-100) */
+        fun ownershipPercentage(ownershipPercentage: Long) =
+            ownershipPercentage(JsonField.of(ownershipPercentage))
+
+        /**
+         * Sets [Builder.ownershipPercentage] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ownershipPercentage] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun ownershipPercentage(ownershipPercentage: JsonField<Long>) = apply {
+            this.ownershipPercentage = ownershipPercentage
+        }
+
         fun personalInfo(personalInfo: PersonalInfo) = personalInfo(JsonField.of(personalInfo))
 
         /**
@@ -334,21 +350,6 @@ private constructor(
         fun addRole(role: Role) = apply {
             roles =
                 (roles ?: JsonField.of(mutableListOf())).also { checkKnown("roles", it).add(role) }
-        }
-
-        /** Percentage of ownership in the business (0-100) */
-        fun ownershipPercentage(ownershipPercentage: Long) =
-            ownershipPercentage(JsonField.of(ownershipPercentage))
-
-        /**
-         * Sets [Builder.ownershipPercentage] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.ownershipPercentage] with a well-typed [Long] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun ownershipPercentage(ownershipPercentage: JsonField<Long>) = apply {
-            this.ownershipPercentage = ownershipPercentage
         }
 
         /** When this beneficial owner was last updated */
@@ -393,6 +394,7 @@ private constructor(
          * .createdAt()
          * .customerId()
          * .kycStatus()
+         * .ownershipPercentage()
          * .personalInfo()
          * .roles()
          * ```
@@ -405,9 +407,9 @@ private constructor(
                 checkRequired("createdAt", createdAt),
                 checkRequired("customerId", customerId),
                 checkRequired("kycStatus", kycStatus),
+                checkRequired("ownershipPercentage", ownershipPercentage),
                 checkRequired("personalInfo", personalInfo),
                 checkRequired("roles", roles).map { it.toImmutable() },
-                ownershipPercentage,
                 updatedAt,
                 additionalProperties.toMutableMap(),
             )
@@ -424,9 +426,9 @@ private constructor(
         createdAt()
         customerId()
         kycStatus().validate()
+        ownershipPercentage()
         personalInfo().validate()
         roles().forEach { it.validate() }
-        ownershipPercentage()
         updatedAt()
         validated = true
     }
@@ -449,9 +451,9 @@ private constructor(
             (if (createdAt.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (kycStatus.asKnown()?.validity() ?: 0) +
+            (if (ownershipPercentage.asKnown() == null) 0 else 1) +
             (personalInfo.asKnown()?.validity() ?: 0) +
             (roles.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (ownershipPercentage.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1)
 
     /** The current KYC status of a customer */
@@ -1495,9 +1497,9 @@ private constructor(
             createdAt == other.createdAt &&
             customerId == other.customerId &&
             kycStatus == other.kycStatus &&
+            ownershipPercentage == other.ownershipPercentage &&
             personalInfo == other.personalInfo &&
             roles == other.roles &&
-            ownershipPercentage == other.ownershipPercentage &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
     }
@@ -1508,9 +1510,9 @@ private constructor(
             createdAt,
             customerId,
             kycStatus,
+            ownershipPercentage,
             personalInfo,
             roles,
-            ownershipPercentage,
             updatedAt,
             additionalProperties,
         )
@@ -1519,5 +1521,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BeneficialOwnerCreateResponse{id=$id, createdAt=$createdAt, customerId=$customerId, kycStatus=$kycStatus, personalInfo=$personalInfo, roles=$roles, ownershipPercentage=$ownershipPercentage, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "BeneficialOwnerCreateResponse{id=$id, createdAt=$createdAt, customerId=$customerId, kycStatus=$kycStatus, ownershipPercentage=$ownershipPercentage, personalInfo=$personalInfo, roles=$roles, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
