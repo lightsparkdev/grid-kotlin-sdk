@@ -22,6 +22,7 @@ internal class BeneficialOwnerListPageResponseTest {
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
+                        .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerListResponse.PersonalInfo.builder()
                                 .address(
@@ -48,7 +49,6 @@ internal class BeneficialOwnerListPageResponseTest {
                         )
                         .addRole(BeneficialOwnerListResponse.Role.UBO)
                         .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
-                        .ownershipPercentage(51L)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
@@ -64,6 +64,7 @@ internal class BeneficialOwnerListPageResponseTest {
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
+                    .ownershipPercentage(51L)
                     .personalInfo(
                         BeneficialOwnerListResponse.PersonalInfo.builder()
                             .address(
@@ -90,7 +91,6 @@ internal class BeneficialOwnerListPageResponseTest {
                     )
                     .addRole(BeneficialOwnerListResponse.Role.UBO)
                     .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
-                    .ownershipPercentage(51L)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .build()
             )
@@ -110,6 +110,7 @@ internal class BeneficialOwnerListPageResponseTest {
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
+                        .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerListResponse.PersonalInfo.builder()
                                 .address(
@@ -136,7 +137,6 @@ internal class BeneficialOwnerListPageResponseTest {
                         )
                         .addRole(BeneficialOwnerListResponse.Role.UBO)
                         .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
-                        .ownershipPercentage(51L)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )

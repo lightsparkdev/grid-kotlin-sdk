@@ -20,6 +20,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .kycStatus(BeneficialOwnerUpdateResponse.KycStatus.APPROVED)
+                .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerUpdateResponse.PersonalInfo.builder()
                         .address(
@@ -46,7 +47,6 @@ internal class BeneficialOwnerUpdateResponseTest {
                 )
                 .addRole(BeneficialOwnerUpdateResponse.Role.UBO)
                 .addRole(BeneficialOwnerUpdateResponse.Role.DIRECTOR)
-                .ownershipPercentage(51L)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
@@ -58,6 +58,7 @@ internal class BeneficialOwnerUpdateResponseTest {
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(beneficialOwnerUpdateResponse.kycStatus())
             .isEqualTo(BeneficialOwnerUpdateResponse.KycStatus.APPROVED)
+        assertThat(beneficialOwnerUpdateResponse.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwnerUpdateResponse.personalInfo())
             .isEqualTo(
                 BeneficialOwnerUpdateResponse.PersonalInfo.builder()
@@ -88,7 +89,6 @@ internal class BeneficialOwnerUpdateResponseTest {
                 BeneficialOwnerUpdateResponse.Role.UBO,
                 BeneficialOwnerUpdateResponse.Role.DIRECTOR,
             )
-        assertThat(beneficialOwnerUpdateResponse.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwnerUpdateResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
     }
@@ -102,6 +102,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .kycStatus(BeneficialOwnerUpdateResponse.KycStatus.APPROVED)
+                .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerUpdateResponse.PersonalInfo.builder()
                         .address(
@@ -128,7 +129,6 @@ internal class BeneficialOwnerUpdateResponseTest {
                 )
                 .addRole(BeneficialOwnerUpdateResponse.Role.UBO)
                 .addRole(BeneficialOwnerUpdateResponse.Role.DIRECTOR)
-                .ownershipPercentage(51L)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
