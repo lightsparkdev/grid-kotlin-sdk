@@ -1412,7 +1412,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofNgnAccount() {
         val ngnAccount =
             ExternalAccountInfoOneOf.NgnAccount.builder()
-                .accountNumber("2102979809")
+                .accountNumber("0123456789")
                 .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -1483,7 +1483,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofNgnAccount(
                 ExternalAccountInfoOneOf.NgnAccount.builder()
-                    .accountNumber("2102979809")
+                    .accountNumber("0123456789")
                     .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
                     .bankName("x")
                     .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -1524,7 +1524,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofPhpAccount() {
         val phpAccount =
             PhpExternalAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("001234567890")
                 .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -1596,7 +1596,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPhpAccount(
                 PhpExternalAccountInfo.builder()
-                    .accountNumber("x")
+                    .accountNumber("001234567890")
                     .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                     .bankName("BDO Unibank")
                     .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -1755,7 +1755,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofSgdAccount() {
         val sgdAccount =
             SgdExternalAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("0123456789")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
@@ -1828,7 +1828,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofSgdAccount(
                 SgdExternalAccountInfo.builder()
-                    .accountNumber("x")
+                    .accountNumber("0123456789")
                     .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                     .bankName("DBS Bank Ltd")
                     .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
