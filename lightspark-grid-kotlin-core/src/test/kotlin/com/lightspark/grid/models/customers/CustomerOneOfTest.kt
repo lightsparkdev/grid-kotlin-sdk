@@ -131,7 +131,9 @@ internal class CustomerOneOfTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .purposeOfAccount("Payout to contractors")
+                        .purposeOfAccount(
+                            BusinessCustomerFields.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
@@ -215,7 +217,10 @@ internal class CustomerOneOfTest {
                             )
                             .addExpectedRecipientJurisdiction("US")
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
-                            .purposeOfAccount("Payout to contractors")
+                            .purposeOfAccount(
+                                BusinessCustomerFields.BusinessInfo.PurposeOfAccount
+                                    .CONTRACTOR_PAYOUTS
+                            )
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
