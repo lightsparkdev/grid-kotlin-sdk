@@ -14,7 +14,7 @@ internal class SgdExternalAccountInfoTest {
     fun create() {
         val sgdExternalAccountInfo =
             SgdExternalAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("0123456789")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
@@ -43,7 +43,7 @@ internal class SgdExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(sgdExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(sgdExternalAccountInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(sgdExternalAccountInfo.accountType())
             .isEqualTo(SgdAccountInfo.AccountType.SGD_ACCOUNT)
         assertThat(sgdExternalAccountInfo.bankName()).isEqualTo("DBS Bank Ltd")
@@ -82,7 +82,7 @@ internal class SgdExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val sgdExternalAccountInfo =
             SgdExternalAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("0123456789")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
                 .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)

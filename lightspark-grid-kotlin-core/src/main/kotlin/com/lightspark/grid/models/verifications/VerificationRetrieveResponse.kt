@@ -414,7 +414,9 @@ private constructor(
         fun resourceId(): String = resourceId.getRequired("resourceId")
 
         /**
-         * Type of verification error
+         * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate which
+         * document category is needed and determine the accepted document types returned in
+         * acceptedDocumentTypes.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -423,8 +425,19 @@ private constructor(
 
         /**
          * Document types that would satisfy this requirement. The integrator can upload any one of
-         * the listed types. Present when type is MISSING_DOCUMENT, INVALID_DOCUMENT, or
-         * EXPIRED_DOCUMENT.
+         * the listed types. Present when type is MISSING_LEGAL_PRESENCE_DOCUMENT,
+         * MISSING_COMPANY_DETAILS_DOCUMENT, MISSING_CONTROL_STRUCTURE_DOCUMENT,
+         * MISSING_OWNERSHIP_STRUCTURE_DOCUMENT, MISSING_PROOF_OF_ADDRESS_DOCUMENT,
+         * MISSING_IDENTITY_DOCUMENT, INVALID_DOCUMENT, or EXPIRED_DOCUMENT.
+         *
+         * |Error Type                          |Accepted Document Types                                                                                                                                                           |
+         * |------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |MISSING_LEGAL_PRESENCE_DOCUMENT     |CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT                                                                          |
+         * |MISSING_COMPANY_DETAILS_DOCUMENT    |INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE, GOOD_STANDING_CERTIFICATE|
+         * |MISSING_CONTROL_STRUCTURE_DOCUMENT  |ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT                                                         |
+         * |MISSING_OWNERSHIP_STRUCTURE_DOCUMENT|SHAREHOLDER_REGISTER, INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION                                   |
+         * |MISSING_PROOF_OF_ADDRESS_DOCUMENT   |PROOF_OF_ADDRESS                                                                                                                                                                  |
+         * |MISSING_IDENTITY_DOCUMENT           |PASSPORT, DRIVERS_LICENSE, NATIONAL_ID                                                                                                                                            |
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -551,7 +564,11 @@ private constructor(
              */
             fun resourceId(resourceId: JsonField<String>) = apply { this.resourceId = resourceId }
 
-            /** Type of verification error */
+            /**
+             * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate
+             * which document category is needed and determine the accepted document types returned
+             * in acceptedDocumentTypes.
+             */
             fun type(type: Type) = type(JsonField.of(type))
 
             /**
@@ -565,8 +582,19 @@ private constructor(
 
             /**
              * Document types that would satisfy this requirement. The integrator can upload any one
-             * of the listed types. Present when type is MISSING_DOCUMENT, INVALID_DOCUMENT, or
-             * EXPIRED_DOCUMENT.
+             * of the listed types. Present when type is MISSING_LEGAL_PRESENCE_DOCUMENT,
+             * MISSING_COMPANY_DETAILS_DOCUMENT, MISSING_CONTROL_STRUCTURE_DOCUMENT,
+             * MISSING_OWNERSHIP_STRUCTURE_DOCUMENT, MISSING_PROOF_OF_ADDRESS_DOCUMENT,
+             * MISSING_IDENTITY_DOCUMENT, INVALID_DOCUMENT, or EXPIRED_DOCUMENT.
+             *
+             * |Error Type                          |Accepted Document Types                                                                                                                                                           |
+             * |------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+             * |MISSING_LEGAL_PRESENCE_DOCUMENT     |CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT                                                                          |
+             * |MISSING_COMPANY_DETAILS_DOCUMENT    |INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE, GOOD_STANDING_CERTIFICATE|
+             * |MISSING_CONTROL_STRUCTURE_DOCUMENT  |ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT                                                         |
+             * |MISSING_OWNERSHIP_STRUCTURE_DOCUMENT|SHAREHOLDER_REGISTER, INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION                                   |
+             * |MISSING_PROOF_OF_ADDRESS_DOCUMENT   |PROOF_OF_ADDRESS                                                                                                                                                                  |
+             * |MISSING_IDENTITY_DOCUMENT           |PASSPORT, DRIVERS_LICENSE, NATIONAL_ID                                                                                                                                            |
              */
             fun acceptedDocumentTypes(acceptedDocumentTypes: List<AcceptedDocumentType>) =
                 acceptedDocumentTypes(JsonField.of(acceptedDocumentTypes))
@@ -691,7 +719,11 @@ private constructor(
                 (acceptedDocumentTypes.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (field.asKnown() == null) 0 else 1)
 
-        /** Type of verification error */
+        /**
+         * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate which
+         * document category is needed and determine the accepted document types returned in
+         * acceptedDocumentTypes.
+         */
         class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
             /**
@@ -710,7 +742,18 @@ private constructor(
 
                 val INVALID_FIELD = of("INVALID_FIELD")
 
-                val MISSING_DOCUMENT = of("MISSING_DOCUMENT")
+                val MISSING_LEGAL_PRESENCE_DOCUMENT = of("MISSING_LEGAL_PRESENCE_DOCUMENT")
+
+                val MISSING_COMPANY_DETAILS_DOCUMENT = of("MISSING_COMPANY_DETAILS_DOCUMENT")
+
+                val MISSING_CONTROL_STRUCTURE_DOCUMENT = of("MISSING_CONTROL_STRUCTURE_DOCUMENT")
+
+                val MISSING_OWNERSHIP_STRUCTURE_DOCUMENT =
+                    of("MISSING_OWNERSHIP_STRUCTURE_DOCUMENT")
+
+                val MISSING_PROOF_OF_ADDRESS_DOCUMENT = of("MISSING_PROOF_OF_ADDRESS_DOCUMENT")
+
+                val MISSING_IDENTITY_DOCUMENT = of("MISSING_IDENTITY_DOCUMENT")
 
                 val INVALID_DOCUMENT = of("INVALID_DOCUMENT")
 
@@ -725,7 +768,12 @@ private constructor(
             enum class Known {
                 MISSING_FIELD,
                 INVALID_FIELD,
-                MISSING_DOCUMENT,
+                MISSING_LEGAL_PRESENCE_DOCUMENT,
+                MISSING_COMPANY_DETAILS_DOCUMENT,
+                MISSING_CONTROL_STRUCTURE_DOCUMENT,
+                MISSING_OWNERSHIP_STRUCTURE_DOCUMENT,
+                MISSING_PROOF_OF_ADDRESS_DOCUMENT,
+                MISSING_IDENTITY_DOCUMENT,
                 INVALID_DOCUMENT,
                 EXPIRED_DOCUMENT,
                 MISSING_BENEFICIAL_OWNER,
@@ -743,7 +791,12 @@ private constructor(
             enum class Value {
                 MISSING_FIELD,
                 INVALID_FIELD,
-                MISSING_DOCUMENT,
+                MISSING_LEGAL_PRESENCE_DOCUMENT,
+                MISSING_COMPANY_DETAILS_DOCUMENT,
+                MISSING_CONTROL_STRUCTURE_DOCUMENT,
+                MISSING_OWNERSHIP_STRUCTURE_DOCUMENT,
+                MISSING_PROOF_OF_ADDRESS_DOCUMENT,
+                MISSING_IDENTITY_DOCUMENT,
                 INVALID_DOCUMENT,
                 EXPIRED_DOCUMENT,
                 MISSING_BENEFICIAL_OWNER,
@@ -762,7 +815,13 @@ private constructor(
                 when (this) {
                     MISSING_FIELD -> Value.MISSING_FIELD
                     INVALID_FIELD -> Value.INVALID_FIELD
-                    MISSING_DOCUMENT -> Value.MISSING_DOCUMENT
+                    MISSING_LEGAL_PRESENCE_DOCUMENT -> Value.MISSING_LEGAL_PRESENCE_DOCUMENT
+                    MISSING_COMPANY_DETAILS_DOCUMENT -> Value.MISSING_COMPANY_DETAILS_DOCUMENT
+                    MISSING_CONTROL_STRUCTURE_DOCUMENT -> Value.MISSING_CONTROL_STRUCTURE_DOCUMENT
+                    MISSING_OWNERSHIP_STRUCTURE_DOCUMENT ->
+                        Value.MISSING_OWNERSHIP_STRUCTURE_DOCUMENT
+                    MISSING_PROOF_OF_ADDRESS_DOCUMENT -> Value.MISSING_PROOF_OF_ADDRESS_DOCUMENT
+                    MISSING_IDENTITY_DOCUMENT -> Value.MISSING_IDENTITY_DOCUMENT
                     INVALID_DOCUMENT -> Value.INVALID_DOCUMENT
                     EXPIRED_DOCUMENT -> Value.EXPIRED_DOCUMENT
                     MISSING_BENEFICIAL_OWNER -> Value.MISSING_BENEFICIAL_OWNER
@@ -782,7 +841,13 @@ private constructor(
                 when (this) {
                     MISSING_FIELD -> Known.MISSING_FIELD
                     INVALID_FIELD -> Known.INVALID_FIELD
-                    MISSING_DOCUMENT -> Known.MISSING_DOCUMENT
+                    MISSING_LEGAL_PRESENCE_DOCUMENT -> Known.MISSING_LEGAL_PRESENCE_DOCUMENT
+                    MISSING_COMPANY_DETAILS_DOCUMENT -> Known.MISSING_COMPANY_DETAILS_DOCUMENT
+                    MISSING_CONTROL_STRUCTURE_DOCUMENT -> Known.MISSING_CONTROL_STRUCTURE_DOCUMENT
+                    MISSING_OWNERSHIP_STRUCTURE_DOCUMENT ->
+                        Known.MISSING_OWNERSHIP_STRUCTURE_DOCUMENT
+                    MISSING_PROOF_OF_ADDRESS_DOCUMENT -> Known.MISSING_PROOF_OF_ADDRESS_DOCUMENT
+                    MISSING_IDENTITY_DOCUMENT -> Known.MISSING_IDENTITY_DOCUMENT
                     INVALID_DOCUMENT -> Known.INVALID_DOCUMENT
                     EXPIRED_DOCUMENT -> Known.EXPIRED_DOCUMENT
                     MISSING_BENEFICIAL_OWNER -> Known.MISSING_BENEFICIAL_OWNER
@@ -842,7 +907,20 @@ private constructor(
             override fun toString() = value.toString()
         }
 
-        /** Type of identity or business verification document */
+        /**
+         * Type of identity or business verification document. Document types are grouped by
+         * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
+         * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
+         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
+         * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
+         * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
+         * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
+         * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
+         * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
+         * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
+         * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** —
+         * PROOF_OF_ADDRESS
+         */
         class AcceptedDocumentType
         @JsonCreator
         private constructor(private val value: JsonField<String>) : Enum {
