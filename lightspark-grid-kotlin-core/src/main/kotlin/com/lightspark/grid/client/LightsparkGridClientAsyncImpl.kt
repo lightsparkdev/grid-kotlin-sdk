@@ -18,6 +18,8 @@ import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsyncImpl
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsyncImpl
+import com.lightspark.grid.services.async.PlaidServiceAsync
+import com.lightspark.grid.services.async.PlaidServiceAsyncImpl
 import com.lightspark.grid.services.async.PlatformServiceAsync
 import com.lightspark.grid.services.async.PlatformServiceAsyncImpl
 import com.lightspark.grid.services.async.QuoteServiceAsync
@@ -69,6 +71,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     private val platform: PlatformServiceAsync by lazy {
         PlatformServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
+    private val plaid: PlaidServiceAsync by lazy {
+        PlaidServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
     private val transferIn: TransferInServiceAsync by lazy {
@@ -149,6 +155,8 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     /** Internal account management endpoints for creating and managing internal accounts */
     override fun platform(): PlatformServiceAsync = platform
 
+    override fun plaid(): PlaidServiceAsync = plaid
+
     /**
      * Endpoints for transferring funds between internal and external accounts with the same
      * currency
@@ -225,6 +233,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         private val platform: PlatformServiceAsync.WithRawResponse by lazy {
             PlatformServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val plaid: PlaidServiceAsync.WithRawResponse by lazy {
+            PlaidServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val transferIn: TransferInServiceAsync.WithRawResponse by lazy {
@@ -304,6 +316,8 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         /** Internal account management endpoints for creating and managing internal accounts */
         override fun platform(): PlatformServiceAsync.WithRawResponse = platform
+
+        override fun plaid(): PlaidServiceAsync.WithRawResponse = plaid
 
         /**
          * Endpoints for transferring funds between internal and external accounts with the same
