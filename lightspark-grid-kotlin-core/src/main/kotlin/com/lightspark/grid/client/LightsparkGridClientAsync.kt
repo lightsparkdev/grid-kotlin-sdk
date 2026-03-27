@@ -10,6 +10,7 @@ import com.lightspark.grid.services.async.CustomerServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsync
+import com.lightspark.grid.services.async.PlaidServiceAsync
 import com.lightspark.grid.services.async.PlatformServiceAsync
 import com.lightspark.grid.services.async.QuoteServiceAsync
 import com.lightspark.grid.services.async.ReceiverServiceAsync
@@ -68,6 +69,8 @@ interface LightsparkGridClientAsync {
 
     /** Internal account management endpoints for creating and managing internal accounts */
     fun platform(): PlatformServiceAsync
+
+    fun plaid(): PlaidServiceAsync
 
     /**
      * Endpoints for transferring funds between internal and external accounts with the same
@@ -168,6 +171,8 @@ interface LightsparkGridClientAsync {
 
         /** Internal account management endpoints for creating and managing internal accounts */
         fun platform(): PlatformServiceAsync.WithRawResponse
+
+        fun plaid(): PlaidServiceAsync.WithRawResponse
 
         /**
          * Endpoints for transferring funds between internal and external accounts with the same
