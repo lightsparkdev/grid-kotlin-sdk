@@ -2267,8 +2267,6 @@ private constructor(
 
             val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
 
-            val TIMEOUT = of("TIMEOUT")
-
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -2279,7 +2277,6 @@ private constructor(
             LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
-            TIMEOUT,
         }
 
         /**
@@ -2297,7 +2294,6 @@ private constructor(
             LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
-            TIMEOUT,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2319,7 +2315,6 @@ private constructor(
                 LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
-                TIMEOUT -> Value.TIMEOUT
                 else -> Value._UNKNOWN
             }
 
@@ -2339,7 +2334,6 @@ private constructor(
                 LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
-                TIMEOUT -> Known.TIMEOUT
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
@@ -2845,6 +2839,8 @@ private constructor(
 
                 val USER_CANCELLATION = of("USER_CANCELLATION")
 
+                val TIMEOUT = of("TIMEOUT")
+
                 fun of(value: String) = Reason(JsonField.of(value))
             }
 
@@ -2852,6 +2848,7 @@ private constructor(
             enum class Known {
                 TRANSACTION_FAILED,
                 USER_CANCELLATION,
+                TIMEOUT,
             }
 
             /**
@@ -2866,6 +2863,7 @@ private constructor(
             enum class Value {
                 TRANSACTION_FAILED,
                 USER_CANCELLATION,
+                TIMEOUT,
                 /**
                  * An enum member indicating that [Reason] was instantiated with an unknown value.
                  */
@@ -2883,6 +2881,7 @@ private constructor(
                 when (this) {
                     TRANSACTION_FAILED -> Value.TRANSACTION_FAILED
                     USER_CANCELLATION -> Value.USER_CANCELLATION
+                    TIMEOUT -> Value.TIMEOUT
                     else -> Value._UNKNOWN
                 }
 
@@ -2899,6 +2898,7 @@ private constructor(
                 when (this) {
                     TRANSACTION_FAILED -> Known.TRANSACTION_FAILED
                     USER_CANCELLATION -> Known.USER_CANCELLATION
+                    TIMEOUT -> Known.TIMEOUT
                     else -> throw LightsparkGridInvalidDataException("Unknown Reason: $value")
                 }
 
