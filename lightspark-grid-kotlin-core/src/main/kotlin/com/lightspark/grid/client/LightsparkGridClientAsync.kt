@@ -7,6 +7,7 @@ import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.CryptoServiceAsync
 import com.lightspark.grid.services.async.CustomerServiceAsync
+import com.lightspark.grid.services.async.DiscoveryServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsync
@@ -134,6 +135,12 @@ interface LightsparkGridClientAsync {
     fun verifications(): VerificationServiceAsync
 
     /**
+     * Endpoints for discovering available payment rails, banks, and providers for a given country
+     * and currency corridor.
+     */
+    fun discoveries(): DiscoveryServiceAsync
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -234,5 +241,11 @@ interface LightsparkGridClientAsync {
          * including managing beneficial owners and triggering verification for customers.
          */
         fun verifications(): VerificationServiceAsync.WithRawResponse
+
+        /**
+         * Endpoints for discovering available payment rails, banks, and providers for a given
+         * country and currency corridor.
+         */
+        fun discoveries(): DiscoveryServiceAsync.WithRawResponse
     }
 }
