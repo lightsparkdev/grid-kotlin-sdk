@@ -30,7 +30,6 @@ internal class GbpBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(gbpBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class GbpBeneficiaryTest {
         assertThat(gbpBeneficiary.email()).isEqualTo("email")
         assertThat(gbpBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(gbpBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(gbpBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class GbpBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedGbpBeneficiary =

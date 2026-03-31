@@ -30,7 +30,6 @@ internal class InrBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(inrBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class InrBeneficiaryTest {
         assertThat(inrBeneficiary.email()).isEqualTo("email")
         assertThat(inrBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(inrBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(inrBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class InrBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedInrBeneficiary =

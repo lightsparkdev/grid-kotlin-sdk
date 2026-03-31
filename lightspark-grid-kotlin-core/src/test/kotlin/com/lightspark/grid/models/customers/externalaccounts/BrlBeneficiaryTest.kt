@@ -30,7 +30,6 @@ internal class BrlBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(brlBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class BrlBeneficiaryTest {
         assertThat(brlBeneficiary.email()).isEqualTo("email")
         assertThat(brlBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(brlBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(brlBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class BrlBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedBrlBeneficiary =

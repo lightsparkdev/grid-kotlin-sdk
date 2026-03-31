@@ -567,6 +567,54 @@ private constructor(
         fun accountInfo(xafAccount: ExternalAccountInfoOneOf.XafAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofXafAccount(xafAccount))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofBdtAccount(bdtAccount)`.
+         */
+        fun accountInfo(bdtAccount: ExternalAccountInfoOneOf.BdtAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofBdtAccount(bdtAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofCopAccount(copAccount)`.
+         */
+        fun accountInfo(copAccount: ExternalAccountInfoOneOf.CopAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofCopAccount(copAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofEgpAccount(egpAccount)`.
+         */
+        fun accountInfo(egpAccount: ExternalAccountInfoOneOf.EgpAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofEgpAccount(egpAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGhsAccount(ghsAccount)`.
+         */
+        fun accountInfo(ghsAccount: ExternalAccountInfoOneOf.GhsAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofGhsAccount(ghsAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGtqAccount(gtqAccount)`.
+         */
+        fun accountInfo(gtqAccount: ExternalAccountInfoOneOf.GtqAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofGtqAccount(gtqAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofHtgAccount(htgAccount)`.
+         */
+        fun accountInfo(htgAccount: ExternalAccountInfoOneOf.HtgAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofHtgAccount(htgAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofJmdAccount(jmdAccount)`.
+         */
+        fun accountInfo(jmdAccount: ExternalAccountInfoOneOf.JmdAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofJmdAccount(jmdAccount))
+
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount)`.
+         */
+        fun accountInfo(pkrAccount: ExternalAccountInfoOneOf.PkrAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 

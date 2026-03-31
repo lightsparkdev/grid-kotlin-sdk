@@ -30,7 +30,6 @@ internal class DkkBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(dkkBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class DkkBeneficiaryTest {
         assertThat(dkkBeneficiary.email()).isEqualTo("email")
         assertThat(dkkBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(dkkBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(dkkBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class DkkBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedDkkBeneficiary =

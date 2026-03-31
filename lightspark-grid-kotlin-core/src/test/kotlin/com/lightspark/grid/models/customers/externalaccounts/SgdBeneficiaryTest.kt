@@ -30,7 +30,6 @@ internal class SgdBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(sgdBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class SgdBeneficiaryTest {
         assertThat(sgdBeneficiary.email()).isEqualTo("email")
         assertThat(sgdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(sgdBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(sgdBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class SgdBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedSgdBeneficiary =
