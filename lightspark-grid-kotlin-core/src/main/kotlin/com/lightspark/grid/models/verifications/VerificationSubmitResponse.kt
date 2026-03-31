@@ -415,8 +415,10 @@ private constructor(
 
         /**
          * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate which
-         * document category is needed and determine the accepted document types returned in
-         * acceptedDocumentTypes.
+         * document category is needed. Document quality types (POOR_QUALITY_DOCUMENT,
+         * SUSPECTED_FRAUD_DOCUMENT, etc.) indicate specific issues with uploaded documents.
+         * APPLICANT_* types indicate issues with the applicant themselves (sanctions, fraud,
+         * criminal records).
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -566,8 +568,10 @@ private constructor(
 
             /**
              * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate
-             * which document category is needed and determine the accepted document types returned
-             * in acceptedDocumentTypes.
+             * which document category is needed. Document quality types (POOR_QUALITY_DOCUMENT,
+             * SUSPECTED_FRAUD_DOCUMENT, etc.) indicate specific issues with uploaded documents.
+             * APPLICANT_* types indicate issues with the applicant themselves (sanctions, fraud,
+             * criminal records).
              */
             fun type(type: Type) = type(JsonField.of(type))
 
@@ -721,8 +725,10 @@ private constructor(
 
         /**
          * Type of verification error. The category-specific MISSING_*_DOCUMENT types indicate which
-         * document category is needed and determine the accepted document types returned in
-         * acceptedDocumentTypes.
+         * document category is needed. Document quality types (POOR_QUALITY_DOCUMENT,
+         * SUSPECTED_FRAUD_DOCUMENT, etc.) indicate specific issues with uploaded documents.
+         * APPLICANT_* types indicate issues with the applicant themselves (sanctions, fraud,
+         * criminal records).
          */
         class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -759,6 +765,26 @@ private constructor(
 
                 val EXPIRED_DOCUMENT = of("EXPIRED_DOCUMENT")
 
+                val POOR_QUALITY_DOCUMENT = of("POOR_QUALITY_DOCUMENT")
+
+                val SUSPECTED_FRAUD_DOCUMENT = of("SUSPECTED_FRAUD_DOCUMENT")
+
+                val WRONG_DOCUMENT_TYPE = of("WRONG_DOCUMENT_TYPE")
+
+                val INCOMPLETE_DOCUMENT = of("INCOMPLETE_DOCUMENT")
+
+                val UNREADABLE_DOCUMENT = of("UNREADABLE_DOCUMENT")
+
+                val DOCUMENT_VERIFICATION_FAILED = of("DOCUMENT_VERIFICATION_FAILED")
+
+                val APPLICANT_SANCTIONED = of("APPLICANT_SANCTIONED")
+
+                val APPLICANT_FRAUD = of("APPLICANT_FRAUD")
+
+                val APPLICANT_CRIMINAL_RECORD = of("APPLICANT_CRIMINAL_RECORD")
+
+                val APPLICANT_REJECTED = of("APPLICANT_REJECTED")
+
                 val MISSING_BENEFICIAL_OWNER = of("MISSING_BENEFICIAL_OWNER")
 
                 fun of(value: String) = Type(JsonField.of(value))
@@ -776,6 +802,16 @@ private constructor(
                 MISSING_IDENTITY_DOCUMENT,
                 INVALID_DOCUMENT,
                 EXPIRED_DOCUMENT,
+                POOR_QUALITY_DOCUMENT,
+                SUSPECTED_FRAUD_DOCUMENT,
+                WRONG_DOCUMENT_TYPE,
+                INCOMPLETE_DOCUMENT,
+                UNREADABLE_DOCUMENT,
+                DOCUMENT_VERIFICATION_FAILED,
+                APPLICANT_SANCTIONED,
+                APPLICANT_FRAUD,
+                APPLICANT_CRIMINAL_RECORD,
+                APPLICANT_REJECTED,
                 MISSING_BENEFICIAL_OWNER,
             }
 
@@ -799,6 +835,16 @@ private constructor(
                 MISSING_IDENTITY_DOCUMENT,
                 INVALID_DOCUMENT,
                 EXPIRED_DOCUMENT,
+                POOR_QUALITY_DOCUMENT,
+                SUSPECTED_FRAUD_DOCUMENT,
+                WRONG_DOCUMENT_TYPE,
+                INCOMPLETE_DOCUMENT,
+                UNREADABLE_DOCUMENT,
+                DOCUMENT_VERIFICATION_FAILED,
+                APPLICANT_SANCTIONED,
+                APPLICANT_FRAUD,
+                APPLICANT_CRIMINAL_RECORD,
+                APPLICANT_REJECTED,
                 MISSING_BENEFICIAL_OWNER,
                 /** An enum member indicating that [Type] was instantiated with an unknown value. */
                 _UNKNOWN,
@@ -824,6 +870,16 @@ private constructor(
                     MISSING_IDENTITY_DOCUMENT -> Value.MISSING_IDENTITY_DOCUMENT
                     INVALID_DOCUMENT -> Value.INVALID_DOCUMENT
                     EXPIRED_DOCUMENT -> Value.EXPIRED_DOCUMENT
+                    POOR_QUALITY_DOCUMENT -> Value.POOR_QUALITY_DOCUMENT
+                    SUSPECTED_FRAUD_DOCUMENT -> Value.SUSPECTED_FRAUD_DOCUMENT
+                    WRONG_DOCUMENT_TYPE -> Value.WRONG_DOCUMENT_TYPE
+                    INCOMPLETE_DOCUMENT -> Value.INCOMPLETE_DOCUMENT
+                    UNREADABLE_DOCUMENT -> Value.UNREADABLE_DOCUMENT
+                    DOCUMENT_VERIFICATION_FAILED -> Value.DOCUMENT_VERIFICATION_FAILED
+                    APPLICANT_SANCTIONED -> Value.APPLICANT_SANCTIONED
+                    APPLICANT_FRAUD -> Value.APPLICANT_FRAUD
+                    APPLICANT_CRIMINAL_RECORD -> Value.APPLICANT_CRIMINAL_RECORD
+                    APPLICANT_REJECTED -> Value.APPLICANT_REJECTED
                     MISSING_BENEFICIAL_OWNER -> Value.MISSING_BENEFICIAL_OWNER
                     else -> Value._UNKNOWN
                 }
@@ -850,6 +906,16 @@ private constructor(
                     MISSING_IDENTITY_DOCUMENT -> Known.MISSING_IDENTITY_DOCUMENT
                     INVALID_DOCUMENT -> Known.INVALID_DOCUMENT
                     EXPIRED_DOCUMENT -> Known.EXPIRED_DOCUMENT
+                    POOR_QUALITY_DOCUMENT -> Known.POOR_QUALITY_DOCUMENT
+                    SUSPECTED_FRAUD_DOCUMENT -> Known.SUSPECTED_FRAUD_DOCUMENT
+                    WRONG_DOCUMENT_TYPE -> Known.WRONG_DOCUMENT_TYPE
+                    INCOMPLETE_DOCUMENT -> Known.INCOMPLETE_DOCUMENT
+                    UNREADABLE_DOCUMENT -> Known.UNREADABLE_DOCUMENT
+                    DOCUMENT_VERIFICATION_FAILED -> Known.DOCUMENT_VERIFICATION_FAILED
+                    APPLICANT_SANCTIONED -> Known.APPLICANT_SANCTIONED
+                    APPLICANT_FRAUD -> Known.APPLICANT_FRAUD
+                    APPLICANT_CRIMINAL_RECORD -> Known.APPLICANT_CRIMINAL_RECORD
+                    APPLICANT_REJECTED -> Known.APPLICANT_REJECTED
                     MISSING_BENEFICIAL_OWNER -> Known.MISSING_BENEFICIAL_OWNER
                     else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
                 }
@@ -1217,6 +1283,8 @@ private constructor(
 
             val REJECTED = of("REJECTED")
 
+            val READY_FOR_VERIFICATION = of("READY_FOR_VERIFICATION")
+
             fun of(value: String) = VerificationStatus(JsonField.of(value))
         }
 
@@ -1227,6 +1295,7 @@ private constructor(
             IN_PROGRESS,
             APPROVED,
             REJECTED,
+            READY_FOR_VERIFICATION,
         }
 
         /**
@@ -1244,6 +1313,7 @@ private constructor(
             IN_PROGRESS,
             APPROVED,
             REJECTED,
+            READY_FOR_VERIFICATION,
             /**
              * An enum member indicating that [VerificationStatus] was instantiated with an unknown
              * value.
@@ -1265,6 +1335,7 @@ private constructor(
                 IN_PROGRESS -> Value.IN_PROGRESS
                 APPROVED -> Value.APPROVED
                 REJECTED -> Value.REJECTED
+                READY_FOR_VERIFICATION -> Value.READY_FOR_VERIFICATION
                 else -> Value._UNKNOWN
             }
 
@@ -1284,6 +1355,7 @@ private constructor(
                 IN_PROGRESS -> Known.IN_PROGRESS
                 APPROVED -> Known.APPROVED
                 REJECTED -> Known.REJECTED
+                READY_FOR_VERIFICATION -> Known.READY_FOR_VERIFICATION
                 else ->
                     throw LightsparkGridInvalidDataException("Unknown VerificationStatus: $value")
             }
