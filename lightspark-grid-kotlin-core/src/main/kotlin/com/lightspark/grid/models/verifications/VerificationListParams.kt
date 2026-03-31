@@ -244,6 +244,8 @@ private constructor(
 
             val REJECTED = of("REJECTED")
 
+            val READY_FOR_VERIFICATION = of("READY_FOR_VERIFICATION")
+
             fun of(value: String) = VerificationStatus(JsonField.of(value))
         }
 
@@ -254,6 +256,7 @@ private constructor(
             IN_PROGRESS,
             APPROVED,
             REJECTED,
+            READY_FOR_VERIFICATION,
         }
 
         /**
@@ -271,6 +274,7 @@ private constructor(
             IN_PROGRESS,
             APPROVED,
             REJECTED,
+            READY_FOR_VERIFICATION,
             /**
              * An enum member indicating that [VerificationStatus] was instantiated with an unknown
              * value.
@@ -292,6 +296,7 @@ private constructor(
                 IN_PROGRESS -> Value.IN_PROGRESS
                 APPROVED -> Value.APPROVED
                 REJECTED -> Value.REJECTED
+                READY_FOR_VERIFICATION -> Value.READY_FOR_VERIFICATION
                 else -> Value._UNKNOWN
             }
 
@@ -311,6 +316,7 @@ private constructor(
                 IN_PROGRESS -> Known.IN_PROGRESS
                 APPROVED -> Known.APPROVED
                 REJECTED -> Known.REJECTED
+                READY_FOR_VERIFICATION -> Known.READY_FOR_VERIFICATION
                 else ->
                     throw LightsparkGridInvalidDataException("Unknown VerificationStatus: $value")
             }
