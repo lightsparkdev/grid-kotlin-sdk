@@ -441,6 +441,8 @@ private constructor(
 
             val FEDNOW = of("FEDNOW")
 
+            val BANK_TRANSFER = of("BANK_TRANSFER")
+
             fun of(value: String) = PaymentRail(JsonField.of(value))
         }
 
@@ -450,6 +452,7 @@ private constructor(
             WIRE,
             RTP,
             FEDNOW,
+            BANK_TRANSFER,
         }
 
         /**
@@ -466,6 +469,7 @@ private constructor(
             WIRE,
             RTP,
             FEDNOW,
+            BANK_TRANSFER,
             /**
              * An enum member indicating that [PaymentRail] was instantiated with an unknown value.
              */
@@ -485,6 +489,7 @@ private constructor(
                 WIRE -> Value.WIRE
                 RTP -> Value.RTP
                 FEDNOW -> Value.FEDNOW
+                BANK_TRANSFER -> Value.BANK_TRANSFER
                 else -> Value._UNKNOWN
             }
 
@@ -503,6 +508,7 @@ private constructor(
                 WIRE -> Known.WIRE
                 RTP -> Known.RTP
                 FEDNOW -> Known.FEDNOW
+                BANK_TRANSFER -> Known.BANK_TRANSFER
                 else -> throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
             }
 

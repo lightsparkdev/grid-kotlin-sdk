@@ -30,7 +30,6 @@ internal class PhpBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(phpBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class PhpBeneficiaryTest {
         assertThat(phpBeneficiary.email()).isEqualTo("email")
         assertThat(phpBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(phpBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(phpBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class PhpBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedPhpBeneficiary =

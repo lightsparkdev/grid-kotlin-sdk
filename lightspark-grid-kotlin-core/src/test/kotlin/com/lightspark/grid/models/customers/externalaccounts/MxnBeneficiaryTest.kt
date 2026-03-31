@@ -30,7 +30,6 @@ internal class MxnBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(mxnBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class MxnBeneficiaryTest {
         assertThat(mxnBeneficiary.email()).isEqualTo("email")
         assertThat(mxnBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(mxnBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(mxnBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class MxnBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedMxnBeneficiary =

@@ -36,9 +36,7 @@ internal class ExternalAccountServiceTest {
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .birthDate("1990-01-15")
                                     .fullName("John Doe")
-                                    .nationality("US")
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -49,10 +47,11 @@ internal class ExternalAccountServiceTest {
                                             .state("CA")
                                             .build()
                                     )
+                                    .birthDate("1990-01-15")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
+                                    .nationality("US")
                                     .phoneNumber("phoneNumber")
-                                    .registrationNumber("registrationNumber")
                                     .build()
                             )
                             .build()

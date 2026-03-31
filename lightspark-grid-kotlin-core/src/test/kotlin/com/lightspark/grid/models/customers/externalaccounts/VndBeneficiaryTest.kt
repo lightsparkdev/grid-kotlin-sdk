@@ -30,7 +30,6 @@ internal class VndBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(vndBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class VndBeneficiaryTest {
         assertThat(vndBeneficiary.email()).isEqualTo("email")
         assertThat(vndBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(vndBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(vndBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class VndBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedVndBeneficiary =
