@@ -30,7 +30,6 @@ internal class HkdBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(hkdBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class HkdBeneficiaryTest {
         assertThat(hkdBeneficiary.email()).isEqualTo("email")
         assertThat(hkdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(hkdBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(hkdBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class HkdBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedHkdBeneficiary =

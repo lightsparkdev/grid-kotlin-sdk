@@ -30,7 +30,6 @@ internal class ThbBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(thbBeneficiary.beneficiaryType())
@@ -52,7 +51,6 @@ internal class ThbBeneficiaryTest {
         assertThat(thbBeneficiary.email()).isEqualTo("email")
         assertThat(thbBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(thbBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(thbBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -77,7 +75,6 @@ internal class ThbBeneficiaryTest {
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedThbBeneficiary =

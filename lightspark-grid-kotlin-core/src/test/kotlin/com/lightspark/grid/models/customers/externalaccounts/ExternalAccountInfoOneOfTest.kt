@@ -58,7 +58,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -99,6 +98,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -131,7 +138,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -214,6 +220,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -287,7 +301,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -328,6 +341,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -359,7 +380,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -384,7 +404,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
                     ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
-                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -395,12 +414,12 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -441,6 +460,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -455,7 +482,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .swiftCode("DEUTDEFF")
                     .beneficiary(
                         ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
-                            .fullName("fullName")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -466,12 +492,12 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .fullName("fullName")
                             .birthDate("birthDate")
                             .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -513,7 +539,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -554,6 +579,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -585,7 +618,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -628,7 +660,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -669,6 +700,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -701,7 +740,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -745,7 +783,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -786,6 +823,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -819,7 +864,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -860,7 +904,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -901,6 +944,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -931,7 +982,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -968,7 +1018,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -1016,6 +1065,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1043,7 +1100,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -1085,7 +1141,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -1133,6 +1188,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1160,7 +1223,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -1206,7 +1268,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1247,6 +1308,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1277,7 +1346,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -1320,7 +1388,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1361,6 +1428,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1393,7 +1468,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -1434,7 +1508,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1475,6 +1548,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1505,7 +1586,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -1547,7 +1627,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1588,6 +1667,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1619,7 +1706,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -1656,7 +1742,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -1704,6 +1789,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1731,7 +1824,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -1779,7 +1871,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1820,6 +1911,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1852,7 +1951,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -1895,7 +1993,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -1936,6 +2033,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -1968,7 +2073,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -2005,7 +2109,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -2053,6 +2156,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2080,7 +2191,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -2122,7 +2232,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -2170,6 +2279,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2197,7 +2314,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -2228,9 +2344,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .birthDate("birthDate")
                         .fullName("fullName")
-                        .nationality("nationality")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -2241,10 +2355,11 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
+                        .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -2285,6 +2400,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2300,9 +2423,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         UsdBeneficiary.builder()
                             .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .birthDate("birthDate")
                             .fullName("fullName")
-                            .nationality("nationality")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -2313,10 +2434,11 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .birthDate("birthDate")
                             .countryOfResidence("countryOfResidence")
                             .email("email")
+                            .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -2359,7 +2481,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .build()
@@ -2400,6 +2521,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2432,7 +2561,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .build()
@@ -2469,7 +2597,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -2518,6 +2645,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2545,7 +2680,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -2590,7 +2724,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -2636,6 +2769,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2665,7 +2806,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -2705,7 +2845,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(
@@ -2753,6 +2892,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2780,7 +2927,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(
@@ -2844,6 +2990,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2917,6 +3071,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -2989,6 +3151,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3055,6 +3225,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3122,6 +3300,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3188,6 +3374,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3253,6 +3447,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3296,7 +3498,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .iban("AE070331234567890123456")
@@ -3340,6 +3541,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isEqualTo(aedAccount)
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3366,7 +3575,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .iban("AE070331234567890123456")
@@ -3406,7 +3614,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(ExternalAccountInfoOneOf.BwpAccount.PaymentRail.MOBILE_MONEY)
@@ -3450,6 +3657,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isEqualTo(bwpAccount)
         assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3476,7 +3691,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(ExternalAccountInfoOneOf.BwpAccount.PaymentRail.MOBILE_MONEY)
@@ -3516,7 +3730,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
-                        .registrationNumber("registrationNumber")
                         .build()
                 )
                 .addPaymentRail(ExternalAccountInfoOneOf.XafAccount.PaymentRail.MOBILE_MONEY)
@@ -3561,6 +3774,14 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
         assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
         assertThat(externalAccountInfoOneOf.xafAccount()).isEqualTo(xafAccount)
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
     }
 
     @Test
@@ -3587,13 +3808,950 @@ internal class ExternalAccountInfoOneOfTest {
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
-                            .registrationNumber("registrationNumber")
                             .build()
                     )
                     .addPaymentRail(ExternalAccountInfoOneOf.XafAccount.PaymentRail.MOBILE_MONEY)
                     .phoneNumber("+1234567890")
                     .provider("x")
                     .region(ExternalAccountInfoOneOf.XafAccount.Region.CM)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofBdtAccount() {
+        val bdtAccount =
+            ExternalAccountInfoOneOf.BdtAccount.builder()
+                .accountNumber("x")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.BdtAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .branchCode("21029")
+                .addPaymentRail(ExternalAccountInfoOneOf.BdtAccount.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
+                .swiftCode("DEUTDEFF")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofBdtAccount(bdtAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isEqualTo(bdtAccount)
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofBdtAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofBdtAccount(
+                ExternalAccountInfoOneOf.BdtAccount.builder()
+                    .accountNumber("x")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.BdtAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .branchCode("21029")
+                    .addPaymentRail(ExternalAccountInfoOneOf.BdtAccount.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+1234567890")
+                    .swiftCode("DEUTDEFF")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofCopAccount() {
+        val copAccount =
+            ExternalAccountInfoOneOf.CopAccount.builder()
+                .accountNumber("x")
+                .bankAccountType(ExternalAccountInfoOneOf.CopAccount.BankAccountType.CHECKING)
+                .beneficiary(
+                    ExternalAccountInfoOneOf.CopAccount.Beneficiary.Individual.builder()
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.CopAccount.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofCopAccount(copAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isEqualTo(copAccount)
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofCopAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofCopAccount(
+                ExternalAccountInfoOneOf.CopAccount.builder()
+                    .accountNumber("x")
+                    .bankAccountType(ExternalAccountInfoOneOf.CopAccount.BankAccountType.CHECKING)
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.CopAccount.Beneficiary.Individual.builder()
+                            .countryOfResidence("countryOfResidence")
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.CopAccount.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+1234567890")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofEgpAccount() {
+        val egpAccount =
+            ExternalAccountInfoOneOf.EgpAccount.builder()
+                .accountNumber("x")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.EgpAccount.Beneficiary.Individual.builder()
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .phoneNumber("phoneNumber")
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.EgpAccount.PaymentRail.BANK_TRANSFER)
+                .iban("DE89370400440532013000")
+                .swiftCode("DEUTDEFF")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofEgpAccount(egpAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isEqualTo(egpAccount)
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofEgpAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofEgpAccount(
+                ExternalAccountInfoOneOf.EgpAccount.builder()
+                    .accountNumber("x")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.EgpAccount.Beneficiary.Individual.builder()
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .countryOfResidence("countryOfResidence")
+                            .fullName("fullName")
+                            .phoneNumber("phoneNumber")
+                            .birthDate("birthDate")
+                            .email("email")
+                            .nationality("nationality")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.EgpAccount.PaymentRail.BANK_TRANSFER)
+                    .iban("DE89370400440532013000")
+                    .swiftCode("DEUTDEFF")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofGhsAccount() {
+        val ghsAccount =
+            ExternalAccountInfoOneOf.GhsAccount.builder()
+                .accountNumber("x")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.GhsAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.GhsAccount.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofGhsAccount(ghsAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isEqualTo(ghsAccount)
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofGhsAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofGhsAccount(
+                ExternalAccountInfoOneOf.GhsAccount.builder()
+                    .accountNumber("x")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.GhsAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.GhsAccount.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+1234567890")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofGtqAccount() {
+        val gtqAccount =
+            ExternalAccountInfoOneOf.GtqAccount.builder()
+                .accountNumber("x")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.GtqAccount.Beneficiary.Individual.builder()
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.GtqAccount.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofGtqAccount(gtqAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isEqualTo(gtqAccount)
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofGtqAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofGtqAccount(
+                ExternalAccountInfoOneOf.GtqAccount.builder()
+                    .accountNumber("x")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.GtqAccount.Beneficiary.Individual.builder()
+                            .countryOfResidence("countryOfResidence")
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.GtqAccount.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+1234567890")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofHtgAccount() {
+        val htgAccount =
+            ExternalAccountInfoOneOf.HtgAccount.builder()
+                .beneficiary(
+                    ExternalAccountInfoOneOf.HtgAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.HtgAccount.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofHtgAccount(htgAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isEqualTo(htgAccount)
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofHtgAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofHtgAccount(
+                ExternalAccountInfoOneOf.HtgAccount.builder()
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.HtgAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.HtgAccount.PaymentRail.MOBILE_MONEY)
+                    .phoneNumber("+1234567890")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofJmdAccount() {
+        val jmdAccount =
+            ExternalAccountInfoOneOf.JmdAccount.builder()
+                .accountNumber("x")
+                .bankAccountType(ExternalAccountInfoOneOf.JmdAccount.BankAccountType.CHECKING)
+                .beneficiary(
+                    ExternalAccountInfoOneOf.JmdAccount.Beneficiary.Individual.builder()
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .fullName("fullName")
+                        .phoneNumber("phoneNumber")
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .build()
+                )
+                .branchCode("21029")
+                .addPaymentRail(ExternalAccountInfoOneOf.JmdAccount.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofJmdAccount(jmdAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isEqualTo(jmdAccount)
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+    }
+
+    @Test
+    fun ofJmdAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofJmdAccount(
+                ExternalAccountInfoOneOf.JmdAccount.builder()
+                    .accountNumber("x")
+                    .bankAccountType(ExternalAccountInfoOneOf.JmdAccount.BankAccountType.CHECKING)
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.JmdAccount.Beneficiary.Individual.builder()
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .fullName("fullName")
+                            .phoneNumber("phoneNumber")
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .build()
+                    )
+                    .branchCode("21029")
+                    .addPaymentRail(ExternalAccountInfoOneOf.JmdAccount.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofPkrAccount() {
+        val pkrAccount =
+            ExternalAccountInfoOneOf.PkrAccount.builder()
+                .accountNumber("x")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.PkrAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.PkrAccount.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
+                .iban("DE89370400440532013000")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zarExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWallet()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isEqualTo(pkrAccount)
+    }
+
+    @Test
+    fun ofPkrAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofPkrAccount(
+                ExternalAccountInfoOneOf.PkrAccount.builder()
+                    .accountNumber("x")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.PkrAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.PkrAccount.PaymentRail.BANK_TRANSFER)
+                    .phoneNumber("+1234567890")
+                    .iban("DE89370400440532013000")
                     .build()
             )
 

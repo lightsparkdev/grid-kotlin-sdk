@@ -27,7 +27,6 @@ private constructor(
     private val email: JsonField<String>,
     private val nationality: JsonField<String>,
     private val phoneNumber: JsonField<String>,
-    private val registrationNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -49,9 +48,6 @@ private constructor(
         @JsonProperty("phoneNumber")
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("registrationNumber")
-        @ExcludeMissing
-        registrationNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
         fullName,
@@ -61,7 +57,6 @@ private constructor(
         email,
         nationality,
         phoneNumber,
-        registrationNumber,
         mutableMapOf(),
     )
 
@@ -126,14 +121,6 @@ private constructor(
     fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
-     * The registration number of the beneficiary
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun registrationNumber(): String? = registrationNumber.getNullable("registrationNumber")
-
-    /**
      * Returns the raw JSON value of [beneficiaryType].
      *
      * Unlike [beneficiaryType], this method doesn't throw if the JSON field has an unexpected type.
@@ -194,16 +181,6 @@ private constructor(
      */
     @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
 
-    /**
-     * Returns the raw JSON value of [registrationNumber].
-     *
-     * Unlike [registrationNumber], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("registrationNumber")
-    @ExcludeMissing
-    fun _registrationNumber(): JsonField<String> = registrationNumber
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -241,7 +218,6 @@ private constructor(
         private var email: JsonField<String> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
-        private var registrationNumber: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(gbpBeneficiary: GbpBeneficiary) = apply {
@@ -253,7 +229,6 @@ private constructor(
             email = gbpBeneficiary.email
             nationality = gbpBeneficiary.nationality
             phoneNumber = gbpBeneficiary.phoneNumber
-            registrationNumber = gbpBeneficiary.registrationNumber
             additionalProperties = gbpBeneficiary.additionalProperties.toMutableMap()
         }
 
@@ -354,21 +329,6 @@ private constructor(
          */
         fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
-        /** The registration number of the beneficiary */
-        fun registrationNumber(registrationNumber: String) =
-            registrationNumber(JsonField.of(registrationNumber))
-
-        /**
-         * Sets [Builder.registrationNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.registrationNumber] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun registrationNumber(registrationNumber: JsonField<String>) = apply {
-            this.registrationNumber = registrationNumber
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -411,7 +371,6 @@ private constructor(
                 email,
                 nationality,
                 phoneNumber,
-                registrationNumber,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -431,7 +390,6 @@ private constructor(
         email()
         nationality()
         phoneNumber()
-        registrationNumber()
         validated = true
     }
 
@@ -456,8 +414,7 @@ private constructor(
             (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
             (if (nationality.asKnown() == null) 0 else 1) +
-            (if (phoneNumber.asKnown() == null) 0 else 1) +
-            (if (registrationNumber.asKnown() == null) 0 else 1)
+            (if (phoneNumber.asKnown() == null) 0 else 1)
 
     class BeneficiaryType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -596,7 +553,6 @@ private constructor(
             email == other.email &&
             nationality == other.nationality &&
             phoneNumber == other.phoneNumber &&
-            registrationNumber == other.registrationNumber &&
             additionalProperties == other.additionalProperties
     }
 
@@ -610,7 +566,6 @@ private constructor(
             email,
             nationality,
             phoneNumber,
-            registrationNumber,
             additionalProperties,
         )
     }
@@ -618,5 +573,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GbpBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, registrationNumber=$registrationNumber, additionalProperties=$additionalProperties}"
+        "GbpBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

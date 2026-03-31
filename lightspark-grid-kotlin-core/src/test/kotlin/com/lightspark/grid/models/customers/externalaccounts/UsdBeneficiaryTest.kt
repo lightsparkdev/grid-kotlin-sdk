@@ -14,9 +14,7 @@ internal class UsdBeneficiaryTest {
         val usdBeneficiary =
             UsdBeneficiary.builder()
                 .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .birthDate("birthDate")
                 .fullName("fullName")
-                .nationality("nationality")
                 .address(
                     Address.builder()
                         .country("US")
@@ -27,17 +25,16 @@ internal class UsdBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .birthDate("birthDate")
                 .countryOfResidence("countryOfResidence")
                 .email("email")
+                .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         assertThat(usdBeneficiary.beneficiaryType())
             .isEqualTo(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(usdBeneficiary.birthDate()).isEqualTo("birthDate")
         assertThat(usdBeneficiary.fullName()).isEqualTo("fullName")
-        assertThat(usdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(usdBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -49,10 +46,11 @@ internal class UsdBeneficiaryTest {
                     .state("CA")
                     .build()
             )
+        assertThat(usdBeneficiary.birthDate()).isEqualTo("birthDate")
         assertThat(usdBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(usdBeneficiary.email()).isEqualTo("email")
+        assertThat(usdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(usdBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
-        assertThat(usdBeneficiary.registrationNumber()).isEqualTo("registrationNumber")
     }
 
     @Test
@@ -61,9 +59,7 @@ internal class UsdBeneficiaryTest {
         val usdBeneficiary =
             UsdBeneficiary.builder()
                 .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .birthDate("birthDate")
                 .fullName("fullName")
-                .nationality("nationality")
                 .address(
                     Address.builder()
                         .country("US")
@@ -74,10 +70,11 @@ internal class UsdBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .birthDate("birthDate")
                 .countryOfResidence("countryOfResidence")
                 .email("email")
+                .nationality("nationality")
                 .phoneNumber("phoneNumber")
-                .registrationNumber("registrationNumber")
                 .build()
 
         val roundtrippedUsdBeneficiary =
