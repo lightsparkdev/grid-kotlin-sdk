@@ -7,6 +7,7 @@ import com.lightspark.grid.services.blocking.BeneficialOwnerService
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CustomerService
+import com.lightspark.grid.services.blocking.DiscoveryService
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.InvitationService
@@ -134,6 +135,12 @@ interface LightsparkGridClient {
     fun verifications(): VerificationService
 
     /**
+     * Endpoints for discovering available payment rails, banks, and providers for a given country
+     * and currency corridor.
+     */
+    fun discoveries(): DiscoveryService
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -233,5 +240,11 @@ interface LightsparkGridClient {
          * including managing beneficial owners and triggering verification for customers.
          */
         fun verifications(): VerificationService.WithRawResponse
+
+        /**
+         * Endpoints for discovering available payment rails, banks, and providers for a given
+         * country and currency corridor.
+         */
+        fun discoveries(): DiscoveryService.WithRawResponse
     }
 }

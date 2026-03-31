@@ -12,6 +12,8 @@ import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CryptoServiceImpl
 import com.lightspark.grid.services.blocking.CustomerService
 import com.lightspark.grid.services.blocking.CustomerServiceImpl
+import com.lightspark.grid.services.blocking.DiscoveryService
+import com.lightspark.grid.services.blocking.DiscoveryServiceImpl
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.DocumentServiceImpl
 import com.lightspark.grid.services.blocking.ExchangeRateService
@@ -124,6 +126,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         VerificationServiceImpl(clientOptionsWithUserAgent)
     }
 
+    private val discoveries: DiscoveryService by lazy {
+        DiscoveryServiceImpl(clientOptionsWithUserAgent)
+    }
+
     override fun async(): LightsparkGridClientAsync = async
 
     override fun withRawResponse(): LightsparkGridClient.WithRawResponse = withRawResponse
@@ -204,6 +210,12 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
      * managing beneficial owners and triggering verification for customers.
      */
     override fun verifications(): VerificationService = verifications
+
+    /**
+     * Endpoints for discovering available payment rails, banks, and providers for a given country
+     * and currency corridor.
+     */
+    override fun discoveries(): DiscoveryService = discoveries
 
     override fun close() = clientOptions.close()
 
@@ -286,6 +298,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
             VerificationServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val discoveries: DiscoveryService.WithRawResponse by lazy {
+            DiscoveryServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): LightsparkGridClient.WithRawResponse =
@@ -366,5 +382,11 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
          * including managing beneficial owners and triggering verification for customers.
          */
         override fun verifications(): VerificationService.WithRawResponse = verifications
+
+        /**
+         * Endpoints for discovering available payment rails, banks, and providers for a given
+         * country and currency corridor.
+         */
+        override fun discoveries(): DiscoveryService.WithRawResponse = discoveries
     }
 }
