@@ -512,20 +512,6 @@ private constructor(
         fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
             destination(QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination))
 
-        /**
-         * Alias for calling [destination] with
-         * `QuoteDestinationOneOf.ofExternalAccountDetailsDestination(externalAccountDetailsDestination)`.
-         */
-        fun destination(
-            externalAccountDetailsDestination:
-                QuoteDestinationOneOf.ExternalAccountDetailsDestination
-        ) =
-            destination(
-                QuoteDestinationOneOf.ofExternalAccountDetailsDestination(
-                    externalAccountDetailsDestination
-                )
-            )
-
         /** Number of sending currency units per receiving currency unit. */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
