@@ -841,20 +841,6 @@ private constructor(
                 )
 
             /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofExternalAccountDetailsTransaction(externalAccountDetailsTransaction)`.
-             */
-            fun destination(
-                externalAccountDetailsTransaction:
-                    IncomingTransaction.Destination.ExternalAccountDetailsTransactionDestination
-            ) =
-                destination(
-                    IncomingTransaction.Destination.ofExternalAccountDetailsTransaction(
-                        externalAccountDetailsTransaction
-                    )
-                )
-
-            /**
              * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
              */
             fun platformCustomerId(platformCustomerId: String) =

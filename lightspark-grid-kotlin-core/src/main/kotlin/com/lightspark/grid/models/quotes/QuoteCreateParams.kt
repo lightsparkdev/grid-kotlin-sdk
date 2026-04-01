@@ -294,15 +294,6 @@ private constructor(
             }
 
         /**
-         * Alias for calling [destination] with
-         * `QuoteDestinationOneOf.ofExternalAccountDetailsDestination(externalAccountDetailsDestination)`.
-         */
-        fun destination(
-            externalAccountDetailsDestination:
-                QuoteDestinationOneOf.ExternalAccountDetailsDestination
-        ) = apply { body.destination(externalAccountDetailsDestination) }
-
-        /**
          * The amount to send/receive in the smallest unit of the locked currency (eg. cents). See
          * `lockedCurrencySide` for more information.
          */
@@ -930,20 +921,6 @@ private constructor(
              */
             fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
                 destination(QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination))
-
-            /**
-             * Alias for calling [destination] with
-             * `QuoteDestinationOneOf.ofExternalAccountDetailsDestination(externalAccountDetailsDestination)`.
-             */
-            fun destination(
-                externalAccountDetailsDestination:
-                    QuoteDestinationOneOf.ExternalAccountDetailsDestination
-            ) =
-                destination(
-                    QuoteDestinationOneOf.ofExternalAccountDetailsDestination(
-                        externalAccountDetailsDestination
-                    )
-                )
 
             /**
              * The amount to send/receive in the smallest unit of the locked currency (eg. cents).
