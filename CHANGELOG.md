@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.0 (2026-04-01)
+
+Full Changelog: [v1.3.0...v1.4.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.3.0...v1.4.0)
+
+### Features
+
+* **api:** add discoveries resource ([12df4dc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/12df4dc411a9b37d9f801bd0c59bfbddc482a538))
+* **api:** add READY_FOR_VERIFICATION status/webhook event, 10 error types to verifications ([09d181a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/09d181af1965b28c27cdb47ebce90d42ed11ac60))
+* **api:** manual updates ([9422fcc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9422fcca46491a81974e7c79e0d692ba8660f823))
+* **api:** manual updates ([c814c1e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c814c1ef5a36c09508a8d7bf574fa8b150de15ba))
+* **api:** remove createLinkToken and submitPublicToken methods from plaid ([d850b83](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d850b8326a0c8be08ef8dd2f7d9ba48e63db74f5))
+* **api:** remove external account details destination from quotes and transactions ([598dd8b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/598dd8b0a34af1ee0195f1fa1b20971431789d1a))
+* Move timeout to refund reason ([e7460ef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e7460ef37adb8ac690cbe4140a5d0edce364ad40))
+
+
+### Chores
+
+* Sync account schemas ([047b627](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/047b6272157a2ee1aeda574903d097e44cbf0f84))
+
 ## 1.3.0 (2026-03-25)
 
 Full Changelog: [v1.2.0...v1.3.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.2.0...v1.3.0)
