@@ -23,7 +23,6 @@ import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import java.util.Collections
 import java.util.Objects
 
@@ -34,7 +33,6 @@ class QuoteDestinationOneOf
 private constructor(
     private val accountDestination: AccountDestination? = null,
     private val umaAddressDestination: UmaAddressDestination? = null,
-    private val externalAccountDetailsDestination: ExternalAccountDetailsDestination? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -44,20 +42,9 @@ private constructor(
     /** UMA address destination details */
     fun umaAddressDestination(): UmaAddressDestination? = umaAddressDestination
 
-    /**
-     * A convenient destination option which adds the external account and creates the quote in one
-     * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
-     * test values.
-     */
-    fun externalAccountDetailsDestination(): ExternalAccountDetailsDestination? =
-        externalAccountDetailsDestination
-
     fun isAccountDestination(): Boolean = accountDestination != null
 
     fun isUmaAddressDestination(): Boolean = umaAddressDestination != null
-
-    fun isExternalAccountDetailsDestination(): Boolean = externalAccountDetailsDestination != null
 
     /** Destination account details */
     fun asAccountDestination(): AccountDestination =
@@ -67,15 +54,6 @@ private constructor(
     fun asUmaAddressDestination(): UmaAddressDestination =
         umaAddressDestination.getOrThrow("umaAddressDestination")
 
-    /**
-     * A convenient destination option which adds the external account and creates the quote in one
-     * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
-     * test values.
-     */
-    fun asExternalAccountDetailsDestination(): ExternalAccountDetailsDestination =
-        externalAccountDetailsDestination.getOrThrow("externalAccountDetailsDestination")
-
     fun _json(): JsonValue? = _json
 
     fun <T> accept(visitor: Visitor<T>): T =
@@ -83,8 +61,6 @@ private constructor(
             accountDestination != null -> visitor.visitAccountDestination(accountDestination)
             umaAddressDestination != null ->
                 visitor.visitUmaAddressDestination(umaAddressDestination)
-            externalAccountDetailsDestination != null ->
-                visitor.visitExternalAccountDetailsDestination(externalAccountDetailsDestination)
             else -> visitor.unknown(_json)
         }
 
@@ -105,12 +81,6 @@ private constructor(
                     umaAddressDestination: UmaAddressDestination
                 ) {
                     umaAddressDestination.validate()
-                }
-
-                override fun visitExternalAccountDetailsDestination(
-                    externalAccountDetailsDestination: ExternalAccountDetailsDestination
-                ) {
-                    externalAccountDetailsDestination.validate()
                 }
             }
         )
@@ -140,10 +110,6 @@ private constructor(
                     umaAddressDestination: UmaAddressDestination
                 ) = umaAddressDestination.validity()
 
-                override fun visitExternalAccountDetailsDestination(
-                    externalAccountDetailsDestination: ExternalAccountDetailsDestination
-                ) = externalAccountDetailsDestination.validity()
-
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -155,12 +121,10 @@ private constructor(
 
         return other is QuoteDestinationOneOf &&
             accountDestination == other.accountDestination &&
-            umaAddressDestination == other.umaAddressDestination &&
-            externalAccountDetailsDestination == other.externalAccountDetailsDestination
+            umaAddressDestination == other.umaAddressDestination
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(accountDestination, umaAddressDestination, externalAccountDetailsDestination)
+    override fun hashCode(): Int = Objects.hash(accountDestination, umaAddressDestination)
 
     override fun toString(): String =
         when {
@@ -168,8 +132,6 @@ private constructor(
                 "QuoteDestinationOneOf{accountDestination=$accountDestination}"
             umaAddressDestination != null ->
                 "QuoteDestinationOneOf{umaAddressDestination=$umaAddressDestination}"
-            externalAccountDetailsDestination != null ->
-                "QuoteDestinationOneOf{externalAccountDetailsDestination=$externalAccountDetailsDestination}"
             _json != null -> "QuoteDestinationOneOf{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid QuoteDestinationOneOf")
         }
@@ -183,19 +145,6 @@ private constructor(
         /** UMA address destination details */
         fun ofUmaAddressDestination(umaAddressDestination: UmaAddressDestination) =
             QuoteDestinationOneOf(umaAddressDestination = umaAddressDestination)
-
-        /**
-         * A convenient destination option which adds the external account and creates the quote in
-         * one step rather than first needing to call /external-accounts to add the account. Useful
-         * for one-off payments to some destination. See the Sandbox Testing guide in the API
-         * reference for test values.
-         */
-        fun ofExternalAccountDetailsDestination(
-            externalAccountDetailsDestination: ExternalAccountDetailsDestination
-        ) =
-            QuoteDestinationOneOf(
-                externalAccountDetailsDestination = externalAccountDetailsDestination
-            )
     }
 
     /**
@@ -209,16 +158,6 @@ private constructor(
 
         /** UMA address destination details */
         fun visitUmaAddressDestination(umaAddressDestination: UmaAddressDestination): T
-
-        /**
-         * A convenient destination option which adds the external account and creates the quote in
-         * one step rather than first needing to call /external-accounts to add the account. Useful
-         * for one-off payments to some destination. See the Sandbox Testing guide in the API
-         * reference for test values.
-         */
-        fun visitExternalAccountDetailsDestination(
-            externalAccountDetailsDestination: ExternalAccountDetailsDestination
-        ): T
 
         /**
          * Maps an unknown variant of [QuoteDestinationOneOf] to a value of type [T].
@@ -252,13 +191,6 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<UmaAddressDestination>())?.let {
                             QuoteDestinationOneOf(umaAddressDestination = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<ExternalAccountDetailsDestination>())
-                            ?.let {
-                                QuoteDestinationOneOf(
-                                    externalAccountDetailsDestination = it,
-                                    _json = json,
-                                )
-                            },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -287,8 +219,6 @@ private constructor(
                 value.accountDestination != null -> generator.writeObject(value.accountDestination)
                 value.umaAddressDestination != null ->
                     generator.writeObject(value.umaAddressDestination)
-                value.externalAccountDetailsDestination != null ->
-                    generator.writeObject(value.externalAccountDetailsDestination)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid QuoteDestinationOneOf")
             }
@@ -799,228 +729,5 @@ private constructor(
 
         override fun toString() =
             "UmaAddressDestination{destinationType=$destinationType, umaAddress=$umaAddress, currency=$currency, additionalProperties=$additionalProperties}"
-    }
-
-    /**
-     * A convenient destination option which adds the external account and creates the quote in one
-     * step rather than first needing to call /external-accounts to add the account. Useful for
-     * one-off payments to some destination. See the Sandbox Testing guide in the API reference for
-     * test values.
-     */
-    class ExternalAccountDetailsDestination
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val destinationType: JsonValue,
-        private val externalAccountDetails: JsonField<ExternalAccountCreate>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("destinationType")
-            @ExcludeMissing
-            destinationType: JsonValue = JsonMissing.of(),
-            @JsonProperty("externalAccountDetails")
-            @ExcludeMissing
-            externalAccountDetails: JsonField<ExternalAccountCreate> = JsonMissing.of(),
-        ) : this(destinationType, externalAccountDetails, mutableMapOf())
-
-        /**
-         * Expected to always return the following:
-         * ```kotlin
-         * JsonValue.from("EXTERNAL_ACCOUNT_DETAILS")
-         * ```
-         *
-         * However, this method can be useful for debugging and logging (e.g. if the server
-         * responded with an unexpected value).
-         */
-        @JsonProperty("destinationType")
-        @ExcludeMissing
-        fun _destinationType(): JsonValue = destinationType
-
-        /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun externalAccountDetails(): ExternalAccountCreate =
-            externalAccountDetails.getRequired("externalAccountDetails")
-
-        /**
-         * Returns the raw JSON value of [externalAccountDetails].
-         *
-         * Unlike [externalAccountDetails], this method doesn't throw if the JSON field has an
-         * unexpected type.
-         */
-        @JsonProperty("externalAccountDetails")
-        @ExcludeMissing
-        fun _externalAccountDetails(): JsonField<ExternalAccountCreate> = externalAccountDetails
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of
-             * [ExternalAccountDetailsDestination].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .externalAccountDetails()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [ExternalAccountDetailsDestination]. */
-        class Builder internal constructor() {
-
-            private var destinationType: JsonValue = JsonValue.from("EXTERNAL_ACCOUNT_DETAILS")
-            private var externalAccountDetails: JsonField<ExternalAccountCreate>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(
-                externalAccountDetailsDestination: ExternalAccountDetailsDestination
-            ) = apply {
-                destinationType = externalAccountDetailsDestination.destinationType
-                externalAccountDetails = externalAccountDetailsDestination.externalAccountDetails
-                additionalProperties =
-                    externalAccountDetailsDestination.additionalProperties.toMutableMap()
-            }
-
-            /**
-             * Sets the field to an arbitrary JSON value.
-             *
-             * It is usually unnecessary to call this method because the field defaults to the
-             * following:
-             * ```kotlin
-             * JsonValue.from("EXTERNAL_ACCOUNT_DETAILS")
-             * ```
-             *
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun destinationType(destinationType: JsonValue) = apply {
-                this.destinationType = destinationType
-            }
-
-            fun externalAccountDetails(externalAccountDetails: ExternalAccountCreate) =
-                externalAccountDetails(JsonField.of(externalAccountDetails))
-
-            /**
-             * Sets [Builder.externalAccountDetails] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.externalAccountDetails] with a well-typed
-             * [ExternalAccountCreate] value instead. This method is primarily for setting the field
-             * to an undocumented or not yet supported value.
-             */
-            fun externalAccountDetails(externalAccountDetails: JsonField<ExternalAccountCreate>) =
-                apply {
-                    this.externalAccountDetails = externalAccountDetails
-                }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [ExternalAccountDetailsDestination].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .externalAccountDetails()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): ExternalAccountDetailsDestination =
-                ExternalAccountDetailsDestination(
-                    destinationType,
-                    checkRequired("externalAccountDetails", externalAccountDetails),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): ExternalAccountDetailsDestination = apply {
-            if (validated) {
-                return@apply
-            }
-
-            _destinationType().let {
-                if (it != JsonValue.from("EXTERNAL_ACCOUNT_DETAILS")) {
-                    throw LightsparkGridInvalidDataException(
-                        "'destinationType' is invalid, received $it"
-                    )
-                }
-            }
-            externalAccountDetails().validate()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            destinationType.let { if (it == JsonValue.from("EXTERNAL_ACCOUNT_DETAILS")) 1 else 0 } +
-                (externalAccountDetails.asKnown()?.validity() ?: 0)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is ExternalAccountDetailsDestination &&
-                destinationType == other.destinationType &&
-                externalAccountDetails == other.externalAccountDetails &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(destinationType, externalAccountDetails, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "ExternalAccountDetailsDestination{destinationType=$destinationType, externalAccountDetails=$externalAccountDetails, additionalProperties=$additionalProperties}"
     }
 }
