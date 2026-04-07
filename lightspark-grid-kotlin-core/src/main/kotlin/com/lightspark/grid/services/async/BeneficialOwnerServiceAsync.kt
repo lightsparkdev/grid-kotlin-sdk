@@ -84,15 +84,11 @@ interface BeneficialOwnerServiceAsync {
     ): BeneficialOwnerUpdateResponse =
         update(beneficialOwnerId, BeneficialOwnerUpdateParams.none(), requestOptions)
 
-    /** Retrieve a list of beneficial owners with optional filtering by customer ID and role. */
+    /** Retrieve a list of beneficial owners for a business customer. */
     suspend fun list(
-        params: BeneficialOwnerListParams = BeneficialOwnerListParams.none(),
+        params: BeneficialOwnerListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): BeneficialOwnerListPageAsync
-
-    /** @see list */
-    suspend fun list(requestOptions: RequestOptions): BeneficialOwnerListPageAsync =
-        list(BeneficialOwnerListParams.none(), requestOptions)
 
     /**
      * A view of [BeneficialOwnerServiceAsync] that provides access to raw HTTP responses for each
@@ -182,15 +178,8 @@ interface BeneficialOwnerServiceAsync {
          */
         @MustBeClosed
         suspend fun list(
-            params: BeneficialOwnerListParams = BeneficialOwnerListParams.none(),
+            params: BeneficialOwnerListParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<BeneficialOwnerListPageAsync>
-
-        /** @see list */
-        @MustBeClosed
-        suspend fun list(
-            requestOptions: RequestOptions
-        ): HttpResponseFor<BeneficialOwnerListPageAsync> =
-            list(BeneficialOwnerListParams.none(), requestOptions)
     }
 }
