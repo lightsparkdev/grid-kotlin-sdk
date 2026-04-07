@@ -2,37 +2,30 @@
 
 package com.lightspark.grid.models.beneficialowners
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.lightspark.grid.core.Enum
-import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.Params
+import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Objects
 
-/** Retrieve a list of beneficial owners with optional filtering by customer ID and role. */
+/** Retrieve a list of beneficial owners for a business customer. */
 class BeneficialOwnerListParams
 private constructor(
+    private val customerId: String,
     private val cursor: String?,
-    private val customerId: String?,
     private val limit: Long?,
-    private val role: Role?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
+    /** The business customer ID */
+    fun customerId(): String = customerId
+
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
 
-    /** Filter by business customer ID */
-    fun customerId(): String? = customerId
-
     /** Maximum number of results to return (default 20, max 100) */
     fun limit(): Long? = limit
-
-    /** Filter by role */
-    fun role(): Role? = role
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -44,10 +37,13 @@ private constructor(
 
     companion object {
 
-        fun none(): BeneficialOwnerListParams = builder().build()
-
         /**
          * Returns a mutable builder for constructing an instance of [BeneficialOwnerListParams].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerId()
+         * ```
          */
         fun builder() = Builder()
     }
@@ -55,27 +51,25 @@ private constructor(
     /** A builder for [BeneficialOwnerListParams]. */
     class Builder internal constructor() {
 
-        private var cursor: String? = null
         private var customerId: String? = null
+        private var cursor: String? = null
         private var limit: Long? = null
-        private var role: Role? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(beneficialOwnerListParams: BeneficialOwnerListParams) = apply {
-            cursor = beneficialOwnerListParams.cursor
             customerId = beneficialOwnerListParams.customerId
+            cursor = beneficialOwnerListParams.cursor
             limit = beneficialOwnerListParams.limit
-            role = beneficialOwnerListParams.role
             additionalHeaders = beneficialOwnerListParams.additionalHeaders.toBuilder()
             additionalQueryParams = beneficialOwnerListParams.additionalQueryParams.toBuilder()
         }
 
+        /** The business customer ID */
+        fun customerId(customerId: String) = apply { this.customerId = customerId }
+
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
-
-        /** Filter by business customer ID */
-        fun customerId(customerId: String?) = apply { this.customerId = customerId }
 
         /** Maximum number of results to return (default 20, max 100) */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -86,9 +80,6 @@ private constructor(
          * This unboxed primitive overload exists for backwards compatibility.
          */
         fun limit(limit: Long) = limit(limit as Long?)
-
-        /** Filter by role */
-        fun role(role: Role?) = apply { this.role = role }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -192,13 +183,19 @@ private constructor(
          * Returns an immutable instance of [BeneficialOwnerListParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerId()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BeneficialOwnerListParams =
             BeneficialOwnerListParams(
+                checkRequired("customerId", customerId),
                 cursor,
-                customerId,
                 limit,
-                role,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -209,163 +206,12 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                put("customerId", customerId)
                 cursor?.let { put("cursor", it) }
-                customerId?.let { put("customerId", it) }
                 limit?.let { put("limit", it.toString()) }
-                role?.let { put("role", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
-
-    /** Filter by role */
-    class Role @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val UBO = of("UBO")
-
-            val DIRECTOR = of("DIRECTOR")
-
-            val COMPANY_OFFICER = of("COMPANY_OFFICER")
-
-            val CONTROL_PERSON = of("CONTROL_PERSON")
-
-            val TRUSTEE = of("TRUSTEE")
-
-            val GENERAL_PARTNER = of("GENERAL_PARTNER")
-
-            fun of(value: String) = Role(JsonField.of(value))
-        }
-
-        /** An enum containing [Role]'s known values. */
-        enum class Known {
-            UBO,
-            DIRECTOR,
-            COMPANY_OFFICER,
-            CONTROL_PERSON,
-            TRUSTEE,
-            GENERAL_PARTNER,
-        }
-
-        /**
-         * An enum containing [Role]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Role] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            UBO,
-            DIRECTOR,
-            COMPANY_OFFICER,
-            CONTROL_PERSON,
-            TRUSTEE,
-            GENERAL_PARTNER,
-            /** An enum member indicating that [Role] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                UBO -> Value.UBO
-                DIRECTOR -> Value.DIRECTOR
-                COMPANY_OFFICER -> Value.COMPANY_OFFICER
-                CONTROL_PERSON -> Value.CONTROL_PERSON
-                TRUSTEE -> Value.TRUSTEE
-                GENERAL_PARTNER -> Value.GENERAL_PARTNER
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                UBO -> Known.UBO
-                DIRECTOR -> Known.DIRECTOR
-                COMPANY_OFFICER -> Known.COMPANY_OFFICER
-                CONTROL_PERSON -> Known.CONTROL_PERSON
-                TRUSTEE -> Known.TRUSTEE
-                GENERAL_PARTNER -> Known.GENERAL_PARTNER
-                else -> throw LightsparkGridInvalidDataException("Unknown Role: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        fun validate(): Role = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Role && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -373,17 +219,16 @@ private constructor(
         }
 
         return other is BeneficialOwnerListParams &&
-            cursor == other.cursor &&
             customerId == other.customerId &&
+            cursor == other.cursor &&
             limit == other.limit &&
-            role == other.role &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(cursor, customerId, limit, role, additionalHeaders, additionalQueryParams)
+        Objects.hash(customerId, cursor, limit, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "BeneficialOwnerListParams{cursor=$cursor, customerId=$customerId, limit=$limit, role=$role, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "BeneficialOwnerListParams{customerId=$customerId, cursor=$cursor, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

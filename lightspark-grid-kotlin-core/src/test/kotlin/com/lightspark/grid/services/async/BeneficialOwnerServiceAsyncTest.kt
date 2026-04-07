@@ -4,6 +4,7 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -131,7 +132,10 @@ internal class BeneficialOwnerServiceAsyncTest {
                 .build()
         val beneficialOwnerServiceAsync = client.beneficialOwners()
 
-        val page = beneficialOwnerServiceAsync.list()
+        val page =
+            beneficialOwnerServiceAsync.list(
+                BeneficialOwnerListParams.builder().customerId("customerId").build()
+            )
 
         page.response().validate()
     }
