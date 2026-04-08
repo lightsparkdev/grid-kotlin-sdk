@@ -20,10 +20,12 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
+import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -403,6 +405,7 @@ private constructor(
         class Individual
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val currencies: JsonField<List<String>>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -415,6 +418,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("currencies")
+                @ExcludeMissing
+                currencies: JsonField<List<String>> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -437,6 +443,7 @@ private constructor(
                 @ExcludeMissing
                 nationality: JsonField<String> = JsonMissing.of(),
             ) : this(
+                currencies,
                 umaAddress,
                 customerType,
                 address,
@@ -448,7 +455,7 @@ private constructor(
             )
 
             fun toCustomerUpdate(): CustomerUpdate =
-                CustomerUpdate.builder().umaAddress(umaAddress).build()
+                CustomerUpdate.builder().currencies(currencies).umaAddress(umaAddress).build()
 
             fun toIndividualCustomerFields(): IndividualCustomerFields =
                 IndividualCustomerFields.builder()
@@ -459,6 +466,17 @@ private constructor(
                     .kycStatus(kycStatus)
                     .nationality(nationality)
                     .build()
+
+            /**
+             * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+             * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some
+             * currency combinations may require separate customers — if so, the request will be
+             * rejected with details.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun currencies(): List<String>? = currencies.getNullable("currencies")
 
             /**
              * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -515,6 +533,16 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun nationality(): String? = nationality.getNullable("nationality")
+
+            /**
+             * Returns the raw JSON value of [currencies].
+             *
+             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            fun _currencies(): JsonField<List<String>> = currencies
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -609,6 +637,7 @@ private constructor(
             /** A builder for [Individual]. */
             class Builder internal constructor() {
 
+                private var currencies: JsonField<MutableList<String>>? = null
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -620,6 +649,7 @@ private constructor(
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(individual: Individual) = apply {
+                    currencies = individual.currencies.map { it.toMutableList() }
                     umaAddress = individual.umaAddress
                     customerType = individual.customerType
                     address = individual.address
@@ -628,6 +658,37 @@ private constructor(
                     kycStatus = individual.kycStatus
                     nationality = individual.nationality
                     additionalProperties = individual.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g.
+                 * "USD", "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing
+                 * list. Some currency combinations may require separate customers — if so, the
+                 * request will be rejected with details.
+                 */
+                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+                /**
+                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currencies(currencies: JsonField<List<String>>) = apply {
+                    this.currencies = currencies.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [currencies].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCurrency(currency: String) = apply {
+                    currencies =
+                        (currencies ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("currencies", it).add(currency)
+                        }
                 }
 
                 /**
@@ -764,6 +825,7 @@ private constructor(
                  */
                 fun build(): Individual =
                     Individual(
+                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -782,6 +844,7 @@ private constructor(
                     return@apply
                 }
 
+                currencies()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -807,7 +870,8 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (umaAddress.asKnown() == null) 0 else 1) +
+                (currencies.asKnown()?.size ?: 0) +
+                    (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
                     (if (birthDate.asKnown() == null) 0 else 1) +
@@ -821,6 +885,7 @@ private constructor(
                 }
 
                 return other is Individual &&
+                    currencies == other.currencies &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -833,6 +898,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    currencies,
                     umaAddress,
                     customerType,
                     address,
@@ -847,12 +913,13 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Individual{umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+                "Individual{currencies=$currencies, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
         }
 
         class Business
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val currencies: JsonField<List<String>>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -863,6 +930,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("currencies")
+                @ExcludeMissing
+                currencies: JsonField<List<String>> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -878,10 +948,18 @@ private constructor(
                 @JsonProperty("kybStatus")
                 @ExcludeMissing
                 kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
-            ) : this(umaAddress, customerType, address, businessInfo, kybStatus, mutableMapOf())
+            ) : this(
+                currencies,
+                umaAddress,
+                customerType,
+                address,
+                businessInfo,
+                kybStatus,
+                mutableMapOf(),
+            )
 
             fun toCustomerUpdate(): CustomerUpdate =
-                CustomerUpdate.builder().umaAddress(umaAddress).build()
+                CustomerUpdate.builder().currencies(currencies).umaAddress(umaAddress).build()
 
             fun toBusinessCustomerFields(): BusinessCustomerFields =
                 BusinessCustomerFields.builder()
@@ -890,6 +968,17 @@ private constructor(
                     .businessInfo(businessInfo)
                     .kybStatus(kybStatus)
                     .build()
+
+            /**
+             * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+             * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some
+             * currency combinations may require separate customers — if so, the request will be
+             * rejected with details.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun currencies(): List<String>? = currencies.getNullable("currencies")
 
             /**
              * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -930,6 +1019,16 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun kybStatus(): BusinessCustomerFields.KybStatus? = kybStatus.getNullable("kybStatus")
+
+            /**
+             * Returns the raw JSON value of [currencies].
+             *
+             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            fun _currencies(): JsonField<List<String>> = currencies
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -1006,6 +1105,7 @@ private constructor(
             /** A builder for [Business]. */
             class Builder internal constructor() {
 
+                private var currencies: JsonField<MutableList<String>>? = null
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -1016,12 +1116,44 @@ private constructor(
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(business: Business) = apply {
+                    currencies = business.currencies.map { it.toMutableList() }
                     umaAddress = business.umaAddress
                     customerType = business.customerType
                     address = business.address
                     businessInfo = business.businessInfo
                     kybStatus = business.kybStatus
                     additionalProperties = business.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g.
+                 * "USD", "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing
+                 * list. Some currency combinations may require separate customers — if so, the
+                 * request will be rejected with details.
+                 */
+                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+                /**
+                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currencies(currencies: JsonField<List<String>>) = apply {
+                    this.currencies = currencies.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [currencies].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCurrency(currency: String) = apply {
+                    currencies =
+                        (currencies ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("currencies", it).add(currency)
+                        }
                 }
 
                 /**
@@ -1134,6 +1266,7 @@ private constructor(
                  */
                 fun build(): Business =
                     Business(
+                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -1150,6 +1283,7 @@ private constructor(
                     return@apply
                 }
 
+                currencies()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -1173,7 +1307,8 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (umaAddress.asKnown() == null) 0 else 1) +
+                (currencies.asKnown()?.size ?: 0) +
+                    (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
                     (businessInfo.asKnown()?.validity() ?: 0) +
@@ -1185,6 +1320,7 @@ private constructor(
                 }
 
                 return other is Business &&
+                    currencies == other.currencies &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -1195,6 +1331,7 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    currencies,
                     umaAddress,
                     customerType,
                     address,
@@ -1207,7 +1344,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Business{umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "Business{currencies=$currencies, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
         }
     }
 
