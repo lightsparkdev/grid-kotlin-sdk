@@ -19,9 +19,6 @@ import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.quotes.QuoteListPage
-import com.lightspark.grid.models.quotes.QuoteListPageResponse
-import com.lightspark.grid.models.quotes.QuoteListParams
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
 /** Endpoints for creating and confirming quotes for cross-currency transfers */
@@ -44,10 +41,6 @@ class QuoteServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun retrieve(params: QuoteRetrieveParams, requestOptions: RequestOptions): Quote =
         // get /quotes/{quoteId}
         withRawResponse().retrieve(params, requestOptions).parse()
-
-    override fun list(params: QuoteListParams, requestOptions: RequestOptions): QuoteListPage =
-        // get /quotes
-        withRawResponse().list(params, requestOptions).parse()
 
     override fun execute(params: QuoteExecuteParams, requestOptions: RequestOptions): Quote =
         // post /quotes/{quoteId}/execute
@@ -116,40 +109,6 @@ class QuoteServiceImpl internal constructor(private val clientOptions: ClientOpt
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
-                    }
-            }
-        }
-
-        private val listHandler: Handler<QuoteListPageResponse> =
-            jsonHandler<QuoteListPageResponse>(clientOptions.jsonMapper)
-
-        override fun list(
-            params: QuoteListParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<QuoteListPage> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("quotes")
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { listHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-                    .let {
-                        QuoteListPage.builder()
-                            .service(QuoteServiceImpl(clientOptions))
-                            .params(params)
-                            .response(it)
-                            .build()
                     }
             }
         }
