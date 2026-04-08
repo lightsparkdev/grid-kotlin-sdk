@@ -9,8 +9,6 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.quotes.QuoteListPage
-import com.lightspark.grid.models.quotes.QuoteListParams
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
 /** Endpoints for creating and confirming quotes for cross-currency transfers */
@@ -74,19 +72,6 @@ interface QuoteService {
     /** @see retrieve */
     fun retrieve(quoteId: String, requestOptions: RequestOptions): Quote =
         retrieve(quoteId, QuoteRetrieveParams.none(), requestOptions)
-
-    /**
-     * Retrieve a list of transfer quotes with optional filtering parameters. Returns all quotes
-     * that match the specified filters. If no filters are provided, returns all quotes (paginated).
-     */
-    fun list(
-        params: QuoteListParams = QuoteListParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): QuoteListPage
-
-    /** @see list */
-    fun list(requestOptions: RequestOptions): QuoteListPage =
-        list(QuoteListParams.none(), requestOptions)
 
     /**
      * Execute a quote by its ID. This endpoint initiates the transfer between the source and
@@ -156,21 +141,6 @@ interface QuoteService {
         @MustBeClosed
         fun retrieve(quoteId: String, requestOptions: RequestOptions): HttpResponseFor<Quote> =
             retrieve(quoteId, QuoteRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `get /quotes`, but is otherwise the same as
-         * [QuoteService.list].
-         */
-        @MustBeClosed
-        fun list(
-            params: QuoteListParams = QuoteListParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<QuoteListPage>
-
-        /** @see list */
-        @MustBeClosed
-        fun list(requestOptions: RequestOptions): HttpResponseFor<QuoteListPage> =
-            list(QuoteListParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /quotes/{quoteId}/execute`, but is otherwise the
