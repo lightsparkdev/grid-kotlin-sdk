@@ -202,7 +202,9 @@ private constructor(
         private val umaAddress: JsonField<String>,
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
+        private val currencies: JsonField<List<String>>,
         private val isDeleted: JsonField<Boolean>,
+        private val region: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
@@ -225,9 +227,13 @@ private constructor(
             @JsonProperty("createdAt")
             @ExcludeMissing
             createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            currencies: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -252,7 +258,9 @@ private constructor(
             umaAddress,
             id,
             createdAt,
+            currencies,
             isDeleted,
+            region,
             updatedAt,
             customerType,
             address,
@@ -269,7 +277,9 @@ private constructor(
                 .umaAddress(umaAddress)
                 .id(id)
                 .createdAt(createdAt)
+                .currencies(currencies)
                 .isDeleted(isDeleted)
+                .region(region)
                 .updatedAt(updatedAt)
                 .build()
 
@@ -317,12 +327,29 @@ private constructor(
         fun createdAt(): OffsetDateTime? = createdAt.getNullable("createdAt")
 
         /**
+         * List of currency codes enabled for this customer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+        /**
          * Whether the customer is marked as deleted
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
         fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
+
+        /**
+         * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
+         * regulatory jurisdiction.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun region(): String? = region.getNullable("region")
 
         /**
          * Last update timestamp
@@ -413,11 +440,27 @@ private constructor(
         fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
         /**
+         * Returns the raw JSON value of [currencies].
+         *
+         * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currencies")
+        @ExcludeMissing
+        fun _currencies(): JsonField<List<String>> = currencies
+
+        /**
          * Returns the raw JSON value of [isDeleted].
          *
          * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
+
+        /**
+         * Returns the raw JSON value of [region].
+         *
+         * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
 
         /**
          * Returns the raw JSON value of [updatedAt].
@@ -513,7 +556,9 @@ private constructor(
             private var umaAddress: JsonField<String>? = null
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var currencies: JsonField<MutableList<String>>? = null
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
+            private var region: JsonField<String> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
@@ -528,7 +573,9 @@ private constructor(
                 umaAddress = individual.umaAddress
                 id = individual.id
                 createdAt = individual.createdAt
+                currencies = individual.currencies.map { it.toMutableList() }
                 isDeleted = individual.isDeleted
+                region = individual.region
                 updatedAt = individual.updatedAt
                 customerType = individual.customerType
                 address = individual.address
@@ -595,6 +642,32 @@ private constructor(
                 this.createdAt = createdAt
             }
 
+            /** List of currency codes enabled for this customer. */
+            fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+            /**
+             * Sets [Builder.currencies] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currencies] with a well-typed `List<String>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currencies(currencies: JsonField<List<String>>) = apply {
+                this.currencies = currencies.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [currencies].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addCurrency(currency: String) = apply {
+                currencies =
+                    (currencies ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("currencies", it).add(currency)
+                    }
+            }
+
             /** Whether the customer is marked as deleted */
             fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
 
@@ -606,6 +679,21 @@ private constructor(
              * supported value.
              */
             fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
+
+            /**
+             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
+             * regulatory jurisdiction.
+             */
+            fun region(region: String) = region(JsonField.of(region))
+
+            /**
+             * Sets [Builder.region] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.region] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun region(region: JsonField<String>) = apply { this.region = region }
 
             /** Last update timestamp */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -739,7 +827,9 @@ private constructor(
                     checkRequired("umaAddress", umaAddress),
                     id,
                     createdAt,
+                    (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                     isDeleted,
+                    region,
                     updatedAt,
                     checkRequired("customerType", customerType),
                     address,
@@ -762,7 +852,9 @@ private constructor(
             umaAddress()
             id()
             createdAt()
+            currencies()
             isDeleted()
+            region()
             updatedAt()
             customerType().validate()
             address()?.validate()
@@ -792,7 +884,9 @@ private constructor(
                 (if (umaAddress.asKnown() == null) 0 else 1) +
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
+                (currencies.asKnown()?.size ?: 0) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
+                (if (region.asKnown() == null) 0 else 1) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (customerType.asKnown()?.validity() ?: 0) +
                 (address.asKnown()?.validity() ?: 0) +
@@ -811,7 +905,9 @@ private constructor(
                 umaAddress == other.umaAddress &&
                 id == other.id &&
                 createdAt == other.createdAt &&
+                currencies == other.currencies &&
                 isDeleted == other.isDeleted &&
+                region == other.region &&
                 updatedAt == other.updatedAt &&
                 customerType == other.customerType &&
                 address == other.address &&
@@ -828,7 +924,9 @@ private constructor(
                 umaAddress,
                 id,
                 createdAt,
+                currencies,
                 isDeleted,
+                region,
                 updatedAt,
                 customerType,
                 address,
@@ -843,7 +941,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
     }
 
     class Business
@@ -853,7 +951,9 @@ private constructor(
         private val umaAddress: JsonField<String>,
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
+        private val currencies: JsonField<List<String>>,
         private val isDeleted: JsonField<Boolean>,
+        private val region: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
         private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
         private val address: JsonField<Address>,
@@ -875,9 +975,13 @@ private constructor(
             @JsonProperty("createdAt")
             @ExcludeMissing
             createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            currencies: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -899,7 +1003,9 @@ private constructor(
             umaAddress,
             id,
             createdAt,
+            currencies,
             isDeleted,
+            region,
             updatedAt,
             customerType,
             address,
@@ -915,7 +1021,9 @@ private constructor(
                 .umaAddress(umaAddress)
                 .id(id)
                 .createdAt(createdAt)
+                .currencies(currencies)
                 .isDeleted(isDeleted)
+                .region(region)
                 .updatedAt(updatedAt)
                 .build()
 
@@ -961,12 +1069,29 @@ private constructor(
         fun createdAt(): OffsetDateTime? = createdAt.getNullable("createdAt")
 
         /**
+         * List of currency codes enabled for this customer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+        /**
          * Whether the customer is marked as deleted
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
         fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
+
+        /**
+         * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
+         * regulatory jurisdiction.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun region(): String? = region.getNullable("region")
 
         /**
          * Last update timestamp
@@ -1049,11 +1174,27 @@ private constructor(
         fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
         /**
+         * Returns the raw JSON value of [currencies].
+         *
+         * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("currencies")
+        @ExcludeMissing
+        fun _currencies(): JsonField<List<String>> = currencies
+
+        /**
          * Returns the raw JSON value of [isDeleted].
          *
          * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
+
+        /**
+         * Returns the raw JSON value of [region].
+         *
+         * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
 
         /**
          * Returns the raw JSON value of [updatedAt].
@@ -1144,7 +1285,9 @@ private constructor(
             private var umaAddress: JsonField<String>? = null
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
+            private var currencies: JsonField<MutableList<String>>? = null
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
+            private var region: JsonField<String> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
             private var address: JsonField<Address> = JsonMissing.of()
@@ -1159,7 +1302,9 @@ private constructor(
                 umaAddress = business.umaAddress
                 id = business.id
                 createdAt = business.createdAt
+                currencies = business.currencies.map { it.toMutableList() }
                 isDeleted = business.isDeleted
+                region = business.region
                 updatedAt = business.updatedAt
                 customerType = business.customerType
                 address = business.address
@@ -1225,6 +1370,32 @@ private constructor(
                 this.createdAt = createdAt
             }
 
+            /** List of currency codes enabled for this customer. */
+            fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+            /**
+             * Sets [Builder.currencies] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.currencies] with a well-typed `List<String>` value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun currencies(currencies: JsonField<List<String>>) = apply {
+                this.currencies = currencies.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [currencies].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addCurrency(currency: String) = apply {
+                currencies =
+                    (currencies ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("currencies", it).add(currency)
+                    }
+            }
+
             /** Whether the customer is marked as deleted */
             fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
 
@@ -1236,6 +1407,21 @@ private constructor(
              * supported value.
              */
             fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
+
+            /**
+             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
+             * regulatory jurisdiction.
+             */
+            fun region(region: String) = region(JsonField.of(region))
+
+            /**
+             * Sets [Builder.region] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.region] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun region(region: JsonField<String>) = apply { this.region = region }
 
             /** Last update timestamp */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1371,7 +1557,9 @@ private constructor(
                     checkRequired("umaAddress", umaAddress),
                     id,
                     createdAt,
+                    (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                     isDeleted,
+                    region,
                     updatedAt,
                     checkRequired("customerType", customerType),
                     address,
@@ -1393,7 +1581,9 @@ private constructor(
             umaAddress()
             id()
             createdAt()
+            currencies()
             isDeleted()
+            region()
             updatedAt()
             customerType().validate()
             address()?.validate()
@@ -1422,7 +1612,9 @@ private constructor(
                 (if (umaAddress.asKnown() == null) 0 else 1) +
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
+                (currencies.asKnown()?.size ?: 0) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
+                (if (region.asKnown() == null) 0 else 1) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (customerType.asKnown()?.validity() ?: 0) +
                 (address.asKnown()?.validity() ?: 0) +
@@ -3030,7 +3222,9 @@ private constructor(
                 umaAddress == other.umaAddress &&
                 id == other.id &&
                 createdAt == other.createdAt &&
+                currencies == other.currencies &&
                 isDeleted == other.isDeleted &&
+                region == other.region &&
                 updatedAt == other.updatedAt &&
                 customerType == other.customerType &&
                 address == other.address &&
@@ -3046,7 +3240,9 @@ private constructor(
                 umaAddress,
                 id,
                 createdAt,
+                currencies,
                 isDeleted,
+                region,
                 updatedAt,
                 customerType,
                 address,
@@ -3060,6 +3256,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, isDeleted=$isDeleted, updatedAt=$updatedAt, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, beneficialOwners=$beneficialOwners, additionalProperties=$additionalProperties}"
+            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, beneficialOwners=$beneficialOwners, additionalProperties=$additionalProperties}"
     }
 }

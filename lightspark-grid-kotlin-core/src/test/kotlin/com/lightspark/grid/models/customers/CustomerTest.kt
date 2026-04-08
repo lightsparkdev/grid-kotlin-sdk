@@ -18,7 +18,10 @@ internal class CustomerTest {
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
                 .isDeleted(false)
+                .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 
@@ -26,7 +29,9 @@ internal class CustomerTest {
         assertThat(customer.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
         assertThat(customer.id()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(customer.createdAt()).isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+        assertThat(customer.currencies()).containsExactly("USD", "USDC")
         assertThat(customer.isDeleted()).isEqualTo(false)
+        assertThat(customer.region()).isEqualTo("US")
         assertThat(customer.updatedAt()).isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
     }
 
@@ -39,7 +44,10 @@ internal class CustomerTest {
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
                 .isDeleted(false)
+                .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 

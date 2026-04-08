@@ -10,6 +10,8 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkKnown
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -17,14 +19,29 @@ import java.util.Objects
 class CustomerUpdate
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val currencies: JsonField<List<String>>,
     private val umaAddress: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of()
-    ) : this(umaAddress, mutableMapOf())
+        @JsonProperty("currencies")
+        @ExcludeMissing
+        currencies: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
+    ) : this(currencies, umaAddress, mutableMapOf())
+
+    /**
+     * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
+     * tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some currency
+     * combinations may require separate customers — if so, the request will be rejected with
+     * details.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun currencies(): List<String>? = currencies.getNullable("currencies")
 
     /**
      * Optional UMA address identifier. If provided, the customer's UMA address will be updated.
@@ -34,6 +51,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
+
+    /**
+     * Returns the raw JSON value of [currencies].
+     *
+     * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("currencies")
+    @ExcludeMissing
+    fun _currencies(): JsonField<List<String>> = currencies
 
     /**
      * Returns the raw JSON value of [umaAddress].
@@ -63,12 +89,45 @@ private constructor(
     /** A builder for [CustomerUpdate]. */
     class Builder internal constructor() {
 
+        private var currencies: JsonField<MutableList<String>>? = null
         private var umaAddress: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customerUpdate: CustomerUpdate) = apply {
+            currencies = customerUpdate.currencies.map { it.toMutableList() }
             umaAddress = customerUpdate.umaAddress
             additionalProperties = customerUpdate.additionalProperties.toMutableMap()
+        }
+
+        /**
+         * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+         * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some currency
+         * combinations may require separate customers — if so, the request will be rejected with
+         * details.
+         */
+        fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+        /**
+         * Sets [Builder.currencies] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.currencies] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun currencies(currencies: JsonField<List<String>>) = apply {
+            this.currencies = currencies.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [currencies].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addCurrency(currency: String) = apply {
+            currencies =
+                (currencies ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("currencies", it).add(currency)
+                }
         }
 
         /**
@@ -111,7 +170,11 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): CustomerUpdate =
-            CustomerUpdate(umaAddress, additionalProperties.toMutableMap())
+            CustomerUpdate(
+                (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                umaAddress,
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -121,6 +184,7 @@ private constructor(
             return@apply
         }
 
+        currencies()
         umaAddress()
         validated = true
     }
@@ -138,7 +202,8 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (if (umaAddress.asKnown() == null) 0 else 1)
+    internal fun validity(): Int =
+        (currencies.asKnown()?.size ?: 0) + (if (umaAddress.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -146,14 +211,15 @@ private constructor(
         }
 
         return other is CustomerUpdate &&
+            currencies == other.currencies &&
             umaAddress == other.umaAddress &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(umaAddress, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(currencies, umaAddress, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerUpdate{umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "CustomerUpdate{currencies=$currencies, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }

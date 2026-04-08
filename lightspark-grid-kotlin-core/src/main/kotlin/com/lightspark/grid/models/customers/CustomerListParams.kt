@@ -17,11 +17,13 @@ class CustomerListParams
 private constructor(
     private val createdAfter: OffsetDateTime?,
     private val createdBefore: OffsetDateTime?,
+    private val currency: String?,
     private val cursor: String?,
     private val customerType: CustomerType?,
     private val isIncludingDeleted: Boolean?,
     private val limit: Long?,
     private val platformCustomerId: String?,
+    private val region: String?,
     private val umaAddress: String?,
     private val updatedAfter: OffsetDateTime?,
     private val updatedBefore: OffsetDateTime?,
@@ -34,6 +36,12 @@ private constructor(
 
     /** Filter customers created before this timestamp (inclusive) */
     fun createdBefore(): OffsetDateTime? = createdBefore
+
+    /**
+     * Filter by currency code. Returns customers that have this currency in their enabled
+     * currencies list.
+     */
+    fun currency(): String? = currency
 
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
@@ -49,6 +57,9 @@ private constructor(
 
     /** Filter by platform-specific customer identifier */
     fun platformCustomerId(): String? = platformCustomerId
+
+    /** Filter by customer region (ISO 3166-1 alpha-2 country code) */
+    fun region(): String? = region
 
     /** Filter by uma address */
     fun umaAddress(): String? = umaAddress
@@ -80,11 +91,13 @@ private constructor(
 
         private var createdAfter: OffsetDateTime? = null
         private var createdBefore: OffsetDateTime? = null
+        private var currency: String? = null
         private var cursor: String? = null
         private var customerType: CustomerType? = null
         private var isIncludingDeleted: Boolean? = null
         private var limit: Long? = null
         private var platformCustomerId: String? = null
+        private var region: String? = null
         private var umaAddress: String? = null
         private var updatedAfter: OffsetDateTime? = null
         private var updatedBefore: OffsetDateTime? = null
@@ -94,11 +107,13 @@ private constructor(
         internal fun from(customerListParams: CustomerListParams) = apply {
             createdAfter = customerListParams.createdAfter
             createdBefore = customerListParams.createdBefore
+            currency = customerListParams.currency
             cursor = customerListParams.cursor
             customerType = customerListParams.customerType
             isIncludingDeleted = customerListParams.isIncludingDeleted
             limit = customerListParams.limit
             platformCustomerId = customerListParams.platformCustomerId
+            region = customerListParams.region
             umaAddress = customerListParams.umaAddress
             updatedAfter = customerListParams.updatedAfter
             updatedBefore = customerListParams.updatedBefore
@@ -113,6 +128,12 @@ private constructor(
         fun createdBefore(createdBefore: OffsetDateTime?) = apply {
             this.createdBefore = createdBefore
         }
+
+        /**
+         * Filter by currency code. Returns customers that have this currency in their enabled
+         * currencies list.
+         */
+        fun currency(currency: String?) = apply { this.currency = currency }
 
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
@@ -147,6 +168,9 @@ private constructor(
         fun platformCustomerId(platformCustomerId: String?) = apply {
             this.platformCustomerId = platformCustomerId
         }
+
+        /** Filter by customer region (ISO 3166-1 alpha-2 country code) */
+        fun region(region: String?) = apply { this.region = region }
 
         /** Filter by uma address */
         fun umaAddress(umaAddress: String?) = apply { this.umaAddress = umaAddress }
@@ -266,11 +290,13 @@ private constructor(
             CustomerListParams(
                 createdAfter,
                 createdBefore,
+                currency,
                 cursor,
                 customerType,
                 isIncludingDeleted,
                 limit,
                 platformCustomerId,
+                region,
                 umaAddress,
                 updatedAfter,
                 updatedBefore,
@@ -290,11 +316,13 @@ private constructor(
                 createdBefore?.let {
                     put("createdBefore", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
                 }
+                currency?.let { put("currency", it) }
                 cursor?.let { put("cursor", it) }
                 customerType?.let { put("customerType", it.toString()) }
                 isIncludingDeleted?.let { put("isIncludingDeleted", it.toString()) }
                 limit?.let { put("limit", it.toString()) }
                 platformCustomerId?.let { put("platformCustomerId", it) }
+                region?.let { put("region", it) }
                 umaAddress?.let { put("umaAddress", it) }
                 updatedAfter?.let {
                     put("updatedAfter", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it))
@@ -314,11 +342,13 @@ private constructor(
         return other is CustomerListParams &&
             createdAfter == other.createdAfter &&
             createdBefore == other.createdBefore &&
+            currency == other.currency &&
             cursor == other.cursor &&
             customerType == other.customerType &&
             isIncludingDeleted == other.isIncludingDeleted &&
             limit == other.limit &&
             platformCustomerId == other.platformCustomerId &&
+            region == other.region &&
             umaAddress == other.umaAddress &&
             updatedAfter == other.updatedAfter &&
             updatedBefore == other.updatedBefore &&
@@ -330,11 +360,13 @@ private constructor(
         Objects.hash(
             createdAfter,
             createdBefore,
+            currency,
             cursor,
             customerType,
             isIncludingDeleted,
             limit,
             platformCustomerId,
+            region,
             umaAddress,
             updatedAfter,
             updatedBefore,
@@ -343,5 +375,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CustomerListParams{createdAfter=$createdAfter, createdBefore=$createdBefore, cursor=$cursor, customerType=$customerType, isIncludingDeleted=$isIncludingDeleted, limit=$limit, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, updatedAfter=$updatedAfter, updatedBefore=$updatedBefore, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerListParams{createdAfter=$createdAfter, createdBefore=$createdBefore, currency=$currency, cursor=$cursor, customerType=$customerType, isIncludingDeleted=$isIncludingDeleted, limit=$limit, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, updatedAfter=$updatedAfter, updatedBefore=$updatedBefore, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
