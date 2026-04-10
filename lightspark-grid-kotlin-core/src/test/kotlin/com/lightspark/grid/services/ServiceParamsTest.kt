@@ -47,6 +47,7 @@ internal class ServiceParamsTest {
 
         quoteService.create(
             QuoteCreateParams.builder()
+                .idempotencyKey("<uuid>")
                 .destination(
                     QuoteDestinationOneOf.AccountDestination.builder()
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")

@@ -6,6 +6,7 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
+import com.lightspark.grid.models.quotes.QuoteExecuteParams
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -25,6 +26,7 @@ internal class QuoteServiceTest {
         val quote =
             quoteService.create(
                 QuoteCreateParams.builder()
+                    .idempotencyKey("<uuid>")
                     .destination(
                         QuoteDestinationOneOf.AccountDestination.builder()
                             .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -80,7 +82,13 @@ internal class QuoteServiceTest {
                 .build()
         val quoteService = client.quotes()
 
-        val quote = quoteService.execute("Quote:019542f5-b3e7-1d02-0000-000000000001")
+        val quote =
+            quoteService.execute(
+                QuoteExecuteParams.builder()
+                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
+                    .idempotencyKey("<uuid>")
+                    .build()
+            )
 
         quote.validate()
     }
