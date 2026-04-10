@@ -547,7 +547,8 @@ private constructor(
          * The crypto network to use for the funding source. Required when `currency` is a
          * stablecoin (e.g. USDC, USDT). Specifies which network the customer will deposit on, so
          * the correct deposit address can be generated. Example values: `SOLANA_MAINNET`,
-         * `SOLANA_DEVNET`, `ETHEREUM_MAINNET`.
+         * `SOLANA_DEVNET`, `ETHEREUM_MAINNET`, `ETHEREUM_TESTNET`, `BASE_MAINNET`, `BASE_TESTNET`,
+         * `SPARK_MAINNET`, `SPARK_TESTNET`, `LIGHTNING_MAINNET`, `LIGHTNING_REGTEST`.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -668,7 +669,9 @@ private constructor(
              * The crypto network to use for the funding source. Required when `currency` is a
              * stablecoin (e.g. USDC, USDT). Specifies which network the customer will deposit on,
              * so the correct deposit address can be generated. Example values: `SOLANA_MAINNET`,
-             * `SOLANA_DEVNET`, `ETHEREUM_MAINNET`.
+             * `SOLANA_DEVNET`, `ETHEREUM_MAINNET`, `ETHEREUM_TESTNET`, `BASE_MAINNET`,
+             * `BASE_TESTNET`, `SPARK_MAINNET`, `SPARK_TESTNET`, `LIGHTNING_MAINNET`,
+             * `LIGHTNING_REGTEST`.
              */
             fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
 

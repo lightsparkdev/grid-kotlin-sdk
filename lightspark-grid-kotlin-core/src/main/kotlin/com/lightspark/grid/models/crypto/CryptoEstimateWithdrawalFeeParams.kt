@@ -40,7 +40,8 @@ private constructor(
 
     /**
      * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-     * ETHEREUM_MAINNET, POLYGON_MAINNET, TRON_MAINNET.
+     * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET,
+     * LIGHTNING_MAINNET, LIGHTNING_REGTEST.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -178,7 +179,8 @@ private constructor(
 
         /**
          * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, POLYGON_MAINNET, TRON_MAINNET.
+         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
+         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
          */
         fun cryptoNetwork(cryptoNetwork: String) = apply { body.cryptoNetwork(cryptoNetwork) }
 
@@ -428,7 +430,8 @@ private constructor(
 
         /**
          * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, POLYGON_MAINNET, TRON_MAINNET.
+         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
+         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -565,7 +568,8 @@ private constructor(
 
             /**
              * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET,
-             * SOLANA_DEVNET, ETHEREUM_MAINNET, POLYGON_MAINNET, TRON_MAINNET.
+             * SOLANA_DEVNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET,
+             * SPARK_MAINNET, SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
              */
             fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
 
