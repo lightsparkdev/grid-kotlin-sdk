@@ -22,7 +22,10 @@ internal class CustomerListPageResponseTest {
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
                         .isDeleted(false)
+                        .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -54,7 +57,10 @@ internal class CustomerListPageResponseTest {
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
                         .isDeleted(false)
+                        .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -90,7 +96,10 @@ internal class CustomerListPageResponseTest {
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
                         .isDeleted(false)
+                        .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(

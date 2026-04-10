@@ -20,10 +20,12 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
+import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -424,6 +426,8 @@ private constructor(
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val platformCustomerId: JsonField<String>,
+            private val currencies: JsonField<List<String>>,
+            private val region: JsonField<String>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -439,6 +443,12 @@ private constructor(
                 @JsonProperty("platformCustomerId")
                 @ExcludeMissing
                 platformCustomerId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("currencies")
+                @ExcludeMissing
+                currencies: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("region")
+                @ExcludeMissing
+                region: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -462,6 +472,8 @@ private constructor(
                 nationality: JsonField<String> = JsonMissing.of(),
             ) : this(
                 platformCustomerId,
+                currencies,
+                region,
                 umaAddress,
                 customerType,
                 address,
@@ -475,6 +487,8 @@ private constructor(
             fun toCustomerCreate(): CustomerCreate =
                 CustomerCreate.builder()
                     .platformCustomerId(platformCustomerId)
+                    .currencies(currencies)
+                    .region(region)
                     .umaAddress(umaAddress)
                     .build()
 
@@ -497,6 +511,31 @@ private constructor(
              *   value).
              */
             fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
+
+            /**
+             * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
+             * tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than
+             * one sending currency, since the correct currencies cannot always be inferred. If not
+             * provided, currencies will be inferred from the customer's region. Some currency
+             * combinations may require separate customers — if so, the request will be rejected
+             * with details.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+            /**
+             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
+             * determines the regulatory jurisdiction and KYC requirements for the customer.
+             * Required if the customer will use currencies with different KYC requirements across
+             * regions. A customer with accounts in multiple regions should be registered as
+             * separate customers. This field is immutable after creation.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun region(): String? = region.getNullable("region")
 
             /**
              * Optional UMA address identifier. If not provided during customer creation, one will
@@ -565,6 +604,23 @@ private constructor(
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             fun _platformCustomerId(): JsonField<String> = platformCustomerId
+
+            /**
+             * Returns the raw JSON value of [currencies].
+             *
+             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            fun _currencies(): JsonField<List<String>> = currencies
+
+            /**
+             * Returns the raw JSON value of [region].
+             *
+             * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -661,6 +717,8 @@ private constructor(
             class Builder internal constructor() {
 
                 private var platformCustomerId: JsonField<String>? = null
+                private var currencies: JsonField<MutableList<String>>? = null
+                private var region: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -673,6 +731,8 @@ private constructor(
 
                 internal fun from(individual: Individual) = apply {
                     platformCustomerId = individual.platformCustomerId
+                    currencies = individual.currencies.map { it.toMutableList() }
+                    region = individual.region
                     umaAddress = individual.umaAddress
                     customerType = individual.customerType
                     address = individual.address
@@ -700,6 +760,57 @@ private constructor(
                 fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
                     this.platformCustomerId = platformCustomerId
                 }
+
+                /**
+                 * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+                 * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use
+                 * more than one sending currency, since the correct currencies cannot always be
+                 * inferred. If not provided, currencies will be inferred from the customer's
+                 * region. Some currency combinations may require separate customers — if so, the
+                 * request will be rejected with details.
+                 */
+                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+                /**
+                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currencies(currencies: JsonField<List<String>>) = apply {
+                    this.currencies = currencies.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [currencies].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCurrency(currency: String) = apply {
+                    currencies =
+                        (currencies ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("currencies", it).add(currency)
+                        }
+                }
+
+                /**
+                 * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity.
+                 * This determines the regulatory jurisdiction and KYC requirements for the
+                 * customer. Required if the customer will use currencies with different KYC
+                 * requirements across regions. A customer with accounts in multiple regions should
+                 * be registered as separate customers. This field is immutable after creation.
+                 */
+                fun region(region: String) = region(JsonField.of(region))
+
+                /**
+                 * Sets [Builder.region] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.region] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun region(region: JsonField<String>) = apply { this.region = region }
 
                 /**
                  * Optional UMA address identifier. If not provided during customer creation, one
@@ -840,6 +951,8 @@ private constructor(
                 fun build(): Individual =
                     Individual(
                         checkRequired("platformCustomerId", platformCustomerId),
+                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                        region,
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -859,6 +972,8 @@ private constructor(
                 }
 
                 platformCustomerId()
+                currencies()
+                region()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -885,6 +1000,8 @@ private constructor(
              */
             internal fun validity(): Int =
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
+                    (currencies.asKnown()?.size ?: 0) +
+                    (if (region.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
@@ -900,6 +1017,8 @@ private constructor(
 
                 return other is Individual &&
                     platformCustomerId == other.platformCustomerId &&
+                    currencies == other.currencies &&
+                    region == other.region &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -913,6 +1032,8 @@ private constructor(
             private val hashCode: Int by lazy {
                 Objects.hash(
                     platformCustomerId,
+                    currencies,
+                    region,
                     umaAddress,
                     customerType,
                     address,
@@ -927,13 +1048,15 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+                "Individual{platformCustomerId=$platformCustomerId, currencies=$currencies, region=$region, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
         }
 
         class Business
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val platformCustomerId: JsonField<String>,
+            private val currencies: JsonField<List<String>>,
+            private val region: JsonField<String>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -947,6 +1070,12 @@ private constructor(
                 @JsonProperty("platformCustomerId")
                 @ExcludeMissing
                 platformCustomerId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("currencies")
+                @ExcludeMissing
+                currencies: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("region")
+                @ExcludeMissing
+                region: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -964,6 +1093,8 @@ private constructor(
                 kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
             ) : this(
                 platformCustomerId,
+                currencies,
+                region,
                 umaAddress,
                 customerType,
                 address,
@@ -975,6 +1106,8 @@ private constructor(
             fun toCustomerCreate(): CustomerCreate =
                 CustomerCreate.builder()
                     .platformCustomerId(platformCustomerId)
+                    .currencies(currencies)
+                    .region(region)
                     .umaAddress(umaAddress)
                     .build()
 
@@ -995,6 +1128,31 @@ private constructor(
              *   value).
              */
             fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
+
+            /**
+             * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
+             * tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than
+             * one sending currency, since the correct currencies cannot always be inferred. If not
+             * provided, currencies will be inferred from the customer's region. Some currency
+             * combinations may require separate customers — if so, the request will be rejected
+             * with details.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+            /**
+             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
+             * determines the regulatory jurisdiction and KYC requirements for the customer.
+             * Required if the customer will use currencies with different KYC requirements across
+             * regions. A customer with accounts in multiple regions should be registered as
+             * separate customers. This field is immutable after creation.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun region(): String? = region.getNullable("region")
 
             /**
              * Optional UMA address identifier. If not provided during customer creation, one will
@@ -1047,6 +1205,23 @@ private constructor(
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             fun _platformCustomerId(): JsonField<String> = platformCustomerId
+
+            /**
+             * Returns the raw JSON value of [currencies].
+             *
+             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            fun _currencies(): JsonField<List<String>> = currencies
+
+            /**
+             * Returns the raw JSON value of [region].
+             *
+             * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -1125,6 +1300,8 @@ private constructor(
             class Builder internal constructor() {
 
                 private var platformCustomerId: JsonField<String>? = null
+                private var currencies: JsonField<MutableList<String>>? = null
+                private var region: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -1136,6 +1313,8 @@ private constructor(
 
                 internal fun from(business: Business) = apply {
                     platformCustomerId = business.platformCustomerId
+                    currencies = business.currencies.map { it.toMutableList() }
+                    region = business.region
                     umaAddress = business.umaAddress
                     customerType = business.customerType
                     address = business.address
@@ -1161,6 +1340,57 @@ private constructor(
                 fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
                     this.platformCustomerId = platformCustomerId
                 }
+
+                /**
+                 * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+                 * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use
+                 * more than one sending currency, since the correct currencies cannot always be
+                 * inferred. If not provided, currencies will be inferred from the customer's
+                 * region. Some currency combinations may require separate customers — if so, the
+                 * request will be rejected with details.
+                 */
+                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+                /**
+                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currencies(currencies: JsonField<List<String>>) = apply {
+                    this.currencies = currencies.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [currencies].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCurrency(currency: String) = apply {
+                    currencies =
+                        (currencies ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("currencies", it).add(currency)
+                        }
+                }
+
+                /**
+                 * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity.
+                 * This determines the regulatory jurisdiction and KYC requirements for the
+                 * customer. Required if the customer will use currencies with different KYC
+                 * requirements across regions. A customer with accounts in multiple regions should
+                 * be registered as separate customers. This field is immutable after creation.
+                 */
+                fun region(region: String) = region(JsonField.of(region))
+
+                /**
+                 * Sets [Builder.region] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.region] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun region(region: JsonField<String>) = apply { this.region = region }
 
                 /**
                  * Optional UMA address identifier. If not provided during customer creation, one
@@ -1277,6 +1507,8 @@ private constructor(
                 fun build(): Business =
                     Business(
                         checkRequired("platformCustomerId", platformCustomerId),
+                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                        region,
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -1294,6 +1526,8 @@ private constructor(
                 }
 
                 platformCustomerId()
+                currencies()
+                region()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -1318,6 +1552,8 @@ private constructor(
              */
             internal fun validity(): Int =
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
+                    (currencies.asKnown()?.size ?: 0) +
+                    (if (region.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
@@ -1331,6 +1567,8 @@ private constructor(
 
                 return other is Business &&
                     platformCustomerId == other.platformCustomerId &&
+                    currencies == other.currencies &&
+                    region == other.region &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -1342,6 +1580,8 @@ private constructor(
             private val hashCode: Int by lazy {
                 Objects.hash(
                     platformCustomerId,
+                    currencies,
+                    region,
                     umaAddress,
                     customerType,
                     address,
@@ -1354,7 +1594,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "Business{platformCustomerId=$platformCustomerId, currencies=$currencies, region=$region, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
         }
     }
 

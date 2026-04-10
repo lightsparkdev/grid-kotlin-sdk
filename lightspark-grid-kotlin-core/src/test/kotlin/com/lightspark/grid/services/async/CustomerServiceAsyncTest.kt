@@ -28,6 +28,9 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.create(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                     .platformCustomerId("ind-9f84e0c2")
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -81,6 +84,7 @@ internal class CustomerServiceAsyncTest {
                     .customerId("customerId")
                     .updateCustomerRequest(
                         CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                            .currencies(listOf("USD", "EUR", "USDC"))
                             .umaAddress("\$john.doe@uma.domain.com")
                             .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(

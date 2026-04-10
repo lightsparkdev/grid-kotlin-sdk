@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -131,7 +132,10 @@ internal class BeneficialOwnerServiceTest {
                 .build()
         val beneficialOwnerService = client.beneficialOwners()
 
-        val page = beneficialOwnerService.list()
+        val page =
+            beneficialOwnerService.list(
+                BeneficialOwnerListParams.builder().customerId("customerId").build()
+            )
 
         page.response().validate()
     }

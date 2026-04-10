@@ -15,6 +15,9 @@ internal class CustomerCreateParamsTest {
             .createCustomerRequest(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                     .platformCustomerId("ind-9f84e0c2")
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -43,6 +46,9 @@ internal class CustomerCreateParamsTest {
                 .createCustomerRequest(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .platformCustomerId("ind-9f84e0c2")
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -70,6 +76,9 @@ internal class CustomerCreateParamsTest {
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .platformCustomerId("ind-9f84e0c2")
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(

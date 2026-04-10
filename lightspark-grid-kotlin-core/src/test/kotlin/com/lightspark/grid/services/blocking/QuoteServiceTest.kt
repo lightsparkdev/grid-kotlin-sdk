@@ -72,21 +72,6 @@ internal class QuoteServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun list() {
-        val client =
-            LightsparkGridOkHttpClient.builder()
-                .username("My Username")
-                .password("My Password")
-                .build()
-        val quoteService = client.quotes()
-
-        val page = quoteService.list()
-
-        page.response().validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
     fun execute() {
         val client =
             LightsparkGridOkHttpClient.builder()

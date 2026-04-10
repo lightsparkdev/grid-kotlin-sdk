@@ -15,6 +15,7 @@ internal class CustomerUpdateParamsTest {
             .customerId("customerId")
             .updateCustomerRequest(
                 CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    .currencies(listOf("USD", "EUR", "USDC"))
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -60,6 +61,7 @@ internal class CustomerUpdateParamsTest {
                 .customerId("customerId")
                 .updateCustomerRequest(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                        .currencies(listOf("USD", "EUR", "USDC"))
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -86,6 +88,7 @@ internal class CustomerUpdateParamsTest {
             .isEqualTo(
                 CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                        .currencies(listOf("USD", "EUR", "USDC"))
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(

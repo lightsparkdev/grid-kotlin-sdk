@@ -14,10 +14,15 @@ internal class CustomerCreateTest {
         val customerCreate =
             CustomerCreate.builder()
                 .platformCustomerId("9f84e0c2a72c4fa")
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
         assertThat(customerCreate.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
+        assertThat(customerCreate.currencies()).containsExactly("USD", "USDC")
+        assertThat(customerCreate.region()).isEqualTo("US")
         assertThat(customerCreate.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
     }
 
@@ -27,6 +32,9 @@ internal class CustomerCreateTest {
         val customerCreate =
             CustomerCreate.builder()
                 .platformCustomerId("9f84e0c2a72c4fa")
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 

@@ -11,10 +11,9 @@ internal class BeneficialOwnerListParamsTest {
     @Test
     fun create() {
         BeneficialOwnerListParams.builder()
-            .cursor("cursor")
             .customerId("customerId")
+            .cursor("cursor")
             .limit(1L)
-            .role(BeneficialOwnerListParams.Role.UBO)
             .build()
     }
 
@@ -22,10 +21,9 @@ internal class BeneficialOwnerListParamsTest {
     fun queryParams() {
         val params =
             BeneficialOwnerListParams.builder()
-                .cursor("cursor")
                 .customerId("customerId")
+                .cursor("cursor")
                 .limit(1L)
-                .role(BeneficialOwnerListParams.Role.UBO)
                 .build()
 
         val queryParams = params._queryParams()
@@ -33,20 +31,20 @@ internal class BeneficialOwnerListParamsTest {
         assertThat(queryParams)
             .isEqualTo(
                 QueryParams.builder()
-                    .put("cursor", "cursor")
                     .put("customerId", "customerId")
+                    .put("cursor", "cursor")
                     .put("limit", "1")
-                    .put("role", "UBO")
                     .build()
             )
     }
 
     @Test
     fun queryParamsWithoutOptionalFields() {
-        val params = BeneficialOwnerListParams.builder().build()
+        val params = BeneficialOwnerListParams.builder().customerId("customerId").build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().build())
+        assertThat(queryParams)
+            .isEqualTo(QueryParams.builder().put("customerId", "customerId").build())
     }
 }
