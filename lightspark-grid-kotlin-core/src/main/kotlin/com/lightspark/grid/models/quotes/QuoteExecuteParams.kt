@@ -21,12 +21,15 @@ import java.util.Objects
 class QuoteExecuteParams
 private constructor(
     private val quoteId: String?,
+    private val idempotencyKey: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
     private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     fun quoteId(): String? = quoteId
+
+    fun idempotencyKey(): String? = idempotencyKey
 
     /** Additional body properties to send with the request. */
     fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
@@ -51,18 +54,22 @@ private constructor(
     class Builder internal constructor() {
 
         private var quoteId: String? = null
+        private var idempotencyKey: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
         private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(quoteExecuteParams: QuoteExecuteParams) = apply {
             quoteId = quoteExecuteParams.quoteId
+            idempotencyKey = quoteExecuteParams.idempotencyKey
             additionalHeaders = quoteExecuteParams.additionalHeaders.toBuilder()
             additionalQueryParams = quoteExecuteParams.additionalQueryParams.toBuilder()
             additionalBodyProperties = quoteExecuteParams.additionalBodyProperties.toMutableMap()
         }
 
         fun quoteId(quoteId: String?) = apply { this.quoteId = quoteId }
+
+        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -192,6 +199,7 @@ private constructor(
         fun build(): QuoteExecuteParams =
             QuoteExecuteParams(
                 quoteId,
+                idempotencyKey,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
                 additionalBodyProperties.toImmutable(),
@@ -206,7 +214,13 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                idempotencyKey?.let { put("Idempotency-Key", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -217,14 +231,21 @@ private constructor(
 
         return other is QuoteExecuteParams &&
             quoteId == other.quoteId &&
+            idempotencyKey == other.idempotencyKey &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
             additionalBodyProperties == other.additionalBodyProperties
     }
 
     override fun hashCode(): Int =
-        Objects.hash(quoteId, additionalHeaders, additionalQueryParams, additionalBodyProperties)
+        Objects.hash(
+            quoteId,
+            idempotencyKey,
+            additionalHeaders,
+            additionalQueryParams,
+            additionalBodyProperties,
+        )
 
     override fun toString() =
-        "QuoteExecuteParams{quoteId=$quoteId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "QuoteExecuteParams{quoteId=$quoteId, idempotencyKey=$idempotencyKey, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

@@ -75,6 +75,7 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -122,6 +123,7 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -169,6 +171,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -216,6 +219,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -263,6 +267,7 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -310,6 +315,7 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -357,6 +363,7 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -404,6 +411,7 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -451,6 +459,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -498,6 +507,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -545,6 +555,7 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -592,6 +603,7 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -639,6 +651,7 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -686,6 +699,7 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -733,6 +747,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -780,6 +795,7 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -825,6 +841,7 @@ internal class ErrorHandlingTest {
             assertThrows<LightsparkGridException> {
                 quoteService.create(
                     QuoteCreateParams.builder()
+                        .idempotencyKey("<uuid>")
                         .destination(
                             QuoteDestinationOneOf.AccountDestination.builder()
                                 .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")

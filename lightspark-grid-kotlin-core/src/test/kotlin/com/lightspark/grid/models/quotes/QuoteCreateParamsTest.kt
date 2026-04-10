@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.quotes
 
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,6 +12,7 @@ internal class QuoteCreateParamsTest {
     @Test
     fun create() {
         QuoteCreateParams.builder()
+            .idempotencyKey("<uuid>")
             .destination(
                 QuoteDestinationOneOf.AccountDestination.builder()
                     .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -39,9 +41,69 @@ internal class QuoteCreateParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            QuoteCreateParams.builder()
+                .idempotencyKey("<uuid>")
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail("ACH")
+                        .build()
+                )
+                .lockedCurrencyAmount(10000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+                .description("Transfer between accounts, either internal or external.")
+                .immediatelyExecute(false)
+                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
+                .senderCustomerInfo(
+                    QuoteCreateParams.SenderCustomerInfo.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().put("Idempotency-Key", "<uuid>").build())
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            QuoteCreateParams.builder()
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
+                .lockedCurrencyAmount(10000L)
+                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
     fun body() {
         val params =
             QuoteCreateParams.builder()
+                .idempotencyKey("<uuid>")
                 .destination(
                     QuoteDestinationOneOf.AccountDestination.builder()
                         .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
