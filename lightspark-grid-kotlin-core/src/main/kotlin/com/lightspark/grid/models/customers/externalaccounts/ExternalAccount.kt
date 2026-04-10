@@ -125,8 +125,9 @@ private constructor(
 
     /**
      * The blockchain network for this external account, if applicable. Present when the account is
-     * a cryptocurrency wallet. Example values: SOLANA_MAINNET, ETHEREUM_MAINNET, POLYGON_MAINNET,
-     * TRON_MAINNET.
+     * a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET, ETHEREUM_MAINNET,
+     * ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET,
+     * LIGHTNING_MAINNET, LIGHTNING_REGTEST.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -671,8 +672,9 @@ private constructor(
 
         /**
          * The blockchain network for this external account, if applicable. Present when the account
-         * is a cryptocurrency wallet. Example values: SOLANA_MAINNET, ETHEREUM_MAINNET,
-         * POLYGON_MAINNET, TRON_MAINNET.
+         * is a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
+         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
+         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
          */
         fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
 
