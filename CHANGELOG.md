@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.5.0 (2026-04-10)
+
+Full Changelog: [v1.4.0...v1.5.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.4.0...v1.5.0)
+
+### Features
+
+* **api:** add currencies/region fields to customers, filters to list ([87d9221](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/87d922160615f1ad5f59083ceb4a2bcb0259d1bd))
+* **api:** remove list method from quotes ([ae6b4e8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ae6b4e838f052ee945ddfdb2f31b4b7a7113a36b))
+
+
+### Bug Fixes
+
+* **api:** make customerId required, remove role filter in beneficial owners list ([ffa8a25](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ffa8a255d98c3baff944a23b615a51a1d5335749))
+
+
+### Documentation
+
+* **api:** update crypto_network examples in crypto/external accounts/quotes ([149bfc9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/149bfc98f9014beb590f47c75983c4b6b9250514))
+
 ## 1.4.0 (2026-04-01)
 
 Full Changelog: [v1.3.0...v1.4.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.3.0...v1.4.0)
