@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.customers.externalaccounts
 
-import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,11 +13,8 @@ internal class ExternalAccountCreateParamsTest {
             .externalAccountCreate(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountInfo.builder()
+                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
                             .accountNumber("12345678901")
-                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                            .routingNumber("123456789")
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -40,6 +36,7 @@ internal class ExternalAccountCreateParamsTest {
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")
@@ -59,11 +56,8 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            UsdExternalAccountInfo.builder()
+                            ExternalAccountCreate.AccountInfo.UsdAccount.builder()
                                 .accountNumber("12345678901")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .routingNumber("123456789")
                                 .beneficiary(
                                     UsdBeneficiary.builder()
                                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -85,6 +79,7 @@ internal class ExternalAccountCreateParamsTest {
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
+                                .routingNumber("123456789")
                                 .build()
                         )
                         .currency("USD")
@@ -102,11 +97,8 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountInfo.builder()
+                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
                             .accountNumber("12345678901")
-                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                            .routingNumber("123456789")
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -128,6 +120,7 @@ internal class ExternalAccountCreateParamsTest {
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")
@@ -146,12 +139,10 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            UsdExternalAccountInfo.builder()
+                            ExternalAccountCreate.AccountInfo.UsdAccount.builder()
                                 .accountNumber("12345678901")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .routingNumber("123456789")
                                 .individualBeneficiary("John Doe")
+                                .routingNumber("123456789")
                                 .build()
                         )
                         .currency("USD")
@@ -165,12 +156,10 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountInfo.builder()
+                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
                             .accountNumber("12345678901")
-                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                            .routingNumber("123456789")
                             .individualBeneficiary("John Doe")
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")

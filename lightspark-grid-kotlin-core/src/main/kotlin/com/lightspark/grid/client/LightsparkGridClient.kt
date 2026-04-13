@@ -11,6 +11,7 @@ import com.lightspark.grid.services.blocking.DiscoveryService
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
 import com.lightspark.grid.services.blocking.InvitationService
+import com.lightspark.grid.services.blocking.PlaidService
 import com.lightspark.grid.services.blocking.PlatformService
 import com.lightspark.grid.services.blocking.QuoteService
 import com.lightspark.grid.services.blocking.ReceiverService
@@ -69,6 +70,8 @@ interface LightsparkGridClient {
 
     /** Internal account management endpoints for creating and managing internal accounts */
     fun platform(): PlatformService
+
+    fun plaid(): PlaidService
 
     /**
      * Endpoints for transferring funds between internal and external accounts with the same
@@ -174,6 +177,8 @@ interface LightsparkGridClient {
 
         /** Internal account management endpoints for creating and managing internal accounts */
         fun platform(): PlatformService.WithRawResponse
+
+        fun plaid(): PlaidService.WithRawResponse
 
         /**
          * Endpoints for transferring funds between internal and external accounts with the same
