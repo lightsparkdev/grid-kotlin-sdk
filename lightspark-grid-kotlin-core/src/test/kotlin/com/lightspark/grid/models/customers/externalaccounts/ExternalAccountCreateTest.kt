@@ -4,7 +4,6 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,15 +14,10 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
+                                .builder()
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -42,6 +36,8 @@ internal class ExternalAccountCreateTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .iban("AE070331234567890123456")
+                        .swiftCode("EBILAEAD")
                         .build()
                 )
                 .currency("USD")
@@ -53,16 +49,11 @@ internal class ExternalAccountCreateTest {
 
         assertThat(externalAccountCreate.accountInfo())
             .isEqualTo(
-                ExternalAccountInfoOneOf.ofBrlAccount(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                ExternalAccountCreate.AccountInfo.ofAedAccount(
+                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
+                                .builder()
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -81,6 +72,8 @@ internal class ExternalAccountCreateTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .iban("AE070331234567890123456")
+                        .swiftCode("EBILAEAD")
                         .build()
                 )
             )
@@ -98,15 +91,10 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
+                                .builder()
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -125,6 +113,8 @@ internal class ExternalAccountCreateTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .iban("AE070331234567890123456")
+                        .swiftCode("EBILAEAD")
                         .build()
                 )
                 .currency("USD")
