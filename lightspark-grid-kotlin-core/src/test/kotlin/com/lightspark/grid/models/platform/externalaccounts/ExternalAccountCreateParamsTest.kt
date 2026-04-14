@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.platform.externalaccounts
 
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import org.assertj.core.api.Assertions.assertThat
@@ -13,8 +14,9 @@ internal class ExternalAccountCreateParamsTest {
     fun create() {
         ExternalAccountCreateParams.builder()
             .accountInfo(
-                ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                UsdExternalAccountCreateInfo.builder()
                     .accountNumber("12345678901")
+                    .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                     .beneficiary(
                         UsdBeneficiary.builder()
                             .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -49,8 +51,9 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                    UsdExternalAccountCreateInfo.builder()
                         .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                         .beneficiary(
                             UsdBeneficiary.builder()
                                 .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -84,8 +87,9 @@ internal class ExternalAccountCreateParamsTest {
         assertThat(body.accountInfo())
             .isEqualTo(
                 ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                    UsdExternalAccountCreateInfo.builder()
                         .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                         .beneficiary(
                             UsdBeneficiary.builder()
                                 .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -120,8 +124,9 @@ internal class ExternalAccountCreateParamsTest {
         val params =
             ExternalAccountCreateParams.builder()
                 .accountInfo(
-                    ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                    UsdExternalAccountCreateInfo.builder()
                         .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                         .individualBeneficiary("John Doe")
                         .routingNumber("123456789")
                         .build()
@@ -134,8 +139,9 @@ internal class ExternalAccountCreateParamsTest {
         assertThat(body.accountInfo())
             .isEqualTo(
                 ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                    UsdExternalAccountCreateInfo.builder()
                         .accountNumber("12345678901")
+                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                         .individualBeneficiary("John Doe")
                         .routingNumber("123456789")
                         .build()

@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.async.customers
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
@@ -25,8 +26,9 @@ internal class ExternalAccountServiceAsyncTest {
             externalAccountServiceAsync.create(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                        UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)

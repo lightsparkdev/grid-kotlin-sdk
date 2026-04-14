@@ -22,7 +22,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 .kycStatus(BeneficialOwnerUpdateResponse.KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerUpdateResponse.PersonalInfo.builder()
+                    BeneficialOwnerPersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -36,7 +36,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
+                        .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
                         .countryOfIssuance("US")
@@ -61,7 +61,7 @@ internal class BeneficialOwnerUpdateResponseTest {
         assertThat(beneficialOwnerUpdateResponse.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwnerUpdateResponse.personalInfo())
             .isEqualTo(
-                BeneficialOwnerUpdateResponse.PersonalInfo.builder()
+                BeneficialOwnerPersonalInfo.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -75,7 +75,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                     .birthDate(LocalDate.parse("1978-06-15"))
                     .firstName("Jane")
                     .identifier("123-45-6789")
-                    .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
+                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .nationality("US")
                     .countryOfIssuance("US")
@@ -104,7 +104,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                 .kycStatus(BeneficialOwnerUpdateResponse.KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerUpdateResponse.PersonalInfo.builder()
+                    BeneficialOwnerPersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -118,7 +118,7 @@ internal class BeneficialOwnerUpdateResponseTest {
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerUpdateResponse.PersonalInfo.IdType.SSN)
+                        .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
                         .countryOfIssuance("US")

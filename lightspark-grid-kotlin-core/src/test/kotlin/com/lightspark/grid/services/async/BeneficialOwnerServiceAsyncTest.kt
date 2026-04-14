@@ -5,6 +5,7 @@ package com.lightspark.grid.services.async
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -29,7 +30,7 @@ internal class BeneficialOwnerServiceAsyncTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .ownershipPercentage(51L)
                     .personalInfo(
-                        BeneficialOwnerCreateParams.PersonalInfo.builder()
+                        BeneficialOwnerPersonalInfo.builder()
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -43,7 +44,7 @@ internal class BeneficialOwnerServiceAsyncTest {
                             .birthDate(LocalDate.parse("1978-06-15"))
                             .firstName("Jane")
                             .identifier("123-45-6789")
-                            .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                            .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                             .lastName("Smith")
                             .nationality("US")
                             .countryOfIssuance("US")

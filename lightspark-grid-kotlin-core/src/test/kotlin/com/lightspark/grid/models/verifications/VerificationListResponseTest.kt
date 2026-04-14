@@ -4,6 +4,7 @@ package com.lightspark.grid.models.verifications
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.VerificationError
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -18,13 +19,11 @@ internal class VerificationListResponseTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .addError(
-                    VerificationListResponse.Error.builder()
+                    VerificationError.builder()
                         .reason("Business address line 1 is required")
                         .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .type(VerificationListResponse.Error.Type.MISSING_FIELD)
-                        .addAcceptedDocumentType(
-                            VerificationListResponse.Error.AcceptedDocumentType.PASSPORT
-                        )
+                        .type(VerificationError.Type.MISSING_FIELD)
+                        .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
                         .field("customer.address.line1")
                         .build()
                 )
@@ -40,13 +39,11 @@ internal class VerificationListResponseTest {
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(verificationListResponse.errors())
             .containsExactly(
-                VerificationListResponse.Error.builder()
+                VerificationError.builder()
                     .reason("Business address line 1 is required")
                     .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .type(VerificationListResponse.Error.Type.MISSING_FIELD)
-                    .addAcceptedDocumentType(
-                        VerificationListResponse.Error.AcceptedDocumentType.PASSPORT
-                    )
+                    .type(VerificationError.Type.MISSING_FIELD)
+                    .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
                     .field("customer.address.line1")
                     .build()
             )
@@ -65,13 +62,11 @@ internal class VerificationListResponseTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .addError(
-                    VerificationListResponse.Error.builder()
+                    VerificationError.builder()
                         .reason("Business address line 1 is required")
                         .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .type(VerificationListResponse.Error.Type.MISSING_FIELD)
-                        .addAcceptedDocumentType(
-                            VerificationListResponse.Error.AcceptedDocumentType.PASSPORT
-                        )
+                        .type(VerificationError.Type.MISSING_FIELD)
+                        .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
                         .field("customer.address.line1")
                         .build()
                 )

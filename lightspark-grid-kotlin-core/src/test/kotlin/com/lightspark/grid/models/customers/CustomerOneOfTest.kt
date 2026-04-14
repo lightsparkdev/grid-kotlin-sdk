@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -157,7 +158,7 @@ internal class CustomerOneOfTest {
                         .kycStatus(CustomerOneOf.Business.BeneficialOwner.KycStatus.APPROVED)
                         .ownershipPercentage(51L)
                         .personalInfo(
-                            CustomerOneOf.Business.BeneficialOwner.PersonalInfo.builder()
+                            BeneficialOwnerPersonalInfo.builder()
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -171,9 +172,7 @@ internal class CustomerOneOfTest {
                                 .birthDate(LocalDate.parse("1978-06-15"))
                                 .firstName("Jane")
                                 .identifier("123-45-6789")
-                                .idType(
-                                    CustomerOneOf.Business.BeneficialOwner.PersonalInfo.IdType.SSN
-                                )
+                                .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                                 .lastName("Smith")
                                 .nationality("US")
                                 .countryOfIssuance("US")
@@ -262,7 +261,7 @@ internal class CustomerOneOfTest {
                             .kycStatus(CustomerOneOf.Business.BeneficialOwner.KycStatus.APPROVED)
                             .ownershipPercentage(51L)
                             .personalInfo(
-                                CustomerOneOf.Business.BeneficialOwner.PersonalInfo.builder()
+                                BeneficialOwnerPersonalInfo.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -276,10 +275,7 @@ internal class CustomerOneOfTest {
                                     .birthDate(LocalDate.parse("1978-06-15"))
                                     .firstName("Jane")
                                     .identifier("123-45-6789")
-                                    .idType(
-                                        CustomerOneOf.Business.BeneficialOwner.PersonalInfo.IdType
-                                            .SSN
-                                    )
+                                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                                     .lastName("Smith")
                                     .nationality("US")
                                     .countryOfIssuance("US")
