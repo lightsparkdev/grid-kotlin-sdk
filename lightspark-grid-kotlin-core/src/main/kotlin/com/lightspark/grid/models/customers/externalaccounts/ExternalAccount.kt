@@ -13,6 +13,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import java.util.Collections
 import java.util.Objects
 
@@ -536,19 +537,25 @@ private constructor(
          * Alias for calling [accountInfo] with
          * `ExternalAccountInfoOneOf.ofEthereumWallet(ethereumWallet)`.
          */
-        fun accountInfo(ethereumWallet: ExternalAccountInfoOneOf.EthereumWallet) =
+        fun accountInfo(ethereumWallet: EthereumWalletExternalAccountInfo) =
             accountInfo(ExternalAccountInfoOneOf.ofEthereumWallet(ethereumWallet))
 
         /**
          * Alias for calling [accountInfo] with the following:
          * ```kotlin
-         * ExternalAccountInfoOneOf.EthereumWallet.builder()
+         * EthereumWalletExternalAccountInfo.builder()
+         *     .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
          *     .address(address)
          *     .build()
          * ```
          */
         fun ethereumWalletAccountInfo(address: String) =
-            accountInfo(ExternalAccountInfoOneOf.EthereumWallet.builder().address(address).build())
+            accountInfo(
+                EthereumWalletExternalAccountInfo.builder()
+                    .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+                    .address(address)
+                    .build()
+            )
 
         /**
          * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofAedAccount(aedAccount)`.

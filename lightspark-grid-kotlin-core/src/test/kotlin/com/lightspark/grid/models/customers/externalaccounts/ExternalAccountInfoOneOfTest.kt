@@ -6,6 +6,29 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.BdtBeneficiary
+import com.lightspark.grid.models.BwpBeneficiary
+import com.lightspark.grid.models.CadBeneficiary
+import com.lightspark.grid.models.CopBeneficiary
+import com.lightspark.grid.models.EgpBeneficiary
+import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
+import com.lightspark.grid.models.EurBeneficiary
+import com.lightspark.grid.models.GhsBeneficiary
+import com.lightspark.grid.models.GtqBeneficiary
+import com.lightspark.grid.models.HtgBeneficiary
+import com.lightspark.grid.models.JmdBeneficiary
+import com.lightspark.grid.models.KesBeneficiary
+import com.lightspark.grid.models.MwkBeneficiary
+import com.lightspark.grid.models.NgnBeneficiary
+import com.lightspark.grid.models.PkrBeneficiary
+import com.lightspark.grid.models.RwfBeneficiary
+import com.lightspark.grid.models.TzsBeneficiary
+import com.lightspark.grid.models.UgxBeneficiary
+import com.lightspark.grid.models.XafBeneficiary
+import com.lightspark.grid.models.XofBeneficiary
+import com.lightspark.grid.models.ZarBeneficiary
+import com.lightspark.grid.models.ZmwBeneficiary
 import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.CadAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
@@ -162,7 +185,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .branchCode("00012")
                 .addPaymentRail(CadAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
+                    CadBeneficiary.builder()
+                        .beneficiaryType(CadBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -242,7 +266,8 @@ internal class ExternalAccountInfoOneOfTest {
                     .branchCode("00012")
                     .addPaymentRail(CadAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.CadAccount.Beneficiary.Individual.builder()
+                        CadBeneficiary.builder()
+                            .beneficiaryType(CadBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -403,7 +428,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
+                    EurBeneficiary.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -414,6 +439,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
@@ -481,7 +507,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .addPaymentRail(EurAccountInfo.PaymentRail.SEPA)
                     .swiftCode("DEUTDEFF")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.EurAccount.Beneficiary.Individual.builder()
+                        EurBeneficiary.builder()
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -492,6 +518,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .birthDate("birthDate")
                             .countryOfResidence("countryOfResidence")
@@ -1001,7 +1028,8 @@ internal class ExternalAccountInfoOneOfTest {
         val kesExternalAccountInfo =
             ExternalAccountInfoOneOf.KesExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.KesExternalAccountInfo.Beneficiary.Individual.builder()
+                    KesBeneficiary.builder()
+                        .beneficiaryType(KesBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1082,8 +1110,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofKesExternalAccountInfo(
                 ExternalAccountInfoOneOf.KesExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.KesExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        KesBeneficiary.builder()
+                            .beneficiaryType(KesBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1124,7 +1152,8 @@ internal class ExternalAccountInfoOneOfTest {
         val mwkExternalAccountInfo =
             ExternalAccountInfoOneOf.MwkExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.MwkExternalAccountInfo.Beneficiary.Individual.builder()
+                    MwkBeneficiary.builder()
+                        .beneficiaryType(MwkBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1205,8 +1234,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofMwkExternalAccountInfo(
                 ExternalAccountInfoOneOf.MwkExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.MwkExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        MwkBeneficiary.builder()
+                            .beneficiaryType(MwkBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1491,7 +1520,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
+                    NgnBeneficiary.builder()
+                        .beneficiaryType(NgnBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1569,7 +1599,8 @@ internal class ExternalAccountInfoOneOfTest {
                     .bankName("x")
                     .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.NgnAccount.Beneficiary.Individual.builder()
+                        NgnBeneficiary.builder()
+                            .beneficiaryType(NgnBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -1725,7 +1756,8 @@ internal class ExternalAccountInfoOneOfTest {
         val rwfExternalAccountInfo =
             ExternalAccountInfoOneOf.RwfExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.RwfExternalAccountInfo.Beneficiary.Individual.builder()
+                    RwfBeneficiary.builder()
+                        .beneficiaryType(RwfBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -1806,8 +1838,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofRwfExternalAccountInfo(
                 ExternalAccountInfoOneOf.RwfExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.RwfExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        RwfBeneficiary.builder()
+                            .beneficiaryType(RwfBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2092,7 +2124,8 @@ internal class ExternalAccountInfoOneOfTest {
         val tzsExternalAccountInfo =
             ExternalAccountInfoOneOf.TzsExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.TzsExternalAccountInfo.Beneficiary.Individual.builder()
+                    TzsBeneficiary.builder()
+                        .beneficiaryType(TzsBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2173,8 +2206,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofTzsExternalAccountInfo(
                 ExternalAccountInfoOneOf.TzsExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.TzsExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        TzsBeneficiary.builder()
+                            .beneficiaryType(TzsBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2215,7 +2248,8 @@ internal class ExternalAccountInfoOneOfTest {
         val ugxExternalAccountInfo =
             ExternalAccountInfoOneOf.UgxExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.UgxExternalAccountInfo.Beneficiary.Individual.builder()
+                    UgxBeneficiary.builder()
+                        .beneficiaryType(UgxBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2296,8 +2330,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofUgxExternalAccountInfo(
                 ExternalAccountInfoOneOf.UgxExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.UgxExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        UgxBeneficiary.builder()
+                            .beneficiaryType(UgxBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2580,7 +2614,8 @@ internal class ExternalAccountInfoOneOfTest {
         val xofExternalAccountInfo =
             ExternalAccountInfoOneOf.XofExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.XofExternalAccountInfo.Beneficiary.Individual.builder()
+                    XofBeneficiary.builder()
+                        .beneficiaryType(XofBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2662,8 +2697,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofXofExternalAccountInfo(
                 ExternalAccountInfoOneOf.XofExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.XofExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        XofBeneficiary.builder()
+                            .beneficiaryType(XofBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2707,7 +2742,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("1234567890")
                 .bankName("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.ZarExternalAccountInfo.Beneficiary.Individual.builder()
+                    ZarBeneficiary.builder()
+                        .beneficiaryType(ZarBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2788,8 +2824,8 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("1234567890")
                     .bankName("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.ZarExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        ZarBeneficiary.builder()
+                            .beneficiaryType(ZarBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -2828,7 +2864,8 @@ internal class ExternalAccountInfoOneOfTest {
         val zmwExternalAccountInfo =
             ExternalAccountInfoOneOf.ZmwExternalAccountInfo.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.ZmwExternalAccountInfo.Beneficiary.Individual.builder()
+                    ZmwBeneficiary.builder()
+                        .beneficiaryType(ZmwBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -2909,8 +2946,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofZmwExternalAccountInfo(
                 ExternalAccountInfoOneOf.ZmwExternalAccountInfo.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.ZmwExternalAccountInfo.Beneficiary.Individual
-                            .builder()
+                        ZmwBeneficiary.builder()
+                            .beneficiaryType(ZmwBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3407,7 +3444,8 @@ internal class ExternalAccountInfoOneOfTest {
     @Test
     fun ofEthereumWallet() {
         val ethereumWallet =
-            ExternalAccountInfoOneOf.EthereumWallet.builder()
+            EthereumWalletExternalAccountInfo.builder()
+                .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
                 .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                 .build()
 
@@ -3462,7 +3500,8 @@ internal class ExternalAccountInfoOneOfTest {
         val jsonMapper = jsonMapper()
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofEthereumWallet(
-                ExternalAccountInfoOneOf.EthereumWallet.builder()
+                EthereumWalletExternalAccountInfo.builder()
+                    .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
                     .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
                     .build()
             )
@@ -3481,7 +3520,8 @@ internal class ExternalAccountInfoOneOfTest {
         val aedAccount =
             ExternalAccountInfoOneOf.AedAccount.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.AedAccount.Beneficiary.Individual.builder()
+                    AedBeneficiary.builder()
+                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3558,7 +3598,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofAedAccount(
                 ExternalAccountInfoOneOf.AedAccount.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.AedAccount.Beneficiary.Individual.builder()
+                        AedBeneficiary.builder()
+                            .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3597,7 +3638,8 @@ internal class ExternalAccountInfoOneOfTest {
         val bwpAccount =
             ExternalAccountInfoOneOf.BwpAccount.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.BwpAccount.Beneficiary.Individual.builder()
+                    BwpBeneficiary.builder()
+                        .beneficiaryType(BwpBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3674,7 +3716,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofBwpAccount(
                 ExternalAccountInfoOneOf.BwpAccount.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.BwpAccount.Beneficiary.Individual.builder()
+                        BwpBeneficiary.builder()
+                            .beneficiaryType(BwpBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3713,7 +3756,8 @@ internal class ExternalAccountInfoOneOfTest {
         val xafAccount =
             ExternalAccountInfoOneOf.XafAccount.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.XafAccount.Beneficiary.Individual.builder()
+                    XafBeneficiary.builder()
+                        .beneficiaryType(XafBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3791,7 +3835,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofXafAccount(
                 ExternalAccountInfoOneOf.XafAccount.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.XafAccount.Beneficiary.Individual.builder()
+                        XafBeneficiary.builder()
+                            .beneficiaryType(XafBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3832,7 +3877,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.BdtAccount.builder()
                 .accountNumber("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.BdtAccount.Beneficiary.Individual.builder()
+                    BdtBeneficiary.builder()
+                        .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3911,7 +3957,8 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.BdtAccount.builder()
                     .accountNumber("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.BdtAccount.Beneficiary.Individual.builder()
+                        BdtBeneficiary.builder()
+                            .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3953,7 +4000,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("x")
                 .bankAccountType(ExternalAccountInfoOneOf.CopAccount.BankAccountType.CHECKING)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.CopAccount.Beneficiary.Individual.builder()
+                    CopBeneficiary.builder()
+                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
@@ -4031,7 +4079,8 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("x")
                     .bankAccountType(ExternalAccountInfoOneOf.CopAccount.BankAccountType.CHECKING)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.CopAccount.Beneficiary.Individual.builder()
+                        CopBeneficiary.builder()
+                            .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
@@ -4070,7 +4119,7 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.EgpAccount.builder()
                 .accountNumber("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.EgpAccount.Beneficiary.Individual.builder()
+                    EgpBeneficiary.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -4081,6 +4130,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .phoneNumber("phoneNumber")
@@ -4148,7 +4198,7 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.EgpAccount.builder()
                     .accountNumber("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.EgpAccount.Beneficiary.Individual.builder()
+                        EgpBeneficiary.builder()
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -4159,6 +4209,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .phoneNumber("phoneNumber")
@@ -4188,7 +4239,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.GhsAccount.builder()
                 .accountNumber("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.GhsAccount.Beneficiary.Individual.builder()
+                    GhsBeneficiary.builder()
+                        .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4265,7 +4317,8 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.GhsAccount.builder()
                     .accountNumber("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.GhsAccount.Beneficiary.Individual.builder()
+                        GhsBeneficiary.builder()
+                            .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4304,7 +4357,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.GtqAccount.builder()
                 .accountNumber("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.GtqAccount.Beneficiary.Individual.builder()
+                    GtqBeneficiary.builder()
+                        .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
@@ -4381,7 +4435,8 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.GtqAccount.builder()
                     .accountNumber("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.GtqAccount.Beneficiary.Individual.builder()
+                        GtqBeneficiary.builder()
+                            .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
@@ -4419,7 +4474,8 @@ internal class ExternalAccountInfoOneOfTest {
         val htgAccount =
             ExternalAccountInfoOneOf.HtgAccount.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.HtgAccount.Beneficiary.Individual.builder()
+                    HtgBeneficiary.builder()
+                        .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4495,7 +4551,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofHtgAccount(
                 ExternalAccountInfoOneOf.HtgAccount.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.HtgAccount.Beneficiary.Individual.builder()
+                        HtgBeneficiary.builder()
+                            .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4535,7 +4592,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("x")
                 .bankAccountType(ExternalAccountInfoOneOf.JmdAccount.BankAccountType.CHECKING)
                 .beneficiary(
-                    ExternalAccountInfoOneOf.JmdAccount.Beneficiary.Individual.builder()
+                    JmdBeneficiary.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -4546,6 +4603,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
@@ -4613,7 +4671,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("x")
                     .bankAccountType(ExternalAccountInfoOneOf.JmdAccount.BankAccountType.CHECKING)
                     .beneficiary(
-                        ExternalAccountInfoOneOf.JmdAccount.Beneficiary.Individual.builder()
+                        JmdBeneficiary.builder()
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -4624,6 +4682,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .phoneNumber("phoneNumber")
                             .birthDate("birthDate")
@@ -4652,7 +4711,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.PkrAccount.builder()
                 .accountNumber("x")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.PkrAccount.Beneficiary.Individual.builder()
+                    PkrBeneficiary.builder()
+                        .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4730,7 +4790,8 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.PkrAccount.builder()
                     .accountNumber("x")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.PkrAccount.Beneficiary.Individual.builder()
+                        PkrBeneficiary.builder()
+                            .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()

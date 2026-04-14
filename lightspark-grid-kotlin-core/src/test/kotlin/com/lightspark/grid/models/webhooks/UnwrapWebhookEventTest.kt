@@ -7,6 +7,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
+import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.IndividualCustomerFields
@@ -954,13 +955,12 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .addError(
-                            VerificationUpdateWebhookEvent.Data.Error.builder()
+                            VerificationError.builder()
                                 .reason("Business address line 1 is required")
                                 .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .type(VerificationUpdateWebhookEvent.Data.Error.Type.MISSING_FIELD)
+                                .type(VerificationError.Type.MISSING_FIELD)
                                 .addAcceptedDocumentType(
-                                    VerificationUpdateWebhookEvent.Data.Error.AcceptedDocumentType
-                                        .PASSPORT
+                                    VerificationError.AcceptedDocumentType.PASSPORT
                                 )
                                 .field("customer.address.line1")
                                 .build()
@@ -1000,16 +1000,12 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .addError(
-                                VerificationUpdateWebhookEvent.Data.Error.builder()
+                                VerificationError.builder()
                                     .reason("Business address line 1 is required")
                                     .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                    .type(
-                                        VerificationUpdateWebhookEvent.Data.Error.Type.MISSING_FIELD
-                                    )
+                                    .type(VerificationError.Type.MISSING_FIELD)
                                     .addAcceptedDocumentType(
-                                        VerificationUpdateWebhookEvent.Data.Error
-                                            .AcceptedDocumentType
-                                            .PASSPORT
+                                        VerificationError.AcceptedDocumentType.PASSPORT
                                     )
                                     .field("customer.address.line1")
                                     .build()

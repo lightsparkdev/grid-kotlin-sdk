@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.customers.externalaccounts
 
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,8 +14,9 @@ internal class ExternalAccountCreateParamsTest {
             .externalAccountCreate(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                        UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -56,8 +58,9 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                            UsdExternalAccountCreateInfo.builder()
                                 .accountNumber("12345678901")
+                                .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                                 .beneficiary(
                                     UsdBeneficiary.builder()
                                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -97,8 +100,9 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                        UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -139,8 +143,9 @@ internal class ExternalAccountCreateParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                            UsdExternalAccountCreateInfo.builder()
                                 .accountNumber("12345678901")
+                                .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                                 .individualBeneficiary("John Doe")
                                 .routingNumber("123456789")
                                 .build()
@@ -156,8 +161,9 @@ internal class ExternalAccountCreateParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        ExternalAccountCreate.AccountInfo.UsdAccount.builder()
+                        UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .individualBeneficiary("John Doe")
                             .routingNumber("123456789")
                             .build()
