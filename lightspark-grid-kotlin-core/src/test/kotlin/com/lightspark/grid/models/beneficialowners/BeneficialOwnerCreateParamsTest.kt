@@ -15,7 +15,7 @@ internal class BeneficialOwnerCreateParamsTest {
             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
             .ownershipPercentage(51L)
             .personalInfo(
-                BeneficialOwnerCreateParams.PersonalInfo.builder()
+                BeneficialOwnerPersonalInfo.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -29,7 +29,7 @@ internal class BeneficialOwnerCreateParamsTest {
                     .birthDate(LocalDate.parse("1978-06-15"))
                     .firstName("Jane")
                     .identifier("123-45-6789")
-                    .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .nationality("US")
                     .countryOfIssuance("US")
@@ -50,7 +50,7 @@ internal class BeneficialOwnerCreateParamsTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerCreateParams.PersonalInfo.builder()
+                    BeneficialOwnerPersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -64,7 +64,7 @@ internal class BeneficialOwnerCreateParamsTest {
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                        .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
                         .countryOfIssuance("US")
@@ -83,7 +83,7 @@ internal class BeneficialOwnerCreateParamsTest {
         assertThat(body.ownershipPercentage()).isEqualTo(51L)
         assertThat(body.personalInfo())
             .isEqualTo(
-                BeneficialOwnerCreateParams.PersonalInfo.builder()
+                BeneficialOwnerPersonalInfo.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -97,7 +97,7 @@ internal class BeneficialOwnerCreateParamsTest {
                     .birthDate(LocalDate.parse("1978-06-15"))
                     .firstName("Jane")
                     .identifier("123-45-6789")
-                    .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .nationality("US")
                     .countryOfIssuance("US")
@@ -120,7 +120,7 @@ internal class BeneficialOwnerCreateParamsTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerCreateParams.PersonalInfo.builder()
+                    BeneficialOwnerPersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -131,7 +131,7 @@ internal class BeneficialOwnerCreateParamsTest {
                         .birthDate(LocalDate.parse("1978-06-15"))
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                        .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .nationality("US")
                         .build()
@@ -146,7 +146,7 @@ internal class BeneficialOwnerCreateParamsTest {
         assertThat(body.ownershipPercentage()).isEqualTo(51L)
         assertThat(body.personalInfo())
             .isEqualTo(
-                BeneficialOwnerCreateParams.PersonalInfo.builder()
+                BeneficialOwnerPersonalInfo.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -157,7 +157,7 @@ internal class BeneficialOwnerCreateParamsTest {
                     .birthDate(LocalDate.parse("1978-06-15"))
                     .firstName("Jane")
                     .identifier("123-45-6789")
-                    .idType(BeneficialOwnerCreateParams.PersonalInfo.IdType.SSN)
+                    .idType(BeneficialOwnerPersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .nationality("US")
                     .build()

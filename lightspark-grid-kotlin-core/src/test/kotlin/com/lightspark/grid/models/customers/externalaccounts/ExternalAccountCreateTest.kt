@@ -4,6 +4,8 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,10 +16,11 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
-                                .builder()
+                            AedBeneficiary.builder()
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -50,10 +53,11 @@ internal class ExternalAccountCreateTest {
         assertThat(externalAccountCreate.accountInfo())
             .isEqualTo(
                 ExternalAccountCreate.AccountInfo.ofAedAccount(
-                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
-                                .builder()
+                            AedBeneficiary.builder()
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -91,10 +95,11 @@ internal class ExternalAccountCreateTest {
         val externalAccountCreate =
             ExternalAccountCreate.builder()
                 .accountInfo(
-                    ExternalAccountCreate.AccountInfo.AedAccount.builder()
+                    AedExternalAccountCreateInfo.builder()
+                        .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
-                            ExternalAccountCreate.AccountInfo.AedAccount.Beneficiary.Individual
-                                .builder()
+                            AedBeneficiary.builder()
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()

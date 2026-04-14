@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.blocking.platform
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
@@ -26,8 +27,9 @@ internal class ExternalAccountServiceTest {
             externalAccountService.create(
                 ExternalAccountCreateParams.builder()
                     .accountInfo(
-                        ExternalAccountCreateParams.AccountInfo.UsdAccount.builder()
+                        UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
