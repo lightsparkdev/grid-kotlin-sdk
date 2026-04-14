@@ -685,7 +685,7 @@ private constructor(
         fun identifier(): String? = identifier.getNullable("identifier")
 
         /**
-         * Type of personal identification document
+         * Type of tax identification
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -937,7 +937,7 @@ private constructor(
              */
             fun identifier(identifier: JsonField<String>) = apply { this.identifier = identifier }
 
-            /** Type of personal identification document */
+            /** Type of tax identification */
             fun idType(idType: IdType) = idType(JsonField.of(idType))
 
             /**
@@ -1090,7 +1090,7 @@ private constructor(
                 (if (nationality.asKnown() == null) 0 else 1) +
                 (if (phoneNumber.asKnown() == null) 0 else 1)
 
-        /** Type of personal identification document */
+        /** Type of tax identification */
         class IdType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
             /**
@@ -1111,7 +1111,7 @@ private constructor(
 
                 val EIN = of("EIN")
 
-                val NON_TAX_ID = of("NON_TAX_ID")
+                val NON_US_TAX_ID = of("NON_US_TAX_ID")
 
                 fun of(value: String) = IdType(JsonField.of(value))
             }
@@ -1121,7 +1121,7 @@ private constructor(
                 SSN,
                 ITIN,
                 EIN,
-                NON_TAX_ID,
+                NON_US_TAX_ID,
             }
 
             /**
@@ -1137,7 +1137,7 @@ private constructor(
                 SSN,
                 ITIN,
                 EIN,
-                NON_TAX_ID,
+                NON_US_TAX_ID,
                 /**
                  * An enum member indicating that [IdType] was instantiated with an unknown value.
                  */
@@ -1156,7 +1156,7 @@ private constructor(
                     SSN -> Value.SSN
                     ITIN -> Value.ITIN
                     EIN -> Value.EIN
-                    NON_TAX_ID -> Value.NON_TAX_ID
+                    NON_US_TAX_ID -> Value.NON_US_TAX_ID
                     else -> Value._UNKNOWN
                 }
 
@@ -1174,7 +1174,7 @@ private constructor(
                     SSN -> Known.SSN
                     ITIN -> Known.ITIN
                     EIN -> Known.EIN
-                    NON_TAX_ID -> Known.NON_TAX_ID
+                    NON_US_TAX_ID -> Known.NON_US_TAX_ID
                     else -> throw LightsparkGridInvalidDataException("Unknown IdType: $value")
                 }
 
