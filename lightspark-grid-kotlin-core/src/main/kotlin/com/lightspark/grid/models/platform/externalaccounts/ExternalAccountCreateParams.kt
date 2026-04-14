@@ -391,22 +391,12 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofBaseWallet(baseWallet)`. */
         fun accountInfo(baseWallet: BaseWalletInfo) = apply { body.accountInfo(baseWallet) }
 
-        /** Alias for calling [accountInfo] with `AccountInfo.ofEthereumWallet(ethereumWallet)`. */
-        fun accountInfo(ethereumWallet: EthereumWalletExternalAccountInfo) = apply {
-            body.accountInfo(ethereumWallet)
-        }
-
         /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * EthereumWalletExternalAccountInfo.builder()
-         *     .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
-         *     .address(address)
-         *     .build()
-         * ```
+         * Alias for calling [accountInfo] with
+         * `AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal)`.
          */
-        fun ethereumWalletAccountInfo(address: String) = apply {
-            body.ethereumWalletAccountInfo(address)
+        fun accountInfo(ethereumWalletExternal: EthereumWalletExternalAccountInfo) = apply {
+            body.accountInfo(ethereumWalletExternal)
         }
 
         /** The ISO 4217 currency code */
@@ -885,27 +875,11 @@ private constructor(
                 accountInfo(AccountInfo.ofBaseWallet(baseWallet))
 
             /**
-             * Alias for calling [accountInfo] with `AccountInfo.ofEthereumWallet(ethereumWallet)`.
+             * Alias for calling [accountInfo] with
+             * `AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal)`.
              */
-            fun accountInfo(ethereumWallet: EthereumWalletExternalAccountInfo) =
-                accountInfo(AccountInfo.ofEthereumWallet(ethereumWallet))
-
-            /**
-             * Alias for calling [accountInfo] with the following:
-             * ```kotlin
-             * EthereumWalletExternalAccountInfo.builder()
-             *     .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
-             *     .address(address)
-             *     .build()
-             * ```
-             */
-            fun ethereumWalletAccountInfo(address: String) =
-                accountInfo(
-                    EthereumWalletExternalAccountInfo.builder()
-                        .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
-                        .address(address)
-                        .build()
-                )
+            fun accountInfo(ethereumWalletExternal: EthereumWalletExternalAccountInfo) =
+                accountInfo(AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal))
 
             /** The ISO 4217 currency code */
             fun currency(currency: String) = currency(JsonField.of(currency))
@@ -1081,7 +1055,7 @@ private constructor(
         private val tronWallet: TronWalletInfo? = null,
         private val polygonWallet: PolygonWalletInfo? = null,
         private val baseWallet: BaseWalletInfo? = null,
-        private val ethereumWallet: EthereumWalletExternalAccountInfo? = null,
+        private val ethereumWalletExternal: EthereumWalletExternalAccountInfo? = null,
         private val _json: JsonValue? = null,
     ) {
 
@@ -1171,7 +1145,7 @@ private constructor(
 
         fun baseWallet(): BaseWalletInfo? = baseWallet
 
-        fun ethereumWallet(): EthereumWalletExternalAccountInfo? = ethereumWallet
+        fun ethereumWalletExternal(): EthereumWalletExternalAccountInfo? = ethereumWalletExternal
 
         fun isAedAccount(): Boolean = aedAccount != null
 
@@ -1255,7 +1229,7 @@ private constructor(
 
         fun isBaseWallet(): Boolean = baseWallet != null
 
-        fun isEthereumWallet(): Boolean = ethereumWallet != null
+        fun isEthereumWalletExternal(): Boolean = ethereumWalletExternal != null
 
         fun asAedAccount(): AedExternalAccountCreateInfo = aedAccount.getOrThrow("aedAccount")
 
@@ -1343,8 +1317,8 @@ private constructor(
 
         fun asBaseWallet(): BaseWalletInfo = baseWallet.getOrThrow("baseWallet")
 
-        fun asEthereumWallet(): EthereumWalletExternalAccountInfo =
-            ethereumWallet.getOrThrow("ethereumWallet")
+        fun asEthereumWalletExternal(): EthereumWalletExternalAccountInfo =
+            ethereumWalletExternal.getOrThrow("ethereumWalletExternal")
 
         fun _json(): JsonValue? = _json
 
@@ -1391,7 +1365,8 @@ private constructor(
                 tronWallet != null -> visitor.visitTronWallet(tronWallet)
                 polygonWallet != null -> visitor.visitPolygonWallet(polygonWallet)
                 baseWallet != null -> visitor.visitBaseWallet(baseWallet)
-                ethereumWallet != null -> visitor.visitEthereumWallet(ethereumWallet)
+                ethereumWalletExternal != null ->
+                    visitor.visitEthereumWalletExternal(ethereumWalletExternal)
                 else -> visitor.unknown(_json)
             }
 
@@ -1568,10 +1543,10 @@ private constructor(
                         baseWallet.validate()
                     }
 
-                    override fun visitEthereumWallet(
-                        ethereumWallet: EthereumWalletExternalAccountInfo
+                    override fun visitEthereumWalletExternal(
+                        ethereumWalletExternal: EthereumWalletExternalAccountInfo
                     ) {
-                        ethereumWallet.validate()
+                        ethereumWalletExternal.validate()
                     }
                 }
             )
@@ -1716,9 +1691,9 @@ private constructor(
 
                     override fun visitBaseWallet(baseWallet: BaseWalletInfo) = baseWallet.validity()
 
-                    override fun visitEthereumWallet(
-                        ethereumWallet: EthereumWalletExternalAccountInfo
-                    ) = ethereumWallet.validity()
+                    override fun visitEthereumWalletExternal(
+                        ethereumWalletExternal: EthereumWalletExternalAccountInfo
+                    ) = ethereumWalletExternal.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -1771,7 +1746,7 @@ private constructor(
                 tronWallet == other.tronWallet &&
                 polygonWallet == other.polygonWallet &&
                 baseWallet == other.baseWallet &&
-                ethereumWallet == other.ethereumWallet
+                ethereumWalletExternal == other.ethereumWalletExternal
         }
 
         override fun hashCode(): Int =
@@ -1817,7 +1792,7 @@ private constructor(
                 tronWallet,
                 polygonWallet,
                 baseWallet,
-                ethereumWallet,
+                ethereumWalletExternal,
             )
 
         override fun toString(): String =
@@ -1863,7 +1838,8 @@ private constructor(
                 tronWallet != null -> "AccountInfo{tronWallet=$tronWallet}"
                 polygonWallet != null -> "AccountInfo{polygonWallet=$polygonWallet}"
                 baseWallet != null -> "AccountInfo{baseWallet=$baseWallet}"
-                ethereumWallet != null -> "AccountInfo{ethereumWallet=$ethereumWallet}"
+                ethereumWalletExternal != null ->
+                    "AccountInfo{ethereumWalletExternal=$ethereumWalletExternal}"
                 _json != null -> "AccountInfo{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid AccountInfo")
             }
@@ -1994,8 +1970,9 @@ private constructor(
 
             fun ofBaseWallet(baseWallet: BaseWalletInfo) = AccountInfo(baseWallet = baseWallet)
 
-            fun ofEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo) =
-                AccountInfo(ethereumWallet = ethereumWallet)
+            fun ofEthereumWalletExternal(
+                ethereumWalletExternal: EthereumWalletExternalAccountInfo
+            ) = AccountInfo(ethereumWalletExternal = ethereumWalletExternal)
         }
 
         /**
@@ -2090,7 +2067,9 @@ private constructor(
 
             fun visitBaseWallet(baseWallet: BaseWalletInfo): T
 
-            fun visitEthereumWallet(ethereumWallet: EthereumWalletExternalAccountInfo): T
+            fun visitEthereumWalletExternal(
+                ethereumWalletExternal: EthereumWalletExternalAccountInfo
+            ): T
 
             /**
              * Maps an unknown variant of [AccountInfo] to a value of type [T].
@@ -2289,14 +2268,6 @@ private constructor(
                             ?.let { AccountInfo(pkrAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
-                    "ETHEREUM_WALLET" -> {
-                        return tryDeserialize(
-                                node,
-                                jacksonTypeRef<EthereumWalletExternalAccountInfo>(),
-                            )
-                            ?.let { AccountInfo(ethereumWallet = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
                 }
 
                 val bestMatches =
@@ -2319,6 +2290,11 @@ private constructor(
                             tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
                                 AccountInfo(baseWallet = it, _json = json)
                             },
+                            tryDeserialize(
+                                    node,
+                                    jacksonTypeRef<EthereumWalletExternalAccountInfo>(),
+                                )
+                                ?.let { AccountInfo(ethereumWalletExternal = it, _json = json) },
                         )
                         .filterNotNull()
                         .allMaxBy { it.validity() }
@@ -2385,7 +2361,8 @@ private constructor(
                     value.tronWallet != null -> generator.writeObject(value.tronWallet)
                     value.polygonWallet != null -> generator.writeObject(value.polygonWallet)
                     value.baseWallet != null -> generator.writeObject(value.baseWallet)
-                    value.ethereumWallet != null -> generator.writeObject(value.ethereumWallet)
+                    value.ethereumWalletExternal != null ->
+                        generator.writeObject(value.ethereumWalletExternal)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid AccountInfo")
                 }
