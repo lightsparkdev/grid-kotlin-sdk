@@ -551,17 +551,11 @@ private constructor(
 
             val SSN = of("SSN")
 
-            val PASSPORT = of("PASSPORT")
-
-            val NATIONAL_ID = of("NATIONAL_ID")
-
-            val DRIVERS_LICENSE = of("DRIVERS_LICENSE")
-
-            val TAX_ID = of("TAX_ID")
-
             val ITIN = of("ITIN")
 
-            val CPF = of("CPF")
+            val EIN = of("EIN")
+
+            val NON_TAX_ID = of("NON_TAX_ID")
 
             fun of(value: String) = IdType(JsonField.of(value))
         }
@@ -569,12 +563,9 @@ private constructor(
         /** An enum containing [IdType]'s known values. */
         enum class Known {
             SSN,
-            PASSPORT,
-            NATIONAL_ID,
-            DRIVERS_LICENSE,
-            TAX_ID,
             ITIN,
-            CPF,
+            EIN,
+            NON_TAX_ID,
         }
 
         /**
@@ -588,12 +579,9 @@ private constructor(
          */
         enum class Value {
             SSN,
-            PASSPORT,
-            NATIONAL_ID,
-            DRIVERS_LICENSE,
-            TAX_ID,
             ITIN,
-            CPF,
+            EIN,
+            NON_TAX_ID,
             /** An enum member indicating that [IdType] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -608,12 +596,9 @@ private constructor(
         fun value(): Value =
             when (this) {
                 SSN -> Value.SSN
-                PASSPORT -> Value.PASSPORT
-                NATIONAL_ID -> Value.NATIONAL_ID
-                DRIVERS_LICENSE -> Value.DRIVERS_LICENSE
-                TAX_ID -> Value.TAX_ID
                 ITIN -> Value.ITIN
-                CPF -> Value.CPF
+                EIN -> Value.EIN
+                NON_TAX_ID -> Value.NON_TAX_ID
                 else -> Value._UNKNOWN
             }
 
@@ -629,12 +614,9 @@ private constructor(
         fun known(): Known =
             when (this) {
                 SSN -> Known.SSN
-                PASSPORT -> Known.PASSPORT
-                NATIONAL_ID -> Known.NATIONAL_ID
-                DRIVERS_LICENSE -> Known.DRIVERS_LICENSE
-                TAX_ID -> Known.TAX_ID
                 ITIN -> Known.ITIN
-                CPF -> Known.CPF
+                EIN -> Known.EIN
+                NON_TAX_ID -> Known.NON_TAX_ID
                 else -> throw LightsparkGridInvalidDataException("Unknown IdType: $value")
             }
 

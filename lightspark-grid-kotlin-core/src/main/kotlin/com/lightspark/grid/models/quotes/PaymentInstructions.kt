@@ -30,7 +30,6 @@ import com.lightspark.grid.models.platform.externalaccounts.AedAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.BdtAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.BwpAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.CadAccountInfo
-import com.lightspark.grid.models.platform.externalaccounts.CopAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.DkkAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.EgpAccountInfo
 import com.lightspark.grid.models.platform.externalaccounts.EurAccountInfo
@@ -390,10 +389,10 @@ private constructor(
 
         /**
          * Alias for calling [accountOrWalletInfo] with
-         * `AccountOrWalletInfo.ofCopAccount(copAccount)`.
+         * `AccountOrWalletInfo.ofPaymentCopAccount(paymentCopAccount)`.
          */
-        fun accountOrWalletInfo(copAccount: AccountOrWalletInfo.CopAccount) =
-            accountOrWalletInfo(AccountOrWalletInfo.ofCopAccount(copAccount))
+        fun accountOrWalletInfo(paymentCopAccount: AccountOrWalletInfo.PaymentCopAccountInfo) =
+            accountOrWalletInfo(AccountOrWalletInfo.ofPaymentCopAccount(paymentCopAccount))
 
         /**
          * Alias for calling [accountOrWalletInfo] with
@@ -623,7 +622,7 @@ private constructor(
         private val bwpAccount: BwpAccount? = null,
         private val xafAccount: XafAccount? = null,
         private val bdtAccount: BdtAccount? = null,
-        private val copAccount: CopAccount? = null,
+        private val paymentCopAccount: PaymentCopAccountInfo? = null,
         private val egpAccount: EgpAccount? = null,
         private val ghsAccount: GhsAccount? = null,
         private val gtqAccount: GtqAccount? = null,
@@ -696,7 +695,7 @@ private constructor(
 
         fun bdtAccount(): BdtAccount? = bdtAccount
 
-        fun copAccount(): CopAccount? = copAccount
+        fun paymentCopAccount(): PaymentCopAccountInfo? = paymentCopAccount
 
         fun egpAccount(): EgpAccount? = egpAccount
 
@@ -780,7 +779,7 @@ private constructor(
 
         fun isBdtAccount(): Boolean = bdtAccount != null
 
-        fun isCopAccount(): Boolean = copAccount != null
+        fun isPaymentCopAccount(): Boolean = paymentCopAccount != null
 
         fun isEgpAccount(): Boolean = egpAccount != null
 
@@ -865,7 +864,8 @@ private constructor(
 
         fun asBdtAccount(): BdtAccount = bdtAccount.getOrThrow("bdtAccount")
 
-        fun asCopAccount(): CopAccount = copAccount.getOrThrow("copAccount")
+        fun asPaymentCopAccount(): PaymentCopAccountInfo =
+            paymentCopAccount.getOrThrow("paymentCopAccount")
 
         fun asEgpAccount(): EgpAccount = egpAccount.getOrThrow("egpAccount")
 
@@ -928,7 +928,7 @@ private constructor(
                 bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
                 xafAccount != null -> visitor.visitXafAccount(xafAccount)
                 bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
-                copAccount != null -> visitor.visitCopAccount(copAccount)
+                paymentCopAccount != null -> visitor.visitPaymentCopAccount(paymentCopAccount)
                 egpAccount != null -> visitor.visitEgpAccount(egpAccount)
                 ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
                 gtqAccount != null -> visitor.visitGtqAccount(gtqAccount)
@@ -1067,8 +1067,8 @@ private constructor(
                         bdtAccount.validate()
                     }
 
-                    override fun visitCopAccount(copAccount: CopAccount) {
-                        copAccount.validate()
+                    override fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) {
+                        paymentCopAccount.validate()
                     }
 
                     override fun visitEgpAccount(egpAccount: EgpAccount) {
@@ -1203,7 +1203,8 @@ private constructor(
 
                     override fun visitBdtAccount(bdtAccount: BdtAccount) = bdtAccount.validity()
 
-                    override fun visitCopAccount(copAccount: CopAccount) = copAccount.validity()
+                    override fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) =
+                        paymentCopAccount.validity()
 
                     override fun visitEgpAccount(egpAccount: EgpAccount) = egpAccount.validity()
 
@@ -1277,7 +1278,7 @@ private constructor(
                 bwpAccount == other.bwpAccount &&
                 xafAccount == other.xafAccount &&
                 bdtAccount == other.bdtAccount &&
-                copAccount == other.copAccount &&
+                paymentCopAccount == other.paymentCopAccount &&
                 egpAccount == other.egpAccount &&
                 ghsAccount == other.ghsAccount &&
                 gtqAccount == other.gtqAccount &&
@@ -1323,7 +1324,7 @@ private constructor(
                 bwpAccount,
                 xafAccount,
                 bdtAccount,
-                copAccount,
+                paymentCopAccount,
                 egpAccount,
                 ghsAccount,
                 gtqAccount,
@@ -1370,7 +1371,8 @@ private constructor(
                 bwpAccount != null -> "AccountOrWalletInfo{bwpAccount=$bwpAccount}"
                 xafAccount != null -> "AccountOrWalletInfo{xafAccount=$xafAccount}"
                 bdtAccount != null -> "AccountOrWalletInfo{bdtAccount=$bdtAccount}"
-                copAccount != null -> "AccountOrWalletInfo{copAccount=$copAccount}"
+                paymentCopAccount != null ->
+                    "AccountOrWalletInfo{paymentCopAccount=$paymentCopAccount}"
                 egpAccount != null -> "AccountOrWalletInfo{egpAccount=$egpAccount}"
                 ghsAccount != null -> "AccountOrWalletInfo{ghsAccount=$ghsAccount}"
                 gtqAccount != null -> "AccountOrWalletInfo{gtqAccount=$gtqAccount}"
@@ -1449,7 +1451,8 @@ private constructor(
 
             fun ofBdtAccount(bdtAccount: BdtAccount) = AccountOrWalletInfo(bdtAccount = bdtAccount)
 
-            fun ofCopAccount(copAccount: CopAccount) = AccountOrWalletInfo(copAccount = copAccount)
+            fun ofPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) =
+                AccountOrWalletInfo(paymentCopAccount = paymentCopAccount)
 
             fun ofEgpAccount(egpAccount: EgpAccount) = AccountOrWalletInfo(egpAccount = egpAccount)
 
@@ -1547,7 +1550,7 @@ private constructor(
 
             fun visitBdtAccount(bdtAccount: BdtAccount): T
 
-            fun visitCopAccount(copAccount: CopAccount): T
+            fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo): T
 
             fun visitEgpAccount(egpAccount: EgpAccount): T
 
@@ -1730,11 +1733,6 @@ private constructor(
                             AccountOrWalletInfo(bdtAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
-                    "COP_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<CopAccount>())?.let {
-                            AccountOrWalletInfo(copAccount = it, _json = json)
-                        } ?: AccountOrWalletInfo(_json = json)
-                    }
                     "EGP_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<EgpAccount>())?.let {
                             AccountOrWalletInfo(egpAccount = it, _json = json)
@@ -1774,6 +1772,9 @@ private constructor(
                             },
                             tryDeserialize(node, jacksonTypeRef<InrAccountInfo>())?.let {
                                 AccountOrWalletInfo(inrAccount = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<PaymentCopAccountInfo>())?.let {
+                                AccountOrWalletInfo(paymentCopAccount = it, _json = json)
                             },
                             tryDeserialize(node, jacksonTypeRef<PaymentSparkWalletInfo>())?.let {
                                 AccountOrWalletInfo(paymentSpark = it, _json = json)
@@ -1852,7 +1853,8 @@ private constructor(
                     value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
                     value.xafAccount != null -> generator.writeObject(value.xafAccount)
                     value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
-                    value.copAccount != null -> generator.writeObject(value.copAccount)
+                    value.paymentCopAccount != null ->
+                        generator.writeObject(value.paymentCopAccount)
                     value.egpAccount != null -> generator.writeObject(value.egpAccount)
                     value.ghsAccount != null -> generator.writeObject(value.ghsAccount)
                     value.gtqAccount != null -> generator.writeObject(value.gtqAccount)
@@ -12522,118 +12524,48 @@ private constructor(
                 "BdtAccount{accountNumber=$accountNumber, accountType=$accountType, branchCode=$branchCode, paymentRails=$paymentRails, phoneNumber=$phoneNumber, swiftCode=$swiftCode, reference=$reference, additionalProperties=$additionalProperties}"
         }
 
-        class CopAccount
+        class PaymentCopAccountInfo
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
-            private val accountNumber: JsonField<String>,
-            private val accountType: JsonField<CopAccountInfo.AccountType>,
-            private val bankAccountType: JsonField<CopAccountInfo.BankAccountType>,
-            private val paymentRails: JsonField<List<CopAccountInfo.PaymentRail>>,
-            private val phoneNumber: JsonField<String>,
-            private val reference: JsonField<String>,
+            private val paymentUrl: JsonField<String>,
+            private val accountType: JsonField<AccountType>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
             @JsonCreator
             private constructor(
-                @JsonProperty("accountNumber")
+                @JsonProperty("paymentUrl")
                 @ExcludeMissing
-                accountNumber: JsonField<String> = JsonMissing.of(),
+                paymentUrl: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("accountType")
                 @ExcludeMissing
-                accountType: JsonField<CopAccountInfo.AccountType> = JsonMissing.of(),
-                @JsonProperty("bankAccountType")
-                @ExcludeMissing
-                bankAccountType: JsonField<CopAccountInfo.BankAccountType> = JsonMissing.of(),
-                @JsonProperty("paymentRails")
-                @ExcludeMissing
-                paymentRails: JsonField<List<CopAccountInfo.PaymentRail>> = JsonMissing.of(),
-                @JsonProperty("phoneNumber")
-                @ExcludeMissing
-                phoneNumber: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("reference")
-                @ExcludeMissing
-                reference: JsonField<String> = JsonMissing.of(),
-            ) : this(
-                accountNumber,
-                accountType,
-                bankAccountType,
-                paymentRails,
-                phoneNumber,
-                reference,
-                mutableMapOf(),
-            )
-
-            fun toCopAccountInfo(): CopAccountInfo =
-                CopAccountInfo.builder()
-                    .accountNumber(accountNumber)
-                    .accountType(accountType)
-                    .bankAccountType(bankAccountType)
-                    .paymentRails(paymentRails)
-                    .phoneNumber(phoneNumber)
-                    .build()
+                accountType: JsonField<AccountType> = JsonMissing.of(),
+            ) : this(paymentUrl, accountType, mutableMapOf())
 
             /**
-             * The account number of the bank
+             * A payment URL where the customer can complete their COP deposit.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
              */
-            fun accountNumber(): String = accountNumber.getRequired("accountNumber")
+            fun paymentUrl(): String = paymentUrl.getRequired("paymentUrl")
 
             /**
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
+             *   (e.g. if the server responded with an unexpected value).
              */
-            fun accountType(): CopAccountInfo.AccountType = accountType.getRequired("accountType")
+            fun accountType(): AccountType? = accountType.getNullable("accountType")
 
             /**
-             * The bank account type
+             * Returns the raw JSON value of [paymentUrl].
              *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun bankAccountType(): CopAccountInfo.BankAccountType =
-                bankAccountType.getRequired("bankAccountType")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun paymentRails(): List<CopAccountInfo.PaymentRail> =
-                paymentRails.getRequired("paymentRails")
-
-            /**
-             * The phone number in international format
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
-
-            /**
-             * Unique reference code that must be included with the payment to properly credit it
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun reference(): String = reference.getRequired("reference")
-
-            /**
-             * Returns the raw JSON value of [accountNumber].
-             *
-             * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected
+             * Unlike [paymentUrl], this method doesn't throw if the JSON field has an unexpected
              * type.
              */
-            @JsonProperty("accountNumber")
+            @JsonProperty("paymentUrl")
             @ExcludeMissing
-            fun _accountNumber(): JsonField<String> = accountNumber
+            fun _paymentUrl(): JsonField<String> = paymentUrl
 
             /**
              * Returns the raw JSON value of [accountType].
@@ -12643,47 +12575,7 @@ private constructor(
              */
             @JsonProperty("accountType")
             @ExcludeMissing
-            fun _accountType(): JsonField<CopAccountInfo.AccountType> = accountType
-
-            /**
-             * Returns the raw JSON value of [bankAccountType].
-             *
-             * Unlike [bankAccountType], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("bankAccountType")
-            @ExcludeMissing
-            fun _bankAccountType(): JsonField<CopAccountInfo.BankAccountType> = bankAccountType
-
-            /**
-             * Returns the raw JSON value of [paymentRails].
-             *
-             * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("paymentRails")
-            @ExcludeMissing
-            fun _paymentRails(): JsonField<List<CopAccountInfo.PaymentRail>> = paymentRails
-
-            /**
-             * Returns the raw JSON value of [phoneNumber].
-             *
-             * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("phoneNumber")
-            @ExcludeMissing
-            fun _phoneNumber(): JsonField<String> = phoneNumber
-
-            /**
-             * Returns the raw JSON value of [reference].
-             *
-             * Unlike [reference], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("reference")
-            @ExcludeMissing
-            fun _reference(): JsonField<String> = reference
+            fun _accountType(): JsonField<AccountType> = accountType
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -12700,142 +12592,56 @@ private constructor(
             companion object {
 
                 /**
-                 * Returns a mutable builder for constructing an instance of [CopAccount].
+                 * Returns a mutable builder for constructing an instance of
+                 * [PaymentCopAccountInfo].
                  *
                  * The following fields are required:
                  * ```kotlin
-                 * .accountNumber()
-                 * .accountType()
-                 * .bankAccountType()
-                 * .paymentRails()
-                 * .phoneNumber()
-                 * .reference()
+                 * .paymentUrl()
                  * ```
                  */
                 fun builder() = Builder()
             }
 
-            /** A builder for [CopAccount]. */
+            /** A builder for [PaymentCopAccountInfo]. */
             class Builder internal constructor() {
 
-                private var accountNumber: JsonField<String>? = null
-                private var accountType: JsonField<CopAccountInfo.AccountType>? = null
-                private var bankAccountType: JsonField<CopAccountInfo.BankAccountType>? = null
-                private var paymentRails: JsonField<MutableList<CopAccountInfo.PaymentRail>>? = null
-                private var phoneNumber: JsonField<String>? = null
-                private var reference: JsonField<String>? = null
+                private var paymentUrl: JsonField<String>? = null
+                private var accountType: JsonField<AccountType> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-                internal fun from(copAccount: CopAccount) = apply {
-                    accountNumber = copAccount.accountNumber
-                    accountType = copAccount.accountType
-                    bankAccountType = copAccount.bankAccountType
-                    paymentRails = copAccount.paymentRails.map { it.toMutableList() }
-                    phoneNumber = copAccount.phoneNumber
-                    reference = copAccount.reference
-                    additionalProperties = copAccount.additionalProperties.toMutableMap()
+                internal fun from(paymentCopAccountInfo: PaymentCopAccountInfo) = apply {
+                    paymentUrl = paymentCopAccountInfo.paymentUrl
+                    accountType = paymentCopAccountInfo.accountType
+                    additionalProperties = paymentCopAccountInfo.additionalProperties.toMutableMap()
                 }
 
-                /** The account number of the bank */
-                fun accountNumber(accountNumber: String) =
-                    accountNumber(JsonField.of(accountNumber))
+                /** A payment URL where the customer can complete their COP deposit. */
+                fun paymentUrl(paymentUrl: String) = paymentUrl(JsonField.of(paymentUrl))
 
                 /**
-                 * Sets [Builder.accountNumber] to an arbitrary JSON value.
+                 * Sets [Builder.paymentUrl] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.accountNumber] with a well-typed [String] value
+                 * You should usually call [Builder.paymentUrl] with a well-typed [String] value
                  * instead. This method is primarily for setting the field to an undocumented or not
                  * yet supported value.
                  */
-                fun accountNumber(accountNumber: JsonField<String>) = apply {
-                    this.accountNumber = accountNumber
+                fun paymentUrl(paymentUrl: JsonField<String>) = apply {
+                    this.paymentUrl = paymentUrl
                 }
 
-                fun accountType(accountType: CopAccountInfo.AccountType) =
-                    accountType(JsonField.of(accountType))
+                fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
 
                 /**
                  * Sets [Builder.accountType] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.accountType] with a well-typed
-                 * [CopAccountInfo.AccountType] value instead. This method is primarily for setting
-                 * the field to an undocumented or not yet supported value.
+                 * You should usually call [Builder.accountType] with a well-typed [AccountType]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
                  */
-                fun accountType(accountType: JsonField<CopAccountInfo.AccountType>) = apply {
+                fun accountType(accountType: JsonField<AccountType>) = apply {
                     this.accountType = accountType
                 }
-
-                /** The bank account type */
-                fun bankAccountType(bankAccountType: CopAccountInfo.BankAccountType) =
-                    bankAccountType(JsonField.of(bankAccountType))
-
-                /**
-                 * Sets [Builder.bankAccountType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.bankAccountType] with a well-typed
-                 * [CopAccountInfo.BankAccountType] value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun bankAccountType(bankAccountType: JsonField<CopAccountInfo.BankAccountType>) =
-                    apply {
-                        this.bankAccountType = bankAccountType
-                    }
-
-                fun paymentRails(paymentRails: List<CopAccountInfo.PaymentRail>) =
-                    paymentRails(JsonField.of(paymentRails))
-
-                /**
-                 * Sets [Builder.paymentRails] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.paymentRails] with a well-typed
-                 * `List<CopAccountInfo.PaymentRail>` value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun paymentRails(paymentRails: JsonField<List<CopAccountInfo.PaymentRail>>) =
-                    apply {
-                        this.paymentRails = paymentRails.map { it.toMutableList() }
-                    }
-
-                /**
-                 * Adds a single [CopAccountInfo.PaymentRail] to [paymentRails].
-                 *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addPaymentRail(paymentRail: CopAccountInfo.PaymentRail) = apply {
-                    paymentRails =
-                        (paymentRails ?: JsonField.of(mutableListOf())).also {
-                            checkKnown("paymentRails", it).add(paymentRail)
-                        }
-                }
-
-                /** The phone number in international format */
-                fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
-
-                /**
-                 * Sets [Builder.phoneNumber] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.phoneNumber] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun phoneNumber(phoneNumber: JsonField<String>) = apply {
-                    this.phoneNumber = phoneNumber
-                }
-
-                /**
-                 * Unique reference code that must be included with the payment to properly credit
-                 * it
-                 */
-                fun reference(reference: String) = reference(JsonField.of(reference))
-
-                /**
-                 * Sets [Builder.reference] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.reference] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun reference(reference: JsonField<String>) = apply { this.reference = reference }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
@@ -12860,47 +12666,34 @@ private constructor(
                 }
 
                 /**
-                 * Returns an immutable instance of [CopAccount].
+                 * Returns an immutable instance of [PaymentCopAccountInfo].
                  *
                  * Further updates to this [Builder] will not mutate the returned instance.
                  *
                  * The following fields are required:
                  * ```kotlin
-                 * .accountNumber()
-                 * .accountType()
-                 * .bankAccountType()
-                 * .paymentRails()
-                 * .phoneNumber()
-                 * .reference()
+                 * .paymentUrl()
                  * ```
                  *
                  * @throws IllegalStateException if any required field is unset.
                  */
-                fun build(): CopAccount =
-                    CopAccount(
-                        checkRequired("accountNumber", accountNumber),
-                        checkRequired("accountType", accountType),
-                        checkRequired("bankAccountType", bankAccountType),
-                        checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                        checkRequired("phoneNumber", phoneNumber),
-                        checkRequired("reference", reference),
+                fun build(): PaymentCopAccountInfo =
+                    PaymentCopAccountInfo(
+                        checkRequired("paymentUrl", paymentUrl),
+                        accountType,
                         additionalProperties.toMutableMap(),
                     )
             }
 
             private var validated: Boolean = false
 
-            fun validate(): CopAccount = apply {
+            fun validate(): PaymentCopAccountInfo = apply {
                 if (validated) {
                     return@apply
                 }
 
-                accountNumber()
-                accountType().validate()
-                bankAccountType().validate()
-                paymentRails().forEach { it.validate() }
-                phoneNumber()
-                reference()
+                paymentUrl()
+                accountType()?.validate()
                 validated = true
             }
 
@@ -12919,44 +12712,154 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (accountNumber.asKnown() == null) 0 else 1) +
-                    (accountType.asKnown()?.validity() ?: 0) +
-                    (bankAccountType.asKnown()?.validity() ?: 0) +
-                    (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (if (phoneNumber.asKnown() == null) 0 else 1) +
-                    (if (reference.asKnown() == null) 0 else 1)
+                (if (paymentUrl.asKnown() == null) 0 else 1) +
+                    (accountType.asKnown()?.validity() ?: 0)
+
+            class AccountType
+            @JsonCreator
+            private constructor(private val value: JsonField<String>) : Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val COP_ACCOUNT = of("COP_ACCOUNT")
+
+                    fun of(value: String) = AccountType(JsonField.of(value))
+                }
+
+                /** An enum containing [AccountType]'s known values. */
+                enum class Known {
+                    COP_ACCOUNT
+                }
+
+                /**
+                 * An enum containing [AccountType]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [AccountType] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    COP_ACCOUNT,
+                    /**
+                     * An enum member indicating that [AccountType] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        COP_ACCOUNT -> Value.COP_ACCOUNT
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        COP_ACCOUNT -> Known.COP_ACCOUNT
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown AccountType: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): AccountType = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is AccountType && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
                 }
 
-                return other is CopAccount &&
-                    accountNumber == other.accountNumber &&
+                return other is PaymentCopAccountInfo &&
+                    paymentUrl == other.paymentUrl &&
                     accountType == other.accountType &&
-                    bankAccountType == other.bankAccountType &&
-                    paymentRails == other.paymentRails &&
-                    phoneNumber == other.phoneNumber &&
-                    reference == other.reference &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(
-                    accountNumber,
-                    accountType,
-                    bankAccountType,
-                    paymentRails,
-                    phoneNumber,
-                    reference,
-                    additionalProperties,
-                )
+                Objects.hash(paymentUrl, accountType, additionalProperties)
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "CopAccount{accountNumber=$accountNumber, accountType=$accountType, bankAccountType=$bankAccountType, paymentRails=$paymentRails, phoneNumber=$phoneNumber, reference=$reference, additionalProperties=$additionalProperties}"
+                "PaymentCopAccountInfo{paymentUrl=$paymentUrl, accountType=$accountType, additionalProperties=$additionalProperties}"
         }
 
         class EgpAccount
