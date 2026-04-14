@@ -389,6 +389,26 @@ private constructor(
 
         /**
          * Alias for calling [accountOrWalletInfo] with
+         * `AccountOrWalletInfo.ofArsAccount(arsAccount)`.
+         */
+        fun accountOrWalletInfo(arsAccount: AccountOrWalletInfo.ArsAccount) =
+            accountOrWalletInfo(AccountOrWalletInfo.ofArsAccount(arsAccount))
+
+        /**
+         * Alias for calling [accountOrWalletInfo] with the following:
+         * ```kotlin
+         * AccountOrWalletInfo.ArsAccount.builder()
+         *     .accountNumber(accountNumber)
+         *     .build()
+         * ```
+         */
+        fun arsAccountAccountOrWalletInfo(accountNumber: String) =
+            accountOrWalletInfo(
+                AccountOrWalletInfo.ArsAccount.builder().accountNumber(accountNumber).build()
+            )
+
+        /**
+         * Alias for calling [accountOrWalletInfo] with
          * `AccountOrWalletInfo.ofPaymentCopAccount(paymentCopAccount)`.
          */
         fun accountOrWalletInfo(paymentCopAccount: AccountOrWalletInfo.PaymentCopAccountInfo) =
@@ -622,6 +642,7 @@ private constructor(
         private val bwpAccount: BwpAccount? = null,
         private val xafAccount: XafAccount? = null,
         private val bdtAccount: BdtAccount? = null,
+        private val arsAccount: ArsAccount? = null,
         private val paymentCopAccount: PaymentCopAccountInfo? = null,
         private val egpAccount: EgpAccount? = null,
         private val ghsAccount: GhsAccount? = null,
@@ -694,6 +715,8 @@ private constructor(
         fun xafAccount(): XafAccount? = xafAccount
 
         fun bdtAccount(): BdtAccount? = bdtAccount
+
+        fun arsAccount(): ArsAccount? = arsAccount
 
         fun paymentCopAccount(): PaymentCopAccountInfo? = paymentCopAccount
 
@@ -778,6 +801,8 @@ private constructor(
         fun isXafAccount(): Boolean = xafAccount != null
 
         fun isBdtAccount(): Boolean = bdtAccount != null
+
+        fun isArsAccount(): Boolean = arsAccount != null
 
         fun isPaymentCopAccount(): Boolean = paymentCopAccount != null
 
@@ -864,6 +889,8 @@ private constructor(
 
         fun asBdtAccount(): BdtAccount = bdtAccount.getOrThrow("bdtAccount")
 
+        fun asArsAccount(): ArsAccount = arsAccount.getOrThrow("arsAccount")
+
         fun asPaymentCopAccount(): PaymentCopAccountInfo =
             paymentCopAccount.getOrThrow("paymentCopAccount")
 
@@ -928,6 +955,7 @@ private constructor(
                 bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
                 xafAccount != null -> visitor.visitXafAccount(xafAccount)
                 bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
+                arsAccount != null -> visitor.visitArsAccount(arsAccount)
                 paymentCopAccount != null -> visitor.visitPaymentCopAccount(paymentCopAccount)
                 egpAccount != null -> visitor.visitEgpAccount(egpAccount)
                 ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
@@ -1067,6 +1095,10 @@ private constructor(
                         bdtAccount.validate()
                     }
 
+                    override fun visitArsAccount(arsAccount: ArsAccount) {
+                        arsAccount.validate()
+                    }
+
                     override fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) {
                         paymentCopAccount.validate()
                     }
@@ -1203,6 +1235,8 @@ private constructor(
 
                     override fun visitBdtAccount(bdtAccount: BdtAccount) = bdtAccount.validity()
 
+                    override fun visitArsAccount(arsAccount: ArsAccount) = arsAccount.validity()
+
                     override fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) =
                         paymentCopAccount.validity()
 
@@ -1278,6 +1312,7 @@ private constructor(
                 bwpAccount == other.bwpAccount &&
                 xafAccount == other.xafAccount &&
                 bdtAccount == other.bdtAccount &&
+                arsAccount == other.arsAccount &&
                 paymentCopAccount == other.paymentCopAccount &&
                 egpAccount == other.egpAccount &&
                 ghsAccount == other.ghsAccount &&
@@ -1324,6 +1359,7 @@ private constructor(
                 bwpAccount,
                 xafAccount,
                 bdtAccount,
+                arsAccount,
                 paymentCopAccount,
                 egpAccount,
                 ghsAccount,
@@ -1371,6 +1407,7 @@ private constructor(
                 bwpAccount != null -> "AccountOrWalletInfo{bwpAccount=$bwpAccount}"
                 xafAccount != null -> "AccountOrWalletInfo{xafAccount=$xafAccount}"
                 bdtAccount != null -> "AccountOrWalletInfo{bdtAccount=$bdtAccount}"
+                arsAccount != null -> "AccountOrWalletInfo{arsAccount=$arsAccount}"
                 paymentCopAccount != null ->
                     "AccountOrWalletInfo{paymentCopAccount=$paymentCopAccount}"
                 egpAccount != null -> "AccountOrWalletInfo{egpAccount=$egpAccount}"
@@ -1450,6 +1487,8 @@ private constructor(
             fun ofXafAccount(xafAccount: XafAccount) = AccountOrWalletInfo(xafAccount = xafAccount)
 
             fun ofBdtAccount(bdtAccount: BdtAccount) = AccountOrWalletInfo(bdtAccount = bdtAccount)
+
+            fun ofArsAccount(arsAccount: ArsAccount) = AccountOrWalletInfo(arsAccount = arsAccount)
 
             fun ofPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo) =
                 AccountOrWalletInfo(paymentCopAccount = paymentCopAccount)
@@ -1549,6 +1588,8 @@ private constructor(
             fun visitXafAccount(xafAccount: XafAccount): T
 
             fun visitBdtAccount(bdtAccount: BdtAccount): T
+
+            fun visitArsAccount(arsAccount: ArsAccount): T
 
             fun visitPaymentCopAccount(paymentCopAccount: PaymentCopAccountInfo): T
 
@@ -1733,6 +1774,11 @@ private constructor(
                             AccountOrWalletInfo(bdtAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
+                    "ARS_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<ArsAccount>())?.let {
+                            AccountOrWalletInfo(arsAccount = it, _json = json)
+                        } ?: AccountOrWalletInfo(_json = json)
+                    }
                     "EGP_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<EgpAccount>())?.let {
                             AccountOrWalletInfo(egpAccount = it, _json = json)
@@ -1853,6 +1899,7 @@ private constructor(
                     value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
                     value.xafAccount != null -> generator.writeObject(value.xafAccount)
                     value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
+                    value.arsAccount != null -> generator.writeObject(value.arsAccount)
                     value.paymentCopAccount != null ->
                         generator.writeObject(value.paymentCopAccount)
                     value.egpAccount != null -> generator.writeObject(value.egpAccount)
@@ -12522,6 +12569,220 @@ private constructor(
 
             override fun toString() =
                 "BdtAccount{accountNumber=$accountNumber, accountType=$accountType, branchCode=$branchCode, paymentRails=$paymentRails, phoneNumber=$phoneNumber, swiftCode=$swiftCode, reference=$reference, additionalProperties=$additionalProperties}"
+        }
+
+        class ArsAccount
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountNumber: JsonField<String>,
+            private val accountType: JsonValue,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountNumber")
+                @ExcludeMissing
+                accountNumber: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+            ) : this(accountNumber, accountType, mutableMapOf())
+
+            /**
+             * The static CVU (Clave Virtual Uniforme) bank account number to pay to.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun accountNumber(): String = accountNumber.getRequired("accountNumber")
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("ARS_ACCOUNT")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * Returns the raw JSON value of [accountNumber].
+             *
+             * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("accountNumber")
+            @ExcludeMissing
+            fun _accountNumber(): JsonField<String> = accountNumber
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [ArsAccount].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .accountNumber()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [ArsAccount]. */
+            class Builder internal constructor() {
+
+                private var accountNumber: JsonField<String>? = null
+                private var accountType: JsonValue = JsonValue.from("ARS_ACCOUNT")
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(arsAccount: ArsAccount) = apply {
+                    accountNumber = arsAccount.accountNumber
+                    accountType = arsAccount.accountType
+                    additionalProperties = arsAccount.additionalProperties.toMutableMap()
+                }
+
+                /** The static CVU (Clave Virtual Uniforme) bank account number to pay to. */
+                fun accountNumber(accountNumber: String) =
+                    accountNumber(JsonField.of(accountNumber))
+
+                /**
+                 * Sets [Builder.accountNumber] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.accountNumber] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun accountNumber(accountNumber: JsonField<String>) = apply {
+                    this.accountNumber = accountNumber
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("ARS_ACCOUNT")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [ArsAccount].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .accountNumber()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): ArsAccount =
+                    ArsAccount(
+                        checkRequired("accountNumber", accountNumber),
+                        accountType,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): ArsAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accountNumber()
+                _accountType().let {
+                    if (it != JsonValue.from("ARS_ACCOUNT")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (accountNumber.asKnown() == null) 0 else 1) +
+                    accountType.let { if (it == JsonValue.from("ARS_ACCOUNT")) 1 else 0 }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ArsAccount &&
+                    accountNumber == other.accountNumber &&
+                    accountType == other.accountType &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(accountNumber, accountType, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "ArsAccount{accountNumber=$accountNumber, accountType=$accountType, additionalProperties=$additionalProperties}"
         }
 
         class PaymentCopAccountInfo
