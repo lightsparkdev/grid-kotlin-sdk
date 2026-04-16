@@ -14,9 +14,9 @@ internal class CustomerCreateParamsTest {
         CustomerCreateParams.builder()
             .createCustomerRequest(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                    .platformCustomerId("ind-9f84e0c2")
                     .addCurrency("USD")
                     .addCurrency("USDC")
+                    .platformCustomerId("ind-9f84e0c2")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
@@ -45,9 +45,9 @@ internal class CustomerCreateParamsTest {
             CustomerCreateParams.builder()
                 .createCustomerRequest(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("ind-9f84e0c2")
                         .addCurrency("USD")
                         .addCurrency("USDC")
+                        .platformCustomerId("ind-9f84e0c2")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
@@ -75,9 +75,9 @@ internal class CustomerCreateParamsTest {
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("ind-9f84e0c2")
                         .addCurrency("USD")
                         .addCurrency("USDC")
+                        .platformCustomerId("ind-9f84e0c2")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
@@ -103,7 +103,13 @@ internal class CustomerCreateParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            CustomerCreateParams.builder().individualCreateCustomerRequest("ind-9f84e0c2").build()
+            CustomerCreateParams.builder()
+                .createCustomerRequest(
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                        .build()
+                )
+                .build()
 
         val body = params._body()
 
@@ -111,7 +117,6 @@ internal class CustomerCreateParamsTest {
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .platformCustomerId("ind-9f84e0c2")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .build()
                 )
