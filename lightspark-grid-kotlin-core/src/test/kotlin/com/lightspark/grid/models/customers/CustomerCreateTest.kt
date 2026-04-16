@@ -13,15 +13,15 @@ internal class CustomerCreateTest {
     fun create() {
         val customerCreate =
             CustomerCreate.builder()
-                .platformCustomerId("9f84e0c2a72c4fa")
                 .addCurrency("USD")
                 .addCurrency("USDC")
+                .platformCustomerId("9f84e0c2a72c4fa")
                 .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
-        assertThat(customerCreate.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(customerCreate.currencies()).containsExactly("USD", "USDC")
+        assertThat(customerCreate.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(customerCreate.region()).isEqualTo("US")
         assertThat(customerCreate.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -31,9 +31,9 @@ internal class CustomerCreateTest {
         val jsonMapper = jsonMapper()
         val customerCreate =
             CustomerCreate.builder()
-                .platformCustomerId("9f84e0c2a72c4fa")
                 .addCurrency("USD")
                 .addCurrency("USDC")
+                .platformCustomerId("9f84e0c2a72c4fa")
                 .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
