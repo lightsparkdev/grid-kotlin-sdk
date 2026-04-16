@@ -27,9 +27,9 @@ internal class CustomerServiceAsyncTest {
         val customerOneOf =
             customerServiceAsync.create(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                    .platformCustomerId("ind-9f84e0c2")
                     .addCurrency("USD")
                     .addCurrency("USDC")
+                    .platformCustomerId("ind-9f84e0c2")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
