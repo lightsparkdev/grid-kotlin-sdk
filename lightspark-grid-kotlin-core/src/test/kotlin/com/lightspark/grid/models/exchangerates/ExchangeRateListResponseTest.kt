@@ -25,7 +25,9 @@ internal class ExchangeRateListResponseTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .destinationPaymentRail("UPI")
+                        .destinationPaymentRail(
+                            ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
+                        )
                         .exchangeRate(82.5)
                         .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)
@@ -56,7 +58,9 @@ internal class ExchangeRateListResponseTest {
                             .symbol("\$")
                             .build()
                     )
-                    .destinationPaymentRail("UPI")
+                    .destinationPaymentRail(
+                        ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
+                    )
                     .exchangeRate(82.5)
                     .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                     .maxSendingAmount(10000000L)
@@ -91,7 +95,9 @@ internal class ExchangeRateListResponseTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .destinationPaymentRail("UPI")
+                        .destinationPaymentRail(
+                            ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
+                        )
                         .exchangeRate(82.5)
                         .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)
