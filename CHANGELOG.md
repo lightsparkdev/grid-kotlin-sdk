@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.6.0 (2026-04-17)
+
+Full Changelog: [v1.5.0...v1.6.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.5.0...v1.6.0)
+
+### Features
+
+* Add COL payment instructions to grid_api ([7cc62ba](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7cc62bae78b06587c390f75307837d2e0ada1298))
+* **api:** add ArsAccount variant to AccountOrWalletInfo ([6dd1ee3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6dd1ee3d26ec2c761049887e2f1a1e7afdbd423e))
+* **api:** manual updates ([07defd3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/07defd3dd6303ee32a0d4bdfa905893ea6abc2a3))
+* **api:** manual updates ([544c451](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/544c451aed4a3cb03632531e7b93bd0408b99873))
+* **api:** manual updates ([db652f0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/db652f02171b3ed20f10ed155c201fc0bb1fd6d4))
+* fix mispelling of identification type enum ([a899b75](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a899b7500952a39d4c804beaec3ff2bab04f16be))
+* Split request and response schemas for external account paymentRails ([e6c10c6](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e6c10c679ea795b11c02f0c5d026458f87fa6316))
+
+
+### Bug Fixes
+
+* **types:** change payment rail fields to enum in exchange rates/quotes ([be60620](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/be60620f6c605005b7d863c36b7c1c55f8824f76))
+* **types:** make platformCustomerId optional in customer create types ([a87e16e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a87e16e13be57cc29ad5c8163a5280867d98e936))
+
+
+### Chores
+
+* **ci:** remove release-doctor workflow ([955f921](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/955f92164b792446704c0f2148f36fbc4929397a))
+* **internal:** regenerate SDK with no functional changes ([d687510](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d687510e47d3867323e70c31d41dd1005d2cbb79))
+
 ## 1.5.0 (2026-04-10)
 
 Full Changelog: [v1.4.0...v1.5.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.4.0...v1.5.0)
