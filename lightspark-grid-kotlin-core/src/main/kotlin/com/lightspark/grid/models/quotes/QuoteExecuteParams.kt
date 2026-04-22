@@ -16,11 +16,17 @@ import java.util.Objects
  * This endpoint can only be used for quotes with a `source` which is either an internal account, or
  * has direct pull functionality (e.g. ACH pull with an external account).
  *
+ * When the quote's `source` is an internal account of type `EMBEDDED_WALLET`, the request must
+ * include a `Grid-Wallet-Signature` header. The signature is produced by signing the
+ * `payloadToSign` value from the quote's `paymentInstructions[].accountOrWalletInfo` entry with the
+ * session private key of a verified authentication credential on the source Embedded Wallet.
+ *
  * Once executed, the quote cannot be cancelled and the transfer will be processed.
  */
 class QuoteExecuteParams
 private constructor(
     private val quoteId: String?,
+    private val gridWalletSignature: String?,
     private val idempotencyKey: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -28,6 +34,8 @@ private constructor(
 ) : Params {
 
     fun quoteId(): String? = quoteId
+
+    fun gridWalletSignature(): String? = gridWalletSignature
 
     fun idempotencyKey(): String? = idempotencyKey
 
@@ -54,6 +62,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var quoteId: String? = null
+        private var gridWalletSignature: String? = null
         private var idempotencyKey: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
@@ -61,6 +70,7 @@ private constructor(
 
         internal fun from(quoteExecuteParams: QuoteExecuteParams) = apply {
             quoteId = quoteExecuteParams.quoteId
+            gridWalletSignature = quoteExecuteParams.gridWalletSignature
             idempotencyKey = quoteExecuteParams.idempotencyKey
             additionalHeaders = quoteExecuteParams.additionalHeaders.toBuilder()
             additionalQueryParams = quoteExecuteParams.additionalQueryParams.toBuilder()
@@ -68,6 +78,10 @@ private constructor(
         }
 
         fun quoteId(quoteId: String?) = apply { this.quoteId = quoteId }
+
+        fun gridWalletSignature(gridWalletSignature: String?) = apply {
+            this.gridWalletSignature = gridWalletSignature
+        }
 
         fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
 
@@ -199,6 +213,7 @@ private constructor(
         fun build(): QuoteExecuteParams =
             QuoteExecuteParams(
                 quoteId,
+                gridWalletSignature,
                 idempotencyKey,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -217,6 +232,7 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
+                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
                 idempotencyKey?.let { put("Idempotency-Key", it) }
                 putAll(additionalHeaders)
             }
@@ -231,6 +247,7 @@ private constructor(
 
         return other is QuoteExecuteParams &&
             quoteId == other.quoteId &&
+            gridWalletSignature == other.gridWalletSignature &&
             idempotencyKey == other.idempotencyKey &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams &&
@@ -240,6 +257,7 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             quoteId,
+            gridWalletSignature,
             idempotencyKey,
             additionalHeaders,
             additionalQueryParams,
@@ -247,5 +265,5 @@ private constructor(
         )
 
     override fun toString() =
-        "QuoteExecuteParams{quoteId=$quoteId, idempotencyKey=$idempotencyKey, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "QuoteExecuteParams{quoteId=$quoteId, gridWalletSignature=$gridWalletSignature, idempotencyKey=$idempotencyKey, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }

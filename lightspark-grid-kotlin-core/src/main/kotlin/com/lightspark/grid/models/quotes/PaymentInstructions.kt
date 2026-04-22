@@ -509,6 +509,26 @@ private constructor(
         fun accountOrWalletInfo(paymentEthereum: AccountOrWalletInfo.PaymentEthereumWalletInfo) =
             accountOrWalletInfo(AccountOrWalletInfo.ofPaymentEthereum(paymentEthereum))
 
+        /**
+         * Alias for calling [accountOrWalletInfo] with
+         * `AccountOrWalletInfo.ofEmbeddedWallet(embeddedWallet)`.
+         */
+        fun accountOrWalletInfo(embeddedWallet: AccountOrWalletInfo.EmbeddedWallet) =
+            accountOrWalletInfo(AccountOrWalletInfo.ofEmbeddedWallet(embeddedWallet))
+
+        /**
+         * Alias for calling [accountOrWalletInfo] with the following:
+         * ```kotlin
+         * AccountOrWalletInfo.EmbeddedWallet.builder()
+         *     .payloadToSign(payloadToSign)
+         *     .build()
+         * ```
+         */
+        fun embeddedWalletAccountOrWalletInfo(payloadToSign: String) =
+            accountOrWalletInfo(
+                AccountOrWalletInfo.EmbeddedWallet.builder().payloadToSign(payloadToSign).build()
+            )
+
         /** Additional human-readable instructions for making the payment */
         fun instructionsNotes(instructionsNotes: String) =
             instructionsNotes(JsonField.of(instructionsNotes))
@@ -657,6 +677,7 @@ private constructor(
         private val paymentPolygon: PaymentPolygonWalletInfo? = null,
         private val paymentBase: PaymentBaseWalletInfo? = null,
         private val paymentEthereum: PaymentEthereumWalletInfo? = null,
+        private val embeddedWallet: EmbeddedWallet? = null,
         private val _json: JsonValue? = null,
     ) {
 
@@ -746,6 +767,8 @@ private constructor(
 
         fun paymentEthereum(): PaymentEthereumWalletInfo? = paymentEthereum
 
+        fun embeddedWallet(): EmbeddedWallet? = embeddedWallet
+
         fun isUsdAccount(): Boolean = usdAccount != null
 
         fun isPaymentBrlAccount(): Boolean = paymentBrlAccount != null
@@ -831,6 +854,8 @@ private constructor(
         fun isPaymentBase(): Boolean = paymentBase != null
 
         fun isPaymentEthereum(): Boolean = paymentEthereum != null
+
+        fun isEmbeddedWallet(): Boolean = embeddedWallet != null
 
         fun asUsdAccount(): UsdAccount = usdAccount.getOrThrow("usdAccount")
 
@@ -923,6 +948,8 @@ private constructor(
         fun asPaymentEthereum(): PaymentEthereumWalletInfo =
             paymentEthereum.getOrThrow("paymentEthereum")
 
+        fun asEmbeddedWallet(): EmbeddedWallet = embeddedWallet.getOrThrow("embeddedWallet")
+
         fun _json(): JsonValue? = _json
 
         fun <T> accept(visitor: Visitor<T>): T =
@@ -971,6 +998,7 @@ private constructor(
                 paymentPolygon != null -> visitor.visitPaymentPolygon(paymentPolygon)
                 paymentBase != null -> visitor.visitPaymentBase(paymentBase)
                 paymentEthereum != null -> visitor.visitPaymentEthereum(paymentEthereum)
+                embeddedWallet != null -> visitor.visitEmbeddedWallet(embeddedWallet)
                 else -> visitor.unknown(_json)
             }
 
@@ -1156,6 +1184,10 @@ private constructor(
                     override fun visitPaymentEthereum(paymentEthereum: PaymentEthereumWalletInfo) {
                         paymentEthereum.validate()
                     }
+
+                    override fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet) {
+                        embeddedWallet.validate()
+                    }
                 }
             )
             validated = true
@@ -1274,6 +1306,9 @@ private constructor(
                     override fun visitPaymentEthereum(paymentEthereum: PaymentEthereumWalletInfo) =
                         paymentEthereum.validity()
 
+                    override fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet) =
+                        embeddedWallet.validity()
+
                     override fun unknown(json: JsonValue?) = 0
                 }
             )
@@ -1326,7 +1361,8 @@ private constructor(
                 paymentTron == other.paymentTron &&
                 paymentPolygon == other.paymentPolygon &&
                 paymentBase == other.paymentBase &&
-                paymentEthereum == other.paymentEthereum
+                paymentEthereum == other.paymentEthereum &&
+                embeddedWallet == other.embeddedWallet
         }
 
         override fun hashCode(): Int =
@@ -1374,6 +1410,7 @@ private constructor(
                 paymentPolygon,
                 paymentBase,
                 paymentEthereum,
+                embeddedWallet,
             )
 
         override fun toString(): String =
@@ -1424,6 +1461,7 @@ private constructor(
                 paymentPolygon != null -> "AccountOrWalletInfo{paymentPolygon=$paymentPolygon}"
                 paymentBase != null -> "AccountOrWalletInfo{paymentBase=$paymentBase}"
                 paymentEthereum != null -> "AccountOrWalletInfo{paymentEthereum=$paymentEthereum}"
+                embeddedWallet != null -> "AccountOrWalletInfo{embeddedWallet=$embeddedWallet}"
                 _json != null -> "AccountOrWalletInfo{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid AccountOrWalletInfo")
             }
@@ -1525,6 +1563,9 @@ private constructor(
 
             fun ofPaymentEthereum(paymentEthereum: PaymentEthereumWalletInfo) =
                 AccountOrWalletInfo(paymentEthereum = paymentEthereum)
+
+            fun ofEmbeddedWallet(embeddedWallet: EmbeddedWallet) =
+                AccountOrWalletInfo(embeddedWallet = embeddedWallet)
         }
 
         /**
@@ -1620,6 +1661,8 @@ private constructor(
             fun visitPaymentBase(paymentBase: PaymentBaseWalletInfo): T
 
             fun visitPaymentEthereum(paymentEthereum: PaymentEthereumWalletInfo): T
+
+            fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet): T
 
             /**
              * Maps an unknown variant of [AccountOrWalletInfo] to a value of type [T].
@@ -1809,6 +1852,11 @@ private constructor(
                             AccountOrWalletInfo(pkrAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
+                    "EMBEDDED_WALLET" -> {
+                        return tryDeserialize(node, jacksonTypeRef<EmbeddedWallet>())?.let {
+                            AccountOrWalletInfo(embeddedWallet = it, _json = json)
+                        } ?: AccountOrWalletInfo(_json = json)
+                    }
                 }
 
                 val bestMatches =
@@ -1916,6 +1964,7 @@ private constructor(
                     value.paymentPolygon != null -> generator.writeObject(value.paymentPolygon)
                     value.paymentBase != null -> generator.writeObject(value.paymentBase)
                     value.paymentEthereum != null -> generator.writeObject(value.paymentEthereum)
+                    value.embeddedWallet != null -> generator.writeObject(value.embeddedWallet)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid AccountOrWalletInfo")
                 }
@@ -18205,6 +18254,233 @@ private constructor(
 
             override fun toString() =
                 "PaymentEthereumWalletInfo{accountType=$accountType, address=$address, assetType=$assetType, additionalProperties=$additionalProperties}"
+        }
+
+        class EmbeddedWallet
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountType: JsonValue,
+            private val payloadToSign: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+                @JsonProperty("payloadToSign")
+                @ExcludeMissing
+                payloadToSign: JsonField<String> = JsonMissing.of(),
+            ) : this(accountType, payloadToSign, mutableMapOf())
+
+            /**
+             * Discriminator value identifying this as Embedded Wallet payment instructions.
+             *
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("EMBEDDED_WALLET")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * JSON-encoded transaction signing payload that must be signed, as-is (byte-for-byte,
+             * without re-serialization), with the session private key of a verified authentication
+             * credential on the source Embedded Wallet. The resulting signature is base64-encoded
+             * and passed as the `Grid-Wallet-Signature` header on `POST /quotes/{quoteId}/execute`
+             * to authorize the outbound transfer from the wallet.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun payloadToSign(): String = payloadToSign.getRequired("payloadToSign")
+
+            /**
+             * Returns the raw JSON value of [payloadToSign].
+             *
+             * Unlike [payloadToSign], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("payloadToSign")
+            @ExcludeMissing
+            fun _payloadToSign(): JsonField<String> = payloadToSign
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [EmbeddedWallet].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .payloadToSign()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [EmbeddedWallet]. */
+            class Builder internal constructor() {
+
+                private var accountType: JsonValue = JsonValue.from("EMBEDDED_WALLET")
+                private var payloadToSign: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(embeddedWallet: EmbeddedWallet) = apply {
+                    accountType = embeddedWallet.accountType
+                    payloadToSign = embeddedWallet.payloadToSign
+                    additionalProperties = embeddedWallet.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("EMBEDDED_WALLET")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                /**
+                 * JSON-encoded transaction signing payload that must be signed, as-is
+                 * (byte-for-byte, without re-serialization), with the session private key of a
+                 * verified authentication credential on the source Embedded Wallet. The resulting
+                 * signature is base64-encoded and passed as the `Grid-Wallet-Signature` header on
+                 * `POST /quotes/{quoteId}/execute` to authorize the outbound transfer from the
+                 * wallet.
+                 */
+                fun payloadToSign(payloadToSign: String) =
+                    payloadToSign(JsonField.of(payloadToSign))
+
+                /**
+                 * Sets [Builder.payloadToSign] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.payloadToSign] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun payloadToSign(payloadToSign: JsonField<String>) = apply {
+                    this.payloadToSign = payloadToSign
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [EmbeddedWallet].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .payloadToSign()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): EmbeddedWallet =
+                    EmbeddedWallet(
+                        accountType,
+                        checkRequired("payloadToSign", payloadToSign),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): EmbeddedWallet = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _accountType().let {
+                    if (it != JsonValue.from("EMBEDDED_WALLET")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                payloadToSign()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accountType.let { if (it == JsonValue.from("EMBEDDED_WALLET")) 1 else 0 } +
+                    (if (payloadToSign.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is EmbeddedWallet &&
+                    accountType == other.accountType &&
+                    payloadToSign == other.payloadToSign &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(accountType, payloadToSign, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "EmbeddedWallet{accountType=$accountType, payloadToSign=$payloadToSign, additionalProperties=$additionalProperties}"
         }
     }
 
