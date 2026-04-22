@@ -4,6 +4,8 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
+import com.lightspark.grid.services.blocking.AuthService
+import com.lightspark.grid.services.blocking.AuthServiceImpl
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
 import com.lightspark.grid.services.blocking.BeneficialOwnerServiceImpl
 import com.lightspark.grid.services.blocking.ConfigService
@@ -126,6 +128,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         DiscoveryServiceImpl(clientOptionsWithUserAgent)
     }
 
+    private val auth: AuthService by lazy { AuthServiceImpl(clientOptionsWithUserAgent) }
+
     override fun async(): LightsparkGridClientAsync = async
 
     override fun withRawResponse(): LightsparkGridClient.WithRawResponse = withRawResponse
@@ -211,6 +215,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
      */
     override fun discoveries(): DiscoveryService = discoveries
 
+    override fun auth(): AuthService = auth
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -290,6 +296,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         private val discoveries: DiscoveryService.WithRawResponse by lazy {
             DiscoveryServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val auth: AuthService.WithRawResponse by lazy {
+            AuthServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -376,5 +386,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
          * country and currency corridor.
          */
         override fun discoveries(): DiscoveryService.WithRawResponse = discoveries
+
+        override fun auth(): AuthService.WithRawResponse = auth
     }
 }

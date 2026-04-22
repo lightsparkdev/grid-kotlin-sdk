@@ -3,6 +3,7 @@
 package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.services.blocking.AuthService
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.CryptoService
@@ -137,6 +138,8 @@ interface LightsparkGridClient {
      */
     fun discoveries(): DiscoveryService
 
+    fun auth(): AuthService
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -241,5 +244,7 @@ interface LightsparkGridClient {
          * country and currency corridor.
          */
         fun discoveries(): DiscoveryService.WithRawResponse
+
+        fun auth(): AuthService.WithRawResponse
     }
 }

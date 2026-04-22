@@ -4,6 +4,8 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
+import com.lightspark.grid.services.async.AuthServiceAsync
+import com.lightspark.grid.services.async.AuthServiceAsyncImpl
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsyncImpl
 import com.lightspark.grid.services.async.ConfigServiceAsync
@@ -137,6 +139,8 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         DiscoveryServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val auth: AuthServiceAsync by lazy { AuthServiceAsyncImpl(clientOptionsWithUserAgent) }
+
     override fun sync(): LightsparkGridClient = sync
 
     override fun withRawResponse(): LightsparkGridClientAsync.WithRawResponse = withRawResponse
@@ -222,6 +226,8 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
      */
     override fun discoveries(): DiscoveryServiceAsync = discoveries
 
+    override fun auth(): AuthServiceAsync = auth
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -301,6 +307,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         private val discoveries: DiscoveryServiceAsync.WithRawResponse by lazy {
             DiscoveryServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val auth: AuthServiceAsync.WithRawResponse by lazy {
+            AuthServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -388,5 +398,7 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
          * country and currency corridor.
          */
         override fun discoveries(): DiscoveryServiceAsync.WithRawResponse = discoveries
+
+        override fun auth(): AuthServiceAsync.WithRawResponse = auth
     }
 }
