@@ -13,7 +13,6 @@ import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDelet
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountUpdateParams
 
 /** External account management endpoints for creating and managing external bank accounts */
 interface ExternalAccountServiceAsync {
@@ -56,27 +55,6 @@ interface ExternalAccountServiceAsync {
         requestOptions: RequestOptions,
     ): ExternalAccount =
         retrieve(externalAccountId, ExternalAccountRetrieveParams.none(), requestOptions)
-
-    /**
-     * Update mutable fields on a platform external account. Only `platformAccountId` and
-     * `beneficiary` can be updated via this endpoint.
-     */
-    suspend fun update(
-        externalAccountId: String,
-        params: ExternalAccountUpdateParams = ExternalAccountUpdateParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccount =
-        update(params.toBuilder().externalAccountId(externalAccountId).build(), requestOptions)
-
-    /** @see update */
-    suspend fun update(
-        params: ExternalAccountUpdateParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccount
-
-    /** @see update */
-    suspend fun update(externalAccountId: String, requestOptions: RequestOptions): ExternalAccount =
-        update(externalAccountId, ExternalAccountUpdateParams.none(), requestOptions)
 
     /**
      * Retrieve a list of all external accounts that belong to the platform, as opposed to an
@@ -165,33 +143,6 @@ interface ExternalAccountServiceAsync {
             requestOptions: RequestOptions,
         ): HttpResponseFor<ExternalAccount> =
             retrieve(externalAccountId, ExternalAccountRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `patch /platform/external-accounts/{externalAccountId}`,
-         * but is otherwise the same as [ExternalAccountServiceAsync.update].
-         */
-        @MustBeClosed
-        suspend fun update(
-            externalAccountId: String,
-            params: ExternalAccountUpdateParams = ExternalAccountUpdateParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccount> =
-            update(params.toBuilder().externalAccountId(externalAccountId).build(), requestOptions)
-
-        /** @see update */
-        @MustBeClosed
-        suspend fun update(
-            params: ExternalAccountUpdateParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccount>
-
-        /** @see update */
-        @MustBeClosed
-        suspend fun update(
-            externalAccountId: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccount> =
-            update(externalAccountId, ExternalAccountUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /platform/external-accounts`, but is otherwise the
