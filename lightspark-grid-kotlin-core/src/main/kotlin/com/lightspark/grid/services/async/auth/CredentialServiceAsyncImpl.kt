@@ -18,6 +18,8 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 
@@ -43,6 +45,13 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
     ): CredentialCreateResponse =
         // post /auth/credentials
         withRawResponse().create(params, requestOptions).parse()
+
+    override suspend fun resendChallenge(
+        params: CredentialResendChallengeParams,
+        requestOptions: RequestOptions,
+    ): CredentialResendChallengeResponse =
+        // post /auth/credentials/{id}/challenge
+        withRawResponse().resendChallenge(params, requestOptions).parse()
 
     override suspend fun verify(
         params: CredentialVerifyParams,
@@ -84,6 +93,37 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
             return errorHandler.handle(response).parseable {
                 response
                     .use { createHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val resendChallengeHandler: Handler<CredentialResendChallengeResponse> =
+            jsonHandler<CredentialResendChallengeResponse>(clientOptions.jsonMapper)
+
+        override suspend fun resendChallenge(
+            params: CredentialResendChallengeParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CredentialResendChallengeResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("auth", "credentials", params._pathParam(0), "challenge")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { resendChallengeHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
