@@ -101,7 +101,12 @@ private constructor(
      * you don't want to lock and view rate details before executing the quote. If you are executing
      * a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint instead. This is false by
      * default. This can only be used for quotes with a `source` which is either an internal
-     * account, or has direct pull functionality (e.g. ACH pull with an external account).
+     * account, or has direct pull functionality (e.g. ACH pull with an external account). Not
+     * supported when the `source` is an internal account of type `EMBEDDED_WALLET`: those transfers
+     * require a `Grid-Wallet-Signature` over the `payloadToSign` returned in the quote response,
+     * which is not available in a combined create-and-execute call. Create the quote first with
+     * `immediatelyExecute: false` and then call `POST /quotes/{quoteId}/execute` with the signature
+     * header.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -389,7 +394,11 @@ private constructor(
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
          * instead. This is false by default. This can only be used for quotes with a `source` which
          * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
-         * external account).
+         * external account). Not supported when the `source` is an internal account of type
+         * `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature` over the
+         * `payloadToSign` returned in the quote response, which is not available in a combined
+         * create-and-execute call. Create the quote first with `immediatelyExecute: false` and then
+         * call `POST /quotes/{quoteId}/execute` with the signature header.
          */
         fun immediatelyExecute(immediatelyExecute: Boolean) = apply {
             body.immediatelyExecute(immediatelyExecute)
@@ -728,7 +737,11 @@ private constructor(
          * you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute` endpoint
          * instead. This is false by default. This can only be used for quotes with a `source` which
          * is either an internal account, or has direct pull functionality (e.g. ACH pull with an
-         * external account).
+         * external account). Not supported when the `source` is an internal account of type
+         * `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature` over the
+         * `payloadToSign` returned in the quote response, which is not available in a combined
+         * create-and-execute call. Create the quote first with `immediatelyExecute: false` and then
+         * call `POST /quotes/{quoteId}/execute` with the signature header.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1022,7 +1035,11 @@ private constructor(
              * quote. If you are executing a pre-existing quote, use the `/quotes/{quoteId}/execute`
              * endpoint instead. This is false by default. This can only be used for quotes with a
              * `source` which is either an internal account, or has direct pull functionality (e.g.
-             * ACH pull with an external account).
+             * ACH pull with an external account). Not supported when the `source` is an internal
+             * account of type `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature`
+             * over the `payloadToSign` returned in the quote response, which is not available in a
+             * combined create-and-execute call. Create the quote first with `immediatelyExecute:
+             * false` and then call `POST /quotes/{quoteId}/execute` with the signature header.
              */
             fun immediatelyExecute(immediatelyExecute: Boolean) =
                 immediatelyExecute(JsonField.of(immediatelyExecute))

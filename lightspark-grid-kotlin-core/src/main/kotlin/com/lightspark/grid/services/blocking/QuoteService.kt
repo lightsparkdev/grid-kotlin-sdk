@@ -80,6 +80,12 @@ interface QuoteService {
      * This endpoint can only be used for quotes with a `source` which is either an internal
      * account, or has direct pull functionality (e.g. ACH pull with an external account).
      *
+     * When the quote's `source` is an internal account of type `EMBEDDED_WALLET`, the request must
+     * include a `Grid-Wallet-Signature` header. The signature is produced by signing the
+     * `payloadToSign` value from the quote's `paymentInstructions[].accountOrWalletInfo` entry with
+     * the session private key of a verified authentication credential on the source Embedded
+     * Wallet.
+     *
      * Once executed, the quote cannot be cancelled and the transfer will be processed.
      */
     fun execute(
