@@ -56,6 +56,8 @@ class CustomerInfoFieldName @JsonCreator private constructor(private val value: 
 
         val BUSINESS_TYPE = of("BUSINESS_TYPE")
 
+        val COMPANY_LEGAL_NAME = of("COMPANY_LEGAL_NAME")
+
         fun of(value: String) = CustomerInfoFieldName(JsonField.of(value))
     }
 
@@ -78,6 +80,7 @@ class CustomerInfoFieldName @JsonCreator private constructor(private val value: 
         ULTIMATE_INSTITUTION_COUNTRY,
         IDENTIFIER,
         BUSINESS_TYPE,
+        COMPANY_LEGAL_NAME,
     }
 
     /**
@@ -107,6 +110,7 @@ class CustomerInfoFieldName @JsonCreator private constructor(private val value: 
         ULTIMATE_INSTITUTION_COUNTRY,
         IDENTIFIER,
         BUSINESS_TYPE,
+        COMPANY_LEGAL_NAME,
         /**
          * An enum member indicating that [CustomerInfoFieldName] was instantiated with an unknown
          * value.
@@ -140,6 +144,7 @@ class CustomerInfoFieldName @JsonCreator private constructor(private val value: 
             ULTIMATE_INSTITUTION_COUNTRY -> Value.ULTIMATE_INSTITUTION_COUNTRY
             IDENTIFIER -> Value.IDENTIFIER
             BUSINESS_TYPE -> Value.BUSINESS_TYPE
+            COMPANY_LEGAL_NAME -> Value.COMPANY_LEGAL_NAME
             else -> Value._UNKNOWN
         }
 
@@ -171,6 +176,7 @@ class CustomerInfoFieldName @JsonCreator private constructor(private val value: 
             ULTIMATE_INSTITUTION_COUNTRY -> Known.ULTIMATE_INSTITUTION_COUNTRY
             IDENTIFIER -> Known.IDENTIFIER
             BUSINESS_TYPE -> Known.BUSINESS_TYPE
+            COMPANY_LEGAL_NAME -> Known.COMPANY_LEGAL_NAME
             else ->
                 throw LightsparkGridInvalidDataException("Unknown CustomerInfoFieldName: $value")
         }

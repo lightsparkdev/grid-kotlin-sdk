@@ -2374,6 +2374,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                 .routingNumber("021000021")
+                .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -2453,6 +2454,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                     .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                     .routingNumber("021000021")
+                    .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                     .beneficiary(
                         UsdBeneficiary.builder()
                             .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -3999,6 +4001,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
+                .bankName("bankName")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
                 .beneficiary(
@@ -4017,6 +4020,8 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4079,6 +4084,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("x")
                     .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
                     .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
+                    .bankName("bankName")
                     .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                     .phoneNumber("+1234567890")
                     .beneficiary(
@@ -4097,6 +4103,8 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
+                            .documentNumber("documentNumber")
+                            .documentType("documentType")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")

@@ -17,6 +17,7 @@ internal class CopExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("bankName")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -33,6 +34,8 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -46,6 +49,7 @@ internal class CopExternalAccountCreateInfoTest {
             .isEqualTo(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
         assertThat(copExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
+        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("bankName")
         assertThat(copExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 CopExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -64,6 +68,8 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -81,6 +87,7 @@ internal class CopExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("bankName")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -97,6 +104,8 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
