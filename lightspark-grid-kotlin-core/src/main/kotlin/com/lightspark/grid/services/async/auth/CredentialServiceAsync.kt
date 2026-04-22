@@ -127,10 +127,13 @@ interface CredentialServiceAsync {
      * session signing key.
      *
      * For `EMAIL_OTP` credentials, supply the one-time password that was emailed to the user along
-     * with a client-generated public key. On success, the response contains an
-     * `encryptedSessionSigningKey` that is encrypted to the supplied `clientPublicKey`, along with
-     * an `expiresAt` timestamp marking when the session expires. The `clientPublicKey` is ephemeral
-     * and one-time-use per verification request.
+     * with a client-generated public key. For `OAUTH` credentials, supply a fresh OIDC token (`iat`
+     * must be less than 60 seconds before the request) along with the client-generated public key;
+     * this is also the reauthentication path after a prior session expired.
+     *
+     * On success, the response contains an `encryptedSessionSigningKey` that is encrypted to the
+     * supplied `clientPublicKey`, along with an `expiresAt` timestamp marking when the session
+     * expires. The `clientPublicKey` is ephemeral and one-time-use per verification request.
      */
     suspend fun verify(
         id: String,
