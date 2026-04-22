@@ -37,6 +37,21 @@ internal class CredentialServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
+    fun resendChallenge() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val credentialService = client.auth().credentials()
+
+        val response = credentialService.resendChallenge("id")
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
     fun verify() {
         val client =
             LightsparkGridOkHttpClient.builder()
