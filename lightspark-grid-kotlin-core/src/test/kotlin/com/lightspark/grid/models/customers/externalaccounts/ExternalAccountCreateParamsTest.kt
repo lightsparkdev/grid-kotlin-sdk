@@ -39,6 +39,7 @@ internal class ExternalAccountCreateParamsTest {
                                     .build()
                             )
                             .routingNumber("123456789")
+                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .build()
                     )
                     .currency("USD")
@@ -83,6 +84,9 @@ internal class ExternalAccountCreateParamsTest {
                                         .build()
                                 )
                                 .routingNumber("123456789")
+                                .bankAccountType(
+                                    UsdExternalAccountCreateInfo.BankAccountType.CHECKING
+                                )
                                 .build()
                         )
                         .currency("USD")
@@ -125,6 +129,7 @@ internal class ExternalAccountCreateParamsTest {
                                     .build()
                             )
                             .routingNumber("123456789")
+                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .build()
                     )
                     .currency("USD")
