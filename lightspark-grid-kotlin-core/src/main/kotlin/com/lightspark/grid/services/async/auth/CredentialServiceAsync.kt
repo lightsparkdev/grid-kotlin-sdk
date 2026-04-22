@@ -8,6 +8,8 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 
@@ -59,6 +61,33 @@ interface CredentialServiceAsync {
     ): CredentialCreateResponse
 
     /**
+     * Re-issue the challenge for an existing authentication credential.
+     *
+     * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on
+     * file. After the user receives the new OTP, call `POST /auth/credentials/{id}/verify` to
+     * complete verification and issue a session.
+     */
+    suspend fun resendChallenge(
+        id: String,
+        params: CredentialResendChallengeParams = CredentialResendChallengeParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialResendChallengeResponse =
+        resendChallenge(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see resendChallenge */
+    suspend fun resendChallenge(
+        params: CredentialResendChallengeParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialResendChallengeResponse
+
+    /** @see resendChallenge */
+    suspend fun resendChallenge(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CredentialResendChallengeResponse =
+        resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
+
+    /**
      * Complete the verification step for a previously created authentication credential and issue a
      * session signing key.
      *
@@ -104,6 +133,33 @@ interface CredentialServiceAsync {
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse>
+
+        /**
+         * Returns a raw HTTP response for `post /auth/credentials/{id}/challenge`, but is otherwise
+         * the same as [CredentialServiceAsync.resendChallenge].
+         */
+        @MustBeClosed
+        suspend fun resendChallenge(
+            id: String,
+            params: CredentialResendChallengeParams = CredentialResendChallengeParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialResendChallengeResponse> =
+            resendChallenge(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see resendChallenge */
+        @MustBeClosed
+        suspend fun resendChallenge(
+            params: CredentialResendChallengeParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialResendChallengeResponse>
+
+        /** @see resendChallenge */
+        @MustBeClosed
+        suspend fun resendChallenge(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CredentialResendChallengeResponse> =
+            resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /auth/credentials/{id}/verify`, but is otherwise
