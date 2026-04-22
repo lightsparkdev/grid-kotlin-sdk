@@ -23,7 +23,6 @@ import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDelet
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountUpdateParams
 
 /** External account management endpoints for creating and managing external bank accounts */
 class ExternalAccountServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -51,13 +50,6 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
     ): ExternalAccount =
         // get /platform/external-accounts/{externalAccountId}
         withRawResponse().retrieve(params, requestOptions).parse()
-
-    override fun update(
-        params: ExternalAccountUpdateParams,
-        requestOptions: RequestOptions,
-    ): ExternalAccount =
-        // patch /platform/external-accounts/{externalAccountId}
-        withRawResponse().update(params, requestOptions).parse()
 
     override fun list(
         params: ExternalAccountListParams,
@@ -134,37 +126,6 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             return errorHandler.handle(response).parseable {
                 response
                     .use { retrieveHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val updateHandler: Handler<ExternalAccount> =
-            jsonHandler<ExternalAccount>(clientOptions.jsonMapper)
-
-        override fun update(
-            params: ExternalAccountUpdateParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccount> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("externalAccountId", params.externalAccountId())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.PATCH)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("platform", "external-accounts", params._pathParam(0))
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { updateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
