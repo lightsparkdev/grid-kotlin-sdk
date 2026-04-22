@@ -51,6 +51,7 @@ internal class ExternalAccountServiceAsyncTest {
                                     .build()
                             )
                             .routingNumber("123456789")
+                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .build()
                     )
                     .currency("USD")
