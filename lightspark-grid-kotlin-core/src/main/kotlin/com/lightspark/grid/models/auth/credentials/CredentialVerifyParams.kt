@@ -6,13 +6,24 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.BaseDeserializer
+import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
+import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
@@ -24,10 +35,13 @@ import java.util.Objects
  * session signing key.
  *
  * For `EMAIL_OTP` credentials, supply the one-time password that was emailed to the user along with
- * a client-generated public key. On success, the response contains an `encryptedSessionSigningKey`
- * that is encrypted to the supplied `clientPublicKey`, along with an `expiresAt` timestamp marking
- * when the session expires. The `clientPublicKey` is ephemeral and one-time-use per verification
- * request.
+ * a client-generated public key. For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be
+ * less than 60 seconds before the request) along with the client-generated public key; this is also
+ * the reauthentication path after a prior session expired.
+ *
+ * On success, the response contains an `encryptedSessionSigningKey` that is encrypted to the
+ * supplied `clientPublicKey`, along with an `expiresAt` timestamp marking when the session expires.
+ * The `clientPublicKey` is ephemeral and one-time-use per verification request.
  */
 class CredentialVerifyParams
 private constructor(
@@ -39,55 +53,7 @@ private constructor(
 
     fun id(): String? = id
 
-    /**
-     * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04 prefix
-     * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The matching
-     * private key must remain on the client. Grid encrypts the session signing key returned in the
-     * response to this public key. The key is ephemeral and one-time-use per verification request.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun clientPublicKey(): String = body.clientPublicKey()
-
-    /**
-     * The one-time password received by the user via email.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun otp(): String = body.otp()
-
-    /**
-     * Discriminator value identifying this as an email OTP verification.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun type(): Type = body.type()
-
-    /**
-     * Returns the raw JSON value of [clientPublicKey].
-     *
-     * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _clientPublicKey(): JsonField<String> = body._clientPublicKey()
-
-    /**
-     * Returns the raw JSON value of [otp].
-     *
-     * Unlike [otp], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _otp(): JsonField<String> = body._otp()
-
-    /**
-     * Returns the raw JSON value of [type].
-     *
-     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _type(): JsonField<Type> = body._type()
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun body(): Body = body
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -104,9 +70,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .clientPublicKey()
-         * .otp()
-         * .type()
+         * .body()
          * ```
          */
         fun builder() = Builder()
@@ -116,92 +80,34 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var body: Body.Builder = Body.builder()
+        private var body: Body? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(credentialVerifyParams: CredentialVerifyParams) = apply {
             id = credentialVerifyParams.id
-            body = credentialVerifyParams.body.toBuilder()
+            body = credentialVerifyParams.body
             additionalHeaders = credentialVerifyParams.additionalHeaders.toBuilder()
             additionalQueryParams = credentialVerifyParams.additionalQueryParams.toBuilder()
         }
 
         fun id(id: String?) = apply { this.id = id }
 
-        /**
-         * Sets the entire request body.
-         *
-         * This is generally only useful if you are already constructing the body separately.
-         * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [clientPublicKey]
-         * - [otp]
-         * - [type]
-         */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
+        fun body(body: Body) = apply { this.body = body }
 
         /**
-         * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04 prefix
-         * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The
-         * matching private key must remain on the client. Grid encrypts the session signing key
-         * returned in the response to this public key. The key is ephemeral and one-time-use per
-         * verification request.
+         * Alias for calling [body] with
+         * `Body.ofEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest)`.
          */
-        fun clientPublicKey(clientPublicKey: String) = apply {
-            body.clientPublicKey(clientPublicKey)
-        }
+        fun body(emailOtpCredentialVerifyRequest: Body.EmailOtpCredentialVerifyRequest) =
+            body(Body.ofEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest))
 
         /**
-         * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * Alias for calling [body] with
+         * `Body.ofOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest)`.
          */
-        fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
-            body.clientPublicKey(clientPublicKey)
-        }
-
-        /** The one-time password received by the user via email. */
-        fun otp(otp: String) = apply { body.otp(otp) }
-
-        /**
-         * Sets [Builder.otp] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.otp] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun otp(otp: JsonField<String>) = apply { body.otp(otp) }
-
-        /** Discriminator value identifying this as an email OTP verification. */
-        fun type(type: Type) = apply { body.type(type) }
-
-        /**
-         * Sets [Builder.type] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun type(type: JsonField<Type>) = apply { body.type(type) }
-
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
-        }
+        fun body(oauthCredentialVerifyRequest: Body.OAuthCredentialVerifyRequest) =
+            body(Body.ofOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -308,9 +214,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .clientPublicKey()
-         * .otp()
-         * .type()
+         * .body()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -318,7 +222,7 @@ private constructor(
         fun build(): CredentialVerifyParams =
             CredentialVerifyParams(
                 id,
-                body.build(),
+                checkRequired("body", body),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -336,204 +240,41 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    @JsonDeserialize(using = Body.Deserializer::class)
+    @JsonSerialize(using = Body.Serializer::class)
     class Body
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val clientPublicKey: JsonField<String>,
-        private val otp: JsonField<String>,
-        private val type: JsonField<Type>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
+        private val emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest? = null,
+        private val oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest? = null,
+        private val _json: JsonValue? = null,
     ) {
 
-        @JsonCreator
-        private constructor(
-            @JsonProperty("clientPublicKey")
-            @ExcludeMissing
-            clientPublicKey: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("otp") @ExcludeMissing otp: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-        ) : this(clientPublicKey, otp, type, mutableMapOf())
+        fun emailOtpCredentialVerifyRequest(): EmailOtpCredentialVerifyRequest? =
+            emailOtpCredentialVerifyRequest
 
-        /**
-         * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04 prefix
-         * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The
-         * matching private key must remain on the client. Grid encrypts the session signing key
-         * returned in the response to this public key. The key is ephemeral and one-time-use per
-         * verification request.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
+        fun oauthCredentialVerifyRequest(): OAuthCredentialVerifyRequest? =
+            oauthCredentialVerifyRequest
 
-        /**
-         * The one-time password received by the user via email.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun otp(): String = otp.getRequired("otp")
+        fun isEmailOtpCredentialVerifyRequest(): Boolean = emailOtpCredentialVerifyRequest != null
 
-        /**
-         * Discriminator value identifying this as an email OTP verification.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun type(): Type = type.getRequired("type")
+        fun isOAuthCredentialVerifyRequest(): Boolean = oauthCredentialVerifyRequest != null
 
-        /**
-         * Returns the raw JSON value of [clientPublicKey].
-         *
-         * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("clientPublicKey")
-        @ExcludeMissing
-        fun _clientPublicKey(): JsonField<String> = clientPublicKey
+        fun asEmailOtpCredentialVerifyRequest(): EmailOtpCredentialVerifyRequest =
+            emailOtpCredentialVerifyRequest.getOrThrow("emailOtpCredentialVerifyRequest")
 
-        /**
-         * Returns the raw JSON value of [otp].
-         *
-         * Unlike [otp], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("otp") @ExcludeMissing fun _otp(): JsonField<String> = otp
+        fun asOAuthCredentialVerifyRequest(): OAuthCredentialVerifyRequest =
+            oauthCredentialVerifyRequest.getOrThrow("oauthCredentialVerifyRequest")
 
-        /**
-         * Returns the raw JSON value of [type].
-         *
-         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+        fun _json(): JsonValue? = _json
 
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Body].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .clientPublicKey()
-             * .otp()
-             * .type()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Body]. */
-        class Builder internal constructor() {
-
-            private var clientPublicKey: JsonField<String>? = null
-            private var otp: JsonField<String>? = null
-            private var type: JsonField<Type>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(body: Body) = apply {
-                clientPublicKey = body.clientPublicKey
-                otp = body.otp
-                type = body.type
-                additionalProperties = body.additionalProperties.toMutableMap()
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                emailOtpCredentialVerifyRequest != null ->
+                    visitor.visitEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest)
+                oauthCredentialVerifyRequest != null ->
+                    visitor.visitOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest)
+                else -> visitor.unknown(_json)
             }
-
-            /**
-             * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
-             * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
-             * total). The matching private key must remain on the client. Grid encrypts the session
-             * signing key returned in the response to this public key. The key is ephemeral and
-             * one-time-use per verification request.
-             */
-            fun clientPublicKey(clientPublicKey: String) =
-                clientPublicKey(JsonField.of(clientPublicKey))
-
-            /**
-             * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
-                this.clientPublicKey = clientPublicKey
-            }
-
-            /** The one-time password received by the user via email. */
-            fun otp(otp: String) = otp(JsonField.of(otp))
-
-            /**
-             * Sets [Builder.otp] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.otp] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun otp(otp: JsonField<String>) = apply { this.otp = otp }
-
-            /** Discriminator value identifying this as an email OTP verification. */
-            fun type(type: Type) = type(JsonField.of(type))
-
-            /**
-             * Sets [Builder.type] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun type(type: JsonField<Type>) = apply { this.type = type }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Body].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .clientPublicKey()
-             * .otp()
-             * .type()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Body =
-                Body(
-                    checkRequired("clientPublicKey", clientPublicKey),
-                    checkRequired("otp", otp),
-                    checkRequired("type", type),
-                    additionalProperties.toMutableMap(),
-                )
-        }
 
         private var validated: Boolean = false
 
@@ -542,9 +283,21 @@ private constructor(
                 return@apply
             }
 
-            clientPublicKey()
-            otp()
-            type().validate()
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitEmailOtpCredentialVerifyRequest(
+                        emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
+                    ) {
+                        emailOtpCredentialVerifyRequest.validate()
+                    }
+
+                    override fun visitOAuthCredentialVerifyRequest(
+                        oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
+                    ) {
+                        oauthCredentialVerifyRequest.validate()
+                    }
+                }
+            )
             validated = true
         }
 
@@ -563,9 +316,19 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (clientPublicKey.asKnown() == null) 0 else 1) +
-                (if (otp.asKnown() == null) 0 else 1) +
-                (type.asKnown()?.validity() ?: 0)
+            accept(
+                object : Visitor<Int> {
+                    override fun visitEmailOtpCredentialVerifyRequest(
+                        emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
+                    ) = emailOtpCredentialVerifyRequest.validity()
+
+                    override fun visitOAuthCredentialVerifyRequest(
+                        oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
+                    ) = oauthCredentialVerifyRequest.validity()
+
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -573,152 +336,918 @@ private constructor(
             }
 
             return other is Body &&
-                clientPublicKey == other.clientPublicKey &&
-                otp == other.otp &&
-                type == other.type &&
-                additionalProperties == other.additionalProperties
+                emailOtpCredentialVerifyRequest == other.emailOtpCredentialVerifyRequest &&
+                oauthCredentialVerifyRequest == other.oauthCredentialVerifyRequest
         }
 
-        private val hashCode: Int by lazy {
-            Objects.hash(clientPublicKey, otp, type, additionalProperties)
-        }
+        override fun hashCode(): Int =
+            Objects.hash(emailOtpCredentialVerifyRequest, oauthCredentialVerifyRequest)
 
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Body{clientPublicKey=$clientPublicKey, otp=$otp, type=$type, additionalProperties=$additionalProperties}"
-    }
-
-    /** Discriminator value identifying this as an email OTP verification. */
-    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+        override fun toString(): String =
+            when {
+                emailOtpCredentialVerifyRequest != null ->
+                    "Body{emailOtpCredentialVerifyRequest=$emailOtpCredentialVerifyRequest}"
+                oauthCredentialVerifyRequest != null ->
+                    "Body{oauthCredentialVerifyRequest=$oauthCredentialVerifyRequest}"
+                _json != null -> "Body{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid Body")
+            }
 
         companion object {
 
-            val EMAIL_OTP = of("EMAIL_OTP")
+            fun ofEmailOtpCredentialVerifyRequest(
+                emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
+            ) = Body(emailOtpCredentialVerifyRequest = emailOtpCredentialVerifyRequest)
 
-            val OAUTH = of("OAUTH")
-
-            val PASSKEY = of("PASSKEY")
-
-            fun of(value: String) = Type(JsonField.of(value))
+            fun ofOAuthCredentialVerifyRequest(
+                oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
+            ) = Body(oauthCredentialVerifyRequest = oauthCredentialVerifyRequest)
         }
 
-        /** An enum containing [Type]'s known values. */
-        enum class Known {
-            EMAIL_OTP,
-            OAUTH,
-            PASSKEY,
+        /** An interface that defines how to map each variant of [Body] to a value of type [T]. */
+        interface Visitor<out T> {
+
+            fun visitEmailOtpCredentialVerifyRequest(
+                emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
+            ): T
+
+            fun visitOAuthCredentialVerifyRequest(
+                oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
+            ): T
+
+            /**
+             * Maps an unknown variant of [Body] to a value of type [T].
+             *
+             * An instance of [Body] can contain an unknown variant if it was deserialized from data
+             * that doesn't match any known variant. For example, if the SDK is on an older version
+             * than the API, then the API may respond with new variants that the SDK is unaware of.
+             *
+             * @throws LightsparkGridInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw LightsparkGridInvalidDataException("Unknown Body: $json")
+            }
         }
 
-        /**
-         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Type] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            EMAIL_OTP,
-            OAUTH,
-            PASSKEY,
-            /** An enum member indicating that [Type] was instantiated with an unknown value. */
-            _UNKNOWN,
+        internal class Deserializer : BaseDeserializer<Body>(Body::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): Body {
+                val json = JsonValue.fromJsonNode(node)
+                val type = json.asObject()?.get("type")?.asString()
+
+                when (type) {}
+
+                val bestMatches =
+                    sequenceOf(
+                            tryDeserialize(node, jacksonTypeRef<EmailOtpCredentialVerifyRequest>())
+                                ?.let { Body(emailOtpCredentialVerifyRequest = it, _json = json) },
+                            tryDeserialize(node, jacksonTypeRef<OAuthCredentialVerifyRequest>())
+                                ?.let { Body(oauthCredentialVerifyRequest = it, _json = json) },
+                        )
+                        .filterNotNull()
+                        .allMaxBy { it.validity() }
+                        .toList()
+                return when (bestMatches.size) {
+                    // This can happen if what we're deserializing is completely incompatible with
+                    // all the possible variants (e.g. deserializing from boolean).
+                    0 -> Body(_json = json)
+                    1 -> bestMatches.single()
+                    // If there's more than one match with the highest validity, then use the first
+                    // completely valid match, or simply the first match if none are completely
+                    // valid.
+                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                }
+            }
         }
 
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                EMAIL_OTP -> Value.EMAIL_OTP
-                OAUTH -> Value.OAUTH
-                PASSKEY -> Value.PASSKEY
-                else -> Value._UNKNOWN
+        internal class Serializer : BaseSerializer<Body>(Body::class) {
+
+            override fun serialize(
+                value: Body,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.emailOtpCredentialVerifyRequest != null ->
+                        generator.writeObject(value.emailOtpCredentialVerifyRequest)
+                    value.oauthCredentialVerifyRequest != null ->
+                        generator.writeObject(value.oauthCredentialVerifyRequest)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid Body")
+                }
             }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                EMAIL_OTP -> Known.EMAIL_OTP
-                OAUTH -> Known.OAUTH
-                PASSKEY -> Known.PASSKEY
-                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        fun validate(): Type = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
         }
 
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
+        class EmailOtpCredentialVerifyRequest
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val clientPublicKey: JsonField<String>,
+            private val otp: JsonField<String>,
+            private val type: JsonField<Type>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("clientPublicKey")
+                @ExcludeMissing
+                clientPublicKey: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("otp") @ExcludeMissing otp: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+            ) : this(clientPublicKey, otp, type, mutableMapOf())
+
+            /**
+             * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+             * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+             * total). The matching private key must remain on the client. Grid encrypts the session
+             * signing key returned in the response to this public key. The key is ephemeral and
+             * one-time-use per verification request.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
+
+            /**
+             * The one-time password received by the user via email.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun otp(): String = otp.getRequired("otp")
+
+            /**
+             * Discriminator value identifying this as an email OTP verification.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun type(): Type = type.getRequired("type")
+
+            /**
+             * Returns the raw JSON value of [clientPublicKey].
+             *
+             * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("clientPublicKey")
+            @ExcludeMissing
+            fun _clientPublicKey(): JsonField<String> = clientPublicKey
+
+            /**
+             * Returns the raw JSON value of [otp].
+             *
+             * Unlike [otp], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("otp") @ExcludeMissing fun _otp(): JsonField<String> = otp
+
+            /**
+             * Returns the raw JSON value of [type].
+             *
+             * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
             }
 
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [EmailOtpCredentialVerifyRequest].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .clientPublicKey()
+                 * .otp()
+                 * .type()
+                 * ```
+                 */
+                fun builder() = Builder()
             }
 
-            return other is Type && value == other.value
+            /** A builder for [EmailOtpCredentialVerifyRequest]. */
+            class Builder internal constructor() {
+
+                private var clientPublicKey: JsonField<String>? = null
+                private var otp: JsonField<String>? = null
+                private var type: JsonField<Type>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(
+                    emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
+                ) = apply {
+                    clientPublicKey = emailOtpCredentialVerifyRequest.clientPublicKey
+                    otp = emailOtpCredentialVerifyRequest.otp
+                    type = emailOtpCredentialVerifyRequest.type
+                    additionalProperties =
+                        emailOtpCredentialVerifyRequest.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+                 * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+                 * total). The matching private key must remain on the client. Grid encrypts the
+                 * session signing key returned in the response to this public key. The key is
+                 * ephemeral and one-time-use per verification request.
+                 */
+                fun clientPublicKey(clientPublicKey: String) =
+                    clientPublicKey(JsonField.of(clientPublicKey))
+
+                /**
+                 * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.clientPublicKey] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+                    this.clientPublicKey = clientPublicKey
+                }
+
+                /** The one-time password received by the user via email. */
+                fun otp(otp: String) = otp(JsonField.of(otp))
+
+                /**
+                 * Sets [Builder.otp] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.otp] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun otp(otp: JsonField<String>) = apply { this.otp = otp }
+
+                /** Discriminator value identifying this as an email OTP verification. */
+                fun type(type: Type) = type(JsonField.of(type))
+
+                /**
+                 * Sets [Builder.type] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.type] with a well-typed [Type] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun type(type: JsonField<Type>) = apply { this.type = type }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [EmailOtpCredentialVerifyRequest].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .clientPublicKey()
+                 * .otp()
+                 * .type()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): EmailOtpCredentialVerifyRequest =
+                    EmailOtpCredentialVerifyRequest(
+                        checkRequired("clientPublicKey", clientPublicKey),
+                        checkRequired("otp", otp),
+                        checkRequired("type", type),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): EmailOtpCredentialVerifyRequest = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                clientPublicKey()
+                otp()
+                type().validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (clientPublicKey.asKnown() == null) 0 else 1) +
+                    (if (otp.asKnown() == null) 0 else 1) +
+                    (type.asKnown()?.validity() ?: 0)
+
+            /** Discriminator value identifying this as an email OTP verification. */
+            class Type @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val EMAIL_OTP = of("EMAIL_OTP")
+
+                    val OAUTH = of("OAUTH")
+
+                    val PASSKEY = of("PASSKEY")
+
+                    fun of(value: String) = Type(JsonField.of(value))
+                }
+
+                /** An enum containing [Type]'s known values. */
+                enum class Known {
+                    EMAIL_OTP,
+                    OAUTH,
+                    PASSKEY,
+                }
+
+                /**
+                 * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Type] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    EMAIL_OTP,
+                    OAUTH,
+                    PASSKEY,
+                    /**
+                     * An enum member indicating that [Type] was instantiated with an unknown value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        EMAIL_OTP -> Value.EMAIL_OTP
+                        OAUTH -> Value.OAUTH
+                        PASSKEY -> Value.PASSKEY
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        EMAIL_OTP -> Known.EMAIL_OTP
+                        OAUTH -> Known.OAUTH
+                        PASSKEY -> Known.PASSKEY
+                        else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): Type = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Type && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is EmailOtpCredentialVerifyRequest &&
+                    clientPublicKey == other.clientPublicKey &&
+                    otp == other.otp &&
+                    type == other.type &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(clientPublicKey, otp, type, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "EmailOtpCredentialVerifyRequest{clientPublicKey=$clientPublicKey, otp=$otp, type=$type, additionalProperties=$additionalProperties}"
         }
 
-        override fun hashCode() = value.hashCode()
+        class OAuthCredentialVerifyRequest
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val clientPublicKey: JsonField<String>,
+            private val oidcToken: JsonField<String>,
+            private val type: JsonField<Type>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
 
-        override fun toString() = value.toString()
+            @JsonCreator
+            private constructor(
+                @JsonProperty("clientPublicKey")
+                @ExcludeMissing
+                clientPublicKey: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("oidcToken")
+                @ExcludeMissing
+                oidcToken: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+            ) : this(clientPublicKey, oidcToken, type, mutableMapOf())
+
+            /**
+             * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+             * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+             * total). The matching private key must remain on the client. Grid encrypts the session
+             * signing key returned in the response to this public key. The key is ephemeral and
+             * one-time-use per verification request.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
+
+            /**
+             * OIDC ID token issued by the identity provider. For reauthentication after a prior
+             * session expired, supply a fresh token — the token's `iat` claim must be less than 60
+             * seconds before the request timestamp. Grid fetches the issuer's signing key from the
+             * `iss` claim's `.well-known` OpenID configuration and verifies the token signature.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun oidcToken(): String = oidcToken.getRequired("oidcToken")
+
+            /**
+             * Discriminator value identifying this as an OAuth verification.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun type(): Type = type.getRequired("type")
+
+            /**
+             * Returns the raw JSON value of [clientPublicKey].
+             *
+             * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("clientPublicKey")
+            @ExcludeMissing
+            fun _clientPublicKey(): JsonField<String> = clientPublicKey
+
+            /**
+             * Returns the raw JSON value of [oidcToken].
+             *
+             * Unlike [oidcToken], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("oidcToken")
+            @ExcludeMissing
+            fun _oidcToken(): JsonField<String> = oidcToken
+
+            /**
+             * Returns the raw JSON value of [type].
+             *
+             * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of
+                 * [OAuthCredentialVerifyRequest].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .clientPublicKey()
+                 * .oidcToken()
+                 * .type()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [OAuthCredentialVerifyRequest]. */
+            class Builder internal constructor() {
+
+                private var clientPublicKey: JsonField<String>? = null
+                private var oidcToken: JsonField<String>? = null
+                private var type: JsonField<Type>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest) =
+                    apply {
+                        clientPublicKey = oauthCredentialVerifyRequest.clientPublicKey
+                        oidcToken = oauthCredentialVerifyRequest.oidcToken
+                        type = oauthCredentialVerifyRequest.type
+                        additionalProperties =
+                            oauthCredentialVerifyRequest.additionalProperties.toMutableMap()
+                    }
+
+                /**
+                 * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+                 * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+                 * total). The matching private key must remain on the client. Grid encrypts the
+                 * session signing key returned in the response to this public key. The key is
+                 * ephemeral and one-time-use per verification request.
+                 */
+                fun clientPublicKey(clientPublicKey: String) =
+                    clientPublicKey(JsonField.of(clientPublicKey))
+
+                /**
+                 * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.clientPublicKey] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+                    this.clientPublicKey = clientPublicKey
+                }
+
+                /**
+                 * OIDC ID token issued by the identity provider. For reauthentication after a prior
+                 * session expired, supply a fresh token — the token's `iat` claim must be less than
+                 * 60 seconds before the request timestamp. Grid fetches the issuer's signing key
+                 * from the `iss` claim's `.well-known` OpenID configuration and verifies the token
+                 * signature.
+                 */
+                fun oidcToken(oidcToken: String) = oidcToken(JsonField.of(oidcToken))
+
+                /**
+                 * Sets [Builder.oidcToken] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.oidcToken] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun oidcToken(oidcToken: JsonField<String>) = apply { this.oidcToken = oidcToken }
+
+                /** Discriminator value identifying this as an OAuth verification. */
+                fun type(type: Type) = type(JsonField.of(type))
+
+                /**
+                 * Sets [Builder.type] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.type] with a well-typed [Type] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun type(type: JsonField<Type>) = apply { this.type = type }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [OAuthCredentialVerifyRequest].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .clientPublicKey()
+                 * .oidcToken()
+                 * .type()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): OAuthCredentialVerifyRequest =
+                    OAuthCredentialVerifyRequest(
+                        checkRequired("clientPublicKey", clientPublicKey),
+                        checkRequired("oidcToken", oidcToken),
+                        checkRequired("type", type),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): OAuthCredentialVerifyRequest = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                clientPublicKey()
+                oidcToken()
+                type().validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (clientPublicKey.asKnown() == null) 0 else 1) +
+                    (if (oidcToken.asKnown() == null) 0 else 1) +
+                    (type.asKnown()?.validity() ?: 0)
+
+            /** Discriminator value identifying this as an OAuth verification. */
+            class Type @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val OAUTH = of("OAUTH")
+
+                    val EMAIL_OTP = of("EMAIL_OTP")
+
+                    val PASSKEY = of("PASSKEY")
+
+                    fun of(value: String) = Type(JsonField.of(value))
+                }
+
+                /** An enum containing [Type]'s known values. */
+                enum class Known {
+                    OAUTH,
+                    EMAIL_OTP,
+                    PASSKEY,
+                }
+
+                /**
+                 * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Type] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    OAUTH,
+                    EMAIL_OTP,
+                    PASSKEY,
+                    /**
+                     * An enum member indicating that [Type] was instantiated with an unknown value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        OAUTH -> Value.OAUTH
+                        EMAIL_OTP -> Value.EMAIL_OTP
+                        PASSKEY -> Value.PASSKEY
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        OAUTH -> Known.OAUTH
+                        EMAIL_OTP -> Known.EMAIL_OTP
+                        PASSKEY -> Known.PASSKEY
+                        else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                fun validate(): Type = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Type && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is OAuthCredentialVerifyRequest &&
+                    clientPublicKey == other.clientPublicKey &&
+                    oidcToken == other.oidcToken &&
+                    type == other.type &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(clientPublicKey, oidcToken, type, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "OAuthCredentialVerifyRequest{clientPublicKey=$clientPublicKey, oidcToken=$oidcToken, type=$type, additionalProperties=$additionalProperties}"
+        }
     }
 
     override fun equals(other: Any?): Boolean {
