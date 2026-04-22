@@ -40,7 +40,10 @@ interface CredentialServiceAsync {
      * call this endpoint with the credential details. The response is `201` with the created
      * `AuthMethod`. For `EMAIL_OTP` credentials, this call also triggers a one-time password email
      * to the address on the customer record tied to the internal account; the credential must be
-     * activated via `POST /auth/credentials/{id}/verify` before it can sign requests.
+     * activated via `POST /auth/credentials/{id}/verify` before it can sign requests. For `OAUTH`
+     * credentials, the supplied `oidcToken` is validated inline against the issuer's `.well-known`
+     * OpenID configuration (the token's `iat` must be less than 60 seconds before the request);
+     * activation still happens via `POST /auth/credentials/{id}/verify`.
      *
      * **Adding an additional credential**
      *
@@ -59,6 +62,38 @@ interface CredentialServiceAsync {
         params: CredentialCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse
+
+    /** @see create */
+    suspend fun create(
+        body: CredentialCreateParams.Body,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(CredentialCreateParams.builder().body(body).build(), requestOptions)
+
+    /** @see create */
+    suspend fun create(
+        emailOtpCredentialCreateRequest:
+            CredentialCreateParams.Body.EmailOtpCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(
+            CredentialCreateParams.Body.ofEmailOtpCredentialCreateRequest(
+                emailOtpCredentialCreateRequest
+            ),
+            requestOptions,
+        )
+
+    /** @see create */
+    suspend fun create(
+        oauthCredentialCreateRequest: CredentialCreateParams.Body.OAuthCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(
+            CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
+                oauthCredentialCreateRequest
+            ),
+            requestOptions,
+        )
 
     /**
      * Re-issue the challenge for an existing authentication credential.
@@ -133,6 +168,41 @@ interface CredentialServiceAsync {
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse>
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            body: CredentialCreateParams.Body,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(CredentialCreateParams.builder().body(body).build(), requestOptions)
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            emailOtpCredentialCreateRequest:
+                CredentialCreateParams.Body.EmailOtpCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(
+                CredentialCreateParams.Body.ofEmailOtpCredentialCreateRequest(
+                    emailOtpCredentialCreateRequest
+                ),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            oauthCredentialCreateRequest: CredentialCreateParams.Body.OAuthCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(
+                CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
+                    oauthCredentialCreateRequest
+                ),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `post /auth/credentials/{id}/challenge`, but is otherwise
