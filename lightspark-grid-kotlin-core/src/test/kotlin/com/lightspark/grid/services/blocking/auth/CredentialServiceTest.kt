@@ -71,6 +71,7 @@ internal class CredentialServiceTest {
             credentialService.verify(
                 CredentialVerifyParams.builder()
                     .id("id")
+                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .body(
                         CredentialVerifyParams.Body.EmailOtpCredentialVerifyRequest.builder()
                             .clientPublicKey(
