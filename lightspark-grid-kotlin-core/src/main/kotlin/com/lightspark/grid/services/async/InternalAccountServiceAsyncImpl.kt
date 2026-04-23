@@ -1,0 +1,88 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.lightspark.grid.services.async
+
+import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.handlers.errorBodyHandler
+import com.lightspark.grid.core.handlers.errorHandler
+import com.lightspark.grid.core.handlers.jsonHandler
+import com.lightspark.grid.core.http.HttpMethod
+import com.lightspark.grid.core.http.HttpRequest
+import com.lightspark.grid.core.http.HttpResponse
+import com.lightspark.grid.core.http.HttpResponse.Handler
+import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.core.http.json
+import com.lightspark.grid.core.http.parseable
+import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.internalaccounts.InternalAccountExportParams
+import com.lightspark.grid.models.internalaccounts.InternalAccountExportResponse
+
+/** Internal account management endpoints for creating and managing internal accounts */
+class InternalAccountServiceAsyncImpl
+internal constructor(private val clientOptions: ClientOptions) : InternalAccountServiceAsync {
+
+    private val withRawResponse: InternalAccountServiceAsync.WithRawResponse by lazy {
+        WithRawResponseImpl(clientOptions)
+    }
+
+    override fun withRawResponse(): InternalAccountServiceAsync.WithRawResponse = withRawResponse
+
+    override fun withOptions(
+        modifier: (ClientOptions.Builder) -> Unit
+    ): InternalAccountServiceAsync =
+        InternalAccountServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
+
+    override suspend fun export(
+        params: InternalAccountExportParams,
+        requestOptions: RequestOptions,
+    ): InternalAccountExportResponse =
+        // post /internal-accounts/{id}/export
+        withRawResponse().export(params, requestOptions).parse()
+
+    class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
+        InternalAccountServiceAsync.WithRawResponse {
+
+        private val errorHandler: Handler<HttpResponse> =
+            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
+
+        override fun withOptions(
+            modifier: (ClientOptions.Builder) -> Unit
+        ): InternalAccountServiceAsync.WithRawResponse =
+            InternalAccountServiceAsyncImpl.WithRawResponseImpl(
+                clientOptions.toBuilder().apply(modifier).build()
+            )
+
+        private val exportHandler: Handler<InternalAccountExportResponse> =
+            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
+
+        override suspend fun export(
+            params: InternalAccountExportParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InternalAccountExportResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("internal-accounts", params._pathParam(0), "export")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { exportHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+    }
+}
