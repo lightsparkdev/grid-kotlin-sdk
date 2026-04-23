@@ -204,6 +204,7 @@ private constructor(
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val currencies: JsonField<List<String>>,
+        private val email: JsonField<String>,
         private val isDeleted: JsonField<Boolean>,
         private val region: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
@@ -231,6 +232,7 @@ private constructor(
             @JsonProperty("currencies")
             @ExcludeMissing
             currencies: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
@@ -260,6 +262,7 @@ private constructor(
             id,
             createdAt,
             currencies,
+            email,
             isDeleted,
             region,
             updatedAt,
@@ -279,6 +282,7 @@ private constructor(
                 .id(id)
                 .createdAt(createdAt)
                 .currencies(currencies)
+                .email(email)
                 .isDeleted(isDeleted)
                 .region(region)
                 .updatedAt(updatedAt)
@@ -334,6 +338,14 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+        /**
+         * Email address for the customer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun email(): String? = email.getNullable("email")
 
         /**
          * Whether the customer is marked as deleted
@@ -450,6 +462,13 @@ private constructor(
         fun _currencies(): JsonField<List<String>> = currencies
 
         /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+        /**
          * Returns the raw JSON value of [isDeleted].
          *
          * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
@@ -558,6 +577,7 @@ private constructor(
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var currencies: JsonField<MutableList<String>>? = null
+            private var email: JsonField<String> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
             private var region: JsonField<String> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -575,6 +595,7 @@ private constructor(
                 id = individual.id
                 createdAt = individual.createdAt
                 currencies = individual.currencies.map { it.toMutableList() }
+                email = individual.email
                 isDeleted = individual.isDeleted
                 region = individual.region
                 updatedAt = individual.updatedAt
@@ -668,6 +689,18 @@ private constructor(
                         checkKnown("currencies", it).add(currency)
                     }
             }
+
+            /** Email address for the customer. */
+            fun email(email: String) = email(JsonField.of(email))
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun email(email: JsonField<String>) = apply { this.email = email }
 
             /** Whether the customer is marked as deleted */
             fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
@@ -829,6 +862,7 @@ private constructor(
                     id,
                     createdAt,
                     (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                    email,
                     isDeleted,
                     region,
                     updatedAt,
@@ -854,6 +888,7 @@ private constructor(
             id()
             createdAt()
             currencies()
+            email()
             isDeleted()
             region()
             updatedAt()
@@ -886,6 +921,7 @@ private constructor(
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (currencies.asKnown()?.size ?: 0) +
+                (if (email.asKnown() == null) 0 else 1) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
                 (if (region.asKnown() == null) 0 else 1) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
@@ -907,6 +943,7 @@ private constructor(
                 id == other.id &&
                 createdAt == other.createdAt &&
                 currencies == other.currencies &&
+                email == other.email &&
                 isDeleted == other.isDeleted &&
                 region == other.region &&
                 updatedAt == other.updatedAt &&
@@ -926,6 +963,7 @@ private constructor(
                 id,
                 createdAt,
                 currencies,
+                email,
                 isDeleted,
                 region,
                 updatedAt,
@@ -942,7 +980,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+            "Individual{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
     }
 
     class Business
@@ -953,6 +991,7 @@ private constructor(
         private val id: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val currencies: JsonField<List<String>>,
+        private val email: JsonField<String>,
         private val isDeleted: JsonField<Boolean>,
         private val region: JsonField<String>,
         private val updatedAt: JsonField<OffsetDateTime>,
@@ -979,6 +1018,7 @@ private constructor(
             @JsonProperty("currencies")
             @ExcludeMissing
             currencies: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
             @JsonProperty("isDeleted")
             @ExcludeMissing
             isDeleted: JsonField<Boolean> = JsonMissing.of(),
@@ -1005,6 +1045,7 @@ private constructor(
             id,
             createdAt,
             currencies,
+            email,
             isDeleted,
             region,
             updatedAt,
@@ -1023,6 +1064,7 @@ private constructor(
                 .id(id)
                 .createdAt(createdAt)
                 .currencies(currencies)
+                .email(email)
                 .isDeleted(isDeleted)
                 .region(region)
                 .updatedAt(updatedAt)
@@ -1076,6 +1118,14 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+        /**
+         * Email address for the customer.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun email(): String? = email.getNullable("email")
 
         /**
          * Whether the customer is marked as deleted
@@ -1184,6 +1234,13 @@ private constructor(
         fun _currencies(): JsonField<List<String>> = currencies
 
         /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+        /**
          * Returns the raw JSON value of [isDeleted].
          *
          * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
@@ -1287,6 +1344,7 @@ private constructor(
             private var id: JsonField<String> = JsonMissing.of()
             private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var currencies: JsonField<MutableList<String>>? = null
+            private var email: JsonField<String> = JsonMissing.of()
             private var isDeleted: JsonField<Boolean> = JsonMissing.of()
             private var region: JsonField<String> = JsonMissing.of()
             private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -1304,6 +1362,7 @@ private constructor(
                 id = business.id
                 createdAt = business.createdAt
                 currencies = business.currencies.map { it.toMutableList() }
+                email = business.email
                 isDeleted = business.isDeleted
                 region = business.region
                 updatedAt = business.updatedAt
@@ -1396,6 +1455,18 @@ private constructor(
                         checkKnown("currencies", it).add(currency)
                     }
             }
+
+            /** Email address for the customer. */
+            fun email(email: String) = email(JsonField.of(email))
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun email(email: JsonField<String>) = apply { this.email = email }
 
             /** Whether the customer is marked as deleted */
             fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
@@ -1559,6 +1630,7 @@ private constructor(
                     id,
                     createdAt,
                     (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                    email,
                     isDeleted,
                     region,
                     updatedAt,
@@ -1583,6 +1655,7 @@ private constructor(
             id()
             createdAt()
             currencies()
+            email()
             isDeleted()
             region()
             updatedAt()
@@ -1614,6 +1687,7 @@ private constructor(
                 (if (id.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (currencies.asKnown()?.size ?: 0) +
+                (if (email.asKnown() == null) 0 else 1) +
                 (if (isDeleted.asKnown() == null) 0 else 1) +
                 (if (region.asKnown() == null) 0 else 1) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
@@ -2438,6 +2512,7 @@ private constructor(
                 id == other.id &&
                 createdAt == other.createdAt &&
                 currencies == other.currencies &&
+                email == other.email &&
                 isDeleted == other.isDeleted &&
                 region == other.region &&
                 updatedAt == other.updatedAt &&
@@ -2456,6 +2531,7 @@ private constructor(
                 id,
                 createdAt,
                 currencies,
+                email,
                 isDeleted,
                 region,
                 updatedAt,
@@ -2471,6 +2547,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, beneficialOwners=$beneficialOwners, additionalProperties=$additionalProperties}"
+            "Business{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, beneficialOwners=$beneficialOwners, additionalProperties=$additionalProperties}"
     }
 }

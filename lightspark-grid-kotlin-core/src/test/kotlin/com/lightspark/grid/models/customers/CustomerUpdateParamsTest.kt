@@ -16,6 +16,7 @@ internal class CustomerUpdateParamsTest {
             .updateCustomerRequest(
                 CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                     .currencies(listOf("USD", "EUR", "USDC"))
+                    .email("john.doe@example.com")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
@@ -62,6 +63,7 @@ internal class CustomerUpdateParamsTest {
                 .updateCustomerRequest(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                         .currencies(listOf("USD", "EUR", "USDC"))
+                        .email("john.doe@example.com")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
@@ -89,6 +91,7 @@ internal class CustomerUpdateParamsTest {
                 CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
                     CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                         .currencies(listOf("USD", "EUR", "USDC"))
+                        .email("john.doe@example.com")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
