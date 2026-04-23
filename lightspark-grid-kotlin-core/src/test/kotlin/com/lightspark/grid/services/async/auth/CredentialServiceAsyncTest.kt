@@ -4,6 +4,7 @@ package com.lightspark.grid.services.async.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -40,6 +41,24 @@ internal class CredentialServiceAsyncTest {
             )
 
         credential.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun list() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val credentialServiceAsync = client.auth().credentials()
+
+        val credentials =
+            credentialServiceAsync.list(
+                CredentialListParams.builder().accountId("accountId").build()
+            )
+
+        credentials.validate()
     }
 
     @Disabled("Mock server tests are disabled")
