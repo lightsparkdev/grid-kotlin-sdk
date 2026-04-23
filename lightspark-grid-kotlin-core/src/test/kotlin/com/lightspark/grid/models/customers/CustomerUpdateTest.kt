@@ -14,10 +14,12 @@ internal class CustomerUpdateTest {
         val customerUpdate =
             CustomerUpdate.builder()
                 .currencies(listOf("USD", "EUR", "USDC"))
+                .email("john.doe@example.com")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
         assertThat(customerUpdate.currencies()).containsExactly("USD", "EUR", "USDC")
+        assertThat(customerUpdate.email()).isEqualTo("john.doe@example.com")
         assertThat(customerUpdate.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
     }
 
@@ -27,6 +29,7 @@ internal class CustomerUpdateTest {
         val customerUpdate =
             CustomerUpdate.builder()
                 .currencies(listOf("USD", "EUR", "USDC"))
+                .email("john.doe@example.com")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
