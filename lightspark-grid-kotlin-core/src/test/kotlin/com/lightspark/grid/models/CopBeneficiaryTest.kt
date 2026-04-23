@@ -15,7 +15,8 @@ internal class CopBeneficiaryTest {
         val copBeneficiary =
             CopBeneficiary.builder()
                 .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
+                .documentNumber("documentNumber")
+                .documentType("documentType")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -28,8 +29,7 @@ internal class CopBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
-                .documentNumber("documentNumber")
-                .documentType("documentType")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
@@ -37,7 +37,8 @@ internal class CopBeneficiaryTest {
 
         assertThat(copBeneficiary.beneficiaryType())
             .isEqualTo(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(copBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
+        assertThat(copBeneficiary.documentNumber()).isEqualTo("documentNumber")
+        assertThat(copBeneficiary.documentType()).isEqualTo("documentType")
         assertThat(copBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(copBeneficiary.address())
             .isEqualTo(
@@ -51,8 +52,7 @@ internal class CopBeneficiaryTest {
                     .build()
             )
         assertThat(copBeneficiary.birthDate()).isEqualTo("birthDate")
-        assertThat(copBeneficiary.documentNumber()).isEqualTo("documentNumber")
-        assertThat(copBeneficiary.documentType()).isEqualTo("documentType")
+        assertThat(copBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(copBeneficiary.email()).isEqualTo("email")
         assertThat(copBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(copBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
@@ -64,7 +64,8 @@ internal class CopBeneficiaryTest {
         val copBeneficiary =
             CopBeneficiary.builder()
                 .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
+                .documentNumber("documentNumber")
+                .documentType("documentType")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -77,8 +78,7 @@ internal class CopBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
-                .documentNumber("documentNumber")
-                .documentType("documentType")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
