@@ -62,7 +62,11 @@ private constructor(
     )
 
     /**
-     * System-generated unique identifier for the authentication credential.
+     * System-generated unique identifier for the session. Pass this value to `DELETE
+     * /auth/sessions/{id}` to revoke the session before `expiresAt`. Overrides the `id` inherited
+     * from `AuthMethod` so the verify response identifies the session that was just issued; the
+     * caller already has the authenticating credential's `AuthMethod` id from the path of the
+     * verify request.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -86,11 +90,10 @@ private constructor(
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
-     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied when the
-     * credential was created. Encoded as a base58check string: the decoded payload is a 33-byte
-     * compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The client
-     * decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
-     * requests until `expiresAt`.
+     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the verify
+     * request. Encoded as a base58check string: the decoded payload is a 33-byte compressed P-256
+     * encapsulated public key followed by AES-256-GCM ciphertext. The client decrypts this key with
+     * its private key and uses it to sign subsequent Embedded Wallet requests until `expiresAt`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -99,7 +102,8 @@ private constructor(
         encryptedSessionSigningKey.getRequired("encryptedSessionSigningKey")
 
     /**
-     * Timestamp after which the session signing key is no longer valid.
+     * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
+     * must not be used to sign further requests.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -258,7 +262,13 @@ private constructor(
             additionalProperties = credentialVerifyResponse.additionalProperties.toMutableMap()
         }
 
-        /** System-generated unique identifier for the authentication credential. */
+        /**
+         * System-generated unique identifier for the session. Pass this value to `DELETE
+         * /auth/sessions/{id}` to revoke the session before `expiresAt`. Overrides the `id`
+         * inherited from `AuthMethod` so the verify response identifies the session that was just
+         * issued; the caller already has the authenticating credential's `AuthMethod` id from the
+         * path of the verify request.
+         */
         fun id(id: String) = id(JsonField.of(id))
 
         /**
@@ -294,8 +304,8 @@ private constructor(
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
         /**
-         * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied when the
-         * credential was created. Encoded as a base58check string: the decoded payload is a 33-byte
+         * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
+         * verify request. Encoded as a base58check string: the decoded payload is a 33-byte
          * compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The client
          * decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
          * requests until `expiresAt`.
@@ -314,7 +324,10 @@ private constructor(
             this.encryptedSessionSigningKey = encryptedSessionSigningKey
         }
 
-        /** Timestamp after which the session signing key is no longer valid. */
+        /**
+         * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
+         * must not be used to sign further requests.
+         */
         fun expiresAt(expiresAt: OffsetDateTime) = expiresAt(JsonField.of(expiresAt))
 
         /**
