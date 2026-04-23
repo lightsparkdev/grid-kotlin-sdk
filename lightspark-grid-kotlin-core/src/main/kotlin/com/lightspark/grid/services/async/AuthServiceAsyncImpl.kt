@@ -3,26 +3,11 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.core.ClientOptions
-import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.handlers.errorBodyHandler
-import com.lightspark.grid.core.handlers.errorHandler
-import com.lightspark.grid.core.handlers.jsonHandler
-import com.lightspark.grid.core.http.HttpMethod
-import com.lightspark.grid.core.http.HttpRequest
-import com.lightspark.grid.core.http.HttpResponse
-import com.lightspark.grid.core.http.HttpResponse.Handler
-import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.core.http.parseable
-import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.auth.AuthListSessionsParams
-import com.lightspark.grid.models.auth.AuthListSessionsResponse
 import com.lightspark.grid.services.async.auth.CredentialServiceAsync
 import com.lightspark.grid.services.async.auth.CredentialServiceAsyncImpl
+import com.lightspark.grid.services.async.auth.SessionServiceAsync
+import com.lightspark.grid.services.async.auth.SessionServiceAsyncImpl
 
-/**
- * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
- * passkey) used to sign Embedded Wallet actions.
- */
 class AuthServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     AuthServiceAsync {
 
@@ -33,6 +18,8 @@ class AuthServiceAsyncImpl internal constructor(private val clientOptions: Clien
     private val credentials: CredentialServiceAsync by lazy {
         CredentialServiceAsyncImpl(clientOptions)
     }
+
+    private val sessions: SessionServiceAsync by lazy { SessionServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): AuthServiceAsync.WithRawResponse = withRawResponse
 
@@ -45,21 +32,21 @@ class AuthServiceAsyncImpl internal constructor(private val clientOptions: Clien
      */
     override fun credentials(): CredentialServiceAsync = credentials
 
-    override suspend fun listSessions(
-        params: AuthListSessionsParams,
-        requestOptions: RequestOptions,
-    ): AuthListSessionsResponse =
-        // get /auth/sessions
-        withRawResponse().listSessions(params, requestOptions).parse()
+    /**
+     * Endpoints for registering and verifying end-user authentication credentials (email OTP,
+     * OAuth, passkey) used to sign Embedded Wallet actions.
+     */
+    override fun sessions(): SessionServiceAsync = sessions
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         AuthServiceAsync.WithRawResponse {
 
-        private val errorHandler: Handler<HttpResponse> =
-            errorHandler(errorBodyHandler(clientOptions.jsonMapper))
-
         private val credentials: CredentialServiceAsync.WithRawResponse by lazy {
             CredentialServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val sessions: SessionServiceAsync.WithRawResponse by lazy {
+            SessionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -75,31 +62,10 @@ class AuthServiceAsyncImpl internal constructor(private val clientOptions: Clien
          */
         override fun credentials(): CredentialServiceAsync.WithRawResponse = credentials
 
-        private val listSessionsHandler: Handler<AuthListSessionsResponse> =
-            jsonHandler<AuthListSessionsResponse>(clientOptions.jsonMapper)
-
-        override suspend fun listSessions(
-            params: AuthListSessionsParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthListSessionsResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("auth", "sessions")
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { listSessionsHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
+        /**
+         * Endpoints for registering and verifying end-user authentication credentials (email OTP,
+         * OAuth, passkey) used to sign Embedded Wallet actions.
+         */
+        override fun sessions(): SessionServiceAsync.WithRawResponse = sessions
     }
 }

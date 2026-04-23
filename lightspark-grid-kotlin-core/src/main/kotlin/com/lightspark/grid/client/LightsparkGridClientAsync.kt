@@ -138,10 +138,6 @@ interface LightsparkGridClientAsync {
      */
     fun discoveries(): DiscoveryServiceAsync
 
-    /**
-     * Endpoints for registering and verifying end-user authentication credentials (email OTP,
-     * OAuth, passkey) used to sign Embedded Wallet actions.
-     */
     fun auth(): AuthServiceAsync
 
     /**
@@ -250,10 +246,6 @@ interface LightsparkGridClientAsync {
          */
         fun discoveries(): DiscoveryServiceAsync.WithRawResponse
 
-        /**
-         * Endpoints for registering and verifying end-user authentication credentials (email OTP,
-         * OAuth, passkey) used to sign Embedded Wallet actions.
-         */
         fun auth(): AuthServiceAsync.WithRawResponse
     }
 }
