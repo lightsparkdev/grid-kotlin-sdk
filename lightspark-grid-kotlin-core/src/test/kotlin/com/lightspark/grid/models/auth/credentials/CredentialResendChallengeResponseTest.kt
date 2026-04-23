@@ -3,50 +3,51 @@
 package com.lightspark.grid.models.auth.credentials
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 
 internal class CredentialResendChallengeResponseTest {
 
     @Test
-    fun create() {
-        val credentialResendChallengeResponse =
-            CredentialResendChallengeResponse.builder()
+    fun ofAuthMethod() {
+        val authMethod =
+            CredentialResendChallengeResponse.AuthMethod.builder()
                 .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(CredentialResendChallengeResponse.Type.OAUTH)
+                .type(CredentialResendChallengeResponse.AuthMethod.Type.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .build()
 
-        assertThat(credentialResendChallengeResponse.id())
-            .isEqualTo("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(credentialResendChallengeResponse.accountId())
-            .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-        assertThat(credentialResendChallengeResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-        assertThat(credentialResendChallengeResponse.nickname()).isEqualTo("example@lightspark.com")
-        assertThat(credentialResendChallengeResponse.type())
-            .isEqualTo(CredentialResendChallengeResponse.Type.OAUTH)
-        assertThat(credentialResendChallengeResponse.updatedAt())
-            .isEqualTo(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+        val credentialResendChallengeResponse =
+            CredentialResendChallengeResponse.ofAuthMethod(authMethod)
+
+        assertThat(credentialResendChallengeResponse.authMethod()).isEqualTo(authMethod)
+        assertThat(credentialResendChallengeResponse.passkeyAuthChallenge()).isNull()
     }
 
     @Test
-    fun roundtrip() {
+    fun ofAuthMethodRoundtrip() {
         val jsonMapper = jsonMapper()
         val credentialResendChallengeResponse =
-            CredentialResendChallengeResponse.builder()
-                .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
-                .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-                .nickname("example@lightspark.com")
-                .type(CredentialResendChallengeResponse.Type.OAUTH)
-                .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
-                .build()
+            CredentialResendChallengeResponse.ofAuthMethod(
+                CredentialResendChallengeResponse.AuthMethod.builder()
+                    .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
+                    .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
+                    .nickname("example@lightspark.com")
+                    .type(CredentialResendChallengeResponse.AuthMethod.Type.OAUTH)
+                    .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                    .build()
+            )
 
         val roundtrippedCredentialResendChallengeResponse =
             jsonMapper.readValue(
@@ -56,5 +57,78 @@ internal class CredentialResendChallengeResponseTest {
 
         assertThat(roundtrippedCredentialResendChallengeResponse)
             .isEqualTo(credentialResendChallengeResponse)
+    }
+
+    @Test
+    fun ofPasskeyAuthChallenge() {
+        val passkeyAuthChallenge =
+            CredentialResendChallengeResponse.PasskeyAuthChallenge.builder()
+                .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
+                .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
+                .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .nickname("example@lightspark.com")
+                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .type(CredentialResendChallengeResponse.PasskeyAuthChallenge.Type.OAUTH)
+                .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .build()
+
+        val credentialResendChallengeResponse =
+            CredentialResendChallengeResponse.ofPasskeyAuthChallenge(passkeyAuthChallenge)
+
+        assertThat(credentialResendChallengeResponse.authMethod()).isNull()
+        assertThat(credentialResendChallengeResponse.passkeyAuthChallenge())
+            .isEqualTo(passkeyAuthChallenge)
+    }
+
+    @Test
+    fun ofPasskeyAuthChallengeRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val credentialResendChallengeResponse =
+            CredentialResendChallengeResponse.ofPasskeyAuthChallenge(
+                CredentialResendChallengeResponse.PasskeyAuthChallenge.builder()
+                    .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
+                    .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                    .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
+                    .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                    .nickname("example@lightspark.com")
+                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .type(CredentialResendChallengeResponse.PasskeyAuthChallenge.Type.OAUTH)
+                    .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                    .build()
+            )
+
+        val roundtrippedCredentialResendChallengeResponse =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(credentialResendChallengeResponse),
+                jacksonTypeRef<CredentialResendChallengeResponse>(),
+            )
+
+        assertThat(roundtrippedCredentialResendChallengeResponse)
+            .isEqualTo(credentialResendChallengeResponse)
+    }
+
+    enum class IncompatibleJsonShapeTestCase(val value: JsonValue) {
+        BOOLEAN(JsonValue.from(false)),
+        STRING(JsonValue.from("invalid")),
+        INTEGER(JsonValue.from(-1)),
+        FLOAT(JsonValue.from(3.14)),
+        ARRAY(JsonValue.from(listOf("invalid", "array"))),
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    fun incompatibleJsonShapeDeserializesToUnknown(testCase: IncompatibleJsonShapeTestCase) {
+        val credentialResendChallengeResponse =
+            jsonMapper()
+                .convertValue(testCase.value, jacksonTypeRef<CredentialResendChallengeResponse>())
+
+        val e =
+            assertThrows<LightsparkGridInvalidDataException> {
+                credentialResendChallengeResponse.validate()
+            }
+        assertThat(e).hasMessageStartingWith("Unknown ")
     }
 }

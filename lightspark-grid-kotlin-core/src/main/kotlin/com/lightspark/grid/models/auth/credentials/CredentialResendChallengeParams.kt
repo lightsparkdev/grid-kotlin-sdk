@@ -13,8 +13,15 @@ import java.util.Objects
  * Re-issue the challenge for an existing authentication credential.
  *
  * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on file.
- * After the user receives the new OTP, call `POST /auth/credentials/{id}/verify` to complete
- * verification and issue a session.
+ * The response is a plain `AuthMethod`; there is no challenge body to surface because the OTP is
+ * delivered out-of-band via email. After the user receives the new OTP, call `POST
+ * /auth/credentials/{id}/verify` to complete verification and issue a session.
+ *
+ * For `PASSKEY` credentials, this issues a fresh Grid-generated WebAuthn challenge for
+ * reauthentication. The response is a `PasskeyAuthChallenge` — the base `AuthMethod` fields plus
+ * the new `challenge`, `requestId`, and `expiresAt`. The client passes the `challenge` into
+ * `navigator.credentials.get()` and submits the resulting assertion to `POST
+ * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
  */
 class CredentialResendChallengeParams
 private constructor(
