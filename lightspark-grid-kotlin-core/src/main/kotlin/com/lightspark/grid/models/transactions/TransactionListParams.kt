@@ -20,6 +20,7 @@ import java.util.Objects
  */
 class TransactionListParams
 private constructor(
+    private val accountIdentifier: String?,
     private val cursor: String?,
     private val customerId: String?,
     private val endDate: OffsetDateTime?,
@@ -35,6 +36,9 @@ private constructor(
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    /** Filter by account identifier (matches either sender or receiver) */
+    fun accountIdentifier(): String? = accountIdentifier
 
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
@@ -91,6 +95,7 @@ private constructor(
     /** A builder for [TransactionListParams]. */
     class Builder internal constructor() {
 
+        private var accountIdentifier: String? = null
         private var cursor: String? = null
         private var customerId: String? = null
         private var endDate: OffsetDateTime? = null
@@ -107,6 +112,7 @@ private constructor(
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(transactionListParams: TransactionListParams) = apply {
+            accountIdentifier = transactionListParams.accountIdentifier
             cursor = transactionListParams.cursor
             customerId = transactionListParams.customerId
             endDate = transactionListParams.endDate
@@ -121,6 +127,11 @@ private constructor(
             type = transactionListParams.type
             additionalHeaders = transactionListParams.additionalHeaders.toBuilder()
             additionalQueryParams = transactionListParams.additionalQueryParams.toBuilder()
+        }
+
+        /** Filter by account identifier (matches either sender or receiver) */
+        fun accountIdentifier(accountIdentifier: String?) = apply {
+            this.accountIdentifier = accountIdentifier
         }
 
         /** Cursor for pagination (returned from previous request) */
@@ -277,6 +288,7 @@ private constructor(
          */
         fun build(): TransactionListParams =
             TransactionListParams(
+                accountIdentifier,
                 cursor,
                 customerId,
                 endDate,
@@ -299,6 +311,7 @@ private constructor(
     override fun _queryParams(): QueryParams =
         QueryParams.builder()
             .apply {
+                accountIdentifier?.let { put("accountIdentifier", it) }
                 cursor?.let { put("cursor", it) }
                 customerId?.let { put("customerId", it) }
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
@@ -451,6 +464,7 @@ private constructor(
         }
 
         return other is TransactionListParams &&
+            accountIdentifier == other.accountIdentifier &&
             cursor == other.cursor &&
             customerId == other.customerId &&
             endDate == other.endDate &&
@@ -469,6 +483,7 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
+            accountIdentifier,
             cursor,
             customerId,
             endDate,
@@ -486,5 +501,5 @@ private constructor(
         )
 
     override fun toString() =
-        "TransactionListParams{cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "TransactionListParams{accountIdentifier=$accountIdentifier, cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
