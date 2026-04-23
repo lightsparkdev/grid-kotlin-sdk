@@ -43,7 +43,10 @@ private constructor(
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
 
-    /** Filter by system customer ID */
+    /**
+     * Filter by system customer ID. To filter to transactions made on behalf of the platform,
+     * specify the platform ID as the customer ID.
+     */
     fun customerId(): String? = customerId
 
     /** Filter by end date (inclusive) in ISO 8601 format */
@@ -137,7 +140,10 @@ private constructor(
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
 
-        /** Filter by system customer ID */
+        /**
+         * Filter by system customer ID. To filter to transactions made on behalf of the platform,
+         * specify the platform ID as the customer ID.
+         */
         fun customerId(customerId: String?) = apply { this.customerId = customerId }
 
         /** Filter by end date (inclusive) in ISO 8601 format */
