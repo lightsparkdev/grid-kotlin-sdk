@@ -43,7 +43,18 @@ interface CredentialService {
      * activated via `POST /auth/credentials/{id}/verify` before it can sign requests. For `OAUTH`
      * credentials, the supplied `oidcToken` is validated inline against the issuer's `.well-known`
      * OpenID configuration (the token's `iat` must be less than 60 seconds before the request);
-     * activation still happens via `POST /auth/credentials/{id}/verify`.
+     * activation still happens via `POST /auth/credentials/{id}/verify`. For `PASSKEY` credentials,
+     * the client completes a WebAuthn registration (`navigator.credentials.create()`) using a
+     * `challenge` issued by the platform backend and submits the resulting `attestation` here; the
+     * credential must still be activated via `POST /auth/credentials/{id}/verify` by completing a
+     * WebAuthn assertion. Unlike the registration `challenge` (platform-issued), the challenge for
+     * the first authentication is issued by Grid and returned inline on the `201` response
+     * alongside the `AuthMethod` fields, plus a `requestId` and challenge `expiresAt` (see
+     * `PasskeyAuthChallenge`). The client uses that Grid-issued `challenge` to produce the
+     * assertion and submits it with `Request-Id: <requestId>` to `POST
+     * /auth/credentials/{id}/verify`. On every subsequent reauthentication the challenge is
+     * re-issued via `POST /auth/credentials/{id}/challenge`. Only one `PASSKEY` credential is
+     * supported per internal account in v1.
      *
      * **Adding an additional credential**
      *
@@ -91,6 +102,18 @@ interface CredentialService {
         create(
             CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
                 oauthCredentialCreateRequest
+            ),
+            requestOptions,
+        )
+
+    /** @see create */
+    fun create(
+        passkeyCredentialCreateRequest: CredentialCreateParams.Body.PasskeyCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(
+            CredentialCreateParams.Body.ofPasskeyCredentialCreateRequest(
+                passkeyCredentialCreateRequest
             ),
             requestOptions,
         )
@@ -200,6 +223,20 @@ interface CredentialService {
             create(
                 CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
                     oauthCredentialCreateRequest
+                ),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        fun create(
+            passkeyCredentialCreateRequest:
+                CredentialCreateParams.Body.PasskeyCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(
+                CredentialCreateParams.Body.ofPasskeyCredentialCreateRequest(
+                    passkeyCredentialCreateRequest
                 ),
                 requestOptions,
             )
