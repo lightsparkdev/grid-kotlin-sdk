@@ -17,6 +17,7 @@ internal class JmdExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("x")
                 .beneficiary(
                     JmdBeneficiary.builder()
                         .address(
@@ -46,6 +47,7 @@ internal class JmdExternalAccountCreateInfoTest {
             .isEqualTo(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
         assertThat(jmdExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(JmdExternalAccountCreateInfo.BankAccountType.CHECKING)
+        assertThat(jmdExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(jmdExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 JmdExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -81,6 +83,7 @@ internal class JmdExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(JmdExternalAccountCreateInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("x")
                 .beneficiary(
                     JmdBeneficiary.builder()
                         .address(

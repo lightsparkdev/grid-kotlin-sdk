@@ -13,8 +13,6 @@ internal class UsdBeneficiaryTest {
     fun create() {
         val usdBeneficiary =
             UsdBeneficiary.builder()
-                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -25,16 +23,15 @@ internal class UsdBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                 .birthDate("birthDate")
+                .fullName("fullName")
+                .nationality("nationality")
                 .countryOfResidence("countryOfResidence")
                 .email("email")
-                .nationality("nationality")
                 .phoneNumber("phoneNumber")
                 .build()
 
-        assertThat(usdBeneficiary.beneficiaryType())
-            .isEqualTo(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(usdBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(usdBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -46,10 +43,13 @@ internal class UsdBeneficiaryTest {
                     .state("CA")
                     .build()
             )
+        assertThat(usdBeneficiary.beneficiaryType())
+            .isEqualTo(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
         assertThat(usdBeneficiary.birthDate()).isEqualTo("birthDate")
+        assertThat(usdBeneficiary.fullName()).isEqualTo("fullName")
+        assertThat(usdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(usdBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(usdBeneficiary.email()).isEqualTo("email")
-        assertThat(usdBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(usdBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
     }
 
@@ -58,8 +58,6 @@ internal class UsdBeneficiaryTest {
         val jsonMapper = jsonMapper()
         val usdBeneficiary =
             UsdBeneficiary.builder()
-                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -70,10 +68,12 @@ internal class UsdBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                 .birthDate("birthDate")
+                .fullName("fullName")
+                .nationality("nationality")
                 .countryOfResidence("countryOfResidence")
                 .email("email")
-                .nationality("nationality")
                 .phoneNumber("phoneNumber")
                 .build()
 

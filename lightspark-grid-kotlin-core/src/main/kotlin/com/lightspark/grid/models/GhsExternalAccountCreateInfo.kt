@@ -32,6 +32,7 @@ class GhsExternalAccountCreateInfo
 private constructor(
     private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
+    private val bankName: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val phoneNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -45,13 +46,14 @@ private constructor(
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<AccountType> = JsonMissing.of(),
+        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, beneficiary, phoneNumber, mutableMapOf())
+    ) : this(accountNumber, accountType, bankName, beneficiary, phoneNumber, mutableMapOf())
 
     /**
      * The account number of the bank
@@ -66,6 +68,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountType(): AccountType = accountType.getRequired("accountType")
+
+    /**
+     * The name of the bank
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun bankName(): String = bankName.getRequired("bankName")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -98,6 +108,13 @@ private constructor(
     @JsonProperty("accountType")
     @ExcludeMissing
     fun _accountType(): JsonField<AccountType> = accountType
+
+    /**
+     * Returns the raw JSON value of [bankName].
+     *
+     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
 
     /**
      * Returns the raw JSON value of [beneficiary].
@@ -136,6 +153,7 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
+         * .bankName()
          * .beneficiary()
          * .phoneNumber()
          * ```
@@ -148,6 +166,7 @@ private constructor(
 
         private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
+        private var bankName: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
         private var phoneNumber: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -155,6 +174,7 @@ private constructor(
         internal fun from(ghsExternalAccountCreateInfo: GhsExternalAccountCreateInfo) = apply {
             accountNumber = ghsExternalAccountCreateInfo.accountNumber
             accountType = ghsExternalAccountCreateInfo.accountType
+            bankName = ghsExternalAccountCreateInfo.bankName
             beneficiary = ghsExternalAccountCreateInfo.beneficiary
             phoneNumber = ghsExternalAccountCreateInfo.phoneNumber
             additionalProperties = ghsExternalAccountCreateInfo.additionalProperties.toMutableMap()
@@ -186,6 +206,17 @@ private constructor(
         fun accountType(accountType: JsonField<AccountType>) = apply {
             this.accountType = accountType
         }
+
+        /** The name of the bank */
+        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+        /**
+         * Sets [Builder.bankName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -282,6 +313,7 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
+         * .bankName()
          * .beneficiary()
          * .phoneNumber()
          * ```
@@ -292,6 +324,7 @@ private constructor(
             GhsExternalAccountCreateInfo(
                 checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
+                checkRequired("bankName", bankName),
                 checkRequired("beneficiary", beneficiary),
                 checkRequired("phoneNumber", phoneNumber),
                 additionalProperties.toMutableMap(),
@@ -307,6 +340,7 @@ private constructor(
 
         accountNumber()
         accountType().validate()
+        bankName()
         beneficiary().validate()
         phoneNumber()
         validated = true
@@ -328,6 +362,7 @@ private constructor(
     internal fun validity(): Int =
         (if (accountNumber.asKnown() == null) 0 else 1) +
             (accountType.asKnown()?.validity() ?: 0) +
+            (if (bankName.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
 
@@ -629,17 +664,25 @@ private constructor(
         return other is GhsExternalAccountCreateInfo &&
             accountNumber == other.accountNumber &&
             accountType == other.accountType &&
+            bankName == other.bankName &&
             beneficiary == other.beneficiary &&
             phoneNumber == other.phoneNumber &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountNumber, accountType, beneficiary, phoneNumber, additionalProperties)
+        Objects.hash(
+            accountNumber,
+            accountType,
+            bankName,
+            beneficiary,
+            phoneNumber,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GhsExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, beneficiary=$beneficiary, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "GhsExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

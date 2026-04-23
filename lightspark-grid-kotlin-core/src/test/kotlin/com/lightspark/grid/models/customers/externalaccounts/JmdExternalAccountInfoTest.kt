@@ -18,6 +18,7 @@ internal class JmdExternalAccountInfoTest {
                 .accountNumber("x")
                 .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
+                .bankName("x")
                 .branchCode("21029")
                 .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
@@ -48,6 +49,7 @@ internal class JmdExternalAccountInfoTest {
             .isEqualTo(JmdAccountInfo.AccountType.JMD_ACCOUNT)
         assertThat(jmdExternalAccountInfo.bankAccountType())
             .isEqualTo(JmdAccountInfo.BankAccountType.CHECKING)
+        assertThat(jmdExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(jmdExternalAccountInfo.branchCode()).isEqualTo("21029")
         assertThat(jmdExternalAccountInfo.paymentRails())
             .containsExactly(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -85,6 +87,7 @@ internal class JmdExternalAccountInfoTest {
                 .accountNumber("x")
                 .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
+                .bankName("x")
                 .branchCode("21029")
                 .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(

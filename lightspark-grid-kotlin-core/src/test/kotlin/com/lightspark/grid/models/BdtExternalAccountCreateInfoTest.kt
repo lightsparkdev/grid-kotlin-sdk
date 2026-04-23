@@ -16,6 +16,7 @@ internal class BdtExternalAccountCreateInfoTest {
             BdtExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,6 +46,7 @@ internal class BdtExternalAccountCreateInfoTest {
         assertThat(bdtExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.accountType())
             .isEqualTo(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+        assertThat(bdtExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -81,6 +83,7 @@ internal class BdtExternalAccountCreateInfoTest {
             BdtExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
