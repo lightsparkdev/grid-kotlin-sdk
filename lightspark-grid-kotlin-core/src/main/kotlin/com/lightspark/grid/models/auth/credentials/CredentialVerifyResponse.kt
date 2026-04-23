@@ -17,17 +17,23 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * An authentication session on an Embedded Wallet internal account. Returned from `GET
+ * /auth/sessions` (list) and `POST /auth/credentials/{id}/verify` (on credential verification).
+ * Only the verify response includes `encryptedSessionSigningKey` — it is delivered exactly once at
+ * the moment the session is issued and is never returned by the list endpoint.
+ */
 class CredentialVerifyResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
     private val accountId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
-    private val encryptedSessionSigningKey: JsonField<String>,
     private val expiresAt: JsonField<OffsetDateTime>,
     private val nickname: JsonField<String>,
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val encryptedSessionSigningKey: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -38,9 +44,6 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("encryptedSessionSigningKey")
-        @ExcludeMissing
-        encryptedSessionSigningKey: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expiresAt")
         @ExcludeMissing
         expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -49,24 +52,26 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("encryptedSessionSigningKey")
+        @ExcludeMissing
+        encryptedSessionSigningKey: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         accountId,
         createdAt,
-        encryptedSessionSigningKey,
         expiresAt,
         nickname,
         type,
         updatedAt,
+        encryptedSessionSigningKey,
         mutableMapOf(),
     )
 
     /**
      * System-generated unique identifier for the session. Pass this value to `DELETE
      * /auth/sessions/{id}` to revoke the session before `expiresAt`. Overrides the `id` inherited
-     * from `AuthMethod` so the verify response identifies the session that was just issued; the
-     * caller already has the authenticating credential's `AuthMethod` id from the path of the
-     * verify request.
+     * from `AuthMethod` so this response identifies the session rather than the authenticating
+     * credential.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -88,18 +93,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
-
-    /**
-     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the verify
-     * request. Encoded as a base58check string: the decoded payload is a 33-byte compressed P-256
-     * encapsulated public key followed by AES-256-GCM ciphertext. The client decrypts this key with
-     * its private key and uses it to sign subsequent Embedded Wallet requests until `expiresAt`.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun encryptedSessionSigningKey(): String =
-        encryptedSessionSigningKey.getRequired("encryptedSessionSigningKey")
 
     /**
      * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
@@ -141,6 +134,22 @@ private constructor(
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
 
     /**
+     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the verify
+     * request. Encoded as a base58check string: the decoded payload is a 33-byte compressed P-256
+     * encapsulated public key followed by AES-256-GCM ciphertext. The client decrypts this key with
+     * its private key and uses it to sign subsequent Embedded Wallet requests until `expiresAt`.
+     *
+     * Only returned from `POST /auth/credentials/{id}/verify` (where the session is first issued).
+     * Omitted from responses that simply surface existing sessions (e.g. `GET /auth/sessions`) —
+     * Grid does not retain the plaintext key after the client has decrypted it.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun encryptedSessionSigningKey(): String? =
+        encryptedSessionSigningKey.getNullable("encryptedSessionSigningKey")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -162,16 +171,6 @@ private constructor(
     @JsonProperty("createdAt")
     @ExcludeMissing
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
-
-    /**
-     * Returns the raw JSON value of [encryptedSessionSigningKey].
-     *
-     * Unlike [encryptedSessionSigningKey], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    @JsonProperty("encryptedSessionSigningKey")
-    @ExcludeMissing
-    fun _encryptedSessionSigningKey(): JsonField<String> = encryptedSessionSigningKey
 
     /**
      * Returns the raw JSON value of [expiresAt].
@@ -205,6 +204,16 @@ private constructor(
     @ExcludeMissing
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
+    /**
+     * Returns the raw JSON value of [encryptedSessionSigningKey].
+     *
+     * Unlike [encryptedSessionSigningKey], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("encryptedSessionSigningKey")
+    @ExcludeMissing
+    fun _encryptedSessionSigningKey(): JsonField<String> = encryptedSessionSigningKey
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -227,7 +236,6 @@ private constructor(
          * .id()
          * .accountId()
          * .createdAt()
-         * .encryptedSessionSigningKey()
          * .expiresAt()
          * .nickname()
          * .type()
@@ -243,31 +251,30 @@ private constructor(
         private var id: JsonField<String>? = null
         private var accountId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
-        private var encryptedSessionSigningKey: JsonField<String>? = null
         private var expiresAt: JsonField<OffsetDateTime>? = null
         private var nickname: JsonField<String>? = null
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var encryptedSessionSigningKey: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(credentialVerifyResponse: CredentialVerifyResponse) = apply {
             id = credentialVerifyResponse.id
             accountId = credentialVerifyResponse.accountId
             createdAt = credentialVerifyResponse.createdAt
-            encryptedSessionSigningKey = credentialVerifyResponse.encryptedSessionSigningKey
             expiresAt = credentialVerifyResponse.expiresAt
             nickname = credentialVerifyResponse.nickname
             type = credentialVerifyResponse.type
             updatedAt = credentialVerifyResponse.updatedAt
+            encryptedSessionSigningKey = credentialVerifyResponse.encryptedSessionSigningKey
             additionalProperties = credentialVerifyResponse.additionalProperties.toMutableMap()
         }
 
         /**
          * System-generated unique identifier for the session. Pass this value to `DELETE
          * /auth/sessions/{id}` to revoke the session before `expiresAt`. Overrides the `id`
-         * inherited from `AuthMethod` so the verify response identifies the session that was just
-         * issued; the caller already has the authenticating credential's `AuthMethod` id from the
-         * path of the verify request.
+         * inherited from `AuthMethod` so this response identifies the session rather than the
+         * authenticating credential.
          */
         fun id(id: String) = id(JsonField.of(id))
 
@@ -302,27 +309,6 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
-
-        /**
-         * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
-         * verify request. Encoded as a base58check string: the decoded payload is a 33-byte
-         * compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The client
-         * decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
-         * requests until `expiresAt`.
-         */
-        fun encryptedSessionSigningKey(encryptedSessionSigningKey: String) =
-            encryptedSessionSigningKey(JsonField.of(encryptedSessionSigningKey))
-
-        /**
-         * Sets [Builder.encryptedSessionSigningKey] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.encryptedSessionSigningKey] with a well-typed [String]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun encryptedSessionSigningKey(encryptedSessionSigningKey: JsonField<String>) = apply {
-            this.encryptedSessionSigningKey = encryptedSessionSigningKey
-        }
 
         /**
          * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
@@ -383,6 +369,32 @@ private constructor(
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
+        /**
+         * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
+         * verify request. Encoded as a base58check string: the decoded payload is a 33-byte
+         * compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The client
+         * decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
+         * requests until `expiresAt`.
+         *
+         * Only returned from `POST /auth/credentials/{id}/verify` (where the session is first
+         * issued). Omitted from responses that simply surface existing sessions (e.g. `GET
+         * /auth/sessions`) — Grid does not retain the plaintext key after the client has decrypted
+         * it.
+         */
+        fun encryptedSessionSigningKey(encryptedSessionSigningKey: String) =
+            encryptedSessionSigningKey(JsonField.of(encryptedSessionSigningKey))
+
+        /**
+         * Sets [Builder.encryptedSessionSigningKey] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.encryptedSessionSigningKey] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun encryptedSessionSigningKey(encryptedSessionSigningKey: JsonField<String>) = apply {
+            this.encryptedSessionSigningKey = encryptedSessionSigningKey
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -412,7 +424,6 @@ private constructor(
          * .id()
          * .accountId()
          * .createdAt()
-         * .encryptedSessionSigningKey()
          * .expiresAt()
          * .nickname()
          * .type()
@@ -426,11 +437,11 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("accountId", accountId),
                 checkRequired("createdAt", createdAt),
-                checkRequired("encryptedSessionSigningKey", encryptedSessionSigningKey),
                 checkRequired("expiresAt", expiresAt),
                 checkRequired("nickname", nickname),
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
+                encryptedSessionSigningKey,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -445,11 +456,11 @@ private constructor(
         id()
         accountId()
         createdAt()
-        encryptedSessionSigningKey()
         expiresAt()
         nickname()
         type().validate()
         updatedAt()
+        encryptedSessionSigningKey()
         validated = true
     }
 
@@ -470,11 +481,11 @@ private constructor(
         (if (id.asKnown() == null) 0 else 1) +
             (if (accountId.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
-            (if (encryptedSessionSigningKey.asKnown() == null) 0 else 1) +
             (if (expiresAt.asKnown() == null) 0 else 1) +
             (if (nickname.asKnown() == null) 0 else 1) +
             (type.asKnown()?.validity() ?: 0) +
-            (if (updatedAt.asKnown() == null) 0 else 1)
+            (if (updatedAt.asKnown() == null) 0 else 1) +
+            (if (encryptedSessionSigningKey.asKnown() == null) 0 else 1)
 
     /**
      * The type of authentication credential.
@@ -623,11 +634,11 @@ private constructor(
             id == other.id &&
             accountId == other.accountId &&
             createdAt == other.createdAt &&
-            encryptedSessionSigningKey == other.encryptedSessionSigningKey &&
             expiresAt == other.expiresAt &&
             nickname == other.nickname &&
             type == other.type &&
             updatedAt == other.updatedAt &&
+            encryptedSessionSigningKey == other.encryptedSessionSigningKey &&
             additionalProperties == other.additionalProperties
     }
 
@@ -636,11 +647,11 @@ private constructor(
             id,
             accountId,
             createdAt,
-            encryptedSessionSigningKey,
             expiresAt,
             nickname,
             type,
             updatedAt,
+            encryptedSessionSigningKey,
             additionalProperties,
         )
     }
@@ -648,5 +659,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CredentialVerifyResponse{id=$id, accountId=$accountId, createdAt=$createdAt, encryptedSessionSigningKey=$encryptedSessionSigningKey, expiresAt=$expiresAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "CredentialVerifyResponse{id=$id, accountId=$accountId, createdAt=$createdAt, expiresAt=$expiresAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, encryptedSessionSigningKey=$encryptedSessionSigningKey, additionalProperties=$additionalProperties}"
 }
