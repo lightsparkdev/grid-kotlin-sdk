@@ -16,6 +16,7 @@ internal class EgpExternalAccountCreateInfoTest {
             EgpExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(
@@ -44,6 +45,7 @@ internal class EgpExternalAccountCreateInfoTest {
         assertThat(egpExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(egpExternalAccountCreateInfo.accountType())
             .isEqualTo(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
+        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(egpExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -79,6 +81,7 @@ internal class EgpExternalAccountCreateInfoTest {
             EgpExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(
