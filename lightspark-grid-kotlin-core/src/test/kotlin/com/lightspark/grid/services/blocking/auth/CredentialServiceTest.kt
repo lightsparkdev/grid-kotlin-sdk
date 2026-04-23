@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -40,6 +41,22 @@ internal class CredentialServiceTest {
             )
 
         credential.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun list() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val credentialService = client.auth().credentials()
+
+        val credentials =
+            credentialService.list(CredentialListParams.builder().accountId("accountId").build())
+
+        credentials.validate()
     }
 
     @Disabled("Mock server tests are disabled")

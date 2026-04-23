@@ -18,6 +18,8 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
+import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
@@ -45,6 +47,13 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
     ): CredentialCreateResponse =
         // post /auth/credentials
         withRawResponse().create(params, requestOptions).parse()
+
+    override fun list(
+        params: CredentialListParams,
+        requestOptions: RequestOptions,
+    ): CredentialListResponse =
+        // get /auth/credentials
+        withRawResponse().list(params, requestOptions).parse()
 
     override fun resendChallenge(
         params: CredentialResendChallengeParams,
@@ -93,6 +102,33 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
             return errorHandler.handle(response).parseable {
                 response
                     .use { createHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val listHandler: Handler<CredentialListResponse> =
+            jsonHandler<CredentialListResponse>(clientOptions.jsonMapper)
+
+        override fun list(
+            params: CredentialListParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CredentialListResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("auth", "credentials")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

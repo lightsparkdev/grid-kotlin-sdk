@@ -8,6 +8,8 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
+import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
@@ -117,6 +119,18 @@ interface CredentialService {
             ),
             requestOptions,
         )
+
+    /**
+     * Retrieve all authentication credentials registered on an Embedded Wallet internal account.
+     *
+     * The response is not paginated: an internal account is expected to have a small, bounded
+     * number of credentials (typically 1–5), so all results are returned inline. Additional
+     * per-credential detail (such as active session expiry) is available on `GET /auth/sessions`.
+     */
+    fun list(
+        params: CredentialListParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialListResponse
 
     /**
      * Re-issue the challenge for an existing authentication credential.
@@ -254,6 +268,16 @@ interface CredentialService {
                 ),
                 requestOptions,
             )
+
+        /**
+         * Returns a raw HTTP response for `get /auth/credentials`, but is otherwise the same as
+         * [CredentialService.list].
+         */
+        @MustBeClosed
+        fun list(
+            params: CredentialListParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialListResponse>
 
         /**
          * Returns a raw HTTP response for `post /auth/credentials/{id}/challenge`, but is otherwise
