@@ -406,6 +406,7 @@ private constructor(
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val currencies: JsonField<List<String>>,
+            private val email: JsonField<String>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -421,6 +422,7 @@ private constructor(
                 @JsonProperty("currencies")
                 @ExcludeMissing
                 currencies: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -444,6 +446,7 @@ private constructor(
                 nationality: JsonField<String> = JsonMissing.of(),
             ) : this(
                 currencies,
+                email,
                 umaAddress,
                 customerType,
                 address,
@@ -455,7 +458,11 @@ private constructor(
             )
 
             fun toCustomerUpdate(): CustomerUpdate =
-                CustomerUpdate.builder().currencies(currencies).umaAddress(umaAddress).build()
+                CustomerUpdate.builder()
+                    .currencies(currencies)
+                    .email(email)
+                    .umaAddress(umaAddress)
+                    .build()
 
             fun toIndividualCustomerFields(): IndividualCustomerFields =
                 IndividualCustomerFields.builder()
@@ -477,6 +484,14 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+            /**
+             * Email address for the customer.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun email(): String? = email.getNullable("email")
 
             /**
              * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -543,6 +558,13 @@ private constructor(
             @JsonProperty("currencies")
             @ExcludeMissing
             fun _currencies(): JsonField<List<String>> = currencies
+
+            /**
+             * Returns the raw JSON value of [email].
+             *
+             * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -638,6 +660,7 @@ private constructor(
             class Builder internal constructor() {
 
                 private var currencies: JsonField<MutableList<String>>? = null
+                private var email: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -650,6 +673,7 @@ private constructor(
 
                 internal fun from(individual: Individual) = apply {
                     currencies = individual.currencies.map { it.toMutableList() }
+                    email = individual.email
                     umaAddress = individual.umaAddress
                     customerType = individual.customerType
                     address = individual.address
@@ -690,6 +714,18 @@ private constructor(
                             checkKnown("currencies", it).add(currency)
                         }
                 }
+
+                /** Email address for the customer. */
+                fun email(email: String) = email(JsonField.of(email))
+
+                /**
+                 * Sets [Builder.email] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.email] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun email(email: JsonField<String>) = apply { this.email = email }
 
                 /**
                  * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -826,6 +862,7 @@ private constructor(
                 fun build(): Individual =
                     Individual(
                         (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                        email,
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -845,6 +882,7 @@ private constructor(
                 }
 
                 currencies()
+                email()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -871,6 +909,7 @@ private constructor(
              */
             internal fun validity(): Int =
                 (currencies.asKnown()?.size ?: 0) +
+                    (if (email.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
@@ -886,6 +925,7 @@ private constructor(
 
                 return other is Individual &&
                     currencies == other.currencies &&
+                    email == other.email &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -899,6 +939,7 @@ private constructor(
             private val hashCode: Int by lazy {
                 Objects.hash(
                     currencies,
+                    email,
                     umaAddress,
                     customerType,
                     address,
@@ -913,13 +954,14 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Individual{currencies=$currencies, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+                "Individual{currencies=$currencies, email=$email, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
         }
 
         class Business
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val currencies: JsonField<List<String>>,
+            private val email: JsonField<String>,
             private val umaAddress: JsonField<String>,
             private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
@@ -933,6 +975,7 @@ private constructor(
                 @JsonProperty("currencies")
                 @ExcludeMissing
                 currencies: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
@@ -950,6 +993,7 @@ private constructor(
                 kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
             ) : this(
                 currencies,
+                email,
                 umaAddress,
                 customerType,
                 address,
@@ -959,7 +1003,11 @@ private constructor(
             )
 
             fun toCustomerUpdate(): CustomerUpdate =
-                CustomerUpdate.builder().currencies(currencies).umaAddress(umaAddress).build()
+                CustomerUpdate.builder()
+                    .currencies(currencies)
+                    .email(email)
+                    .umaAddress(umaAddress)
+                    .build()
 
             fun toBusinessCustomerFields(): BusinessCustomerFields =
                 BusinessCustomerFields.builder()
@@ -979,6 +1027,14 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+            /**
+             * Email address for the customer.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun email(): String? = email.getNullable("email")
 
             /**
              * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -1029,6 +1085,13 @@ private constructor(
             @JsonProperty("currencies")
             @ExcludeMissing
             fun _currencies(): JsonField<List<String>> = currencies
+
+            /**
+             * Returns the raw JSON value of [email].
+             *
+             * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
             /**
              * Returns the raw JSON value of [umaAddress].
@@ -1106,6 +1169,7 @@ private constructor(
             class Builder internal constructor() {
 
                 private var currencies: JsonField<MutableList<String>>? = null
+                private var email: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
                 private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
@@ -1117,6 +1181,7 @@ private constructor(
 
                 internal fun from(business: Business) = apply {
                     currencies = business.currencies.map { it.toMutableList() }
+                    email = business.email
                     umaAddress = business.umaAddress
                     customerType = business.customerType
                     address = business.address
@@ -1155,6 +1220,18 @@ private constructor(
                             checkKnown("currencies", it).add(currency)
                         }
                 }
+
+                /** Email address for the customer. */
+                fun email(email: String) = email(JsonField.of(email))
+
+                /**
+                 * Sets [Builder.email] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.email] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun email(email: JsonField<String>) = apply { this.email = email }
 
                 /**
                  * Optional UMA address identifier. If provided, the customer's UMA address will be
@@ -1267,6 +1344,7 @@ private constructor(
                 fun build(): Business =
                     Business(
                         (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                        email,
                         umaAddress,
                         checkRequired("customerType", customerType),
                         address,
@@ -1284,6 +1362,7 @@ private constructor(
                 }
 
                 currencies()
+                email()
                 umaAddress()
                 customerType().validate()
                 address()?.validate()
@@ -1308,6 +1387,7 @@ private constructor(
              */
             internal fun validity(): Int =
                 (currencies.asKnown()?.size ?: 0) +
+                    (if (email.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
                     (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
@@ -1321,6 +1401,7 @@ private constructor(
 
                 return other is Business &&
                     currencies == other.currencies &&
+                    email == other.email &&
                     umaAddress == other.umaAddress &&
                     customerType == other.customerType &&
                     address == other.address &&
@@ -1332,6 +1413,7 @@ private constructor(
             private val hashCode: Int by lazy {
                 Objects.hash(
                     currencies,
+                    email,
                     umaAddress,
                     customerType,
                     address,
@@ -1344,7 +1426,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Business{currencies=$currencies, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "Business{currencies=$currencies, email=$email, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
         }
     }
 
