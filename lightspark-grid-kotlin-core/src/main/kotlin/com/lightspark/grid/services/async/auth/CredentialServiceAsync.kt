@@ -12,6 +12,8 @@ import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
+import com.lightspark.grid.models.auth.credentials.CredentialRevokeParams
+import com.lightspark.grid.models.auth.credentials.CredentialRevokeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 
@@ -167,6 +169,37 @@ interface CredentialServiceAsync {
         resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
 
     /**
+     * Revoke an authentication credential on an Embedded Wallet internal account.
+     *
+     * Revocation is a two-step flow because it must be authorized by a session on a *different*
+     * credential on the same internal account:
+     * 1. Call `DELETE /auth/credentials/{id}` with no headers. The response is `202` with a
+     *    `payloadToSign`, `requestId`, and `expiresAt`.
+     * 2. Sign the `payloadToSign` with the session private key of an existing verified credential
+     *    on the same internal account — other than the one being revoked — and retry the same
+     *    `DELETE` request with the signature supplied as the `Grid-Wallet-Signature` header and the
+     *    `requestId` echoed back as the `Request-Id` header. The signed retry returns `204`.
+     *
+     * The account must retain at least one authentication credential; an account with only a single
+     * credential cannot use this endpoint to revoke it.
+     */
+    suspend fun revoke(
+        id: String,
+        params: CredentialRevokeParams = CredentialRevokeParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialRevokeResponse = revoke(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see revoke */
+    suspend fun revoke(
+        params: CredentialRevokeParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialRevokeResponse
+
+    /** @see revoke */
+    suspend fun revoke(id: String, requestOptions: RequestOptions): CredentialRevokeResponse =
+        revoke(id, CredentialRevokeParams.none(), requestOptions)
+
+    /**
      * Complete the verification step for a previously created authentication credential and issue a
      * session signing key.
      *
@@ -308,6 +341,33 @@ interface CredentialServiceAsync {
             requestOptions: RequestOptions,
         ): HttpResponseFor<CredentialResendChallengeResponse> =
             resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `delete /auth/credentials/{id}`, but is otherwise the
+         * same as [CredentialServiceAsync.revoke].
+         */
+        @MustBeClosed
+        suspend fun revoke(
+            id: String,
+            params: CredentialRevokeParams = CredentialRevokeParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialRevokeResponse> =
+            revoke(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see revoke */
+        @MustBeClosed
+        suspend fun revoke(
+            params: CredentialRevokeParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialRevokeResponse>
+
+        /** @see revoke */
+        @MustBeClosed
+        suspend fun revoke(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CredentialRevokeResponse> =
+            revoke(id, CredentialRevokeParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /auth/credentials/{id}/verify`, but is otherwise
