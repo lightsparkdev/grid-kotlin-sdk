@@ -11,6 +11,7 @@ import com.lightspark.grid.services.async.CustomerServiceAsync
 import com.lightspark.grid.services.async.DiscoveryServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
+import com.lightspark.grid.services.async.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.PlatformServiceAsync
 import com.lightspark.grid.services.async.QuoteServiceAsync
@@ -140,6 +141,9 @@ interface LightsparkGridClientAsync {
 
     fun auth(): AuthServiceAsync
 
+    /** Internal account management endpoints for creating and managing internal accounts */
+    fun internalAccounts(): InternalAccountServiceAsync
+
     /**
      * Closes this client, relinquishing any underlying resources.
      *
@@ -247,5 +251,8 @@ interface LightsparkGridClientAsync {
         fun discoveries(): DiscoveryServiceAsync.WithRawResponse
 
         fun auth(): AuthServiceAsync.WithRawResponse
+
+        /** Internal account management endpoints for creating and managing internal accounts */
+        fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse
     }
 }

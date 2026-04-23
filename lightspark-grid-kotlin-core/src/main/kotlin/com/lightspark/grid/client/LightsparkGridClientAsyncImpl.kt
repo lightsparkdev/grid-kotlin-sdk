@@ -20,6 +20,8 @@ import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsyncImpl
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsyncImpl
+import com.lightspark.grid.services.async.InternalAccountServiceAsync
+import com.lightspark.grid.services.async.InternalAccountServiceAsyncImpl
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsyncImpl
 import com.lightspark.grid.services.async.PlatformServiceAsync
@@ -141,6 +143,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     private val auth: AuthServiceAsync by lazy { AuthServiceAsyncImpl(clientOptionsWithUserAgent) }
 
+    private val internalAccounts: InternalAccountServiceAsync by lazy {
+        InternalAccountServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     override fun sync(): LightsparkGridClient = sync
 
     override fun withRawResponse(): LightsparkGridClientAsync.WithRawResponse = withRawResponse
@@ -228,6 +234,9 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     override fun auth(): AuthServiceAsync = auth
 
+    /** Internal account management endpoints for creating and managing internal accounts */
+    override fun internalAccounts(): InternalAccountServiceAsync = internalAccounts
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -311,6 +320,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         private val auth: AuthServiceAsync.WithRawResponse by lazy {
             AuthServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val internalAccounts: InternalAccountServiceAsync.WithRawResponse by lazy {
+            InternalAccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -400,5 +413,9 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         override fun discoveries(): DiscoveryServiceAsync.WithRawResponse = discoveries
 
         override fun auth(): AuthServiceAsync.WithRawResponse = auth
+
+        /** Internal account management endpoints for creating and managing internal accounts */
+        override fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse =
+            internalAccounts
     }
 }
