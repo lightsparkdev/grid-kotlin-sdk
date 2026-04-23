@@ -226,10 +226,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
      */
     override fun discoveries(): DiscoveryServiceAsync = discoveries
 
-    /**
-     * Endpoints for registering and verifying end-user authentication credentials (email OTP,
-     * OAuth, passkey) used to sign Embedded Wallet actions.
-     */
     override fun auth(): AuthServiceAsync = auth
 
     override fun close() = clientOptions.close()
@@ -403,10 +399,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
          */
         override fun discoveries(): DiscoveryServiceAsync.WithRawResponse = discoveries
 
-        /**
-         * Endpoints for registering and verifying end-user authentication credentials (email OTP,
-         * OAuth, passkey) used to sign Embedded Wallet actions.
-         */
         override fun auth(): AuthServiceAsync.WithRawResponse = auth
     }
 }

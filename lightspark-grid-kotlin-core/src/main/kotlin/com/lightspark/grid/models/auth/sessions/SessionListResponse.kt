@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth
+package com.lightspark.grid.models.auth.sessions
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -19,7 +19,7 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class AuthListSessionsResponse
+class SessionListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<List<Data>>,
@@ -61,7 +61,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [AuthListSessionsResponse].
+         * Returns a mutable builder for constructing an instance of [SessionListResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -71,15 +71,15 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [AuthListSessionsResponse]. */
+    /** A builder for [SessionListResponse]. */
     class Builder internal constructor() {
 
         private var data: JsonField<MutableList<Data>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(authListSessionsResponse: AuthListSessionsResponse) = apply {
-            data = authListSessionsResponse.data.map { it.toMutableList() }
-            additionalProperties = authListSessionsResponse.additionalProperties.toMutableMap()
+        internal fun from(sessionListResponse: SessionListResponse) = apply {
+            data = sessionListResponse.data.map { it.toMutableList() }
+            additionalProperties = sessionListResponse.additionalProperties.toMutableMap()
         }
 
         /** List of active authentication sessions for the internal account. */
@@ -127,7 +127,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [AuthListSessionsResponse].
+         * Returns an immutable instance of [SessionListResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -138,8 +138,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): AuthListSessionsResponse =
-            AuthListSessionsResponse(
+        fun build(): SessionListResponse =
+            SessionListResponse(
                 checkRequired("data", data).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
@@ -147,7 +147,7 @@ private constructor(
 
     private var validated: Boolean = false
 
-    fun validate(): AuthListSessionsResponse = apply {
+    fun validate(): SessionListResponse = apply {
         if (validated) {
             return@apply
         }
@@ -838,7 +838,7 @@ private constructor(
             return true
         }
 
-        return other is AuthListSessionsResponse &&
+        return other is SessionListResponse &&
             data == other.data &&
             additionalProperties == other.additionalProperties
     }
@@ -848,5 +848,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AuthListSessionsResponse{data=$data, additionalProperties=$additionalProperties}"
+        "SessionListResponse{data=$data, additionalProperties=$additionalProperties}"
 }

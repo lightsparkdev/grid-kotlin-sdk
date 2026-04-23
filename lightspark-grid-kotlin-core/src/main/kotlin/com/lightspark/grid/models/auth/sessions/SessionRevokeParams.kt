@@ -1,31 +1,42 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth
+package com.lightspark.grid.models.auth.sessions
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
-import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.core.toImmutable
 import java.util.Objects
 
 /**
- * Retrieve all active authentication sessions on an Embedded Wallet internal account. A session is
- * created each time a credential is verified via `POST /auth/credentials/{id}/verify`, and remains
- * active until its `expiresAt` passes or it is revoked via `DELETE /auth/sessions/{id}`.
- *
- * The response is not paginated: an internal account is expected to have a small, bounded number of
- * concurrent sessions (one per signed-in device, typically 1–4), so all results are returned
- * inline.
+ * Revoke an authentication session on an Embedded Wallet internal account. Revocation is a two-step
+ * signed-retry flow:
+ * 1. Call `DELETE /auth/sessions/{id}` with no headers. The response is `202` with a
+ *    `payloadToSign`, `requestId`, and `expiresAt`.
+ * 2. Sign the `payloadToSign` with the session private key of a verified session on the same
+ *    internal account (this can be the session being revoked, for self-logout) and retry the same
+ *    `DELETE` request with the signature as the `Grid-Wallet-Signature` header and the `requestId`
+ *    echoed back as the `Request-Id` header. The signed retry returns `204`.
  */
-class AuthListSessionsParams
+class SessionRevokeParams
 private constructor(
-    private val accountId: String,
+    private val id: String?,
+    private val gridWalletSignature: String?,
+    private val requestId: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
+    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
-    /** Internal account id whose sessions to list. */
-    fun accountId(): String = accountId
+    fun id(): String? = id
+
+    fun gridWalletSignature(): String? = gridWalletSignature
+
+    fun requestId(): String? = requestId
+
+    /** Additional body properties to send with the request. */
+    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -37,32 +48,38 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [AuthListSessionsParams].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .accountId()
-         * ```
-         */
+        fun none(): SessionRevokeParams = builder().build()
+
+        /** Returns a mutable builder for constructing an instance of [SessionRevokeParams]. */
         fun builder() = Builder()
     }
 
-    /** A builder for [AuthListSessionsParams]. */
+    /** A builder for [SessionRevokeParams]. */
     class Builder internal constructor() {
 
-        private var accountId: String? = null
+        private var id: String? = null
+        private var gridWalletSignature: String? = null
+        private var requestId: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
+        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(authListSessionsParams: AuthListSessionsParams) = apply {
-            accountId = authListSessionsParams.accountId
-            additionalHeaders = authListSessionsParams.additionalHeaders.toBuilder()
-            additionalQueryParams = authListSessionsParams.additionalQueryParams.toBuilder()
+        internal fun from(sessionRevokeParams: SessionRevokeParams) = apply {
+            id = sessionRevokeParams.id
+            gridWalletSignature = sessionRevokeParams.gridWalletSignature
+            requestId = sessionRevokeParams.requestId
+            additionalHeaders = sessionRevokeParams.additionalHeaders.toBuilder()
+            additionalQueryParams = sessionRevokeParams.additionalQueryParams.toBuilder()
+            additionalBodyProperties = sessionRevokeParams.additionalBodyProperties.toMutableMap()
         }
 
-        /** Internal account id whose sessions to list. */
-        fun accountId(accountId: String) = apply { this.accountId = accountId }
+        fun id(id: String?) = apply { this.id = id }
+
+        fun gridWalletSignature(gridWalletSignature: String?) = apply {
+            this.gridWalletSignature = gridWalletSignature
+        }
+
+        fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -162,49 +179,87 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            this.additionalBodyProperties.clear()
+            putAllAdditionalBodyProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            additionalBodyProperties.put(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                this.additionalBodyProperties.putAll(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply {
+            additionalBodyProperties.remove(key)
+        }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            keys.forEach(::removeAdditionalBodyProperty)
+        }
+
         /**
-         * Returns an immutable instance of [AuthListSessionsParams].
+         * Returns an immutable instance of [SessionRevokeParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .accountId()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): AuthListSessionsParams =
-            AuthListSessionsParams(
-                checkRequired("accountId", accountId),
+        fun build(): SessionRevokeParams =
+            SessionRevokeParams(
+                id,
+                gridWalletSignature,
+                requestId,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
+                additionalBodyProperties.toImmutable(),
             )
     }
 
-    override fun _headers(): Headers = additionalHeaders
+    fun _body(): Map<String, JsonValue>? = additionalBodyProperties.ifEmpty { null }
 
-    override fun _queryParams(): QueryParams =
-        QueryParams.builder()
+    fun _pathParam(index: Int): String =
+        when (index) {
+            0 -> id ?: ""
+            else -> ""
+        }
+
+    override fun _headers(): Headers =
+        Headers.builder()
             .apply {
-                put("accountId", accountId)
-                putAll(additionalQueryParams)
+                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
+                requestId?.let { put("Request-Id", it) }
+                putAll(additionalHeaders)
             }
             .build()
+
+    override fun _queryParams(): QueryParams = additionalQueryParams
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is AuthListSessionsParams &&
-            accountId == other.accountId &&
+        return other is SessionRevokeParams &&
+            id == other.id &&
+            gridWalletSignature == other.gridWalletSignature &&
+            requestId == other.requestId &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams
+            additionalQueryParams == other.additionalQueryParams &&
+            additionalBodyProperties == other.additionalBodyProperties
     }
 
-    override fun hashCode(): Int = Objects.hash(accountId, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(
+            id,
+            gridWalletSignature,
+            requestId,
+            additionalHeaders,
+            additionalQueryParams,
+            additionalBodyProperties,
+        )
 
     override fun toString() =
-        "AuthListSessionsParams{accountId=$accountId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionRevokeParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
 }
