@@ -22,6 +22,8 @@ import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
+import com.lightspark.grid.models.auth.credentials.CredentialRevokeParams
+import com.lightspark.grid.models.auth.credentials.CredentialRevokeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 
@@ -61,6 +63,13 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
     ): CredentialResendChallengeResponse =
         // post /auth/credentials/{id}/challenge
         withRawResponse().resendChallenge(params, requestOptions).parse()
+
+    override fun revoke(
+        params: CredentialRevokeParams,
+        requestOptions: RequestOptions,
+    ): CredentialRevokeResponse =
+        // delete /auth/credentials/{id}
+        withRawResponse().revoke(params, requestOptions).parse()
 
     override fun verify(
         params: CredentialVerifyParams,
@@ -160,6 +169,37 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
             return errorHandler.handle(response).parseable {
                 response
                     .use { resendChallengeHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val revokeHandler: Handler<CredentialRevokeResponse> =
+            jsonHandler<CredentialRevokeResponse>(clientOptions.jsonMapper)
+
+        override fun revoke(
+            params: CredentialRevokeParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CredentialRevokeResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.DELETE)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("auth", "credentials", params._pathParam(0))
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { revokeHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
