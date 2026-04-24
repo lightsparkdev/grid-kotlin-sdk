@@ -10,16 +10,29 @@ internal class PlatformListInternalAccountsParamsTest {
 
     @Test
     fun create() {
-        PlatformListInternalAccountsParams.builder().currency("currency").build()
+        PlatformListInternalAccountsParams.builder()
+            .currency("currency")
+            .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
+            .build()
     }
 
     @Test
     fun queryParams() {
-        val params = PlatformListInternalAccountsParams.builder().currency("currency").build()
+        val params =
+            PlatformListInternalAccountsParams.builder()
+                .currency("currency")
+                .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
+                .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("currency", "currency").build())
+        assertThat(queryParams)
+            .isEqualTo(
+                QueryParams.builder()
+                    .put("currency", "currency")
+                    .put("type", "INTERNAL_FIAT")
+                    .build()
+            )
     }
 
     @Test
