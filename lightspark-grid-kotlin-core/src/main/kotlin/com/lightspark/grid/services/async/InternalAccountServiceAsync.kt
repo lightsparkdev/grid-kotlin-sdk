@@ -25,23 +25,32 @@ interface InternalAccountServiceAsync {
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): InternalAccountServiceAsync
 
     /**
-     * Export the wallet credentials of an Embedded Wallet internal account. Wallet credentials are
-     * returned encrypted to the client public key that was supplied when the authorizing session
-     * was verified.
+     * Export the wallet credentials of an Embedded Wallet internal account. The returned wallet
+     * credentials are HPKE-encrypted to the `clientPublicKey` supplied in the request body.
      *
      * Export is a two-step signed-retry flow (same pattern as add-additional credential, revoke
      * credential, and revoke session):
-     * 1. Call `POST /internal-accounts/{id}/export` with no headers. The response is `202` with a
-     *    `payloadToSign`, `requestId`, and `expiresAt`.
+     * 1. Call `POST /internal-accounts/{id}/export` with the request body `{ "clientPublicKey":
+     *    "..." }` and no signature headers. Grid binds the `clientPublicKey` into the
+     *    `payloadToSign` it returns, so the subsequent `Grid-Wallet-Signature` commits to the
+     *    target encryption key. The response is `202` with `payloadToSign`, `requestId`, and
+     *    `expiresAt`.
      * 2. Sign the `payloadToSign` with the session private key of a verified authentication
      *    credential on the same internal account and retry with the signature as the
      *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The signed retry returns `200` with `encryptedWalletCredentials`, which the client can
-     *    decrypt with its local private key.
+     *    The retry body must carry the **same** `clientPublicKey` submitted in step 1 — Grid
+     *    rejects the retry with `401` if it disagrees with what was bound into `payloadToSign`. The
+     *    signed retry returns `200` with `encryptedWalletCredentials`, which the client decrypts
+     *    with the matching private key.
+     *
+     * The `clientPublicKey` is ephemeral: generate a fresh P-256 keypair for this export and
+     * discard the private key after decrypting. Do not reuse the keypair from any prior verify call
+     * — that private key was already discarded after decrypting the session signing key it was
+     * issued against.
      */
     suspend fun export(
         id: String,
-        params: InternalAccountExportParams = InternalAccountExportParams.none(),
+        params: InternalAccountExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): InternalAccountExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
 
@@ -50,10 +59,6 @@ interface InternalAccountServiceAsync {
         params: InternalAccountExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): InternalAccountExportResponse
-
-    /** @see export */
-    suspend fun export(id: String, requestOptions: RequestOptions): InternalAccountExportResponse =
-        export(id, InternalAccountExportParams.none(), requestOptions)
 
     /**
      * A view of [InternalAccountServiceAsync] that provides access to raw HTTP responses for each
@@ -77,7 +82,7 @@ interface InternalAccountServiceAsync {
         @MustBeClosed
         suspend fun export(
             id: String,
-            params: InternalAccountExportParams = InternalAccountExportParams.none(),
+            params: InternalAccountExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<InternalAccountExportResponse> =
             export(params.toBuilder().id(id).build(), requestOptions)
@@ -88,13 +93,5 @@ interface InternalAccountServiceAsync {
             params: InternalAccountExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<InternalAccountExportResponse>
-
-        /** @see export */
-        @MustBeClosed
-        suspend fun export(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<InternalAccountExportResponse> =
-            export(id, InternalAccountExportParams.none(), requestOptions)
     }
 }
