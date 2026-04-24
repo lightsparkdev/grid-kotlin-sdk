@@ -21,12 +21,12 @@ class CopBeneficiary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val beneficiaryType: JsonField<BeneficiaryType>,
-    private val documentNumber: JsonField<String>,
-    private val documentType: JsonField<String>,
+    private val countryOfResidence: JsonField<String>,
     private val fullName: JsonField<String>,
     private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
-    private val countryOfResidence: JsonField<String>,
+    private val documentNumber: JsonField<String>,
+    private val documentType: JsonField<String>,
     private val email: JsonField<String>,
     private val nationality: JsonField<String>,
     private val phoneNumber: JsonField<String>,
@@ -38,18 +38,18 @@ private constructor(
         @JsonProperty("beneficiaryType")
         @ExcludeMissing
         beneficiaryType: JsonField<BeneficiaryType> = JsonMissing.of(),
+        @JsonProperty("countryOfResidence")
+        @ExcludeMissing
+        countryOfResidence: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
+        @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("documentNumber")
         @ExcludeMissing
         documentNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("documentType")
         @ExcludeMissing
         documentType: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
-        @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("countryOfResidence")
-        @ExcludeMissing
-        countryOfResidence: JsonField<String> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("nationality")
         @ExcludeMissing
@@ -59,12 +59,12 @@ private constructor(
         phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
-        documentNumber,
-        documentType,
+        countryOfResidence,
         fullName,
         address,
         birthDate,
-        countryOfResidence,
+        documentNumber,
+        documentType,
         email,
         nationality,
         phoneNumber,
@@ -78,20 +78,12 @@ private constructor(
     fun beneficiaryType(): BeneficiaryType = beneficiaryType.getRequired("beneficiaryType")
 
     /**
-     * The identity document number
+     * The country of residence of the beneficiary
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun documentNumber(): String = documentNumber.getRequired("documentNumber")
-
-    /**
-     * The type of identity document (e.g., national ID, passport)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun documentType(): String = documentType.getRequired("documentType")
+    fun countryOfResidence(): String = countryOfResidence.getRequired("countryOfResidence")
 
     /**
      * The full name of the beneficiary
@@ -116,12 +108,20 @@ private constructor(
     fun birthDate(): String? = birthDate.getNullable("birthDate")
 
     /**
-     * The country of residence of the beneficiary
+     * The identity document number
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun countryOfResidence(): String? = countryOfResidence.getNullable("countryOfResidence")
+    fun documentNumber(): String? = documentNumber.getNullable("documentNumber")
+
+    /**
+     * The type of identity document (e.g., national ID, passport)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun documentType(): String? = documentType.getNullable("documentType")
 
     /**
      * The email of the beneficiary
@@ -157,22 +157,14 @@ private constructor(
     fun _beneficiaryType(): JsonField<BeneficiaryType> = beneficiaryType
 
     /**
-     * Returns the raw JSON value of [documentNumber].
+     * Returns the raw JSON value of [countryOfResidence].
      *
-     * Unlike [documentNumber], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    @JsonProperty("documentNumber")
+    @JsonProperty("countryOfResidence")
     @ExcludeMissing
-    fun _documentNumber(): JsonField<String> = documentNumber
-
-    /**
-     * Returns the raw JSON value of [documentType].
-     *
-     * Unlike [documentType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("documentType")
-    @ExcludeMissing
-    fun _documentType(): JsonField<String> = documentType
+    fun _countryOfResidence(): JsonField<String> = countryOfResidence
 
     /**
      * Returns the raw JSON value of [fullName].
@@ -196,14 +188,22 @@ private constructor(
     @JsonProperty("birthDate") @ExcludeMissing fun _birthDate(): JsonField<String> = birthDate
 
     /**
-     * Returns the raw JSON value of [countryOfResidence].
+     * Returns the raw JSON value of [documentNumber].
      *
-     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has an unexpected
-     * type.
+     * Unlike [documentNumber], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("countryOfResidence")
+    @JsonProperty("documentNumber")
     @ExcludeMissing
-    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+    fun _documentNumber(): JsonField<String> = documentNumber
+
+    /**
+     * Returns the raw JSON value of [documentType].
+     *
+     * Unlike [documentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("documentType")
+    @ExcludeMissing
+    fun _documentType(): JsonField<String> = documentType
 
     /**
      * Returns the raw JSON value of [email].
@@ -246,8 +246,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
+         * .countryOfResidence()
          * .fullName()
          * ```
          */
@@ -258,12 +257,12 @@ private constructor(
     class Builder internal constructor() {
 
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
-        private var documentNumber: JsonField<String>? = null
-        private var documentType: JsonField<String>? = null
+        private var countryOfResidence: JsonField<String>? = null
         private var fullName: JsonField<String>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
-        private var countryOfResidence: JsonField<String> = JsonMissing.of()
+        private var documentNumber: JsonField<String> = JsonMissing.of()
+        private var documentType: JsonField<String> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
@@ -271,12 +270,12 @@ private constructor(
 
         internal fun from(copBeneficiary: CopBeneficiary) = apply {
             beneficiaryType = copBeneficiary.beneficiaryType
-            documentNumber = copBeneficiary.documentNumber
-            documentType = copBeneficiary.documentType
+            countryOfResidence = copBeneficiary.countryOfResidence
             fullName = copBeneficiary.fullName
             address = copBeneficiary.address
             birthDate = copBeneficiary.birthDate
-            countryOfResidence = copBeneficiary.countryOfResidence
+            documentNumber = copBeneficiary.documentNumber
+            documentType = copBeneficiary.documentType
             email = copBeneficiary.email
             nationality = copBeneficiary.nationality
             phoneNumber = copBeneficiary.phoneNumber
@@ -297,32 +296,19 @@ private constructor(
             this.beneficiaryType = beneficiaryType
         }
 
-        /** The identity document number */
-        fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
+        /** The country of residence of the beneficiary */
+        fun countryOfResidence(countryOfResidence: String) =
+            countryOfResidence(JsonField.of(countryOfResidence))
 
         /**
-         * Sets [Builder.documentNumber] to an arbitrary JSON value.
+         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.documentNumber] with a well-typed [String] value
+         * You should usually call [Builder.countryOfResidence] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun documentNumber(documentNumber: JsonField<String>) = apply {
-            this.documentNumber = documentNumber
-        }
-
-        /** The type of identity document (e.g., national ID, passport) */
-        fun documentType(documentType: String) = documentType(JsonField.of(documentType))
-
-        /**
-         * Sets [Builder.documentType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.documentType] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun documentType(documentType: JsonField<String>) = apply {
-            this.documentType = documentType
+        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+            this.countryOfResidence = countryOfResidence
         }
 
         /** The full name of the beneficiary */
@@ -358,19 +344,32 @@ private constructor(
          */
         fun birthDate(birthDate: JsonField<String>) = apply { this.birthDate = birthDate }
 
-        /** The country of residence of the beneficiary */
-        fun countryOfResidence(countryOfResidence: String) =
-            countryOfResidence(JsonField.of(countryOfResidence))
+        /** The identity document number */
+        fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
 
         /**
-         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+         * Sets [Builder.documentNumber] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.countryOfResidence] with a well-typed [String] value
+         * You should usually call [Builder.documentNumber] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
-            this.countryOfResidence = countryOfResidence
+        fun documentNumber(documentNumber: JsonField<String>) = apply {
+            this.documentNumber = documentNumber
+        }
+
+        /** The type of identity document (e.g., national ID, passport) */
+        fun documentType(documentType: String) = documentType(JsonField.of(documentType))
+
+        /**
+         * Sets [Builder.documentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.documentType] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun documentType(documentType: JsonField<String>) = apply {
+            this.documentType = documentType
         }
 
         /** The email of the beneficiary */
@@ -435,8 +434,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
+         * .countryOfResidence()
          * .fullName()
          * ```
          *
@@ -445,12 +443,12 @@ private constructor(
         fun build(): CopBeneficiary =
             CopBeneficiary(
                 checkRequired("beneficiaryType", beneficiaryType),
-                checkRequired("documentNumber", documentNumber),
-                checkRequired("documentType", documentType),
+                checkRequired("countryOfResidence", countryOfResidence),
                 checkRequired("fullName", fullName),
                 address,
                 birthDate,
-                countryOfResidence,
+                documentNumber,
+                documentType,
                 email,
                 nationality,
                 phoneNumber,
@@ -466,12 +464,12 @@ private constructor(
         }
 
         beneficiaryType().validate()
-        documentNumber()
-        documentType()
+        countryOfResidence()
         fullName()
         address()?.validate()
         birthDate()
-        countryOfResidence()
+        documentNumber()
+        documentType()
         email()
         nationality()
         phoneNumber()
@@ -493,12 +491,12 @@ private constructor(
      */
     internal fun validity(): Int =
         (beneficiaryType.asKnown()?.validity() ?: 0) +
-            (if (documentNumber.asKnown() == null) 0 else 1) +
-            (if (documentType.asKnown() == null) 0 else 1) +
+            (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (fullName.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
-            (if (countryOfResidence.asKnown() == null) 0 else 1) +
+            (if (documentNumber.asKnown() == null) 0 else 1) +
+            (if (documentType.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
             (if (nationality.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
@@ -633,12 +631,12 @@ private constructor(
 
         return other is CopBeneficiary &&
             beneficiaryType == other.beneficiaryType &&
-            documentNumber == other.documentNumber &&
-            documentType == other.documentType &&
+            countryOfResidence == other.countryOfResidence &&
             fullName == other.fullName &&
             address == other.address &&
             birthDate == other.birthDate &&
-            countryOfResidence == other.countryOfResidence &&
+            documentNumber == other.documentNumber &&
+            documentType == other.documentType &&
             email == other.email &&
             nationality == other.nationality &&
             phoneNumber == other.phoneNumber &&
@@ -648,12 +646,12 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             beneficiaryType,
-            documentNumber,
-            documentType,
+            countryOfResidence,
             fullName,
             address,
             birthDate,
-            countryOfResidence,
+            documentNumber,
+            documentType,
             email,
             nationality,
             phoneNumber,
@@ -664,5 +662,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CopBeneficiary{beneficiaryType=$beneficiaryType, documentNumber=$documentNumber, documentType=$documentType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "CopBeneficiary{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, fullName=$fullName, address=$address, birthDate=$birthDate, documentNumber=$documentNumber, documentType=$documentType, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

@@ -264,6 +264,7 @@ internal class UnwrapWebhookEventTest {
                                         .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                         .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                         .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                                         .reference("UMA-Q12345-REF")
                                         .build()
                                 )
@@ -412,6 +413,9 @@ internal class UnwrapWebhookEventTest {
                                             .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                             .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
                                             .routingNumber("021000021")
+                                            .bankAccountType(
+                                                UsdAccountInfo.BankAccountType.CHECKING
+                                            )
                                             .reference("UMA-Q12345-REF")
                                             .build()
                                     )
@@ -858,6 +862,7 @@ internal class UnwrapWebhookEventTest {
                                         .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                                         .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                         .routingNumber("021000021")
+                                        .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                                         .reference("UMA-Q12345-REF")
                                         .build()
                                 )
@@ -920,6 +925,9 @@ internal class UnwrapWebhookEventTest {
                                             .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                                             .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                                             .routingNumber("021000021")
+                                            .bankAccountType(
+                                                UsdAccountInfo.BankAccountType.CHECKING
+                                            )
                                             .reference("UMA-Q12345-REF")
                                             .build()
                                     )

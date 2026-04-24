@@ -15,7 +15,6 @@ internal class BdtAccountInfoTest {
             BdtAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                .bankName("x")
                 .branchCode("21029")
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
@@ -24,7 +23,6 @@ internal class BdtAccountInfoTest {
 
         assertThat(bdtAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtAccountInfo.accountType()).isEqualTo(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-        assertThat(bdtAccountInfo.bankName()).isEqualTo("x")
         assertThat(bdtAccountInfo.branchCode()).isEqualTo("21029")
         assertThat(bdtAccountInfo.paymentRails())
             .containsExactly(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
@@ -39,7 +37,6 @@ internal class BdtAccountInfoTest {
             BdtAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                .bankName("x")
                 .branchCode("21029")
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")

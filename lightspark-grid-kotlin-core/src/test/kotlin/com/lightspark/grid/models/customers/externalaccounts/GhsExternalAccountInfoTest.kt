@@ -17,7 +17,6 @@ internal class GhsExternalAccountInfoTest {
             GhsExternalAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
                 .beneficiary(
@@ -46,7 +45,6 @@ internal class GhsExternalAccountInfoTest {
         assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.accountType())
             .isEqualTo(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-        assertThat(ghsExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.paymentRails())
             .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(ghsExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
@@ -83,7 +81,6 @@ internal class GhsExternalAccountInfoTest {
             GhsExternalAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
                 .beneficiary(
