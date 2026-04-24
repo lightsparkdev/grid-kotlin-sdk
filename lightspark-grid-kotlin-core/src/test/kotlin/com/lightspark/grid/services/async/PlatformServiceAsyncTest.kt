@@ -21,7 +21,10 @@ internal class PlatformServiceAsyncTest {
 
         val response =
             platformServiceAsync.listInternalAccounts(
-                PlatformListInternalAccountsParams.builder().currency("currency").build()
+                PlatformListInternalAccountsParams.builder()
+                    .currency("currency")
+                    .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
+                    .build()
             )
 
         response.validate()
