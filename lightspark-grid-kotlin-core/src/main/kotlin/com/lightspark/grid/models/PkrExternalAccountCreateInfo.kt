@@ -32,7 +32,6 @@ class PkrExternalAccountCreateInfo
 private constructor(
     private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
-    private val bankName: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val phoneNumber: JsonField<String>,
     private val iban: JsonField<String>,
@@ -47,7 +46,6 @@ private constructor(
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<AccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
@@ -55,7 +53,7 @@ private constructor(
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, bankName, beneficiary, phoneNumber, iban, mutableMapOf())
+    ) : this(accountNumber, accountType, beneficiary, phoneNumber, iban, mutableMapOf())
 
     /**
      * The account number of the bank
@@ -70,14 +68,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountType(): AccountType = accountType.getRequired("accountType")
-
-    /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -118,13 +108,6 @@ private constructor(
     @JsonProperty("accountType")
     @ExcludeMissing
     fun _accountType(): JsonField<AccountType> = accountType
-
-    /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
 
     /**
      * Returns the raw JSON value of [beneficiary].
@@ -170,7 +153,6 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
          * .phoneNumber()
          * ```
@@ -183,7 +165,6 @@ private constructor(
 
         private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
         private var phoneNumber: JsonField<String>? = null
         private var iban: JsonField<String> = JsonMissing.of()
@@ -192,7 +173,6 @@ private constructor(
         internal fun from(pkrExternalAccountCreateInfo: PkrExternalAccountCreateInfo) = apply {
             accountNumber = pkrExternalAccountCreateInfo.accountNumber
             accountType = pkrExternalAccountCreateInfo.accountType
-            bankName = pkrExternalAccountCreateInfo.bankName
             beneficiary = pkrExternalAccountCreateInfo.beneficiary
             phoneNumber = pkrExternalAccountCreateInfo.phoneNumber
             iban = pkrExternalAccountCreateInfo.iban
@@ -225,17 +205,6 @@ private constructor(
         fun accountType(accountType: JsonField<AccountType>) = apply {
             this.accountType = accountType
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -343,7 +312,6 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
          * .phoneNumber()
          * ```
@@ -354,7 +322,6 @@ private constructor(
             PkrExternalAccountCreateInfo(
                 checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
-                checkRequired("bankName", bankName),
                 checkRequired("beneficiary", beneficiary),
                 checkRequired("phoneNumber", phoneNumber),
                 iban,
@@ -371,7 +338,6 @@ private constructor(
 
         accountNumber()
         accountType().validate()
-        bankName()
         beneficiary().validate()
         phoneNumber()
         iban()
@@ -394,7 +360,6 @@ private constructor(
     internal fun validity(): Int =
         (if (accountNumber.asKnown() == null) 0 else 1) +
             (accountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0) +
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (iban.asKnown() == null) 0 else 1)
@@ -697,7 +662,6 @@ private constructor(
         return other is PkrExternalAccountCreateInfo &&
             accountNumber == other.accountNumber &&
             accountType == other.accountType &&
-            bankName == other.bankName &&
             beneficiary == other.beneficiary &&
             phoneNumber == other.phoneNumber &&
             iban == other.iban &&
@@ -708,7 +672,6 @@ private constructor(
         Objects.hash(
             accountNumber,
             accountType,
-            bankName,
             beneficiary,
             phoneNumber,
             iban,
@@ -719,5 +682,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PkrExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, phoneNumber=$phoneNumber, iban=$iban, additionalProperties=$additionalProperties}"
+        "PkrExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, beneficiary=$beneficiary, phoneNumber=$phoneNumber, iban=$iban, additionalProperties=$additionalProperties}"
 }

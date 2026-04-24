@@ -17,12 +17,11 @@ internal class CopExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
+                .bankName("bankName")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -35,12 +34,14 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .phoneNumber("+1234567890")
                 .build()
 
         assertThat(copExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
@@ -48,14 +49,13 @@ internal class CopExternalAccountCreateInfoTest {
             .isEqualTo(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
         assertThat(copExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("x")
+        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("bankName")
         assertThat(copExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 CopExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -68,13 +68,15 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
             )
+        assertThat(copExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -85,12 +87,11 @@ internal class CopExternalAccountCreateInfoTest {
                 .accountNumber("x")
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
+                .bankName("bankName")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -103,12 +104,14 @@ internal class CopExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
+                        .documentNumber("documentNumber")
+                        .documentType("documentType")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedCopExternalAccountCreateInfo =

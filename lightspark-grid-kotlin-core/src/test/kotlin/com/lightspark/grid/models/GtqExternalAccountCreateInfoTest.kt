@@ -16,14 +16,11 @@ internal class GtqExternalAccountCreateInfoTest {
             GtqExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
-                .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -37,16 +34,15 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
+                .phoneNumber("+1234567890")
                 .build()
 
         assertThat(gtqExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(gtqExternalAccountCreateInfo.accountType())
             .isEqualTo(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
-        assertThat(gtqExternalAccountCreateInfo.bankAccountType())
-            .isEqualTo(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(gtqExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(gtqExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 GtqExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -54,7 +50,6 @@ internal class GtqExternalAccountCreateInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -68,9 +63,11 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
             )
+        assertThat(gtqExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -80,14 +77,11 @@ internal class GtqExternalAccountCreateInfoTest {
             GtqExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
-                .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -101,8 +95,10 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedGtqExternalAccountCreateInfo =

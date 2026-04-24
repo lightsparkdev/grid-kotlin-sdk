@@ -15,7 +15,6 @@ internal class EgpAccountInfoTest {
             EgpAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("DE89370400440532013000")
                 .swiftCode("DEUTDEFF")
@@ -23,7 +22,6 @@ internal class EgpAccountInfoTest {
 
         assertThat(egpAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(egpAccountInfo.accountType()).isEqualTo(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpAccountInfo.bankName()).isEqualTo("x")
         assertThat(egpAccountInfo.paymentRails())
             .containsExactly(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(egpAccountInfo.iban()).isEqualTo("DE89370400440532013000")
@@ -37,7 +35,6 @@ internal class EgpAccountInfoTest {
             EgpAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("DE89370400440532013000")
                 .swiftCode("DEUTDEFF")
