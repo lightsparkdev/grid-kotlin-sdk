@@ -19,6 +19,8 @@ internal class UsdExternalAccountCreateInfoTest {
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                 .beneficiary(
                     UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -29,16 +31,15 @@ internal class UsdExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .birthDate("birthDate")
-                        .fullName("fullName")
-                        .nationality("nationality")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
+                        .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
                 .routingNumber("021000021")
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .build()
 
         assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
@@ -48,6 +49,8 @@ internal class UsdExternalAccountCreateInfoTest {
             .isEqualTo(
                 UsdExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -58,17 +61,17 @@ internal class UsdExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .birthDate("birthDate")
-                        .fullName("fullName")
-                        .nationality("nationality")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
+                        .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
             )
         assertThat(usdExternalAccountCreateInfo.routingNumber()).isEqualTo("021000021")
+        assertThat(usdExternalAccountCreateInfo.bankAccountType())
+            .isEqualTo(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
     }
 
     @Test
@@ -80,6 +83,8 @@ internal class UsdExternalAccountCreateInfoTest {
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                 .beneficiary(
                     UsdBeneficiary.builder()
+                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -90,16 +95,15 @@ internal class UsdExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .birthDate("birthDate")
-                        .fullName("fullName")
-                        .nationality("nationality")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
+                        .nationality("nationality")
                         .phoneNumber("phoneNumber")
                         .build()
                 )
                 .routingNumber("021000021")
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .build()
 
         val roundtrippedUsdExternalAccountCreateInfo =

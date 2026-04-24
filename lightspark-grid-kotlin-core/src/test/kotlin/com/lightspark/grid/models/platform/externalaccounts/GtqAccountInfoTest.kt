@@ -15,18 +15,15 @@ internal class GtqAccountInfoTest {
             GtqAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
-                .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
                 .build()
 
         assertThat(gtqAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(gtqAccountInfo.accountType()).isEqualTo(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
-        assertThat(gtqAccountInfo.bankAccountType())
-            .isEqualTo(GtqAccountInfo.BankAccountType.CHECKING)
-        assertThat(gtqAccountInfo.bankName()).isEqualTo("x")
         assertThat(gtqAccountInfo.paymentRails())
             .containsExactly(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(gtqAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -36,9 +33,8 @@ internal class GtqAccountInfoTest {
             GtqAccountInfo.builder()
                 .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
-                .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedGtqAccountInfo =

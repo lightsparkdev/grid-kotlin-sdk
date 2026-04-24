@@ -35,6 +35,7 @@ private constructor(
     private val accountType: JsonField<UsdAccountInfo.AccountType>,
     private val paymentRails: JsonField<List<UsdAccountInfo.PaymentRail>>,
     private val routingNumber: JsonField<String>,
+    private val bankAccountType: JsonField<UsdAccountInfo.BankAccountType>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -53,10 +54,21 @@ private constructor(
         @JsonProperty("routingNumber")
         @ExcludeMissing
         routingNumber: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("bankAccountType")
+        @ExcludeMissing
+        bankAccountType: JsonField<UsdAccountInfo.BankAccountType> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, paymentRails, routingNumber, beneficiary, mutableMapOf())
+    ) : this(
+        accountNumber,
+        accountType,
+        paymentRails,
+        routingNumber,
+        bankAccountType,
+        beneficiary,
+        mutableMapOf(),
+    )
 
     fun toUsdAccountInfo(): UsdAccountInfo =
         UsdAccountInfo.builder()
@@ -64,6 +76,7 @@ private constructor(
             .accountType(accountType)
             .paymentRails(paymentRails)
             .routingNumber(routingNumber)
+            .bankAccountType(bankAccountType)
             .build()
 
     /**
@@ -93,6 +106,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun routingNumber(): String = routingNumber.getRequired("routingNumber")
+
+    /**
+     * The bank account type. Required for certain corridors (e.g., El Salvador).
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun bankAccountType(): UsdAccountInfo.BankAccountType? =
+        bankAccountType.getNullable("bankAccountType")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -135,6 +157,15 @@ private constructor(
     @JsonProperty("routingNumber")
     @ExcludeMissing
     fun _routingNumber(): JsonField<String> = routingNumber
+
+    /**
+     * Returns the raw JSON value of [bankAccountType].
+     *
+     * Unlike [bankAccountType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bankAccountType")
+    @ExcludeMissing
+    fun _bankAccountType(): JsonField<UsdAccountInfo.BankAccountType> = bankAccountType
 
     /**
      * Returns the raw JSON value of [beneficiary].
@@ -181,6 +212,7 @@ private constructor(
         private var accountType: JsonField<UsdAccountInfo.AccountType>? = null
         private var paymentRails: JsonField<MutableList<UsdAccountInfo.PaymentRail>>? = null
         private var routingNumber: JsonField<String>? = null
+        private var bankAccountType: JsonField<UsdAccountInfo.BankAccountType> = JsonMissing.of()
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -189,6 +221,7 @@ private constructor(
             accountType = usdExternalAccountInfo.accountType
             paymentRails = usdExternalAccountInfo.paymentRails.map { it.toMutableList() }
             routingNumber = usdExternalAccountInfo.routingNumber
+            bankAccountType = usdExternalAccountInfo.bankAccountType
             beneficiary = usdExternalAccountInfo.beneficiary
             additionalProperties = usdExternalAccountInfo.additionalProperties.toMutableMap()
         }
@@ -261,6 +294,21 @@ private constructor(
             this.routingNumber = routingNumber
         }
 
+        /** The bank account type. Required for certain corridors (e.g., El Salvador). */
+        fun bankAccountType(bankAccountType: UsdAccountInfo.BankAccountType) =
+            bankAccountType(JsonField.of(bankAccountType))
+
+        /**
+         * Sets [Builder.bankAccountType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bankAccountType] with a well-typed
+         * [UsdAccountInfo.BankAccountType] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun bankAccountType(bankAccountType: JsonField<UsdAccountInfo.BankAccountType>) = apply {
+            this.bankAccountType = bankAccountType
+        }
+
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
         /**
@@ -277,6 +325,23 @@ private constructor(
         /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
         fun beneficiary(individual: UsdBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [beneficiary] with the following:
+         * ```kotlin
+         * UsdBeneficiary.builder()
+         *     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualBeneficiary(fullName: String) =
+            beneficiary(
+                UsdBeneficiary.builder()
+                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
 
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
@@ -340,6 +405,7 @@ private constructor(
                 checkRequired("accountType", accountType),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                 checkRequired("routingNumber", routingNumber),
+                bankAccountType,
                 checkRequired("beneficiary", beneficiary),
                 additionalProperties.toMutableMap(),
             )
@@ -356,6 +422,7 @@ private constructor(
         accountType().validate()
         paymentRails().forEach { it.validate() }
         routingNumber()
+        bankAccountType()?.validate()
         beneficiary().validate()
         validated = true
     }
@@ -378,6 +445,7 @@ private constructor(
             (accountType.asKnown()?.validity() ?: 0) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (routingNumber.asKnown() == null) 0 else 1) +
+            (bankAccountType.asKnown()?.validity() ?: 0) +
             (beneficiary.asKnown()?.validity() ?: 0)
 
     @JsonDeserialize(using = Beneficiary.Deserializer::class)
@@ -558,6 +626,7 @@ private constructor(
             accountType == other.accountType &&
             paymentRails == other.paymentRails &&
             routingNumber == other.routingNumber &&
+            bankAccountType == other.bankAccountType &&
             beneficiary == other.beneficiary &&
             additionalProperties == other.additionalProperties
     }
@@ -568,6 +637,7 @@ private constructor(
             accountType,
             paymentRails,
             routingNumber,
+            bankAccountType,
             beneficiary,
             additionalProperties,
         )
@@ -576,5 +646,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "UsdExternalAccountInfo{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, routingNumber=$routingNumber, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+        "UsdExternalAccountInfo{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, routingNumber=$routingNumber, bankAccountType=$bankAccountType, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
 }
