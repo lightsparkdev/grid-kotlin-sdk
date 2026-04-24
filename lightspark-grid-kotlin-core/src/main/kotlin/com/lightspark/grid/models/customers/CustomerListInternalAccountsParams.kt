@@ -2,9 +2,13 @@
 
 package com.lightspark.grid.models.customers
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.lightspark.grid.core.Enum
+import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Objects
 
 /**
@@ -21,6 +25,7 @@ private constructor(
     private val cursor: String?,
     private val customerId: String?,
     private val limit: Long?,
+    private val type: Type?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -36,6 +41,13 @@ private constructor(
 
     /** Maximum number of results to return (default 20, max 100) */
     fun limit(): Long? = limit
+
+    /**
+     * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
+     * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
+     * holding accounts.
+     */
+    fun type(): Type? = type
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -63,6 +75,7 @@ private constructor(
         private var cursor: String? = null
         private var customerId: String? = null
         private var limit: Long? = null
+        private var type: Type? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -72,6 +85,7 @@ private constructor(
                 cursor = customerListInternalAccountsParams.cursor
                 customerId = customerListInternalAccountsParams.customerId
                 limit = customerListInternalAccountsParams.limit
+                type = customerListInternalAccountsParams.type
                 additionalHeaders = customerListInternalAccountsParams.additionalHeaders.toBuilder()
                 additionalQueryParams =
                     customerListInternalAccountsParams.additionalQueryParams.toBuilder()
@@ -95,6 +109,13 @@ private constructor(
          * This unboxed primitive overload exists for backwards compatibility.
          */
         fun limit(limit: Long) = limit(limit as Long?)
+
+        /**
+         * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
+         * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the
+         * platform-managed holding accounts.
+         */
+        fun type(type: Type?) = apply { this.type = type }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -205,6 +226,7 @@ private constructor(
                 cursor,
                 customerId,
                 limit,
+                type,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -219,9 +241,146 @@ private constructor(
                 cursor?.let { put("cursor", it) }
                 customerId?.let { put("customerId", it) }
                 limit?.let { put("limit", it.toString()) }
+                type?.let { put("type", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
+
+    /**
+     * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
+     * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
+     * holding accounts.
+     */
+    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val INTERNAL_FIAT = of("INTERNAL_FIAT")
+
+            val INTERNAL_CRYPTO = of("INTERNAL_CRYPTO")
+
+            val EMBEDDED_WALLET = of("EMBEDDED_WALLET")
+
+            fun of(value: String) = Type(JsonField.of(value))
+        }
+
+        /** An enum containing [Type]'s known values. */
+        enum class Known {
+            INTERNAL_FIAT,
+            INTERNAL_CRYPTO,
+            EMBEDDED_WALLET,
+        }
+
+        /**
+         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Type] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            INTERNAL_FIAT,
+            INTERNAL_CRYPTO,
+            EMBEDDED_WALLET,
+            /** An enum member indicating that [Type] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                INTERNAL_FIAT -> Value.INTERNAL_FIAT
+                INTERNAL_CRYPTO -> Value.INTERNAL_CRYPTO
+                EMBEDDED_WALLET -> Value.EMBEDDED_WALLET
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                INTERNAL_FIAT -> Known.INTERNAL_FIAT
+                INTERNAL_CRYPTO -> Known.INTERNAL_CRYPTO
+                EMBEDDED_WALLET -> Known.EMBEDDED_WALLET
+                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        fun validate(): Type = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -233,13 +392,22 @@ private constructor(
             cursor == other.cursor &&
             customerId == other.customerId &&
             limit == other.limit &&
+            type == other.type &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(currency, cursor, customerId, limit, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            currency,
+            cursor,
+            customerId,
+            limit,
+            type,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "CustomerListInternalAccountsParams{currency=$currency, cursor=$cursor, customerId=$customerId, limit=$limit, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerListInternalAccountsParams{currency=$currency, cursor=$cursor, customerId=$customerId, limit=$limit, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
