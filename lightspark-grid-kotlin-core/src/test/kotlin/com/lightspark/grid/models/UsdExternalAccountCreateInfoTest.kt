@@ -39,7 +39,6 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
-                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .build()
 
         assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
@@ -70,8 +69,6 @@ internal class UsdExternalAccountCreateInfoTest {
                 )
             )
         assertThat(usdExternalAccountCreateInfo.routingNumber()).isEqualTo("021000021")
-        assertThat(usdExternalAccountCreateInfo.bankAccountType())
-            .isEqualTo(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
     }
 
     @Test
@@ -103,7 +100,6 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
-                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .build()
 
         val roundtrippedUsdExternalAccountCreateInfo =
