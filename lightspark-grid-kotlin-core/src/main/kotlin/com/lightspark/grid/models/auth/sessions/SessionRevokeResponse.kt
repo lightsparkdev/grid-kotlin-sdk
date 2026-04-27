@@ -58,9 +58,9 @@ private constructor(
     fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
 
     /**
-     * Payload that must be signed with the session private key of a verified authentication
-     * credential. The resulting signature is passed as the `Grid-Wallet-Signature` header on the
-     * retry of the originating request to complete the operation.
+     * Canonical payload for the retry authorization stamp. Build an API-key stamp over this exact
+     * value with the session API keypair, then send the full base64url-encoded stamp in
+     * `Grid-Wallet-Signature` on the retry that completes the original request.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -179,9 +179,9 @@ private constructor(
         fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply { this.expiresAt = expiresAt }
 
         /**
-         * Payload that must be signed with the session private key of a verified authentication
-         * credential. The resulting signature is passed as the `Grid-Wallet-Signature` header on
-         * the retry of the originating request to complete the operation.
+         * Canonical payload for the retry authorization stamp. Build an API-key stamp over this
+         * exact value with the session API keypair, then send the full base64url-encoded stamp in
+         * `Grid-Wallet-Signature` on the retry that completes the original request.
          */
         fun payloadToSign(payloadToSign: String) = payloadToSign(JsonField.of(payloadToSign))
 

@@ -61,13 +61,13 @@ import java.util.Objects
  * Registering an additional credential against an internal account that already has one requires a
  * signature from an existing verified credential. Call this endpoint with the new credential's
  * details; if an existing credential is already registered on the internal account the response is
- * `202` with a `payloadToSign` and a `requestId`. Sign the payload with the session private key of
- * an existing verified credential on the same internal account (decrypted client-side from its
- * `encryptedSessionSigningKey`) and retry the same request with the signature supplied as the
- * `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header. The
- * signed retry returns `201` with the created `AuthMethod`. For `EMAIL_OTP`, the OTP email is
- * triggered on the signed retry, and the credential must then be activated via `POST
- * /auth/credentials/{id}/verify`.
+ * `202` with a `payloadToSign` and a `requestId`. Use the session API keypair of an existing
+ * verified credential on the same internal account (decrypted client-side from its
+ * `encryptedSessionSigningKey`) to build an API-key stamp over `payloadToSign`, then retry the same
+ * request with that full stamp as the `Grid-Wallet-Signature` header and the `requestId` echoed
+ * back as the `Request-Id` header. The signed retry returns `201` with the created `AuthMethod`.
+ * For `EMAIL_OTP`, the OTP email is triggered on the signed retry, and the credential must then be
+ * activated via `POST /auth/credentials/{id}/verify`.
  */
 class CredentialCreateParams
 private constructor(
