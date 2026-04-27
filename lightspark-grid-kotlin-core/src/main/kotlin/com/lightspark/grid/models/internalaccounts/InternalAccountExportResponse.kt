@@ -40,10 +40,17 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Encrypted wallet mnemonic, sealed to the `clientPublicKey` supplied on the verify request.
-     * Decrypt with the matching private key, then manage the mnemonic securely — it is the master
-     * key of the self-custodial Embedded Wallet. Encoded as base58check (same format as
-     * `AuthSession.encryptedSessionSigningKey`).
+     * Encrypted wallet mnemonic, sealed to the `clientPublicKey` from the request body using HPKE:
+     * DHKEM(P-256, HKDF-SHA256) + HKDF-SHA256 + AES-256-GCM. Decrypt with the matching private key,
+     * then manage the mnemonic securely because it is the master key of the self-custodial Embedded
+     * Wallet. The value is a JSON string of the form `{"version": "v1.0.0", "data": "<hex>",
+     * "dataSignature": "<hex>", "enclaveQuorumPublic": "<hex>"}`. `data` hex-decodes to JSON
+     * `{"encappedPublic": "<hex>", "ciphertext": "<hex>", "organizationId": "<id>"}`, where
+     * `encappedPublic` is the uncompressed SEC1 ephemeral public key. `dataSignature` is an
+     * ECDSA-P256-SHA256 signature over the `data` bytes produced by the issuer key in
+     * `enclaveQuorumPublic`; verify before decrypting. In sandbox, `dataSignature` and
+     * `enclaveQuorumPublic` are empty strings. Clients should bypass attestation verification when
+     * calling against sandbox.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -120,10 +127,17 @@ private constructor(
         fun id(id: JsonField<String>) = apply { this.id = id }
 
         /**
-         * Encrypted wallet mnemonic, sealed to the `clientPublicKey` supplied on the verify
-         * request. Decrypt with the matching private key, then manage the mnemonic securely — it is
-         * the master key of the self-custodial Embedded Wallet. Encoded as base58check (same format
-         * as `AuthSession.encryptedSessionSigningKey`).
+         * Encrypted wallet mnemonic, sealed to the `clientPublicKey` from the request body using
+         * HPKE: DHKEM(P-256, HKDF-SHA256) + HKDF-SHA256 + AES-256-GCM. Decrypt with the matching
+         * private key, then manage the mnemonic securely because it is the master key of the
+         * self-custodial Embedded Wallet. The value is a JSON string of the form `{"version":
+         * "v1.0.0", "data": "<hex>", "dataSignature": "<hex>", "enclaveQuorumPublic": "<hex>"}`.
+         * `data` hex-decodes to JSON `{"encappedPublic": "<hex>", "ciphertext": "<hex>",
+         * "organizationId": "<id>"}`, where `encappedPublic` is the uncompressed SEC1 ephemeral
+         * public key. `dataSignature` is an ECDSA-P256-SHA256 signature over the `data` bytes
+         * produced by the issuer key in `enclaveQuorumPublic`; verify before decrypting. In
+         * sandbox, `dataSignature` and `enclaveQuorumPublic` are empty strings. Clients should
+         * bypass attestation verification when calling against sandbox.
          */
         fun encryptedWalletCredentials(encryptedWalletCredentials: String) =
             encryptedWalletCredentials(JsonField.of(encryptedWalletCredentials))

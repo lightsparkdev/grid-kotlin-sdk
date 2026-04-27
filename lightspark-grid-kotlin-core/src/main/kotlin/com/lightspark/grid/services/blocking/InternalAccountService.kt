@@ -32,16 +32,16 @@ interface InternalAccountService {
      * credential, and revoke session):
      * 1. Call `POST /internal-accounts/{id}/export` with the request body `{ "clientPublicKey":
      *    "..." }` and no signature headers. Grid binds the `clientPublicKey` into the
-     *    `payloadToSign` it returns, so the subsequent `Grid-Wallet-Signature` commits to the
-     *    target encryption key. The response is `202` with `payloadToSign`, `requestId`, and
+     *    `payloadToSign` it returns, so the subsequent stamp in `Grid-Wallet-Signature` commits to
+     *    the target encryption key. The response is `202` with `payloadToSign`, `requestId`, and
      *    `expiresAt`.
-     * 2. Sign the `payloadToSign` with the session private key of a verified authentication
-     *    credential on the same internal account and retry with the signature as the
-     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The retry body must carry the **same** `clientPublicKey` submitted in step 1 — Grid
-     *    rejects the retry with `401` if it disagrees with what was bound into `payloadToSign`. The
-     *    signed retry returns `200` with `encryptedWalletCredentials`, which the client decrypts
-     *    with the matching private key.
+     * 2. Use the session API keypair of a verified authentication credential on the same internal
+     *    account to build an API-key stamp over `payloadToSign`, then retry with that full stamp as
+     *    the `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id`
+     *    header. The retry body must carry the **same** `clientPublicKey` submitted in step 1 —
+     *    Grid rejects the retry with `401` if it disagrees with what was bound into
+     *    `payloadToSign`. The signed retry returns `200` with `encryptedWalletCredentials`, which
+     *    the client decrypts with the matching private key.
      *
      * The `clientPublicKey` is ephemeral: generate a fresh P-256 keypair for this export and
      * discard the private key after decrypting. Do not reuse the keypair from any prior verify call
