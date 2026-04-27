@@ -1,5 +1,43 @@
 # Changelog
 
+## 1.7.0 (2026-04-27)
+
+Full Changelog: [v1.6.0...v1.7.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.6.0...v1.7.0)
+
+### Features
+
+* **api:** add accountIdentifier parameter to transaction list method ([ca2725b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ca2725b3763569a0872b1ac1e572d186ed57591a))
+* **api:** add auth credentials create and verify endpoints ([b036435](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b036435c6e127fbe0dce4739b5d8dd5738610786))
+* **api:** add bankName fields, add bankAccountType to GTQ, remove phoneNumber, update types ([848a5d2](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/848a5d2dc29d576b979a19ca21316e4e30a36007))
+* **api:** add bankName to BDT/EGP/GHS/GTQ/JMD/PKR, GTQ bankAccountType, remove COP/GTQ/USD fields ([4ad202a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4ad202ab7ee7e5ec713a575bca06e833056da4a9))
+* **api:** add COMPANY_LEGAL_NAME to CustomerInfoFieldName ([087693a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/087693af0b9e004bf8d96ada03cb938a4450ea0e))
+* **api:** add credentials create/verify/resend methods to auth resource ([a3673a8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a3673a8140966cc08ba97e0c66601a41d6399f87))
+* **api:** add email field to customer models ([062a7ab](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/062a7abcaf0d660a97ec01bf48ccdbbafd4f36eb))
+* **api:** add gridWalletSignature parameter and EmbeddedWallet type to quotes ([2664f0b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2664f0bf301f98cd62d3b7e6279f9df8da8f9325))
+* **api:** add internal_accounts/export, auth/sessions, auth/credentials list/revoke endpoints ([3507805](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/35078057a67dca522905a1ba49d417ad8e3803cb))
+* **api:** add list and revoke methods to credentials ([d460c5c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d460c5c8508aa43f589098a5e5dc863c62032e30))
+* **api:** add list method to auth credentials ([f1af309](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f1af3092e5b0dcceda155e65db20e85072c9c80e))
+* **api:** add list sessions to auth, list/revoke methods to credentials ([6158a20](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6158a203be729f3bd93d4dd0c168c7d2a313e684))
+* **api:** add OAuth credential type and oidcToken param to credential create ([1a89c75](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1a89c75623a201693f3512fc0183dab5e0ac46f4))
+* **api:** add passkey credential support to credentials ([22cc69b](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/22cc69b75555c4b6e56935e1010da8a93c9ad597))
+* **api:** add passkey support to credentials verify method ([a2b583d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a2b583dc807f244dc50517de3e9a76fcf2fee931))
+* **api:** add required clientPublicKey parameter to internal accounts export method ([4bb1334](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4bb1334724411595f23ad6257ab0990503c50826))
+* **api:** add resendChallenge method to credentials ([9368a26](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9368a263d80872773d80490dff25ef59864e0cb3))
+* **api:** add retrieve/update/delete to customers/platform external accounts ([602b49d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/602b49dec83c14511c09a86cbbc8d370e91b677f))
+* **api:** add session field to CredentialVerifyResponse ([f2d9c62](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f2d9c626154e73c1d3fcfa477ffeded68fe2b920))
+* **api:** add sessions resource, list/revoke methods to credentials ([6140095](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6140095db2c785df8ec9572cd21aa0632aff77a5))
+* **api:** add type field to InternalAccount ([44d8154](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/44d81547c2171b0ca57f0f9986acdadf25557e25))
+* **api:** add type parameter to customer/platform list internal accounts ([501b3c5](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/501b3c5fa222a68ae2960f29686ad8d81d85351d))
+* **api:** manual updates ([9a5ff6e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9a5ff6ee35c1ed86d86883352079f31e78806a7c))
+* **api:** remove update method from customers/platform external accounts ([1c02d44](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1c02d445c9eb42eb577f56ba9b22b1380377663d))
+* **types:** add phoneNumber/bankAccountType, remove bankName, update beneficiary fields ([afceef2](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/afceef2216014fa8089881231ea566294aa00140))
+* **types:** convert CredentialResendChallengeResponse to AuthMethod/PasskeyAuthChallenge union ([3bd7203](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3bd720328e2205851e205335f47898cc2404c464))
+
+
+### Documentation
+
+* **api:** clarify customerId parameter documentation in transactions ([69a6031](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/69a6031d6b491ca68edf340917f6dec4dd68b708))
+
 ## 1.6.0 (2026-04-17)
 
 Full Changelog: [v1.5.0...v1.6.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.5.0...v1.6.0)
