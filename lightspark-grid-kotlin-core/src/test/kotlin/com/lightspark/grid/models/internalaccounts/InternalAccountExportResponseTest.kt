@@ -15,7 +15,7 @@ internal class InternalAccountExportResponseTest {
             InternalAccountExportResponse.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .encryptedWalletCredentials(
-                    "5KqM8nT3wJz2F9b6H1vRgLpXcA7eD4YuN0sBaE8kPyW5iVfG2xQoZ3MnK9LhU6jT1dS4rCyPbH7oVwX2AgE5uYsNq8fLzR3D7JeM1bVkWcHa9Tp"
+                    "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
                 )
                 .build()
 
@@ -23,7 +23,7 @@ internal class InternalAccountExportResponseTest {
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(internalAccountExportResponse.encryptedWalletCredentials())
             .isEqualTo(
-                "5KqM8nT3wJz2F9b6H1vRgLpXcA7eD4YuN0sBaE8kPyW5iVfG2xQoZ3MnK9LhU6jT1dS4rCyPbH7oVwX2AgE5uYsNq8fLzR3D7JeM1bVkWcHa9Tp"
+                "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
             )
     }
 
@@ -34,7 +34,7 @@ internal class InternalAccountExportResponseTest {
             InternalAccountExportResponse.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .encryptedWalletCredentials(
-                    "5KqM8nT3wJz2F9b6H1vRgLpXcA7eD4YuN0sBaE8kPyW5iVfG2xQoZ3MnK9LhU6jT1dS4rCyPbH7oVwX2AgE5uYsNq8fLzR3D7JeM1bVkWcHa9Tp"
+                    "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
                 )
                 .build()
 
