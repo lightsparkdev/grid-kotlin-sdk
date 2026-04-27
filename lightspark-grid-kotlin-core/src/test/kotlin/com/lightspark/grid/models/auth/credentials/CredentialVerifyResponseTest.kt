@@ -17,10 +17,10 @@ internal class CredentialVerifyResponseTest {
                 .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-                .expiresAt(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(CredentialVerifyResponse.Type.OAUTH)
+                .type(AuthMethod.Type.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .expiresAt(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
                 .encryptedSessionSigningKey(
                     "w99a5xV6A75TfoAUkZn869fVyDYvgVsKrawMALZXmrauZd8hEv66EkPU1Z42CUaHESQjcA5bqd8dynTGBMLWB9ewtXWPEVbZvocB4Tw2K1vQVp7uwjf"
                 )
@@ -32,12 +32,12 @@ internal class CredentialVerifyResponseTest {
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(credentialVerifyResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-        assertThat(credentialVerifyResponse.expiresAt())
-            .isEqualTo(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
         assertThat(credentialVerifyResponse.nickname()).isEqualTo("example@lightspark.com")
-        assertThat(credentialVerifyResponse.type()).isEqualTo(CredentialVerifyResponse.Type.OAUTH)
+        assertThat(credentialVerifyResponse.type()).isEqualTo(AuthMethod.Type.OAUTH)
         assertThat(credentialVerifyResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+        assertThat(credentialVerifyResponse.expiresAt())
+            .isEqualTo(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
         assertThat(credentialVerifyResponse.encryptedSessionSigningKey())
             .isEqualTo(
                 "w99a5xV6A75TfoAUkZn869fVyDYvgVsKrawMALZXmrauZd8hEv66EkPU1Z42CUaHESQjcA5bqd8dynTGBMLWB9ewtXWPEVbZvocB4Tw2K1vQVp7uwjf"
@@ -52,10 +52,10 @@ internal class CredentialVerifyResponseTest {
                 .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-                .expiresAt(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(CredentialVerifyResponse.Type.OAUTH)
+                .type(AuthMethod.Type.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .expiresAt(OffsetDateTime.parse("2026-04-09T15:30:01Z"))
                 .encryptedSessionSigningKey(
                     "w99a5xV6A75TfoAUkZn869fVyDYvgVsKrawMALZXmrauZd8hEv66EkPU1Z42CUaHESQjcA5bqd8dynTGBMLWB9ewtXWPEVbZvocB4Tw2K1vQVp7uwjf"
                 )

@@ -15,12 +15,12 @@ internal class CredentialListResponseTest {
         val credentialListResponse =
             CredentialListResponse.builder()
                 .addData(
-                    CredentialListResponse.Data.builder()
+                    AuthMethod.builder()
                         .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                         .nickname("example@lightspark.com")
-                        .type(CredentialListResponse.Data.Type.OAUTH)
+                        .type(AuthMethod.Type.OAUTH)
                         .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                         .build()
                 )
@@ -28,12 +28,12 @@ internal class CredentialListResponseTest {
 
         assertThat(credentialListResponse.data())
             .containsExactly(
-                CredentialListResponse.Data.builder()
+                AuthMethod.builder()
                     .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                     .nickname("example@lightspark.com")
-                    .type(CredentialListResponse.Data.Type.OAUTH)
+                    .type(AuthMethod.Type.OAUTH)
                     .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                     .build()
             )
@@ -45,12 +45,12 @@ internal class CredentialListResponseTest {
         val credentialListResponse =
             CredentialListResponse.builder()
                 .addData(
-                    CredentialListResponse.Data.builder()
+                    AuthMethod.builder()
                         .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                         .nickname("example@lightspark.com")
-                        .type(CredentialListResponse.Data.Type.OAUTH)
+                        .type(AuthMethod.Type.OAUTH)
                         .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                         .build()
                 )

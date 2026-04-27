@@ -80,45 +80,41 @@ interface CredentialServiceAsync {
 
     /** @see create */
     suspend fun create(
-        body: CredentialCreateParams.Body,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse =
-        create(CredentialCreateParams.builder().body(body).build(), requestOptions)
-
-    /** @see create */
-    suspend fun create(
-        emailOtpCredentialCreateRequest:
-            CredentialCreateParams.Body.EmailOtpCredentialCreateRequest,
+        authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
         create(
-            CredentialCreateParams.Body.ofEmailOtpCredentialCreateRequest(
-                emailOtpCredentialCreateRequest
-            ),
+            CredentialCreateParams.builder()
+                .authCredentialCreateRequest(authCredentialCreateRequest)
+                .build(),
             requestOptions,
         )
 
     /** @see create */
     suspend fun create(
-        oauthCredentialCreateRequest: CredentialCreateParams.Body.OAuthCredentialCreateRequest,
+        emailOtp:
+            CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
         create(
-            CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
-                oauthCredentialCreateRequest
-            ),
+            CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
             requestOptions,
         )
 
     /** @see create */
     suspend fun create(
-        passkeyCredentialCreateRequest: CredentialCreateParams.Body.PasskeyCredentialCreateRequest,
+        oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth), requestOptions)
+
+    /** @see create */
+    suspend fun create(
+        passkey: CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CredentialCreateResponse =
         create(
-            CredentialCreateParams.Body.ofPasskeyCredentialCreateRequest(
-                passkeyCredentialCreateRequest
-            ),
+            CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
             requestOptions,
         )
 
@@ -259,49 +255,48 @@ interface CredentialServiceAsync {
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            body: CredentialCreateParams.Body,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse> =
-            create(CredentialCreateParams.builder().body(body).build(), requestOptions)
-
-        /** @see create */
-        @MustBeClosed
-        suspend fun create(
-            emailOtpCredentialCreateRequest:
-                CredentialCreateParams.Body.EmailOtpCredentialCreateRequest,
+            authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
             create(
-                CredentialCreateParams.Body.ofEmailOtpCredentialCreateRequest(
-                    emailOtpCredentialCreateRequest
-                ),
+                CredentialCreateParams.builder()
+                    .authCredentialCreateRequest(authCredentialCreateRequest)
+                    .build(),
                 requestOptions,
             )
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            oauthCredentialCreateRequest: CredentialCreateParams.Body.OAuthCredentialCreateRequest,
+            emailOtp:
+                CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
             create(
-                CredentialCreateParams.Body.ofOAuthCredentialCreateRequest(
-                    oauthCredentialCreateRequest
-                ),
+                CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
                 requestOptions,
             )
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            passkeyCredentialCreateRequest:
-                CredentialCreateParams.Body.PasskeyCredentialCreateRequest,
+            oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CredentialCreateResponse> =
             create(
-                CredentialCreateParams.Body.ofPasskeyCredentialCreateRequest(
-                    passkeyCredentialCreateRequest
-                ),
+                CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            passkey:
+                CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(
+                CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
                 requestOptions,
             )
 

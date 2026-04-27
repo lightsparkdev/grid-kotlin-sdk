@@ -18,12 +18,12 @@ internal class CredentialResendChallengeResponseTest {
     @Test
     fun ofAuthMethod() {
         val authMethod =
-            CredentialResendChallengeResponse.AuthMethod.builder()
+            AuthMethod.builder()
                 .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(CredentialResendChallengeResponse.AuthMethod.Type.OAUTH)
+                .type(AuthMethod.Type.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .build()
 
@@ -39,12 +39,12 @@ internal class CredentialResendChallengeResponseTest {
         val jsonMapper = jsonMapper()
         val credentialResendChallengeResponse =
             CredentialResendChallengeResponse.ofAuthMethod(
-                CredentialResendChallengeResponse.AuthMethod.builder()
+                AuthMethod.builder()
                     .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                     .nickname("example@lightspark.com")
-                    .type(CredentialResendChallengeResponse.AuthMethod.Type.OAUTH)
+                    .type(AuthMethod.Type.OAUTH)
                     .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                     .build()
             )
@@ -65,13 +65,13 @@ internal class CredentialResendChallengeResponseTest {
             CredentialResendChallengeResponse.PasskeyAuthChallenge.builder()
                 .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-                .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .nickname("example@lightspark.com")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                .type(CredentialResendChallengeResponse.PasskeyAuthChallenge.Type.OAUTH)
+                .type(AuthMethod.Type.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 
         val credentialResendChallengeResponse =
@@ -90,13 +90,13 @@ internal class CredentialResendChallengeResponseTest {
                 CredentialResendChallengeResponse.PasskeyAuthChallenge.builder()
                     .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
                     .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
-                    .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                     .nickname("example@lightspark.com")
-                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                    .type(CredentialResendChallengeResponse.PasskeyAuthChallenge.Type.OAUTH)
+                    .type(AuthMethod.Type.OAUTH)
                     .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                    .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                    .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
             )
 
