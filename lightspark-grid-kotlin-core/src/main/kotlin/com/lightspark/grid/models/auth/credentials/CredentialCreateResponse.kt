@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
-import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -277,21 +276,24 @@ private constructor(
     }
 
     /**
-     * Strict wrapper around `AuthMethod` used inside `AuthCredentialResponseOneOf` for the
-     * `EMAIL_OTP` and `OAUTH` branches. The only difference from `AuthMethod` is
-     * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge`
-     * — without the strictness, an `AuthMethod` with extra fields would ambiguously match both
-     * branches.
+     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST /auth/credentials`
+     * (first-authentication case) and `POST /auth/credentials/{id}/challenge` (reauthentication
+     * case). Adds a Grid-issued `challenge`, the corresponding `requestId`, and the challenge's
+     * `expiresAt` to the base `AuthMethod` fields. The client signs the challenge with the passkey
+     * to produce the assertion submitted to `POST /auth/credentials/{id}/verify`.
      */
-    class AuthMethod
+    class PasskeyAuthChallenge
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val id: JsonField<String>,
         private val accountId: JsonField<String>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val nickname: JsonField<String>,
-        private val type: JsonField<Type>,
+        private val type: JsonField<AuthMethod.Type>,
         private val updatedAt: JsonField<OffsetDateTime>,
+        private val challenge: JsonField<String>,
+        private val expiresAt: JsonField<OffsetDateTime>,
+        private val requestId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -307,11 +309,43 @@ private constructor(
             @JsonProperty("nickname")
             @ExcludeMissing
             nickname: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+            @JsonProperty("type")
+            @ExcludeMissing
+            type: JsonField<AuthMethod.Type> = JsonMissing.of(),
             @JsonProperty("updatedAt")
             @ExcludeMissing
             updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(id, accountId, createdAt, nickname, type, updatedAt, mutableMapOf())
+            @JsonProperty("challenge")
+            @ExcludeMissing
+            challenge: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("expiresAt")
+            @ExcludeMissing
+            expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("requestId")
+            @ExcludeMissing
+            requestId: JsonField<String> = JsonMissing.of(),
+        ) : this(
+            id,
+            accountId,
+            createdAt,
+            nickname,
+            type,
+            updatedAt,
+            challenge,
+            expiresAt,
+            requestId,
+            mutableMapOf(),
+        )
+
+        fun toAuthMethod(): AuthMethod =
+            AuthMethod.builder()
+                .id(id)
+                .accountId(accountId)
+                .createdAt(createdAt)
+                .nickname(nickname)
+                .type(type)
+                .updatedAt(updatedAt)
+                .build()
 
         /**
          * System-generated unique identifier for the authentication credential.
@@ -357,7 +391,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun type(): Type = type.getRequired("type")
+        fun type(): AuthMethod.Type = type.getRequired("type")
 
         /**
          * Last update timestamp.
@@ -366,515 +400,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
-
-        /**
-         * Returns the raw JSON value of [id].
-         *
-         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
-
-        /**
-         * Returns the raw JSON value of [accountId].
-         *
-         * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
-
-        /**
-         * Returns the raw JSON value of [createdAt].
-         *
-         * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("createdAt")
-        @ExcludeMissing
-        fun _createdAt(): JsonField<OffsetDateTime> = createdAt
-
-        /**
-         * Returns the raw JSON value of [nickname].
-         *
-         * Unlike [nickname], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("nickname") @ExcludeMissing fun _nickname(): JsonField<String> = nickname
-
-        /**
-         * Returns the raw JSON value of [type].
-         *
-         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-        /**
-         * Returns the raw JSON value of [updatedAt].
-         *
-         * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("updatedAt")
-        @ExcludeMissing
-        fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [AuthMethod].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .id()
-             * .accountId()
-             * .createdAt()
-             * .nickname()
-             * .type()
-             * .updatedAt()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [AuthMethod]. */
-        class Builder internal constructor() {
-
-            private var id: JsonField<String>? = null
-            private var accountId: JsonField<String>? = null
-            private var createdAt: JsonField<OffsetDateTime>? = null
-            private var nickname: JsonField<String>? = null
-            private var type: JsonField<Type>? = null
-            private var updatedAt: JsonField<OffsetDateTime>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(authMethod: AuthMethod) = apply {
-                id = authMethod.id
-                accountId = authMethod.accountId
-                createdAt = authMethod.createdAt
-                nickname = authMethod.nickname
-                type = authMethod.type
-                updatedAt = authMethod.updatedAt
-                additionalProperties = authMethod.additionalProperties.toMutableMap()
-            }
-
-            /** System-generated unique identifier for the authentication credential. */
-            fun id(id: String) = id(JsonField.of(id))
-
-            /**
-             * Sets [Builder.id] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.id] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun id(id: JsonField<String>) = apply { this.id = id }
-
-            /** Identifier of the internal account that this credential authenticates. */
-            fun accountId(accountId: String) = accountId(JsonField.of(accountId))
-
-            /**
-             * Sets [Builder.accountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.accountId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
-
-            /** Creation timestamp. */
-            fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
-
-            /**
-             * Sets [Builder.createdAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply {
-                this.createdAt = createdAt
-            }
-
-            /**
-             * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
-             * email address; for OAUTH credentials it is typically the email claim from the OIDC
-             * token; for PASSKEY credentials it is the nickname provided at registration time.
-             */
-            fun nickname(nickname: String) = nickname(JsonField.of(nickname))
-
-            /**
-             * Sets [Builder.nickname] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.nickname] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun nickname(nickname: JsonField<String>) = apply { this.nickname = nickname }
-
-            /**
-             * The type of authentication credential.
-             * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google
-             *   or Apple.
-             * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
-             * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
-             */
-            fun type(type: Type) = type(JsonField.of(type))
-
-            /**
-             * Sets [Builder.type] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun type(type: JsonField<Type>) = apply { this.type = type }
-
-            /** Last update timestamp. */
-            fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
-
-            /**
-             * Sets [Builder.updatedAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
-                this.updatedAt = updatedAt
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [AuthMethod].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .id()
-             * .accountId()
-             * .createdAt()
-             * .nickname()
-             * .type()
-             * .updatedAt()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): AuthMethod =
-                AuthMethod(
-                    checkRequired("id", id),
-                    checkRequired("accountId", accountId),
-                    checkRequired("createdAt", createdAt),
-                    checkRequired("nickname", nickname),
-                    checkRequired("type", type),
-                    checkRequired("updatedAt", updatedAt),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): AuthMethod = apply {
-            if (validated) {
-                return@apply
-            }
-
-            id()
-            accountId()
-            createdAt()
-            nickname()
-            type().validate()
-            updatedAt()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            (if (id.asKnown() == null) 0 else 1) +
-                (if (accountId.asKnown() == null) 0 else 1) +
-                (if (createdAt.asKnown() == null) 0 else 1) +
-                (if (nickname.asKnown() == null) 0 else 1) +
-                (type.asKnown()?.validity() ?: 0) +
-                (if (updatedAt.asKnown() == null) 0 else 1)
-
-        /**
-         * The type of authentication credential.
-         * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
-         *   Apple.
-         * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
-         * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
-         */
-        class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val OAUTH = of("OAUTH")
-
-                val EMAIL_OTP = of("EMAIL_OTP")
-
-                val PASSKEY = of("PASSKEY")
-
-                fun of(value: String) = Type(JsonField.of(value))
-            }
-
-            /** An enum containing [Type]'s known values. */
-            enum class Known {
-                OAUTH,
-                EMAIL_OTP,
-                PASSKEY,
-            }
-
-            /**
-             * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [Type] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                OAUTH,
-                EMAIL_OTP,
-                PASSKEY,
-                /** An enum member indicating that [Type] was instantiated with an unknown value. */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    OAUTH -> Value.OAUTH
-                    EMAIL_OTP -> Value.EMAIL_OTP
-                    PASSKEY -> Value.PASSKEY
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    OAUTH -> Known.OAUTH
-                    EMAIL_OTP -> Known.EMAIL_OTP
-                    PASSKEY -> Known.PASSKEY
-                    else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): Type = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Type && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is AuthMethod &&
-                id == other.id &&
-                accountId == other.accountId &&
-                createdAt == other.createdAt &&
-                nickname == other.nickname &&
-                type == other.type &&
-                updatedAt == other.updatedAt &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(id, accountId, createdAt, nickname, type, updatedAt, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "AuthMethod{id=$id, accountId=$accountId, createdAt=$createdAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
-    }
-
-    /**
-     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST /auth/credentials`
-     * (first-authentication case) and `POST /auth/credentials/{id}/challenge` (reauthentication
-     * case). Adds a Grid-issued `challenge`, the corresponding `requestId`, and the challenge's
-     * `expiresAt` to the base `AuthMethod` fields. The client signs the challenge with the passkey
-     * to produce the assertion submitted to `POST /auth/credentials/{id}/verify`.
-     */
-    class PasskeyAuthChallenge
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val id: JsonField<String>,
-        private val accountId: JsonField<String>,
-        private val challenge: JsonField<String>,
-        private val createdAt: JsonField<OffsetDateTime>,
-        private val expiresAt: JsonField<OffsetDateTime>,
-        private val nickname: JsonField<String>,
-        private val requestId: JsonField<String>,
-        private val type: JsonField<Type>,
-        private val updatedAt: JsonField<OffsetDateTime>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("accountId")
-            @ExcludeMissing
-            accountId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("challenge")
-            @ExcludeMissing
-            challenge: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("createdAt")
-            @ExcludeMissing
-            createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("expiresAt")
-            @ExcludeMissing
-            expiresAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-            @JsonProperty("nickname")
-            @ExcludeMissing
-            nickname: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("requestId")
-            @ExcludeMissing
-            requestId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
-            @JsonProperty("updatedAt")
-            @ExcludeMissing
-            updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        ) : this(
-            id,
-            accountId,
-            challenge,
-            createdAt,
-            expiresAt,
-            nickname,
-            requestId,
-            type,
-            updatedAt,
-            mutableMapOf(),
-        )
-
-        /**
-         * System-generated unique identifier for the authentication credential.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun id(): String = id.getRequired("id")
-
-        /**
-         * Identifier of the internal account that this credential authenticates.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun accountId(): String = accountId.getRequired("accountId")
 
         /**
          * Base64url-encoded challenge issued by Grid for the pending passkey authentication. The
@@ -888,14 +413,6 @@ private constructor(
         fun challenge(): String = challenge.getRequired("challenge")
 
         /**
-         * Creation timestamp.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
-
-        /**
          * Timestamp after which the issued challenge is no longer valid. The assertion must reach
          * `POST /auth/credentials/{id}/verify` before this time; otherwise the client must request
          * a fresh challenge via `POST /auth/credentials/{id}/challenge`.
@@ -906,16 +423,6 @@ private constructor(
         fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
 
         /**
-         * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
-         * email address; for OAUTH credentials it is typically the email claim from the OIDC token;
-         * for PASSKEY credentials it is the nickname provided at registration time.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun nickname(): String = nickname.getRequired("nickname")
-
-        /**
          * Unique identifier for this pending passkey authentication request. Must be echoed as the
          * `Request-Id` header on the subsequent `POST /auth/credentials/{id}/verify` call so Grid
          * can correlate the assertion with the issued challenge.
@@ -924,26 +431,6 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun requestId(): String = requestId.getRequired("requestId")
-
-        /**
-         * The type of authentication credential.
-         * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
-         *   Apple.
-         * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
-         * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun type(): Type = type.getRequired("type")
-
-        /**
-         * Last update timestamp.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
 
         /**
          * Returns the raw JSON value of [id].
@@ -960,13 +447,6 @@ private constructor(
         @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
 
         /**
-         * Returns the raw JSON value of [challenge].
-         *
-         * Unlike [challenge], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("challenge") @ExcludeMissing fun _challenge(): JsonField<String> = challenge
-
-        /**
          * Returns the raw JSON value of [createdAt].
          *
          * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -974,6 +454,36 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+
+        /**
+         * Returns the raw JSON value of [nickname].
+         *
+         * Unlike [nickname], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("nickname") @ExcludeMissing fun _nickname(): JsonField<String> = nickname
+
+        /**
+         * Returns the raw JSON value of [type].
+         *
+         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<AuthMethod.Type> = type
+
+        /**
+         * Returns the raw JSON value of [updatedAt].
+         *
+         * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("updatedAt")
+        @ExcludeMissing
+        fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
+
+        /**
+         * Returns the raw JSON value of [challenge].
+         *
+         * Unlike [challenge], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("challenge") @ExcludeMissing fun _challenge(): JsonField<String> = challenge
 
         /**
          * Returns the raw JSON value of [expiresAt].
@@ -985,34 +495,11 @@ private constructor(
         fun _expiresAt(): JsonField<OffsetDateTime> = expiresAt
 
         /**
-         * Returns the raw JSON value of [nickname].
-         *
-         * Unlike [nickname], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("nickname") @ExcludeMissing fun _nickname(): JsonField<String> = nickname
-
-        /**
          * Returns the raw JSON value of [requestId].
          *
          * Unlike [requestId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("requestId") @ExcludeMissing fun _requestId(): JsonField<String> = requestId
-
-        /**
-         * Returns the raw JSON value of [type].
-         *
-         * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-        /**
-         * Returns the raw JSON value of [updatedAt].
-         *
-         * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("updatedAt")
-        @ExcludeMissing
-        fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1035,13 +522,13 @@ private constructor(
              * ```kotlin
              * .id()
              * .accountId()
-             * .challenge()
              * .createdAt()
-             * .expiresAt()
              * .nickname()
-             * .requestId()
              * .type()
              * .updatedAt()
+             * .challenge()
+             * .expiresAt()
+             * .requestId()
              * ```
              */
             fun builder() = Builder()
@@ -1052,25 +539,25 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var accountId: JsonField<String>? = null
-            private var challenge: JsonField<String>? = null
             private var createdAt: JsonField<OffsetDateTime>? = null
-            private var expiresAt: JsonField<OffsetDateTime>? = null
             private var nickname: JsonField<String>? = null
-            private var requestId: JsonField<String>? = null
-            private var type: JsonField<Type>? = null
+            private var type: JsonField<AuthMethod.Type>? = null
             private var updatedAt: JsonField<OffsetDateTime>? = null
+            private var challenge: JsonField<String>? = null
+            private var expiresAt: JsonField<OffsetDateTime>? = null
+            private var requestId: JsonField<String>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(passkeyAuthChallenge: PasskeyAuthChallenge) = apply {
                 id = passkeyAuthChallenge.id
                 accountId = passkeyAuthChallenge.accountId
-                challenge = passkeyAuthChallenge.challenge
                 createdAt = passkeyAuthChallenge.createdAt
-                expiresAt = passkeyAuthChallenge.expiresAt
                 nickname = passkeyAuthChallenge.nickname
-                requestId = passkeyAuthChallenge.requestId
                 type = passkeyAuthChallenge.type
                 updatedAt = passkeyAuthChallenge.updatedAt
+                challenge = passkeyAuthChallenge.challenge
+                expiresAt = passkeyAuthChallenge.expiresAt
+                requestId = passkeyAuthChallenge.requestId
                 additionalProperties = passkeyAuthChallenge.additionalProperties.toMutableMap()
             }
 
@@ -1098,6 +585,68 @@ private constructor(
              */
             fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
+            /** Creation timestamp. */
+            fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
+
+            /**
+             * Sets [Builder.createdAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply {
+                this.createdAt = createdAt
+            }
+
+            /**
+             * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
+             * email address; for OAUTH credentials it is typically the email claim from the OIDC
+             * token; for PASSKEY credentials it is the nickname provided at registration time.
+             */
+            fun nickname(nickname: String) = nickname(JsonField.of(nickname))
+
+            /**
+             * Sets [Builder.nickname] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.nickname] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun nickname(nickname: JsonField<String>) = apply { this.nickname = nickname }
+
+            /**
+             * The type of authentication credential.
+             * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google
+             *   or Apple.
+             * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+             * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
+             */
+            fun type(type: AuthMethod.Type) = type(JsonField.of(type))
+
+            /**
+             * Sets [Builder.type] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.type] with a well-typed [AuthMethod.Type] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun type(type: JsonField<AuthMethod.Type>) = apply { this.type = type }
+
+            /** Last update timestamp. */
+            fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
+
+            /**
+             * Sets [Builder.updatedAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
+                this.updatedAt = updatedAt
+            }
+
             /**
              * Base64url-encoded challenge issued by Grid for the pending passkey authentication.
              * The client passes it into `navigator.credentials.get()` as the WebAuthn challenge;
@@ -1115,20 +664,6 @@ private constructor(
              * supported value.
              */
             fun challenge(challenge: JsonField<String>) = apply { this.challenge = challenge }
-
-            /** Creation timestamp. */
-            fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
-
-            /**
-             * Sets [Builder.createdAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply {
-                this.createdAt = createdAt
-            }
 
             /**
              * Timestamp after which the issued challenge is no longer valid. The assertion must
@@ -1149,22 +684,6 @@ private constructor(
             }
 
             /**
-             * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
-             * email address; for OAUTH credentials it is typically the email claim from the OIDC
-             * token; for PASSKEY credentials it is the nickname provided at registration time.
-             */
-            fun nickname(nickname: String) = nickname(JsonField.of(nickname))
-
-            /**
-             * Sets [Builder.nickname] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.nickname] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun nickname(nickname: JsonField<String>) = apply { this.nickname = nickname }
-
-            /**
              * Unique identifier for this pending passkey authentication request. Must be echoed as
              * the `Request-Id` header on the subsequent `POST /auth/credentials/{id}/verify` call
              * so Grid can correlate the assertion with the issued challenge.
@@ -1179,38 +698,6 @@ private constructor(
              * supported value.
              */
             fun requestId(requestId: JsonField<String>) = apply { this.requestId = requestId }
-
-            /**
-             * The type of authentication credential.
-             * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google
-             *   or Apple.
-             * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
-             * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
-             */
-            fun type(type: Type) = type(JsonField.of(type))
-
-            /**
-             * Sets [Builder.type] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.type] with a well-typed [Type] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun type(type: JsonField<Type>) = apply { this.type = type }
-
-            /** Last update timestamp. */
-            fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
-
-            /**
-             * Sets [Builder.updatedAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
-                this.updatedAt = updatedAt
-            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1240,13 +727,13 @@ private constructor(
              * ```kotlin
              * .id()
              * .accountId()
-             * .challenge()
              * .createdAt()
-             * .expiresAt()
              * .nickname()
-             * .requestId()
              * .type()
              * .updatedAt()
+             * .challenge()
+             * .expiresAt()
+             * .requestId()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
@@ -1255,13 +742,13 @@ private constructor(
                 PasskeyAuthChallenge(
                     checkRequired("id", id),
                     checkRequired("accountId", accountId),
-                    checkRequired("challenge", challenge),
                     checkRequired("createdAt", createdAt),
-                    checkRequired("expiresAt", expiresAt),
                     checkRequired("nickname", nickname),
-                    checkRequired("requestId", requestId),
                     checkRequired("type", type),
                     checkRequired("updatedAt", updatedAt),
+                    checkRequired("challenge", challenge),
+                    checkRequired("expiresAt", expiresAt),
+                    checkRequired("requestId", requestId),
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1275,13 +762,13 @@ private constructor(
 
             id()
             accountId()
-            challenge()
             createdAt()
-            expiresAt()
             nickname()
-            requestId()
             type().validate()
             updatedAt()
+            challenge()
+            expiresAt()
+            requestId()
             validated = true
         }
 
@@ -1302,152 +789,13 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (accountId.asKnown() == null) 0 else 1) +
-                (if (challenge.asKnown() == null) 0 else 1) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
-                (if (expiresAt.asKnown() == null) 0 else 1) +
                 (if (nickname.asKnown() == null) 0 else 1) +
-                (if (requestId.asKnown() == null) 0 else 1) +
                 (type.asKnown()?.validity() ?: 0) +
-                (if (updatedAt.asKnown() == null) 0 else 1)
-
-        /**
-         * The type of authentication credential.
-         * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
-         *   Apple.
-         * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
-         * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
-         */
-        class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val OAUTH = of("OAUTH")
-
-                val EMAIL_OTP = of("EMAIL_OTP")
-
-                val PASSKEY = of("PASSKEY")
-
-                fun of(value: String) = Type(JsonField.of(value))
-            }
-
-            /** An enum containing [Type]'s known values. */
-            enum class Known {
-                OAUTH,
-                EMAIL_OTP,
-                PASSKEY,
-            }
-
-            /**
-             * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [Type] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                OAUTH,
-                EMAIL_OTP,
-                PASSKEY,
-                /** An enum member indicating that [Type] was instantiated with an unknown value. */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    OAUTH -> Value.OAUTH
-                    EMAIL_OTP -> Value.EMAIL_OTP
-                    PASSKEY -> Value.PASSKEY
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    OAUTH -> Known.OAUTH
-                    EMAIL_OTP -> Known.EMAIL_OTP
-                    PASSKEY -> Known.PASSKEY
-                    else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            fun validate(): Type = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is Type && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
+                (if (updatedAt.asKnown() == null) 0 else 1) +
+                (if (challenge.asKnown() == null) 0 else 1) +
+                (if (expiresAt.asKnown() == null) 0 else 1) +
+                (if (requestId.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1457,13 +805,13 @@ private constructor(
             return other is PasskeyAuthChallenge &&
                 id == other.id &&
                 accountId == other.accountId &&
-                challenge == other.challenge &&
                 createdAt == other.createdAt &&
-                expiresAt == other.expiresAt &&
                 nickname == other.nickname &&
-                requestId == other.requestId &&
                 type == other.type &&
                 updatedAt == other.updatedAt &&
+                challenge == other.challenge &&
+                expiresAt == other.expiresAt &&
+                requestId == other.requestId &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -1471,13 +819,13 @@ private constructor(
             Objects.hash(
                 id,
                 accountId,
-                challenge,
                 createdAt,
-                expiresAt,
                 nickname,
-                requestId,
                 type,
                 updatedAt,
+                challenge,
+                expiresAt,
+                requestId,
                 additionalProperties,
             )
         }
@@ -1485,6 +833,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "PasskeyAuthChallenge{id=$id, accountId=$accountId, challenge=$challenge, createdAt=$createdAt, expiresAt=$expiresAt, nickname=$nickname, requestId=$requestId, type=$type, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+            "PasskeyAuthChallenge{id=$id, accountId=$accountId, createdAt=$createdAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, challenge=$challenge, expiresAt=$expiresAt, requestId=$requestId, additionalProperties=$additionalProperties}"
     }
 }

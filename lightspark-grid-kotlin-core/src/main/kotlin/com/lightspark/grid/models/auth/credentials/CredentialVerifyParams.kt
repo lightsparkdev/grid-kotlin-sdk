@@ -53,7 +53,7 @@ class CredentialVerifyParams
 private constructor(
     private val id: String?,
     private val requestId: String?,
-    private val body: Body,
+    private val authCredentialVerifyRequest: AuthCredentialVerifyRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -62,7 +62,7 @@ private constructor(
 
     fun requestId(): String? = requestId
 
-    fun body(): Body = body
+    fun authCredentialVerifyRequest(): AuthCredentialVerifyRequest = authCredentialVerifyRequest
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -79,7 +79,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .body()
+         * .authCredentialVerifyRequest()
          * ```
          */
         fun builder() = Builder()
@@ -90,14 +90,14 @@ private constructor(
 
         private var id: String? = null
         private var requestId: String? = null
-        private var body: Body? = null
+        private var authCredentialVerifyRequest: AuthCredentialVerifyRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(credentialVerifyParams: CredentialVerifyParams) = apply {
             id = credentialVerifyParams.id
             requestId = credentialVerifyParams.requestId
-            body = credentialVerifyParams.body
+            authCredentialVerifyRequest = credentialVerifyParams.authCredentialVerifyRequest
             additionalHeaders = credentialVerifyParams.additionalHeaders.toBuilder()
             additionalQueryParams = credentialVerifyParams.additionalQueryParams.toBuilder()
         }
@@ -106,28 +106,34 @@ private constructor(
 
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
-        fun body(body: Body) = apply { this.body = body }
+        fun authCredentialVerifyRequest(authCredentialVerifyRequest: AuthCredentialVerifyRequest) =
+            apply {
+                this.authCredentialVerifyRequest = authCredentialVerifyRequest
+            }
 
         /**
-         * Alias for calling [body] with
-         * `Body.ofEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest)`.
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequest.ofEmailOtp(emailOtp)`.
          */
-        fun body(emailOtpCredentialVerifyRequest: Body.EmailOtpCredentialVerifyRequest) =
-            body(Body.ofEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest))
+        fun authCredentialVerifyRequest(
+            emailOtp: AuthCredentialVerifyRequest.EmailOtpCredentialVerifyRequest
+        ) = authCredentialVerifyRequest(AuthCredentialVerifyRequest.ofEmailOtp(emailOtp))
 
         /**
-         * Alias for calling [body] with
-         * `Body.ofOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest)`.
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequest.ofOAuth(oauth)`.
          */
-        fun body(oauthCredentialVerifyRequest: Body.OAuthCredentialVerifyRequest) =
-            body(Body.ofOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest))
+        fun authCredentialVerifyRequest(
+            oauth: AuthCredentialVerifyRequest.OAuthCredentialVerifyRequest
+        ) = authCredentialVerifyRequest(AuthCredentialVerifyRequest.ofOAuth(oauth))
 
         /**
-         * Alias for calling [body] with
-         * `Body.ofPasskeyCredentialVerifyRequest(passkeyCredentialVerifyRequest)`.
+         * Alias for calling [authCredentialVerifyRequest] with
+         * `AuthCredentialVerifyRequest.ofPasskey(passkey)`.
          */
-        fun body(passkeyCredentialVerifyRequest: Body.PasskeyCredentialVerifyRequest) =
-            body(Body.ofPasskeyCredentialVerifyRequest(passkeyCredentialVerifyRequest))
+        fun authCredentialVerifyRequest(
+            passkey: AuthCredentialVerifyRequest.PasskeyCredentialVerifyRequest
+        ) = authCredentialVerifyRequest(AuthCredentialVerifyRequest.ofPasskey(passkey))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -234,7 +240,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .body()
+         * .authCredentialVerifyRequest()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -243,13 +249,13 @@ private constructor(
             CredentialVerifyParams(
                 id,
                 requestId,
-                checkRequired("body", body),
+                checkRequired("authCredentialVerifyRequest", authCredentialVerifyRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): Body = body
+    fun _body(): AuthCredentialVerifyRequest = authCredentialVerifyRequest
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -267,78 +273,63 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    @JsonDeserialize(using = Body.Deserializer::class)
-    @JsonSerialize(using = Body.Serializer::class)
-    class Body
+    @JsonDeserialize(using = AuthCredentialVerifyRequest.Deserializer::class)
+    @JsonSerialize(using = AuthCredentialVerifyRequest.Serializer::class)
+    class AuthCredentialVerifyRequest
     private constructor(
-        private val emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest? = null,
-        private val oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest? = null,
-        private val passkeyCredentialVerifyRequest: PasskeyCredentialVerifyRequest? = null,
+        private val emailOtp: EmailOtpCredentialVerifyRequest? = null,
+        private val oauth: OAuthCredentialVerifyRequest? = null,
+        private val passkey: PasskeyCredentialVerifyRequest? = null,
         private val _json: JsonValue? = null,
     ) {
 
-        fun emailOtpCredentialVerifyRequest(): EmailOtpCredentialVerifyRequest? =
-            emailOtpCredentialVerifyRequest
+        fun emailOtp(): EmailOtpCredentialVerifyRequest? = emailOtp
 
-        fun oauthCredentialVerifyRequest(): OAuthCredentialVerifyRequest? =
-            oauthCredentialVerifyRequest
+        fun oauth(): OAuthCredentialVerifyRequest? = oauth
 
-        fun passkeyCredentialVerifyRequest(): PasskeyCredentialVerifyRequest? =
-            passkeyCredentialVerifyRequest
+        fun passkey(): PasskeyCredentialVerifyRequest? = passkey
 
-        fun isEmailOtpCredentialVerifyRequest(): Boolean = emailOtpCredentialVerifyRequest != null
+        fun isEmailOtp(): Boolean = emailOtp != null
 
-        fun isOAuthCredentialVerifyRequest(): Boolean = oauthCredentialVerifyRequest != null
+        fun isOAuth(): Boolean = oauth != null
 
-        fun isPasskeyCredentialVerifyRequest(): Boolean = passkeyCredentialVerifyRequest != null
+        fun isPasskey(): Boolean = passkey != null
 
-        fun asEmailOtpCredentialVerifyRequest(): EmailOtpCredentialVerifyRequest =
-            emailOtpCredentialVerifyRequest.getOrThrow("emailOtpCredentialVerifyRequest")
+        fun asEmailOtp(): EmailOtpCredentialVerifyRequest = emailOtp.getOrThrow("emailOtp")
 
-        fun asOAuthCredentialVerifyRequest(): OAuthCredentialVerifyRequest =
-            oauthCredentialVerifyRequest.getOrThrow("oauthCredentialVerifyRequest")
+        fun asOAuth(): OAuthCredentialVerifyRequest = oauth.getOrThrow("oauth")
 
-        fun asPasskeyCredentialVerifyRequest(): PasskeyCredentialVerifyRequest =
-            passkeyCredentialVerifyRequest.getOrThrow("passkeyCredentialVerifyRequest")
+        fun asPasskey(): PasskeyCredentialVerifyRequest = passkey.getOrThrow("passkey")
 
         fun _json(): JsonValue? = _json
 
         fun <T> accept(visitor: Visitor<T>): T =
             when {
-                emailOtpCredentialVerifyRequest != null ->
-                    visitor.visitEmailOtpCredentialVerifyRequest(emailOtpCredentialVerifyRequest)
-                oauthCredentialVerifyRequest != null ->
-                    visitor.visitOAuthCredentialVerifyRequest(oauthCredentialVerifyRequest)
-                passkeyCredentialVerifyRequest != null ->
-                    visitor.visitPasskeyCredentialVerifyRequest(passkeyCredentialVerifyRequest)
+                emailOtp != null -> visitor.visitEmailOtp(emailOtp)
+                oauth != null -> visitor.visitOAuth(oauth)
+                passkey != null -> visitor.visitPasskey(passkey)
                 else -> visitor.unknown(_json)
             }
 
         private var validated: Boolean = false
 
-        fun validate(): Body = apply {
+        fun validate(): AuthCredentialVerifyRequest = apply {
             if (validated) {
                 return@apply
             }
 
             accept(
                 object : Visitor<Unit> {
-                    override fun visitEmailOtpCredentialVerifyRequest(
-                        emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
-                    ) {
-                        emailOtpCredentialVerifyRequest.validate()
+                    override fun visitEmailOtp(emailOtp: EmailOtpCredentialVerifyRequest) {
+                        emailOtp.validate()
                     }
 
-                    override fun visitOAuthCredentialVerifyRequest(
-                        oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
-                    ) {
-                        oauthCredentialVerifyRequest.validate()
+                    override fun visitOAuth(oauth: OAuthCredentialVerifyRequest) {
+                        oauth.validate()
                     }
 
-                    override fun visitPasskeyCredentialVerifyRequest(
-                        passkeyCredentialVerifyRequest: PasskeyCredentialVerifyRequest
-                    ) {
-                        passkeyCredentialVerifyRequest.validate()
+                    override fun visitPasskey(passkey: PasskeyCredentialVerifyRequest) {
+                        passkey.validate()
                     }
                 }
             )
@@ -362,17 +353,13 @@ private constructor(
         internal fun validity(): Int =
             accept(
                 object : Visitor<Int> {
-                    override fun visitEmailOtpCredentialVerifyRequest(
-                        emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
-                    ) = emailOtpCredentialVerifyRequest.validity()
+                    override fun visitEmailOtp(emailOtp: EmailOtpCredentialVerifyRequest) =
+                        emailOtp.validity()
 
-                    override fun visitOAuthCredentialVerifyRequest(
-                        oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
-                    ) = oauthCredentialVerifyRequest.validity()
+                    override fun visitOAuth(oauth: OAuthCredentialVerifyRequest) = oauth.validity()
 
-                    override fun visitPasskeyCredentialVerifyRequest(
-                        passkeyCredentialVerifyRequest: PasskeyCredentialVerifyRequest
-                    ) = passkeyCredentialVerifyRequest.validity()
+                    override fun visitPasskey(passkey: PasskeyCredentialVerifyRequest) =
+                        passkey.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -383,78 +370,68 @@ private constructor(
                 return true
             }
 
-            return other is Body &&
-                emailOtpCredentialVerifyRequest == other.emailOtpCredentialVerifyRequest &&
-                oauthCredentialVerifyRequest == other.oauthCredentialVerifyRequest &&
-                passkeyCredentialVerifyRequest == other.passkeyCredentialVerifyRequest
+            return other is AuthCredentialVerifyRequest &&
+                emailOtp == other.emailOtp &&
+                oauth == other.oauth &&
+                passkey == other.passkey
         }
 
-        override fun hashCode(): Int =
-            Objects.hash(
-                emailOtpCredentialVerifyRequest,
-                oauthCredentialVerifyRequest,
-                passkeyCredentialVerifyRequest,
-            )
+        override fun hashCode(): Int = Objects.hash(emailOtp, oauth, passkey)
 
         override fun toString(): String =
             when {
-                emailOtpCredentialVerifyRequest != null ->
-                    "Body{emailOtpCredentialVerifyRequest=$emailOtpCredentialVerifyRequest}"
-                oauthCredentialVerifyRequest != null ->
-                    "Body{oauthCredentialVerifyRequest=$oauthCredentialVerifyRequest}"
-                passkeyCredentialVerifyRequest != null ->
-                    "Body{passkeyCredentialVerifyRequest=$passkeyCredentialVerifyRequest}"
-                _json != null -> "Body{_unknown=$_json}"
-                else -> throw IllegalStateException("Invalid Body")
+                emailOtp != null -> "AuthCredentialVerifyRequest{emailOtp=$emailOtp}"
+                oauth != null -> "AuthCredentialVerifyRequest{oauth=$oauth}"
+                passkey != null -> "AuthCredentialVerifyRequest{passkey=$passkey}"
+                _json != null -> "AuthCredentialVerifyRequest{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid AuthCredentialVerifyRequest")
             }
 
         companion object {
 
-            fun ofEmailOtpCredentialVerifyRequest(
-                emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
-            ) = Body(emailOtpCredentialVerifyRequest = emailOtpCredentialVerifyRequest)
+            fun ofEmailOtp(emailOtp: EmailOtpCredentialVerifyRequest) =
+                AuthCredentialVerifyRequest(emailOtp = emailOtp)
 
-            fun ofOAuthCredentialVerifyRequest(
-                oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
-            ) = Body(oauthCredentialVerifyRequest = oauthCredentialVerifyRequest)
+            fun ofOAuth(oauth: OAuthCredentialVerifyRequest) =
+                AuthCredentialVerifyRequest(oauth = oauth)
 
-            fun ofPasskeyCredentialVerifyRequest(
-                passkeyCredentialVerifyRequest: PasskeyCredentialVerifyRequest
-            ) = Body(passkeyCredentialVerifyRequest = passkeyCredentialVerifyRequest)
+            fun ofPasskey(passkey: PasskeyCredentialVerifyRequest) =
+                AuthCredentialVerifyRequest(passkey = passkey)
         }
 
-        /** An interface that defines how to map each variant of [Body] to a value of type [T]. */
+        /**
+         * An interface that defines how to map each variant of [AuthCredentialVerifyRequest] to a
+         * value of type [T].
+         */
         interface Visitor<out T> {
 
-            fun visitEmailOtpCredentialVerifyRequest(
-                emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
-            ): T
+            fun visitEmailOtp(emailOtp: EmailOtpCredentialVerifyRequest): T
 
-            fun visitOAuthCredentialVerifyRequest(
-                oauthCredentialVerifyRequest: OAuthCredentialVerifyRequest
-            ): T
+            fun visitOAuth(oauth: OAuthCredentialVerifyRequest): T
 
-            fun visitPasskeyCredentialVerifyRequest(
-                passkeyCredentialVerifyRequest: PasskeyCredentialVerifyRequest
-            ): T
+            fun visitPasskey(passkey: PasskeyCredentialVerifyRequest): T
 
             /**
-             * Maps an unknown variant of [Body] to a value of type [T].
+             * Maps an unknown variant of [AuthCredentialVerifyRequest] to a value of type [T].
              *
-             * An instance of [Body] can contain an unknown variant if it was deserialized from data
-             * that doesn't match any known variant. For example, if the SDK is on an older version
-             * than the API, then the API may respond with new variants that the SDK is unaware of.
+             * An instance of [AuthCredentialVerifyRequest] can contain an unknown variant if it was
+             * deserialized from data that doesn't match any known variant. For example, if the SDK
+             * is on an older version than the API, then the API may respond with new variants that
+             * the SDK is unaware of.
              *
              * @throws LightsparkGridInvalidDataException in the default implementation.
              */
             fun unknown(json: JsonValue?): T {
-                throw LightsparkGridInvalidDataException("Unknown Body: $json")
+                throw LightsparkGridInvalidDataException(
+                    "Unknown AuthCredentialVerifyRequest: $json"
+                )
             }
         }
 
-        internal class Deserializer : BaseDeserializer<Body>(Body::class) {
+        internal class Deserializer :
+            BaseDeserializer<AuthCredentialVerifyRequest>(AuthCredentialVerifyRequest::class) {
 
-            override fun ObjectCodec.deserialize(node: JsonNode): Body {
+            override fun ObjectCodec.deserialize(node: JsonNode): AuthCredentialVerifyRequest {
                 val json = JsonValue.fromJsonNode(node)
                 val type = json.asObject()?.get("type")?.asString()
 
@@ -463,11 +440,11 @@ private constructor(
                 val bestMatches =
                     sequenceOf(
                             tryDeserialize(node, jacksonTypeRef<EmailOtpCredentialVerifyRequest>())
-                                ?.let { Body(emailOtpCredentialVerifyRequest = it, _json = json) },
+                                ?.let { AuthCredentialVerifyRequest(emailOtp = it, _json = json) },
                             tryDeserialize(node, jacksonTypeRef<OAuthCredentialVerifyRequest>())
-                                ?.let { Body(oauthCredentialVerifyRequest = it, _json = json) },
+                                ?.let { AuthCredentialVerifyRequest(oauth = it, _json = json) },
                             tryDeserialize(node, jacksonTypeRef<PasskeyCredentialVerifyRequest>())
-                                ?.let { Body(passkeyCredentialVerifyRequest = it, _json = json) },
+                                ?.let { AuthCredentialVerifyRequest(passkey = it, _json = json) },
                         )
                         .filterNotNull()
                         .allMaxBy { it.validity() }
@@ -475,7 +452,7 @@ private constructor(
                 return when (bestMatches.size) {
                     // This can happen if what we're deserializing is completely incompatible with
                     // all the possible variants (e.g. deserializing from boolean).
-                    0 -> Body(_json = json)
+                    0 -> AuthCredentialVerifyRequest(_json = json)
                     1 -> bestMatches.single()
                     // If there's more than one match with the highest validity, then use the first
                     // completely valid match, or simply the first match if none are completely
@@ -485,22 +462,20 @@ private constructor(
             }
         }
 
-        internal class Serializer : BaseSerializer<Body>(Body::class) {
+        internal class Serializer :
+            BaseSerializer<AuthCredentialVerifyRequest>(AuthCredentialVerifyRequest::class) {
 
             override fun serialize(
-                value: Body,
+                value: AuthCredentialVerifyRequest,
                 generator: JsonGenerator,
                 provider: SerializerProvider,
             ) {
                 when {
-                    value.emailOtpCredentialVerifyRequest != null ->
-                        generator.writeObject(value.emailOtpCredentialVerifyRequest)
-                    value.oauthCredentialVerifyRequest != null ->
-                        generator.writeObject(value.oauthCredentialVerifyRequest)
-                    value.passkeyCredentialVerifyRequest != null ->
-                        generator.writeObject(value.passkeyCredentialVerifyRequest)
+                    value.emailOtp != null -> generator.writeObject(value.emailOtp)
+                    value.oauth != null -> generator.writeObject(value.oauth)
+                    value.passkey != null -> generator.writeObject(value.passkey)
                     value._json != null -> generator.writeObject(value._json)
-                    else -> throw IllegalStateException("Invalid Body")
+                    else -> throw IllegalStateException("Invalid AuthCredentialVerifyRequest")
                 }
             }
         }
@@ -2139,14 +2114,20 @@ private constructor(
         return other is CredentialVerifyParams &&
             id == other.id &&
             requestId == other.requestId &&
-            body == other.body &&
+            authCredentialVerifyRequest == other.authCredentialVerifyRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, requestId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            requestId,
+            authCredentialVerifyRequest,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "CredentialVerifyParams{id=$id, requestId=$requestId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CredentialVerifyParams{id=$id, requestId=$requestId, authCredentialVerifyRequest=$authCredentialVerifyRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
