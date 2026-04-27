@@ -18,7 +18,6 @@ internal class UsdExternalAccountInfoTest {
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                 .routingNumber("021000021")
-                .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -48,8 +47,6 @@ internal class UsdExternalAccountInfoTest {
         assertThat(usdExternalAccountInfo.paymentRails())
             .containsExactly(UsdAccountInfo.PaymentRail.ACH)
         assertThat(usdExternalAccountInfo.routingNumber()).isEqualTo("021000021")
-        assertThat(usdExternalAccountInfo.bankAccountType())
-            .isEqualTo(UsdAccountInfo.BankAccountType.CHECKING)
         assertThat(usdExternalAccountInfo.beneficiary())
             .isEqualTo(
                 UsdExternalAccountInfo.Beneficiary.ofIndividual(
@@ -85,7 +82,6 @@ internal class UsdExternalAccountInfoTest {
                 .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
                 .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
                 .routingNumber("021000021")
-                .bankAccountType(UsdAccountInfo.BankAccountType.CHECKING)
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)

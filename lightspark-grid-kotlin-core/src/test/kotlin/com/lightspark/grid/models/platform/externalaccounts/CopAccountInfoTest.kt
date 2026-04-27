@@ -16,19 +16,17 @@ internal class CopAccountInfoTest {
                 .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("bankName")
+                .bankName("x")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
                 .build()
 
         assertThat(copAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(copAccountInfo.accountType()).isEqualTo(CopAccountInfo.AccountType.COP_ACCOUNT)
         assertThat(copAccountInfo.bankAccountType())
             .isEqualTo(CopAccountInfo.BankAccountType.CHECKING)
-        assertThat(copAccountInfo.bankName()).isEqualTo("bankName")
+        assertThat(copAccountInfo.bankName()).isEqualTo("x")
         assertThat(copAccountInfo.paymentRails())
             .containsExactly(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(copAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -39,9 +37,8 @@ internal class CopAccountInfoTest {
                 .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("bankName")
+                .bankName("x")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedCopAccountInfo =

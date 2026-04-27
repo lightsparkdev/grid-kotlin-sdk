@@ -16,6 +16,7 @@ internal class PkrExternalAccountCreateInfoTest {
             PkrExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -44,6 +45,7 @@ internal class PkrExternalAccountCreateInfoTest {
         assertThat(pkrExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(pkrExternalAccountCreateInfo.accountType())
             .isEqualTo(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(pkrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -79,6 +81,7 @@ internal class PkrExternalAccountCreateInfoTest {
             PkrExternalAccountCreateInfo.builder()
                 .accountNumber("x")
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                .bankName("x")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
