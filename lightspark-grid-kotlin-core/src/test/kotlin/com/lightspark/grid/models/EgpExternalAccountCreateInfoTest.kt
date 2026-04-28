@@ -38,8 +38,8 @@ internal class EgpExternalAccountCreateInfoTest {
                         .nationality("nationality")
                         .build()
                 )
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .build()
 
         assertThat(egpExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
@@ -70,8 +70,8 @@ internal class EgpExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(egpExternalAccountCreateInfo.iban()).isEqualTo("DE89370400440532013000")
-        assertThat(egpExternalAccountCreateInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(egpExternalAccountCreateInfo.iban()).isEqualTo("EG380019000500000000263180002")
+        assertThat(egpExternalAccountCreateInfo.swiftCode()).isEqualTo("NBEGEGCX")
     }
 
     @Test
@@ -103,8 +103,8 @@ internal class EgpExternalAccountCreateInfoTest {
                         .nationality("nationality")
                         .build()
                 )
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .build()
 
         val roundtrippedEgpExternalAccountCreateInfo =

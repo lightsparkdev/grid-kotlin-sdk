@@ -69,7 +69,7 @@ private constructor(
     fun accountType(): DkkAccountInfo.AccountType = accountType.getRequired("accountType")
 
     /**
-     * The IBAN of the bank account
+     * Danish IBAN (18 characters, starting with DK)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -198,7 +198,7 @@ private constructor(
             this.accountType = accountType
         }
 
-        /** The IBAN of the bank account */
+        /** Danish IBAN (18 characters, starting with DK) */
         fun iban(iban: String) = iban(JsonField.of(iban))
 
         /**
