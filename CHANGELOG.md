@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.7.1 (2026-04-28)
+
+Full Changelog: [v1.7.0...v1.7.1](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.0...v1.7.1)
+
+### Features
+
+* **api:** add clientPublicKey parameter to credential resendChallenge method ([14ed1b3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/14ed1b378fe39900f83997e7cc3d9807e41377be))
+* support setting headers via env ([5796d7e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5796d7e97c84df0fcdf449768c019d409ab1748e))
+
+
+### Bug Fixes
+
+* **types:** make clientPublicKey optional in EmailOtp/OAuth/Passkey credential verify ([8412bef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8412bef2530516eb4ee51b8351b4bce75c01ed28))
+
+
+### Documentation
+
+* **api:** update signing flow documentation for credentials/sessions/internal accounts ([0474f6d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/0474f6dd1bed57e9db7b5a9b4369d59c1d6d73f7))
+* **types:** update IBAN field descriptions in DKK/EGP/PKR account models ([8f1b936](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8f1b9368bcdc11e5a96c5afc7ad63c63ffbe576e))
+
 ## 1.7.0 (2026-04-27)
 
 Full Changelog: [v1.6.0...v1.7.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.6.0...v1.7.0)
