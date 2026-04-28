@@ -22,6 +22,9 @@ class ExternalAccountListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val data: JsonField<List<ExternalAccount>>,
+    private val hasMore: JsonField<Boolean>,
+    private val nextCursor: JsonField<String>,
+    private val totalCount: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -29,8 +32,13 @@ private constructor(
     private constructor(
         @JsonProperty("data")
         @ExcludeMissing
-        data: JsonField<List<ExternalAccount>> = JsonMissing.of()
-    ) : this(data, mutableMapOf())
+        data: JsonField<List<ExternalAccount>> = JsonMissing.of(),
+        @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("nextCursor")
+        @ExcludeMissing
+        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("totalCount") @ExcludeMissing totalCount: JsonField<Long> = JsonMissing.of(),
+    ) : this(data, hasMore, nextCursor, totalCount, mutableMapOf())
 
     /**
      * List of external accounts matching the filter criteria
@@ -41,11 +49,56 @@ private constructor(
     fun data(): List<ExternalAccount> = data.getRequired("data")
 
     /**
+     * Indicates if more results are available beyond this page
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun hasMore(): Boolean = hasMore.getRequired("hasMore")
+
+    /**
+     * Cursor to retrieve the next page of results (only present if hasMore is true)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun nextCursor(): String? = nextCursor.getNullable("nextCursor")
+
+    /**
+     * Total number of external accounts matching the criteria (excluding pagination)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun totalCount(): Long? = totalCount.getNullable("totalCount")
+
+    /**
      * Returns the raw JSON value of [data].
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<ExternalAccount>> = data
+
+    /**
+     * Returns the raw JSON value of [hasMore].
+     *
+     * Unlike [hasMore], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("hasMore") @ExcludeMissing fun _hasMore(): JsonField<Boolean> = hasMore
+
+    /**
+     * Returns the raw JSON value of [nextCursor].
+     *
+     * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
+
+    /**
+     * Returns the raw JSON value of [totalCount].
+     *
+     * Unlike [totalCount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("totalCount") @ExcludeMissing fun _totalCount(): JsonField<Long> = totalCount
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -67,6 +120,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .data()
+         * .hasMore()
          * ```
          */
         fun builder() = Builder()
@@ -76,10 +130,16 @@ private constructor(
     class Builder internal constructor() {
 
         private var data: JsonField<MutableList<ExternalAccount>>? = null
+        private var hasMore: JsonField<Boolean>? = null
+        private var nextCursor: JsonField<String> = JsonMissing.of()
+        private var totalCount: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(externalAccountListResponse: ExternalAccountListResponse) = apply {
             data = externalAccountListResponse.data.map { it.toMutableList() }
+            hasMore = externalAccountListResponse.hasMore
+            nextCursor = externalAccountListResponse.nextCursor
+            totalCount = externalAccountListResponse.totalCount
             additionalProperties = externalAccountListResponse.additionalProperties.toMutableMap()
         }
 
@@ -109,6 +169,40 @@ private constructor(
                 }
         }
 
+        /** Indicates if more results are available beyond this page */
+        fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))
+
+        /**
+         * Sets [Builder.hasMore] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.hasMore] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun hasMore(hasMore: JsonField<Boolean>) = apply { this.hasMore = hasMore }
+
+        /** Cursor to retrieve the next page of results (only present if hasMore is true) */
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
+
+        /**
+         * Sets [Builder.nextCursor] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.nextCursor] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun nextCursor(nextCursor: JsonField<String>) = apply { this.nextCursor = nextCursor }
+
+        /** Total number of external accounts matching the criteria (excluding pagination) */
+        fun totalCount(totalCount: Long) = totalCount(JsonField.of(totalCount))
+
+        /**
+         * Sets [Builder.totalCount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.totalCount] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun totalCount(totalCount: JsonField<Long>) = apply { this.totalCount = totalCount }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -136,6 +230,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .data()
+         * .hasMore()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -143,6 +238,9 @@ private constructor(
         fun build(): ExternalAccountListResponse =
             ExternalAccountListResponse(
                 checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("hasMore", hasMore),
+                nextCursor,
+                totalCount,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -155,6 +253,9 @@ private constructor(
         }
 
         data().forEach { it.validate() }
+        hasMore()
+        nextCursor()
+        totalCount()
         validated = true
     }
 
@@ -171,7 +272,11 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+    internal fun validity(): Int =
+        (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (hasMore.asKnown() == null) 0 else 1) +
+            (if (nextCursor.asKnown() == null) 0 else 1) +
+            (if (totalCount.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -180,13 +285,18 @@ private constructor(
 
         return other is ExternalAccountListResponse &&
             data == other.data &&
+            hasMore == other.hasMore &&
+            nextCursor == other.nextCursor &&
+            totalCount == other.totalCount &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(data, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(data, hasMore, nextCursor, totalCount, additionalProperties)
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccountListResponse{data=$data, additionalProperties=$additionalProperties}"
+        "ExternalAccountListResponse{data=$data, hasMore=$hasMore, nextCursor=$nextCursor, totalCount=$totalCount, additionalProperties=$additionalProperties}"
 }

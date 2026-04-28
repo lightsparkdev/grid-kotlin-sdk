@@ -65,6 +65,9 @@ internal class ExternalAccountListResponseTest {
                         .platformAccountId("acc_123456789")
                         .build()
                 )
+                .hasMore(true)
+                .nextCursor("nextCursor")
+                .totalCount(0L)
                 .build()
 
         assertThat(externalAccountListResponse.data())
@@ -115,6 +118,9 @@ internal class ExternalAccountListResponseTest {
                     .platformAccountId("acc_123456789")
                     .build()
             )
+        assertThat(externalAccountListResponse.hasMore()).isEqualTo(true)
+        assertThat(externalAccountListResponse.nextCursor()).isEqualTo("nextCursor")
+        assertThat(externalAccountListResponse.totalCount()).isEqualTo(0L)
     }
 
     @Test
@@ -169,6 +175,9 @@ internal class ExternalAccountListResponseTest {
                         .platformAccountId("acc_123456789")
                         .build()
                 )
+                .hasMore(true)
+                .nextCursor("nextCursor")
+                .totalCount(0L)
                 .build()
 
         val roundtrippedExternalAccountListResponse =
