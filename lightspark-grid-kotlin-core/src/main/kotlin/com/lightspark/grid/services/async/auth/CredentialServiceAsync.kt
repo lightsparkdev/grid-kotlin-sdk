@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.auth.credentials.AuthMethod
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
-import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
@@ -49,16 +49,14 @@ interface CredentialServiceAsync {
      * OpenID configuration (the token's `iat` must be less than 60 seconds before the request);
      * activation still happens via `POST /auth/credentials/{id}/verify`. For `PASSKEY` credentials,
      * the client completes a WebAuthn registration (`navigator.credentials.create()`) using a
-     * `challenge` issued by the platform backend and submits the resulting `attestation` here; the
-     * credential must still be activated via `POST /auth/credentials/{id}/verify` by completing a
-     * WebAuthn assertion. Unlike the registration `challenge` (platform-issued), the challenge for
-     * the first authentication is issued by Grid and returned inline on the `201` response
-     * alongside the `AuthMethod` fields, plus a `requestId` and challenge `expiresAt` (see
-     * `PasskeyAuthChallenge`). The client uses that Grid-issued `challenge` to produce the
-     * assertion and submits it with `Request-Id: <requestId>` to `POST
-     * /auth/credentials/{id}/verify`. On every subsequent reauthentication the challenge is
-     * re-issued via `POST /auth/credentials/{id}/challenge`. Only one `PASSKEY` credential is
-     * supported per internal account in v1.
+     * `challenge` issued by the platform backend and submits the resulting `attestation` here. The
+     * registration response is a plain `AuthMethod` (no inline authentication challenge). To
+     * produce the first session, the client follows registration with two further calls: `POST
+     * /auth/credentials/{id}/challenge` (carrying the client's ephemeral `clientPublicKey`) returns
+     * a Grid-issued WebAuthn challenge plus `requestId`, and `POST /auth/credentials/{id}/verify`
+     * (with `Request-Id: <requestId>`) consumes the resulting assertion and issues the session. The
+     * same two-step pattern is used on every subsequent reauthentication. Only one `PASSKEY`
+     * credential is supported per internal account in v1.
      *
      * **Adding an additional credential**
      *
@@ -76,13 +74,13 @@ interface CredentialServiceAsync {
     suspend fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse
+    ): AuthMethod
 
     /** @see create */
     suspend fun create(
         authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse =
+    ): AuthMethod =
         create(
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -95,7 +93,7 @@ interface CredentialServiceAsync {
         emailOtp:
             CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse =
+    ): AuthMethod =
         create(
             CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
             requestOptions,
@@ -105,14 +103,14 @@ interface CredentialServiceAsync {
     suspend fun create(
         oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse =
+    ): AuthMethod =
         create(CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth), requestOptions)
 
     /** @see create */
     suspend fun create(
         passkey: CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialCreateResponse =
+    ): AuthMethod =
         create(
             CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
             requestOptions,
@@ -139,10 +137,13 @@ interface CredentialServiceAsync {
      * /auth/credentials/{id}/verify` to complete verification and issue a session.
      *
      * For `PASSKEY` credentials, this issues a fresh Grid-generated WebAuthn challenge for
-     * reauthentication. The response is a `PasskeyAuthChallenge` — the base `AuthMethod` fields
-     * plus the new `challenge`, `requestId`, and `expiresAt`. The client passes the `challenge`
-     * into `navigator.credentials.get()` and submits the resulting assertion to `POST
-     * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
+     * reauthentication. The request body must carry the client's ephemeral `clientPublicKey` so
+     * Grid can bake it into the Turnkey session-creation payload the returned challenge is computed
+     * from — this seals the resulting session signing key to the client. The response is a
+     * `PasskeyAuthChallenge` — the base `AuthMethod` fields plus the new `challenge`, `requestId`,
+     * and `expiresAt`. The client passes the `challenge` into `navigator.credentials.get()` and
+     * submits the resulting assertion to `POST /auth/credentials/{id}/verify` with `Request-Id:
+     * <requestId>` to receive a session.
      */
     suspend fun resendChallenge(
         id: String,
@@ -251,14 +252,14 @@ interface CredentialServiceAsync {
         suspend fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse>
+        ): HttpResponseFor<AuthMethod>
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
             authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse> =
+        ): HttpResponseFor<AuthMethod> =
             create(
                 CredentialCreateParams.builder()
                     .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -272,7 +273,7 @@ interface CredentialServiceAsync {
             emailOtp:
                 CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse> =
+        ): HttpResponseFor<AuthMethod> =
             create(
                 CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
                 requestOptions,
@@ -283,7 +284,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse> =
+        ): HttpResponseFor<AuthMethod> =
             create(
                 CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth),
                 requestOptions,
@@ -295,7 +296,7 @@ interface CredentialServiceAsync {
             passkey:
                 CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialCreateResponse> =
+        ): HttpResponseFor<AuthMethod> =
             create(
                 CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
                 requestOptions,

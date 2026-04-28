@@ -5,6 +5,7 @@ package com.lightspark.grid.services.async.auth
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialRevokeParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import org.junit.jupiter.api.Disabled
@@ -22,7 +23,7 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val credential =
+        val authMethod =
             credentialServiceAsync.create(
                 CredentialCreateParams.builder()
                     .gridWalletSignature(
@@ -45,7 +46,7 @@ internal class CredentialServiceAsyncTest {
                     .build()
             )
 
-        credential.validate()
+        authMethod.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -76,7 +77,15 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val response = credentialServiceAsync.resendChallenge("id")
+        val response =
+            credentialServiceAsync.resendChallenge(
+                CredentialResendChallengeParams.builder()
+                    .id("id")
+                    .clientPublicKey(
+                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    )
+                    .build()
+            )
 
         response.validate()
     }

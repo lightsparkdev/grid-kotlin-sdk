@@ -16,8 +16,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.auth.credentials.AuthMethod
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
-import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialListResponse
 import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
@@ -46,7 +46,7 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
     override fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions,
-    ): CredentialCreateResponse =
+    ): AuthMethod =
         // post /auth/credentials
         withRawResponse().create(params, requestOptions).parse()
 
@@ -91,13 +91,13 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createHandler: Handler<CredentialCreateResponse> =
-            jsonHandler<CredentialCreateResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<AuthMethod> =
+            jsonHandler<AuthMethod>(clientOptions.jsonMapper)
 
         override fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CredentialCreateResponse> {
+        ): HttpResponseFor<AuthMethod> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -161,7 +161,7 @@ class CredentialServiceImpl internal constructor(private val clientOptions: Clie
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("auth", "credentials", params._pathParam(0), "challenge")
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))

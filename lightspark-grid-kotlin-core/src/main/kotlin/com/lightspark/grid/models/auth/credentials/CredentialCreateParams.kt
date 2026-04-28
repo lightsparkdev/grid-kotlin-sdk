@@ -46,15 +46,14 @@ import java.util.Objects
  * token's `iat` must be less than 60 seconds before the request); activation still happens via
  * `POST /auth/credentials/{id}/verify`. For `PASSKEY` credentials, the client completes a WebAuthn
  * registration (`navigator.credentials.create()`) using a `challenge` issued by the platform
- * backend and submits the resulting `attestation` here; the credential must still be activated via
- * `POST /auth/credentials/{id}/verify` by completing a WebAuthn assertion. Unlike the registration
- * `challenge` (platform-issued), the challenge for the first authentication is issued by Grid and
- * returned inline on the `201` response alongside the `AuthMethod` fields, plus a `requestId` and
- * challenge `expiresAt` (see `PasskeyAuthChallenge`). The client uses that Grid-issued `challenge`
- * to produce the assertion and submits it with `Request-Id: <requestId>` to `POST
- * /auth/credentials/{id}/verify`. On every subsequent reauthentication the challenge is re-issued
- * via `POST /auth/credentials/{id}/challenge`. Only one `PASSKEY` credential is supported per
- * internal account in v1.
+ * backend and submits the resulting `attestation` here. The registration response is a plain
+ * `AuthMethod` (no inline authentication challenge). To produce the first session, the client
+ * follows registration with two further calls: `POST /auth/credentials/{id}/challenge` (carrying
+ * the client's ephemeral `clientPublicKey`) returns a Grid-issued WebAuthn challenge plus
+ * `requestId`, and `POST /auth/credentials/{id}/verify` (with `Request-Id: <requestId>`) consumes
+ * the resulting assertion and issues the session. The same two-step pattern is used on every
+ * subsequent reauthentication. Only one `PASSKEY` credential is supported per internal account in
+ * v1.
  *
  * **Adding an additional credential**
  *
