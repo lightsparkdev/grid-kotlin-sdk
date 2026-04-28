@@ -16,7 +16,6 @@ internal class GtqAccountInfoTest {
                 .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
@@ -24,7 +23,6 @@ internal class GtqAccountInfoTest {
         assertThat(gtqAccountInfo.accountType()).isEqualTo(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
         assertThat(gtqAccountInfo.bankAccountType())
             .isEqualTo(GtqAccountInfo.BankAccountType.CHECKING)
-        assertThat(gtqAccountInfo.bankName()).isEqualTo("x")
         assertThat(gtqAccountInfo.paymentRails())
             .containsExactly(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -37,7 +35,6 @@ internal class GtqAccountInfoTest {
                 .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

@@ -15,6 +15,7 @@ internal class HtgBeneficiaryTest {
         val htgBeneficiary =
             HtgBeneficiary.builder()
                 .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -27,7 +28,6 @@ internal class HtgBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
@@ -35,6 +35,7 @@ internal class HtgBeneficiaryTest {
 
         assertThat(htgBeneficiary.beneficiaryType())
             .isEqualTo(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+        assertThat(htgBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(htgBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(htgBeneficiary.address())
             .isEqualTo(
@@ -48,7 +49,6 @@ internal class HtgBeneficiaryTest {
                     .build()
             )
         assertThat(htgBeneficiary.birthDate()).isEqualTo("birthDate")
-        assertThat(htgBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(htgBeneficiary.email()).isEqualTo("email")
         assertThat(htgBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(htgBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
@@ -60,6 +60,7 @@ internal class HtgBeneficiaryTest {
         val htgBeneficiary =
             HtgBeneficiary.builder()
                 .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -72,7 +73,6 @@ internal class HtgBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
