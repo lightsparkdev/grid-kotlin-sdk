@@ -20,7 +20,7 @@ internal class PkrExternalAccountInfoTest {
                 .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
-                .iban("DE89370400440532013000")
+                .iban("PK36SCBL0000001123456702")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -51,7 +51,7 @@ internal class PkrExternalAccountInfoTest {
         assertThat(pkrExternalAccountInfo.paymentRails())
             .containsExactly(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(pkrExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(pkrExternalAccountInfo.iban()).isEqualTo("DE89370400440532013000")
+        assertThat(pkrExternalAccountInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
         assertThat(pkrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountInfo.Beneficiary.ofIndividual(
@@ -88,7 +88,7 @@ internal class PkrExternalAccountInfoTest {
                 .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
-                .iban("DE89370400440532013000")
+                .iban("PK36SCBL0000001123456702")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)

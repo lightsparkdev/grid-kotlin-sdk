@@ -323,9 +323,9 @@ internal class ExternalAccountInfoOneOfTest {
         val dkkAccount =
             DkkExternalAccountInfo.builder()
                 .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                .iban("DE89370400440532013000")
+                .iban("DK5000400040116243")
                 .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                .swiftCode("DEUTDEFF")
+                .swiftCode("DABADKKK")
                 .beneficiary(
                     DkkBeneficiary.builder()
                         .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -402,9 +402,9 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofDkkAccount(
                 DkkExternalAccountInfo.builder()
                     .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                    .iban("DE89370400440532013000")
+                    .iban("DK5000400040116243")
                     .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                    .swiftCode("DEUTDEFF")
+                    .swiftCode("DABADKKK")
                     .beneficiary(
                         DkkBeneficiary.builder()
                             .beneficiaryType(DkkBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -4128,8 +4128,8 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(
@@ -4209,8 +4209,8 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                     .bankName("x")
                     .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .iban("DE89370400440532013000")
-                    .swiftCode("DEUTDEFF")
+                    .iban("EG380019000500000000263180002")
+                    .swiftCode("NBEGEGCX")
                     .beneficiary(
                         EgpBeneficiary.builder()
                             .address(
@@ -4739,7 +4739,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .phoneNumber("+1234567890")
-                .iban("DE89370400440532013000")
+                .iban("PK36SCBL0000001123456702")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -4820,7 +4820,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .bankName("x")
                     .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                     .phoneNumber("+1234567890")
-                    .iban("DE89370400440532013000")
+                    .iban("PK36SCBL0000001123456702")
                     .beneficiary(
                         PkrBeneficiary.builder()
                             .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)

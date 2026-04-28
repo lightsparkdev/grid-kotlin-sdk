@@ -85,7 +85,7 @@ private constructor(
     fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
 
     /**
-     * The IBAN of the bank account
+     * Pakistani IBAN (24 characters, starting with PK)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -265,7 +265,7 @@ private constructor(
          */
         fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
-        /** The IBAN of the bank account */
+        /** Pakistani IBAN (24 characters, starting with PK) */
         fun iban(iban: String) = iban(JsonField.of(iban))
 
         /**

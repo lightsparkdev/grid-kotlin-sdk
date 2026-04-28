@@ -17,8 +17,8 @@ internal class EgpAccountInfoTest {
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .build()
 
         assertThat(egpAccountInfo.accountNumber()).isEqualTo("x")
@@ -26,8 +26,8 @@ internal class EgpAccountInfoTest {
         assertThat(egpAccountInfo.bankName()).isEqualTo("x")
         assertThat(egpAccountInfo.paymentRails())
             .containsExactly(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(egpAccountInfo.iban()).isEqualTo("DE89370400440532013000")
-        assertThat(egpAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(egpAccountInfo.iban()).isEqualTo("EG380019000500000000263180002")
+        assertThat(egpAccountInfo.swiftCode()).isEqualTo("NBEGEGCX")
     }
 
     @Test
@@ -39,8 +39,8 @@ internal class EgpAccountInfoTest {
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .build()
 
         val roundtrippedEgpAccountInfo =

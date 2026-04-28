@@ -37,8 +37,8 @@ internal class DkkExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("DK5000400040116243")
+                .swiftCode("DABADKKK")
                 .build()
 
         assertThat(dkkExternalAccountCreateInfo.accountType())
@@ -67,8 +67,8 @@ internal class DkkExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(dkkExternalAccountCreateInfo.iban()).isEqualTo("DE89370400440532013000")
-        assertThat(dkkExternalAccountCreateInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(dkkExternalAccountCreateInfo.iban()).isEqualTo("DK5000400040116243")
+        assertThat(dkkExternalAccountCreateInfo.swiftCode()).isEqualTo("DABADKKK")
     }
 
     @Test
@@ -98,8 +98,8 @@ internal class DkkExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("DK5000400040116243")
+                .swiftCode("DABADKKK")
                 .build()
 
         val roundtrippedDkkExternalAccountCreateInfo =

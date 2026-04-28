@@ -84,7 +84,7 @@ private constructor(
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
     /**
-     * The IBAN of the bank account
+     * Egyptian IBAN (29 characters, starting with EG)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -272,7 +272,7 @@ private constructor(
                     .build()
             )
 
-        /** The IBAN of the bank account */
+        /** Egyptian IBAN (29 characters, starting with EG) */
         fun iban(iban: String) = iban(JsonField.of(iban))
 
         /**
