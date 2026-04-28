@@ -39,7 +39,7 @@ internal class PkrExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .iban("DE89370400440532013000")
+                .iban("PK36SCBL0000001123456702")
                 .build()
 
         assertThat(pkrExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
@@ -71,7 +71,7 @@ internal class PkrExternalAccountCreateInfoTest {
                 )
             )
         assertThat(pkrExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(pkrExternalAccountCreateInfo.iban()).isEqualTo("DE89370400440532013000")
+        assertThat(pkrExternalAccountCreateInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
     }
 
     @Test
@@ -104,7 +104,7 @@ internal class PkrExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .iban("DE89370400440532013000")
+                .iban("PK36SCBL0000001123456702")
                 .build()
 
         val roundtrippedPkrExternalAccountCreateInfo =

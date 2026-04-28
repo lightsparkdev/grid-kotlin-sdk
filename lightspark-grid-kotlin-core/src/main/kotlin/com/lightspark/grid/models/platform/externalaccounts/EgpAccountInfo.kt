@@ -75,7 +75,7 @@ private constructor(
     fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The IBAN of the bank account
+     * Egyptian IBAN (29 characters, starting with EG)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -250,7 +250,7 @@ private constructor(
                 }
         }
 
-        /** The IBAN of the bank account */
+        /** Egyptian IBAN (29 characters, starting with EG) */
         fun iban(iban: String) = iban(JsonField.of(iban))
 
         /**

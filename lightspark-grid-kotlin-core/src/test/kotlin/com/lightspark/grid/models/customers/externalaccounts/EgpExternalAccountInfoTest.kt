@@ -19,8 +19,8 @@ internal class EgpExternalAccountInfoTest {
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(
@@ -50,8 +50,8 @@ internal class EgpExternalAccountInfoTest {
         assertThat(egpExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(egpExternalAccountInfo.paymentRails())
             .containsExactly(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(egpExternalAccountInfo.iban()).isEqualTo("DE89370400440532013000")
-        assertThat(egpExternalAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(egpExternalAccountInfo.iban()).isEqualTo("EG380019000500000000263180002")
+        assertThat(egpExternalAccountInfo.swiftCode()).isEqualTo("NBEGEGCX")
         assertThat(egpExternalAccountInfo.beneficiary())
             .isEqualTo(
                 EgpExternalAccountInfo.Beneficiary.ofIndividual(
@@ -87,8 +87,8 @@ internal class EgpExternalAccountInfoTest {
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
                 .bankName("x")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
-                .iban("DE89370400440532013000")
-                .swiftCode("DEUTDEFF")
+                .iban("EG380019000500000000263180002")
+                .swiftCode("NBEGEGCX")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(

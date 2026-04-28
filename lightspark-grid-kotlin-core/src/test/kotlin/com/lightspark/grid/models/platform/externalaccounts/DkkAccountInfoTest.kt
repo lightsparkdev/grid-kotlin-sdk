@@ -14,15 +14,15 @@ internal class DkkAccountInfoTest {
         val dkkAccountInfo =
             DkkAccountInfo.builder()
                 .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                .iban("DE89370400440532013000")
+                .iban("DK5000400040116243")
                 .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                .swiftCode("DEUTDEFF")
+                .swiftCode("DABADKKK")
                 .build()
 
         assertThat(dkkAccountInfo.accountType()).isEqualTo(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-        assertThat(dkkAccountInfo.iban()).isEqualTo("DE89370400440532013000")
+        assertThat(dkkAccountInfo.iban()).isEqualTo("DK5000400040116243")
         assertThat(dkkAccountInfo.paymentRails()).containsExactly(DkkAccountInfo.PaymentRail.SEPA)
-        assertThat(dkkAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(dkkAccountInfo.swiftCode()).isEqualTo("DABADKKK")
     }
 
     @Test
@@ -31,9 +31,9 @@ internal class DkkAccountInfoTest {
         val dkkAccountInfo =
             DkkAccountInfo.builder()
                 .accountType(DkkAccountInfo.AccountType.DKK_ACCOUNT)
-                .iban("DE89370400440532013000")
+                .iban("DK5000400040116243")
                 .addPaymentRail(DkkAccountInfo.PaymentRail.SEPA)
-                .swiftCode("DEUTDEFF")
+                .swiftCode("DABADKKK")
                 .build()
 
         val roundtrippedDkkAccountInfo =
