@@ -254,23 +254,6 @@ private constructor(
         fun beneficiary(individual: PkrBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
 
-        /**
-         * Alias for calling [beneficiary] with the following:
-         * ```kotlin
-         * PkrBeneficiary.builder()
-         *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualBeneficiary(fullName: String) =
-            beneficiary(
-                PkrBeneficiary.builder()
-                    .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
             beneficiary(Beneficiary.ofBusiness(business))

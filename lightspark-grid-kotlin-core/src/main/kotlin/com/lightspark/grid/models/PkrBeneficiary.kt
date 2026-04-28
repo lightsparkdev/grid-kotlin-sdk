@@ -21,10 +21,10 @@ class PkrBeneficiary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val beneficiaryType: JsonField<BeneficiaryType>,
+    private val countryOfResidence: JsonField<String>,
     private val fullName: JsonField<String>,
     private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
-    private val countryOfResidence: JsonField<String>,
     private val email: JsonField<String>,
     private val nationality: JsonField<String>,
     private val phoneNumber: JsonField<String>,
@@ -36,12 +36,12 @@ private constructor(
         @JsonProperty("beneficiaryType")
         @ExcludeMissing
         beneficiaryType: JsonField<BeneficiaryType> = JsonMissing.of(),
-        @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
-        @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("countryOfResidence")
         @ExcludeMissing
         countryOfResidence: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
+        @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("nationality")
         @ExcludeMissing
@@ -51,10 +51,10 @@ private constructor(
         phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
+        countryOfResidence,
         fullName,
         address,
         birthDate,
-        countryOfResidence,
         email,
         nationality,
         phoneNumber,
@@ -66,6 +66,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiaryType(): BeneficiaryType = beneficiaryType.getRequired("beneficiaryType")
+
+    /**
+     * The country of residence of the beneficiary
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun countryOfResidence(): String = countryOfResidence.getRequired("countryOfResidence")
 
     /**
      * The full name of the beneficiary
@@ -88,14 +96,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun birthDate(): String? = birthDate.getNullable("birthDate")
-
-    /**
-     * The country of residence of the beneficiary
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun countryOfResidence(): String? = countryOfResidence.getNullable("countryOfResidence")
 
     /**
      * The email of the beneficiary
@@ -131,6 +131,16 @@ private constructor(
     fun _beneficiaryType(): JsonField<BeneficiaryType> = beneficiaryType
 
     /**
+     * Returns the raw JSON value of [countryOfResidence].
+     *
+     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("countryOfResidence")
+    @ExcludeMissing
+    fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+    /**
      * Returns the raw JSON value of [fullName].
      *
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
@@ -150,16 +160,6 @@ private constructor(
      * Unlike [birthDate], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("birthDate") @ExcludeMissing fun _birthDate(): JsonField<String> = birthDate
-
-    /**
-     * Returns the raw JSON value of [countryOfResidence].
-     *
-     * Unlike [countryOfResidence], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("countryOfResidence")
-    @ExcludeMissing
-    fun _countryOfResidence(): JsonField<String> = countryOfResidence
 
     /**
      * Returns the raw JSON value of [email].
@@ -202,6 +202,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
+         * .countryOfResidence()
          * .fullName()
          * ```
          */
@@ -212,10 +213,10 @@ private constructor(
     class Builder internal constructor() {
 
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
+        private var countryOfResidence: JsonField<String>? = null
         private var fullName: JsonField<String>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
-        private var countryOfResidence: JsonField<String> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
@@ -223,10 +224,10 @@ private constructor(
 
         internal fun from(pkrBeneficiary: PkrBeneficiary) = apply {
             beneficiaryType = pkrBeneficiary.beneficiaryType
+            countryOfResidence = pkrBeneficiary.countryOfResidence
             fullName = pkrBeneficiary.fullName
             address = pkrBeneficiary.address
             birthDate = pkrBeneficiary.birthDate
-            countryOfResidence = pkrBeneficiary.countryOfResidence
             email = pkrBeneficiary.email
             nationality = pkrBeneficiary.nationality
             phoneNumber = pkrBeneficiary.phoneNumber
@@ -245,6 +246,21 @@ private constructor(
          */
         fun beneficiaryType(beneficiaryType: JsonField<BeneficiaryType>) = apply {
             this.beneficiaryType = beneficiaryType
+        }
+
+        /** The country of residence of the beneficiary */
+        fun countryOfResidence(countryOfResidence: String) =
+            countryOfResidence(JsonField.of(countryOfResidence))
+
+        /**
+         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.countryOfResidence] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
+            this.countryOfResidence = countryOfResidence
         }
 
         /** The full name of the beneficiary */
@@ -279,21 +295,6 @@ private constructor(
          * value.
          */
         fun birthDate(birthDate: JsonField<String>) = apply { this.birthDate = birthDate }
-
-        /** The country of residence of the beneficiary */
-        fun countryOfResidence(countryOfResidence: String) =
-            countryOfResidence(JsonField.of(countryOfResidence))
-
-        /**
-         * Sets [Builder.countryOfResidence] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.countryOfResidence] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
-            this.countryOfResidence = countryOfResidence
-        }
 
         /** The email of the beneficiary */
         fun email(email: String) = email(JsonField.of(email))
@@ -357,6 +358,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
+         * .countryOfResidence()
          * .fullName()
          * ```
          *
@@ -365,10 +367,10 @@ private constructor(
         fun build(): PkrBeneficiary =
             PkrBeneficiary(
                 checkRequired("beneficiaryType", beneficiaryType),
+                checkRequired("countryOfResidence", countryOfResidence),
                 checkRequired("fullName", fullName),
                 address,
                 birthDate,
-                countryOfResidence,
                 email,
                 nationality,
                 phoneNumber,
@@ -384,10 +386,10 @@ private constructor(
         }
 
         beneficiaryType().validate()
+        countryOfResidence()
         fullName()
         address()?.validate()
         birthDate()
-        countryOfResidence()
         email()
         nationality()
         phoneNumber()
@@ -409,10 +411,10 @@ private constructor(
      */
     internal fun validity(): Int =
         (beneficiaryType.asKnown()?.validity() ?: 0) +
+            (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (fullName.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
-            (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
             (if (nationality.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
@@ -547,10 +549,10 @@ private constructor(
 
         return other is PkrBeneficiary &&
             beneficiaryType == other.beneficiaryType &&
+            countryOfResidence == other.countryOfResidence &&
             fullName == other.fullName &&
             address == other.address &&
             birthDate == other.birthDate &&
-            countryOfResidence == other.countryOfResidence &&
             email == other.email &&
             nationality == other.nationality &&
             phoneNumber == other.phoneNumber &&
@@ -560,10 +562,10 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             beneficiaryType,
+            countryOfResidence,
             fullName,
             address,
             birthDate,
-            countryOfResidence,
             email,
             nationality,
             phoneNumber,
@@ -574,5 +576,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PkrBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "PkrBeneficiary{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, fullName=$fullName, address=$address, birthDate=$birthDate, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }
