@@ -133,15 +133,15 @@ internal class CredentialServiceAsyncTest {
                         CredentialVerifyParams.AuthCredentialVerifyRequest
                             .EmailOtpCredentialVerifyRequest
                             .builder()
-                            .clientPublicKey(
-                                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                            )
                             .otp("123456")
                             .type(
                                 CredentialVerifyParams.AuthCredentialVerifyRequest
                                     .EmailOtpCredentialVerifyRequest
                                     .Type
                                     .EMAIL_OTP
+                            )
+                            .clientPublicKey(
+                                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
                             )
                             .build()
                     )
