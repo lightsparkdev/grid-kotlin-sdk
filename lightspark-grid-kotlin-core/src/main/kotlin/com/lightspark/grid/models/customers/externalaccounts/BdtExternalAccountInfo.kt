@@ -32,11 +32,11 @@ import java.util.Objects
 class BdtExternalAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val accountNumber: JsonField<String>,
     private val accountType: JsonField<BdtAccountInfo.AccountType>,
     private val paymentRails: JsonField<List<BdtAccountInfo.PaymentRail>>,
-    private val phoneNumber: JsonField<String>,
+    private val accountNumber: JsonField<String>,
     private val branchCode: JsonField<String>,
+    private val phoneNumber: JsonField<String>,
     private val swiftCode: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -44,31 +44,31 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("accountNumber")
-        @ExcludeMissing
-        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<BdtAccountInfo.AccountType> = JsonMissing.of(),
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<BdtAccountInfo.PaymentRail>> = JsonMissing.of(),
-        @JsonProperty("phoneNumber")
+        @JsonProperty("accountNumber")
         @ExcludeMissing
-        phoneNumber: JsonField<String> = JsonMissing.of(),
+        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("branchCode")
         @ExcludeMissing
         branchCode: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("swiftCode") @ExcludeMissing swiftCode: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
     ) : this(
-        accountNumber,
         accountType,
         paymentRails,
-        phoneNumber,
+        accountNumber,
         branchCode,
+        phoneNumber,
         swiftCode,
         beneficiary,
         mutableMapOf(),
@@ -76,21 +76,13 @@ private constructor(
 
     fun toBdtAccountInfo(): BdtAccountInfo =
         BdtAccountInfo.builder()
-            .accountNumber(accountNumber)
             .accountType(accountType)
             .paymentRails(paymentRails)
-            .phoneNumber(phoneNumber)
+            .accountNumber(accountNumber)
             .branchCode(branchCode)
+            .phoneNumber(phoneNumber)
             .swiftCode(swiftCode)
             .build()
-
-    /**
-     * The account number of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -105,12 +97,12 @@ private constructor(
     fun paymentRails(): List<BdtAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The phone number in international format
+     * The account number of the bank
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
+    fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
 
     /**
      * The branch code
@@ -119,6 +111,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun branchCode(): String? = branchCode.getNullable("branchCode")
+
+    /**
+     * The phone number in international format
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * The SWIFT/BIC code of the bank
@@ -133,15 +133,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
-
-    /**
-     * Returns the raw JSON value of [accountNumber].
-     *
-     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("accountNumber")
-    @ExcludeMissing
-    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [accountType].
@@ -162,11 +153,13 @@ private constructor(
     fun _paymentRails(): JsonField<List<BdtAccountInfo.PaymentRail>> = paymentRails
 
     /**
-     * Returns the raw JSON value of [phoneNumber].
+     * Returns the raw JSON value of [accountNumber].
      *
-     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
+    @JsonProperty("accountNumber")
+    @ExcludeMissing
+    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [branchCode].
@@ -174,6 +167,13 @@ private constructor(
      * Unlike [branchCode], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("branchCode") @ExcludeMissing fun _branchCode(): JsonField<String> = branchCode
+
+    /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
 
     /**
      * Returns the raw JSON value of [swiftCode].
@@ -210,10 +210,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
          * .paymentRails()
-         * .phoneNumber()
          * .beneficiary()
          * ```
          */
@@ -223,38 +221,24 @@ private constructor(
     /** A builder for [BdtExternalAccountInfo]. */
     class Builder internal constructor() {
 
-        private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<BdtAccountInfo.AccountType>? = null
         private var paymentRails: JsonField<MutableList<BdtAccountInfo.PaymentRail>>? = null
-        private var phoneNumber: JsonField<String>? = null
+        private var accountNumber: JsonField<String> = JsonMissing.of()
         private var branchCode: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var swiftCode: JsonField<String> = JsonMissing.of()
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(bdtExternalAccountInfo: BdtExternalAccountInfo) = apply {
-            accountNumber = bdtExternalAccountInfo.accountNumber
             accountType = bdtExternalAccountInfo.accountType
             paymentRails = bdtExternalAccountInfo.paymentRails.map { it.toMutableList() }
-            phoneNumber = bdtExternalAccountInfo.phoneNumber
+            accountNumber = bdtExternalAccountInfo.accountNumber
             branchCode = bdtExternalAccountInfo.branchCode
+            phoneNumber = bdtExternalAccountInfo.phoneNumber
             swiftCode = bdtExternalAccountInfo.swiftCode
             beneficiary = bdtExternalAccountInfo.beneficiary
             additionalProperties = bdtExternalAccountInfo.additionalProperties.toMutableMap()
-        }
-
-        /** The account number of the bank */
-        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
-
-        /**
-         * Sets [Builder.accountNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun accountNumber(accountNumber: JsonField<String>) = apply {
-            this.accountNumber = accountNumber
         }
 
         fun accountType(accountType: BdtAccountInfo.AccountType) =
@@ -297,17 +281,19 @@ private constructor(
                 }
         }
 
-        /** The phone number in international format */
-        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+        /** The account number of the bank */
+        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
 
         /**
-         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         * Sets [Builder.accountNumber] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
+        fun accountNumber(accountNumber: JsonField<String>) = apply {
+            this.accountNumber = accountNumber
+        }
 
         /** The branch code */
         fun branchCode(branchCode: String) = branchCode(JsonField.of(branchCode))
@@ -320,6 +306,18 @@ private constructor(
          * value.
          */
         fun branchCode(branchCode: JsonField<String>) = apply { this.branchCode = branchCode }
+
+        /** The phone number in international format */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
         /** The SWIFT/BIC code of the bank */
         fun swiftCode(swiftCode: String) = swiftCode(JsonField.of(swiftCode))
@@ -397,10 +395,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
          * .paymentRails()
-         * .phoneNumber()
          * .beneficiary()
          * ```
          *
@@ -408,11 +404,11 @@ private constructor(
          */
         fun build(): BdtExternalAccountInfo =
             BdtExternalAccountInfo(
-                checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                checkRequired("phoneNumber", phoneNumber),
+                accountNumber,
                 branchCode,
+                phoneNumber,
                 swiftCode,
                 checkRequired("beneficiary", beneficiary),
                 additionalProperties.toMutableMap(),
@@ -426,11 +422,11 @@ private constructor(
             return@apply
         }
 
-        accountNumber()
         accountType().validate()
         paymentRails().forEach { it.validate() }
-        phoneNumber()
+        accountNumber()
         branchCode()
+        phoneNumber()
         swiftCode()
         beneficiary().validate()
         validated = true
@@ -450,11 +446,11 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountNumber.asKnown() == null) 0 else 1) +
-            (accountType.asKnown()?.validity() ?: 0) +
+        (accountType.asKnown()?.validity() ?: 0) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (phoneNumber.asKnown() == null) 0 else 1) +
+            (if (accountNumber.asKnown() == null) 0 else 1) +
             (if (branchCode.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (swiftCode.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0)
 
@@ -632,11 +628,11 @@ private constructor(
         }
 
         return other is BdtExternalAccountInfo &&
-            accountNumber == other.accountNumber &&
             accountType == other.accountType &&
             paymentRails == other.paymentRails &&
-            phoneNumber == other.phoneNumber &&
+            accountNumber == other.accountNumber &&
             branchCode == other.branchCode &&
+            phoneNumber == other.phoneNumber &&
             swiftCode == other.swiftCode &&
             beneficiary == other.beneficiary &&
             additionalProperties == other.additionalProperties
@@ -644,11 +640,11 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            accountNumber,
             accountType,
             paymentRails,
-            phoneNumber,
+            accountNumber,
             branchCode,
+            phoneNumber,
             swiftCode,
             beneficiary,
             additionalProperties,
@@ -658,5 +654,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BdtExternalAccountInfo{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, phoneNumber=$phoneNumber, branchCode=$branchCode, swiftCode=$swiftCode, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+        "BdtExternalAccountInfo{accountType=$accountType, paymentRails=$paymentRails, accountNumber=$accountNumber, branchCode=$branchCode, phoneNumber=$phoneNumber, swiftCode=$swiftCode, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
 }

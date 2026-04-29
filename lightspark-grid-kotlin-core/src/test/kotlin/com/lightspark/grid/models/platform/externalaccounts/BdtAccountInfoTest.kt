@@ -13,20 +13,20 @@ internal class BdtAccountInfoTest {
     fun create() {
         val bdtAccountInfo =
             BdtAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()
 
-        assertThat(bdtAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtAccountInfo.accountType()).isEqualTo(BdtAccountInfo.AccountType.BDT_ACCOUNT)
         assertThat(bdtAccountInfo.paymentRails())
             .containsExactly(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(bdtAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(bdtAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtAccountInfo.branchCode()).isEqualTo("21029")
+        assertThat(bdtAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(bdtAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
     }
 
@@ -35,11 +35,11 @@ internal class BdtAccountInfoTest {
         val jsonMapper = jsonMapper()
         val bdtAccountInfo =
             BdtAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()
 

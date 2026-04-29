@@ -14,7 +14,6 @@ internal class BdtExternalAccountCreateInfoTest {
     fun create() {
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
                 .beneficiary(
                     BdtBeneficiary.builder()
@@ -37,12 +36,12 @@ internal class BdtExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()
 
-        assertThat(bdtExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.accountType())
             .isEqualTo(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
         assertThat(bdtExternalAccountCreateInfo.beneficiary())
@@ -69,8 +68,9 @@ internal class BdtExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(bdtExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(bdtExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.branchCode()).isEqualTo("21029")
+        assertThat(bdtExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(bdtExternalAccountCreateInfo.swiftCode()).isEqualTo("DEUTDEFF")
     }
 
@@ -79,7 +79,6 @@ internal class BdtExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
                 .beneficiary(
                     BdtBeneficiary.builder()
@@ -102,8 +101,9 @@ internal class BdtExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()
 
