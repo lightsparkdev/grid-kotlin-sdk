@@ -14,9 +14,7 @@ internal class PkrExternalAccountCreateInfoTest {
     fun create() {
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,14 +36,14 @@ internal class PkrExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(pkrExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(pkrExternalAccountCreateInfo.accountType())
             .isEqualTo(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(pkrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -70,8 +68,10 @@ internal class PkrExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(pkrExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(pkrExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
+        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(pkrExternalAccountCreateInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
+        assertThat(pkrExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -79,9 +79,7 @@ internal class PkrExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -103,8 +101,10 @@ internal class PkrExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedPkrExternalAccountCreateInfo =

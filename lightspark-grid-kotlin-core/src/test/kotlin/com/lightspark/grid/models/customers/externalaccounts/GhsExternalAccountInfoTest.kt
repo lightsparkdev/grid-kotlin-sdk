@@ -15,9 +15,9 @@ internal class GhsExternalAccountInfoTest {
     fun create() {
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()
@@ -42,11 +42,11 @@ internal class GhsExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.accountType())
             .isEqualTo(GhsAccountInfo.AccountType.GHS_ACCOUNT)
         assertThat(ghsExternalAccountInfo.paymentRails())
             .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(ghsExternalAccountInfo.beneficiary())
             .isEqualTo(
@@ -79,9 +79,9 @@ internal class GhsExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()

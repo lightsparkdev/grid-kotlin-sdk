@@ -14,7 +14,6 @@ internal class GhsExternalAccountCreateInfoTest {
     fun create() {
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
                 .beneficiary(
                     GhsBeneficiary.builder()
@@ -37,10 +36,10 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountCreateInfo.accountType())
             .isEqualTo(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
         assertThat(ghsExternalAccountCreateInfo.beneficiary())
@@ -67,6 +66,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .build()
                 )
             )
+        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -75,7 +75,6 @@ internal class GhsExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
                 .beneficiary(
                     GhsBeneficiary.builder()
@@ -98,6 +97,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 

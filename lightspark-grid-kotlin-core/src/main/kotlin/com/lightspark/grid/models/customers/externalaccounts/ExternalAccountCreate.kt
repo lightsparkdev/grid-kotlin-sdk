@@ -24,6 +24,7 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.AedExternalAccountCreateInfo
+import com.lightspark.grid.models.BdtBeneficiary
 import com.lightspark.grid.models.BdtExternalAccountCreateInfo
 import com.lightspark.grid.models.BrlExternalAccountCreateInfo
 import com.lightspark.grid.models.BwpExternalAccountCreateInfo
@@ -34,6 +35,7 @@ import com.lightspark.grid.models.EgpExternalAccountCreateInfo
 import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
+import com.lightspark.grid.models.GhsBeneficiary
 import com.lightspark.grid.models.GhsExternalAccountCreateInfo
 import com.lightspark.grid.models.GtqExternalAccountCreateInfo
 import com.lightspark.grid.models.HkdExternalAccountCreateInfo
@@ -47,6 +49,7 @@ import com.lightspark.grid.models.MxnExternalAccountCreateInfo
 import com.lightspark.grid.models.MyrExternalAccountCreateInfo
 import com.lightspark.grid.models.NgnExternalAccountCreateInfo
 import com.lightspark.grid.models.PhpExternalAccountCreateInfo
+import com.lightspark.grid.models.PkrBeneficiary
 import com.lightspark.grid.models.PkrExternalAccountCreateInfo
 import com.lightspark.grid.models.RwfExternalAccountCreateInfo
 import com.lightspark.grid.models.SgdExternalAccountCreateInfo
@@ -391,6 +394,54 @@ private constructor(
         fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofBdtAccount(bdtAccount))
 
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * BdtExternalAccountCreateInfo.builder()
+         *     .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun bdtAccountAccountInfo(beneficiary: BdtExternalAccountCreateInfo.Beneficiary) =
+            accountInfo(
+                BdtExternalAccountCreateInfo.builder()
+                    .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+                    .beneficiary(beneficiary)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with
+         * `BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun bdtAccountAccountInfo(individual: BdtBeneficiary) =
+            bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with
+         * `BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun bdtAccountAccountInfo(business: BusinessBeneficiary) =
+            bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessBdtAccountAccountInfo(legalName: String) =
+            bdtAccountAccountInfo(
+                BusinessBeneficiary.builder()
+                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                    .legalName(legalName)
+                    .build()
+            )
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
         fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofCopAccount(copAccount))
@@ -402,6 +453,54 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
         fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofGhsAccount(ghsAccount))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * GhsExternalAccountCreateInfo.builder()
+         *     .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun ghsAccountAccountInfo(beneficiary: GhsExternalAccountCreateInfo.Beneficiary) =
+            accountInfo(
+                GhsExternalAccountCreateInfo.builder()
+                    .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
+                    .beneficiary(beneficiary)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with
+         * `GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun ghsAccountAccountInfo(individual: GhsBeneficiary) =
+            ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with
+         * `GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun ghsAccountAccountInfo(business: BusinessBeneficiary) =
+            ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessGhsAccountAccountInfo(legalName: String) =
+            ghsAccountAccountInfo(
+                BusinessBeneficiary.builder()
+                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                    .legalName(legalName)
+                    .build()
+            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
         fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) =
@@ -418,6 +517,54 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
         fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofPkrAccount(pkrAccount))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PkrExternalAccountCreateInfo.builder()
+         *     .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun pkrAccountAccountInfo(beneficiary: PkrExternalAccountCreateInfo.Beneficiary) =
+            accountInfo(
+                PkrExternalAccountCreateInfo.builder()
+                    .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                    .beneficiary(beneficiary)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with
+         * `PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun pkrAccountAccountInfo(individual: PkrBeneficiary) =
+            pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with
+         * `PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun pkrAccountAccountInfo(business: BusinessBeneficiary) =
+            pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessPkrAccountAccountInfo(legalName: String) =
+            pkrAccountAccountInfo(
+                BusinessBeneficiary.builder()
+                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                    .legalName(legalName)
+                    .build()
+            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofSparkWallet(sparkWallet)`. */
         fun accountInfo(sparkWallet: SparkWalletInfo) =

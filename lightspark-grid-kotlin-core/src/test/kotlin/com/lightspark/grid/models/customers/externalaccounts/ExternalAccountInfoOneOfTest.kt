@@ -3872,11 +3872,11 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofBdtAccount() {
         val bdtAccount =
             BdtExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
                     BdtBeneficiary.builder()
@@ -3953,11 +3953,11 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofBdtAccount(
                 BdtExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                     .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .phoneNumber("+1234567890")
+                    .accountNumber("x")
                     .branchCode("21029")
+                    .phoneNumber("+1234567890")
                     .swiftCode("DEUTDEFF")
                     .beneficiary(
                         BdtBeneficiary.builder()
@@ -4246,9 +4246,9 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofGhsAccount() {
         val ghsAccount =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()
@@ -4325,9 +4325,9 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGhsAccount(
                 GhsExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
                     .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .accountNumber("x")
                     .phoneNumber("+1234567890")
                     .beneficiary(
                         GhsBeneficiary.builder()
@@ -4726,12 +4726,12 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofPkrAccount() {
         val pkrAccount =
             PkrExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -4807,12 +4807,12 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPkrAccount(
                 PkrExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                    .bankName("x")
                     .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .phoneNumber("+1234567890")
+                    .accountNumber("x")
+                    .bankName("x")
                     .iban("PK36SCBL0000001123456702")
+                    .phoneNumber("+1234567890")
                     .beneficiary(
                         PkrBeneficiary.builder()
                             .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)

@@ -15,11 +15,11 @@ internal class BdtExternalAccountInfoTest {
     fun create() {
         val bdtExternalAccountInfo =
             BdtExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
                     BdtBeneficiary.builder()
@@ -44,13 +44,13 @@ internal class BdtExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(bdtExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountInfo.accountType())
             .isEqualTo(BdtAccountInfo.AccountType.BDT_ACCOUNT)
         assertThat(bdtExternalAccountInfo.paymentRails())
             .containsExactly(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(bdtExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(bdtExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountInfo.branchCode()).isEqualTo("21029")
+        assertThat(bdtExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(bdtExternalAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
         assertThat(bdtExternalAccountInfo.beneficiary())
             .isEqualTo(
@@ -83,11 +83,11 @@ internal class BdtExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val bdtExternalAccountInfo =
             BdtExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
                 .branchCode("21029")
+                .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
                     BdtBeneficiary.builder()
