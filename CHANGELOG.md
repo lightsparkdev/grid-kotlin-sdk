@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.8.0 (2026-04-30)
+
+Full Changelog: [v1.7.1...v1.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.1...v1.8.0)
+
+### Features
+
+* **api:** add pagination to external accounts list method ([fe9a790](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fe9a790d1c441a9b43d2fcb7f582f246c8289e84))
+
+
+### Bug Fixes
+
+* **types:** make accountNumber/phoneNumber/bankName optional in BDT/GHS/PKR account models ([2430c1d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2430c1d98c1cef99f36a7fac4bf359ab670e8625))
+* **types:** remove bankName, require countryOfResidence, update BDT/GTQ field optionality ([8528425](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8528425a1497e59d7d77338163ae2bd38befd221))
+
 ## 1.7.1 (2026-04-28)
 
 Full Changelog: [v1.7.0...v1.7.1](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.0...v1.7.1)
