@@ -23,11 +23,11 @@ private constructor(
     private val beneficiaryType: JsonField<BeneficiaryType>,
     private val countryOfResidence: JsonField<String>,
     private val fullName: JsonField<String>,
-    private val phoneNumber: JsonField<String>,
     private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
     private val email: JsonField<String>,
     private val nationality: JsonField<String>,
+    private val phoneNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -40,24 +40,24 @@ private constructor(
         @ExcludeMissing
         countryOfResidence: JsonField<String> = JsonMissing.of(),
         @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("phoneNumber")
-        @ExcludeMissing
-        phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("nationality")
         @ExcludeMissing
         nationality: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
         countryOfResidence,
         fullName,
-        phoneNumber,
         address,
         birthDate,
         email,
         nationality,
+        phoneNumber,
         mutableMapOf(),
     )
 
@@ -82,14 +82,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun fullName(): String = fullName.getRequired("fullName")
-
-    /**
-     * The phone number of the beneficiary
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -122,6 +114,14 @@ private constructor(
     fun nationality(): String? = nationality.getNullable("nationality")
 
     /**
+     * The phone number of the beneficiary
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+    /**
      * Returns the raw JSON value of [beneficiaryType].
      *
      * Unlike [beneficiaryType], this method doesn't throw if the JSON field has an unexpected type.
@@ -146,13 +146,6 @@ private constructor(
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
-
-    /**
-     * Returns the raw JSON value of [phoneNumber].
-     *
-     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
 
     /**
      * Returns the raw JSON value of [address].
@@ -182,6 +175,13 @@ private constructor(
      */
     @JsonProperty("nationality") @ExcludeMissing fun _nationality(): JsonField<String> = nationality
 
+    /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -204,7 +204,6 @@ private constructor(
          * .beneficiaryType()
          * .countryOfResidence()
          * .fullName()
-         * .phoneNumber()
          * ```
          */
         fun builder() = Builder()
@@ -216,22 +215,22 @@ private constructor(
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
         private var countryOfResidence: JsonField<String>? = null
         private var fullName: JsonField<String>? = null
-        private var phoneNumber: JsonField<String>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(gtqBeneficiary: GtqBeneficiary) = apply {
             beneficiaryType = gtqBeneficiary.beneficiaryType
             countryOfResidence = gtqBeneficiary.countryOfResidence
             fullName = gtqBeneficiary.fullName
-            phoneNumber = gtqBeneficiary.phoneNumber
             address = gtqBeneficiary.address
             birthDate = gtqBeneficiary.birthDate
             email = gtqBeneficiary.email
             nationality = gtqBeneficiary.nationality
+            phoneNumber = gtqBeneficiary.phoneNumber
             additionalProperties = gtqBeneficiary.additionalProperties.toMutableMap()
         }
 
@@ -274,18 +273,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
-
-        /** The phone number of the beneficiary */
-        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
-
-        /**
-         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
         fun address(address: Address) = address(JsonField.of(address))
 
@@ -332,6 +319,18 @@ private constructor(
          */
         fun nationality(nationality: JsonField<String>) = apply { this.nationality = nationality }
 
+        /** The phone number of the beneficiary */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -361,7 +360,6 @@ private constructor(
          * .beneficiaryType()
          * .countryOfResidence()
          * .fullName()
-         * .phoneNumber()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -371,11 +369,11 @@ private constructor(
                 checkRequired("beneficiaryType", beneficiaryType),
                 checkRequired("countryOfResidence", countryOfResidence),
                 checkRequired("fullName", fullName),
-                checkRequired("phoneNumber", phoneNumber),
                 address,
                 birthDate,
                 email,
                 nationality,
+                phoneNumber,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -390,11 +388,11 @@ private constructor(
         beneficiaryType().validate()
         countryOfResidence()
         fullName()
-        phoneNumber()
         address()?.validate()
         birthDate()
         email()
         nationality()
+        phoneNumber()
         validated = true
     }
 
@@ -415,11 +413,11 @@ private constructor(
         (beneficiaryType.asKnown()?.validity() ?: 0) +
             (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (fullName.asKnown() == null) 0 else 1) +
-            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
-            (if (nationality.asKnown() == null) 0 else 1)
+            (if (nationality.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1)
 
     class BeneficiaryType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -553,11 +551,11 @@ private constructor(
             beneficiaryType == other.beneficiaryType &&
             countryOfResidence == other.countryOfResidence &&
             fullName == other.fullName &&
-            phoneNumber == other.phoneNumber &&
             address == other.address &&
             birthDate == other.birthDate &&
             email == other.email &&
             nationality == other.nationality &&
+            phoneNumber == other.phoneNumber &&
             additionalProperties == other.additionalProperties
     }
 
@@ -566,11 +564,11 @@ private constructor(
             beneficiaryType,
             countryOfResidence,
             fullName,
-            phoneNumber,
             address,
             birthDate,
             email,
             nationality,
+            phoneNumber,
             additionalProperties,
         )
     }
@@ -578,5 +576,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GtqBeneficiary{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, fullName=$fullName, phoneNumber=$phoneNumber, address=$address, birthDate=$birthDate, email=$email, nationality=$nationality, additionalProperties=$additionalProperties}"
+        "GtqBeneficiary{beneficiaryType=$beneficiaryType, countryOfResidence=$countryOfResidence, fullName=$fullName, address=$address, birthDate=$birthDate, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

@@ -13,18 +13,16 @@ internal class GhsAccountInfoTest {
     fun create() {
         val ghsAccountInfo =
             GhsAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(ghsAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsAccountInfo.accountType()).isEqualTo(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-        assertThat(ghsAccountInfo.bankName()).isEqualTo("x")
         assertThat(ghsAccountInfo.paymentRails())
             .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(ghsAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -33,10 +31,9 @@ internal class GhsAccountInfoTest {
         val jsonMapper = jsonMapper()
         val ghsAccountInfo =
             GhsAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .build()
 

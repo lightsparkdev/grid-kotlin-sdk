@@ -15,14 +15,14 @@ internal class GhsExternalAccountInfoTest {
     fun create() {
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -35,7 +35,6 @@ internal class GhsExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -43,18 +42,18 @@ internal class GhsExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.accountType())
             .isEqualTo(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-        assertThat(ghsExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.paymentRails())
             .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(ghsExternalAccountInfo.beneficiary())
             .isEqualTo(
                 GhsExternalAccountInfo.Beneficiary.ofIndividual(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -67,7 +66,6 @@ internal class GhsExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -81,14 +79,14 @@ internal class GhsExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -101,7 +99,6 @@ internal class GhsExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")

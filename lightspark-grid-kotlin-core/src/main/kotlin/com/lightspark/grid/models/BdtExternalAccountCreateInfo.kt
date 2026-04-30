@@ -30,10 +30,9 @@ import java.util.Objects
 class BdtExternalAccountCreateInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
-    private val bankName: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
+    private val accountNumber: JsonField<String>,
     private val branchCode: JsonField<String>,
     private val phoneNumber: JsonField<String>,
     private val swiftCode: JsonField<String>,
@@ -42,16 +41,15 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("accountNumber")
-        @ExcludeMissing
-        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<AccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+        @JsonProperty("accountNumber")
+        @ExcludeMissing
+        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("branchCode")
         @ExcludeMissing
         branchCode: JsonField<String> = JsonMissing.of(),
@@ -60,23 +58,14 @@ private constructor(
         phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("swiftCode") @ExcludeMissing swiftCode: JsonField<String> = JsonMissing.of(),
     ) : this(
-        accountNumber,
         accountType,
-        bankName,
         beneficiary,
+        accountNumber,
         branchCode,
         phoneNumber,
         swiftCode,
         mutableMapOf(),
     )
-
-    /**
-     * The account number of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -85,34 +74,34 @@ private constructor(
     fun accountType(): AccountType = accountType.getRequired("accountType")
 
     /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
-
-    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
     /**
+     * The account number of the bank
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
+
+    /**
      * The branch code
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun branchCode(): String = branchCode.getRequired("branchCode")
+    fun branchCode(): String? = branchCode.getNullable("branchCode")
 
     /**
      * The phone number in international format
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * The SWIFT/BIC code of the bank
@@ -121,15 +110,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun swiftCode(): String? = swiftCode.getNullable("swiftCode")
-
-    /**
-     * Returns the raw JSON value of [accountNumber].
-     *
-     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("accountNumber")
-    @ExcludeMissing
-    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [accountType].
@@ -141,13 +121,6 @@ private constructor(
     fun _accountType(): JsonField<AccountType> = accountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [beneficiary].
      *
      * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
@@ -155,6 +128,15 @@ private constructor(
     @JsonProperty("beneficiary")
     @ExcludeMissing
     fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+
+    /**
+     * Returns the raw JSON value of [accountNumber].
+     *
+     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("accountNumber")
+    @ExcludeMissing
+    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [branchCode].
@@ -196,12 +178,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
-         * .branchCode()
-         * .phoneNumber()
          * ```
          */
         fun builder() = Builder()
@@ -210,38 +188,22 @@ private constructor(
     /** A builder for [BdtExternalAccountCreateInfo]. */
     class Builder internal constructor() {
 
-        private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
-        private var branchCode: JsonField<String>? = null
-        private var phoneNumber: JsonField<String>? = null
+        private var accountNumber: JsonField<String> = JsonMissing.of()
+        private var branchCode: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var swiftCode: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(bdtExternalAccountCreateInfo: BdtExternalAccountCreateInfo) = apply {
-            accountNumber = bdtExternalAccountCreateInfo.accountNumber
             accountType = bdtExternalAccountCreateInfo.accountType
-            bankName = bdtExternalAccountCreateInfo.bankName
             beneficiary = bdtExternalAccountCreateInfo.beneficiary
+            accountNumber = bdtExternalAccountCreateInfo.accountNumber
             branchCode = bdtExternalAccountCreateInfo.branchCode
             phoneNumber = bdtExternalAccountCreateInfo.phoneNumber
             swiftCode = bdtExternalAccountCreateInfo.swiftCode
             additionalProperties = bdtExternalAccountCreateInfo.additionalProperties.toMutableMap()
-        }
-
-        /** The account number of the bank */
-        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
-
-        /**
-         * Sets [Builder.accountNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun accountNumber(accountNumber: JsonField<String>) = apply {
-            this.accountNumber = accountNumber
         }
 
         fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
@@ -256,17 +218,6 @@ private constructor(
         fun accountType(accountType: JsonField<AccountType>) = apply {
             this.accountType = accountType
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -284,23 +235,6 @@ private constructor(
         /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
         fun beneficiary(individual: BdtBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [beneficiary] with the following:
-         * ```kotlin
-         * BdtBeneficiary.builder()
-         *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualBeneficiary(fullName: String) =
-            beneficiary(
-                BdtBeneficiary.builder()
-                    .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
 
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
@@ -322,6 +256,20 @@ private constructor(
                     .legalName(legalName)
                     .build()
             )
+
+        /** The account number of the bank */
+        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
+
+        /**
+         * Sets [Builder.accountNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun accountNumber(accountNumber: JsonField<String>) = apply {
+            this.accountNumber = accountNumber
+        }
 
         /** The branch code */
         fun branchCode(branchCode: String) = branchCode(JsonField.of(branchCode))
@@ -385,24 +333,19 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
-         * .branchCode()
-         * .phoneNumber()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo(
-                checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
-                checkRequired("bankName", bankName),
                 checkRequired("beneficiary", beneficiary),
-                checkRequired("branchCode", branchCode),
-                checkRequired("phoneNumber", phoneNumber),
+                accountNumber,
+                branchCode,
+                phoneNumber,
                 swiftCode,
                 additionalProperties.toMutableMap(),
             )
@@ -415,10 +358,9 @@ private constructor(
             return@apply
         }
 
-        accountNumber()
         accountType().validate()
-        bankName()
         beneficiary().validate()
+        accountNumber()
         branchCode()
         phoneNumber()
         swiftCode()
@@ -439,10 +381,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountNumber.asKnown() == null) 0 else 1) +
-            (accountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
+        (accountType.asKnown()?.validity() ?: 0) +
             (beneficiary.asKnown()?.validity() ?: 0) +
+            (if (accountNumber.asKnown() == null) 0 else 1) +
             (if (branchCode.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (swiftCode.asKnown() == null) 0 else 1)
@@ -743,10 +684,9 @@ private constructor(
         }
 
         return other is BdtExternalAccountCreateInfo &&
-            accountNumber == other.accountNumber &&
             accountType == other.accountType &&
-            bankName == other.bankName &&
             beneficiary == other.beneficiary &&
+            accountNumber == other.accountNumber &&
             branchCode == other.branchCode &&
             phoneNumber == other.phoneNumber &&
             swiftCode == other.swiftCode &&
@@ -755,10 +695,9 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            accountNumber,
             accountType,
-            bankName,
             beneficiary,
+            accountNumber,
             branchCode,
             phoneNumber,
             swiftCode,
@@ -769,5 +708,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BdtExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, branchCode=$branchCode, phoneNumber=$phoneNumber, swiftCode=$swiftCode, additionalProperties=$additionalProperties}"
+        "BdtExternalAccountCreateInfo{accountType=$accountType, beneficiary=$beneficiary, accountNumber=$accountNumber, branchCode=$branchCode, phoneNumber=$phoneNumber, swiftCode=$swiftCode, additionalProperties=$additionalProperties}"
 }

@@ -89,7 +89,11 @@ internal class ExternalAccountServiceTest {
 
         val externalAccounts =
             externalAccountService.list(
-                ExternalAccountListParams.builder().currency("currency").build()
+                ExternalAccountListParams.builder()
+                    .currency("currency")
+                    .cursor("cursor")
+                    .limit(1L)
+                    .build()
             )
 
         externalAccounts.validate()

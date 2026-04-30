@@ -15,15 +15,16 @@ internal class PkrExternalAccountInfoTest {
     fun create() {
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -36,7 +37,6 @@ internal class PkrExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -44,19 +44,20 @@ internal class PkrExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(pkrExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(pkrExternalAccountInfo.accountType())
             .isEqualTo(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(pkrExternalAccountInfo.paymentRails())
             .containsExactly(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(pkrExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(pkrExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(pkrExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(pkrExternalAccountInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
+        assertThat(pkrExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(pkrExternalAccountInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountInfo.Beneficiary.ofIndividual(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -69,7 +70,6 @@ internal class PkrExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -83,15 +83,16 @@ internal class PkrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -104,7 +105,6 @@ internal class PkrExternalAccountInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")

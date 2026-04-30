@@ -13,21 +13,21 @@ internal class PkrAccountInfoTest {
     fun create() {
         val pkrAccountInfo =
             PkrAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(pkrAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(pkrAccountInfo.accountType()).isEqualTo(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrAccountInfo.bankName()).isEqualTo("x")
         assertThat(pkrAccountInfo.paymentRails())
             .containsExactly(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(pkrAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(pkrAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(pkrAccountInfo.bankName()).isEqualTo("x")
         assertThat(pkrAccountInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
+        assertThat(pkrAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -35,12 +35,12 @@ internal class PkrAccountInfoTest {
         val jsonMapper = jsonMapper()
         val pkrAccountInfo =
             PkrAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedPkrAccountInfo =

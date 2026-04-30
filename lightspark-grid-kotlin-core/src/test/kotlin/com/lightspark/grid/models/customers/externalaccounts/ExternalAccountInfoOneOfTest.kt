@@ -3872,16 +3872,16 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofBdtAccount() {
         val bdtAccount =
             BdtExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                .bankName("x")
-                .branchCode("21029")
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .branchCode("21029")
                 .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3894,7 +3894,6 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -3954,16 +3953,16 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofBdtAccount(
                 BdtExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                    .bankName("x")
-                    .branchCode("21029")
                     .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .accountNumber("x")
+                    .branchCode("21029")
                     .phoneNumber("+1234567890")
                     .swiftCode("DEUTDEFF")
                     .beneficiary(
                         BdtBeneficiary.builder()
                             .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3976,7 +3975,6 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
-                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4248,14 +4246,14 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofGhsAccount() {
         val ghsAccount =
             GhsExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
                 .phoneNumber("+1234567890")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4268,7 +4266,6 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4328,14 +4325,14 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofGhsAccount(
                 GhsExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
-                    .bankName("x")
                     .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .accountNumber("x")
                     .phoneNumber("+1234567890")
                     .beneficiary(
                         GhsBeneficiary.builder()
                             .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4348,7 +4345,6 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
-                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4373,14 +4369,12 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -4394,6 +4388,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()
@@ -4453,14 +4448,12 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("x")
                     .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                     .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
-                    .bankName("x")
                     .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
                         GtqBeneficiary.builder()
                             .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
-                            .phoneNumber("phoneNumber")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -4474,6 +4467,7 @@ internal class ExternalAccountInfoOneOfTest {
                             .birthDate("birthDate")
                             .email("email")
                             .nationality("nationality")
+                            .phoneNumber("phoneNumber")
                             .build()
                     )
                     .build()
@@ -4498,6 +4492,7 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     HtgBeneficiary.builder()
                         .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4510,7 +4505,6 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4576,6 +4570,7 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         HtgBeneficiary.builder()
                             .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4588,7 +4583,6 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
-                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4613,7 +4607,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .accountNumber("x")
                 .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                 .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .branchCode("21029")
                 .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .beneficiary(
@@ -4629,10 +4622,10 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .build()
@@ -4694,7 +4687,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .accountNumber("x")
                     .accountType(JmdAccountInfo.AccountType.JMD_ACCOUNT)
                     .bankAccountType(JmdAccountInfo.BankAccountType.CHECKING)
-                    .bankName("x")
                     .branchCode("21029")
                     .addPaymentRail(JmdAccountInfo.PaymentRail.BANK_TRANSFER)
                     .beneficiary(
@@ -4710,10 +4702,10 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .phoneNumber("phoneNumber")
                             .birthDate("birthDate")
-                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .build()
@@ -4734,15 +4726,16 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofPkrAccount() {
         val pkrAccount =
             PkrExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("x")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .phoneNumber("+1234567890")
+                .accountNumber("x")
+                .bankName("x")
                 .iban("PK36SCBL0000001123456702")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4755,7 +4748,6 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4815,15 +4807,16 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofPkrAccount(
                 PkrExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                    .bankName("x")
                     .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                    .phoneNumber("+1234567890")
+                    .accountNumber("x")
+                    .bankName("x")
                     .iban("PK36SCBL0000001123456702")
+                    .phoneNumber("+1234567890")
                     .beneficiary(
                         PkrBeneficiary.builder()
                             .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4836,7 +4829,6 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
-                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")

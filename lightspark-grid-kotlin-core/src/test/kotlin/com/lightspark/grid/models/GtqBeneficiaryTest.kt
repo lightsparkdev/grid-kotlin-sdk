@@ -17,7 +17,6 @@ internal class GtqBeneficiaryTest {
                 .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                 .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
-                .phoneNumber("phoneNumber")
                 .address(
                     Address.builder()
                         .country("US")
@@ -31,13 +30,13 @@ internal class GtqBeneficiaryTest {
                 .birthDate("birthDate")
                 .email("email")
                 .nationality("nationality")
+                .phoneNumber("phoneNumber")
                 .build()
 
         assertThat(gtqBeneficiary.beneficiaryType())
             .isEqualTo(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
         assertThat(gtqBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(gtqBeneficiary.fullName()).isEqualTo("fullName")
-        assertThat(gtqBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
         assertThat(gtqBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -52,6 +51,7 @@ internal class GtqBeneficiaryTest {
         assertThat(gtqBeneficiary.birthDate()).isEqualTo("birthDate")
         assertThat(gtqBeneficiary.email()).isEqualTo("email")
         assertThat(gtqBeneficiary.nationality()).isEqualTo("nationality")
+        assertThat(gtqBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
     }
 
     @Test
@@ -62,7 +62,6 @@ internal class GtqBeneficiaryTest {
                 .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                 .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
-                .phoneNumber("phoneNumber")
                 .address(
                     Address.builder()
                         .country("US")
@@ -76,6 +75,7 @@ internal class GtqBeneficiaryTest {
                 .birthDate("birthDate")
                 .email("email")
                 .nationality("nationality")
+                .phoneNumber("phoneNumber")
                 .build()
 
         val roundtrippedGtqBeneficiary =

@@ -32,63 +32,55 @@ import java.util.Objects
 class PkrExternalAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val accountNumber: JsonField<String>,
     private val accountType: JsonField<PkrAccountInfo.AccountType>,
-    private val bankName: JsonField<String>,
     private val paymentRails: JsonField<List<PkrAccountInfo.PaymentRail>>,
-    private val phoneNumber: JsonField<String>,
+    private val accountNumber: JsonField<String>,
+    private val bankName: JsonField<String>,
     private val iban: JsonField<String>,
+    private val phoneNumber: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("accountNumber")
-        @ExcludeMissing
-        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<PkrAccountInfo.AccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<PkrAccountInfo.PaymentRail>> = JsonMissing.of(),
+        @JsonProperty("accountNumber")
+        @ExcludeMissing
+        accountNumber: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("iban") @ExcludeMissing iban: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
     ) : this(
-        accountNumber,
         accountType,
-        bankName,
         paymentRails,
-        phoneNumber,
+        accountNumber,
+        bankName,
         iban,
+        phoneNumber,
         beneficiary,
         mutableMapOf(),
     )
 
     fun toPkrAccountInfo(): PkrAccountInfo =
         PkrAccountInfo.builder()
-            .accountNumber(accountNumber)
             .accountType(accountType)
-            .bankName(bankName)
             .paymentRails(paymentRails)
-            .phoneNumber(phoneNumber)
+            .accountNumber(accountNumber)
+            .bankName(bankName)
             .iban(iban)
+            .phoneNumber(phoneNumber)
             .build()
-
-    /**
-     * The account number of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountNumber(): String = accountNumber.getRequired("accountNumber")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -97,26 +89,26 @@ private constructor(
     fun accountType(): PkrAccountInfo.AccountType = accountType.getRequired("accountType")
 
     /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
-
-    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun paymentRails(): List<PkrAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
 
     /**
-     * The phone number in international format
+     * The account number of the bank
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
+    fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
+
+    /**
+     * The name of the bank
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun bankName(): String? = bankName.getNullable("bankName")
 
     /**
      * Pakistani IBAN (24 characters, starting with PK)
@@ -127,19 +119,18 @@ private constructor(
     fun iban(): String? = iban.getNullable("iban")
 
     /**
+     * The phone number in international format
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
-
-    /**
-     * Returns the raw JSON value of [accountNumber].
-     *
-     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("accountNumber")
-    @ExcludeMissing
-    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [accountType].
@@ -151,13 +142,6 @@ private constructor(
     fun _accountType(): JsonField<PkrAccountInfo.AccountType> = accountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [paymentRails].
      *
      * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected type.
@@ -167,11 +151,20 @@ private constructor(
     fun _paymentRails(): JsonField<List<PkrAccountInfo.PaymentRail>> = paymentRails
 
     /**
-     * Returns the raw JSON value of [phoneNumber].
+     * Returns the raw JSON value of [accountNumber].
      *
-     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
+    @JsonProperty("accountNumber")
+    @ExcludeMissing
+    fun _accountNumber(): JsonField<String> = accountNumber
+
+    /**
+     * Returns the raw JSON value of [bankName].
+     *
+     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
 
     /**
      * Returns the raw JSON value of [iban].
@@ -179,6 +172,13 @@ private constructor(
      * Unlike [iban], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("iban") @ExcludeMissing fun _iban(): JsonField<String> = iban
+
+    /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
 
     /**
      * Returns the raw JSON value of [beneficiary].
@@ -208,11 +208,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .paymentRails()
-         * .phoneNumber()
          * .beneficiary()
          * ```
          */
@@ -222,38 +219,24 @@ private constructor(
     /** A builder for [PkrExternalAccountInfo]. */
     class Builder internal constructor() {
 
-        private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<PkrAccountInfo.AccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var paymentRails: JsonField<MutableList<PkrAccountInfo.PaymentRail>>? = null
-        private var phoneNumber: JsonField<String>? = null
+        private var accountNumber: JsonField<String> = JsonMissing.of()
+        private var bankName: JsonField<String> = JsonMissing.of()
         private var iban: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(pkrExternalAccountInfo: PkrExternalAccountInfo) = apply {
-            accountNumber = pkrExternalAccountInfo.accountNumber
             accountType = pkrExternalAccountInfo.accountType
-            bankName = pkrExternalAccountInfo.bankName
             paymentRails = pkrExternalAccountInfo.paymentRails.map { it.toMutableList() }
-            phoneNumber = pkrExternalAccountInfo.phoneNumber
+            accountNumber = pkrExternalAccountInfo.accountNumber
+            bankName = pkrExternalAccountInfo.bankName
             iban = pkrExternalAccountInfo.iban
+            phoneNumber = pkrExternalAccountInfo.phoneNumber
             beneficiary = pkrExternalAccountInfo.beneficiary
             additionalProperties = pkrExternalAccountInfo.additionalProperties.toMutableMap()
-        }
-
-        /** The account number of the bank */
-        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
-
-        /**
-         * Sets [Builder.accountNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun accountNumber(accountNumber: JsonField<String>) = apply {
-            this.accountNumber = accountNumber
         }
 
         fun accountType(accountType: PkrAccountInfo.AccountType) =
@@ -269,17 +252,6 @@ private constructor(
         fun accountType(accountType: JsonField<PkrAccountInfo.AccountType>) = apply {
             this.accountType = accountType
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun paymentRails(paymentRails: List<PkrAccountInfo.PaymentRail>) =
             paymentRails(JsonField.of(paymentRails))
@@ -307,17 +279,30 @@ private constructor(
                 }
         }
 
-        /** The phone number in international format */
-        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+        /** The account number of the bank */
+        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
 
         /**
-         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         * Sets [Builder.accountNumber] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
+        fun accountNumber(accountNumber: JsonField<String>) = apply {
+            this.accountNumber = accountNumber
+        }
+
+        /** The name of the bank */
+        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+        /**
+         * Sets [Builder.bankName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         /** Pakistani IBAN (24 characters, starting with PK) */
         fun iban(iban: String) = iban(JsonField.of(iban))
@@ -329,6 +314,18 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun iban(iban: JsonField<String>) = apply { this.iban = iban }
+
+        /** The phone number in international format */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -346,23 +343,6 @@ private constructor(
         /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
         fun beneficiary(individual: PkrBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [beneficiary] with the following:
-         * ```kotlin
-         * PkrBeneficiary.builder()
-         *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualBeneficiary(fullName: String) =
-            beneficiary(
-                PkrBeneficiary.builder()
-                    .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
 
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
@@ -411,11 +391,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .paymentRails()
-         * .phoneNumber()
          * .beneficiary()
          * ```
          *
@@ -423,12 +400,12 @@ private constructor(
          */
         fun build(): PkrExternalAccountInfo =
             PkrExternalAccountInfo(
-                checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
-                checkRequired("bankName", bankName),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                checkRequired("phoneNumber", phoneNumber),
+                accountNumber,
+                bankName,
                 iban,
+                phoneNumber,
                 checkRequired("beneficiary", beneficiary),
                 additionalProperties.toMutableMap(),
             )
@@ -441,12 +418,12 @@ private constructor(
             return@apply
         }
 
-        accountNumber()
         accountType().validate()
-        bankName()
         paymentRails().forEach { it.validate() }
-        phoneNumber()
+        accountNumber()
+        bankName()
         iban()
+        phoneNumber()
         beneficiary().validate()
         validated = true
     }
@@ -465,12 +442,12 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountNumber.asKnown() == null) 0 else 1) +
-            (accountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
+        (accountType.asKnown()?.validity() ?: 0) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (phoneNumber.asKnown() == null) 0 else 1) +
+            (if (accountNumber.asKnown() == null) 0 else 1) +
+            (if (bankName.asKnown() == null) 0 else 1) +
             (if (iban.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0)
 
     @JsonDeserialize(using = Beneficiary.Deserializer::class)
@@ -647,24 +624,24 @@ private constructor(
         }
 
         return other is PkrExternalAccountInfo &&
-            accountNumber == other.accountNumber &&
             accountType == other.accountType &&
-            bankName == other.bankName &&
             paymentRails == other.paymentRails &&
-            phoneNumber == other.phoneNumber &&
+            accountNumber == other.accountNumber &&
+            bankName == other.bankName &&
             iban == other.iban &&
+            phoneNumber == other.phoneNumber &&
             beneficiary == other.beneficiary &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            accountNumber,
             accountType,
-            bankName,
             paymentRails,
-            phoneNumber,
+            accountNumber,
+            bankName,
             iban,
+            phoneNumber,
             beneficiary,
             additionalProperties,
         )
@@ -673,5 +650,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PkrExternalAccountInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, phoneNumber=$phoneNumber, iban=$iban, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+        "PkrExternalAccountInfo{accountType=$accountType, paymentRails=$paymentRails, accountNumber=$accountNumber, bankName=$bankName, iban=$iban, phoneNumber=$phoneNumber, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
 }
