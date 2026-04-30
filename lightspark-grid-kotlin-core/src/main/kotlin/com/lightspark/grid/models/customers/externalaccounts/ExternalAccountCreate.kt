@@ -70,7 +70,6 @@ class ExternalAccountCreate
 private constructor(
     private val accountInfo: JsonField<AccountInfo>,
     private val currency: JsonField<String>,
-    private val cryptoNetwork: JsonField<String>,
     private val customerId: JsonField<String>,
     private val defaultUmaDepositAccount: JsonField<Boolean>,
     private val platformAccountId: JsonField<String>,
@@ -83,9 +82,6 @@ private constructor(
         @ExcludeMissing
         accountInfo: JsonField<AccountInfo> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("cryptoNetwork")
-        @ExcludeMissing
-        cryptoNetwork: JsonField<String> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -98,7 +94,6 @@ private constructor(
     ) : this(
         accountInfo,
         currency,
-        cryptoNetwork,
         customerId,
         defaultUmaDepositAccount,
         platformAccountId,
@@ -121,17 +116,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun currency(): String = currency.getRequired("currency")
-
-    /**
-     * The blockchain network for this external account. Required when the account is a
-     * cryptocurrency wallet. Specifies which network the wallet is on. Example values:
-     * SOLANA_MAINNET, SOLANA_DEVNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET,
-     * BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun cryptoNetwork(): String? = cryptoNetwork.getNullable("cryptoNetwork")
 
     /**
      * The ID of the customer for whom to create the external account. If not provided, the external
@@ -181,15 +165,6 @@ private constructor(
      * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
-
-    /**
-     * Returns the raw JSON value of [cryptoNetwork].
-     *
-     * Unlike [cryptoNetwork], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cryptoNetwork")
-    @ExcludeMissing
-    fun _cryptoNetwork(): JsonField<String> = cryptoNetwork
 
     /**
      * Returns the raw JSON value of [customerId].
@@ -249,7 +224,6 @@ private constructor(
 
         private var accountInfo: JsonField<AccountInfo>? = null
         private var currency: JsonField<String>? = null
-        private var cryptoNetwork: JsonField<String> = JsonMissing.of()
         private var customerId: JsonField<String> = JsonMissing.of()
         private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
@@ -258,7 +232,6 @@ private constructor(
         internal fun from(externalAccountCreate: ExternalAccountCreate) = apply {
             accountInfo = externalAccountCreate.accountInfo
             currency = externalAccountCreate.currency
-            cryptoNetwork = externalAccountCreate.cryptoNetwork
             customerId = externalAccountCreate.customerId
             defaultUmaDepositAccount = externalAccountCreate.defaultUmaDepositAccount
             platformAccountId = externalAccountCreate.platformAccountId
@@ -611,25 +584,6 @@ private constructor(
         fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
         /**
-         * The blockchain network for this external account. Required when the account is a
-         * cryptocurrency wallet. Specifies which network the wallet is on. Example values:
-         * SOLANA_MAINNET, SOLANA_DEVNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET,
-         * BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-         */
-        fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
-
-        /**
-         * Sets [Builder.cryptoNetwork] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cryptoNetwork] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun cryptoNetwork(cryptoNetwork: JsonField<String>) = apply {
-            this.cryptoNetwork = cryptoNetwork
-        }
-
-        /**
          * The ID of the customer for whom to create the external account. If not provided, the
          * external account will be created on behalf of the platform.
          */
@@ -721,7 +675,6 @@ private constructor(
             ExternalAccountCreate(
                 checkRequired("accountInfo", accountInfo),
                 checkRequired("currency", currency),
-                cryptoNetwork,
                 customerId,
                 defaultUmaDepositAccount,
                 platformAccountId,
@@ -738,7 +691,6 @@ private constructor(
 
         accountInfo().validate()
         currency()
-        cryptoNetwork()
         customerId()
         defaultUmaDepositAccount()
         platformAccountId()
@@ -761,7 +713,6 @@ private constructor(
     internal fun validity(): Int =
         (accountInfo.asKnown()?.validity() ?: 0) +
             (if (currency.asKnown() == null) 0 else 1) +
-            (if (cryptoNetwork.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
@@ -2138,7 +2089,6 @@ private constructor(
         return other is ExternalAccountCreate &&
             accountInfo == other.accountInfo &&
             currency == other.currency &&
-            cryptoNetwork == other.cryptoNetwork &&
             customerId == other.customerId &&
             defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
             platformAccountId == other.platformAccountId &&
@@ -2149,7 +2099,6 @@ private constructor(
         Objects.hash(
             accountInfo,
             currency,
-            cryptoNetwork,
             customerId,
             defaultUmaDepositAccount,
             platformAccountId,
@@ -2160,5 +2109,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccountCreate{accountInfo=$accountInfo, currency=$currency, cryptoNetwork=$cryptoNetwork, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "ExternalAccountCreate{accountInfo=$accountInfo, currency=$currency, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }

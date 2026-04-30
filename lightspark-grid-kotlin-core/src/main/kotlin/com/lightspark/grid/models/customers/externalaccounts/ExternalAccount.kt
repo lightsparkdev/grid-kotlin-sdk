@@ -26,7 +26,6 @@ private constructor(
     private val status: JsonField<Status>,
     private val beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus>,
     private val beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData>,
-    private val cryptoNetwork: JsonField<String>,
     private val customerId: JsonField<String>,
     private val defaultUmaDepositAccount: JsonField<Boolean>,
     private val platformAccountId: JsonField<String>,
@@ -47,9 +46,6 @@ private constructor(
         @JsonProperty("beneficiaryVerifiedData")
         @ExcludeMissing
         beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of(),
-        @JsonProperty("cryptoNetwork")
-        @ExcludeMissing
-        cryptoNetwork: JsonField<String> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -66,7 +62,6 @@ private constructor(
         status,
         beneficiaryVerificationStatus,
         beneficiaryVerifiedData,
-        cryptoNetwork,
         customerId,
         defaultUmaDepositAccount,
         platformAccountId,
@@ -123,17 +118,6 @@ private constructor(
      */
     fun beneficiaryVerifiedData(): BeneficiaryVerifiedData? =
         beneficiaryVerifiedData.getNullable("beneficiaryVerifiedData")
-
-    /**
-     * The blockchain network for this external account, if applicable. Present when the account is
-     * a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET, ETHEREUM_MAINNET,
-     * ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET,
-     * LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun cryptoNetwork(): String? = cryptoNetwork.getNullable("cryptoNetwork")
 
     /**
      * The customer this account is tied to, or null if the account is on behalf of the platform.
@@ -217,15 +201,6 @@ private constructor(
     fun _beneficiaryVerifiedData(): JsonField<BeneficiaryVerifiedData> = beneficiaryVerifiedData
 
     /**
-     * Returns the raw JSON value of [cryptoNetwork].
-     *
-     * Unlike [cryptoNetwork], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cryptoNetwork")
-    @ExcludeMissing
-    fun _cryptoNetwork(): JsonField<String> = cryptoNetwork
-
-    /**
      * Returns the raw JSON value of [customerId].
      *
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -290,7 +265,6 @@ private constructor(
         private var beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus> =
             JsonMissing.of()
         private var beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of()
-        private var cryptoNetwork: JsonField<String> = JsonMissing.of()
         private var customerId: JsonField<String> = JsonMissing.of()
         private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
@@ -303,7 +277,6 @@ private constructor(
             status = externalAccount.status
             beneficiaryVerificationStatus = externalAccount.beneficiaryVerificationStatus
             beneficiaryVerifiedData = externalAccount.beneficiaryVerifiedData
-            cryptoNetwork = externalAccount.cryptoNetwork
             customerId = externalAccount.customerId
             defaultUmaDepositAccount = externalAccount.defaultUmaDepositAccount
             platformAccountId = externalAccount.platformAccountId
@@ -657,25 +630,6 @@ private constructor(
             }
 
         /**
-         * The blockchain network for this external account, if applicable. Present when the account
-         * is a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
-         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-         */
-        fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
-
-        /**
-         * Sets [Builder.cryptoNetwork] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cryptoNetwork] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun cryptoNetwork(cryptoNetwork: JsonField<String>) = apply {
-            this.cryptoNetwork = cryptoNetwork
-        }
-
-        /**
          * The customer this account is tied to, or null if the account is on behalf of the
          * platform.
          */
@@ -769,7 +723,6 @@ private constructor(
                 checkRequired("status", status),
                 beneficiaryVerificationStatus,
                 beneficiaryVerifiedData,
-                cryptoNetwork,
                 customerId,
                 defaultUmaDepositAccount,
                 platformAccountId,
@@ -790,7 +743,6 @@ private constructor(
         status().validate()
         beneficiaryVerificationStatus()?.validate()
         beneficiaryVerifiedData()?.validate()
-        cryptoNetwork()
         customerId()
         defaultUmaDepositAccount()
         platformAccountId()
@@ -817,7 +769,6 @@ private constructor(
             (status.asKnown()?.validity() ?: 0) +
             (beneficiaryVerificationStatus.asKnown()?.validity() ?: 0) +
             (beneficiaryVerifiedData.asKnown()?.validity() ?: 0) +
-            (if (cryptoNetwork.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
@@ -1132,7 +1083,6 @@ private constructor(
             status == other.status &&
             beneficiaryVerificationStatus == other.beneficiaryVerificationStatus &&
             beneficiaryVerifiedData == other.beneficiaryVerifiedData &&
-            cryptoNetwork == other.cryptoNetwork &&
             customerId == other.customerId &&
             defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
             platformAccountId == other.platformAccountId &&
@@ -1147,7 +1097,6 @@ private constructor(
             status,
             beneficiaryVerificationStatus,
             beneficiaryVerifiedData,
-            cryptoNetwork,
             customerId,
             defaultUmaDepositAccount,
             platformAccountId,
@@ -1158,5 +1107,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, beneficiaryVerificationStatus=$beneficiaryVerificationStatus, beneficiaryVerifiedData=$beneficiaryVerifiedData, cryptoNetwork=$cryptoNetwork, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, beneficiaryVerificationStatus=$beneficiaryVerificationStatus, beneficiaryVerifiedData=$beneficiaryVerifiedData, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }
