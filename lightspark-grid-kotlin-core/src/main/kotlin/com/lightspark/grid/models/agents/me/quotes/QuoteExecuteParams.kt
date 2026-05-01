@@ -13,8 +13,8 @@ import java.util.Objects
  * Execute a quote created by the authenticated agent. Requires the EXECUTE_QUOTES permission in the
  * agent's policy. If the agent's policy requires approval for this amount (based on execution mode
  * or approval thresholds), the transaction will be created in a pending state and must be approved
- * by the platform via `POST /agents/{agentId}/transactions/{transactionId}/approve`. Once executed,
- * the quote cannot be cancelled.
+ * by the platform via `POST /agents/{agentId}/actions/{actionId}/approve`. Once executed, the quote
+ * cannot be cancelled.
  */
 class QuoteExecuteParams
 private constructor(

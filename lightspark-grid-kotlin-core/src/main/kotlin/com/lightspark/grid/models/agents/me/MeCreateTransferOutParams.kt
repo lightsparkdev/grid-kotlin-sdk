@@ -25,7 +25,7 @@ import java.util.Objects
  * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS permission
  * in the agent's policy. If the agent's policy requires approval for this amount, the transaction
  * will be created in a pending state and must be approved by the platform via `POST
- * /agents/{agentId}/transactions/{transactionId}/approve`.
+ * /agents/{agentId}/actions/{actionId}/approve`.
  */
 class MeCreateTransferOutParams
 private constructor(

@@ -95,9 +95,9 @@ interface MeServiceAsync {
      * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS
      * permission in the agent's policy. If the agent's policy requires approval for this amount,
      * the transaction will be created in a pending state and must be approved by the platform via
-     * `POST /agents/{agentId}/transactions/{transactionId}/approve`. This endpoint should only be
-     * used for external account sources with pull functionality (e.g. ACH Pull). Otherwise, use the
-     * payment instructions on the internal account to deposit funds.
+     * `POST /agents/{agentId}/actions/{actionId}/approve`. This endpoint should only be used for
+     * external account sources with pull functionality (e.g. ACH Pull). Otherwise, use the payment
+     * instructions on the internal account to deposit funds.
      */
     suspend fun createTransferIn(
         params: MeCreateTransferInParams,
@@ -109,7 +109,7 @@ interface MeServiceAsync {
      * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS
      * permission in the agent's policy. If the agent's policy requires approval for this amount,
      * the transaction will be created in a pending state and must be approved by the platform via
-     * `POST /agents/{agentId}/transactions/{transactionId}/approve`.
+     * `POST /agents/{agentId}/actions/{actionId}/approve`.
      */
     suspend fun createTransferOut(
         params: MeCreateTransferOutParams,
