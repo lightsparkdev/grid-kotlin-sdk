@@ -22,6 +22,7 @@ internal class GtqExternalAccountCreateInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -35,7 +36,6 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()
@@ -52,6 +52,7 @@ internal class GtqExternalAccountCreateInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -65,7 +66,6 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
             )
@@ -84,6 +84,7 @@ internal class GtqExternalAccountCreateInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -97,7 +98,6 @@ internal class GtqExternalAccountCreateInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()

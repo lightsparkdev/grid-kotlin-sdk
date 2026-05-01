@@ -392,6 +392,23 @@ private constructor(
             bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
 
         /**
+         * Alias for calling [bdtAccountAccountInfo] with the following:
+         * ```kotlin
+         * BdtBeneficiary.builder()
+         *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualBdtAccountAccountInfo(fullName: String) =
+            bdtAccountAccountInfo(
+                BdtBeneficiary.builder()
+                    .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
+
+        /**
          * Alias for calling [bdtAccountAccountInfo] with
          * `BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
          */
@@ -450,6 +467,23 @@ private constructor(
          */
         fun ghsAccountAccountInfo(individual: GhsBeneficiary) =
             ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with the following:
+         * ```kotlin
+         * GhsBeneficiary.builder()
+         *     .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualGhsAccountAccountInfo(fullName: String) =
+            ghsAccountAccountInfo(
+                GhsBeneficiary.builder()
+                    .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
 
         /**
          * Alias for calling [ghsAccountAccountInfo] with
@@ -514,6 +548,23 @@ private constructor(
          */
         fun pkrAccountAccountInfo(individual: PkrBeneficiary) =
             pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with the following:
+         * ```kotlin
+         * PkrBeneficiary.builder()
+         *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualPkrAccountAccountInfo(fullName: String) =
+            pkrAccountAccountInfo(
+                PkrBeneficiary.builder()
+                    .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
 
         /**
          * Alias for calling [pkrAccountAccountInfo] with

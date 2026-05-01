@@ -18,7 +18,6 @@ internal class BdtExternalAccountCreateInfoTest {
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -31,6 +30,7 @@ internal class BdtExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -49,7 +49,6 @@ internal class BdtExternalAccountCreateInfoTest {
                 BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -62,6 +61,7 @@ internal class BdtExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -83,7 +83,6 @@ internal class BdtExternalAccountCreateInfoTest {
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -96,6 +95,7 @@ internal class BdtExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")

@@ -15,7 +15,6 @@ internal class GhsBeneficiaryTest {
         val ghsBeneficiary =
             GhsBeneficiary.builder()
                 .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -28,6 +27,7 @@ internal class GhsBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
@@ -35,7 +35,6 @@ internal class GhsBeneficiaryTest {
 
         assertThat(ghsBeneficiary.beneficiaryType())
             .isEqualTo(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(ghsBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(ghsBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(ghsBeneficiary.address())
             .isEqualTo(
@@ -49,6 +48,7 @@ internal class GhsBeneficiaryTest {
                     .build()
             )
         assertThat(ghsBeneficiary.birthDate()).isEqualTo("birthDate")
+        assertThat(ghsBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(ghsBeneficiary.email()).isEqualTo("email")
         assertThat(ghsBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(ghsBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
@@ -60,7 +60,6 @@ internal class GhsBeneficiaryTest {
         val ghsBeneficiary =
             GhsBeneficiary.builder()
                 .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -73,6 +72,7 @@ internal class GhsBeneficiaryTest {
                         .build()
                 )
                 .birthDate("birthDate")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")

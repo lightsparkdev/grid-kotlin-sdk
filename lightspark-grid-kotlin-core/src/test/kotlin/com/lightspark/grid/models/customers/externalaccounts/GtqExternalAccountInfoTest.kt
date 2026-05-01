@@ -24,6 +24,7 @@ internal class GtqExternalAccountInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -37,7 +38,6 @@ internal class GtqExternalAccountInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()
@@ -56,6 +56,7 @@ internal class GtqExternalAccountInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -69,7 +70,6 @@ internal class GtqExternalAccountInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
             )
@@ -89,6 +89,7 @@ internal class GtqExternalAccountInfoTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -102,7 +103,6 @@ internal class GtqExternalAccountInfoTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()

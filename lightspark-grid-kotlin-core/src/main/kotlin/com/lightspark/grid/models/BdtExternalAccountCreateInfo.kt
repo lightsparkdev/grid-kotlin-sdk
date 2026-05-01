@@ -236,6 +236,23 @@ private constructor(
         fun beneficiary(individual: BdtBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
 
+        /**
+         * Alias for calling [beneficiary] with the following:
+         * ```kotlin
+         * BdtBeneficiary.builder()
+         *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualBeneficiary(fullName: String) =
+            beneficiary(
+                BdtBeneficiary.builder()
+                    .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
+
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
             beneficiary(Beneficiary.ofBusiness(business))

@@ -3881,7 +3881,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -3894,6 +3893,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -3962,7 +3962,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         BdtBeneficiary.builder()
                             .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -3975,6 +3974,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4253,7 +4253,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4266,6 +4265,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4332,7 +4332,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         GhsBeneficiary.builder()
                             .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4345,6 +4344,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4375,6 +4375,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
+                        .phoneNumber("phoneNumber")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -4388,7 +4389,6 @@ internal class ExternalAccountInfoOneOfTest {
                         .birthDate("birthDate")
                         .email("email")
                         .nationality("nationality")
-                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .build()
@@ -4454,6 +4454,7 @@ internal class ExternalAccountInfoOneOfTest {
                             .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
+                            .phoneNumber("phoneNumber")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -4467,7 +4468,6 @@ internal class ExternalAccountInfoOneOfTest {
                             .birthDate("birthDate")
                             .email("email")
                             .nationality("nationality")
-                            .phoneNumber("phoneNumber")
                             .build()
                     )
                     .build()
@@ -4492,7 +4492,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     HtgBeneficiary.builder()
                         .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4505,6 +4504,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4570,7 +4570,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         HtgBeneficiary.builder()
                             .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4583,6 +4582,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
@@ -4622,10 +4622,10 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .build()
@@ -4702,10 +4702,10 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .beneficiaryType(JmdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .phoneNumber("phoneNumber")
                             .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .build()
@@ -4735,7 +4735,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4748,6 +4747,7 @@ internal class ExternalAccountInfoOneOfTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -4816,7 +4816,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .beneficiary(
                         PkrBeneficiary.builder()
                             .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .countryOfResidence("countryOfResidence")
                             .fullName("fullName")
                             .address(
                                 Address.builder()
@@ -4829,6 +4828,7 @@ internal class ExternalAccountInfoOneOfTest {
                                     .build()
                             )
                             .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
                             .email("email")
                             .nationality("nationality")
                             .phoneNumber("phoneNumber")
