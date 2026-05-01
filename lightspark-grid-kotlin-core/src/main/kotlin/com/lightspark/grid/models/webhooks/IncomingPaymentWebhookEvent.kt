@@ -279,6 +279,7 @@ private constructor(
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val status: JsonField<TransactionStatus>,
         private val type: JsonField<IncomingTransaction.Type>,
+        private val agentId: JsonField<String>,
         private val counterpartyInformation: JsonField<IncomingTransaction.CounterpartyInformation>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
@@ -314,6 +315,7 @@ private constructor(
             @JsonProperty("type")
             @ExcludeMissing
             type: JsonField<IncomingTransaction.Type> = JsonMissing.of(),
+            @JsonProperty("agentId") @ExcludeMissing agentId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("counterpartyInformation")
             @ExcludeMissing
             counterpartyInformation: JsonField<IncomingTransaction.CounterpartyInformation> =
@@ -354,6 +356,7 @@ private constructor(
             receivedAmount,
             status,
             type,
+            agentId,
             counterpartyInformation,
             createdAt,
             description,
@@ -376,6 +379,7 @@ private constructor(
                 .receivedAmount(receivedAmount)
                 .status(status)
                 .type(type)
+                .agentId(agentId)
                 .counterpartyInformation(counterpartyInformation)
                 .createdAt(createdAt)
                 .description(description)
@@ -451,6 +455,15 @@ private constructor(
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun type(): IncomingTransaction.Type = type.getRequired("type")
+
+        /**
+         * If this transaction was initiated by an agent, the system-generated ID of that agent.
+         * Absent for platform-initiated transactions.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun agentId(): String? = agentId.getNullable("agentId")
 
         /**
          * Additional information about the counterparty, if available and relevant to the
@@ -601,6 +614,13 @@ private constructor(
         fun _type(): JsonField<IncomingTransaction.Type> = type
 
         /**
+         * Returns the raw JSON value of [agentId].
+         *
+         * Unlike [agentId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("agentId") @ExcludeMissing fun _agentId(): JsonField<String> = agentId
+
+        /**
          * Returns the raw JSON value of [counterpartyInformation].
          *
          * Unlike [counterpartyInformation], this method doesn't throw if the JSON field has an
@@ -738,6 +758,7 @@ private constructor(
             private var receivedAmount: JsonField<CurrencyAmount>? = null
             private var status: JsonField<TransactionStatus>? = null
             private var type: JsonField<IncomingTransaction.Type>? = null
+            private var agentId: JsonField<String> = JsonMissing.of()
             private var counterpartyInformation:
                 JsonField<IncomingTransaction.CounterpartyInformation> =
                 JsonMissing.of()
@@ -764,6 +785,7 @@ private constructor(
                 receivedAmount = data.receivedAmount
                 status = data.status
                 type = data.type
+                agentId = data.agentId
                 counterpartyInformation = data.counterpartyInformation
                 createdAt = data.createdAt
                 description = data.description
@@ -907,6 +929,21 @@ private constructor(
              * not yet supported value.
              */
             fun type(type: JsonField<IncomingTransaction.Type>) = apply { this.type = type }
+
+            /**
+             * If this transaction was initiated by an agent, the system-generated ID of that agent.
+             * Absent for platform-initiated transactions.
+             */
+            fun agentId(agentId: String) = agentId(JsonField.of(agentId))
+
+            /**
+             * Sets [Builder.agentId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.agentId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun agentId(agentId: JsonField<String>) = apply { this.agentId = agentId }
 
             /**
              * Additional information about the counterparty, if available and relevant to the
@@ -1161,6 +1198,7 @@ private constructor(
                     checkRequired("receivedAmount", receivedAmount),
                     checkRequired("status", status),
                     checkRequired("type", type),
+                    agentId,
                     counterpartyInformation,
                     createdAt,
                     description,
@@ -1191,6 +1229,7 @@ private constructor(
             receivedAmount().validate()
             status().validate()
             type().validate()
+            agentId()
             counterpartyInformation()?.validate()
             createdAt()
             description()
@@ -1226,6 +1265,7 @@ private constructor(
                 (receivedAmount.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
                 (type.asKnown()?.validity() ?: 0) +
+                (if (agentId.asKnown() == null) 0 else 1) +
                 (counterpartyInformation.asKnown()?.validity() ?: 0) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (description.asKnown() == null) 0 else 1) +
@@ -1251,6 +1291,7 @@ private constructor(
                 receivedAmount == other.receivedAmount &&
                 status == other.status &&
                 type == other.type &&
+                agentId == other.agentId &&
                 counterpartyInformation == other.counterpartyInformation &&
                 createdAt == other.createdAt &&
                 description == other.description &&
@@ -1273,6 +1314,7 @@ private constructor(
                 receivedAmount,
                 status,
                 type,
+                agentId,
                 counterpartyInformation,
                 createdAt,
                 description,
@@ -1290,7 +1332,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1361,6 +1403,8 @@ private constructor(
 
             val BULK_UPLOAD_FAILED = of("BULK_UPLOAD.FAILED")
 
+            val AGENT_ACTION_PENDING_APPROVAL = of("AGENT_ACTION.PENDING_APPROVAL")
+
             val TEST = of("TEST")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -1395,6 +1439,7 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
         }
 
@@ -1435,6 +1480,7 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -1476,6 +1522,7 @@ private constructor(
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Value.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Value.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
@@ -1518,6 +1565,7 @@ private constructor(
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Known.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Known.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }

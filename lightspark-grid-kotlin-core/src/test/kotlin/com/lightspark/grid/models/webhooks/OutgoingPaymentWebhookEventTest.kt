@@ -54,6 +54,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         )
                         .status(OutgoingTransactionStatus.PENDING)
                         .type(OutgoingTransaction.Type.OUTGOING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
                             OutgoingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -181,6 +182,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     )
                     .status(OutgoingTransactionStatus.PENDING)
                     .type(OutgoingTransaction.Type.OUTGOING)
+                    .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                     .counterpartyInformation(
                         OutgoingTransaction.CounterpartyInformation.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -313,6 +315,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         )
                         .status(OutgoingTransactionStatus.PENDING)
                         .type(OutgoingTransaction.Type.OUTGOING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
                             OutgoingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

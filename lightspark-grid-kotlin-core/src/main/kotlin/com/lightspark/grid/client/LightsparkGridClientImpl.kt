@@ -4,6 +4,8 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
+import com.lightspark.grid.services.blocking.AgentService
+import com.lightspark.grid.services.blocking.AgentServiceImpl
 import com.lightspark.grid.services.blocking.AuthService
 import com.lightspark.grid.services.blocking.AuthServiceImpl
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
@@ -136,6 +138,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         InternalAccountServiceImpl(clientOptionsWithUserAgent)
     }
 
+    private val agents: AgentService by lazy { AgentServiceImpl(clientOptionsWithUserAgent) }
+
     override fun async(): LightsparkGridClientAsync = async
 
     override fun withRawResponse(): LightsparkGridClient.WithRawResponse = withRawResponse
@@ -226,6 +230,14 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     /** Internal account management endpoints for creating and managing internal accounts */
     override fun internalAccounts(): InternalAccountService = internalAccounts
 
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
+    override fun agents(): AgentService = agents
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -313,6 +325,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         private val internalAccounts: InternalAccountService.WithRawResponse by lazy {
             InternalAccountServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val agents: AgentService.WithRawResponse by lazy {
+            AgentServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -404,5 +420,13 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         /** Internal account management endpoints for creating and managing internal accounts */
         override fun internalAccounts(): InternalAccountService.WithRawResponse = internalAccounts
+
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
+        override fun agents(): AgentService.WithRawResponse = agents
     }
 }

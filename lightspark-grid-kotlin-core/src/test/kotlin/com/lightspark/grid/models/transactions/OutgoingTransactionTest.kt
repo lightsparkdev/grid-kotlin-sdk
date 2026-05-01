@@ -48,6 +48,7 @@ internal class OutgoingTransactionTest {
                 )
                 .status(OutgoingTransactionStatus.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
+                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
                     OutgoingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -173,6 +174,8 @@ internal class OutgoingTransactionTest {
             )
         assertThat(outgoingTransaction.status()).isEqualTo(OutgoingTransactionStatus.PENDING)
         assertThat(outgoingTransaction.type()).isEqualTo(OutgoingTransaction.Type.OUTGOING)
+        assertThat(outgoingTransaction.agentId())
+            .isEqualTo("Agent:019542f5-b3e7-1d02-0000-000000000042")
         assertThat(outgoingTransaction.counterpartyInformation())
             .isEqualTo(
                 OutgoingTransaction.CounterpartyInformation.builder()
@@ -302,6 +305,7 @@ internal class OutgoingTransactionTest {
                 )
                 .status(OutgoingTransactionStatus.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
+                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
                     OutgoingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

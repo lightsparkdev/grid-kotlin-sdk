@@ -337,6 +337,8 @@ private constructor(
 
             val BULK_UPLOAD_FAILED = of("BULK_UPLOAD.FAILED")
 
+            val AGENT_ACTION_PENDING_APPROVAL = of("AGENT_ACTION.PENDING_APPROVAL")
+
             val TEST = of("TEST")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -371,6 +373,7 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
         }
 
@@ -411,6 +414,7 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -452,6 +456,7 @@ private constructor(
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Value.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Value.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
@@ -494,6 +499,7 @@ private constructor(
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Known.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Known.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }

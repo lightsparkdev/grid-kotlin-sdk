@@ -3,6 +3,7 @@
 package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.services.async.AgentServiceAsync
 import com.lightspark.grid.services.async.AuthServiceAsync
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsync
@@ -145,6 +146,14 @@ interface LightsparkGridClientAsync {
     fun internalAccounts(): InternalAccountServiceAsync
 
     /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
+    fun agents(): AgentServiceAsync
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -254,5 +263,13 @@ interface LightsparkGridClientAsync {
 
         /** Internal account management endpoints for creating and managing internal accounts */
         fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse
+
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
+        fun agents(): AgentServiceAsync.WithRawResponse
     }
 }

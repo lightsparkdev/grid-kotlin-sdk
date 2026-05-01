@@ -1,0 +1,98 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.lightspark.grid.services.blocking.agents.me
+
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.agents.me.quotes.QuoteCreateParams
+import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteParams
+import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
+import com.lightspark.grid.models.quotes.QuoteSourceOneOf
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
+
+internal class QuoteServiceTest {
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun create() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val quoteService = client.agents().me().quotes()
+
+        val quote =
+            quoteService.create(
+                QuoteCreateParams.builder()
+                    .idempotencyKey("<uuid>")
+                    .destination(
+                        QuoteDestinationOneOf.AccountDestination.builder()
+                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                            .build()
+                    )
+                    .lockedCurrencyAmount(1000L)
+                    .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
+                    .source(
+                        QuoteSourceOneOf.AccountQuoteSource.builder()
+                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .build()
+                    )
+                    .description("Invoice #1234 payment")
+                    .immediatelyExecute(false)
+                    .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                    .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
+                    .senderCustomerInfo(
+                        QuoteCreateParams.SenderCustomerInfo.builder()
+                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .build()
+            )
+
+        quote.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieve() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val quoteService = client.agents().me().quotes()
+
+        val quote = quoteService.retrieve("quoteId")
+
+        quote.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun execute() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val quoteService = client.agents().me().quotes()
+
+        val response =
+            quoteService.execute(
+                QuoteExecuteParams.builder()
+                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
+                    .gridWalletSignature(
+                        "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
+                    )
+                    .idempotencyKey("<uuid>")
+                    .build()
+            )
+
+        response.validate()
+    }
+}
