@@ -21,6 +21,7 @@ import java.util.Objects
 @JsonSerialize(using = UnwrapWebhookEvent.Serializer::class)
 class UnwrapWebhookEvent
 private constructor(
+    private val agentAction: AgentActionWebhookEvent? = null,
     private val incomingPayment: IncomingPaymentWebhookEvent? = null,
     private val outgoingPayment: OutgoingPaymentWebhookEvent? = null,
     private val testWebhook: TestWebhookWebhookEvent? = null,
@@ -31,6 +32,8 @@ private constructor(
     private val verificationUpdate: VerificationUpdateWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
+
+    fun agentAction(): AgentActionWebhookEvent? = agentAction
 
     fun incomingPayment(): IncomingPaymentWebhookEvent? = incomingPayment
 
@@ -48,6 +51,8 @@ private constructor(
 
     fun verificationUpdate(): VerificationUpdateWebhookEvent? = verificationUpdate
 
+    fun isAgentAction(): Boolean = agentAction != null
+
     fun isIncomingPayment(): Boolean = incomingPayment != null
 
     fun isOutgoingPayment(): Boolean = outgoingPayment != null
@@ -63,6 +68,8 @@ private constructor(
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
 
     fun isVerificationUpdate(): Boolean = verificationUpdate != null
+
+    fun asAgentAction(): AgentActionWebhookEvent = agentAction.getOrThrow("agentAction")
 
     fun asIncomingPayment(): IncomingPaymentWebhookEvent =
         incomingPayment.getOrThrow("incomingPayment")
@@ -89,6 +96,7 @@ private constructor(
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
+            agentAction != null -> visitor.visitAgentAction(agentAction)
             incomingPayment != null -> visitor.visitIncomingPayment(incomingPayment)
             outgoingPayment != null -> visitor.visitOutgoingPayment(outgoingPayment)
             testWebhook != null -> visitor.visitTestWebhook(testWebhook)
@@ -110,6 +118,10 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
+                override fun visitAgentAction(agentAction: AgentActionWebhookEvent) {
+                    agentAction.validate()
+                }
+
                 override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) {
                     incomingPayment.validate()
                 }
@@ -168,6 +180,9 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
+                override fun visitAgentAction(agentAction: AgentActionWebhookEvent) =
+                    agentAction.validity()
+
                 override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
                     incomingPayment.validity()
 
@@ -205,6 +220,7 @@ private constructor(
         }
 
         return other is UnwrapWebhookEvent &&
+            agentAction == other.agentAction &&
             incomingPayment == other.incomingPayment &&
             outgoingPayment == other.outgoingPayment &&
             testWebhook == other.testWebhook &&
@@ -217,6 +233,7 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
+            agentAction,
             incomingPayment,
             outgoingPayment,
             testWebhook,
@@ -229,6 +246,7 @@ private constructor(
 
     override fun toString(): String =
         when {
+            agentAction != null -> "UnwrapWebhookEvent{agentAction=$agentAction}"
             incomingPayment != null -> "UnwrapWebhookEvent{incomingPayment=$incomingPayment}"
             outgoingPayment != null -> "UnwrapWebhookEvent{outgoingPayment=$outgoingPayment}"
             testWebhook != null -> "UnwrapWebhookEvent{testWebhook=$testWebhook}"
@@ -244,6 +262,9 @@ private constructor(
         }
 
     companion object {
+
+        fun ofAgentAction(agentAction: AgentActionWebhookEvent) =
+            UnwrapWebhookEvent(agentAction = agentAction)
 
         fun ofIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
             UnwrapWebhookEvent(incomingPayment = incomingPayment)
@@ -275,6 +296,8 @@ private constructor(
      * [T].
      */
     interface Visitor<out T> {
+
+        fun visitAgentAction(agentAction: AgentActionWebhookEvent): T
 
         fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent): T
 
@@ -314,6 +337,9 @@ private constructor(
 
             val bestMatches =
                 sequenceOf(
+                        tryDeserialize(node, jacksonTypeRef<AgentActionWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(agentAction = it, _json = json)
+                        },
                         tryDeserialize(node, jacksonTypeRef<IncomingPaymentWebhookEvent>())?.let {
                             UnwrapWebhookEvent(incomingPayment = it, _json = json)
                         },
@@ -360,6 +386,7 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
+                value.agentAction != null -> generator.writeObject(value.agentAction)
                 value.incomingPayment != null -> generator.writeObject(value.incomingPayment)
                 value.outgoingPayment != null -> generator.writeObject(value.outgoingPayment)
                 value.testWebhook != null -> generator.writeObject(value.testWebhook)

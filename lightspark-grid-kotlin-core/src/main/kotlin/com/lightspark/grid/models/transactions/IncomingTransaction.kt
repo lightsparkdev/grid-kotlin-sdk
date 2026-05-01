@@ -40,6 +40,7 @@ private constructor(
     private val receivedAmount: JsonField<CurrencyAmount>,
     private val status: JsonField<TransactionStatus>,
     private val type: JsonField<Type>,
+    private val agentId: JsonField<String>,
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val description: JsonField<String>,
@@ -71,6 +72,7 @@ private constructor(
         @ExcludeMissing
         status: JsonField<TransactionStatus> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+        @JsonProperty("agentId") @ExcludeMissing agentId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("counterpartyInformation")
         @ExcludeMissing
         counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of(),
@@ -106,6 +108,7 @@ private constructor(
         receivedAmount,
         status,
         type,
+        agentId,
         counterpartyInformation,
         createdAt,
         description,
@@ -182,6 +185,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun type(): Type = type.getRequired("type")
+
+    /**
+     * If this transaction was initiated by an agent, the system-generated ID of that agent. Absent
+     * for platform-initiated transactions.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun agentId(): String? = agentId.getNullable("agentId")
 
     /**
      * Additional information about the counterparty, if available and relevant to the transaction
@@ -315,6 +327,13 @@ private constructor(
     @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
     /**
+     * Returns the raw JSON value of [agentId].
+     *
+     * Unlike [agentId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("agentId") @ExcludeMissing fun _agentId(): JsonField<String> = agentId
+
+    /**
      * Returns the raw JSON value of [counterpartyInformation].
      *
      * Unlike [counterpartyInformation], this method doesn't throw if the JSON field has an
@@ -437,6 +456,7 @@ private constructor(
         private var receivedAmount: JsonField<CurrencyAmount>? = null
         private var status: JsonField<TransactionStatus>? = null
         private var type: JsonField<Type>? = null
+        private var agentId: JsonField<String> = JsonMissing.of()
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
@@ -457,6 +477,7 @@ private constructor(
             receivedAmount = incomingTransaction.receivedAmount
             status = incomingTransaction.status
             type = incomingTransaction.type
+            agentId = incomingTransaction.agentId
             counterpartyInformation = incomingTransaction.counterpartyInformation
             createdAt = incomingTransaction.createdAt
             description = incomingTransaction.description
@@ -584,6 +605,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun type(type: JsonField<Type>) = apply { this.type = type }
+
+        /**
+         * If this transaction was initiated by an agent, the system-generated ID of that agent.
+         * Absent for platform-initiated transactions.
+         */
+        fun agentId(agentId: String) = agentId(JsonField.of(agentId))
+
+        /**
+         * Sets [Builder.agentId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.agentId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun agentId(agentId: JsonField<String>) = apply { this.agentId = agentId }
 
         /**
          * Additional information about the counterparty, if available and relevant to the
@@ -785,6 +820,7 @@ private constructor(
                 checkRequired("receivedAmount", receivedAmount),
                 checkRequired("status", status),
                 checkRequired("type", type),
+                agentId,
                 counterpartyInformation,
                 createdAt,
                 description,
@@ -812,6 +848,7 @@ private constructor(
         receivedAmount().validate()
         status().validate()
         type().validate()
+        agentId()
         counterpartyInformation()?.validate()
         createdAt()
         description()
@@ -845,6 +882,7 @@ private constructor(
             (receivedAmount.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
+            (if (agentId.asKnown() == null) 0 else 1) +
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (if (description.asKnown() == null) 0 else 1) +
@@ -1909,6 +1947,7 @@ private constructor(
             receivedAmount == other.receivedAmount &&
             status == other.status &&
             type == other.type &&
+            agentId == other.agentId &&
             counterpartyInformation == other.counterpartyInformation &&
             createdAt == other.createdAt &&
             description == other.description &&
@@ -1930,6 +1969,7 @@ private constructor(
             receivedAmount,
             status,
             type,
+            agentId,
             counterpartyInformation,
             createdAt,
             description,
@@ -1946,5 +1986,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

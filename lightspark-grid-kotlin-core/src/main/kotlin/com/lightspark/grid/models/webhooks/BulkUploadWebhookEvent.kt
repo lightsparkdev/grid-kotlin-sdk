@@ -1087,6 +1087,8 @@ private constructor(
 
             val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
 
+            val AGENT_ACTION_PENDING_APPROVAL = of("AGENT_ACTION.PENDING_APPROVAL")
+
             val TEST = of("TEST")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -1121,6 +1123,7 @@ private constructor(
             VERIFICATION_READY_FOR_VERIFICATION,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
         }
 
@@ -1161,6 +1164,7 @@ private constructor(
             VERIFICATION_READY_FOR_VERIFICATION,
             INTERNAL_ACCOUNT_BALANCE_UPDATED,
             INVITATION_CLAIMED,
+            AGENT_ACTION_PENDING_APPROVAL,
             TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -1202,6 +1206,7 @@ private constructor(
                 VERIFICATION_READY_FOR_VERIFICATION -> Value.VERIFICATION_READY_FOR_VERIFICATION
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
+                AGENT_ACTION_PENDING_APPROVAL -> Value.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
@@ -1244,6 +1249,7 @@ private constructor(
                 VERIFICATION_READY_FOR_VERIFICATION -> Known.VERIFICATION_READY_FOR_VERIFICATION
                 INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
+                AGENT_ACTION_PENDING_APPROVAL -> Known.AGENT_ACTION_PENDING_APPROVAL
                 TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
