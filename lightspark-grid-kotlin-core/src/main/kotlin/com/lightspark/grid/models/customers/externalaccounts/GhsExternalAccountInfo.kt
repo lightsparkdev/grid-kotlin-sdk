@@ -273,6 +273,23 @@ private constructor(
         fun beneficiary(individual: GhsBeneficiary) =
             beneficiary(Beneficiary.ofIndividual(individual))
 
+        /**
+         * Alias for calling [beneficiary] with the following:
+         * ```kotlin
+         * GhsBeneficiary.builder()
+         *     .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualBeneficiary(fullName: String) =
+            beneficiary(
+                GhsBeneficiary.builder()
+                    .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
+
         /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
         fun beneficiary(business: BusinessBeneficiary) =
             beneficiary(Beneficiary.ofBusiness(business))

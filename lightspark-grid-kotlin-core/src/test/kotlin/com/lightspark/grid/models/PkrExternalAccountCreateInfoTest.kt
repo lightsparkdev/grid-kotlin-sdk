@@ -18,7 +18,6 @@ internal class PkrExternalAccountCreateInfoTest {
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -31,6 +30,7 @@ internal class PkrExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -49,7 +49,6 @@ internal class PkrExternalAccountCreateInfoTest {
                 PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -62,6 +61,7 @@ internal class PkrExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -83,7 +83,6 @@ internal class PkrExternalAccountCreateInfoTest {
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -96,6 +95,7 @@ internal class PkrExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")

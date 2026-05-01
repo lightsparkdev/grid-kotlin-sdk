@@ -18,7 +18,6 @@ internal class GhsExternalAccountCreateInfoTest {
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -31,6 +30,7 @@ internal class GhsExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -47,7 +47,6 @@ internal class GhsExternalAccountCreateInfoTest {
                 GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -60,6 +59,7 @@ internal class GhsExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -79,7 +79,6 @@ internal class GhsExternalAccountCreateInfoTest {
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -92,6 +91,7 @@ internal class GhsExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")

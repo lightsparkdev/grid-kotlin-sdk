@@ -18,7 +18,6 @@ internal class HtgExternalAccountCreateInfoTest {
                 .beneficiary(
                     HtgBeneficiary.builder()
                         .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -31,6 +30,7 @@ internal class HtgExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -46,7 +46,6 @@ internal class HtgExternalAccountCreateInfoTest {
                 HtgExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     HtgBeneficiary.builder()
                         .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -59,6 +58,7 @@ internal class HtgExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -77,7 +77,6 @@ internal class HtgExternalAccountCreateInfoTest {
                 .beneficiary(
                     HtgBeneficiary.builder()
                         .beneficiaryType(HtgBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -90,6 +89,7 @@ internal class HtgExternalAccountCreateInfoTest {
                                 .build()
                         )
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
