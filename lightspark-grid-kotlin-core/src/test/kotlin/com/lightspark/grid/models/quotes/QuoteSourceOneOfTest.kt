@@ -53,7 +53,7 @@ internal class QuoteSourceOneOfTest {
         val realtimeFundingQuoteSource =
             QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
                 .currency("USD")
-                .cryptoNetwork("SOLANA_MAINNET")
+                .cryptoNetwork("SOLANA")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                 .build()
 
@@ -72,7 +72,7 @@ internal class QuoteSourceOneOfTest {
             QuoteSourceOneOf.ofRealtimeFundingQuoteSource(
                 QuoteSourceOneOf.RealtimeFundingQuoteSource.builder()
                     .currency("USD")
-                    .cryptoNetwork("SOLANA_MAINNET")
+                    .cryptoNetwork("SOLANA")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000009")
                     .build()
             )

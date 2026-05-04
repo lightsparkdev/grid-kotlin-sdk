@@ -23,7 +23,7 @@ internal class CryptoServiceAsyncTest {
             cryptoServiceAsync.estimateWithdrawalFee(
                 CryptoEstimateWithdrawalFeeParams.builder()
                     .amount(1000000L)
-                    .cryptoNetwork("SOLANA_MAINNET")
+                    .cryptoNetwork("SOLANA")
                     .currency("USDC")
                     .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
                     .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
