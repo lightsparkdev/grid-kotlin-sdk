@@ -103,7 +103,7 @@ private constructor(
     /**
      * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the email
      * address; for OAUTH credentials it is typically the email claim from the OIDC token; for
-     * PASSKEY credentials it is the nickname provided at registration time.
+     * PASSKEY credentials it is the validated nickname provided at registration time.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -314,7 +314,7 @@ private constructor(
         /**
          * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
          * email address; for OAUTH credentials it is typically the email claim from the OIDC token;
-         * for PASSKEY credentials it is the nickname provided at registration time.
+         * for PASSKEY credentials it is the validated nickname provided at registration time.
          */
         fun nickname(nickname: String) = nickname(JsonField.of(nickname))
 

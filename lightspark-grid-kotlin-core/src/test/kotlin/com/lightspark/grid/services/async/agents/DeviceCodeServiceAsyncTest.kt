@@ -10,7 +10,7 @@ internal class DeviceCodeServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun getStatus() {
+    suspend fun deviceCodes() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -18,7 +18,7 @@ internal class DeviceCodeServiceAsyncTest {
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
-        val response = deviceCodeServiceAsync.getStatus("code")
+        val response = deviceCodeServiceAsync.deviceCodes("agentId")
 
         response.validate()
     }
@@ -40,7 +40,7 @@ internal class DeviceCodeServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun regenerate() {
+    suspend fun retrieveStatus() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -48,7 +48,7 @@ internal class DeviceCodeServiceAsyncTest {
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
-        val response = deviceCodeServiceAsync.regenerate("agentId")
+        val response = deviceCodeServiceAsync.retrieveStatus("code")
 
         response.validate()
     }

@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.agents.me
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveExternalAccountsParams
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
@@ -29,21 +30,6 @@ internal class ExternalAccountServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun list() {
-        val client =
-            LightsparkGridOkHttpClient.builder()
-                .username("My Username")
-                .password("My Password")
-                .build()
-        val externalAccountService = client.agents().me().externalAccounts()
-
-        val page = externalAccountService.list()
-
-        page.response().validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
     fun delete() {
         val client =
             LightsparkGridOkHttpClient.builder()
@@ -57,7 +43,7 @@ internal class ExternalAccountServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun add() {
+    fun externalAccounts() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -66,7 +52,7 @@ internal class ExternalAccountServiceTest {
         val externalAccountService = client.agents().me().externalAccounts()
 
         val externalAccount =
-            externalAccountService.add(
+            externalAccountService.externalAccounts(
                 ExternalAccountCreate.builder()
                     .accountInfo(
                         UsdExternalAccountCreateInfo.builder()
@@ -104,5 +90,27 @@ internal class ExternalAccountServiceTest {
             )
 
         externalAccount.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun retrieveExternalAccounts() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val externalAccountService = client.agents().me().externalAccounts()
+
+        val response =
+            externalAccountService.retrieveExternalAccounts(
+                ExternalAccountRetrieveExternalAccountsParams.builder()
+                    .currency("currency")
+                    .cursor("cursor")
+                    .limit(1L)
+                    .build()
+            )
+
+        response.validate()
     }
 }

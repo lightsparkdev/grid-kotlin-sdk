@@ -17,11 +17,10 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountAddParams
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountDeleteParams
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListPage
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListPageResponse
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountExternalAccountsParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveExternalAccountsParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveExternalAccountsResponse
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 
@@ -51,24 +50,24 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
         // get /agents/me/external-accounts/{externalAccountId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override fun list(
-        params: ExternalAccountListParams,
-        requestOptions: RequestOptions,
-    ): ExternalAccountListPage =
-        // get /agents/me/external-accounts
-        withRawResponse().list(params, requestOptions).parse()
-
     override fun delete(params: ExternalAccountDeleteParams, requestOptions: RequestOptions) {
         // delete /agents/me/external-accounts/{externalAccountId}
         withRawResponse().delete(params, requestOptions)
     }
 
-    override fun add(
-        params: ExternalAccountAddParams,
+    override fun externalAccounts(
+        params: ExternalAccountExternalAccountsParams,
         requestOptions: RequestOptions,
     ): ExternalAccount =
         // post /agents/me/external-accounts
-        withRawResponse().add(params, requestOptions).parse()
+        withRawResponse().externalAccounts(params, requestOptions).parse()
+
+    override fun retrieveExternalAccounts(
+        params: ExternalAccountRetrieveExternalAccountsParams,
+        requestOptions: RequestOptions,
+    ): ExternalAccountRetrieveExternalAccountsResponse =
+        // get /agents/me/external-accounts
+        withRawResponse().retrieveExternalAccounts(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         ExternalAccountService.WithRawResponse {
@@ -113,40 +112,6 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListPageResponse> =
-            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
-
-        override fun list(
-            params: ExternalAccountListParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccountListPage> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", "me", "external-accounts")
-                    .build()
-                    .prepare(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { listHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-                    .let {
-                        ExternalAccountListPage.builder()
-                            .service(ExternalAccountServiceImpl(clientOptions))
-                            .params(params)
-                            .response(it)
-                            .build()
-                    }
-            }
-        }
-
         private val deleteHandler: Handler<Void?> = emptyHandler()
 
         override fun delete(
@@ -171,11 +136,11 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val addHandler: Handler<ExternalAccount> =
+        private val externalAccountsHandler: Handler<ExternalAccount> =
             jsonHandler<ExternalAccount>(clientOptions.jsonMapper)
 
-        override fun add(
-            params: ExternalAccountAddParams,
+        override fun externalAccounts(
+            params: ExternalAccountExternalAccountsParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<ExternalAccount> {
             val request =
@@ -190,7 +155,35 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { addHandler.handle(it) }
+                    .use { externalAccountsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val retrieveExternalAccountsHandler:
+            Handler<ExternalAccountRetrieveExternalAccountsResponse> =
+            jsonHandler<ExternalAccountRetrieveExternalAccountsResponse>(clientOptions.jsonMapper)
+
+        override fun retrieveExternalAccounts(
+            params: ExternalAccountRetrieveExternalAccountsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<ExternalAccountRetrieveExternalAccountsResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("agents", "me", "external-accounts")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { retrieveExternalAccountsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

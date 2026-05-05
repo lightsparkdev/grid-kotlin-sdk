@@ -1372,8 +1372,10 @@ private constructor(
 
             /**
              * Human-readable identifier for the passkey, chosen by the user at registration time
-             * (e.g. "iPhone Face-ID", "YubiKey 5C"). Shown back on `AuthMethod` responses and in
-             * credential listings.
+             * (e.g. "iPhone Face-ID", "YubiKey 5C"). Leading and trailing whitespace is ignored.
+             * Must be 1-100 characters and may contain Unicode letters, numbers, spaces, and the
+             * following separators: period, underscore, hyphen, apostrophe, and parentheses. Shown
+             * back on AuthMethod responses and in credential listings.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -1530,8 +1532,10 @@ private constructor(
 
                 /**
                  * Human-readable identifier for the passkey, chosen by the user at registration
-                 * time (e.g. "iPhone Face-ID", "YubiKey 5C"). Shown back on `AuthMethod` responses
-                 * and in credential listings.
+                 * time (e.g. "iPhone Face-ID", "YubiKey 5C"). Leading and trailing whitespace is
+                 * ignored. Must be 1-100 characters and may contain Unicode letters, numbers,
+                 * spaces, and the following separators: period, underscore, hyphen, apostrophe, and
+                 * parentheses. Shown back on AuthMethod responses and in credential listings.
                  */
                 fun nickname(nickname: String) = nickname(JsonField.of(nickname))
 

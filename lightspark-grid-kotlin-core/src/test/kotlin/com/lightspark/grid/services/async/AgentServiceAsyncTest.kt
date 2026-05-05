@@ -4,8 +4,10 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.agents.AgentCreateParams
+import com.lightspark.grid.models.agents.AgentRetrieveApprovalsParams
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -144,7 +146,7 @@ internal class AgentServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun listApprovals() {
+    suspend fun retrieveApprovals() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -152,9 +154,20 @@ internal class AgentServiceAsyncTest {
                 .build()
         val agentServiceAsync = client.agents()
 
-        val page = agentServiceAsync.listApprovals()
+        val response =
+            agentServiceAsync.retrieveApprovals(
+                AgentRetrieveApprovalsParams.builder()
+                    .agentId("agentId")
+                    .cursor("cursor")
+                    .customerId("customerId")
+                    .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .limit(1L)
+                    .sortOrder(AgentRetrieveApprovalsParams.SortOrder.ASC)
+                    .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
+            )
 
-        page.response().validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
