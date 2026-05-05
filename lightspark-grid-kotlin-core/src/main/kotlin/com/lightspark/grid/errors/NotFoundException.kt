@@ -5,10 +5,14 @@ package com.lightspark.grid.errors
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
+import com.lightspark.grid.core.jsonMapper
 
 class NotFoundException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    LightsparkGridServiceException("404: $body", cause) {
+    LightsparkGridServiceException(
+        "404: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 404
 
