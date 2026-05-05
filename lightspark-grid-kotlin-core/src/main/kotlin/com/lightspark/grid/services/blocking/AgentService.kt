@@ -10,10 +10,10 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
-import com.lightspark.grid.models.agents.AgentListApprovalsPage
-import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPage
 import com.lightspark.grid.models.agents.AgentListParams
+import com.lightspark.grid.models.agents.AgentRetrieveApprovalsParams
+import com.lightspark.grid.models.agents.AgentRetrieveApprovalsResponse
 import com.lightspark.grid.models.agents.AgentRetrieveParams
 import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
@@ -23,7 +23,6 @@ import com.lightspark.grid.models.agents.AgentUpdateResponse
 import com.lightspark.grid.services.blocking.agents.ActionService
 import com.lightspark.grid.services.blocking.agents.DeviceCodeService
 import com.lightspark.grid.services.blocking.agents.MeService
-import com.lightspark.grid.services.blocking.agents.TransactionService
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -61,8 +60,6 @@ interface AgentService {
      * initiated by agents.
      */
     fun deviceCodes(): DeviceCodeService
-
-    fun transactions(): TransactionService
 
     /**
      * Endpoints for creating and managing agents (experimental), called by the partner's backend
@@ -145,14 +142,14 @@ interface AgentService {
      * individual actions via `POST /agents/{agentId}/actions/{actionId}/approve` or `POST
      * /agents/{agentId}/actions/{actionId}/reject`.
      */
-    fun listApprovals(
-        params: AgentListApprovalsParams = AgentListApprovalsParams.none(),
+    fun retrieveApprovals(
+        params: AgentRetrieveApprovalsParams = AgentRetrieveApprovalsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentListApprovalsPage
+    ): AgentRetrieveApprovalsResponse
 
-    /** @see listApprovals */
-    fun listApprovals(requestOptions: RequestOptions): AgentListApprovalsPage =
-        listApprovals(AgentListApprovalsParams.none(), requestOptions)
+    /** @see retrieveApprovals */
+    fun retrieveApprovals(requestOptions: RequestOptions): AgentRetrieveApprovalsResponse =
+        retrieveApprovals(AgentRetrieveApprovalsParams.none(), requestOptions)
 
     /**
      * Partially update an agent's policy. Only provided fields will be updated; omitted fields
@@ -201,8 +198,6 @@ interface AgentService {
          * rejecting transactions initiated by agents.
          */
         fun deviceCodes(): DeviceCodeService.WithRawResponse
-
-        fun transactions(): TransactionService.WithRawResponse
 
         /**
          * Endpoints for creating and managing agents (experimental), called by the partner's
@@ -316,18 +311,20 @@ interface AgentService {
 
         /**
          * Returns a raw HTTP response for `get /agents/approvals`, but is otherwise the same as
-         * [AgentService.listApprovals].
+         * [AgentService.retrieveApprovals].
          */
         @MustBeClosed
-        fun listApprovals(
-            params: AgentListApprovalsParams = AgentListApprovalsParams.none(),
+        fun retrieveApprovals(
+            params: AgentRetrieveApprovalsParams = AgentRetrieveApprovalsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentListApprovalsPage>
+        ): HttpResponseFor<AgentRetrieveApprovalsResponse>
 
-        /** @see listApprovals */
+        /** @see retrieveApprovals */
         @MustBeClosed
-        fun listApprovals(requestOptions: RequestOptions): HttpResponseFor<AgentListApprovalsPage> =
-            listApprovals(AgentListApprovalsParams.none(), requestOptions)
+        fun retrieveApprovals(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<AgentRetrieveApprovalsResponse> =
+            retrieveApprovals(AgentRetrieveApprovalsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `patch /agents/{agentId}/policy`, but is otherwise the

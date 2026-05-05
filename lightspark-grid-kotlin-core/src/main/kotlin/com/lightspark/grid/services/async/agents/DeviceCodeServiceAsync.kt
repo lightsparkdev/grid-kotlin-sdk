@@ -6,12 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusParams
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusResponse
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeDeviceCodesParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeDeviceCodesResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemParams
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemResponse
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateParams
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateResponse
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRetrieveStatusParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRetrieveStatusResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -34,28 +34,29 @@ interface DeviceCodeServiceAsync {
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): DeviceCodeServiceAsync
 
     /**
-     * Check whether a device code has been redeemed. Use this to poll for agent installation
-     * completion after creating an agent.
+     * Generate a new device code for an existing agent. Use this when the original device code has
+     * expired before being redeemed, or when the agent software needs to be reinstalled. Any
+     * previously issued unredeemed device codes for this agent are invalidated.
      */
-    suspend fun getStatus(
-        code: String,
-        params: DeviceCodeGetStatusParams = DeviceCodeGetStatusParams.none(),
+    suspend fun deviceCodes(
+        agentId: String,
+        params: DeviceCodeDeviceCodesParams = DeviceCodeDeviceCodesParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DeviceCodeGetStatusResponse =
-        getStatus(params.toBuilder().code(code).build(), requestOptions)
+    ): DeviceCodeDeviceCodesResponse =
+        deviceCodes(params.toBuilder().agentId(agentId).build(), requestOptions)
 
-    /** @see getStatus */
-    suspend fun getStatus(
-        params: DeviceCodeGetStatusParams,
+    /** @see deviceCodes */
+    suspend fun deviceCodes(
+        params: DeviceCodeDeviceCodesParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DeviceCodeGetStatusResponse
+    ): DeviceCodeDeviceCodesResponse
 
-    /** @see getStatus */
-    suspend fun getStatus(
-        code: String,
+    /** @see deviceCodes */
+    suspend fun deviceCodes(
+        agentId: String,
         requestOptions: RequestOptions,
-    ): DeviceCodeGetStatusResponse =
-        getStatus(code, DeviceCodeGetStatusParams.none(), requestOptions)
+    ): DeviceCodeDeviceCodesResponse =
+        deviceCodes(agentId, DeviceCodeDeviceCodesParams.none(), requestOptions)
 
     /**
      * Redeem a device code to obtain agent credentials. This endpoint is called by the agent
@@ -81,29 +82,28 @@ interface DeviceCodeServiceAsync {
         redeem(code, DeviceCodeRedeemParams.none(), requestOptions)
 
     /**
-     * Generate a new device code for an existing agent. Use this when the original device code has
-     * expired before being redeemed, or when the agent software needs to be reinstalled. Any
-     * previously issued unredeemed device codes for this agent are invalidated.
+     * Check whether a device code has been redeemed. Use this to poll for agent installation
+     * completion after creating an agent.
      */
-    suspend fun regenerate(
-        agentId: String,
-        params: DeviceCodeRegenerateParams = DeviceCodeRegenerateParams.none(),
+    suspend fun retrieveStatus(
+        code: String,
+        params: DeviceCodeRetrieveStatusParams = DeviceCodeRetrieveStatusParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DeviceCodeRegenerateResponse =
-        regenerate(params.toBuilder().agentId(agentId).build(), requestOptions)
+    ): DeviceCodeRetrieveStatusResponse =
+        retrieveStatus(params.toBuilder().code(code).build(), requestOptions)
 
-    /** @see regenerate */
-    suspend fun regenerate(
-        params: DeviceCodeRegenerateParams,
+    /** @see retrieveStatus */
+    suspend fun retrieveStatus(
+        params: DeviceCodeRetrieveStatusParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): DeviceCodeRegenerateResponse
+    ): DeviceCodeRetrieveStatusResponse
 
-    /** @see regenerate */
-    suspend fun regenerate(
-        agentId: String,
+    /** @see retrieveStatus */
+    suspend fun retrieveStatus(
+        code: String,
         requestOptions: RequestOptions,
-    ): DeviceCodeRegenerateResponse =
-        regenerate(agentId, DeviceCodeRegenerateParams.none(), requestOptions)
+    ): DeviceCodeRetrieveStatusResponse =
+        retrieveStatus(code, DeviceCodeRetrieveStatusParams.none(), requestOptions)
 
     /**
      * A view of [DeviceCodeServiceAsync] that provides access to raw HTTP responses for each
@@ -121,31 +121,31 @@ interface DeviceCodeServiceAsync {
         ): DeviceCodeServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `get /agents/device-codes/{code}/status`, but is
-         * otherwise the same as [DeviceCodeServiceAsync.getStatus].
+         * Returns a raw HTTP response for `post /agents/{agentId}/device-codes`, but is otherwise
+         * the same as [DeviceCodeServiceAsync.deviceCodes].
          */
         @MustBeClosed
-        suspend fun getStatus(
-            code: String,
-            params: DeviceCodeGetStatusParams = DeviceCodeGetStatusParams.none(),
+        suspend fun deviceCodes(
+            agentId: String,
+            params: DeviceCodeDeviceCodesParams = DeviceCodeDeviceCodesParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DeviceCodeGetStatusResponse> =
-            getStatus(params.toBuilder().code(code).build(), requestOptions)
+        ): HttpResponseFor<DeviceCodeDeviceCodesResponse> =
+            deviceCodes(params.toBuilder().agentId(agentId).build(), requestOptions)
 
-        /** @see getStatus */
+        /** @see deviceCodes */
         @MustBeClosed
-        suspend fun getStatus(
-            params: DeviceCodeGetStatusParams,
+        suspend fun deviceCodes(
+            params: DeviceCodeDeviceCodesParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DeviceCodeGetStatusResponse>
+        ): HttpResponseFor<DeviceCodeDeviceCodesResponse>
 
-        /** @see getStatus */
+        /** @see deviceCodes */
         @MustBeClosed
-        suspend fun getStatus(
-            code: String,
+        suspend fun deviceCodes(
+            agentId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DeviceCodeGetStatusResponse> =
-            getStatus(code, DeviceCodeGetStatusParams.none(), requestOptions)
+        ): HttpResponseFor<DeviceCodeDeviceCodesResponse> =
+            deviceCodes(agentId, DeviceCodeDeviceCodesParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /agents/device-codes/{code}/redeem`, but is
@@ -175,30 +175,30 @@ interface DeviceCodeServiceAsync {
             redeem(code, DeviceCodeRedeemParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /agents/{agentId}/device-codes`, but is otherwise
-         * the same as [DeviceCodeServiceAsync.regenerate].
+         * Returns a raw HTTP response for `get /agents/device-codes/{code}/status`, but is
+         * otherwise the same as [DeviceCodeServiceAsync.retrieveStatus].
          */
         @MustBeClosed
-        suspend fun regenerate(
-            agentId: String,
-            params: DeviceCodeRegenerateParams = DeviceCodeRegenerateParams.none(),
+        suspend fun retrieveStatus(
+            code: String,
+            params: DeviceCodeRetrieveStatusParams = DeviceCodeRetrieveStatusParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DeviceCodeRegenerateResponse> =
-            regenerate(params.toBuilder().agentId(agentId).build(), requestOptions)
+        ): HttpResponseFor<DeviceCodeRetrieveStatusResponse> =
+            retrieveStatus(params.toBuilder().code(code).build(), requestOptions)
 
-        /** @see regenerate */
+        /** @see retrieveStatus */
         @MustBeClosed
-        suspend fun regenerate(
-            params: DeviceCodeRegenerateParams,
+        suspend fun retrieveStatus(
+            params: DeviceCodeRetrieveStatusParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<DeviceCodeRegenerateResponse>
+        ): HttpResponseFor<DeviceCodeRetrieveStatusResponse>
 
-        /** @see regenerate */
+        /** @see retrieveStatus */
         @MustBeClosed
-        suspend fun regenerate(
-            agentId: String,
+        suspend fun retrieveStatus(
+            code: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DeviceCodeRegenerateResponse> =
-            regenerate(agentId, DeviceCodeRegenerateParams.none(), requestOptions)
+        ): HttpResponseFor<DeviceCodeRetrieveStatusResponse> =
+            retrieveStatus(code, DeviceCodeRetrieveStatusParams.none(), requestOptions)
     }
 }

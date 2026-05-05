@@ -3,8 +3,9 @@
 package com.lightspark.grid.services.async.agents
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
-import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
+import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsParams
+import com.lightspark.grid.models.agents.me.MeTransferInParams
+import com.lightspark.grid.models.agents.me.MeTransferOutParams
 import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import org.junit.jupiter.api.Disabled
@@ -14,7 +15,7 @@ internal class MeServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun retrieve() {
+    suspend fun list() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -22,14 +23,14 @@ internal class MeServiceAsyncTest {
                 .build()
         val meServiceAsync = client.agents().me()
 
-        val me = meServiceAsync.retrieve()
+        val mes = meServiceAsync.list()
 
-        me.validate()
+        mes.validate()
     }
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun createTransferIn() {
+    suspend fun retrieveInternalAccounts() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -38,8 +39,31 @@ internal class MeServiceAsyncTest {
         val meServiceAsync = client.agents().me()
 
         val response =
-            meServiceAsync.createTransferIn(
-                MeCreateTransferInParams.builder()
+            meServiceAsync.retrieveInternalAccounts(
+                MeRetrieveInternalAccountsParams.builder()
+                    .currency("currency")
+                    .cursor("cursor")
+                    .limit(1L)
+                    .type(MeRetrieveInternalAccountsParams.Type.INTERNAL_FIAT)
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun transferIn() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val meServiceAsync = client.agents().me()
+
+        val response =
+            meServiceAsync.transferIn(
+                MeTransferInParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                     .destination(
                         InternalAccountReference.builder()
@@ -60,7 +84,7 @@ internal class MeServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun createTransferOut() {
+    suspend fun transferOut() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -69,8 +93,8 @@ internal class MeServiceAsyncTest {
         val meServiceAsync = client.agents().me()
 
         val response =
-            meServiceAsync.createTransferOut(
-                MeCreateTransferOutParams.builder()
+            meServiceAsync.transferOut(
+                MeTransferOutParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                     .destination(
                         ExternalAccountReference.builder()
@@ -87,20 +111,5 @@ internal class MeServiceAsyncTest {
             )
 
         response.validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
-    suspend fun listInternalAccounts() {
-        val client =
-            LightsparkGridOkHttpClientAsync.builder()
-                .username("My Username")
-                .password("My Password")
-                .build()
-        val meServiceAsync = client.agents().me()
-
-        val page = meServiceAsync.listInternalAccounts()
-
-        page.response().validate()
     }
 }

@@ -4,8 +4,10 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.agents.AgentCreateParams
+import com.lightspark.grid.models.agents.AgentRetrieveApprovalsParams
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -144,7 +146,7 @@ internal class AgentServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun listApprovals() {
+    fun retrieveApprovals() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -152,9 +154,20 @@ internal class AgentServiceTest {
                 .build()
         val agentService = client.agents()
 
-        val page = agentService.listApprovals()
+        val response =
+            agentService.retrieveApprovals(
+                AgentRetrieveApprovalsParams.builder()
+                    .agentId("agentId")
+                    .cursor("cursor")
+                    .customerId("customerId")
+                    .endDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .limit(1L)
+                    .sortOrder(AgentRetrieveApprovalsParams.SortOrder.ASC)
+                    .startDate(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .build()
+            )
 
-        page.response().validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

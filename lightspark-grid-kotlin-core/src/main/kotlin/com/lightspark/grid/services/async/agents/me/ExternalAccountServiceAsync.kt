@@ -7,10 +7,10 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponse
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountAddParams
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountDeleteParams
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListPageAsync
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountExternalAccountsParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveExternalAccountsParams
+import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveExternalAccountsResponse
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
@@ -62,19 +62,6 @@ interface ExternalAccountServiceAsync {
         retrieve(externalAccountId, ExternalAccountRetrieveParams.none(), requestOptions)
 
     /**
-     * Retrieve a paginated list of external accounts belonging to the authenticated agent's
-     * customer. Requires the MANAGE_EXTERNAL_ACCOUNTS permission in the agent's policy.
-     */
-    suspend fun list(
-        params: ExternalAccountListParams = ExternalAccountListParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccountListPageAsync
-
-    /** @see list */
-    suspend fun list(requestOptions: RequestOptions): ExternalAccountListPageAsync =
-        list(ExternalAccountListParams.none(), requestOptions)
-
-    /**
      * Delete an external account belonging to the authenticated agent's customer. Requires the
      * MANAGE_EXTERNAL_ACCOUNTS permission in the agent's policy.
      */
@@ -99,18 +86,39 @@ interface ExternalAccountServiceAsync {
      * Requires the MANAGE_EXTERNAL_ACCOUNTS permission in the agent's policy. The `customerId`
      * field is optional and will be inferred from the agent's associated customer if omitted.
      */
-    suspend fun add(
-        params: ExternalAccountAddParams,
+    suspend fun externalAccounts(
+        params: ExternalAccountExternalAccountsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ExternalAccount
 
-    /** @see add */
-    suspend fun add(
+    /** @see externalAccounts */
+    suspend fun externalAccounts(
         externalAccountCreate: ExternalAccountCreate,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ExternalAccount =
-        add(
-            ExternalAccountAddParams.builder().externalAccountCreate(externalAccountCreate).build(),
+        externalAccounts(
+            ExternalAccountExternalAccountsParams.builder()
+                .externalAccountCreate(externalAccountCreate)
+                .build(),
+            requestOptions,
+        )
+
+    /**
+     * Retrieve a paginated list of external accounts belonging to the authenticated agent's
+     * customer. Requires the MANAGE_EXTERNAL_ACCOUNTS permission in the agent's policy.
+     */
+    suspend fun retrieveExternalAccounts(
+        params: ExternalAccountRetrieveExternalAccountsParams =
+            ExternalAccountRetrieveExternalAccountsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ExternalAccountRetrieveExternalAccountsResponse
+
+    /** @see retrieveExternalAccounts */
+    suspend fun retrieveExternalAccounts(
+        requestOptions: RequestOptions
+    ): ExternalAccountRetrieveExternalAccountsResponse =
+        retrieveExternalAccounts(
+            ExternalAccountRetrieveExternalAccountsParams.none(),
             requestOptions,
         )
 
@@ -160,23 +168,6 @@ interface ExternalAccountServiceAsync {
             retrieve(externalAccountId, ExternalAccountRetrieveParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `get /agents/me/external-accounts`, but is otherwise the
-         * same as [ExternalAccountServiceAsync.list].
-         */
-        @MustBeClosed
-        suspend fun list(
-            params: ExternalAccountListParams = ExternalAccountListParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccountListPageAsync>
-
-        /** @see list */
-        @MustBeClosed
-        suspend fun list(
-            requestOptions: RequestOptions
-        ): HttpResponseFor<ExternalAccountListPageAsync> =
-            list(ExternalAccountListParams.none(), requestOptions)
-
-        /**
          * Returns a raw HTTP response for `delete
          * /agents/me/external-accounts/{externalAccountId}`, but is otherwise the same as
          * [ExternalAccountServiceAsync.delete].
@@ -206,24 +197,45 @@ interface ExternalAccountServiceAsync {
 
         /**
          * Returns a raw HTTP response for `post /agents/me/external-accounts`, but is otherwise the
-         * same as [ExternalAccountServiceAsync.add].
+         * same as [ExternalAccountServiceAsync.externalAccounts].
          */
         @MustBeClosed
-        suspend fun add(
-            params: ExternalAccountAddParams,
+        suspend fun externalAccounts(
+            params: ExternalAccountExternalAccountsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ExternalAccount>
 
-        /** @see add */
+        /** @see externalAccounts */
         @MustBeClosed
-        suspend fun add(
+        suspend fun externalAccounts(
             externalAccountCreate: ExternalAccountCreate,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ExternalAccount> =
-            add(
-                ExternalAccountAddParams.builder()
+            externalAccounts(
+                ExternalAccountExternalAccountsParams.builder()
                     .externalAccountCreate(externalAccountCreate)
                     .build(),
+                requestOptions,
+            )
+
+        /**
+         * Returns a raw HTTP response for `get /agents/me/external-accounts`, but is otherwise the
+         * same as [ExternalAccountServiceAsync.retrieveExternalAccounts].
+         */
+        @MustBeClosed
+        suspend fun retrieveExternalAccounts(
+            params: ExternalAccountRetrieveExternalAccountsParams =
+                ExternalAccountRetrieveExternalAccountsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ExternalAccountRetrieveExternalAccountsResponse>
+
+        /** @see retrieveExternalAccounts */
+        @MustBeClosed
+        suspend fun retrieveExternalAccounts(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<ExternalAccountRetrieveExternalAccountsResponse> =
+            retrieveExternalAccounts(
+                ExternalAccountRetrieveExternalAccountsParams.none(),
                 requestOptions,
             )
     }

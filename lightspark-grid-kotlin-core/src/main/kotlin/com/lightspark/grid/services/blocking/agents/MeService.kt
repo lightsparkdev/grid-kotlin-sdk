@@ -6,14 +6,14 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
-import com.lightspark.grid.models.agents.me.MeCreateTransferInResponse
-import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
-import com.lightspark.grid.models.agents.me.MeCreateTransferOutResponse
-import com.lightspark.grid.models.agents.me.MeListInternalAccountsPage
-import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
-import com.lightspark.grid.models.agents.me.MeRetrieveParams
-import com.lightspark.grid.models.agents.me.MeRetrieveResponse
+import com.lightspark.grid.models.agents.me.MeListParams
+import com.lightspark.grid.models.agents.me.MeListResponse
+import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsParams
+import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsResponse
+import com.lightspark.grid.models.agents.me.MeTransferInParams
+import com.lightspark.grid.models.agents.me.MeTransferInResponse
+import com.lightspark.grid.models.agents.me.MeTransferOutParams
+import com.lightspark.grid.models.agents.me.MeTransferOutResponse
 import com.lightspark.grid.services.blocking.agents.me.ActionService
 import com.lightspark.grid.services.blocking.agents.me.ExternalAccountService
 import com.lightspark.grid.services.blocking.agents.me.QuoteService
@@ -65,7 +65,7 @@ interface MeService {
      * approval, the resulting transaction enters a pending state and must be approved by the
      * platform via `POST /transactions/{transactionId}/approve`.
      */
-    fun externalAccounts(): ExternalAccountService
+    fun actions(): ActionService
 
     /**
      * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -74,21 +74,37 @@ interface MeService {
      * approval, the resulting transaction enters a pending state and must be approved by the
      * platform via `POST /transactions/{transactionId}/approve`.
      */
-    fun actions(): ActionService
+    fun externalAccounts(): ExternalAccountService
 
     /**
      * Retrieve the authenticated agent's own profile, policy, and current usage. This endpoint is
      * called by the agent software itself using its own credentials (obtained via device code
      * redemption) rather than platform credentials.
      */
-    fun retrieve(
-        params: MeRetrieveParams = MeRetrieveParams.none(),
+    fun list(
+        params: MeListParams = MeListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): MeRetrieveResponse
+    ): MeListResponse
 
-    /** @see retrieve */
-    fun retrieve(requestOptions: RequestOptions): MeRetrieveResponse =
-        retrieve(MeRetrieveParams.none(), requestOptions)
+    /** @see list */
+    fun list(requestOptions: RequestOptions): MeListResponse =
+        list(MeListParams.none(), requestOptions)
+
+    /**
+     * Retrieve the internal accounts belonging to the customer this agent operates on behalf of.
+     * Use this to discover available source accounts for transfers and quotes, and to verify which
+     * accounts are accessible under the agent's `accountRestrictions` policy.
+     */
+    fun retrieveInternalAccounts(
+        params: MeRetrieveInternalAccountsParams = MeRetrieveInternalAccountsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): MeRetrieveInternalAccountsResponse
+
+    /** @see retrieveInternalAccounts */
+    fun retrieveInternalAccounts(
+        requestOptions: RequestOptions
+    ): MeRetrieveInternalAccountsResponse =
+        retrieveInternalAccounts(MeRetrieveInternalAccountsParams.none(), requestOptions)
 
     /**
      * Transfer funds from an external account to an internal account for the authenticated agent's
@@ -99,10 +115,10 @@ interface MeService {
      * external account sources with pull functionality (e.g. ACH Pull). Otherwise, use the payment
      * instructions on the internal account to deposit funds.
      */
-    fun createTransferIn(
-        params: MeCreateTransferInParams,
+    fun transferIn(
+        params: MeTransferInParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): MeCreateTransferInResponse
+    ): MeTransferInResponse
 
     /**
      * Transfer funds from an internal account to an external account for the authenticated agent's
@@ -111,24 +127,10 @@ interface MeService {
      * the transaction will be created in a pending state and must be approved by the platform via
      * `POST /agents/{agentId}/actions/{actionId}/approve`.
      */
-    fun createTransferOut(
-        params: MeCreateTransferOutParams,
+    fun transferOut(
+        params: MeTransferOutParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): MeCreateTransferOutResponse
-
-    /**
-     * Retrieve the internal accounts belonging to the customer this agent operates on behalf of.
-     * Use this to discover available source accounts for transfers and quotes, and to verify which
-     * accounts are accessible under the agent's `accountRestrictions` policy.
-     */
-    fun listInternalAccounts(
-        params: MeListInternalAccountsParams = MeListInternalAccountsParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): MeListInternalAccountsPage
-
-    /** @see listInternalAccounts */
-    fun listInternalAccounts(requestOptions: RequestOptions): MeListInternalAccountsPage =
-        listInternalAccounts(MeListInternalAccountsParams.none(), requestOptions)
+    ): MeTransferOutResponse
 
     /** A view of [MeService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -165,7 +167,7 @@ interface MeService {
          * requires approval, the resulting transaction enters a pending state and must be approved
          * by the platform via `POST /transactions/{transactionId}/approve`.
          */
-        fun externalAccounts(): ExternalAccountService.WithRawResponse
+        fun actions(): ActionService.WithRawResponse
 
         /**
          * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -174,58 +176,58 @@ interface MeService {
          * requires approval, the resulting transaction enters a pending state and must be approved
          * by the platform via `POST /transactions/{transactionId}/approve`.
          */
-        fun actions(): ActionService.WithRawResponse
+        fun externalAccounts(): ExternalAccountService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `get /agents/me`, but is otherwise the same as
-         * [MeService.retrieve].
+         * [MeService.list].
          */
         @MustBeClosed
-        fun retrieve(
-            params: MeRetrieveParams = MeRetrieveParams.none(),
+        fun list(
+            params: MeListParams = MeListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MeRetrieveResponse>
+        ): HttpResponseFor<MeListResponse>
 
-        /** @see retrieve */
+        /** @see list */
         @MustBeClosed
-        fun retrieve(requestOptions: RequestOptions): HttpResponseFor<MeRetrieveResponse> =
-            retrieve(MeRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `post /agents/me/transfer-in`, but is otherwise the same
-         * as [MeService.createTransferIn].
-         */
-        @MustBeClosed
-        fun createTransferIn(
-            params: MeCreateTransferInParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MeCreateTransferInResponse>
-
-        /**
-         * Returns a raw HTTP response for `post /agents/me/transfer-out`, but is otherwise the same
-         * as [MeService.createTransferOut].
-         */
-        @MustBeClosed
-        fun createTransferOut(
-            params: MeCreateTransferOutParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MeCreateTransferOutResponse>
+        fun list(requestOptions: RequestOptions): HttpResponseFor<MeListResponse> =
+            list(MeListParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /agents/me/internal-accounts`, but is otherwise the
-         * same as [MeService.listInternalAccounts].
+         * same as [MeService.retrieveInternalAccounts].
          */
         @MustBeClosed
-        fun listInternalAccounts(
-            params: MeListInternalAccountsParams = MeListInternalAccountsParams.none(),
+        fun retrieveInternalAccounts(
+            params: MeRetrieveInternalAccountsParams = MeRetrieveInternalAccountsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<MeListInternalAccountsPage>
+        ): HttpResponseFor<MeRetrieveInternalAccountsResponse>
 
-        /** @see listInternalAccounts */
+        /** @see retrieveInternalAccounts */
         @MustBeClosed
-        fun listInternalAccounts(
+        fun retrieveInternalAccounts(
             requestOptions: RequestOptions
-        ): HttpResponseFor<MeListInternalAccountsPage> =
-            listInternalAccounts(MeListInternalAccountsParams.none(), requestOptions)
+        ): HttpResponseFor<MeRetrieveInternalAccountsResponse> =
+            retrieveInternalAccounts(MeRetrieveInternalAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /agents/me/transfer-in`, but is otherwise the same
+         * as [MeService.transferIn].
+         */
+        @MustBeClosed
+        fun transferIn(
+            params: MeTransferInParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MeTransferInResponse>
+
+        /**
+         * Returns a raw HTTP response for `post /agents/me/transfer-out`, but is otherwise the same
+         * as [MeService.transferOut].
+         */
+        @MustBeClosed
+        fun transferOut(
+            params: MeTransferOutParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<MeTransferOutResponse>
     }
 }
