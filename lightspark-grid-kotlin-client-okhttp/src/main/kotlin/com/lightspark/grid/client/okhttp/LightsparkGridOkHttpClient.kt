@@ -235,10 +235,19 @@ class LightsparkGridOkHttpClient private constructor() {
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun username(username: String) = apply { clientOptions.username(username) }
+        fun username(username: String?) = apply { clientOptions.username(username) }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun password(password: String) = apply { clientOptions.password(password) }
+        fun password(password: String?) = apply { clientOptions.password(password) }
+
+        /**
+         * Bearer access token obtained by redeeming a device code. Required when calling
+         * agent-scoped endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped
+         * operations.
+         */
+        fun agentAccessToken(agentAccessToken: String?) = apply {
+            clientOptions.agentAccessToken(agentAccessToken)
+        }
 
         /**
          * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to

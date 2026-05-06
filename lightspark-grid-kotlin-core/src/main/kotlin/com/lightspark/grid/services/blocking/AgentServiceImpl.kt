@@ -84,6 +84,12 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
      */
     override fun deviceCodes(): DeviceCodeService = deviceCodes
 
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
     override fun transactions(): TransactionService = transactions
 
     /**
@@ -182,6 +188,12 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
          */
         override fun deviceCodes(): DeviceCodeService.WithRawResponse = deviceCodes
 
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
         override fun transactions(): TransactionService.WithRawResponse = transactions
 
         /**
