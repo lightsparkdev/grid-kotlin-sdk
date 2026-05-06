@@ -50,14 +50,11 @@ private constructor(
      * Type of identity or business verification document. Document types are grouped by
      * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
      * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-     * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-     * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-     * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-     * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-     * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** — PROOF_OF_ADDRESS
+     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+     * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+     * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -196,15 +193,11 @@ private constructor(
          * Type of identity or business verification document. Document types are grouped by
          * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
          * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-         * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-         * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-         * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-         * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-         * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** —
-         * PROOF_OF_ADDRESS
+         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+         * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+         * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+         * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL,
+         * RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          */
         fun documentType(documentType: DocumentType) = apply { body.documentType(documentType) }
 
@@ -444,15 +437,11 @@ private constructor(
          * Type of identity or business verification document. Document types are grouped by
          * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
          * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-         * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-         * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-         * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-         * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-         * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** —
-         * PROOF_OF_ADDRESS
+         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+         * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+         * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+         * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL,
+         * RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -588,14 +577,11 @@ private constructor(
              * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID
              * **Business — Legal presence** — CERTIFICATE_OF_INCORPORATION,
              * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business
-             * — Company details** — INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT,
-             * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION,
-             * INCUMBENCY_CERTIFICATE, GOOD_STANDING_CERTIFICATE **Business — Control structure** —
-             * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE,
-             * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT **Business — Ownership structure** —
-             * SHAREHOLDER_REGISTER, INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE,
-             * STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of
-             * address** — PROOF_OF_ADDRESS
+             * — Control structure** — DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY,
+             * PARTNERSHIP_CONTROL_AGREEMENT **Business — Ownership structure** —
+             * SHAREHOLDER_REGISTER, TRUST_AGREEMENT, PARTNERSHIP_AGREEMENT, OTHER **Proof of
+             * address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT,
+             * TAX_RETURN
              */
             fun documentType(documentType: DocumentType) =
                 documentType(MultipartField.of(documentType))
@@ -766,14 +752,11 @@ private constructor(
      * Type of identity or business verification document. Document types are grouped by
      * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
      * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-     * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-     * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-     * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-     * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-     * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** — PROOF_OF_ADDRESS
+     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+     * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+     * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      */
     class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -824,6 +807,20 @@ private constructor(
 
             val UTILITY_BILL = of("UTILITY_BILL")
 
+            val ELECTRICITY_BILL = of("ELECTRICITY_BILL")
+
+            val RENT_OR_LEASE_AGREEMENT = of("RENT_OR_LEASE_AGREEMENT")
+
+            val DIRECTOR_REGISTRY = of("DIRECTOR_REGISTRY")
+
+            val TRUST_AGREEMENT = of("TRUST_AGREEMENT")
+
+            val STATE_COMPANY_REGISTRY = of("STATE_COMPANY_REGISTRY")
+
+            val PARTNERSHIP_CONTROL_AGREEMENT = of("PARTNERSHIP_CONTROL_AGREEMENT")
+
+            val PARTNERSHIP_AGREEMENT = of("PARTNERSHIP_AGREEMENT")
+
             val SELFIE = of("SELFIE")
 
             val OTHER = of("OTHER")
@@ -850,6 +847,13 @@ private constructor(
             SHAREHOLDER_REGISTER,
             POWER_OF_ATTORNEY,
             UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
             SELFIE,
             OTHER,
         }
@@ -881,6 +885,13 @@ private constructor(
             SHAREHOLDER_REGISTER,
             POWER_OF_ATTORNEY,
             UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
             SELFIE,
             OTHER,
             /**
@@ -915,6 +926,13 @@ private constructor(
                 SHAREHOLDER_REGISTER -> Value.SHAREHOLDER_REGISTER
                 POWER_OF_ATTORNEY -> Value.POWER_OF_ATTORNEY
                 UTILITY_BILL -> Value.UTILITY_BILL
+                ELECTRICITY_BILL -> Value.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Value.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Value.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Value.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Value.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Value.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Value.PARTNERSHIP_AGREEMENT
                 SELFIE -> Value.SELFIE
                 OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
@@ -948,6 +966,13 @@ private constructor(
                 SHAREHOLDER_REGISTER -> Known.SHAREHOLDER_REGISTER
                 POWER_OF_ATTORNEY -> Known.POWER_OF_ATTORNEY
                 UTILITY_BILL -> Known.UTILITY_BILL
+                ELECTRICITY_BILL -> Known.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Known.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Known.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Known.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Known.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Known.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Known.PARTNERSHIP_AGREEMENT
                 SELFIE -> Known.SELFIE
                 OTHER -> Known.OTHER
                 else -> throw LightsparkGridInvalidDataException("Unknown DocumentType: $value")
