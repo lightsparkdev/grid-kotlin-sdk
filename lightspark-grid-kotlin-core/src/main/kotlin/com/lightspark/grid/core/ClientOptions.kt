@@ -96,9 +96,14 @@ private constructor(
      */
     val maxRetries: Int,
     /** API token authentication using format `<api token id>:<api client secret>` */
-    val username: String,
+    val username: String?,
     /** API token authentication using format `<api token id>:<api client secret>` */
-    val password: String,
+    val password: String?,
+    /**
+     * Bearer access token obtained by redeeming a device code. Required when calling agent-scoped
+     * endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped operations.
+     */
+    val agentAccessToken: String?,
     /**
      * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to verify
      * that the webhook was sent by Grid.
@@ -140,8 +145,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .username()
-         * .password()
          * ```
          */
         fun builder() = Builder()
@@ -170,6 +173,7 @@ private constructor(
         private var maxRetries: Int = 2
         private var username: String? = null
         private var password: String? = null
+        private var agentAccessToken: String? = null
         private var webhookSignature: String? = null
 
         internal fun from(clientOptions: ClientOptions) = apply {
@@ -186,6 +190,7 @@ private constructor(
             maxRetries = clientOptions.maxRetries
             username = clientOptions.username
             password = clientOptions.password
+            agentAccessToken = clientOptions.agentAccessToken
             webhookSignature = clientOptions.webhookSignature
         }
 
@@ -294,10 +299,19 @@ private constructor(
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun username(username: String) = apply { this.username = username }
+        fun username(username: String?) = apply { this.username = username }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun password(password: String) = apply { this.password = password }
+        fun password(password: String?) = apply { this.password = password }
+
+        /**
+         * Bearer access token obtained by redeeming a device code. Required when calling
+         * agent-scoped endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped
+         * operations.
+         */
+        fun agentAccessToken(agentAccessToken: String?) = apply {
+            this.agentAccessToken = agentAccessToken
+        }
 
         /**
          * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to
@@ -403,12 +417,13 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter            |System property                   |Environment variable      |Required|Default value                                 |
-         * |------------------|----------------------------------|--------------------------|--------|----------------------------------------------|
-         * |`username`        |`lightsparkgrid.gridClientId`     |`GRID_CLIENT_ID`          |true    |-                                             |
-         * |`password`        |`lightsparkgrid.gridClientSecret` |`GRID_CLIENT_SECRET`      |true    |-                                             |
-         * |`webhookSignature`|`lightsparkgrid.gridWebhookPubkey`|`GRID_WEBHOOK_PUBKEY`     |false   |-                                             |
-         * |`baseUrl`         |`lightsparkgrid.baseUrl`          |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
+         * |Setter            |System property                      |Environment variable      |Required|Default value                                 |
+         * |------------------|-------------------------------------|--------------------------|--------|----------------------------------------------|
+         * |`username`        |`lightsparkgrid.gridClientId`        |`GRID_CLIENT_ID`          |false   |-                                             |
+         * |`password`        |`lightsparkgrid.gridClientSecret`    |`GRID_CLIENT_SECRET`      |false   |-                                             |
+         * |`agentAccessToken`|`lightsparkgrid.gridAgentAccessToken`|`GRID_AGENT_ACCESS_TOKEN` |false   |-                                             |
+         * |`webhookSignature`|`lightsparkgrid.gridWebhookPubkey`   |`GRID_WEBHOOK_PUBKEY`     |false   |-                                             |
+         * |`baseUrl`         |`lightsparkgrid.baseUrl`             |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
          *
          * System properties take precedence over environment variables.
          */
@@ -421,6 +436,9 @@ private constructor(
             (System.getProperty("lightsparkgrid.gridClientSecret")
                     ?: System.getenv("GRID_CLIENT_SECRET"))
                 ?.let { password(it) }
+            (System.getProperty("lightsparkgrid.gridAgentAccessToken")
+                    ?: System.getenv("GRID_AGENT_ACCESS_TOKEN"))
+                ?.let { agentAccessToken(it) }
             (System.getProperty("lightsparkgrid.gridWebhookPubkey")
                     ?: System.getenv("GRID_WEBHOOK_PUBKEY"))
                 ?.let { webhookSignature(it) }
@@ -442,8 +460,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .username()
-         * .password()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -451,8 +467,6 @@ private constructor(
         fun build(): ClientOptions {
             val httpClient = checkRequired("httpClient", httpClient)
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
-            val username = checkRequired("username", username)
-            val password = checkRequired("password", password)
 
             val headers = Headers.builder()
             val queryParams = QueryParams.builder()
@@ -467,14 +481,19 @@ private constructor(
             // We replace after all the default headers to allow end-users to overwrite them.
             headers.replaceAll(this.headers.build())
             queryParams.replaceAll(this.queryParams.build())
-            username.let { username ->
-                password.let { password ->
+            username?.let { username ->
+                password?.let { password ->
                     if (!username.isEmpty() && !password.isEmpty()) {
                         headers.replace(
                             "Authorization",
                             "Basic ${Base64.getEncoder().encodeToString("$username:$password".toByteArray())}",
                         )
                     }
+                }
+            }
+            agentAccessToken?.let {
+                if (!it.isEmpty()) {
+                    headers.replace("Authorization", "Bearer $it")
                 }
             }
             webhookSignature?.let {
@@ -503,6 +522,7 @@ private constructor(
                 maxRetries,
                 username,
                 password,
+                agentAccessToken,
                 webhookSignature,
             )
         }

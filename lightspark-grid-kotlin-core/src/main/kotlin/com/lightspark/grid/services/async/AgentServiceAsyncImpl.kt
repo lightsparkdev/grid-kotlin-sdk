@@ -88,6 +88,12 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
      */
     override fun deviceCodes(): DeviceCodeServiceAsync = deviceCodes
 
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
     override fun transactions(): TransactionServiceAsync = transactions
 
     /**
@@ -191,6 +197,12 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
          */
         override fun deviceCodes(): DeviceCodeServiceAsync.WithRawResponse = deviceCodes
 
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
         override fun transactions(): TransactionServiceAsync.WithRawResponse = transactions
 
         /**

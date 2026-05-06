@@ -62,6 +62,12 @@ interface AgentServiceAsync {
      */
     fun deviceCodes(): DeviceCodeServiceAsync
 
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
     fun transactions(): TransactionServiceAsync
 
     /**
@@ -210,6 +216,12 @@ interface AgentServiceAsync {
          */
         fun deviceCodes(): DeviceCodeServiceAsync.WithRawResponse
 
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
         fun transactions(): TransactionServiceAsync.WithRawResponse
 
         /**
