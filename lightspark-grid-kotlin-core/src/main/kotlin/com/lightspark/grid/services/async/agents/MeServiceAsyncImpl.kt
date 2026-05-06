@@ -15,14 +15,15 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.agents.me.MeListParams
-import com.lightspark.grid.models.agents.me.MeListResponse
-import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsParams
-import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsResponse
-import com.lightspark.grid.models.agents.me.MeTransferInParams
-import com.lightspark.grid.models.agents.me.MeTransferInResponse
-import com.lightspark.grid.models.agents.me.MeTransferOutParams
-import com.lightspark.grid.models.agents.me.MeTransferOutResponse
+import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferInResponse
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutResponse
+import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageAsync
+import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageResponse
+import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
+import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.agents.me.MeRetrieveResponse
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsyncImpl
 import com.lightspark.grid.services.async.agents.me.ExternalAccountServiceAsync
@@ -52,11 +53,11 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
 
     private val quotes: QuoteServiceAsync by lazy { QuoteServiceAsyncImpl(clientOptions) }
 
-    private val actions: ActionServiceAsync by lazy { ActionServiceAsyncImpl(clientOptions) }
-
     private val externalAccounts: ExternalAccountServiceAsync by lazy {
         ExternalAccountServiceAsyncImpl(clientOptions)
     }
+
+    private val actions: ActionServiceAsync by lazy { ActionServiceAsyncImpl(clientOptions) }
 
     override fun withRawResponse(): MeServiceAsync.WithRawResponse = withRawResponse
 
@@ -88,7 +89,7 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
      * approval, the resulting transaction enters a pending state and must be approved by the
      * platform via `POST /transactions/{transactionId}/approve`.
      */
-    override fun actions(): ActionServiceAsync = actions
+    override fun externalAccounts(): ExternalAccountServiceAsync = externalAccounts
 
     /**
      * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -97,35 +98,35 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
      * approval, the resulting transaction enters a pending state and must be approved by the
      * platform via `POST /transactions/{transactionId}/approve`.
      */
-    override fun externalAccounts(): ExternalAccountServiceAsync = externalAccounts
+    override fun actions(): ActionServiceAsync = actions
 
-    override suspend fun list(
-        params: MeListParams,
+    override suspend fun retrieve(
+        params: MeRetrieveParams,
         requestOptions: RequestOptions,
-    ): MeListResponse =
+    ): MeRetrieveResponse =
         // get /agents/me
-        withRawResponse().list(params, requestOptions).parse()
+        withRawResponse().retrieve(params, requestOptions).parse()
 
-    override suspend fun retrieveInternalAccounts(
-        params: MeRetrieveInternalAccountsParams,
+    override suspend fun createTransferIn(
+        params: MeCreateTransferInParams,
         requestOptions: RequestOptions,
-    ): MeRetrieveInternalAccountsResponse =
-        // get /agents/me/internal-accounts
-        withRawResponse().retrieveInternalAccounts(params, requestOptions).parse()
-
-    override suspend fun transferIn(
-        params: MeTransferInParams,
-        requestOptions: RequestOptions,
-    ): MeTransferInResponse =
+    ): MeCreateTransferInResponse =
         // post /agents/me/transfer-in
-        withRawResponse().transferIn(params, requestOptions).parse()
+        withRawResponse().createTransferIn(params, requestOptions).parse()
 
-    override suspend fun transferOut(
-        params: MeTransferOutParams,
+    override suspend fun createTransferOut(
+        params: MeCreateTransferOutParams,
         requestOptions: RequestOptions,
-    ): MeTransferOutResponse =
+    ): MeCreateTransferOutResponse =
         // post /agents/me/transfer-out
-        withRawResponse().transferOut(params, requestOptions).parse()
+        withRawResponse().createTransferOut(params, requestOptions).parse()
+
+    override suspend fun listInternalAccounts(
+        params: MeListInternalAccountsParams,
+        requestOptions: RequestOptions,
+    ): MeListInternalAccountsPageAsync =
+        // get /agents/me/internal-accounts
+        withRawResponse().listInternalAccounts(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         MeServiceAsync.WithRawResponse {
@@ -141,12 +142,12 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             QuoteServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val actions: ActionServiceAsync.WithRawResponse by lazy {
-            ActionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val externalAccounts: ExternalAccountServiceAsync.WithRawResponse by lazy {
             ExternalAccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val actions: ActionServiceAsync.WithRawResponse by lazy {
+            ActionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -181,7 +182,8 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
          * requires approval, the resulting transaction enters a pending state and must be approved
          * by the platform via `POST /transactions/{transactionId}/approve`.
          */
-        override fun actions(): ActionServiceAsync.WithRawResponse = actions
+        override fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse =
+            externalAccounts
 
         /**
          * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -190,16 +192,15 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
          * requires approval, the resulting transaction enters a pending state and must be approved
          * by the platform via `POST /transactions/{transactionId}/approve`.
          */
-        override fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse =
-            externalAccounts
+        override fun actions(): ActionServiceAsync.WithRawResponse = actions
 
-        private val listHandler: Handler<MeListResponse> =
-            jsonHandler<MeListResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<MeRetrieveResponse> =
+            jsonHandler<MeRetrieveResponse>(clientOptions.jsonMapper)
 
-        override suspend fun list(
-            params: MeListParams,
+        override suspend fun retrieve(
+            params: MeRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<MeListResponse> {
+        ): HttpResponseFor<MeRetrieveResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -211,7 +212,7 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { listHandler.handle(it) }
+                    .use { retrieveHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -220,40 +221,13 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val retrieveInternalAccountsHandler: Handler<MeRetrieveInternalAccountsResponse> =
-            jsonHandler<MeRetrieveInternalAccountsResponse>(clientOptions.jsonMapper)
+        private val createTransferInHandler: Handler<MeCreateTransferInResponse> =
+            jsonHandler<MeCreateTransferInResponse>(clientOptions.jsonMapper)
 
-        override suspend fun retrieveInternalAccounts(
-            params: MeRetrieveInternalAccountsParams,
+        override suspend fun createTransferIn(
+            params: MeCreateTransferInParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<MeRetrieveInternalAccountsResponse> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.GET)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", "me", "internal-accounts")
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { retrieveInternalAccountsHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val transferInHandler: Handler<MeTransferInResponse> =
-            jsonHandler<MeTransferInResponse>(clientOptions.jsonMapper)
-
-        override suspend fun transferIn(
-            params: MeTransferInParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<MeTransferInResponse> {
+        ): HttpResponseFor<MeCreateTransferInResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -266,7 +240,7 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { transferInHandler.handle(it) }
+                    .use { createTransferInHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -275,13 +249,13 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val transferOutHandler: Handler<MeTransferOutResponse> =
-            jsonHandler<MeTransferOutResponse>(clientOptions.jsonMapper)
+        private val createTransferOutHandler: Handler<MeCreateTransferOutResponse> =
+            jsonHandler<MeCreateTransferOutResponse>(clientOptions.jsonMapper)
 
-        override suspend fun transferOut(
-            params: MeTransferOutParams,
+        override suspend fun createTransferOut(
+            params: MeCreateTransferOutParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<MeTransferOutResponse> {
+        ): HttpResponseFor<MeCreateTransferOutResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -294,11 +268,45 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { transferOutHandler.handle(it) }
+                    .use { createTransferOutHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+            }
+        }
+
+        private val listInternalAccountsHandler: Handler<MeListInternalAccountsPageResponse> =
+            jsonHandler<MeListInternalAccountsPageResponse>(clientOptions.jsonMapper)
+
+        override suspend fun listInternalAccounts(
+            params: MeListInternalAccountsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<MeListInternalAccountsPageAsync> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("agents", "me", "internal-accounts")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listInternalAccountsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+                    .let {
+                        MeListInternalAccountsPageAsync.builder()
+                            .service(MeServiceAsyncImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

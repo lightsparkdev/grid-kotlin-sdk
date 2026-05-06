@@ -516,20 +516,33 @@ private constructor(
         class EmailOtpCredentialVerifyRequest
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val clientPublicKey: JsonField<String>,
             private val otp: JsonField<String>,
             private val type: JsonField<Type>,
-            private val clientPublicKey: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
             @JsonCreator
             private constructor(
-                @JsonProperty("otp") @ExcludeMissing otp: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
                 @JsonProperty("clientPublicKey")
                 @ExcludeMissing
                 clientPublicKey: JsonField<String> = JsonMissing.of(),
-            ) : this(otp, type, clientPublicKey, mutableMapOf())
+                @JsonProperty("otp") @ExcludeMissing otp: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
+            ) : this(clientPublicKey, otp, type, mutableMapOf())
+
+            /**
+             * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+             * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+             * total). The matching private key must remain on the client. Grid encrypts the session
+             * signing key returned in the response to this public key. The key is ephemeral and
+             * one-time-use per verification request.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
 
             /**
              * The one-time password received by the user via email.
@@ -550,16 +563,14 @@ private constructor(
             fun type(): Type = type.getRequired("type")
 
             /**
-             * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
-             * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
-             * total). The matching private key must remain on the client. Grid encrypts the session
-             * signing key returned in the response to this public key. The key is ephemeral and
-             * one-time-use per verification request.
+             * Returns the raw JSON value of [clientPublicKey].
              *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
+             * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an
+             * unexpected type.
              */
-            fun clientPublicKey(): String? = clientPublicKey.getNullable("clientPublicKey")
+            @JsonProperty("clientPublicKey")
+            @ExcludeMissing
+            fun _clientPublicKey(): JsonField<String> = clientPublicKey
 
             /**
              * Returns the raw JSON value of [otp].
@@ -574,16 +585,6 @@ private constructor(
              * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
-
-            /**
-             * Returns the raw JSON value of [clientPublicKey].
-             *
-             * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("clientPublicKey")
-            @ExcludeMissing
-            fun _clientPublicKey(): JsonField<String> = clientPublicKey
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -605,6 +606,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```kotlin
+                 * .clientPublicKey()
                  * .otp()
                  * .type()
                  * ```
@@ -615,19 +617,40 @@ private constructor(
             /** A builder for [EmailOtpCredentialVerifyRequest]. */
             class Builder internal constructor() {
 
+                private var clientPublicKey: JsonField<String>? = null
                 private var otp: JsonField<String>? = null
                 private var type: JsonField<Type>? = null
-                private var clientPublicKey: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(
                     emailOtpCredentialVerifyRequest: EmailOtpCredentialVerifyRequest
                 ) = apply {
+                    clientPublicKey = emailOtpCredentialVerifyRequest.clientPublicKey
                     otp = emailOtpCredentialVerifyRequest.otp
                     type = emailOtpCredentialVerifyRequest.type
-                    clientPublicKey = emailOtpCredentialVerifyRequest.clientPublicKey
                     additionalProperties =
                         emailOtpCredentialVerifyRequest.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
+                 * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
+                 * total). The matching private key must remain on the client. Grid encrypts the
+                 * session signing key returned in the response to this public key. The key is
+                 * ephemeral and one-time-use per verification request.
+                 */
+                fun clientPublicKey(clientPublicKey: String) =
+                    clientPublicKey(JsonField.of(clientPublicKey))
+
+                /**
+                 * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.clientPublicKey] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+                    this.clientPublicKey = clientPublicKey
                 }
 
                 /** The one-time password received by the user via email. */
@@ -653,27 +676,6 @@ private constructor(
                  * supported value.
                  */
                 fun type(type: JsonField<Type>) = apply { this.type = type }
-
-                /**
-                 * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (0x04
-                 * prefix followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters
-                 * total). The matching private key must remain on the client. Grid encrypts the
-                 * session signing key returned in the response to this public key. The key is
-                 * ephemeral and one-time-use per verification request.
-                 */
-                fun clientPublicKey(clientPublicKey: String) =
-                    clientPublicKey(JsonField.of(clientPublicKey))
-
-                /**
-                 * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.clientPublicKey] with a well-typed [String]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
-                    this.clientPublicKey = clientPublicKey
-                }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
@@ -704,6 +706,7 @@ private constructor(
                  *
                  * The following fields are required:
                  * ```kotlin
+                 * .clientPublicKey()
                  * .otp()
                  * .type()
                  * ```
@@ -712,9 +715,9 @@ private constructor(
                  */
                 fun build(): EmailOtpCredentialVerifyRequest =
                     EmailOtpCredentialVerifyRequest(
+                        checkRequired("clientPublicKey", clientPublicKey),
                         checkRequired("otp", otp),
                         checkRequired("type", type),
-                        clientPublicKey,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -736,9 +739,9 @@ private constructor(
                     return@apply
                 }
 
+                clientPublicKey()
                 otp()
                 type().validate()
-                clientPublicKey()
                 validated = true
             }
 
@@ -757,9 +760,9 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (otp.asKnown() == null) 0 else 1) +
-                    (type.asKnown()?.validity() ?: 0) +
-                    (if (clientPublicKey.asKnown() == null) 0 else 1)
+                (if (clientPublicKey.asKnown() == null) 0 else 1) +
+                    (if (otp.asKnown() == null) 0 else 1) +
+                    (type.asKnown()?.validity() ?: 0)
 
             /** Discriminator value identifying this as an email OTP verification. */
             class Type @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -913,20 +916,20 @@ private constructor(
                 }
 
                 return other is EmailOtpCredentialVerifyRequest &&
+                    clientPublicKey == other.clientPublicKey &&
                     otp == other.otp &&
                     type == other.type &&
-                    clientPublicKey == other.clientPublicKey &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(otp, type, clientPublicKey, additionalProperties)
+                Objects.hash(clientPublicKey, otp, type, additionalProperties)
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "EmailOtpCredentialVerifyRequest{otp=$otp, type=$type, clientPublicKey=$clientPublicKey, additionalProperties=$additionalProperties}"
+                "EmailOtpCredentialVerifyRequest{clientPublicKey=$clientPublicKey, otp=$otp, type=$type, additionalProperties=$additionalProperties}"
         }
 
         class OAuthCredentialVerifyRequest

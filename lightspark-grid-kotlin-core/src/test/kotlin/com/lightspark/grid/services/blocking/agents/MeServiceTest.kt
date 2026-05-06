@@ -3,9 +3,8 @@
 package com.lightspark.grid.services.blocking.agents
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.agents.me.MeRetrieveInternalAccountsParams
-import com.lightspark.grid.models.agents.me.MeTransferInParams
-import com.lightspark.grid.models.agents.me.MeTransferOutParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import org.junit.jupiter.api.Disabled
@@ -15,7 +14,7 @@ internal class MeServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun list() {
+    fun retrieve() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -23,14 +22,14 @@ internal class MeServiceTest {
                 .build()
         val meService = client.agents().me()
 
-        val mes = meService.list()
+        val me = meService.retrieve()
 
-        mes.validate()
+        me.validate()
     }
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun retrieveInternalAccounts() {
+    fun createTransferIn() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -39,31 +38,8 @@ internal class MeServiceTest {
         val meService = client.agents().me()
 
         val response =
-            meService.retrieveInternalAccounts(
-                MeRetrieveInternalAccountsParams.builder()
-                    .currency("currency")
-                    .cursor("cursor")
-                    .limit(1L)
-                    .type(MeRetrieveInternalAccountsParams.Type.INTERNAL_FIAT)
-                    .build()
-            )
-
-        response.validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
-    fun transferIn() {
-        val client =
-            LightsparkGridOkHttpClient.builder()
-                .username("My Username")
-                .password("My Password")
-                .build()
-        val meService = client.agents().me()
-
-        val response =
-            meService.transferIn(
-                MeTransferInParams.builder()
+            meService.createTransferIn(
+                MeCreateTransferInParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                     .destination(
                         InternalAccountReference.builder()
@@ -84,7 +60,7 @@ internal class MeServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun transferOut() {
+    fun createTransferOut() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -93,8 +69,8 @@ internal class MeServiceTest {
         val meService = client.agents().me()
 
         val response =
-            meService.transferOut(
-                MeTransferOutParams.builder()
+            meService.createTransferOut(
+                MeCreateTransferOutParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                     .destination(
                         ExternalAccountReference.builder()
@@ -111,5 +87,20 @@ internal class MeServiceTest {
             )
 
         response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listInternalAccounts() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val meService = client.agents().me()
+
+        val page = meService.listInternalAccounts()
+
+        page.response().validate()
     }
 }
