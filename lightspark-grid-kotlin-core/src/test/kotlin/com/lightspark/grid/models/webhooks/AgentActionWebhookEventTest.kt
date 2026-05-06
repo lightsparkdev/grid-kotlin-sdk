@@ -5,6 +5,7 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
@@ -215,7 +216,7 @@ internal class AgentActionWebhookEventTest {
                                 .build()
                         )
                         .transferDetails(
-                            AgentActionWebhookEvent.Data.TransferDetails.builder()
+                            AgentTransferDetails.builder()
                                 .amount(50000L)
                                 .currency("USD")
                                 .destinationAccountId(
@@ -416,7 +417,7 @@ internal class AgentActionWebhookEventTest {
                             .build()
                     )
                     .transferDetails(
-                        AgentActionWebhookEvent.Data.TransferDetails.builder()
+                        AgentTransferDetails.builder()
                             .amount(50000L)
                             .currency("USD")
                             .destinationAccountId(
@@ -625,7 +626,7 @@ internal class AgentActionWebhookEventTest {
                                 .build()
                         )
                         .transferDetails(
-                            AgentActionWebhookEvent.Data.TransferDetails.builder()
+                            AgentTransferDetails.builder()
                                 .amount(50000L)
                                 .currency("USD")
                                 .destinationAccountId(

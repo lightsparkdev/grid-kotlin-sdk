@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.agents.AgentCreateParams
+import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
 import org.junit.jupiter.api.Disabled
@@ -27,13 +28,11 @@ internal class AgentServiceTest {
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .name("Payroll Automation Agent")
                     .policy(
-                        AgentCreateParams.Policy.builder()
-                            .defaultExecutionMode(
-                                AgentCreateParams.Policy.DefaultExecutionMode.AUTO
-                            )
-                            .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                        AgentPolicy.builder()
+                            .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                            .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                             .spendingLimits(
-                                AgentCreateParams.Policy.SpendingLimits.builder()
+                                AgentPolicy.SpendingLimits.builder()
                                     .currency("USD")
                                     .perTransactionLimit(50000L)
                                     .dailyLimit(500000L)
@@ -42,16 +41,14 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .accountRestrictions(
-                                AgentCreateParams.Policy.AccountRestrictions.builder()
+                                AgentPolicy.AccountRestrictions.builder()
                                     .addAccountRule(
-                                        AgentCreateParams.Policy.AccountRestrictions.AccountRule
-                                            .builder()
+                                        AgentPolicy.AccountRestrictions.AccountRule.builder()
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
                                             .executionMode(
-                                                AgentCreateParams.Policy.AccountRestrictions
-                                                    .AccountRule
+                                                AgentPolicy.AccountRestrictions.AccountRule
                                                     .ExecutionMode
                                                     .AUTO
                                             )
@@ -64,7 +61,7 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .approvalThresholds(
-                                AgentCreateParams.Policy.ApprovalThresholds.builder()
+                                AgentPolicy.ApprovalThresholds.builder()
                                     .amount(100000L)
                                     .currency("USD")
                                     .build()

@@ -13,11 +13,11 @@ internal class AgentCreateParamsTest {
             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
             .name("Payroll Automation Agent")
             .policy(
-                AgentCreateParams.Policy.builder()
-                    .defaultExecutionMode(AgentCreateParams.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        AgentCreateParams.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -26,13 +26,12 @@ internal class AgentCreateParamsTest {
                             .build()
                     )
                     .accountRestrictions(
-                        AgentCreateParams.Policy.AccountRestrictions.builder()
+                        AgentPolicy.AccountRestrictions.builder()
                             .addAccountRule(
-                                AgentCreateParams.Policy.AccountRestrictions.AccountRule.builder()
+                                AgentPolicy.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        AgentCreateParams.Policy.AccountRestrictions.AccountRule
-                                            .ExecutionMode
+                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
                                             .AUTO
                                     )
                                     .perTransactionLimit(10000L)
@@ -42,7 +41,7 @@ internal class AgentCreateParamsTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentCreateParams.Policy.ApprovalThresholds.builder()
+                        AgentPolicy.ApprovalThresholds.builder()
                             .amount(100000L)
                             .currency("USD")
                             .build()
@@ -59,11 +58,11 @@ internal class AgentCreateParamsTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .name("Payroll Automation Agent")
                 .policy(
-                    AgentCreateParams.Policy.builder()
-                        .defaultExecutionMode(AgentCreateParams.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentCreateParams.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -72,13 +71,12 @@ internal class AgentCreateParamsTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            AgentCreateParams.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    AgentCreateParams.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            AgentCreateParams.Policy.AccountRestrictions.AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -89,7 +87,7 @@ internal class AgentCreateParamsTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            AgentCreateParams.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -104,11 +102,11 @@ internal class AgentCreateParamsTest {
         assertThat(body.name()).isEqualTo("Payroll Automation Agent")
         assertThat(body.policy())
             .isEqualTo(
-                AgentCreateParams.Policy.builder()
-                    .defaultExecutionMode(AgentCreateParams.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        AgentCreateParams.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -117,13 +115,12 @@ internal class AgentCreateParamsTest {
                             .build()
                     )
                     .accountRestrictions(
-                        AgentCreateParams.Policy.AccountRestrictions.builder()
+                        AgentPolicy.AccountRestrictions.builder()
                             .addAccountRule(
-                                AgentCreateParams.Policy.AccountRestrictions.AccountRule.builder()
+                                AgentPolicy.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        AgentCreateParams.Policy.AccountRestrictions.AccountRule
-                                            .ExecutionMode
+                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
                                             .AUTO
                                     )
                                     .perTransactionLimit(10000L)
@@ -133,7 +130,7 @@ internal class AgentCreateParamsTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentCreateParams.Policy.ApprovalThresholds.builder()
+                        AgentPolicy.ApprovalThresholds.builder()
                             .amount(100000L)
                             .currency("USD")
                             .build()
@@ -149,11 +146,11 @@ internal class AgentCreateParamsTest {
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .name("Payroll Automation Agent")
                 .policy(
-                    AgentCreateParams.Policy.builder()
-                        .defaultExecutionMode(AgentCreateParams.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentCreateParams.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .build()
@@ -168,11 +165,11 @@ internal class AgentCreateParamsTest {
         assertThat(body.name()).isEqualTo("Payroll Automation Agent")
         assertThat(body.policy())
             .isEqualTo(
-                AgentCreateParams.Policy.builder()
-                    .defaultExecutionMode(AgentCreateParams.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentCreateParams.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        AgentCreateParams.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .build()

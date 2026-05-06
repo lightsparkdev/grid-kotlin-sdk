@@ -22,11 +22,11 @@ internal class AgentListResponseTest {
                 .isPaused(false)
                 .name("Payroll Automation Agent")
                 .policy(
-                    AgentListResponse.Policy.builder()
-                        .defaultExecutionMode(AgentListResponse.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentListResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentListResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -35,13 +35,12 @@ internal class AgentListResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            AgentListResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    AgentListResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            AgentListResponse.Policy.AccountRestrictions.AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -52,7 +51,7 @@ internal class AgentListResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            AgentListResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -61,7 +60,7 @@ internal class AgentListResponseTest {
                 )
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .usage(
-                    AgentListResponse.Usage.builder()
+                    AgentUsage.builder()
                         .dailySpend(150000L)
                         .dailyTransactionCount(3L)
                         .monthlySpend(750000L)
@@ -81,11 +80,11 @@ internal class AgentListResponseTest {
         assertThat(agentListResponse.name()).isEqualTo("Payroll Automation Agent")
         assertThat(agentListResponse.policy())
             .isEqualTo(
-                AgentListResponse.Policy.builder()
-                    .defaultExecutionMode(AgentListResponse.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentListResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        AgentListResponse.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -94,13 +93,12 @@ internal class AgentListResponseTest {
                             .build()
                     )
                     .accountRestrictions(
-                        AgentListResponse.Policy.AccountRestrictions.builder()
+                        AgentPolicy.AccountRestrictions.builder()
                             .addAccountRule(
-                                AgentListResponse.Policy.AccountRestrictions.AccountRule.builder()
+                                AgentPolicy.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        AgentListResponse.Policy.AccountRestrictions.AccountRule
-                                            .ExecutionMode
+                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
                                             .AUTO
                                     )
                                     .perTransactionLimit(10000L)
@@ -110,7 +108,7 @@ internal class AgentListResponseTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentListResponse.Policy.ApprovalThresholds.builder()
+                        AgentPolicy.ApprovalThresholds.builder()
                             .amount(100000L)
                             .currency("USD")
                             .build()
@@ -121,7 +119,7 @@ internal class AgentListResponseTest {
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
         assertThat(agentListResponse.usage())
             .isEqualTo(
-                AgentListResponse.Usage.builder()
+                AgentUsage.builder()
                     .dailySpend(150000L)
                     .dailyTransactionCount(3L)
                     .monthlySpend(750000L)
@@ -143,11 +141,11 @@ internal class AgentListResponseTest {
                 .isPaused(false)
                 .name("Payroll Automation Agent")
                 .policy(
-                    AgentListResponse.Policy.builder()
-                        .defaultExecutionMode(AgentListResponse.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentListResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentListResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -156,13 +154,12 @@ internal class AgentListResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            AgentListResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    AgentListResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            AgentListResponse.Policy.AccountRestrictions.AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -173,7 +170,7 @@ internal class AgentListResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            AgentListResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -182,7 +179,7 @@ internal class AgentListResponseTest {
                 )
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .usage(
-                    AgentListResponse.Usage.builder()
+                    AgentUsage.builder()
                         .dailySpend(150000L)
                         .dailyTransactionCount(3L)
                         .monthlySpend(750000L)
