@@ -136,6 +136,10 @@ interface CredentialService {
      * OTP is delivered out-of-band via email. After the user receives the new OTP, call `POST
      * /auth/credentials/{id}/verify` to complete verification and issue a session.
      *
+     * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
+     * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
+     * `clientPublicKey`.
+     *
      * For `PASSKEY` credentials, this issues a fresh Grid-generated WebAuthn challenge for
      * reauthentication. The request body must carry the client's ephemeral `clientPublicKey` so
      * Grid can bake it into the Turnkey session-creation payload the returned challenge is computed

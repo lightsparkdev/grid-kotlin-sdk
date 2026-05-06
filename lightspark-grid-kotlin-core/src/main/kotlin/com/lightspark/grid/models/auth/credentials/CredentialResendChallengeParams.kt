@@ -25,6 +25,10 @@ import java.util.Objects
  * delivered out-of-band via email. After the user receives the new OTP, call `POST
  * /auth/credentials/{id}/verify` to complete verification and issue a session.
  *
+ * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
+ * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
+ * `clientPublicKey`.
+ *
  * For `PASSKEY` credentials, this issues a fresh Grid-generated WebAuthn challenge for
  * reauthentication. The request body must carry the client's ephemeral `clientPublicKey` so Grid
  * can bake it into the Turnkey session-creation payload the returned challenge is computed from —
@@ -49,8 +53,7 @@ private constructor(
      * uncompressed SEC1 format (`04` prefix followed by the 32-byte X and 32-byte Y coordinates;
      * 130 hex characters total). The matching private key must remain on the client. Grid bakes
      * this key into the Turnkey session-creation payload that the returned `challenge` is computed
-     * from, so the resulting session signing key is sealed to the client. Ignored for `EMAIL_OTP`
-     * and `OAUTH` credentials.
+     * from, so the resulting session signing key is sealed to the client. Ignored for `EMAIL_OTP`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -119,7 +122,7 @@ private constructor(
          * coordinates; 130 hex characters total). The matching private key must remain on the
          * client. Grid bakes this key into the Turnkey session-creation payload that the returned
          * `challenge` is computed from, so the resulting session signing key is sealed to the
-         * client. Ignored for `EMAIL_OTP` and `OAUTH` credentials.
+         * client. Ignored for `EMAIL_OTP`.
          */
         fun clientPublicKey(clientPublicKey: String) = apply {
             body.clientPublicKey(clientPublicKey)
@@ -282,9 +285,10 @@ private constructor(
     /**
      * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
      * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the Turnkey
-     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP` and
-     * `OAUTH`, where the credential type alone is sufficient (the OTP is delivered out-of-band for
-     * `EMAIL_OTP`; there is no server-side challenge for `OAUTH`).
+     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`,
+     * where the credential type alone is sufficient because the OTP is delivered out-of-band. OAuth
+     * credentials do not use this endpoint; authenticate or reauthenticate them with `POST
+     * /auth/credentials/{id}/verify`.
      */
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -306,7 +310,7 @@ private constructor(
          * coordinates; 130 hex characters total). The matching private key must remain on the
          * client. Grid bakes this key into the Turnkey session-creation payload that the returned
          * `challenge` is computed from, so the resulting session signing key is sealed to the
-         * client. Ignored for `EMAIL_OTP` and `OAUTH` credentials.
+         * client. Ignored for `EMAIL_OTP`.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -358,7 +362,7 @@ private constructor(
              * coordinates; 130 hex characters total). The matching private key must remain on the
              * client. Grid bakes this key into the Turnkey session-creation payload that the
              * returned `challenge` is computed from, so the resulting session signing key is sealed
-             * to the client. Ignored for `EMAIL_OTP` and `OAUTH` credentials.
+             * to the client. Ignored for `EMAIL_OTP`.
              */
             fun clientPublicKey(clientPublicKey: String) =
                 clientPublicKey(JsonField.of(clientPublicKey))
