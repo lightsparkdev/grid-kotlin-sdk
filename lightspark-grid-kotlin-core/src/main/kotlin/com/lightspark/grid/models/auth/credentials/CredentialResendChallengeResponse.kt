@@ -29,12 +29,13 @@ import java.util.Objects
 
 /**
  * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
- * `EMAIL_OTP` and `OAUTH` credentials the body is a plain `AuthMethod` (wrapped as
- * `AuthMethodResponse` to disambiguate the oneOf). For `PASSKEY` credentials the body is a
- * `PasskeyAuthChallenge` — the base `AuthMethod` fields plus the Grid-issued `challenge`,
- * `requestId`, and `expiresAt` that drive the subsequent assertion. Registration responses from
- * `POST /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all three
- * credential types.
+ * `EMAIL_OTP` credentials the body is a plain `AuthMethod` (wrapped as `AuthMethodResponse` to
+ * disambiguate the oneOf). For `PASSKEY` credentials the body is a `PasskeyAuthChallenge` — the
+ * base `AuthMethod` fields plus the Grid-issued `challenge`, `requestId`, and `expiresAt` that
+ * drive the subsequent assertion. OAuth credentials do not use the challenge endpoint; call `POST
+ * /auth/credentials/{id}/verify` with a fresh OIDC token instead. Registration responses from `POST
+ * /auth/credentials` use the simpler `AuthMethodResponse` shape directly for all three credential
+ * types.
  */
 @JsonDeserialize(using = CredentialResendChallengeResponse.Deserializer::class)
 @JsonSerialize(using = CredentialResendChallengeResponse.Serializer::class)
@@ -48,10 +49,10 @@ private constructor(
     /**
      * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
      * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf` for
-     * the `EMAIL_OTP` and `OAUTH` branches of `POST /auth/credentials/{id}/challenge`. The only
-     * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf
-     * against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields
-     * would ambiguously match both branches.
+     * the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only difference from
+     * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+     * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+     * ambiguously match both branches.
      */
     fun authMethod(): AuthMethod? = authMethod
 
@@ -71,10 +72,10 @@ private constructor(
     /**
      * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
      * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf` for
-     * the `EMAIL_OTP` and `OAUTH` branches of `POST /auth/credentials/{id}/challenge`. The only
-     * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf
-     * against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields
-     * would ambiguously match both branches.
+     * the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only difference from
+     * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
+     * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
+     * ambiguously match both branches.
      */
     fun asAuthMethod(): AuthMethod = authMethod.getOrThrow("authMethod")
 
@@ -201,10 +202,10 @@ private constructor(
         /**
          * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
          * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf`
-         * for the `EMAIL_OTP` and `OAUTH` branches of `POST /auth/credentials/{id}/challenge`. The
-         * only difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates
-         * the oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with
-         * extra fields would ambiguously match both branches.
+         * for the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only
+         * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
+         * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
+         * fields would ambiguously match both branches.
          */
         fun ofAuthMethod(authMethod: AuthMethod) =
             CredentialResendChallengeResponse(authMethod = authMethod)
@@ -230,10 +231,10 @@ private constructor(
         /**
          * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
          * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf`
-         * for the `EMAIL_OTP` and `OAUTH` branches of `POST /auth/credentials/{id}/challenge`. The
-         * only difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates
-         * the oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with
-         * extra fields would ambiguously match both branches.
+         * for the `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only
+         * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
+         * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
+         * fields would ambiguously match both branches.
          */
         fun visitAuthMethod(authMethod: AuthMethod): T
 
