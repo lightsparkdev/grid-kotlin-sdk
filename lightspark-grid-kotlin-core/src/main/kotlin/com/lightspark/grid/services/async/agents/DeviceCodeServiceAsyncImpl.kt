@@ -16,12 +16,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeDeviceCodesParams
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeDeviceCodesResponse
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemParams
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemResponse
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRetrieveStatusParams
-import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRetrieveStatusResponse
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -41,12 +41,12 @@ class DeviceCodeServiceAsyncImpl internal constructor(private val clientOptions:
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): DeviceCodeServiceAsync =
         DeviceCodeServiceAsyncImpl(clientOptions.toBuilder().apply(modifier).build())
 
-    override suspend fun deviceCodes(
-        params: DeviceCodeDeviceCodesParams,
+    override suspend fun getStatus(
+        params: DeviceCodeGetStatusParams,
         requestOptions: RequestOptions,
-    ): DeviceCodeDeviceCodesResponse =
-        // post /agents/{agentId}/device-codes
-        withRawResponse().deviceCodes(params, requestOptions).parse()
+    ): DeviceCodeGetStatusResponse =
+        // get /agents/device-codes/{code}/status
+        withRawResponse().getStatus(params, requestOptions).parse()
 
     override suspend fun redeem(
         params: DeviceCodeRedeemParams,
@@ -55,12 +55,12 @@ class DeviceCodeServiceAsyncImpl internal constructor(private val clientOptions:
         // post /agents/device-codes/{code}/redeem
         withRawResponse().redeem(params, requestOptions).parse()
 
-    override suspend fun retrieveStatus(
-        params: DeviceCodeRetrieveStatusParams,
+    override suspend fun regenerate(
+        params: DeviceCodeRegenerateParams,
         requestOptions: RequestOptions,
-    ): DeviceCodeRetrieveStatusResponse =
-        // get /agents/device-codes/{code}/status
-        withRawResponse().retrieveStatus(params, requestOptions).parse()
+    ): DeviceCodeRegenerateResponse =
+        // post /agents/{agentId}/device-codes
+        withRawResponse().regenerate(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         DeviceCodeServiceAsync.WithRawResponse {
@@ -75,29 +75,28 @@ class DeviceCodeServiceAsyncImpl internal constructor(private val clientOptions:
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val deviceCodesHandler: Handler<DeviceCodeDeviceCodesResponse> =
-            jsonHandler<DeviceCodeDeviceCodesResponse>(clientOptions.jsonMapper)
+        private val getStatusHandler: Handler<DeviceCodeGetStatusResponse> =
+            jsonHandler<DeviceCodeGetStatusResponse>(clientOptions.jsonMapper)
 
-        override suspend fun deviceCodes(
-            params: DeviceCodeDeviceCodesParams,
+        override suspend fun getStatus(
+            params: DeviceCodeGetStatusParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DeviceCodeDeviceCodesResponse> {
+        ): HttpResponseFor<DeviceCodeGetStatusResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("agentId", params.agentId())
+            checkRequired("code", params.code())
             val request =
                 HttpRequest.builder()
-                    .method(HttpMethod.POST)
+                    .method(HttpMethod.GET)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", params._pathParam(0), "device-codes")
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .addPathSegments("agents", "device-codes", params._pathParam(0), "status")
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { deviceCodesHandler.handle(it) }
+                    .use { getStatusHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -137,28 +136,29 @@ class DeviceCodeServiceAsyncImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val retrieveStatusHandler: Handler<DeviceCodeRetrieveStatusResponse> =
-            jsonHandler<DeviceCodeRetrieveStatusResponse>(clientOptions.jsonMapper)
+        private val regenerateHandler: Handler<DeviceCodeRegenerateResponse> =
+            jsonHandler<DeviceCodeRegenerateResponse>(clientOptions.jsonMapper)
 
-        override suspend fun retrieveStatus(
-            params: DeviceCodeRetrieveStatusParams,
+        override suspend fun regenerate(
+            params: DeviceCodeRegenerateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DeviceCodeRetrieveStatusResponse> {
+        ): HttpResponseFor<DeviceCodeRegenerateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
-            checkRequired("code", params.code())
+            checkRequired("agentId", params.agentId())
             val request =
                 HttpRequest.builder()
-                    .method(HttpMethod.GET)
+                    .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", "device-codes", params._pathParam(0), "status")
+                    .addPathSegments("agents", params._pathParam(0), "device-codes")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { retrieveStatusHandler.handle(it) }
+                    .use { regenerateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

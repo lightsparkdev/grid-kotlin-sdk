@@ -20,11 +20,12 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
+import com.lightspark.grid.models.agents.AgentListApprovalsPageAsync
+import com.lightspark.grid.models.agents.AgentListApprovalsPageResponse
+import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPageAsync
 import com.lightspark.grid.models.agents.AgentListPageResponse
 import com.lightspark.grid.models.agents.AgentListParams
-import com.lightspark.grid.models.agents.AgentRetrieveApprovalsParams
-import com.lightspark.grid.models.agents.AgentRetrieveApprovalsResponse
 import com.lightspark.grid.models.agents.AgentRetrieveParams
 import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
@@ -37,6 +38,8 @@ import com.lightspark.grid.services.async.agents.DeviceCodeServiceAsync
 import com.lightspark.grid.services.async.agents.DeviceCodeServiceAsyncImpl
 import com.lightspark.grid.services.async.agents.MeServiceAsync
 import com.lightspark.grid.services.async.agents.MeServiceAsyncImpl
+import com.lightspark.grid.services.async.agents.TransactionServiceAsync
+import com.lightspark.grid.services.async.agents.TransactionServiceAsyncImpl
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -55,6 +58,10 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
     private val deviceCodes: DeviceCodeServiceAsync by lazy {
         DeviceCodeServiceAsyncImpl(clientOptions)
+    }
+
+    private val transactions: TransactionServiceAsync by lazy {
+        TransactionServiceAsyncImpl(clientOptions)
     }
 
     private val actions: ActionServiceAsync by lazy { ActionServiceAsyncImpl(clientOptions) }
@@ -80,6 +87,8 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
      * initiated by agents.
      */
     override fun deviceCodes(): DeviceCodeServiceAsync = deviceCodes
+
+    override fun transactions(): TransactionServiceAsync = transactions
 
     /**
      * Endpoints for creating and managing agents (experimental), called by the partner's backend
@@ -122,12 +131,12 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
         withRawResponse().delete(params, requestOptions)
     }
 
-    override suspend fun retrieveApprovals(
-        params: AgentRetrieveApprovalsParams,
+    override suspend fun listApprovals(
+        params: AgentListApprovalsParams,
         requestOptions: RequestOptions,
-    ): AgentRetrieveApprovalsResponse =
+    ): AgentListApprovalsPageAsync =
         // get /agents/approvals
-        withRawResponse().retrieveApprovals(params, requestOptions).parse()
+        withRawResponse().listApprovals(params, requestOptions).parse()
 
     override suspend fun updatePolicy(
         params: AgentUpdatePolicyParams,
@@ -148,6 +157,10 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
 
         private val deviceCodes: DeviceCodeServiceAsync.WithRawResponse by lazy {
             DeviceCodeServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val transactions: TransactionServiceAsync.WithRawResponse by lazy {
+            TransactionServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val actions: ActionServiceAsync.WithRawResponse by lazy {
@@ -177,6 +190,8 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
          * rejecting transactions initiated by agents.
          */
         override fun deviceCodes(): DeviceCodeServiceAsync.WithRawResponse = deviceCodes
+
+        override fun transactions(): TransactionServiceAsync.WithRawResponse = transactions
 
         /**
          * Endpoints for creating and managing agents (experimental), called by the partner's
@@ -333,13 +348,13 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val retrieveApprovalsHandler: Handler<AgentRetrieveApprovalsResponse> =
-            jsonHandler<AgentRetrieveApprovalsResponse>(clientOptions.jsonMapper)
+        private val listApprovalsHandler: Handler<AgentListApprovalsPageResponse> =
+            jsonHandler<AgentListApprovalsPageResponse>(clientOptions.jsonMapper)
 
-        override suspend fun retrieveApprovals(
-            params: AgentRetrieveApprovalsParams,
+        override suspend fun listApprovals(
+            params: AgentListApprovalsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentRetrieveApprovalsResponse> {
+        ): HttpResponseFor<AgentListApprovalsPageAsync> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -351,11 +366,18 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { retrieveApprovalsHandler.handle(it) }
+                    .use { listApprovalsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        AgentListApprovalsPageAsync.builder()
+                            .service(AgentServiceAsyncImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

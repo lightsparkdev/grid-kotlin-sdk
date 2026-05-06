@@ -20,11 +20,12 @@ import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
+import com.lightspark.grid.models.agents.AgentListApprovalsPage
+import com.lightspark.grid.models.agents.AgentListApprovalsPageResponse
+import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPage
 import com.lightspark.grid.models.agents.AgentListPageResponse
 import com.lightspark.grid.models.agents.AgentListParams
-import com.lightspark.grid.models.agents.AgentRetrieveApprovalsParams
-import com.lightspark.grid.models.agents.AgentRetrieveApprovalsResponse
 import com.lightspark.grid.models.agents.AgentRetrieveParams
 import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
@@ -37,6 +38,8 @@ import com.lightspark.grid.services.blocking.agents.DeviceCodeService
 import com.lightspark.grid.services.blocking.agents.DeviceCodeServiceImpl
 import com.lightspark.grid.services.blocking.agents.MeService
 import com.lightspark.grid.services.blocking.agents.MeServiceImpl
+import com.lightspark.grid.services.blocking.agents.TransactionService
+import com.lightspark.grid.services.blocking.agents.TransactionServiceImpl
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -54,6 +57,8 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
     private val me: MeService by lazy { MeServiceImpl(clientOptions) }
 
     private val deviceCodes: DeviceCodeService by lazy { DeviceCodeServiceImpl(clientOptions) }
+
+    private val transactions: TransactionService by lazy { TransactionServiceImpl(clientOptions) }
 
     private val actions: ActionService by lazy { ActionServiceImpl(clientOptions) }
 
@@ -78,6 +83,8 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
      * initiated by agents.
      */
     override fun deviceCodes(): DeviceCodeService = deviceCodes
+
+    override fun transactions(): TransactionService = transactions
 
     /**
      * Endpoints for creating and managing agents (experimental), called by the partner's backend
@@ -117,12 +124,12 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
         withRawResponse().delete(params, requestOptions)
     }
 
-    override fun retrieveApprovals(
-        params: AgentRetrieveApprovalsParams,
+    override fun listApprovals(
+        params: AgentListApprovalsParams,
         requestOptions: RequestOptions,
-    ): AgentRetrieveApprovalsResponse =
+    ): AgentListApprovalsPage =
         // get /agents/approvals
-        withRawResponse().retrieveApprovals(params, requestOptions).parse()
+        withRawResponse().listApprovals(params, requestOptions).parse()
 
     override fun updatePolicy(
         params: AgentUpdatePolicyParams,
@@ -143,6 +150,10 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
 
         private val deviceCodes: DeviceCodeService.WithRawResponse by lazy {
             DeviceCodeServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val transactions: TransactionService.WithRawResponse by lazy {
+            TransactionServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         private val actions: ActionService.WithRawResponse by lazy {
@@ -170,6 +181,8 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
          * rejecting transactions initiated by agents.
          */
         override fun deviceCodes(): DeviceCodeService.WithRawResponse = deviceCodes
+
+        override fun transactions(): TransactionService.WithRawResponse = transactions
 
         /**
          * Endpoints for creating and managing agents (experimental), called by the partner's
@@ -326,13 +339,13 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val retrieveApprovalsHandler: Handler<AgentRetrieveApprovalsResponse> =
-            jsonHandler<AgentRetrieveApprovalsResponse>(clientOptions.jsonMapper)
+        private val listApprovalsHandler: Handler<AgentListApprovalsPageResponse> =
+            jsonHandler<AgentListApprovalsPageResponse>(clientOptions.jsonMapper)
 
-        override fun retrieveApprovals(
-            params: AgentRetrieveApprovalsParams,
+        override fun listApprovals(
+            params: AgentListApprovalsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentRetrieveApprovalsResponse> {
+        ): HttpResponseFor<AgentListApprovalsPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -344,11 +357,18 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { retrieveApprovalsHandler.handle(it) }
+                    .use { listApprovalsHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        AgentListApprovalsPage.builder()
+                            .service(AgentServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
