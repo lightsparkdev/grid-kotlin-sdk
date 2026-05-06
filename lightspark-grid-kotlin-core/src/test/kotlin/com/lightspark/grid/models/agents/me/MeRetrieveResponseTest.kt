@@ -4,6 +4,8 @@ package com.lightspark.grid.models.agents.me
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.agents.AgentPolicy
+import com.lightspark.grid.models.agents.AgentUsage
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -22,11 +24,11 @@ internal class MeRetrieveResponseTest {
                 .isPaused(false)
                 .name("Payroll Automation Agent")
                 .policy(
-                    MeRetrieveResponse.Policy.builder()
-                        .defaultExecutionMode(MeRetrieveResponse.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(MeRetrieveResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            MeRetrieveResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -35,14 +37,12 @@ internal class MeRetrieveResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            MeRetrieveResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    MeRetrieveResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            MeRetrieveResponse.Policy.AccountRestrictions
-                                                .AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -53,7 +53,7 @@ internal class MeRetrieveResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            MeRetrieveResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -62,7 +62,7 @@ internal class MeRetrieveResponseTest {
                 )
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .usage(
-                    MeRetrieveResponse.Usage.builder()
+                    AgentUsage.builder()
                         .dailySpend(150000L)
                         .dailyTransactionCount(3L)
                         .monthlySpend(750000L)
@@ -82,11 +82,11 @@ internal class MeRetrieveResponseTest {
         assertThat(meRetrieveResponse.name()).isEqualTo("Payroll Automation Agent")
         assertThat(meRetrieveResponse.policy())
             .isEqualTo(
-                MeRetrieveResponse.Policy.builder()
-                    .defaultExecutionMode(MeRetrieveResponse.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(MeRetrieveResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        MeRetrieveResponse.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -95,13 +95,12 @@ internal class MeRetrieveResponseTest {
                             .build()
                     )
                     .accountRestrictions(
-                        MeRetrieveResponse.Policy.AccountRestrictions.builder()
+                        AgentPolicy.AccountRestrictions.builder()
                             .addAccountRule(
-                                MeRetrieveResponse.Policy.AccountRestrictions.AccountRule.builder()
+                                AgentPolicy.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        MeRetrieveResponse.Policy.AccountRestrictions.AccountRule
-                                            .ExecutionMode
+                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
                                             .AUTO
                                     )
                                     .perTransactionLimit(10000L)
@@ -111,7 +110,7 @@ internal class MeRetrieveResponseTest {
                             .build()
                     )
                     .approvalThresholds(
-                        MeRetrieveResponse.Policy.ApprovalThresholds.builder()
+                        AgentPolicy.ApprovalThresholds.builder()
                             .amount(100000L)
                             .currency("USD")
                             .build()
@@ -122,7 +121,7 @@ internal class MeRetrieveResponseTest {
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
         assertThat(meRetrieveResponse.usage())
             .isEqualTo(
-                MeRetrieveResponse.Usage.builder()
+                AgentUsage.builder()
                     .dailySpend(150000L)
                     .dailyTransactionCount(3L)
                     .monthlySpend(750000L)
@@ -144,11 +143,11 @@ internal class MeRetrieveResponseTest {
                 .isPaused(false)
                 .name("Payroll Automation Agent")
                 .policy(
-                    MeRetrieveResponse.Policy.builder()
-                        .defaultExecutionMode(MeRetrieveResponse.Policy.DefaultExecutionMode.AUTO)
-                        .addPermission(MeRetrieveResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            MeRetrieveResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -157,14 +156,12 @@ internal class MeRetrieveResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            MeRetrieveResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    MeRetrieveResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            MeRetrieveResponse.Policy.AccountRestrictions
-                                                .AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -175,7 +172,7 @@ internal class MeRetrieveResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            MeRetrieveResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -184,7 +181,7 @@ internal class MeRetrieveResponseTest {
                 )
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .usage(
-                    MeRetrieveResponse.Usage.builder()
+                    AgentUsage.builder()
                         .dailySpend(150000L)
                         .dailyTransactionCount(3L)
                         .monthlySpend(750000L)

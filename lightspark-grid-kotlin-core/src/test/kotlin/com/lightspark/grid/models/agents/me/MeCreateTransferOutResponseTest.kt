@@ -5,6 +5,7 @@ package com.lightspark.grid.models.agents.me
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
@@ -196,7 +197,7 @@ internal class MeCreateTransferOutResponseTest {
                         .build()
                 )
                 .transferDetails(
-                    MeCreateTransferOutResponse.TransferDetails.builder()
+                    AgentTransferDetails.builder()
                         .amount(50000L)
                         .currency("USD")
                         .destinationAccountId(
@@ -385,7 +386,7 @@ internal class MeCreateTransferOutResponseTest {
             )
         assertThat(meCreateTransferOutResponse.transferDetails())
             .isEqualTo(
-                MeCreateTransferOutResponse.TransferDetails.builder()
+                AgentTransferDetails.builder()
                     .amount(50000L)
                     .currency("USD")
                     .destinationAccountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
@@ -566,7 +567,7 @@ internal class MeCreateTransferOutResponseTest {
                         .build()
                 )
                 .transferDetails(
-                    MeCreateTransferOutResponse.TransferDetails.builder()
+                    AgentTransferDetails.builder()
                         .amount(50000L)
                         .currency("USD")
                         .destinationAccountId(

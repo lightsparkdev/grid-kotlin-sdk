@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.config.CustomerInfoFieldName
@@ -231,7 +232,7 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .transferDetails(
-                            AgentActionWebhookEvent.Data.TransferDetails.builder()
+                            AgentTransferDetails.builder()
                                 .amount(50000L)
                                 .currency("USD")
                                 .destinationAccountId(
@@ -480,7 +481,7 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .transferDetails(
-                                AgentActionWebhookEvent.Data.TransferDetails.builder()
+                                AgentTransferDetails.builder()
                                     .amount(50000L)
                                     .currency("USD")
                                     .destinationAccountId(

@@ -4,6 +4,7 @@ package com.lightspark.grid.models.agents.devicecodes
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.agents.AgentPolicy
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,13 +18,11 @@ internal class DeviceCodeRedeemResponseTest {
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000001")
                 .agentName("Payroll Automation Agent")
                 .policy(
-                    DeviceCodeRedeemResponse.Policy.builder()
-                        .defaultExecutionMode(
-                            DeviceCodeRedeemResponse.Policy.DefaultExecutionMode.AUTO
-                        )
-                        .addPermission(DeviceCodeRedeemResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            DeviceCodeRedeemResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -32,14 +31,12 @@ internal class DeviceCodeRedeemResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            DeviceCodeRedeemResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    DeviceCodeRedeemResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            DeviceCodeRedeemResponse.Policy.AccountRestrictions
-                                                .AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -50,7 +47,7 @@ internal class DeviceCodeRedeemResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            DeviceCodeRedeemResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -66,11 +63,11 @@ internal class DeviceCodeRedeemResponseTest {
         assertThat(deviceCodeRedeemResponse.agentName()).isEqualTo("Payroll Automation Agent")
         assertThat(deviceCodeRedeemResponse.policy())
             .isEqualTo(
-                DeviceCodeRedeemResponse.Policy.builder()
-                    .defaultExecutionMode(DeviceCodeRedeemResponse.Policy.DefaultExecutionMode.AUTO)
-                    .addPermission(DeviceCodeRedeemResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                AgentPolicy.builder()
+                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        DeviceCodeRedeemResponse.Policy.SpendingLimits.builder()
+                        AgentPolicy.SpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -79,15 +76,12 @@ internal class DeviceCodeRedeemResponseTest {
                             .build()
                     )
                     .accountRestrictions(
-                        DeviceCodeRedeemResponse.Policy.AccountRestrictions.builder()
+                        AgentPolicy.AccountRestrictions.builder()
                             .addAccountRule(
-                                DeviceCodeRedeemResponse.Policy.AccountRestrictions.AccountRule
-                                    .builder()
+                                AgentPolicy.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        DeviceCodeRedeemResponse.Policy.AccountRestrictions
-                                            .AccountRule
-                                            .ExecutionMode
+                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
                                             .AUTO
                                     )
                                     .perTransactionLimit(10000L)
@@ -97,7 +91,7 @@ internal class DeviceCodeRedeemResponseTest {
                             .build()
                     )
                     .approvalThresholds(
-                        DeviceCodeRedeemResponse.Policy.ApprovalThresholds.builder()
+                        AgentPolicy.ApprovalThresholds.builder()
                             .amount(100000L)
                             .currency("USD")
                             .build()
@@ -115,13 +109,11 @@ internal class DeviceCodeRedeemResponseTest {
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000001")
                 .agentName("Payroll Automation Agent")
                 .policy(
-                    DeviceCodeRedeemResponse.Policy.builder()
-                        .defaultExecutionMode(
-                            DeviceCodeRedeemResponse.Policy.DefaultExecutionMode.AUTO
-                        )
-                        .addPermission(DeviceCodeRedeemResponse.Policy.Permission.VIEW_TRANSACTIONS)
+                    AgentPolicy.builder()
+                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            DeviceCodeRedeemResponse.Policy.SpendingLimits.builder()
+                            AgentPolicy.SpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -130,14 +122,12 @@ internal class DeviceCodeRedeemResponseTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            DeviceCodeRedeemResponse.Policy.AccountRestrictions.builder()
+                            AgentPolicy.AccountRestrictions.builder()
                                 .addAccountRule(
-                                    DeviceCodeRedeemResponse.Policy.AccountRestrictions.AccountRule
-                                        .builder()
+                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            DeviceCodeRedeemResponse.Policy.AccountRestrictions
-                                                .AccountRule
+                                            AgentPolicy.AccountRestrictions.AccountRule
                                                 .ExecutionMode
                                                 .AUTO
                                         )
@@ -148,7 +138,7 @@ internal class DeviceCodeRedeemResponseTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            DeviceCodeRedeemResponse.Policy.ApprovalThresholds.builder()
+                            AgentPolicy.ApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()

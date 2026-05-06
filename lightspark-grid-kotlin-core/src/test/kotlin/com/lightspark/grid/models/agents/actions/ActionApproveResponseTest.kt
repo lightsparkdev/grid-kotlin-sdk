@@ -5,6 +5,7 @@ package com.lightspark.grid.models.agents.actions
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
@@ -196,7 +197,7 @@ internal class ActionApproveResponseTest {
                         .build()
                 )
                 .transferDetails(
-                    ActionApproveResponse.TransferDetails.builder()
+                    AgentTransferDetails.builder()
                         .amount(50000L)
                         .currency("USD")
                         .destinationAccountId(
@@ -384,7 +385,7 @@ internal class ActionApproveResponseTest {
             )
         assertThat(actionApproveResponse.transferDetails())
             .isEqualTo(
-                ActionApproveResponse.TransferDetails.builder()
+                AgentTransferDetails.builder()
                     .amount(50000L)
                     .currency("USD")
                     .destinationAccountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
@@ -565,7 +566,7 @@ internal class ActionApproveResponseTest {
                         .build()
                 )
                 .transferDetails(
-                    ActionApproveResponse.TransferDetails.builder()
+                    AgentTransferDetails.builder()
                         .amount(50000L)
                         .currency("USD")
                         .destinationAccountId(

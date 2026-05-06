@@ -13,6 +13,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
@@ -41,7 +42,7 @@ private constructor(
     private val quote: JsonField<Quote>,
     private val rejectionReason: JsonField<String>,
     private val transaction: JsonField<Transaction>,
-    private val transferDetails: JsonField<TransferDetails>,
+    private val transferDetails: JsonField<AgentTransferDetails>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -72,7 +73,7 @@ private constructor(
         transaction: JsonField<Transaction> = JsonMissing.of(),
         @JsonProperty("transferDetails")
         @ExcludeMissing
-        transferDetails: JsonField<TransferDetails> = JsonMissing.of(),
+        transferDetails: JsonField<AgentTransferDetails> = JsonMissing.of(),
     ) : this(
         id,
         agentId,
@@ -200,7 +201,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun transferDetails(): TransferDetails? = transferDetails.getNullable("transferDetails")
+    fun transferDetails(): AgentTransferDetails? = transferDetails.getNullable("transferDetails")
 
     /**
      * Returns the raw JSON value of [id].
@@ -297,7 +298,7 @@ private constructor(
      */
     @JsonProperty("transferDetails")
     @ExcludeMissing
-    fun _transferDetails(): JsonField<TransferDetails> = transferDetails
+    fun _transferDetails(): JsonField<AgentTransferDetails> = transferDetails
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -345,7 +346,7 @@ private constructor(
         private var quote: JsonField<Quote> = JsonMissing.of()
         private var rejectionReason: JsonField<String> = JsonMissing.of()
         private var transaction: JsonField<Transaction> = JsonMissing.of()
-        private var transferDetails: JsonField<TransferDetails> = JsonMissing.of()
+        private var transferDetails: JsonField<AgentTransferDetails> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(actionRetrieveResponse: ActionRetrieveResponse) = apply {
@@ -535,17 +536,17 @@ private constructor(
             transaction(Transaction.ofOutgoing(outgoing))
 
         /** Details of a transfer-type agent action (TRANSFER_OUT or TRANSFER_IN). */
-        fun transferDetails(transferDetails: TransferDetails) =
+        fun transferDetails(transferDetails: AgentTransferDetails) =
             transferDetails(JsonField.of(transferDetails))
 
         /**
          * Sets [Builder.transferDetails] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.transferDetails] with a well-typed [TransferDetails]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.transferDetails] with a well-typed
+         * [AgentTransferDetails] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
          */
-        fun transferDetails(transferDetails: JsonField<TransferDetails>) = apply {
+        fun transferDetails(transferDetails: JsonField<AgentTransferDetails>) = apply {
             this.transferDetails = transferDetails
         }
 
@@ -965,313 +966,6 @@ private constructor(
         override fun hashCode() = value.hashCode()
 
         override fun toString() = value.toString()
-    }
-
-    /** Details of a transfer-type agent action (TRANSFER_OUT or TRANSFER_IN). */
-    class TransferDetails
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val amount: JsonField<Long>,
-        private val currency: JsonField<String>,
-        private val destinationAccountId: JsonField<String>,
-        private val sourceAccountId: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("currency")
-            @ExcludeMissing
-            currency: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("destinationAccountId")
-            @ExcludeMissing
-            destinationAccountId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("sourceAccountId")
-            @ExcludeMissing
-            sourceAccountId: JsonField<String> = JsonMissing.of(),
-        ) : this(amount, currency, destinationAccountId, sourceAccountId, mutableMapOf())
-
-        /**
-         * Transfer amount in the smallest unit of the specified currency.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun amount(): Long = amount.getRequired("amount")
-
-        /**
-         * ISO 4217 currency code for the transfer amount.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun currency(): String = currency.getRequired("currency")
-
-        /**
-         * ID of the destination account (internal or external).
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun destinationAccountId(): String =
-            destinationAccountId.getRequired("destinationAccountId")
-
-        /**
-         * ID of the source account (internal or external).
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun sourceAccountId(): String = sourceAccountId.getRequired("sourceAccountId")
-
-        /**
-         * Returns the raw JSON value of [amount].
-         *
-         * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
-
-        /**
-         * Returns the raw JSON value of [currency].
-         *
-         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
-
-        /**
-         * Returns the raw JSON value of [destinationAccountId].
-         *
-         * Unlike [destinationAccountId], this method doesn't throw if the JSON field has an
-         * unexpected type.
-         */
-        @JsonProperty("destinationAccountId")
-        @ExcludeMissing
-        fun _destinationAccountId(): JsonField<String> = destinationAccountId
-
-        /**
-         * Returns the raw JSON value of [sourceAccountId].
-         *
-         * Unlike [sourceAccountId], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("sourceAccountId")
-        @ExcludeMissing
-        fun _sourceAccountId(): JsonField<String> = sourceAccountId
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [TransferDetails].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .amount()
-             * .currency()
-             * .destinationAccountId()
-             * .sourceAccountId()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [TransferDetails]. */
-        class Builder internal constructor() {
-
-            private var amount: JsonField<Long>? = null
-            private var currency: JsonField<String>? = null
-            private var destinationAccountId: JsonField<String>? = null
-            private var sourceAccountId: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(transferDetails: TransferDetails) = apply {
-                amount = transferDetails.amount
-                currency = transferDetails.currency
-                destinationAccountId = transferDetails.destinationAccountId
-                sourceAccountId = transferDetails.sourceAccountId
-                additionalProperties = transferDetails.additionalProperties.toMutableMap()
-            }
-
-            /** Transfer amount in the smallest unit of the specified currency. */
-            fun amount(amount: Long) = amount(JsonField.of(amount))
-
-            /**
-             * Sets [Builder.amount] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.amount] with a well-typed [Long] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
-
-            /** ISO 4217 currency code for the transfer amount. */
-            fun currency(currency: String) = currency(JsonField.of(currency))
-
-            /**
-             * Sets [Builder.currency] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.currency] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
-
-            /** ID of the destination account (internal or external). */
-            fun destinationAccountId(destinationAccountId: String) =
-                destinationAccountId(JsonField.of(destinationAccountId))
-
-            /**
-             * Sets [Builder.destinationAccountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.destinationAccountId] with a well-typed [String]
-             * value instead. This method is primarily for setting the field to an undocumented or
-             * not yet supported value.
-             */
-            fun destinationAccountId(destinationAccountId: JsonField<String>) = apply {
-                this.destinationAccountId = destinationAccountId
-            }
-
-            /** ID of the source account (internal or external). */
-            fun sourceAccountId(sourceAccountId: String) =
-                sourceAccountId(JsonField.of(sourceAccountId))
-
-            /**
-             * Sets [Builder.sourceAccountId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.sourceAccountId] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun sourceAccountId(sourceAccountId: JsonField<String>) = apply {
-                this.sourceAccountId = sourceAccountId
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [TransferDetails].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .amount()
-             * .currency()
-             * .destinationAccountId()
-             * .sourceAccountId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): TransferDetails =
-                TransferDetails(
-                    checkRequired("amount", amount),
-                    checkRequired("currency", currency),
-                    checkRequired("destinationAccountId", destinationAccountId),
-                    checkRequired("sourceAccountId", sourceAccountId),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): TransferDetails = apply {
-            if (validated) {
-                return@apply
-            }
-
-            amount()
-            currency()
-            destinationAccountId()
-            sourceAccountId()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            (if (amount.asKnown() == null) 0 else 1) +
-                (if (currency.asKnown() == null) 0 else 1) +
-                (if (destinationAccountId.asKnown() == null) 0 else 1) +
-                (if (sourceAccountId.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is TransferDetails &&
-                amount == other.amount &&
-                currency == other.currency &&
-                destinationAccountId == other.destinationAccountId &&
-                sourceAccountId == other.sourceAccountId &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(
-                amount,
-                currency,
-                destinationAccountId,
-                sourceAccountId,
-                additionalProperties,
-            )
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "TransferDetails{amount=$amount, currency=$currency, destinationAccountId=$destinationAccountId, sourceAccountId=$sourceAccountId, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
