@@ -60,7 +60,7 @@ private constructor(
      * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
      * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
      * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
-     * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
      * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -224,8 +224,8 @@ private constructor(
          * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
          * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
          * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
-         * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL,
-         * RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
+         * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+         * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          */
         fun documentType(documentType: DocumentType) = apply { body.documentType(documentType) }
 
@@ -472,8 +472,8 @@ private constructor(
          * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
          * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
          * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
-         * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL,
-         * RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
+         * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+         * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -642,9 +642,8 @@ private constructor(
              * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business
              * — Control structure** — DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY,
              * PARTNERSHIP_CONTROL_AGREEMENT **Business — Ownership structure** —
-             * SHAREHOLDER_REGISTER, TRUST_AGREEMENT, PARTNERSHIP_AGREEMENT, OTHER **Proof of
-             * address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT,
-             * TAX_RETURN
+             * SHAREHOLDER_REGISTER, TRUST_AGREEMENT, PARTNERSHIP_AGREEMENT **Proof of address** —
+             * UTILITY_BILL, RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
              */
             fun documentType(documentType: DocumentType) =
                 documentType(MultipartField.of(documentType))
@@ -830,7 +829,7 @@ private constructor(
      * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
      * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
      * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
-     * PARTNERSHIP_AGREEMENT, OTHER **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
      * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      */
     class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
