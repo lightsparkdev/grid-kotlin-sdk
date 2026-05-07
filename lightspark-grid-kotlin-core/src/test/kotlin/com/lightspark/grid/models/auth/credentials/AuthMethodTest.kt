@@ -18,7 +18,7 @@ internal class AuthMethodTest {
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(AuthMethod.Type.OAUTH)
+                .type(AuthMethodType.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .build()
 
@@ -27,7 +27,7 @@ internal class AuthMethodTest {
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(authMethod.createdAt()).isEqualTo(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
         assertThat(authMethod.nickname()).isEqualTo("example@lightspark.com")
-        assertThat(authMethod.type()).isEqualTo(AuthMethod.Type.OAUTH)
+        assertThat(authMethod.type()).isEqualTo(AuthMethodType.OAUTH)
         assertThat(authMethod.updatedAt()).isEqualTo(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
     }
 
@@ -40,7 +40,7 @@ internal class AuthMethodTest {
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(AuthMethod.Type.OAUTH)
+                .type(AuthMethodType.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .build()
 

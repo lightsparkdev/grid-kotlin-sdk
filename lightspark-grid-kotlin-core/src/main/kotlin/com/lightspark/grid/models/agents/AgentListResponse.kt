@@ -10,204 +10,92 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-/**
- * A programmatic agent with scoped permissions and a spending policy, used to automate payment
- * workflows.
- */
 class AgentListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val id: JsonField<String>,
-    private val createdAt: JsonField<OffsetDateTime>,
-    private val customerId: JsonField<String>,
-    private val isConnected: JsonField<Boolean>,
-    private val isPaused: JsonField<Boolean>,
-    private val name: JsonField<String>,
-    private val policy: JsonField<AgentPolicy>,
-    private val updatedAt: JsonField<OffsetDateTime>,
-    private val usage: JsonField<AgentUsage>,
+    private val data: JsonField<List<Agent>>,
+    private val hasMore: JsonField<Boolean>,
+    private val nextCursor: JsonField<String>,
+    private val totalCount: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("createdAt")
+        @JsonProperty("data") @ExcludeMissing data: JsonField<List<Agent>> = JsonMissing.of(),
+        @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("nextCursor")
         @ExcludeMissing
-        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("customerId")
-        @ExcludeMissing
-        customerId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("isConnected")
-        @ExcludeMissing
-        isConnected: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("isPaused") @ExcludeMissing isPaused: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("name") @ExcludeMissing name: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("policy") @ExcludeMissing policy: JsonField<AgentPolicy> = JsonMissing.of(),
-        @JsonProperty("updatedAt")
-        @ExcludeMissing
-        updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("usage") @ExcludeMissing usage: JsonField<AgentUsage> = JsonMissing.of(),
-    ) : this(
-        id,
-        createdAt,
-        customerId,
-        isConnected,
-        isPaused,
-        name,
-        policy,
-        updatedAt,
-        usage,
-        mutableMapOf(),
-    )
+        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("totalCount") @ExcludeMissing totalCount: JsonField<Long> = JsonMissing.of(),
+    ) : this(data, hasMore, nextCursor, totalCount, mutableMapOf())
 
     /**
-     * System-generated unique identifier for the agent.
+     * List of agents matching the filter criteria.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun id(): String = id.getRequired("id")
+    fun data(): List<Agent> = data.getRequired("data")
 
     /**
-     * Creation timestamp.
+     * Indicates if more results are available beyond this page.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+    fun hasMore(): Boolean = hasMore.getRequired("hasMore")
 
     /**
-     * The ID of the customer this agent operates on behalf of.
+     * Cursor to retrieve the next page of results (only present if hasMore is true).
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun customerId(): String = customerId.getRequired("customerId")
+    fun nextCursor(): String? = nextCursor.getNullable("nextCursor")
 
     /**
-     * Whether the agent has been installed and connected (i.e., its device code has been redeemed).
+     * Total number of agents matching the criteria (excluding pagination).
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun isConnected(): Boolean = isConnected.getRequired("isConnected")
+    fun totalCount(): Long? = totalCount.getNullable("totalCount")
 
     /**
-     * Whether the agent is currently paused. Paused agents cannot initiate any actions.
+     * Returns the raw JSON value of [data].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun isPaused(): Boolean = isPaused.getRequired("isPaused")
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<Agent>> = data
 
     /**
-     * Human-readable name for the agent.
+     * Returns the raw JSON value of [hasMore].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [hasMore], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun name(): String = name.getRequired("name")
+    @JsonProperty("hasMore") @ExcludeMissing fun _hasMore(): JsonField<Boolean> = hasMore
 
     /**
-     * Policy governing what an agent can do, how it executes actions, and its spending boundaries.
+     * Returns the raw JSON value of [nextCursor].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun policy(): AgentPolicy = policy.getRequired("policy")
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
 
     /**
-     * Last update timestamp.
+     * Returns the raw JSON value of [totalCount].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [totalCount], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
-
-    /**
-     * Real-time counters tracking the agent's spending and transaction activity against its policy
-     * limits.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun usage(): AgentUsage = usage.getRequired("usage")
-
-    /**
-     * Returns the raw JSON value of [id].
-     *
-     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
-
-    /**
-     * Returns the raw JSON value of [createdAt].
-     *
-     * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("createdAt")
-    @ExcludeMissing
-    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
-
-    /**
-     * Returns the raw JSON value of [customerId].
-     *
-     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
-
-    /**
-     * Returns the raw JSON value of [isConnected].
-     *
-     * Unlike [isConnected], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("isConnected")
-    @ExcludeMissing
-    fun _isConnected(): JsonField<Boolean> = isConnected
-
-    /**
-     * Returns the raw JSON value of [isPaused].
-     *
-     * Unlike [isPaused], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("isPaused") @ExcludeMissing fun _isPaused(): JsonField<Boolean> = isPaused
-
-    /**
-     * Returns the raw JSON value of [name].
-     *
-     * Unlike [name], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("name") @ExcludeMissing fun _name(): JsonField<String> = name
-
-    /**
-     * Returns the raw JSON value of [policy].
-     *
-     * Unlike [policy], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("policy") @ExcludeMissing fun _policy(): JsonField<AgentPolicy> = policy
-
-    /**
-     * Returns the raw JSON value of [updatedAt].
-     *
-     * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("updatedAt")
-    @ExcludeMissing
-    fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
-
-    /**
-     * Returns the raw JSON value of [usage].
-     *
-     * Unlike [usage], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("usage") @ExcludeMissing fun _usage(): JsonField<AgentUsage> = usage
+    @JsonProperty("totalCount") @ExcludeMissing fun _totalCount(): JsonField<Long> = totalCount
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -228,15 +116,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .id()
-         * .createdAt()
-         * .customerId()
-         * .isConnected()
-         * .isPaused()
-         * .name()
-         * .policy()
-         * .updatedAt()
-         * .usage()
+         * .data()
+         * .hasMore()
          * ```
          */
         fun builder() = Builder()
@@ -245,144 +126,79 @@ private constructor(
     /** A builder for [AgentListResponse]. */
     class Builder internal constructor() {
 
-        private var id: JsonField<String>? = null
-        private var createdAt: JsonField<OffsetDateTime>? = null
-        private var customerId: JsonField<String>? = null
-        private var isConnected: JsonField<Boolean>? = null
-        private var isPaused: JsonField<Boolean>? = null
-        private var name: JsonField<String>? = null
-        private var policy: JsonField<AgentPolicy>? = null
-        private var updatedAt: JsonField<OffsetDateTime>? = null
-        private var usage: JsonField<AgentUsage>? = null
+        private var data: JsonField<MutableList<Agent>>? = null
+        private var hasMore: JsonField<Boolean>? = null
+        private var nextCursor: JsonField<String> = JsonMissing.of()
+        private var totalCount: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(agentListResponse: AgentListResponse) = apply {
-            id = agentListResponse.id
-            createdAt = agentListResponse.createdAt
-            customerId = agentListResponse.customerId
-            isConnected = agentListResponse.isConnected
-            isPaused = agentListResponse.isPaused
-            name = agentListResponse.name
-            policy = agentListResponse.policy
-            updatedAt = agentListResponse.updatedAt
-            usage = agentListResponse.usage
+            data = agentListResponse.data.map { it.toMutableList() }
+            hasMore = agentListResponse.hasMore
+            nextCursor = agentListResponse.nextCursor
+            totalCount = agentListResponse.totalCount
             additionalProperties = agentListResponse.additionalProperties.toMutableMap()
         }
 
-        /** System-generated unique identifier for the agent. */
-        fun id(id: String) = id(JsonField.of(id))
+        /** List of agents matching the filter criteria. */
+        fun data(data: List<Agent>) = data(JsonField.of(data))
 
         /**
-         * Sets [Builder.id] to an arbitrary JSON value.
+         * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * You should usually call [Builder.data] with a well-typed `List<Agent>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun data(data: JsonField<List<Agent>>) = apply {
+            this.data = data.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [Agent] to [Builder.data].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addData(data: Agent) = apply {
+            this.data =
+                (this.data ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("data", it).add(data)
+                }
+        }
+
+        /** Indicates if more results are available beyond this page. */
+        fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))
+
+        /**
+         * Sets [Builder.hasMore] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.hasMore] with a well-typed [Boolean] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun id(id: JsonField<String>) = apply { this.id = id }
+        fun hasMore(hasMore: JsonField<Boolean>) = apply { this.hasMore = hasMore }
 
-        /** Creation timestamp. */
-        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
-
-        /**
-         * Sets [Builder.createdAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
-
-        /** The ID of the customer this agent operates on behalf of. */
-        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+        /** Cursor to retrieve the next page of results (only present if hasMore is true). */
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
 
         /**
-         * Sets [Builder.customerId] to an arbitrary JSON value.
+         * Sets [Builder.nextCursor] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * You should usually call [Builder.nextCursor] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
+        fun nextCursor(nextCursor: JsonField<String>) = apply { this.nextCursor = nextCursor }
+
+        /** Total number of agents matching the criteria (excluding pagination). */
+        fun totalCount(totalCount: Long) = totalCount(JsonField.of(totalCount))
 
         /**
-         * Whether the agent has been installed and connected (i.e., its device code has been
-         * redeemed).
-         */
-        fun isConnected(isConnected: Boolean) = isConnected(JsonField.of(isConnected))
-
-        /**
-         * Sets [Builder.isConnected] to an arbitrary JSON value.
+         * Sets [Builder.totalCount] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.isConnected] with a well-typed [Boolean] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun isConnected(isConnected: JsonField<Boolean>) = apply { this.isConnected = isConnected }
-
-        /** Whether the agent is currently paused. Paused agents cannot initiate any actions. */
-        fun isPaused(isPaused: Boolean) = isPaused(JsonField.of(isPaused))
-
-        /**
-         * Sets [Builder.isPaused] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.isPaused] with a well-typed [Boolean] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun isPaused(isPaused: JsonField<Boolean>) = apply { this.isPaused = isPaused }
-
-        /** Human-readable name for the agent. */
-        fun name(name: String) = name(JsonField.of(name))
-
-        /**
-         * Sets [Builder.name] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.name] with a well-typed [String] value instead. This
+         * You should usually call [Builder.totalCount] with a well-typed [Long] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun name(name: JsonField<String>) = apply { this.name = name }
-
-        /**
-         * Policy governing what an agent can do, how it executes actions, and its spending
-         * boundaries.
-         */
-        fun policy(policy: AgentPolicy) = policy(JsonField.of(policy))
-
-        /**
-         * Sets [Builder.policy] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.policy] with a well-typed [AgentPolicy] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun policy(policy: JsonField<AgentPolicy>) = apply { this.policy = policy }
-
-        /** Last update timestamp. */
-        fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
-
-        /**
-         * Sets [Builder.updatedAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
-
-        /**
-         * Real-time counters tracking the agent's spending and transaction activity against its
-         * policy limits.
-         */
-        fun usage(usage: AgentUsage) = usage(JsonField.of(usage))
-
-        /**
-         * Sets [Builder.usage] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.usage] with a well-typed [AgentUsage] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun usage(usage: JsonField<AgentUsage>) = apply { this.usage = usage }
+        fun totalCount(totalCount: JsonField<Long>) = apply { this.totalCount = totalCount }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -410,30 +226,18 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .id()
-         * .createdAt()
-         * .customerId()
-         * .isConnected()
-         * .isPaused()
-         * .name()
-         * .policy()
-         * .updatedAt()
-         * .usage()
+         * .data()
+         * .hasMore()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): AgentListResponse =
             AgentListResponse(
-                checkRequired("id", id),
-                checkRequired("createdAt", createdAt),
-                checkRequired("customerId", customerId),
-                checkRequired("isConnected", isConnected),
-                checkRequired("isPaused", isPaused),
-                checkRequired("name", name),
-                checkRequired("policy", policy),
-                checkRequired("updatedAt", updatedAt),
-                checkRequired("usage", usage),
+                checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("hasMore", hasMore),
+                nextCursor,
+                totalCount,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -453,15 +257,10 @@ private constructor(
             return@apply
         }
 
-        id()
-        createdAt()
-        customerId()
-        isConnected()
-        isPaused()
-        name()
-        policy().validate()
-        updatedAt()
-        usage().validate()
+        data().forEach { it.validate() }
+        hasMore()
+        nextCursor()
+        totalCount()
         validated = true
     }
 
@@ -479,15 +278,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (id.asKnown() == null) 0 else 1) +
-            (if (createdAt.asKnown() == null) 0 else 1) +
-            (if (customerId.asKnown() == null) 0 else 1) +
-            (if (isConnected.asKnown() == null) 0 else 1) +
-            (if (isPaused.asKnown() == null) 0 else 1) +
-            (if (name.asKnown() == null) 0 else 1) +
-            (policy.asKnown()?.validity() ?: 0) +
-            (if (updatedAt.asKnown() == null) 0 else 1) +
-            (usage.asKnown()?.validity() ?: 0)
+        (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (hasMore.asKnown() == null) 0 else 1) +
+            (if (nextCursor.asKnown() == null) 0 else 1) +
+            (if (totalCount.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -495,35 +289,19 @@ private constructor(
         }
 
         return other is AgentListResponse &&
-            id == other.id &&
-            createdAt == other.createdAt &&
-            customerId == other.customerId &&
-            isConnected == other.isConnected &&
-            isPaused == other.isPaused &&
-            name == other.name &&
-            policy == other.policy &&
-            updatedAt == other.updatedAt &&
-            usage == other.usage &&
+            data == other.data &&
+            hasMore == other.hasMore &&
+            nextCursor == other.nextCursor &&
+            totalCount == other.totalCount &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            id,
-            createdAt,
-            customerId,
-            isConnected,
-            isPaused,
-            name,
-            policy,
-            updatedAt,
-            usage,
-            additionalProperties,
-        )
+        Objects.hash(data, hasMore, nextCursor, totalCount, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AgentListResponse{id=$id, createdAt=$createdAt, customerId=$customerId, isConnected=$isConnected, isPaused=$isPaused, name=$name, policy=$policy, updatedAt=$updatedAt, usage=$usage, additionalProperties=$additionalProperties}"
+        "AgentListResponse{data=$data, hasMore=$hasMore, nextCursor=$nextCursor, totalCount=$totalCount, additionalProperties=$additionalProperties}"
 }

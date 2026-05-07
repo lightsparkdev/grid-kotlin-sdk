@@ -13,38 +13,38 @@ class AgentListPageAsync
 private constructor(
     private val service: AgentServiceAsync,
     private val params: AgentListParams,
-    private val response: AgentListPageResponse,
-) : PageAsync<AgentListResponse> {
+    private val response: AgentListResponse,
+) : PageAsync<Agent> {
 
     /**
-     * Delegates to [AgentListPageResponse], but gracefully handles missing data.
+     * Delegates to [AgentListResponse], but gracefully handles missing data.
      *
-     * @see AgentListPageResponse.data
+     * @see AgentListResponse.data
      */
-    fun data(): List<AgentListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<Agent> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [AgentListPageResponse], but gracefully handles missing data.
+     * Delegates to [AgentListResponse], but gracefully handles missing data.
      *
-     * @see AgentListPageResponse.nextCursor
+     * @see AgentListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [AgentListPageResponse], but gracefully handles missing data.
+     * Delegates to [AgentListResponse], but gracefully handles missing data.
      *
-     * @see AgentListPageResponse.hasMore
+     * @see AgentListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [AgentListPageResponse], but gracefully handles missing data.
+     * Delegates to [AgentListResponse], but gracefully handles missing data.
      *
-     * @see AgentListPageResponse.totalCount
+     * @see AgentListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<AgentListResponse> = data()
+    override fun items(): List<Agent> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override suspend fun nextPage(): AgentListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<AgentListResponse> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<Agent> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): AgentListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): AgentListPageResponse = response
+    fun response(): AgentListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: AgentServiceAsync? = null
         private var params: AgentListParams? = null
-        private var response: AgentListPageResponse? = null
+        private var response: AgentListResponse? = null
 
         internal fun from(agentListPageAsync: AgentListPageAsync) = apply {
             service = agentListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: AgentListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: AgentListPageResponse) = apply { this.response = response }
+        fun response(response: AgentListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [AgentListPageAsync].

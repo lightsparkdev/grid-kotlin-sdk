@@ -10,8 +10,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPage
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -63,10 +63,10 @@ interface ExternalAccountService {
     fun list(
         params: ExternalAccountListParams = ExternalAccountListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccountListResponse
+    ): ExternalAccountListPage
 
     /** @see list */
-    fun list(requestOptions: RequestOptions): ExternalAccountListResponse =
+    fun list(requestOptions: RequestOptions): ExternalAccountListPage =
         list(ExternalAccountListParams.none(), requestOptions)
 
     /** Delete a platform external account by its system-generated ID */
@@ -149,11 +149,11 @@ interface ExternalAccountService {
         fun list(
             params: ExternalAccountListParams = ExternalAccountListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccountListResponse>
+        ): HttpResponseFor<ExternalAccountListPage>
 
         /** @see list */
         @MustBeClosed
-        fun list(requestOptions: RequestOptions): HttpResponseFor<ExternalAccountListResponse> =
+        fun list(requestOptions: RequestOptions): HttpResponseFor<ExternalAccountListPage> =
             list(ExternalAccountListParams.none(), requestOptions)
 
         /**

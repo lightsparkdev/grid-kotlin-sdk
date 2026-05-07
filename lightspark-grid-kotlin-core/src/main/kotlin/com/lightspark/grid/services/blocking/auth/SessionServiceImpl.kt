@@ -16,10 +16,10 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
+import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
-import com.lightspark.grid.models.auth.sessions.SessionRevokeParams
-import com.lightspark.grid.models.auth.sessions.SessionRevokeResponse
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -44,12 +44,12 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
         // get /auth/sessions
         withRawResponse().list(params, requestOptions).parse()
 
-    override fun revoke(
-        params: SessionRevokeParams,
+    override fun delete(
+        params: SessionDeleteParams,
         requestOptions: RequestOptions,
-    ): SessionRevokeResponse =
+    ): AuthSignedRequestChallenge =
         // delete /auth/sessions/{id}
-        withRawResponse().revoke(params, requestOptions).parse()
+        withRawResponse().delete(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SessionService.WithRawResponse {
@@ -91,13 +91,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val revokeHandler: Handler<SessionRevokeResponse> =
-            jsonHandler<SessionRevokeResponse>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<AuthSignedRequestChallenge> =
+            jsonHandler<AuthSignedRequestChallenge>(clientOptions.jsonMapper)
 
-        override fun revoke(
-            params: SessionRevokeParams,
+        override fun delete(
+            params: SessionDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionRevokeResponse> {
+        ): HttpResponseFor<AuthSignedRequestChallenge> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -113,7 +113,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { revokeHandler.handle(it) }
+                    .use { deleteHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

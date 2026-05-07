@@ -7,7 +7,9 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponse
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.agents.Agent
 import com.lightspark.grid.models.agents.AgentCreateParams
+import com.lightspark.grid.models.agents.AgentCreateRequest
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
 import com.lightspark.grid.models.agents.AgentListApprovalsPageAsync
@@ -15,11 +17,8 @@ import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPageAsync
 import com.lightspark.grid.models.agents.AgentListParams
 import com.lightspark.grid.models.agents.AgentRetrieveParams
-import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
-import com.lightspark.grid.models.agents.AgentUpdatePolicyResponse
-import com.lightspark.grid.models.agents.AgentUpdateResponse
 import com.lightspark.grid.services.async.agents.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.DeviceCodeServiceAsync
 import com.lightspark.grid.services.async.agents.MeServiceAsync
@@ -87,39 +86,45 @@ interface AgentServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AgentCreateResponse
 
+    /** @see create */
+    suspend fun create(
+        agentCreateRequest: AgentCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AgentCreateResponse =
+        create(
+            AgentCreateParams.builder().agentCreateRequest(agentCreateRequest).build(),
+            requestOptions,
+        )
+
     /** Retrieve an agent by its system-generated ID. */
     suspend fun retrieve(
         agentId: String,
         params: AgentRetrieveParams = AgentRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentRetrieveResponse = retrieve(params.toBuilder().agentId(agentId).build(), requestOptions)
+    ): Agent = retrieve(params.toBuilder().agentId(agentId).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: AgentRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentRetrieveResponse
+    ): Agent
 
     /** @see retrieve */
-    suspend fun retrieve(agentId: String, requestOptions: RequestOptions): AgentRetrieveResponse =
+    suspend fun retrieve(agentId: String, requestOptions: RequestOptions): Agent =
         retrieve(agentId, AgentRetrieveParams.none(), requestOptions)
 
     /** Update an agent's name or paused state. */
     suspend fun update(
         agentId: String,
-        params: AgentUpdateParams = AgentUpdateParams.none(),
+        params: AgentUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentUpdateResponse = update(params.toBuilder().agentId(agentId).build(), requestOptions)
+    ): Agent = update(params.toBuilder().agentId(agentId).build(), requestOptions)
 
     /** @see update */
     suspend fun update(
         params: AgentUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentUpdateResponse
-
-    /** @see update */
-    suspend fun update(agentId: String, requestOptions: RequestOptions): AgentUpdateResponse =
-        update(agentId, AgentUpdateParams.none(), requestOptions)
+    ): Agent
 
     /** Retrieve a paginated list of agents for the authenticated platform. */
     suspend fun list(
@@ -171,20 +176,16 @@ interface AgentServiceAsync {
         agentId: String,
         params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentUpdatePolicyResponse =
-        updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
+    ): Agent = updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
 
     /** @see updatePolicy */
     suspend fun updatePolicy(
         params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentUpdatePolicyResponse
+    ): Agent
 
     /** @see updatePolicy */
-    suspend fun updatePolicy(
-        agentId: String,
-        requestOptions: RequestOptions,
-    ): AgentUpdatePolicyResponse =
+    suspend fun updatePolicy(agentId: String, requestOptions: RequestOptions): Agent =
         updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
 
     /** A view of [AgentServiceAsync] that provides access to raw HTTP responses for each method. */
@@ -242,6 +243,17 @@ interface AgentServiceAsync {
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AgentCreateResponse>
 
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            agentCreateRequest: AgentCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AgentCreateResponse> =
+            create(
+                AgentCreateParams.builder().agentCreateRequest(agentCreateRequest).build(),
+                requestOptions,
+            )
+
         /**
          * Returns a raw HTTP response for `get /agents/{agentId}`, but is otherwise the same as
          * [AgentServiceAsync.retrieve].
@@ -251,7 +263,7 @@ interface AgentServiceAsync {
             agentId: String,
             params: AgentRetrieveParams = AgentRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentRetrieveResponse> =
+        ): HttpResponseFor<Agent> =
             retrieve(params.toBuilder().agentId(agentId).build(), requestOptions)
 
         /** @see retrieve */
@@ -259,15 +271,14 @@ interface AgentServiceAsync {
         suspend fun retrieve(
             params: AgentRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentRetrieveResponse>
+        ): HttpResponseFor<Agent>
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             agentId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentRetrieveResponse> =
-            retrieve(agentId, AgentRetrieveParams.none(), requestOptions)
+        ): HttpResponseFor<Agent> = retrieve(agentId, AgentRetrieveParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `patch /agents/{agentId}`, but is otherwise the same as
@@ -276,9 +287,9 @@ interface AgentServiceAsync {
         @MustBeClosed
         suspend fun update(
             agentId: String,
-            params: AgentUpdateParams = AgentUpdateParams.none(),
+            params: AgentUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentUpdateResponse> =
+        ): HttpResponseFor<Agent> =
             update(params.toBuilder().agentId(agentId).build(), requestOptions)
 
         /** @see update */
@@ -286,15 +297,7 @@ interface AgentServiceAsync {
         suspend fun update(
             params: AgentUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentUpdateResponse>
-
-        /** @see update */
-        @MustBeClosed
-        suspend fun update(
-            agentId: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentUpdateResponse> =
-            update(agentId, AgentUpdateParams.none(), requestOptions)
+        ): HttpResponseFor<Agent>
 
         /**
          * Returns a raw HTTP response for `get /agents`, but is otherwise the same as
@@ -360,7 +363,7 @@ interface AgentServiceAsync {
             agentId: String,
             params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentUpdatePolicyResponse> =
+        ): HttpResponseFor<Agent> =
             updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
 
         /** @see updatePolicy */
@@ -368,14 +371,14 @@ interface AgentServiceAsync {
         suspend fun updatePolicy(
             params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentUpdatePolicyResponse>
+        ): HttpResponseFor<Agent>
 
         /** @see updatePolicy */
         @MustBeClosed
         suspend fun updatePolicy(
             agentId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentUpdatePolicyResponse> =
+        ): HttpResponseFor<Agent> =
             updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
     }
 }

@@ -15,11 +15,11 @@ import com.lightspark.grid.core.http.HttpResponse.Handler
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.agents.AgentAction
+import com.lightspark.grid.models.agents.AgentActionListResponse
 import com.lightspark.grid.models.agents.me.actions.ActionListPage
-import com.lightspark.grid.models.agents.me.actions.ActionListPageResponse
 import com.lightspark.grid.models.agents.me.actions.ActionListParams
 import com.lightspark.grid.models.agents.me.actions.ActionRetrieveParams
-import com.lightspark.grid.models.agents.me.actions.ActionRetrieveResponse
 
 /**
  * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -43,7 +43,7 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun retrieve(
         params: ActionRetrieveParams,
         requestOptions: RequestOptions,
-    ): ActionRetrieveResponse =
+    ): AgentAction =
         // get /agents/me/actions/{actionId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -62,13 +62,13 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
         ): ActionService.WithRawResponse =
             ActionServiceImpl.WithRawResponseImpl(clientOptions.toBuilder().apply(modifier).build())
 
-        private val retrieveHandler: Handler<ActionRetrieveResponse> =
-            jsonHandler<ActionRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<AgentAction> =
+            jsonHandler<AgentAction>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: ActionRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ActionRetrieveResponse> {
+        ): HttpResponseFor<AgentAction> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -92,8 +92,8 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val listHandler: Handler<ActionListPageResponse> =
-            jsonHandler<ActionListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<AgentActionListResponse> =
+            jsonHandler<AgentActionListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: ActionListParams,
