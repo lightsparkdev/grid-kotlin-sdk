@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.blocking.agents
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.agents.AgentActionRejectRequest
 import com.lightspark.grid.models.agents.actions.ActionApproveParams
 import com.lightspark.grid.models.agents.actions.ActionRejectParams
 import org.junit.jupiter.api.Disabled
@@ -20,12 +21,12 @@ internal class ActionServiceTest {
                 .build()
         val actionService = client.agents().actions()
 
-        val response =
+        val agentAction =
             actionService.approve(
                 ActionApproveParams.builder().agentId("agentId").actionId("actionId").build()
             )
 
-        response.validate()
+        agentAction.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -38,15 +39,19 @@ internal class ActionServiceTest {
                 .build()
         val actionService = client.agents().actions()
 
-        val response =
+        val agentAction =
             actionService.reject(
                 ActionRejectParams.builder()
                     .agentId("agentId")
                     .actionId("actionId")
-                    .reason("Transaction amount exceeds customer's current risk limit.")
+                    .agentActionRejectRequest(
+                        AgentActionRejectRequest.builder()
+                            .reason("Transaction amount exceeds customer's current risk limit.")
+                            .build()
+                    )
                     .build()
             )
 
-        response.validate()
+        agentAction.validate()
     }
 }

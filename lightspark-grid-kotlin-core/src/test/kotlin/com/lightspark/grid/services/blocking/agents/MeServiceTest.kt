@@ -22,9 +22,9 @@ internal class MeServiceTest {
                 .build()
         val meService = client.agents().me()
 
-        val me = meService.retrieve()
+        val agent = meService.retrieve()
 
-        me.validate()
+        agent.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -37,7 +37,7 @@ internal class MeServiceTest {
                 .build()
         val meService = client.agents().me()
 
-        val response =
+        val agentAction =
             meService.createTransferIn(
                 MeCreateTransferInParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
@@ -55,7 +55,7 @@ internal class MeServiceTest {
                     .build()
             )
 
-        response.validate()
+        agentAction.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -68,7 +68,7 @@ internal class MeServiceTest {
                 .build()
         val meService = client.agents().me()
 
-        val response =
+        val agentAction =
             meService.createTransferOut(
                 MeCreateTransferOutParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
@@ -86,7 +86,7 @@ internal class MeServiceTest {
                     .build()
             )
 
-        response.validate()
+        agentAction.validate()
     }
 
     @Disabled("Mock server tests are disabled")

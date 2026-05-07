@@ -6,16 +6,20 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.auth.credentials.AuthMethod
+import com.lightspark.grid.models.auth.credentials.AuthCredentialCreateRequestOneOf
+import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
+import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
+import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
+import com.lightspark.grid.models.auth.credentials.AuthSession
+import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
+import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
-import com.lightspark.grid.models.auth.credentials.CredentialListResponse
-import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
-import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeResponse
-import com.lightspark.grid.models.auth.credentials.CredentialRevokeParams
-import com.lightspark.grid.models.auth.credentials.CredentialRevokeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
-import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
+import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialCreateRequest
+import com.lightspark.grid.models.auth.credentials.OAuthCredentialCreateRequest
+import com.lightspark.grid.models.auth.credentials.PasskeyCredentialCreateRequest
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -74,13 +78,13 @@ interface CredentialServiceAsync {
     suspend fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethod
+    ): AuthMethodResponse
 
     /** @see create */
     suspend fun create(
-        authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
+        authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethod =
+    ): AuthMethodResponse =
         create(
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -90,31 +94,23 @@ interface CredentialServiceAsync {
 
     /** @see create */
     suspend fun create(
-        emailOtp:
-            CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
+        emailOtp: EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethod =
-        create(
-            CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
-            requestOptions,
-        )
+    ): AuthMethodResponse =
+        create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
 
     /** @see create */
     suspend fun create(
-        oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
+        oauth: OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethod =
-        create(CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth), requestOptions)
+    ): AuthMethodResponse = create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
 
     /** @see create */
     suspend fun create(
-        passkey: CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
+        passkey: PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethod =
-        create(
-            CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
-            requestOptions,
-        )
+    ): AuthMethodResponse =
+        create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
 
     /**
      * Retrieve all authentication credentials registered on an Embedded Wallet internal account.
@@ -126,7 +122,39 @@ interface CredentialServiceAsync {
     suspend fun list(
         params: CredentialListParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialListResponse
+    ): AuthCredentialListResponse
+
+    /**
+     * Revoke an authentication credential on an Embedded Wallet internal account.
+     *
+     * Revocation is a two-step flow because it must be authorized by a session on a *different*
+     * credential on the same internal account:
+     * 1. Call `DELETE /auth/credentials/{id}` with no headers. The response is `202` with a
+     *    `payloadToSign`, `requestId`, and `expiresAt`.
+     * 2. Use the session API keypair of an existing verified credential on the same internal
+     *    account — other than the one being revoked — to build an API-key stamp over
+     *    `payloadToSign`, then retry the same `DELETE` request with that full stamp as the
+     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
+     *    The signed retry returns `204`.
+     *
+     * The account must retain at least one authentication credential; an account with only a single
+     * credential cannot use this endpoint to revoke it.
+     */
+    suspend fun delete(
+        id: String,
+        params: CredentialDeleteParams = CredentialDeleteParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthSignedRequestChallenge = delete(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see delete */
+    suspend fun delete(
+        params: CredentialDeleteParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthSignedRequestChallenge
+
+    /** @see delete */
+    suspend fun delete(id: String, requestOptions: RequestOptions): AuthSignedRequestChallenge =
+        delete(id, CredentialDeleteParams.none(), requestOptions)
 
     /**
      * Re-issue the challenge for an existing authentication credential.
@@ -149,57 +177,21 @@ interface CredentialServiceAsync {
      * submits the resulting assertion to `POST /auth/credentials/{id}/verify` with `Request-Id:
      * <requestId>` to receive a session.
      */
-    suspend fun resendChallenge(
+    suspend fun challenge(
         id: String,
-        params: CredentialResendChallengeParams = CredentialResendChallengeParams.none(),
+        params: CredentialChallengeParams = CredentialChallengeParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialResendChallengeResponse =
-        resendChallenge(params.toBuilder().id(id).build(), requestOptions)
+    ): AuthCredentialResponseOneOf = challenge(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see resendChallenge */
-    suspend fun resendChallenge(
-        params: CredentialResendChallengeParams,
+    /** @see challenge */
+    suspend fun challenge(
+        params: CredentialChallengeParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialResendChallengeResponse
+    ): AuthCredentialResponseOneOf
 
-    /** @see resendChallenge */
-    suspend fun resendChallenge(
-        id: String,
-        requestOptions: RequestOptions,
-    ): CredentialResendChallengeResponse =
-        resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
-
-    /**
-     * Revoke an authentication credential on an Embedded Wallet internal account.
-     *
-     * Revocation is a two-step flow because it must be authorized by a session on a *different*
-     * credential on the same internal account:
-     * 1. Call `DELETE /auth/credentials/{id}` with no headers. The response is `202` with a
-     *    `payloadToSign`, `requestId`, and `expiresAt`.
-     * 2. Use the session API keypair of an existing verified credential on the same internal
-     *    account — other than the one being revoked — to build an API-key stamp over
-     *    `payloadToSign`, then retry the same `DELETE` request with that full stamp as the
-     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The signed retry returns `204`.
-     *
-     * The account must retain at least one authentication credential; an account with only a single
-     * credential cannot use this endpoint to revoke it.
-     */
-    suspend fun revoke(
-        id: String,
-        params: CredentialRevokeParams = CredentialRevokeParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialRevokeResponse = revoke(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see revoke */
-    suspend fun revoke(
-        params: CredentialRevokeParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialRevokeResponse
-
-    /** @see revoke */
-    suspend fun revoke(id: String, requestOptions: RequestOptions): CredentialRevokeResponse =
-        revoke(id, CredentialRevokeParams.none(), requestOptions)
+    /** @see challenge */
+    suspend fun challenge(id: String, requestOptions: RequestOptions): AuthCredentialResponseOneOf =
+        challenge(id, CredentialChallengeParams.none(), requestOptions)
 
     /**
      * Complete the verification step for a previously created authentication credential and issue a
@@ -225,13 +217,13 @@ interface CredentialServiceAsync {
         id: String,
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialVerifyResponse = verify(params.toBuilder().id(id).build(), requestOptions)
+    ): AuthSession = verify(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see verify */
     suspend fun verify(
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CredentialVerifyResponse
+    ): AuthSession
 
     /**
      * A view of [CredentialServiceAsync] that provides access to raw HTTP responses for each
@@ -256,14 +248,14 @@ interface CredentialServiceAsync {
         suspend fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethod>
+        ): HttpResponseFor<AuthMethodResponse>
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            authCredentialCreateRequest: CredentialCreateParams.AuthCredentialCreateRequest,
+            authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethod> =
+        ): HttpResponseFor<AuthMethodResponse> =
             create(
                 CredentialCreateParams.builder()
                     .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -274,37 +266,26 @@ interface CredentialServiceAsync {
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            emailOtp:
-                CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest,
+            emailOtp: EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethod> =
-            create(
-                CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(emailOtp),
-                requestOptions,
-            )
+        ): HttpResponseFor<AuthMethodResponse> =
+            create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            oauth: CredentialCreateParams.AuthCredentialCreateRequest.OAuthCredentialCreateRequest,
+            oauth: OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethod> =
-            create(
-                CredentialCreateParams.AuthCredentialCreateRequest.ofOAuth(oauth),
-                requestOptions,
-            )
+        ): HttpResponseFor<AuthMethodResponse> =
+            create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
-            passkey:
-                CredentialCreateParams.AuthCredentialCreateRequest.PasskeyCredentialCreateRequest,
+            passkey: PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethod> =
-            create(
-                CredentialCreateParams.AuthCredentialCreateRequest.ofPasskey(passkey),
-                requestOptions,
-            )
+        ): HttpResponseFor<AuthMethodResponse> =
+            create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /auth/credentials`, but is otherwise the same as
@@ -314,61 +295,61 @@ interface CredentialServiceAsync {
         suspend fun list(
             params: CredentialListParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialListResponse>
-
-        /**
-         * Returns a raw HTTP response for `post /auth/credentials/{id}/challenge`, but is otherwise
-         * the same as [CredentialServiceAsync.resendChallenge].
-         */
-        @MustBeClosed
-        suspend fun resendChallenge(
-            id: String,
-            params: CredentialResendChallengeParams = CredentialResendChallengeParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialResendChallengeResponse> =
-            resendChallenge(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see resendChallenge */
-        @MustBeClosed
-        suspend fun resendChallenge(
-            params: CredentialResendChallengeParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialResendChallengeResponse>
-
-        /** @see resendChallenge */
-        @MustBeClosed
-        suspend fun resendChallenge(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CredentialResendChallengeResponse> =
-            resendChallenge(id, CredentialResendChallengeParams.none(), requestOptions)
+        ): HttpResponseFor<AuthCredentialListResponse>
 
         /**
          * Returns a raw HTTP response for `delete /auth/credentials/{id}`, but is otherwise the
-         * same as [CredentialServiceAsync.revoke].
+         * same as [CredentialServiceAsync.delete].
          */
         @MustBeClosed
-        suspend fun revoke(
+        suspend fun delete(
             id: String,
-            params: CredentialRevokeParams = CredentialRevokeParams.none(),
+            params: CredentialDeleteParams = CredentialDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialRevokeResponse> =
-            revoke(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<AuthSignedRequestChallenge> =
+            delete(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see revoke */
+        /** @see delete */
         @MustBeClosed
-        suspend fun revoke(
-            params: CredentialRevokeParams,
+        suspend fun delete(
+            params: CredentialDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialRevokeResponse>
+        ): HttpResponseFor<AuthSignedRequestChallenge>
 
-        /** @see revoke */
+        /** @see delete */
         @MustBeClosed
-        suspend fun revoke(
+        suspend fun delete(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CredentialRevokeResponse> =
-            revoke(id, CredentialRevokeParams.none(), requestOptions)
+        ): HttpResponseFor<AuthSignedRequestChallenge> =
+            delete(id, CredentialDeleteParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /auth/credentials/{id}/challenge`, but is otherwise
+         * the same as [CredentialServiceAsync.challenge].
+         */
+        @MustBeClosed
+        suspend fun challenge(
+            id: String,
+            params: CredentialChallengeParams = CredentialChallengeParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+            challenge(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see challenge */
+        @MustBeClosed
+        suspend fun challenge(
+            params: CredentialChallengeParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthCredentialResponseOneOf>
+
+        /** @see challenge */
+        @MustBeClosed
+        suspend fun challenge(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+            challenge(id, CredentialChallengeParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /auth/credentials/{id}/verify`, but is otherwise
@@ -379,14 +360,13 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialVerifyResponse> =
-            verify(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<AuthSession> = verify(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see verify */
         @MustBeClosed
         suspend fun verify(
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CredentialVerifyResponse>
+        ): HttpResponseFor<AuthSession>
     }
 }
