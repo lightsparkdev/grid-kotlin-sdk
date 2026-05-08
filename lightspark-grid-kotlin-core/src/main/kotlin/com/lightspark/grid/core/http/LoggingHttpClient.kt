@@ -29,7 +29,8 @@ private constructor(
     /**
      * Sensitive headers to redact from logs.
      *
-     * Defaults to `Set.of("Authorization", "X-Grid-Signature")`.
+     * Defaults to `Set.of("authorization", "api-key", "x-api-key", "cookie", "set-cookie",
+     * "x-grid-signature")`.
      */
     val redactedHeaders: SortedSet<String>,
     /**
@@ -182,7 +183,15 @@ private constructor(
     class Builder internal constructor() {
 
         private var httpClient: HttpClient? = null
-        private var redactedHeaders: Set<String> = setOf("Authorization", "X-Grid-Signature")
+        private var redactedHeaders: Set<String> =
+            setOf(
+                "authorization",
+                "api-key",
+                "x-api-key",
+                "cookie",
+                "set-cookie",
+                "x-grid-signature",
+            )
         private var clock: Clock = Clock.systemUTC()
         private var level: LogLevel? = null
 
@@ -199,7 +208,8 @@ private constructor(
         /**
          * Sensitive headers to redact from logs.
          *
-         * Defaults to `Set.of("Authorization", "X-Grid-Signature")`.
+         * Defaults to `Set.of("authorization", "api-key", "x-api-key", "cookie", "set-cookie",
+         * "x-grid-signature")`.
          */
         fun redactedHeaders(redactedHeaders: Set<String>) = apply {
             this.redactedHeaders = redactedHeaders
