@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.lightspark.grid.client.LightsparkGridClientAsync
 import com.lightspark.grid.client.LightsparkGridClientAsyncImpl
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.core.LogLevel
 import com.lightspark.grid.core.Sleeper
 import com.lightspark.grid.core.Timeout
 import com.lightspark.grid.core.http.Headers
@@ -235,6 +236,15 @@ class LightsparkGridOkHttpClientAsync private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
         fun username(username: String?) = apply { clientOptions.username(username) }

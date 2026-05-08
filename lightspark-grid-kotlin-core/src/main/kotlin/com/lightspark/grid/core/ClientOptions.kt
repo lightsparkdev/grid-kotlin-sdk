@@ -5,6 +5,7 @@ package com.lightspark.grid.core
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpClient
+import com.lightspark.grid.core.http.LoggingHttpClient
 import com.lightspark.grid.core.http.PhantomReachableClosingHttpClient
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.http.RetryingHttpClient
@@ -95,6 +96,14 @@ private constructor(
      * Defaults to 2.
      */
     val maxRetries: Int,
+    /**
+     * The level at which to log request and response information.
+     *
+     * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+     *
+     * Defaults to [LogLevel.fromEnv].
+     */
+    val logLevel: LogLevel,
     /** API token authentication using format `<api token id>:<api client secret>` */
     val username: String?,
     /** API token authentication using format `<api token id>:<api client secret>` */
@@ -171,6 +180,7 @@ private constructor(
         private var responseValidation: Boolean = false
         private var timeout: Timeout = Timeout.default()
         private var maxRetries: Int = 2
+        private var logLevel: LogLevel = LogLevel.fromEnv()
         private var username: String? = null
         private var password: String? = null
         private var agentAccessToken: String? = null
@@ -188,6 +198,7 @@ private constructor(
             responseValidation = clientOptions.responseValidation
             timeout = clientOptions.timeout
             maxRetries = clientOptions.maxRetries
+            logLevel = clientOptions.logLevel
             username = clientOptions.username
             password = clientOptions.password
             agentAccessToken = clientOptions.agentAccessToken
@@ -297,6 +308,15 @@ private constructor(
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { this.logLevel = logLevel }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
         fun username(username: String?) = apply { this.username = username }
@@ -428,6 +448,7 @@ private constructor(
          * System properties take precedence over environment variables.
          */
         fun fromEnv() = apply {
+            logLevel(LogLevel.fromEnv())
             (System.getProperty("lightsparkgrid.baseUrl")
                     ?: System.getenv("LIGHTSPARK_GRID_BASE_URL"))
                 ?.let { baseUrl(it) }
@@ -505,7 +526,13 @@ private constructor(
             return ClientOptions(
                 httpClient,
                 RetryingHttpClient.builder()
-                    .httpClient(httpClient)
+                    .httpClient(
+                        LoggingHttpClient.builder()
+                            .httpClient(httpClient)
+                            .clock(clock)
+                            .level(logLevel)
+                            .build()
+                    )
                     .sleeper(sleeper)
                     .clock(clock)
                     .maxRetries(maxRetries)
@@ -520,6 +547,7 @@ private constructor(
                 responseValidation,
                 timeout,
                 maxRetries,
+                logLevel,
                 username,
                 password,
                 agentAccessToken,
