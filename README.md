@@ -399,8 +399,6 @@ while (true) {
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `LIGHTSPARK_GRID_LOG` environment variable to `info`:
 
 ```sh
@@ -411,6 +409,19 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export LIGHTSPARK_GRID_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```kotlin
+import com.lightspark.grid.client.LightsparkGridClient
+import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.core.LogLevel
+
+val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .build()
 ```
 
 ## ProGuard and R8
