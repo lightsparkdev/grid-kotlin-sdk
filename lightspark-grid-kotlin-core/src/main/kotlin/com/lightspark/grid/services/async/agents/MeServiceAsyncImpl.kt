@@ -15,14 +15,15 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferInResponse
 import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageAsync
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.agents.me.MeRetrieveResponse
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsyncImpl
 import com.lightspark.grid.services.async.agents.me.ExternalAccountServiceAsync
@@ -99,21 +100,24 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
      */
     override fun actions(): ActionServiceAsync = actions
 
-    override suspend fun retrieve(params: MeRetrieveParams, requestOptions: RequestOptions): Agent =
+    override suspend fun retrieve(
+        params: MeRetrieveParams,
+        requestOptions: RequestOptions,
+    ): MeRetrieveResponse =
         // get /agents/me
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override suspend fun createTransferIn(
         params: MeCreateTransferInParams,
         requestOptions: RequestOptions,
-    ): AgentAction =
+    ): MeCreateTransferInResponse =
         // post /agents/me/transfer-in
         withRawResponse().createTransferIn(params, requestOptions).parse()
 
     override suspend fun createTransferOut(
         params: MeCreateTransferOutParams,
         requestOptions: RequestOptions,
-    ): AgentAction =
+    ): MeCreateTransferOutResponse =
         // post /agents/me/transfer-out
         withRawResponse().createTransferOut(params, requestOptions).parse()
 
@@ -190,12 +194,13 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
          */
         override fun actions(): ActionServiceAsync.WithRawResponse = actions
 
-        private val retrieveHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<MeRetrieveResponse> =
+            jsonHandler<MeRetrieveResponse>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: MeRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> {
+        ): HttpResponseFor<MeRetrieveResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -216,13 +221,13 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val createTransferInHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val createTransferInHandler: Handler<MeCreateTransferInResponse> =
+            jsonHandler<MeCreateTransferInResponse>(clientOptions.jsonMapper)
 
         override suspend fun createTransferIn(
             params: MeCreateTransferInParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<MeCreateTransferInResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -244,13 +249,13 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val createTransferOutHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val createTransferOutHandler: Handler<MeCreateTransferOutResponse> =
+            jsonHandler<MeCreateTransferOutResponse>(clientOptions.jsonMapper)
 
         override suspend fun createTransferOut(
             params: MeCreateTransferOutParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<MeCreateTransferOutResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

@@ -15,11 +15,11 @@ import com.lightspark.grid.core.http.HttpResponse.Handler
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.agents.AgentAction
-import com.lightspark.grid.models.agents.AgentActionListResponse
 import com.lightspark.grid.models.agents.me.actions.ActionListPageAsync
+import com.lightspark.grid.models.agents.me.actions.ActionListPageResponse
 import com.lightspark.grid.models.agents.me.actions.ActionListParams
 import com.lightspark.grid.models.agents.me.actions.ActionRetrieveParams
+import com.lightspark.grid.models.agents.me.actions.ActionRetrieveResponse
 
 /**
  * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -43,7 +43,7 @@ class ActionServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override suspend fun retrieve(
         params: ActionRetrieveParams,
         requestOptions: RequestOptions,
-    ): AgentAction =
+    ): ActionRetrieveResponse =
         // get /agents/me/actions/{actionId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -67,13 +67,13 @@ class ActionServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<ActionRetrieveResponse> =
+            jsonHandler<ActionRetrieveResponse>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: ActionRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<ActionRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -97,8 +97,8 @@ class ActionServiceAsyncImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val listHandler: Handler<AgentActionListResponse> =
-            jsonHandler<AgentActionListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ActionListPageResponse> =
+            jsonHandler<ActionListPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: ActionListParams,

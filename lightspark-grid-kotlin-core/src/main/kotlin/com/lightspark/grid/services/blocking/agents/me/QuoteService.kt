@@ -6,9 +6,9 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.quotes.QuoteCreateParams
 import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteParams
+import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteResponse
 import com.lightspark.grid.models.agents.me.quotes.QuoteRetrieveParams
 import com.lightspark.grid.models.quotes.Quote
 
@@ -76,16 +76,16 @@ interface QuoteService {
         quoteId: String,
         params: QuoteExecuteParams = QuoteExecuteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
+    ): QuoteExecuteResponse = execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
 
     /** @see execute */
     fun execute(
         params: QuoteExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): QuoteExecuteResponse
 
     /** @see execute */
-    fun execute(quoteId: String, requestOptions: RequestOptions): AgentAction =
+    fun execute(quoteId: String, requestOptions: RequestOptions): QuoteExecuteResponse =
         execute(quoteId, QuoteExecuteParams.none(), requestOptions)
 
     /** A view of [QuoteService] that provides access to raw HTTP responses for each method. */
@@ -141,7 +141,7 @@ interface QuoteService {
             quoteId: String,
             params: QuoteExecuteParams = QuoteExecuteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<QuoteExecuteResponse> =
             execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
 
         /** @see execute */
@@ -149,11 +149,14 @@ interface QuoteService {
         fun execute(
             params: QuoteExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<QuoteExecuteResponse>
 
         /** @see execute */
         @MustBeClosed
-        fun execute(quoteId: String, requestOptions: RequestOptions): HttpResponseFor<AgentAction> =
+        fun execute(
+            quoteId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<QuoteExecuteResponse> =
             execute(quoteId, QuoteExecuteParams.none(), requestOptions)
     }
 }

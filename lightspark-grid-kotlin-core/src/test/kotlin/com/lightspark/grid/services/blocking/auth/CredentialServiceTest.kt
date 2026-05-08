@@ -3,12 +3,11 @@
 package com.lightspark.grid.services.blocking.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
-import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialResendChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialRevokeParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
-import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialVerifyRequestFields
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -24,20 +23,30 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authMethodResponse =
+        val authMethod =
             credentialService.create(
                 CredentialCreateParams.builder()
                     .gridWalletSignature(
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                     )
                     .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                    .emailOtpAuthCredentialCreateRequest(
-                        "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                    .authCredentialCreateRequest(
+                        CredentialCreateParams.AuthCredentialCreateRequest
+                            .EmailOtpCredentialCreateRequest
+                            .builder()
+                            .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                            .type(
+                                CredentialCreateParams.AuthCredentialCreateRequest
+                                    .EmailOtpCredentialCreateRequest
+                                    .Type
+                                    .EMAIL_OTP
+                            )
+                            .build()
                     )
                     .build()
             )
 
-        authMethodResponse.validate()
+        authMethod.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -50,15 +59,15 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authCredentialListResponse =
+        val credentials =
             credentialService.list(CredentialListParams.builder().accountId("accountId").build())
 
-        authCredentialListResponse.validate()
+        credentials.validate()
     }
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun delete() {
+    fun resendChallenge() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -66,9 +75,32 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authSignedRequestChallenge =
-            credentialService.delete(
-                CredentialDeleteParams.builder()
+        val response =
+            credentialService.resendChallenge(
+                CredentialResendChallengeParams.builder()
+                    .id("id")
+                    .clientPublicKey(
+                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    )
+                    .build()
+            )
+
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun revoke() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val credentialService = client.auth().credentials()
+
+        val response =
+            credentialService.revoke(
+                CredentialRevokeParams.builder()
                     .id("id")
                     .gridWalletSignature(
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
@@ -77,30 +109,7 @@ internal class CredentialServiceTest {
                     .build()
             )
 
-        authSignedRequestChallenge.validate()
-    }
-
-    @Disabled("Mock server tests are disabled")
-    @Test
-    fun challenge() {
-        val client =
-            LightsparkGridOkHttpClient.builder()
-                .username("My Username")
-                .password("My Password")
-                .build()
-        val credentialService = client.auth().credentials()
-
-        val authCredentialResponseOneOf =
-            credentialService.challenge(
-                CredentialChallengeParams.builder()
-                    .id("id")
-                    .clientPublicKey(
-                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                    )
-                    .build()
-            )
-
-        authCredentialResponseOneOf.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -113,23 +122,30 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authSession =
+        val response =
             credentialService.verify(
                 CredentialVerifyParams.builder()
                     .id("id")
                     .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .authCredentialVerifyRequest(
-                        EmailOtpCredentialVerifyRequestFields.builder()
+                        CredentialVerifyParams.AuthCredentialVerifyRequest
+                            .EmailOtpCredentialVerifyRequest
+                            .builder()
                             .clientPublicKey(
                                 "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
                             )
                             .otp("123456")
-                            .type(EmailOtpCredentialVerifyRequestFields.Type.EMAIL_OTP)
+                            .type(
+                                CredentialVerifyParams.AuthCredentialVerifyRequest
+                                    .EmailOtpCredentialVerifyRequest
+                                    .Type
+                                    .EMAIL_OTP
+                            )
                             .build()
                     )
                     .build()
             )
 
-        authSession.validate()
+        response.validate()
     }
 }

@@ -6,9 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.transactions.TransactionApproveParams
+import com.lightspark.grid.models.agents.transactions.TransactionApproveResponse
 import com.lightspark.grid.models.agents.transactions.TransactionRejectParams
+import com.lightspark.grid.models.agents.transactions.TransactionRejectResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -42,13 +43,14 @@ interface TransactionService {
         actionId: String,
         params: TransactionApproveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = approve(params.toBuilder().actionId(actionId).build(), requestOptions)
+    ): TransactionApproveResponse =
+        approve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
     /** @see approve */
     fun approve(
         params: TransactionApproveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): TransactionApproveResponse
 
     /**
      * Reject a pending agent action, preventing execution. The action must have status
@@ -60,13 +62,14 @@ interface TransactionService {
         actionId: String,
         params: TransactionRejectParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = reject(params.toBuilder().actionId(actionId).build(), requestOptions)
+    ): TransactionRejectResponse =
+        reject(params.toBuilder().actionId(actionId).build(), requestOptions)
 
     /** @see reject */
     fun reject(
         params: TransactionRejectParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): TransactionRejectResponse
 
     /**
      * A view of [TransactionService] that provides access to raw HTTP responses for each method.
@@ -91,7 +94,7 @@ interface TransactionService {
             actionId: String,
             params: TransactionApproveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<TransactionApproveResponse> =
             approve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
         /** @see approve */
@@ -99,7 +102,7 @@ interface TransactionService {
         fun approve(
             params: TransactionApproveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<TransactionApproveResponse>
 
         /**
          * Returns a raw HTTP response for `post /agents/{agentId}/actions/{actionId}/reject`, but
@@ -110,7 +113,7 @@ interface TransactionService {
             actionId: String,
             params: TransactionRejectParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<TransactionRejectResponse> =
             reject(params.toBuilder().actionId(actionId).build(), requestOptions)
 
         /** @see reject */
@@ -118,6 +121,6 @@ interface TransactionService {
         fun reject(
             params: TransactionRejectParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<TransactionRejectResponse>
     }
 }

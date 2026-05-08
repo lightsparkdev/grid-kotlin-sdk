@@ -3,7 +3,6 @@
 package com.lightspark.grid.services.async.agents
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.agents.AgentActionRejectRequest
 import com.lightspark.grid.models.agents.transactions.TransactionApproveParams
 import com.lightspark.grid.models.agents.transactions.TransactionRejectParams
 import org.junit.jupiter.api.Disabled
@@ -21,12 +20,12 @@ internal class TransactionServiceAsyncTest {
                 .build()
         val transactionServiceAsync = client.agents().transactions()
 
-        val agentAction =
+        val response =
             transactionServiceAsync.approve(
                 TransactionApproveParams.builder().agentId("agentId").actionId("actionId").build()
             )
 
-        agentAction.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -39,19 +38,15 @@ internal class TransactionServiceAsyncTest {
                 .build()
         val transactionServiceAsync = client.agents().transactions()
 
-        val agentAction =
+        val response =
             transactionServiceAsync.reject(
                 TransactionRejectParams.builder()
                     .agentId("agentId")
                     .actionId("actionId")
-                    .agentActionRejectRequest(
-                        AgentActionRejectRequest.builder()
-                            .reason("Transaction amount exceeds customer's current risk limit.")
-                            .build()
-                    )
+                    .reason("Transaction amount exceeds customer's current risk limit.")
                     .build()
             )
 
-        agentAction.validate()
+        response.validate()
     }
 }

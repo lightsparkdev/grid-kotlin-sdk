@@ -6,10 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.actions.ActionListPage
 import com.lightspark.grid.models.agents.me.actions.ActionListParams
 import com.lightspark.grid.models.agents.me.actions.ActionRetrieveParams
+import com.lightspark.grid.models.agents.me.actions.ActionRetrieveResponse
 
 /**
  * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -41,16 +41,17 @@ interface ActionService {
         actionId: String,
         params: ActionRetrieveParams = ActionRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = retrieve(params.toBuilder().actionId(actionId).build(), requestOptions)
+    ): ActionRetrieveResponse =
+        retrieve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         params: ActionRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): ActionRetrieveResponse
 
     /** @see retrieve */
-    fun retrieve(actionId: String, requestOptions: RequestOptions): AgentAction =
+    fun retrieve(actionId: String, requestOptions: RequestOptions): ActionRetrieveResponse =
         retrieve(actionId, ActionRetrieveParams.none(), requestOptions)
 
     /**
@@ -85,7 +86,7 @@ interface ActionService {
             actionId: String,
             params: ActionRetrieveParams = ActionRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<ActionRetrieveResponse> =
             retrieve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
         /** @see retrieve */
@@ -93,14 +94,14 @@ interface ActionService {
         fun retrieve(
             params: ActionRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<ActionRetrieveResponse>
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             actionId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<ActionRetrieveResponse> =
             retrieve(actionId, ActionRetrieveParams.none(), requestOptions)
 
         /**

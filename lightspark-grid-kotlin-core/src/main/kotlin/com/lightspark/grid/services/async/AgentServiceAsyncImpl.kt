@@ -17,19 +17,21 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentActionListResponse
 import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
 import com.lightspark.grid.models.agents.AgentListApprovalsPageAsync
+import com.lightspark.grid.models.agents.AgentListApprovalsPageResponse
 import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPageAsync
+import com.lightspark.grid.models.agents.AgentListPageResponse
 import com.lightspark.grid.models.agents.AgentListParams
-import com.lightspark.grid.models.agents.AgentListResponse
 import com.lightspark.grid.models.agents.AgentRetrieveParams
+import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
+import com.lightspark.grid.models.agents.AgentUpdatePolicyResponse
+import com.lightspark.grid.models.agents.AgentUpdateResponse
 import com.lightspark.grid.services.async.agents.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.ActionServiceAsyncImpl
 import com.lightspark.grid.services.async.agents.DeviceCodeServiceAsync
@@ -112,11 +114,14 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override suspend fun retrieve(
         params: AgentRetrieveParams,
         requestOptions: RequestOptions,
-    ): Agent =
+    ): AgentRetrieveResponse =
         // get /agents/{agentId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override suspend fun update(params: AgentUpdateParams, requestOptions: RequestOptions): Agent =
+    override suspend fun update(
+        params: AgentUpdateParams,
+        requestOptions: RequestOptions,
+    ): AgentUpdateResponse =
         // patch /agents/{agentId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -142,7 +147,7 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
     override suspend fun updatePolicy(
         params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions,
-    ): Agent =
+    ): AgentUpdatePolicyResponse =
         // patch /agents/{agentId}/policy
         withRawResponse().updatePolicy(params, requestOptions).parse()
 
@@ -236,12 +241,13 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val retrieveHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<AgentRetrieveResponse> =
+            jsonHandler<AgentRetrieveResponse>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: AgentRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> {
+        ): HttpResponseFor<AgentRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())
@@ -265,12 +271,13 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val updateHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<AgentUpdateResponse> =
+            jsonHandler<AgentUpdateResponse>(clientOptions.jsonMapper)
 
         override suspend fun update(
             params: AgentUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> {
+        ): HttpResponseFor<AgentUpdateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())
@@ -295,8 +302,8 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val listHandler: Handler<AgentListResponse> =
-            jsonHandler<AgentListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<AgentListPageResponse> =
+            jsonHandler<AgentListPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: AgentListParams,
@@ -353,8 +360,8 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val listApprovalsHandler: Handler<AgentActionListResponse> =
-            jsonHandler<AgentActionListResponse>(clientOptions.jsonMapper)
+        private val listApprovalsHandler: Handler<AgentListApprovalsPageResponse> =
+            jsonHandler<AgentListApprovalsPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun listApprovals(
             params: AgentListApprovalsParams,
@@ -387,13 +394,13 @@ class AgentServiceAsyncImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val updatePolicyHandler: Handler<Agent> =
-            jsonHandler<Agent>(clientOptions.jsonMapper)
+        private val updatePolicyHandler: Handler<AgentUpdatePolicyResponse> =
+            jsonHandler<AgentUpdatePolicyResponse>(clientOptions.jsonMapper)
 
         override suspend fun updatePolicy(
             params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> {
+        ): HttpResponseFor<AgentUpdatePolicyResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())

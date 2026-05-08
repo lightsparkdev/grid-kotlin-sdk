@@ -5,8 +5,6 @@ package com.lightspark.grid.models.agents.me.actions
 import com.lightspark.grid.core.AutoPagerAsync
 import com.lightspark.grid.core.PageAsync
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.models.agents.AgentAction
-import com.lightspark.grid.models.agents.AgentActionListResponse
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import java.util.Objects
 
@@ -15,38 +13,38 @@ class ActionListPageAsync
 private constructor(
     private val service: ActionServiceAsync,
     private val params: ActionListParams,
-    private val response: AgentActionListResponse,
-) : PageAsync<AgentAction> {
+    private val response: ActionListPageResponse,
+) : PageAsync<ActionListResponse> {
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [ActionListPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.data
+     * @see ActionListPageResponse.data
      */
-    fun data(): List<AgentAction> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<ActionListResponse> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [ActionListPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.nextCursor
+     * @see ActionListPageResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [ActionListPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.hasMore
+     * @see ActionListPageResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [ActionListPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.totalCount
+     * @see ActionListPageResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<AgentAction> = data()
+    override fun items(): List<ActionListResponse> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -58,13 +56,13 @@ private constructor(
 
     override suspend fun nextPage(): ActionListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<AgentAction> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<ActionListResponse> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): ActionListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): AgentActionListResponse = response
+    fun response(): ActionListPageResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -88,7 +86,7 @@ private constructor(
 
         private var service: ActionServiceAsync? = null
         private var params: ActionListParams? = null
-        private var response: AgentActionListResponse? = null
+        private var response: ActionListPageResponse? = null
 
         internal fun from(actionListPageAsync: ActionListPageAsync) = apply {
             service = actionListPageAsync.service
@@ -102,7 +100,7 @@ private constructor(
         fun params(params: ActionListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: AgentActionListResponse) = apply { this.response = response }
+        fun response(response: ActionListPageResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [ActionListPageAsync].

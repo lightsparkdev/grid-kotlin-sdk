@@ -11,19 +11,14 @@ internal class AgentUpdateParamsTest {
     fun create() {
         AgentUpdateParams.builder()
             .agentId("agentId")
-            .agentUpdateRequest(
-                AgentUpdateRequest.builder().isPaused(true).name("Updated Payroll Agent").build()
-            )
+            .isPaused(true)
+            .name("Updated Payroll Agent")
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            AgentUpdateParams.builder()
-                .agentId("agentId")
-                .agentUpdateRequest(AgentUpdateRequest.builder().build())
-                .build()
+        val params = AgentUpdateParams.builder().agentId("agentId").build()
 
         assertThat(params._pathParam(0)).isEqualTo("agentId")
         // out-of-bound path param
@@ -35,32 +30,20 @@ internal class AgentUpdateParamsTest {
         val params =
             AgentUpdateParams.builder()
                 .agentId("agentId")
-                .agentUpdateRequest(
-                    AgentUpdateRequest.builder()
-                        .isPaused(true)
-                        .name("Updated Payroll Agent")
-                        .build()
-                )
+                .isPaused(true)
+                .name("Updated Payroll Agent")
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                AgentUpdateRequest.builder().isPaused(true).name("Updated Payroll Agent").build()
-            )
+        assertThat(body.isPaused()).isEqualTo(true)
+        assertThat(body.name()).isEqualTo("Updated Payroll Agent")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            AgentUpdateParams.builder()
-                .agentId("agentId")
-                .agentUpdateRequest(AgentUpdateRequest.builder().build())
-                .build()
+        val params = AgentUpdateParams.builder().agentId("agentId").build()
 
         val body = params._body()
-
-        assertThat(body).isEqualTo(AgentUpdateRequest.builder().build())
     }
 }
