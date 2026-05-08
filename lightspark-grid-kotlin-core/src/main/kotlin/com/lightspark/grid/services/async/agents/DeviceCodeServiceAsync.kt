@@ -6,12 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.AgentDeviceCode
-import com.lightspark.grid.models.agents.AgentDeviceCodeRedeemResponse
-import com.lightspark.grid.models.agents.AgentDeviceCodeStatusResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -41,20 +41,20 @@ interface DeviceCodeServiceAsync {
         code: String,
         params: DeviceCodeGetStatusParams = DeviceCodeGetStatusParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCodeStatusResponse =
+    ): DeviceCodeGetStatusResponse =
         getStatus(params.toBuilder().code(code).build(), requestOptions)
 
     /** @see getStatus */
     suspend fun getStatus(
         params: DeviceCodeGetStatusParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCodeStatusResponse
+    ): DeviceCodeGetStatusResponse
 
     /** @see getStatus */
     suspend fun getStatus(
         code: String,
         requestOptions: RequestOptions,
-    ): AgentDeviceCodeStatusResponse =
+    ): DeviceCodeGetStatusResponse =
         getStatus(code, DeviceCodeGetStatusParams.none(), requestOptions)
 
     /**
@@ -68,19 +68,17 @@ interface DeviceCodeServiceAsync {
         code: String,
         params: DeviceCodeRedeemParams = DeviceCodeRedeemParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCodeRedeemResponse = redeem(params.toBuilder().code(code).build(), requestOptions)
+    ): DeviceCodeRedeemResponse = redeem(params.toBuilder().code(code).build(), requestOptions)
 
     /** @see redeem */
     suspend fun redeem(
         params: DeviceCodeRedeemParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCodeRedeemResponse
+    ): DeviceCodeRedeemResponse
 
     /** @see redeem */
-    suspend fun redeem(
-        code: String,
-        requestOptions: RequestOptions,
-    ): AgentDeviceCodeRedeemResponse = redeem(code, DeviceCodeRedeemParams.none(), requestOptions)
+    suspend fun redeem(code: String, requestOptions: RequestOptions): DeviceCodeRedeemResponse =
+        redeem(code, DeviceCodeRedeemParams.none(), requestOptions)
 
     /**
      * Generate a new device code for an existing agent. Use this when the original device code has
@@ -91,16 +89,20 @@ interface DeviceCodeServiceAsync {
         agentId: String,
         params: DeviceCodeRegenerateParams = DeviceCodeRegenerateParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCode = regenerate(params.toBuilder().agentId(agentId).build(), requestOptions)
+    ): DeviceCodeRegenerateResponse =
+        regenerate(params.toBuilder().agentId(agentId).build(), requestOptions)
 
     /** @see regenerate */
     suspend fun regenerate(
         params: DeviceCodeRegenerateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentDeviceCode
+    ): DeviceCodeRegenerateResponse
 
     /** @see regenerate */
-    suspend fun regenerate(agentId: String, requestOptions: RequestOptions): AgentDeviceCode =
+    suspend fun regenerate(
+        agentId: String,
+        requestOptions: RequestOptions,
+    ): DeviceCodeRegenerateResponse =
         regenerate(agentId, DeviceCodeRegenerateParams.none(), requestOptions)
 
     /**
@@ -127,7 +129,7 @@ interface DeviceCodeServiceAsync {
             code: String,
             params: DeviceCodeGetStatusParams = DeviceCodeGetStatusParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCodeStatusResponse> =
+        ): HttpResponseFor<DeviceCodeGetStatusResponse> =
             getStatus(params.toBuilder().code(code).build(), requestOptions)
 
         /** @see getStatus */
@@ -135,14 +137,14 @@ interface DeviceCodeServiceAsync {
         suspend fun getStatus(
             params: DeviceCodeGetStatusParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCodeStatusResponse>
+        ): HttpResponseFor<DeviceCodeGetStatusResponse>
 
         /** @see getStatus */
         @MustBeClosed
         suspend fun getStatus(
             code: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCodeStatusResponse> =
+        ): HttpResponseFor<DeviceCodeGetStatusResponse> =
             getStatus(code, DeviceCodeGetStatusParams.none(), requestOptions)
 
         /**
@@ -154,7 +156,7 @@ interface DeviceCodeServiceAsync {
             code: String,
             params: DeviceCodeRedeemParams = DeviceCodeRedeemParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCodeRedeemResponse> =
+        ): HttpResponseFor<DeviceCodeRedeemResponse> =
             redeem(params.toBuilder().code(code).build(), requestOptions)
 
         /** @see redeem */
@@ -162,14 +164,14 @@ interface DeviceCodeServiceAsync {
         suspend fun redeem(
             params: DeviceCodeRedeemParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCodeRedeemResponse>
+        ): HttpResponseFor<DeviceCodeRedeemResponse>
 
         /** @see redeem */
         @MustBeClosed
         suspend fun redeem(
             code: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCodeRedeemResponse> =
+        ): HttpResponseFor<DeviceCodeRedeemResponse> =
             redeem(code, DeviceCodeRedeemParams.none(), requestOptions)
 
         /**
@@ -181,7 +183,7 @@ interface DeviceCodeServiceAsync {
             agentId: String,
             params: DeviceCodeRegenerateParams = DeviceCodeRegenerateParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCode> =
+        ): HttpResponseFor<DeviceCodeRegenerateResponse> =
             regenerate(params.toBuilder().agentId(agentId).build(), requestOptions)
 
         /** @see regenerate */
@@ -189,14 +191,14 @@ interface DeviceCodeServiceAsync {
         suspend fun regenerate(
             params: DeviceCodeRegenerateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentDeviceCode>
+        ): HttpResponseFor<DeviceCodeRegenerateResponse>
 
         /** @see regenerate */
         @MustBeClosed
         suspend fun regenerate(
             agentId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCode> =
+        ): HttpResponseFor<DeviceCodeRegenerateResponse> =
             regenerate(agentId, DeviceCodeRegenerateParams.none(), requestOptions)
     }
 }

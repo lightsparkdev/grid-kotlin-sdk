@@ -15,14 +15,15 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
-import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferInResponse
 import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPage
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.agents.me.MeRetrieveResponse
 import com.lightspark.grid.services.blocking.agents.me.ActionService
 import com.lightspark.grid.services.blocking.agents.me.ActionServiceImpl
 import com.lightspark.grid.services.blocking.agents.me.ExternalAccountService
@@ -96,21 +97,24 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
      */
     override fun actions(): ActionService = actions
 
-    override fun retrieve(params: MeRetrieveParams, requestOptions: RequestOptions): Agent =
+    override fun retrieve(
+        params: MeRetrieveParams,
+        requestOptions: RequestOptions,
+    ): MeRetrieveResponse =
         // get /agents/me
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun createTransferIn(
         params: MeCreateTransferInParams,
         requestOptions: RequestOptions,
-    ): AgentAction =
+    ): MeCreateTransferInResponse =
         // post /agents/me/transfer-in
         withRawResponse().createTransferIn(params, requestOptions).parse()
 
     override fun createTransferOut(
         params: MeCreateTransferOutParams,
         requestOptions: RequestOptions,
-    ): AgentAction =
+    ): MeCreateTransferOutResponse =
         // post /agents/me/transfer-out
         withRawResponse().createTransferOut(params, requestOptions).parse()
 
@@ -184,12 +188,13 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
          */
         override fun actions(): ActionService.WithRawResponse = actions
 
-        private val retrieveHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<MeRetrieveResponse> =
+            jsonHandler<MeRetrieveResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: MeRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> {
+        ): HttpResponseFor<MeRetrieveResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -210,13 +215,13 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
             }
         }
 
-        private val createTransferInHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val createTransferInHandler: Handler<MeCreateTransferInResponse> =
+            jsonHandler<MeCreateTransferInResponse>(clientOptions.jsonMapper)
 
         override fun createTransferIn(
             params: MeCreateTransferInParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<MeCreateTransferInResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -238,13 +243,13 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
             }
         }
 
-        private val createTransferOutHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val createTransferOutHandler: Handler<MeCreateTransferOutResponse> =
+            jsonHandler<MeCreateTransferOutResponse>(clientOptions.jsonMapper)
 
         override fun createTransferOut(
             params: MeCreateTransferOutParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<MeCreateTransferOutResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

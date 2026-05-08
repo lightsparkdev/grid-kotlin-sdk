@@ -6,9 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.actions.ActionApproveParams
+import com.lightspark.grid.models.agents.actions.ActionApproveResponse
 import com.lightspark.grid.models.agents.actions.ActionRejectParams
+import com.lightspark.grid.models.agents.actions.ActionRejectResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -42,13 +43,14 @@ interface ActionService {
         actionId: String,
         params: ActionApproveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = approve(params.toBuilder().actionId(actionId).build(), requestOptions)
+    ): ActionApproveResponse =
+        approve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
     /** @see approve */
     fun approve(
         params: ActionApproveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): ActionApproveResponse
 
     /**
      * Reject a pending agent action, preventing execution. The action must have status
@@ -60,13 +62,13 @@ interface ActionService {
         actionId: String,
         params: ActionRejectParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction = reject(params.toBuilder().actionId(actionId).build(), requestOptions)
+    ): ActionRejectResponse = reject(params.toBuilder().actionId(actionId).build(), requestOptions)
 
     /** @see reject */
     fun reject(
         params: ActionRejectParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): ActionRejectResponse
 
     /** A view of [ActionService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -87,7 +89,7 @@ interface ActionService {
             actionId: String,
             params: ActionApproveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<ActionApproveResponse> =
             approve(params.toBuilder().actionId(actionId).build(), requestOptions)
 
         /** @see approve */
@@ -95,7 +97,7 @@ interface ActionService {
         fun approve(
             params: ActionApproveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<ActionApproveResponse>
 
         /**
          * Returns a raw HTTP response for `post /agents/{agentId}/actions/{actionId}/reject`, but
@@ -106,7 +108,7 @@ interface ActionService {
             actionId: String,
             params: ActionRejectParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
+        ): HttpResponseFor<ActionRejectResponse> =
             reject(params.toBuilder().actionId(actionId).build(), requestOptions)
 
         /** @see reject */
@@ -114,6 +116,6 @@ interface ActionService {
         fun reject(
             params: ActionRejectParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<ActionRejectResponse>
     }
 }

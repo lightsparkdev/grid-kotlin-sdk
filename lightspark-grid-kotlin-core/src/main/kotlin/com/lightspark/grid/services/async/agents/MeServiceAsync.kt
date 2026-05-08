@@ -6,13 +6,14 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferInResponse
 import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
+import com.lightspark.grid.models.agents.me.MeCreateTransferOutResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageAsync
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.agents.me.MeRetrieveResponse
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.me.ExternalAccountServiceAsync
 import com.lightspark.grid.services.async.agents.me.QuoteServiceAsync
@@ -83,10 +84,10 @@ interface MeServiceAsync {
     suspend fun retrieve(
         params: MeRetrieveParams = MeRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): Agent
+    ): MeRetrieveResponse
 
     /** @see retrieve */
-    suspend fun retrieve(requestOptions: RequestOptions): Agent =
+    suspend fun retrieve(requestOptions: RequestOptions): MeRetrieveResponse =
         retrieve(MeRetrieveParams.none(), requestOptions)
 
     /**
@@ -101,7 +102,7 @@ interface MeServiceAsync {
     suspend fun createTransferIn(
         params: MeCreateTransferInParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): MeCreateTransferInResponse
 
     /**
      * Transfer funds from an internal account to an external account for the authenticated agent's
@@ -113,7 +114,7 @@ interface MeServiceAsync {
     suspend fun createTransferOut(
         params: MeCreateTransferOutParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
+    ): MeCreateTransferOutResponse
 
     /**
      * Retrieve the internal accounts belonging to the customer this agent operates on behalf of.
@@ -185,11 +186,11 @@ interface MeServiceAsync {
         suspend fun retrieve(
             params: MeRetrieveParams = MeRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Agent>
+        ): HttpResponseFor<MeRetrieveResponse>
 
         /** @see retrieve */
         @MustBeClosed
-        suspend fun retrieve(requestOptions: RequestOptions): HttpResponseFor<Agent> =
+        suspend fun retrieve(requestOptions: RequestOptions): HttpResponseFor<MeRetrieveResponse> =
             retrieve(MeRetrieveParams.none(), requestOptions)
 
         /**
@@ -200,7 +201,7 @@ interface MeServiceAsync {
         suspend fun createTransferIn(
             params: MeCreateTransferInParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<MeCreateTransferInResponse>
 
         /**
          * Returns a raw HTTP response for `post /agents/me/transfer-out`, but is otherwise the same
@@ -210,7 +211,7 @@ interface MeServiceAsync {
         suspend fun createTransferOut(
             params: MeCreateTransferOutParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
+        ): HttpResponseFor<MeCreateTransferOutResponse>
 
         /**
          * Returns a raw HTTP response for `get /agents/me/internal-accounts`, but is otherwise the

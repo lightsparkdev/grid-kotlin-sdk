@@ -16,7 +16,7 @@ internal class AgentCreateResponseTest {
         val agentCreateResponse =
             AgentCreateResponse.builder()
                 .agent(
-                    Agent.builder()
+                    AgentCreateResponse.Agent.builder()
                         .id("Agent:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -77,7 +77,7 @@ internal class AgentCreateResponseTest {
                         .build()
                 )
                 .deviceCode(
-                    AgentDeviceCode.builder()
+                    AgentCreateResponse.DeviceCode.builder()
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000001")
                         .code("GRID-AGENT-X7K9-M2P4")
                         .expiresAt(OffsetDateTime.parse("2025-07-22T17:32:28Z"))
@@ -88,7 +88,7 @@ internal class AgentCreateResponseTest {
 
         assertThat(agentCreateResponse.agent())
             .isEqualTo(
-                Agent.builder()
+                AgentCreateResponse.Agent.builder()
                     .id("Agent:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -150,7 +150,7 @@ internal class AgentCreateResponseTest {
             )
         assertThat(agentCreateResponse.deviceCode())
             .isEqualTo(
-                AgentDeviceCode.builder()
+                AgentCreateResponse.DeviceCode.builder()
                     .agentId("Agent:019542f5-b3e7-1d02-0000-000000000001")
                     .code("GRID-AGENT-X7K9-M2P4")
                     .expiresAt(OffsetDateTime.parse("2025-07-22T17:32:28Z"))
@@ -165,7 +165,7 @@ internal class AgentCreateResponseTest {
         val agentCreateResponse =
             AgentCreateResponse.builder()
                 .agent(
-                    Agent.builder()
+                    AgentCreateResponse.Agent.builder()
                         .id("Agent:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -226,7 +226,7 @@ internal class AgentCreateResponseTest {
                         .build()
                 )
                 .deviceCode(
-                    AgentDeviceCode.builder()
+                    AgentCreateResponse.DeviceCode.builder()
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000001")
                         .code("GRID-AGENT-X7K9-M2P4")
                         .expiresAt(OffsetDateTime.parse("2025-07-22T17:32:28Z"))

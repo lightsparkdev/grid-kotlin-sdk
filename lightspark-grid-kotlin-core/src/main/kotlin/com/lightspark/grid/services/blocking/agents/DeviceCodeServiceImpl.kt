@@ -16,12 +16,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
-import com.lightspark.grid.models.agents.AgentDeviceCode
-import com.lightspark.grid.models.agents.AgentDeviceCodeRedeemResponse
-import com.lightspark.grid.models.agents.AgentDeviceCodeStatusResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeGetStatusResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRedeemResponse
 import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateParams
+import com.lightspark.grid.models.agents.devicecodes.DeviceCodeRegenerateResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -44,21 +44,21 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
     override fun getStatus(
         params: DeviceCodeGetStatusParams,
         requestOptions: RequestOptions,
-    ): AgentDeviceCodeStatusResponse =
+    ): DeviceCodeGetStatusResponse =
         // get /agents/device-codes/{code}/status
         withRawResponse().getStatus(params, requestOptions).parse()
 
     override fun redeem(
         params: DeviceCodeRedeemParams,
         requestOptions: RequestOptions,
-    ): AgentDeviceCodeRedeemResponse =
+    ): DeviceCodeRedeemResponse =
         // post /agents/device-codes/{code}/redeem
         withRawResponse().redeem(params, requestOptions).parse()
 
     override fun regenerate(
         params: DeviceCodeRegenerateParams,
         requestOptions: RequestOptions,
-    ): AgentDeviceCode =
+    ): DeviceCodeRegenerateResponse =
         // post /agents/{agentId}/device-codes
         withRawResponse().regenerate(params, requestOptions).parse()
 
@@ -75,13 +75,13 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val getStatusHandler: Handler<AgentDeviceCodeStatusResponse> =
-            jsonHandler<AgentDeviceCodeStatusResponse>(clientOptions.jsonMapper)
+        private val getStatusHandler: Handler<DeviceCodeGetStatusResponse> =
+            jsonHandler<DeviceCodeGetStatusResponse>(clientOptions.jsonMapper)
 
         override fun getStatus(
             params: DeviceCodeGetStatusParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCodeStatusResponse> {
+        ): HttpResponseFor<DeviceCodeGetStatusResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("code", params.code())
@@ -105,13 +105,13 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val redeemHandler: Handler<AgentDeviceCodeRedeemResponse> =
-            jsonHandler<AgentDeviceCodeRedeemResponse>(clientOptions.jsonMapper)
+        private val redeemHandler: Handler<DeviceCodeRedeemResponse> =
+            jsonHandler<DeviceCodeRedeemResponse>(clientOptions.jsonMapper)
 
         override fun redeem(
             params: DeviceCodeRedeemParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCodeRedeemResponse> {
+        ): HttpResponseFor<DeviceCodeRedeemResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("code", params.code())
@@ -136,13 +136,13 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
             }
         }
 
-        private val regenerateHandler: Handler<AgentDeviceCode> =
-            jsonHandler<AgentDeviceCode>(clientOptions.jsonMapper)
+        private val regenerateHandler: Handler<DeviceCodeRegenerateResponse> =
+            jsonHandler<DeviceCodeRegenerateResponse>(clientOptions.jsonMapper)
 
         override fun regenerate(
             params: DeviceCodeRegenerateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentDeviceCode> {
+        ): HttpResponseFor<DeviceCodeRegenerateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())

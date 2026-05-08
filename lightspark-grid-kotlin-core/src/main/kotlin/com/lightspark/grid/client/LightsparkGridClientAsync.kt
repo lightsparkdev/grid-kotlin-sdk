@@ -12,6 +12,7 @@ import com.lightspark.grid.services.async.CustomerServiceAsync
 import com.lightspark.grid.services.async.DiscoveryServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
+import com.lightspark.grid.services.async.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.PlatformServiceAsync
 import com.lightspark.grid.services.async.QuoteServiceAsync
@@ -141,6 +142,9 @@ interface LightsparkGridClientAsync {
 
     fun auth(): AuthServiceAsync
 
+    /** Internal account management endpoints for creating and managing internal accounts */
+    fun internalAccounts(): InternalAccountServiceAsync
+
     /**
      * Endpoints for creating and managing agents (experimental), called by the partner's backend
      * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
@@ -256,6 +260,9 @@ interface LightsparkGridClientAsync {
         fun discoveries(): DiscoveryServiceAsync.WithRawResponse
 
         fun auth(): AuthServiceAsync.WithRawResponse
+
+        /** Internal account management endpoints for creating and managing internal accounts */
+        fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse
 
         /**
          * Endpoints for creating and managing agents (experimental), called by the partner's

@@ -13,38 +13,39 @@ class AgentListApprovalsPageAsync
 private constructor(
     private val service: AgentServiceAsync,
     private val params: AgentListApprovalsParams,
-    private val response: AgentActionListResponse,
-) : PageAsync<AgentAction> {
+    private val response: AgentListApprovalsPageResponse,
+) : PageAsync<AgentListApprovalsResponse> {
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [AgentListApprovalsPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.data
+     * @see AgentListApprovalsPageResponse.data
      */
-    fun data(): List<AgentAction> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<AgentListApprovalsResponse> =
+        response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [AgentListApprovalsPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.nextCursor
+     * @see AgentListApprovalsPageResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [AgentListApprovalsPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.hasMore
+     * @see AgentListApprovalsPageResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [AgentActionListResponse], but gracefully handles missing data.
+     * Delegates to [AgentListApprovalsPageResponse], but gracefully handles missing data.
      *
-     * @see AgentActionListResponse.totalCount
+     * @see AgentListApprovalsPageResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<AgentAction> = data()
+    override fun items(): List<AgentListApprovalsResponse> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -57,13 +58,13 @@ private constructor(
     override suspend fun nextPage(): AgentListApprovalsPageAsync =
         service.listApprovals(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<AgentAction> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<AgentListApprovalsResponse> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): AgentListApprovalsParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): AgentActionListResponse = response
+    fun response(): AgentListApprovalsPageResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -87,7 +88,7 @@ private constructor(
 
         private var service: AgentServiceAsync? = null
         private var params: AgentListApprovalsParams? = null
-        private var response: AgentActionListResponse? = null
+        private var response: AgentListApprovalsPageResponse? = null
 
         internal fun from(agentListApprovalsPageAsync: AgentListApprovalsPageAsync) = apply {
             service = agentListApprovalsPageAsync.service
@@ -101,7 +102,7 @@ private constructor(
         fun params(params: AgentListApprovalsParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: AgentActionListResponse) = apply { this.response = response }
+        fun response(response: AgentListApprovalsPageResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [AgentListApprovalsPageAsync].

@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.agents.transactions
 
-import com.lightspark.grid.models.agents.AgentActionRejectRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,11 +12,7 @@ internal class TransactionRejectParamsTest {
         TransactionRejectParams.builder()
             .agentId("agentId")
             .actionId("actionId")
-            .agentActionRejectRequest(
-                AgentActionRejectRequest.builder()
-                    .reason("Transaction amount exceeds customer's current risk limit.")
-                    .build()
-            )
+            .reason("Transaction amount exceeds customer's current risk limit.")
             .build()
     }
 
@@ -38,21 +33,13 @@ internal class TransactionRejectParamsTest {
             TransactionRejectParams.builder()
                 .agentId("agentId")
                 .actionId("actionId")
-                .agentActionRejectRequest(
-                    AgentActionRejectRequest.builder()
-                        .reason("Transaction amount exceeds customer's current risk limit.")
-                        .build()
-                )
+                .reason("Transaction amount exceeds customer's current risk limit.")
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                AgentActionRejectRequest.builder()
-                    .reason("Transaction amount exceeds customer's current risk limit.")
-                    .build()
-            )
+        assertThat(body.reason())
+            .isEqualTo("Transaction amount exceeds customer's current risk limit.")
     }
 
     @Test

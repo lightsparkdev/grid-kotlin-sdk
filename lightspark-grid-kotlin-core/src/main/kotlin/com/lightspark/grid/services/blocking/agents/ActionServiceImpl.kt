@@ -16,9 +16,10 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
-import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.actions.ActionApproveParams
+import com.lightspark.grid.models.agents.actions.ActionApproveResponse
 import com.lightspark.grid.models.agents.actions.ActionRejectParams
+import com.lightspark.grid.models.agents.actions.ActionRejectResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -38,11 +39,17 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): ActionService =
         ActionServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
-    override fun approve(params: ActionApproveParams, requestOptions: RequestOptions): AgentAction =
+    override fun approve(
+        params: ActionApproveParams,
+        requestOptions: RequestOptions,
+    ): ActionApproveResponse =
         // post /agents/{agentId}/actions/{actionId}/approve
         withRawResponse().approve(params, requestOptions).parse()
 
-    override fun reject(params: ActionRejectParams, requestOptions: RequestOptions): AgentAction =
+    override fun reject(
+        params: ActionRejectParams,
+        requestOptions: RequestOptions,
+    ): ActionRejectResponse =
         // post /agents/{agentId}/actions/{actionId}/reject
         withRawResponse().reject(params, requestOptions).parse()
 
@@ -57,13 +64,13 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
         ): ActionService.WithRawResponse =
             ActionServiceImpl.WithRawResponseImpl(clientOptions.toBuilder().apply(modifier).build())
 
-        private val approveHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val approveHandler: Handler<ActionApproveResponse> =
+            jsonHandler<ActionApproveResponse>(clientOptions.jsonMapper)
 
         override fun approve(
             params: ActionApproveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<ActionApproveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -94,13 +101,13 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
             }
         }
 
-        private val rejectHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
+        private val rejectHandler: Handler<ActionRejectResponse> =
+            jsonHandler<ActionRejectResponse>(clientOptions.jsonMapper)
 
         override fun reject(
             params: ActionRejectParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
+        ): HttpResponseFor<ActionRejectResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -115,7 +122,7 @@ class ActionServiceImpl internal constructor(private val clientOptions: ClientOp
                         params._pathParam(1),
                         "reject",
                     )
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))

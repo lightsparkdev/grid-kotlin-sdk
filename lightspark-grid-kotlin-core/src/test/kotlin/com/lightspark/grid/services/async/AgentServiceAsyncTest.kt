@@ -3,11 +3,10 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.agents.AgentCreateRequest
+import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
-import com.lightspark.grid.models.agents.AgentUpdateRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -23,9 +22,9 @@ internal class AgentServiceAsyncTest {
                 .build()
         val agentServiceAsync = client.agents()
 
-        val agentCreateResponse =
+        val agent =
             agentServiceAsync.create(
-                AgentCreateRequest.builder()
+                AgentCreateParams.builder()
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .name("Payroll Automation Agent")
                     .policy(
@@ -72,7 +71,7 @@ internal class AgentServiceAsyncTest {
                     .build()
             )
 
-        agentCreateResponse.validate()
+        agent.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -104,12 +103,8 @@ internal class AgentServiceAsyncTest {
             agentServiceAsync.update(
                 AgentUpdateParams.builder()
                     .agentId("agentId")
-                    .agentUpdateRequest(
-                        AgentUpdateRequest.builder()
-                            .isPaused(true)
-                            .name("Updated Payroll Agent")
-                            .build()
-                    )
+                    .isPaused(true)
+                    .name("Updated Payroll Agent")
                     .build()
             )
 
@@ -169,7 +164,7 @@ internal class AgentServiceAsyncTest {
                 .build()
         val agentServiceAsync = client.agents()
 
-        val agent =
+        val response =
             agentServiceAsync.updatePolicy(
                 AgentUpdatePolicyParams.builder()
                     .agentId("agentId")
@@ -209,6 +204,6 @@ internal class AgentServiceAsyncTest {
                     .build()
             )
 
-        agent.validate()
+        response.validate()
     }
 }

@@ -12,6 +12,7 @@ import com.lightspark.grid.services.blocking.CustomerService
 import com.lightspark.grid.services.blocking.DiscoveryService
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
+import com.lightspark.grid.services.blocking.InternalAccountService
 import com.lightspark.grid.services.blocking.InvitationService
 import com.lightspark.grid.services.blocking.PlatformService
 import com.lightspark.grid.services.blocking.QuoteService
@@ -141,6 +142,9 @@ interface LightsparkGridClient {
 
     fun auth(): AuthService
 
+    /** Internal account management endpoints for creating and managing internal accounts */
+    fun internalAccounts(): InternalAccountService
+
     /**
      * Endpoints for creating and managing agents (experimental), called by the partner's backend
      * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
@@ -255,6 +259,9 @@ interface LightsparkGridClient {
         fun discoveries(): DiscoveryService.WithRawResponse
 
         fun auth(): AuthService.WithRawResponse
+
+        /** Internal account management endpoints for creating and managing internal accounts */
+        fun internalAccounts(): InternalAccountService.WithRawResponse
 
         /**
          * Endpoints for creating and managing agents (experimental), called by the partner's

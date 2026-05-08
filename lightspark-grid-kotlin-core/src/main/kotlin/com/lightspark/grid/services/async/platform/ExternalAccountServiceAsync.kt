@@ -10,8 +10,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageAsync
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -66,10 +66,10 @@ interface ExternalAccountServiceAsync {
     suspend fun list(
         params: ExternalAccountListParams = ExternalAccountListParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): ExternalAccountListPageAsync
+    ): ExternalAccountListResponse
 
     /** @see list */
-    suspend fun list(requestOptions: RequestOptions): ExternalAccountListPageAsync =
+    suspend fun list(requestOptions: RequestOptions): ExternalAccountListResponse =
         list(ExternalAccountListParams.none(), requestOptions)
 
     /** Delete a platform external account by its system-generated ID */
@@ -152,13 +152,13 @@ interface ExternalAccountServiceAsync {
         suspend fun list(
             params: ExternalAccountListParams = ExternalAccountListParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<ExternalAccountListPageAsync>
+        ): HttpResponseFor<ExternalAccountListResponse>
 
         /** @see list */
         @MustBeClosed
         suspend fun list(
             requestOptions: RequestOptions
-        ): HttpResponseFor<ExternalAccountListPageAsync> =
+        ): HttpResponseFor<ExternalAccountListResponse> =
             list(ExternalAccountListParams.none(), requestOptions)
 
         /**

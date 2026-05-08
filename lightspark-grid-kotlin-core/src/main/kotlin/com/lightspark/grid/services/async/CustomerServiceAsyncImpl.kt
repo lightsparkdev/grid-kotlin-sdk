@@ -18,7 +18,6 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
-import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
 import com.lightspark.grid.models.customers.CustomerGetKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
@@ -30,7 +29,6 @@ import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.services.async.customers.BulkServiceAsync
 import com.lightspark.grid.services.async.customers.BulkServiceAsyncImpl
 import com.lightspark.grid.services.async.customers.ExternalAccountServiceAsync
@@ -94,13 +92,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CustomerOneOf =
         // delete /customers/{customerId}
         withRawResponse().delete(params, requestOptions).parse()
-
-    override suspend fun export(
-        params: CustomerExportParams,
-        requestOptions: RequestOptions,
-    ): InternalAccountExportResponse =
-        // post /internal-accounts/{id}/export
-        withRawResponse().export(params, requestOptions).parse()
 
     override suspend fun getKycLink(
         params: CustomerGetKycLinkParams,
@@ -292,37 +283,6 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             return errorHandler.handle(response).parseable {
                 response
                     .use { deleteHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val exportHandler: Handler<InternalAccountExportResponse> =
-            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
-
-        override suspend fun export(
-            params: CustomerExportParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<InternalAccountExportResponse> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("internal-accounts", params._pathParam(0), "export")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { exportHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

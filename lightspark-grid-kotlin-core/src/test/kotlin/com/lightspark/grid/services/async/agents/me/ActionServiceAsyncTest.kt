@@ -18,9 +18,9 @@ internal class ActionServiceAsyncTest {
                 .build()
         val actionServiceAsync = client.agents().me().actions()
 
-        val agentAction = actionServiceAsync.retrieve("actionId")
+        val action = actionServiceAsync.retrieve("actionId")
 
-        agentAction.validate()
+        action.validate()
     }
 
     @Disabled("Mock server tests are disabled")

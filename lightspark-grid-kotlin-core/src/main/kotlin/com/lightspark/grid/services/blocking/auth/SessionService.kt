@@ -6,10 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
-import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
+import com.lightspark.grid.models.auth.sessions.SessionRevokeParams
+import com.lightspark.grid.models.auth.sessions.SessionRevokeResponse
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -55,21 +55,21 @@ interface SessionService {
      *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
      *    The signed retry returns `204`.
      */
-    fun delete(
+    fun revoke(
         id: String,
-        params: SessionDeleteParams = SessionDeleteParams.none(),
+        params: SessionRevokeParams = SessionRevokeParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge = delete(params.toBuilder().id(id).build(), requestOptions)
+    ): SessionRevokeResponse = revoke(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see delete */
-    fun delete(
-        params: SessionDeleteParams,
+    /** @see revoke */
+    fun revoke(
+        params: SessionRevokeParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge
+    ): SessionRevokeResponse
 
-    /** @see delete */
-    fun delete(id: String, requestOptions: RequestOptions): AuthSignedRequestChallenge =
-        delete(id, SessionDeleteParams.none(), requestOptions)
+    /** @see revoke */
+    fun revoke(id: String, requestOptions: RequestOptions): SessionRevokeResponse =
+        revoke(id, SessionRevokeParams.none(), requestOptions)
 
     /** A view of [SessionService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -93,29 +93,29 @@ interface SessionService {
 
         /**
          * Returns a raw HTTP response for `delete /auth/sessions/{id}`, but is otherwise the same
-         * as [SessionService.delete].
+         * as [SessionService.revoke].
          */
         @MustBeClosed
-        fun delete(
+        fun revoke(
             id: String,
-            params: SessionDeleteParams = SessionDeleteParams.none(),
+            params: SessionRevokeParams = SessionRevokeParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
-            delete(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SessionRevokeResponse> =
+            revoke(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see delete */
+        /** @see revoke */
         @MustBeClosed
-        fun delete(
-            params: SessionDeleteParams,
+        fun revoke(
+            params: SessionRevokeParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge>
+        ): HttpResponseFor<SessionRevokeResponse>
 
-        /** @see delete */
+        /** @see revoke */
         @MustBeClosed
-        fun delete(
+        fun revoke(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
-            delete(id, SessionDeleteParams.none(), requestOptions)
+        ): HttpResponseFor<SessionRevokeResponse> =
+            revoke(id, SessionRevokeParams.none(), requestOptions)
     }
 }

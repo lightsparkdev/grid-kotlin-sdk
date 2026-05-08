@@ -18,9 +18,9 @@ internal class DeviceCodeServiceAsyncTest {
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
-        val agentDeviceCodeStatusResponse = deviceCodeServiceAsync.getStatus("code")
+        val response = deviceCodeServiceAsync.getStatus("code")
 
-        agentDeviceCodeStatusResponse.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -33,9 +33,9 @@ internal class DeviceCodeServiceAsyncTest {
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
-        val agentDeviceCodeRedeemResponse = deviceCodeServiceAsync.redeem("code")
+        val response = deviceCodeServiceAsync.redeem("code")
 
-        agentDeviceCodeRedeemResponse.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -48,8 +48,8 @@ internal class DeviceCodeServiceAsyncTest {
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
-        val agentDeviceCode = deviceCodeServiceAsync.regenerate("agentId")
+        val response = deviceCodeServiceAsync.regenerate("agentId")
 
-        agentDeviceCode.validate()
+        response.validate()
     }
 }
