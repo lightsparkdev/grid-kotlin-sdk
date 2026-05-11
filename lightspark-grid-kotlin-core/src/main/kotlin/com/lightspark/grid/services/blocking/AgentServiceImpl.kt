@@ -17,21 +17,19 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.agents.Agent
+import com.lightspark.grid.models.agents.AgentActionListResponse
 import com.lightspark.grid.models.agents.AgentCreateParams
 import com.lightspark.grid.models.agents.AgentCreateResponse
 import com.lightspark.grid.models.agents.AgentDeleteParams
 import com.lightspark.grid.models.agents.AgentListApprovalsPage
-import com.lightspark.grid.models.agents.AgentListApprovalsPageResponse
 import com.lightspark.grid.models.agents.AgentListApprovalsParams
 import com.lightspark.grid.models.agents.AgentListPage
-import com.lightspark.grid.models.agents.AgentListPageResponse
 import com.lightspark.grid.models.agents.AgentListParams
+import com.lightspark.grid.models.agents.AgentListResponse
 import com.lightspark.grid.models.agents.AgentRetrieveParams
-import com.lightspark.grid.models.agents.AgentRetrieveResponse
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
-import com.lightspark.grid.models.agents.AgentUpdatePolicyResponse
-import com.lightspark.grid.models.agents.AgentUpdateResponse
 import com.lightspark.grid.services.blocking.agents.ActionService
 import com.lightspark.grid.services.blocking.agents.ActionServiceImpl
 import com.lightspark.grid.services.blocking.agents.DeviceCodeService
@@ -107,17 +105,11 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
         // post /agents
         withRawResponse().create(params, requestOptions).parse()
 
-    override fun retrieve(
-        params: AgentRetrieveParams,
-        requestOptions: RequestOptions,
-    ): AgentRetrieveResponse =
+    override fun retrieve(params: AgentRetrieveParams, requestOptions: RequestOptions): Agent =
         // get /agents/{agentId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override fun update(
-        params: AgentUpdateParams,
-        requestOptions: RequestOptions,
-    ): AgentUpdateResponse =
+    override fun update(params: AgentUpdateParams, requestOptions: RequestOptions): Agent =
         // patch /agents/{agentId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -140,7 +132,7 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
     override fun updatePolicy(
         params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions,
-    ): AgentUpdatePolicyResponse =
+    ): Agent =
         // patch /agents/{agentId}/policy
         withRawResponse().updatePolicy(params, requestOptions).parse()
 
@@ -232,13 +224,12 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val retrieveHandler: Handler<AgentRetrieveResponse> =
-            jsonHandler<AgentRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: AgentRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentRetrieveResponse> {
+        ): HttpResponseFor<Agent> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())
@@ -262,13 +253,12 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val updateHandler: Handler<AgentUpdateResponse> =
-            jsonHandler<AgentUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<Agent> = jsonHandler<Agent>(clientOptions.jsonMapper)
 
         override fun update(
             params: AgentUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentUpdateResponse> {
+        ): HttpResponseFor<Agent> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())
@@ -293,8 +283,8 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val listHandler: Handler<AgentListPageResponse> =
-            jsonHandler<AgentListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<AgentListResponse> =
+            jsonHandler<AgentListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: AgentListParams,
@@ -351,8 +341,8 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val listApprovalsHandler: Handler<AgentListApprovalsPageResponse> =
-            jsonHandler<AgentListApprovalsPageResponse>(clientOptions.jsonMapper)
+        private val listApprovalsHandler: Handler<AgentActionListResponse> =
+            jsonHandler<AgentActionListResponse>(clientOptions.jsonMapper)
 
         override fun listApprovals(
             params: AgentListApprovalsParams,
@@ -385,13 +375,13 @@ class AgentServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val updatePolicyHandler: Handler<AgentUpdatePolicyResponse> =
-            jsonHandler<AgentUpdatePolicyResponse>(clientOptions.jsonMapper)
+        private val updatePolicyHandler: Handler<Agent> =
+            jsonHandler<Agent>(clientOptions.jsonMapper)
 
         override fun updatePolicy(
             params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentUpdatePolicyResponse> {
+        ): HttpResponseFor<Agent> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("agentId", params.agentId())

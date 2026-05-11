@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.AgentTransferDetails
+import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
@@ -31,14 +32,14 @@ internal class AgentActionWebhookEventTest {
             AgentActionWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    AgentActionWebhookEvent.Data.builder()
+                    AgentAction.builder()
                         .id("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                         .platformCustomerId("user-a1b2c3")
-                        .status(AgentActionWebhookEvent.Data.Status.PENDING_APPROVAL)
-                        .type(AgentActionWebhookEvent.Data.Type.EXECUTE_QUOTE)
+                        .status(AgentAction.Status.PENDING_APPROVAL)
+                        .type(AgentAction.Type.EXECUTE_QUOTE)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                         .quote(
                             Quote.builder()
@@ -237,14 +238,14 @@ internal class AgentActionWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(agentActionWebhookEvent.data())
             .isEqualTo(
-                AgentActionWebhookEvent.Data.builder()
+                AgentAction.builder()
                     .id("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
                     .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                     .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                     .platformCustomerId("user-a1b2c3")
-                    .status(AgentActionWebhookEvent.Data.Status.PENDING_APPROVAL)
-                    .type(AgentActionWebhookEvent.Data.Type.EXECUTE_QUOTE)
+                    .status(AgentAction.Status.PENDING_APPROVAL)
+                    .type(AgentAction.Type.EXECUTE_QUOTE)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                     .quote(
                         Quote.builder()
@@ -441,14 +442,14 @@ internal class AgentActionWebhookEventTest {
             AgentActionWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    AgentActionWebhookEvent.Data.builder()
+                    AgentAction.builder()
                         .id("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                         .platformCustomerId("user-a1b2c3")
-                        .status(AgentActionWebhookEvent.Data.Status.PENDING_APPROVAL)
-                        .type(AgentActionWebhookEvent.Data.Type.EXECUTE_QUOTE)
+                        .status(AgentAction.Status.PENDING_APPROVAL)
+                        .type(AgentAction.Type.EXECUTE_QUOTE)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                         .quote(
                             Quote.builder()

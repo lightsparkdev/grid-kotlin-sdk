@@ -3,8 +3,8 @@
 package com.lightspark.grid.services.blocking.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
-import com.lightspark.grid.models.auth.sessions.SessionRevokeParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -20,15 +20,15 @@ internal class SessionServiceTest {
                 .build()
         val sessionService = client.auth().sessions()
 
-        val sessions =
+        val sessionListResponse =
             sessionService.list(SessionListParams.builder().accountId("accountId").build())
 
-        sessions.validate()
+        sessionListResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun revoke() {
+    fun delete() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -36,9 +36,9 @@ internal class SessionServiceTest {
                 .build()
         val sessionService = client.auth().sessions()
 
-        val response =
-            sessionService.revoke(
-                SessionRevokeParams.builder()
+        val authSignedRequestChallenge =
+            sessionService.delete(
+                SessionDeleteParams.builder()
                     .id("id")
                     .gridWalletSignature(
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
@@ -47,6 +47,6 @@ internal class SessionServiceTest {
                     .build()
             )
 
-        response.validate()
+        authSignedRequestChallenge.validate()
     }
 }

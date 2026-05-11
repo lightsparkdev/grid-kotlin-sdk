@@ -20,8 +20,9 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageAsync
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -56,7 +57,7 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
     override suspend fun list(
         params: ExternalAccountListParams,
         requestOptions: RequestOptions,
-    ): ExternalAccountListResponse =
+    ): ExternalAccountListPageAsync =
         // get /platform/external-accounts
         withRawResponse().list(params, requestOptions).parse()
 
@@ -139,13 +140,13 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListResponse> =
-            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListPageResponse> =
+            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: ExternalAccountListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccountListResponse> {
+        ): HttpResponseFor<ExternalAccountListPageAsync> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
@@ -162,6 +163,13 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        ExternalAccountListPageAsync.builder()
+                            .service(ExternalAccountServiceAsyncImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }

@@ -82,7 +82,7 @@ internal class QuoteServiceAsyncTest {
                 .build()
         val quoteServiceAsync = client.agents().me().quotes()
 
-        val response =
+        val agentAction =
             quoteServiceAsync.execute(
                 QuoteExecuteParams.builder()
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
@@ -93,6 +93,6 @@ internal class QuoteServiceAsyncTest {
                     .build()
             )
 
-        response.validate()
+        agentAction.validate()
     }
 }

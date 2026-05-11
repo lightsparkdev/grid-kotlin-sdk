@@ -16,9 +16,9 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.quotes.QuoteCreateParams
 import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteResponse
 import com.lightspark.grid.models.agents.me.quotes.QuoteRetrieveParams
 import com.lightspark.grid.models.quotes.Quote
 
@@ -49,10 +49,7 @@ class QuoteServiceImpl internal constructor(private val clientOptions: ClientOpt
         // get /agents/me/quotes/{quoteId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override fun execute(
-        params: QuoteExecuteParams,
-        requestOptions: RequestOptions,
-    ): QuoteExecuteResponse =
+    override fun execute(params: QuoteExecuteParams, requestOptions: RequestOptions): AgentAction =
         // post /agents/me/quotes/{quoteId}/execute
         withRawResponse().execute(params, requestOptions).parse()
 
@@ -123,13 +120,13 @@ class QuoteServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val executeHandler: Handler<QuoteExecuteResponse> =
-            jsonHandler<QuoteExecuteResponse>(clientOptions.jsonMapper)
+        private val executeHandler: Handler<AgentAction> =
+            jsonHandler<AgentAction>(clientOptions.jsonMapper)
 
         override fun execute(
             params: QuoteExecuteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<QuoteExecuteResponse> {
+        ): HttpResponseFor<AgentAction> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("quoteId", params.quoteId())
