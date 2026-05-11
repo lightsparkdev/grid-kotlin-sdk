@@ -16,6 +16,7 @@ import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialUpdateParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.OAuthCredentialCreateRequest
@@ -93,6 +94,36 @@ interface CredentialService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AuthMethodResponse =
         create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
+
+    /**
+     * Update mutable fields on an authentication credential for an Embedded Wallet internal
+     * account. Today this supports updating the email address used by an `EMAIL_OTP` credential.
+     *
+     * This is a two-step signed-retry flow:
+     * 1. Call `PATCH /auth/credentials/{id}` with the request body `{ "email":
+     *    "new.email@example.com" }` and no signature headers. Grid returns `202` with
+     *    `payloadToSign`, `requestId`, and `expiresAt`.
+     * 2. Use the session API keypair of a verified authentication credential on the same internal
+     *    account to build an API-key stamp over `payloadToSign`, then retry with that full stamp as
+     *    the `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id`
+     *    header. The retry body must carry the same update fields submitted in step 1. The signed
+     *    retry returns `200` with the updated `AuthMethod`.
+     */
+    fun update(
+        id: String,
+        params: CredentialUpdateParams = CredentialUpdateParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthMethodResponse = update(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see update */
+    fun update(
+        params: CredentialUpdateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthMethodResponse
+
+    /** @see update */
+    fun update(id: String, requestOptions: RequestOptions): AuthMethodResponse =
+        update(id, CredentialUpdateParams.none(), requestOptions)
 
     /**
      * Retrieve all authentication credentials registered on an Embedded Wallet internal account.
@@ -264,6 +295,33 @@ interface CredentialService {
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AuthMethodResponse> =
             create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /auth/credentials/{id}`, but is otherwise the same
+         * as [CredentialService.update].
+         */
+        @MustBeClosed
+        fun update(
+            id: String,
+            params: CredentialUpdateParams = CredentialUpdateParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthMethodResponse> =
+            update(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            params: CredentialUpdateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthMethodResponse>
+
+        /** @see update */
+        @MustBeClosed
+        fun update(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AuthMethodResponse> =
+            update(id, CredentialUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /auth/credentials`, but is otherwise the same as
