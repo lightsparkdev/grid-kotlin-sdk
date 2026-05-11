@@ -17,11 +17,11 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST /auth/credentials`
- * (first-authentication case) and `POST /auth/credentials/{id}/challenge` (reauthentication case).
- * Adds a Grid-issued `challenge`, the corresponding `requestId`, and the challenge's `expiresAt` to
- * the base `AuthMethod` fields. The client signs the challenge with the passkey to produce the
- * assertion submitted to `POST /auth/credentials/{id}/verify`.
+ * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+ * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
+ * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge `expiresAt`.
+ * The client signs the challenge with the passkey to produce the assertion submitted to `POST
+ * /auth/credentials/{id}/verify`.
  */
 class PasskeyAuthChallenge
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

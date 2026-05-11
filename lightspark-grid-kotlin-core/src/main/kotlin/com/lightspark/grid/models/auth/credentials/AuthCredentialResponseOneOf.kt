@@ -21,10 +21,10 @@ import java.util.Objects
  * Discriminated response shape returned from `POST /auth/credentials/{id}/challenge`. For
  * `EMAIL_OTP` credentials the body is a plain `AuthMethod` (wrapped as `AuthMethodResponse` to
  * disambiguate the oneOf). For `PASSKEY` credentials the body is a `PasskeyAuthChallenge` — the
- * base `AuthMethod` fields plus the Grid-issued `challenge`, `requestId`, and `expiresAt` that
- * drive the subsequent assertion. OAuth credentials do not use the challenge endpoint. Registration
- * responses from `POST /auth/credentials` use the simpler `AuthMethodResponse` shape directly for
- * all three credential types.
+ * passkey auth method fields plus the WebAuthn `credentialId`, Grid-issued `challenge`,
+ * `requestId`, and `expiresAt` that drive the subsequent assertion. OAuth credentials do not use
+ * the challenge endpoint. Registration responses from `POST /auth/credentials` use the simpler
+ * `AuthMethodResponse` shape directly for all three credential types.
  */
 @JsonDeserialize(using = AuthCredentialResponseOneOf.Deserializer::class)
 @JsonSerialize(using = AuthCredentialResponseOneOf.Serializer::class)
@@ -46,11 +46,11 @@ private constructor(
     fun methodResponse(): AuthMethodResponse? = methodResponse
 
     /**
-     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST /auth/credentials`
-     * (first-authentication case) and `POST /auth/credentials/{id}/challenge` (reauthentication
-     * case). Adds a Grid-issued `challenge`, the corresponding `requestId`, and the challenge's
-     * `expiresAt` to the base `AuthMethod` fields. The client signs the challenge with the passkey
-     * to produce the assertion submitted to `POST /auth/credentials/{id}/verify`.
+     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+     * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
+     * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+     * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun passkeyAuthChallenge(): PasskeyAuthChallenge? = passkeyAuthChallenge
 
@@ -69,11 +69,11 @@ private constructor(
     fun asMethodResponse(): AuthMethodResponse = methodResponse.getOrThrow("methodResponse")
 
     /**
-     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST /auth/credentials`
-     * (first-authentication case) and `POST /auth/credentials/{id}/challenge` (reauthentication
-     * case). Adds a Grid-issued `challenge`, the corresponding `requestId`, and the challenge's
-     * `expiresAt` to the base `AuthMethod` fields. The client signs the challenge with the passkey
-     * to produce the assertion submitted to `POST /auth/credentials/{id}/verify`.
+     * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
+     * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
+     * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+     * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
+     * submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun asPasskeyAuthChallenge(): PasskeyAuthChallenge =
         passkeyAuthChallenge.getOrThrow("passkeyAuthChallenge")
@@ -202,11 +202,10 @@ private constructor(
 
         /**
          * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
-         * /auth/credentials` (first-authentication case) and `POST
-         * /auth/credentials/{id}/challenge` (reauthentication case). Adds a Grid-issued
-         * `challenge`, the corresponding `requestId`, and the challenge's `expiresAt` to the base
-         * `AuthMethod` fields. The client signs the challenge with the passkey to produce the
-         * assertion submitted to `POST /auth/credentials/{id}/verify`.
+         * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
+         * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+         * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
+         * submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun ofPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) =
             AuthCredentialResponseOneOf(passkeyAuthChallenge = passkeyAuthChallenge)
@@ -230,11 +229,10 @@ private constructor(
 
         /**
          * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
-         * /auth/credentials` (first-authentication case) and `POST
-         * /auth/credentials/{id}/challenge` (reauthentication case). Adds a Grid-issued
-         * `challenge`, the corresponding `requestId`, and the challenge's `expiresAt` to the base
-         * `AuthMethod` fields. The client signs the challenge with the passkey to produce the
-         * assertion submitted to `POST /auth/credentials/{id}/verify`.
+         * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
+         * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
+         * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
+         * submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge): T
 
