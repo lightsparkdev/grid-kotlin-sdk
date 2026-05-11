@@ -18,9 +18,9 @@ internal class DeviceCodeServiceTest {
                 .build()
         val deviceCodeService = client.agents().deviceCodes()
 
-        val response = deviceCodeService.getStatus("code")
+        val agentDeviceCodeStatusResponse = deviceCodeService.getStatus("code")
 
-        response.validate()
+        agentDeviceCodeStatusResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -33,9 +33,9 @@ internal class DeviceCodeServiceTest {
                 .build()
         val deviceCodeService = client.agents().deviceCodes()
 
-        val response = deviceCodeService.redeem("code")
+        val agentDeviceCodeRedeemResponse = deviceCodeService.redeem("code")
 
-        response.validate()
+        agentDeviceCodeRedeemResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -48,8 +48,8 @@ internal class DeviceCodeServiceTest {
                 .build()
         val deviceCodeService = client.agents().deviceCodes()
 
-        val response = deviceCodeService.regenerate("agentId")
+        val agentDeviceCode = deviceCodeService.regenerate("agentId")
 
-        response.validate()
+        agentDeviceCode.validate()
     }
 }

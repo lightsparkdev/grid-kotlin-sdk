@@ -6,9 +6,9 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.quotes.QuoteCreateParams
 import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.agents.me.quotes.QuoteExecuteResponse
 import com.lightspark.grid.models.agents.me.quotes.QuoteRetrieveParams
 import com.lightspark.grid.models.quotes.Quote
 
@@ -76,16 +76,16 @@ interface QuoteServiceAsync {
         quoteId: String,
         params: QuoteExecuteParams = QuoteExecuteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): QuoteExecuteResponse = execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
+    ): AgentAction = execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
 
     /** @see execute */
     suspend fun execute(
         params: QuoteExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): QuoteExecuteResponse
+    ): AgentAction
 
     /** @see execute */
-    suspend fun execute(quoteId: String, requestOptions: RequestOptions): QuoteExecuteResponse =
+    suspend fun execute(quoteId: String, requestOptions: RequestOptions): AgentAction =
         execute(quoteId, QuoteExecuteParams.none(), requestOptions)
 
     /** A view of [QuoteServiceAsync] that provides access to raw HTTP responses for each method. */
@@ -145,7 +145,7 @@ interface QuoteServiceAsync {
             quoteId: String,
             params: QuoteExecuteParams = QuoteExecuteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<QuoteExecuteResponse> =
+        ): HttpResponseFor<AgentAction> =
             execute(params.toBuilder().quoteId(quoteId).build(), requestOptions)
 
         /** @see execute */
@@ -153,14 +153,14 @@ interface QuoteServiceAsync {
         suspend fun execute(
             params: QuoteExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<QuoteExecuteResponse>
+        ): HttpResponseFor<AgentAction>
 
         /** @see execute */
         @MustBeClosed
         suspend fun execute(
             quoteId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<QuoteExecuteResponse> =
+        ): HttpResponseFor<AgentAction> =
             execute(quoteId, QuoteExecuteParams.none(), requestOptions)
     }
 }

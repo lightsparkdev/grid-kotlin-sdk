@@ -2,20 +2,13 @@
 
 package com.lightspark.grid.models.agents.transactions
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonField
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.util.Collections
+import com.lightspark.grid.core.immutableEmptyMap
+import com.lightspark.grid.models.agents.AgentActionRejectRequest
 import java.util.Objects
 
 /**
@@ -28,7 +21,7 @@ class TransactionRejectParams
 private constructor(
     private val agentId: String,
     private val actionId: String?,
-    private val body: Body,
+    private val agentActionRejectRequest: AgentActionRejectRequest?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -37,23 +30,10 @@ private constructor(
 
     fun actionId(): String? = actionId
 
-    /**
-     * Optional human-readable reason for the rejection, stored on the action and visible to the
-     * platform.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun reason(): String? = body.reason()
+    fun agentActionRejectRequest(): AgentActionRejectRequest? = agentActionRejectRequest
 
-    /**
-     * Returns the raw JSON value of [reason].
-     *
-     * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _reason(): JsonField<String> = body._reason()
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        agentActionRejectRequest?._additionalProperties() ?: immutableEmptyMap()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -81,14 +61,14 @@ private constructor(
 
         private var agentId: String? = null
         private var actionId: String? = null
-        private var body: Body.Builder = Body.builder()
+        private var agentActionRejectRequest: AgentActionRejectRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(transactionRejectParams: TransactionRejectParams) = apply {
             agentId = transactionRejectParams.agentId
             actionId = transactionRejectParams.actionId
-            body = transactionRejectParams.body.toBuilder()
+            agentActionRejectRequest = transactionRejectParams.agentActionRejectRequest
             additionalHeaders = transactionRejectParams.additionalHeaders.toBuilder()
             additionalQueryParams = transactionRejectParams.additionalQueryParams.toBuilder()
         }
@@ -97,46 +77,8 @@ private constructor(
 
         fun actionId(actionId: String?) = apply { this.actionId = actionId }
 
-        /**
-         * Sets the entire request body.
-         *
-         * This is generally only useful if you are already constructing the body separately.
-         * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [reason]
-         */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        /**
-         * Optional human-readable reason for the rejection, stored on the action and visible to the
-         * platform.
-         */
-        fun reason(reason: String) = apply { body.reason(reason) }
-
-        /**
-         * Sets [Builder.reason] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.reason] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun reason(reason: JsonField<String>) = apply { body.reason(reason) }
-
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
+        fun agentActionRejectRequest(agentActionRejectRequest: AgentActionRejectRequest?) = apply {
+            this.agentActionRejectRequest = agentActionRejectRequest
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -253,13 +195,13 @@ private constructor(
             TransactionRejectParams(
                 checkRequired("agentId", agentId),
                 actionId,
-                body.build(),
+                agentActionRejectRequest,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): Body = body
+    fun _body(): AgentActionRejectRequest? = agentActionRejectRequest
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -272,158 +214,6 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    class Body
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val reason: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("reason") @ExcludeMissing reason: JsonField<String> = JsonMissing.of()
-        ) : this(reason, mutableMapOf())
-
-        /**
-         * Optional human-readable reason for the rejection, stored on the action and visible to the
-         * platform.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun reason(): String? = reason.getNullable("reason")
-
-        /**
-         * Returns the raw JSON value of [reason].
-         *
-         * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<String> = reason
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /** Returns a mutable builder for constructing an instance of [Body]. */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Body]. */
-        class Builder internal constructor() {
-
-            private var reason: JsonField<String> = JsonMissing.of()
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(body: Body) = apply {
-                reason = body.reason
-                additionalProperties = body.additionalProperties.toMutableMap()
-            }
-
-            /**
-             * Optional human-readable reason for the rejection, stored on the action and visible to
-             * the platform.
-             */
-            fun reason(reason: String) = reason(JsonField.of(reason))
-
-            /**
-             * Sets [Builder.reason] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.reason] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun reason(reason: JsonField<String>) = apply { this.reason = reason }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Body].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): Body = Body(reason, additionalProperties.toMutableMap())
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Body = apply {
-            if (validated) {
-                return@apply
-            }
-
-            reason()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = (if (reason.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Body &&
-                reason == other.reason &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(reason, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() = "Body{reason=$reason, additionalProperties=$additionalProperties}"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -432,14 +222,20 @@ private constructor(
         return other is TransactionRejectParams &&
             agentId == other.agentId &&
             actionId == other.actionId &&
-            body == other.body &&
+            agentActionRejectRequest == other.agentActionRejectRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(agentId, actionId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            agentId,
+            actionId,
+            agentActionRejectRequest,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "TransactionRejectParams{agentId=$agentId, actionId=$actionId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "TransactionRejectParams{agentId=$agentId, actionId=$actionId, agentActionRejectRequest=$agentActionRejectRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

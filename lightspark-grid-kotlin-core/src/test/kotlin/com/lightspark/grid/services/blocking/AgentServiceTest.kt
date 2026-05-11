@@ -3,10 +3,11 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.agents.AgentCreateParams
+import com.lightspark.grid.models.agents.AgentCreateRequest
 import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
+import com.lightspark.grid.models.agents.AgentUpdateRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -22,9 +23,9 @@ internal class AgentServiceTest {
                 .build()
         val agentService = client.agents()
 
-        val agent =
+        val agentCreateResponse =
             agentService.create(
-                AgentCreateParams.builder()
+                AgentCreateRequest.builder()
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .name("Payroll Automation Agent")
                     .policy(
@@ -71,7 +72,7 @@ internal class AgentServiceTest {
                     .build()
             )
 
-        agent.validate()
+        agentCreateResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -103,8 +104,12 @@ internal class AgentServiceTest {
             agentService.update(
                 AgentUpdateParams.builder()
                     .agentId("agentId")
-                    .isPaused(true)
-                    .name("Updated Payroll Agent")
+                    .agentUpdateRequest(
+                        AgentUpdateRequest.builder()
+                            .isPaused(true)
+                            .name("Updated Payroll Agent")
+                            .build()
+                    )
                     .build()
             )
 
@@ -164,7 +169,7 @@ internal class AgentServiceTest {
                 .build()
         val agentService = client.agents()
 
-        val response =
+        val agent =
             agentService.updatePolicy(
                 AgentUpdatePolicyParams.builder()
                     .agentId("agentId")
@@ -204,6 +209,6 @@ internal class AgentServiceTest {
                     .build()
             )
 
-        response.validate()
+        agent.validate()
     }
 }

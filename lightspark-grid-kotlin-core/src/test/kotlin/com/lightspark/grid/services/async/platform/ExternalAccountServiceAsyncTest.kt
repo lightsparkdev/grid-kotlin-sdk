@@ -7,7 +7,6 @@ import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -87,16 +86,9 @@ internal class ExternalAccountServiceAsyncTest {
                 .build()
         val externalAccountServiceAsync = client.platform().externalAccounts()
 
-        val externalAccounts =
-            externalAccountServiceAsync.list(
-                ExternalAccountListParams.builder()
-                    .currency("currency")
-                    .cursor("cursor")
-                    .limit(1L)
-                    .build()
-            )
+        val page = externalAccountServiceAsync.list()
 
-        externalAccounts.validate()
+        page.response().validate()
     }
 
     @Disabled("Mock server tests are disabled")

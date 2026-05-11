@@ -18,8 +18,11 @@ internal class AuthMethodTest {
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(AuthMethod.Type.OAUTH)
+                .type(AuthMethodType.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .credentialId(
+                    "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
+                )
                 .build()
 
         assertThat(authMethod.id()).isEqualTo("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
@@ -27,8 +30,12 @@ internal class AuthMethodTest {
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(authMethod.createdAt()).isEqualTo(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
         assertThat(authMethod.nickname()).isEqualTo("example@lightspark.com")
-        assertThat(authMethod.type()).isEqualTo(AuthMethod.Type.OAUTH)
+        assertThat(authMethod.type()).isEqualTo(AuthMethodType.OAUTH)
         assertThat(authMethod.updatedAt()).isEqualTo(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+        assertThat(authMethod.credentialId())
+            .isEqualTo(
+                "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
+            )
     }
 
     @Test
@@ -40,8 +47,11 @@ internal class AuthMethodTest {
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
-                .type(AuthMethod.Type.OAUTH)
+                .type(AuthMethodType.OAUTH)
                 .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
+                .credentialId(
+                    "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
+                )
                 .build()
 
         val roundtrippedAuthMethod =

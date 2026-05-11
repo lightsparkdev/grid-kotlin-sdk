@@ -16,10 +16,9 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.transactions.TransactionApproveParams
-import com.lightspark.grid.models.agents.transactions.TransactionApproveResponse
 import com.lightspark.grid.models.agents.transactions.TransactionRejectParams
-import com.lightspark.grid.models.agents.transactions.TransactionRejectResponse
 
 /**
  * Endpoints for creating and managing agents (experimental), called by the partner's backend using
@@ -42,14 +41,14 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
     override fun approve(
         params: TransactionApproveParams,
         requestOptions: RequestOptions,
-    ): TransactionApproveResponse =
+    ): AgentAction =
         // post /agents/{agentId}/actions/{actionId}/approve
         withRawResponse().approve(params, requestOptions).parse()
 
     override fun reject(
         params: TransactionRejectParams,
         requestOptions: RequestOptions,
-    ): TransactionRejectResponse =
+    ): AgentAction =
         // post /agents/{agentId}/actions/{actionId}/reject
         withRawResponse().reject(params, requestOptions).parse()
 
@@ -66,13 +65,13 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val approveHandler: Handler<TransactionApproveResponse> =
-            jsonHandler<TransactionApproveResponse>(clientOptions.jsonMapper)
+        private val approveHandler: Handler<AgentAction> =
+            jsonHandler<AgentAction>(clientOptions.jsonMapper)
 
         override fun approve(
             params: TransactionApproveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<TransactionApproveResponse> {
+        ): HttpResponseFor<AgentAction> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -103,13 +102,13 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val rejectHandler: Handler<TransactionRejectResponse> =
-            jsonHandler<TransactionRejectResponse>(clientOptions.jsonMapper)
+        private val rejectHandler: Handler<AgentAction> =
+            jsonHandler<AgentAction>(clientOptions.jsonMapper)
 
         override fun reject(
             params: TransactionRejectParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<TransactionRejectResponse> {
+        ): HttpResponseFor<AgentAction> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("actionId", params.actionId())
@@ -124,7 +123,7 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
                         params._pathParam(1),
                         "reject",
                     )
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
