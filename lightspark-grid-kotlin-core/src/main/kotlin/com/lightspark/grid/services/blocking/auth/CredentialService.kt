@@ -154,10 +154,11 @@ interface CredentialService {
      * reauthentication. The request body must carry the client's ephemeral `clientPublicKey` so
      * Grid can bake it into the Turnkey session-creation payload the returned challenge is computed
      * from — this seals the resulting session signing key to the client. The response is a
-     * `PasskeyAuthChallenge` — the base `AuthMethod` fields plus the new `challenge`, `requestId`,
-     * and `expiresAt`. The client passes the `challenge` into `navigator.credentials.get()` and
-     * submits the resulting assertion to `POST /auth/credentials/{id}/verify` with `Request-Id:
-     * <requestId>` to receive a session.
+     * `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn `credentialId`, new
+     * `challenge`, `requestId`, and `expiresAt`. The client passes `credentialId` as
+     * `allowCredentials[].id` and `challenge` as the WebAuthn challenge in
+     * `navigator.credentials.get()`, then submits the resulting assertion to `POST
+     * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
      */
     fun challenge(
         id: String,
