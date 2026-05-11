@@ -18,12 +18,13 @@ import java.util.Objects
 
 /**
  * 202 response returned from Embedded Wallet Auth endpoints that require a signed retry — `POST
- * /auth/credentials` (adding an additional credential), `DELETE /auth/credentials/{id}` (revoking a
- * credential), and `DELETE /auth/sessions/{id}` (revoking a session). Carries the signing fields
- * from `SignedRequestChallenge` plus the `type` of the authentication credential involved (being
- * added, being revoked, or that issued the session being revoked). The client already knows the
- * target resource id from the request path / body it just sent, so nothing beyond `type` is echoed
- * in the response.
+ * /auth/credentials` (adding an additional credential), `PATCH /auth/credentials/{id}` (updating a
+ * credential), `DELETE /auth/credentials/{id}` (revoking a credential), and `DELETE
+ * /auth/sessions/{id}` (revoking a session). Carries the signing fields from
+ * `SignedRequestChallenge` plus the `type` of the authentication credential involved (being added,
+ * updated, revoked, or that issued the session being revoked). The client already knows the target
+ * resource id from the request path / body it just sent, so nothing beyond `type` is echoed in the
+ * response.
  */
 class AuthSignedRequestChallenge
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -84,8 +85,9 @@ private constructor(
 
     /**
      * Credential type relevant to this challenge: the credential type being added (`POST
-     * /auth/credentials`), the credential type being revoked (`DELETE /auth/credentials/{id}`), or
-     * the type of credential that issued the session being revoked (`DELETE /auth/sessions/{id}`).
+     * /auth/credentials`), updated (`PATCH /auth/credentials/{id}`), or revoked (`DELETE
+     * /auth/credentials/{id}`). For session revocation, this is the type of credential that issued
+     * the session (`DELETE /auth/sessions/{id}`).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -219,9 +221,9 @@ private constructor(
 
         /**
          * Credential type relevant to this challenge: the credential type being added (`POST
-         * /auth/credentials`), the credential type being revoked (`DELETE /auth/credentials/{id}`),
-         * or the type of credential that issued the session being revoked (`DELETE
-         * /auth/sessions/{id}`).
+         * /auth/credentials`), updated (`PATCH /auth/credentials/{id}`), or revoked (`DELETE
+         * /auth/credentials/{id}`). For session revocation, this is the type of credential that
+         * issued the session (`DELETE /auth/sessions/{id}`).
          */
         fun type(type: AuthMethodType) = type(JsonField.of(type))
 

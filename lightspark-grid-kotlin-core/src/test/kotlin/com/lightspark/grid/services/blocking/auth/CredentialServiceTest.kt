@@ -7,6 +7,7 @@ import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
+import com.lightspark.grid.models.auth.credentials.CredentialUpdateParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialVerifyRequestFields
 import org.junit.jupiter.api.Disabled
@@ -34,6 +35,31 @@ internal class CredentialServiceTest {
                     .emailOtpAuthCredentialCreateRequest(
                         "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
                     )
+                    .build()
+            )
+
+        authMethodResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun update() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val credentialService = client.auth().credentials()
+
+        val authMethodResponse =
+            credentialService.update(
+                CredentialUpdateParams.builder()
+                    .id("id")
+                    .gridWalletSignature(
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                    )
+                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .email("new.email@example.com")
                     .build()
             )
 
