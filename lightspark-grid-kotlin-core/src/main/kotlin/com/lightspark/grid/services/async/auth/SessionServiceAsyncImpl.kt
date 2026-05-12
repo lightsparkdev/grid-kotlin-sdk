@@ -16,10 +16,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
+import com.lightspark.grid.models.auth.sessions.SessionRefreshParams
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -50,6 +52,13 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
     ): AuthSignedRequestChallenge =
         // delete /auth/sessions/{id}
         withRawResponse().delete(params, requestOptions).parse()
+
+    override suspend fun refresh(
+        params: SessionRefreshParams,
+        requestOptions: RequestOptions,
+    ): AuthSession =
+        // post /auth/sessions/{id}/refresh
+        withRawResponse().refresh(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SessionServiceAsync.WithRawResponse {
@@ -114,6 +123,37 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             return errorHandler.handle(response).parseable {
                 response
                     .use { deleteHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val refreshHandler: Handler<AuthSession> =
+            jsonHandler<AuthSession>(clientOptions.jsonMapper)
+
+        override suspend fun refresh(
+            params: SessionRefreshParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AuthSession> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("auth", "sessions", params._pathParam(0), "refresh")
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { refreshHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

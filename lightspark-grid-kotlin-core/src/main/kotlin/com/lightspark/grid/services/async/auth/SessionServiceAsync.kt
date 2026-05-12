@@ -6,10 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
+import com.lightspark.grid.models.auth.sessions.SessionRefreshParams
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -72,6 +74,33 @@ interface SessionServiceAsync {
         delete(id, SessionDeleteParams.none(), requestOptions)
 
     /**
+     * Refresh an active Embedded Wallet auth session and create a new session signing key. Session
+     * refresh is a two-step signed-retry flow:
+     * 1. Call `POST /auth/sessions/{id}/refresh` with the request body `{ "clientPublicKey":
+     *    "04..." }` and no signature headers. Grid builds a Turnkey create-read-write-session
+     *    payload, binds the supplied `clientPublicKey` into that payload, persists it as a pending
+     *    request, and returns `202` with `payloadToSign`, `requestId`, and `expiresAt`.
+     * 2. Sign `payloadToSign` with the current session signing key, then retry the same request
+     *    with the full API-key stamp as `Grid-Wallet-Signature`, the `requestId` echoed back as
+     *    `Request-Id`, and the same `clientPublicKey` in the request body. On success, Grid returns
+     *    a new `AuthSession` with an `encryptedSessionSigningKey` sealed to that client public key.
+     *
+     * The original session must still be active on both steps so it can authorize the refresh. If
+     * the session has already expired, use the credential reauthentication flow instead.
+     */
+    suspend fun refresh(
+        id: String,
+        params: SessionRefreshParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthSession = refresh(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see refresh */
+    suspend fun refresh(
+        params: SessionRefreshParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthSession
+
+    /**
      * A view of [SessionServiceAsync] that provides access to raw HTTP responses for each method.
      */
     interface WithRawResponse {
@@ -121,5 +150,23 @@ interface SessionServiceAsync {
             requestOptions: RequestOptions,
         ): HttpResponseFor<AuthSignedRequestChallenge> =
             delete(id, SessionDeleteParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /auth/sessions/{id}/refresh`, but is otherwise the
+         * same as [SessionServiceAsync.refresh].
+         */
+        @MustBeClosed
+        suspend fun refresh(
+            id: String,
+            params: SessionRefreshParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthSession> = refresh(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see refresh */
+        @MustBeClosed
+        suspend fun refresh(
+            params: SessionRefreshParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthSession>
     }
 }
