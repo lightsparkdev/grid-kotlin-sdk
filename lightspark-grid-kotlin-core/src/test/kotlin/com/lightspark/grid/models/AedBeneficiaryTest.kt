@@ -14,8 +14,6 @@ internal class AedBeneficiaryTest {
     fun create() {
         val aedBeneficiary =
             AedBeneficiary.builder()
-                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -26,6 +24,8 @@ internal class AedBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .fullName("fullName")
                 .birthDate("birthDate")
                 .countryOfResidence("countryOfResidence")
                 .email("email")
@@ -33,9 +33,6 @@ internal class AedBeneficiaryTest {
                 .phoneNumber("phoneNumber")
                 .build()
 
-        assertThat(aedBeneficiary.beneficiaryType())
-            .isEqualTo(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(aedBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(aedBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -47,6 +44,9 @@ internal class AedBeneficiaryTest {
                     .state("CA")
                     .build()
             )
+        assertThat(aedBeneficiary.beneficiaryType())
+            .isEqualTo(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+        assertThat(aedBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(aedBeneficiary.birthDate()).isEqualTo("birthDate")
         assertThat(aedBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(aedBeneficiary.email()).isEqualTo("email")
@@ -59,8 +59,6 @@ internal class AedBeneficiaryTest {
         val jsonMapper = jsonMapper()
         val aedBeneficiary =
             AedBeneficiary.builder()
-                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -71,6 +69,8 @@ internal class AedBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
+                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .fullName("fullName")
                 .birthDate("birthDate")
                 .countryOfResidence("countryOfResidence")
                 .email("email")

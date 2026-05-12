@@ -21,8 +21,6 @@ internal class AedExternalAccountInfoTest {
                 .swiftCode("EBILAEAD")
                 .beneficiary(
                     AedBeneficiary.builder()
-                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -33,6 +31,8 @@ internal class AedExternalAccountInfoTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
@@ -52,8 +52,6 @@ internal class AedExternalAccountInfoTest {
             .isEqualTo(
                 AedExternalAccountInfo.Beneficiary.ofIndividual(
                     AedBeneficiary.builder()
-                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -64,6 +62,8 @@ internal class AedExternalAccountInfoTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
@@ -85,8 +85,6 @@ internal class AedExternalAccountInfoTest {
                 .swiftCode("EBILAEAD")
                 .beneficiary(
                     AedBeneficiary.builder()
-                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -97,6 +95,8 @@ internal class AedExternalAccountInfoTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")

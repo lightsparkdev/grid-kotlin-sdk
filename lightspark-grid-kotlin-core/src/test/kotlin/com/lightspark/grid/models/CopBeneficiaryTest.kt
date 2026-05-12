@@ -15,8 +15,6 @@ internal class CopBeneficiaryTest {
         val copBeneficiary =
             CopBeneficiary.builder()
                 .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .documentNumber("documentNumber")
-                .documentType("documentType")
                 .fullName("fullName")
                 .address(
                     Address.builder()
@@ -37,8 +35,6 @@ internal class CopBeneficiaryTest {
 
         assertThat(copBeneficiary.beneficiaryType())
             .isEqualTo(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(copBeneficiary.documentNumber()).isEqualTo("documentNumber")
-        assertThat(copBeneficiary.documentType()).isEqualTo("documentType")
         assertThat(copBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(copBeneficiary.address())
             .isEqualTo(
@@ -64,8 +60,6 @@ internal class CopBeneficiaryTest {
         val copBeneficiary =
             CopBeneficiary.builder()
                 .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .documentNumber("documentNumber")
-                .documentType("documentType")
                 .fullName("fullName")
                 .address(
                     Address.builder()

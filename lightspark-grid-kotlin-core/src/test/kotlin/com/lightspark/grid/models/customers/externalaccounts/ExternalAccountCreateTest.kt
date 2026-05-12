@@ -20,8 +20,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -32,6 +30,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -56,8 +56,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -68,6 +66,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -97,8 +97,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -109,6 +107,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")

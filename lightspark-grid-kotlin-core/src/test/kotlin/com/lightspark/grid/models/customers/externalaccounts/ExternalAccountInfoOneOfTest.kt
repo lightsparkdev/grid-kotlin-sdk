@@ -3516,8 +3516,6 @@ internal class ExternalAccountInfoOneOfTest {
                 .swiftCode("EBILAEAD")
                 .beneficiary(
                     AedBeneficiary.builder()
-                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -3528,6 +3526,8 @@ internal class ExternalAccountInfoOneOfTest {
                                 .state("CA")
                                 .build()
                         )
+                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .birthDate("birthDate")
                         .countryOfResidence("countryOfResidence")
                         .email("email")
@@ -3595,8 +3595,6 @@ internal class ExternalAccountInfoOneOfTest {
                     .swiftCode("EBILAEAD")
                     .beneficiary(
                         AedBeneficiary.builder()
-                            .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .fullName("fullName")
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -3607,6 +3605,8 @@ internal class ExternalAccountInfoOneOfTest {
                                     .state("CA")
                                     .build()
                             )
+                            .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            .fullName("fullName")
                             .birthDate("birthDate")
                             .countryOfResidence("countryOfResidence")
                             .email("email")
@@ -3996,16 +3996,13 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofCopAccount() {
         val copAccount =
             CopExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4078,16 +4075,13 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofCopAccount(
                 CopExternalAccountInfo.builder()
-                    .accountNumber("x")
                     .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                    .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                    .bankName("x")
                     .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
+                    .accountNumber("x")
+                    .phoneNumber("+1234567890")
                     .beneficiary(
                         CopBeneficiary.builder()
                             .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .documentNumber("documentNumber")
-                            .documentType("documentType")
                             .fullName("fullName")
                             .address(
                                 Address.builder()

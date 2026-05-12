@@ -32,6 +32,7 @@ import com.lightspark.grid.models.BdtExternalAccountCreateInfo
 import com.lightspark.grid.models.BrlExternalAccountCreateInfo
 import com.lightspark.grid.models.BwpExternalAccountCreateInfo
 import com.lightspark.grid.models.CadExternalAccountCreateInfo
+import com.lightspark.grid.models.CopBeneficiary
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
@@ -394,6 +395,61 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
         fun accountInfo(copAccount: CopExternalAccountCreateInfo) = apply {
             body.accountInfo(copAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * CopExternalAccountCreateInfo.builder()
+         *     .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun copAccountAccountInfo(beneficiary: CopExternalAccountCreateInfo.Beneficiary) = apply {
+            body.copAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with
+         * `CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun copAccountAccountInfo(individual: CopBeneficiary) = apply {
+            body.copAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with the following:
+         * ```kotlin
+         * CopBeneficiary.builder()
+         *     .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualCopAccountAccountInfo(fullName: String) = apply {
+            body.individualCopAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with
+         * `CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun copAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.copAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessCopAccountAccountInfo(legalName: String) = apply {
+            body.businessCopAccountAccountInfo(legalName)
         }
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
@@ -1056,6 +1112,73 @@ private constructor(
             /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
             fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofCopAccount(copAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * CopExternalAccountCreateInfo.builder()
+             *     .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun copAccountAccountInfo(beneficiary: CopExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    CopExternalAccountCreateInfo.builder()
+                        .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with
+             * `CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun copAccountAccountInfo(individual: CopBeneficiary) =
+                copAccountAccountInfo(
+                    CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with the following:
+             * ```kotlin
+             * CopBeneficiary.builder()
+             *     .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualCopAccountAccountInfo(fullName: String) =
+                copAccountAccountInfo(
+                    CopBeneficiary.builder()
+                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with
+             * `CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun copAccountAccountInfo(business: BusinessBeneficiary) =
+                copAccountAccountInfo(CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessCopAccountAccountInfo(legalName: String) =
+                copAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
 
             /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
             fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
