@@ -148,6 +148,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -271,6 +272,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -393,6 +395,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -513,6 +516,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -633,6 +637,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -754,6 +759,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -877,6 +883,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -998,6 +1005,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1117,6 +1125,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1237,6 +1246,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1356,6 +1366,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1476,6 +1487,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1597,6 +1609,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1717,6 +1730,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1837,6 +1851,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -1958,6 +1973,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2080,6 +2096,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2201,6 +2218,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2321,6 +2339,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2441,6 +2460,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2562,6 +2582,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2684,6 +2705,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2805,6 +2827,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -2925,6 +2948,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3022,6 +3046,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3103,6 +3128,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3183,6 +3209,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3257,6 +3284,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3332,6 +3360,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3406,6 +3435,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3484,6 +3514,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3581,6 +3612,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3701,6 +3733,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3822,6 +3855,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -3945,6 +3979,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4067,6 +4102,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4189,6 +4225,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4311,6 +4348,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4431,6 +4469,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4550,6 +4589,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isEqualTo(htgAccount)
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4670,6 +4710,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isEqualTo(jmdAccount)
         assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4793,6 +4834,7 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
         assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
         assertThat(externalAccountInfoOneOf.pkrAccount()).isEqualTo(pkrAccount)
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
     }
 
     @Test
@@ -4828,6 +4870,127 @@ internal class ExternalAccountInfoOneOfTest {
                             .phoneNumber("phoneNumber")
                             .build()
                     )
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofSlvAccount() {
+        val slvAccount =
+            ExternalAccountInfoOneOf.SlvAccount.builder()
+                .beneficiary(
+                    ExternalAccountInfoOneOf.SlvAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .bankAccountType(ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING)
+                .bankName("x")
+                .phoneNumber("+50312345678")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofSlvAccount(slvAccount)
+
+        assertThat(externalAccountInfoOneOf.brlAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cadAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.dkkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.eurAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gbpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.hkdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.idrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.inrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.kesAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mwkAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.mxnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.myrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ngnAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.phpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.rwfAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sgdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.thbAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tzsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ugxAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.usdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.vndAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xofAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.zarAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.zmwAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.sparkWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.lightningWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.solanaWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.tronWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.polygonWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.baseWalletInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.ethereumWalletExternalAccountInfo()).isNull()
+        assertThat(externalAccountInfoOneOf.aedAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bwpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.xafAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.bdtAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.copAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.egpAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ghsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.gtqAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.htgAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.jmdAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.pkrAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.slvAccount()).isEqualTo(slvAccount)
+    }
+
+    @Test
+    fun ofSlvAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofSlvAccount(
+                ExternalAccountInfoOneOf.SlvAccount.builder()
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.SlvAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER)
+                    .accountNumber("x")
+                    .bankAccountType(ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING)
+                    .bankName("x")
+                    .phoneNumber("+50312345678")
                     .build()
             )
 
