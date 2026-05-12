@@ -15,7 +15,7 @@ internal class CustomerExportParamsTest {
             .gridWalletSignature(
                 "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
             )
-            .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+            .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
             .internalAccountExportRequest(
                 InternalAccountExportRequest.builder()
                     .clientPublicKey(
@@ -53,7 +53,7 @@ internal class CustomerExportParamsTest {
                 .gridWalletSignature(
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .internalAccountExportRequest(
                     InternalAccountExportRequest.builder()
                         .clientPublicKey(
@@ -72,7 +72,7 @@ internal class CustomerExportParamsTest {
                         "Grid-Wallet-Signature",
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ",
                     )
-                    .put("Request-Id", "7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .put("Request-Id", "Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
             )
     }
@@ -104,7 +104,7 @@ internal class CustomerExportParamsTest {
                 .gridWalletSignature(
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .internalAccountExportRequest(
                     InternalAccountExportRequest.builder()
                         .clientPublicKey(
