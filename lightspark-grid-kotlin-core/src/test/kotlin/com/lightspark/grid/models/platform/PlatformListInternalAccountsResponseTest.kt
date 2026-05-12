@@ -56,6 +56,7 @@ internal class PlatformListInternalAccountsResponseTest {
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .privateEnabled(true)
                         .build()
                 )
                 .build()
@@ -98,6 +99,7 @@ internal class PlatformListInternalAccountsResponseTest {
                     .type(InternalAccount.Type.INTERNAL_FIAT)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .privateEnabled(true)
                     .build()
             )
     }
@@ -144,6 +146,7 @@ internal class PlatformListInternalAccountsResponseTest {
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .privateEnabled(true)
                         .build()
                 )
                 .build()

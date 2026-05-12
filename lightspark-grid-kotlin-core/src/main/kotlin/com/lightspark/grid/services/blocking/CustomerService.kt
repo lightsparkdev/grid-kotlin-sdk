@@ -9,16 +9,18 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
-import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
-import com.lightspark.grid.models.customers.CustomerGetKycLinkResponse
+import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
+import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
+import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.blocking.customers.BulkService
 import com.lightspark.grid.services.blocking.customers.ExternalAccountService
 
@@ -170,11 +172,38 @@ interface CustomerService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): InternalAccountExportResponse
 
-    /** Generate a hosted KYC link to onboard a customer */
-    fun getKycLink(
-        params: CustomerGetKycLinkParams,
+    /**
+     * Generate a single-use hosted URL the customer can complete to verify their identity, and
+     * (where supported) a provider-specific `token` for embedding the verification flow directly
+     * via the provider's SDK.
+     *
+     * The customer must already exist — create them with `POST /customers` first. Calling this
+     * endpoint does not change the customer's `kycStatus`; the customer remains `PENDING` until
+     * they complete (or fail) the hosted flow.
+     *
+     * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
+     * single-use and will expire on their own. For request-level retry safety, include an
+     * `Idempotency-Key` header.
+     */
+    fun generateKycLink(
+        customerId: String,
+        params: CustomerGenerateKycLinkParams = CustomerGenerateKycLinkParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerGetKycLinkResponse
+    ): CustomerGenerateKycLinkResponse =
+        generateKycLink(params.toBuilder().customerId(customerId).build(), requestOptions)
+
+    /** @see generateKycLink */
+    fun generateKycLink(
+        params: CustomerGenerateKycLinkParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CustomerGenerateKycLinkResponse
+
+    /** @see generateKycLink */
+    fun generateKycLink(
+        customerId: String,
+        requestOptions: RequestOptions,
+    ): CustomerGenerateKycLinkResponse =
+        generateKycLink(customerId, CustomerGenerateKycLinkParams.none(), requestOptions)
 
     /**
      * Retrieve a list of internal accounts with optional filtering parameters. Returns all internal
@@ -192,6 +221,36 @@ interface CustomerService {
     /** @see listInternalAccounts */
     fun listInternalAccounts(requestOptions: RequestOptions): CustomerListInternalAccountsPage =
         listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+    /**
+     * Update mutable fields on an internal account. Today this supports updating the wallet privacy
+     * setting for an Embedded Wallet internal account.
+     *
+     * Updating wallet privacy is a two-step signed-retry flow:
+     * 1. Call `PATCH /internal-accounts/{id}` with the request body `{ "privateEnabled": true }`
+     *    and no signature headers. Grid returns `202` with `payloadToSign`, `requestId`, and
+     *    `expiresAt`.
+     * 2. Use the session API keypair of a verified authentication credential on the same internal
+     *    account to build an API-key stamp over `payloadToSign`, then retry with that full stamp as
+     *    the `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id`
+     *    header. The retry body must carry the same update fields submitted in step 1. The signed
+     *    retry returns `200` with the updated internal account.
+     */
+    fun updateInternalAccount(
+        id: String,
+        params: CustomerUpdateInternalAccountParams = CustomerUpdateInternalAccountParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): InternalAccount = updateInternalAccount(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see updateInternalAccount */
+    fun updateInternalAccount(
+        params: CustomerUpdateInternalAccountParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): InternalAccount
+
+    /** @see updateInternalAccount */
+    fun updateInternalAccount(id: String, requestOptions: RequestOptions): InternalAccount =
+        updateInternalAccount(id, CustomerUpdateInternalAccountParams.none(), requestOptions)
 
     /** A view of [CustomerService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -359,14 +418,31 @@ interface CustomerService {
         ): HttpResponseFor<InternalAccountExportResponse>
 
         /**
-         * Returns a raw HTTP response for `get /customers/kyc-link`, but is otherwise the same as
-         * [CustomerService.getKycLink].
+         * Returns a raw HTTP response for `post /customers/{customerId}/kyc-link`, but is otherwise
+         * the same as [CustomerService.generateKycLink].
          */
         @MustBeClosed
-        fun getKycLink(
-            params: CustomerGetKycLinkParams,
+        fun generateKycLink(
+            customerId: String,
+            params: CustomerGenerateKycLinkParams = CustomerGenerateKycLinkParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerGetKycLinkResponse>
+        ): HttpResponseFor<CustomerGenerateKycLinkResponse> =
+            generateKycLink(params.toBuilder().customerId(customerId).build(), requestOptions)
+
+        /** @see generateKycLink */
+        @MustBeClosed
+        fun generateKycLink(
+            params: CustomerGenerateKycLinkParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CustomerGenerateKycLinkResponse>
+
+        /** @see generateKycLink */
+        @MustBeClosed
+        fun generateKycLink(
+            customerId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<CustomerGenerateKycLinkResponse> =
+            generateKycLink(customerId, CustomerGenerateKycLinkParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /customers/internal-accounts`, but is otherwise the
@@ -384,5 +460,33 @@ interface CustomerService {
             requestOptions: RequestOptions
         ): HttpResponseFor<CustomerListInternalAccountsPage> =
             listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `patch /internal-accounts/{id}`, but is otherwise the
+         * same as [CustomerService.updateInternalAccount].
+         */
+        @MustBeClosed
+        fun updateInternalAccount(
+            id: String,
+            params: CustomerUpdateInternalAccountParams =
+                CustomerUpdateInternalAccountParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<InternalAccount> =
+            updateInternalAccount(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see updateInternalAccount */
+        @MustBeClosed
+        fun updateInternalAccount(
+            params: CustomerUpdateInternalAccountParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<InternalAccount>
+
+        /** @see updateInternalAccount */
+        @MustBeClosed
+        fun updateInternalAccount(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InternalAccount> =
+            updateInternalAccount(id, CustomerUpdateInternalAccountParams.none(), requestOptions)
     }
 }

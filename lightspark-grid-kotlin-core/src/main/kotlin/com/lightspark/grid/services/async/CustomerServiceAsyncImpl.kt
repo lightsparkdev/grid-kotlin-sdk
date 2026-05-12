@@ -19,8 +19,8 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
-import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
-import com.lightspark.grid.models.customers.CustomerGetKycLinkResponse
+import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
+import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
@@ -29,8 +29,10 @@ import com.lightspark.grid.models.customers.CustomerListPageResponse
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
+import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.async.customers.BulkServiceAsync
 import com.lightspark.grid.services.async.customers.BulkServiceAsyncImpl
 import com.lightspark.grid.services.async.customers.ExternalAccountServiceAsync
@@ -102,12 +104,12 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
 
-    override suspend fun getKycLink(
-        params: CustomerGetKycLinkParams,
+    override suspend fun generateKycLink(
+        params: CustomerGenerateKycLinkParams,
         requestOptions: RequestOptions,
-    ): CustomerGetKycLinkResponse =
-        // get /customers/kyc-link
-        withRawResponse().getKycLink(params, requestOptions).parse()
+    ): CustomerGenerateKycLinkResponse =
+        // post /customers/{customerId}/kyc-link
+        withRawResponse().generateKycLink(params, requestOptions).parse()
 
     override suspend fun listInternalAccounts(
         params: CustomerListInternalAccountsParams,
@@ -115,6 +117,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CustomerListInternalAccountsPageAsync =
         // get /customers/internal-accounts
         withRawResponse().listInternalAccounts(params, requestOptions).parse()
+
+    override suspend fun updateInternalAccount(
+        params: CustomerUpdateInternalAccountParams,
+        requestOptions: RequestOptions,
+    ): InternalAccount =
+        // patch /internal-accounts/{id}
+        withRawResponse().updateInternalAccount(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         CustomerServiceAsync.WithRawResponse {
@@ -331,25 +340,29 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val getKycLinkHandler: Handler<CustomerGetKycLinkResponse> =
-            jsonHandler<CustomerGetKycLinkResponse>(clientOptions.jsonMapper)
+        private val generateKycLinkHandler: Handler<CustomerGenerateKycLinkResponse> =
+            jsonHandler<CustomerGenerateKycLinkResponse>(clientOptions.jsonMapper)
 
-        override suspend fun getKycLink(
-            params: CustomerGetKycLinkParams,
+        override suspend fun generateKycLink(
+            params: CustomerGenerateKycLinkParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerGetKycLinkResponse> {
+        ): HttpResponseFor<CustomerGenerateKycLinkResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("customerId", params.customerId())
             val request =
                 HttpRequest.builder()
-                    .method(HttpMethod.GET)
+                    .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("customers", "kyc-link")
+                    .addPathSegments("customers", params._pathParam(0), "kyc-link")
+                    .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { getKycLinkHandler.handle(it) }
+                    .use { generateKycLinkHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -388,6 +401,37 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                             .params(params)
                             .response(it)
                             .build()
+                    }
+            }
+        }
+
+        private val updateInternalAccountHandler: Handler<InternalAccount> =
+            jsonHandler<InternalAccount>(clientOptions.jsonMapper)
+
+        override suspend fun updateInternalAccount(
+            params: CustomerUpdateInternalAccountParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<InternalAccount> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.PATCH)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("internal-accounts", params._pathParam(0))
+                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { updateInternalAccountHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
                     }
             }
         }
