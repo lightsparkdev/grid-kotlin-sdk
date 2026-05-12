@@ -5,7 +5,8 @@ package com.lightspark.grid.services.blocking
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerExportParams
-import com.lightspark.grid.models.customers.CustomerGetKycLinkParams
+import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
+import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.InternalAccountExportRequest
@@ -176,7 +177,7 @@ internal class CustomerServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun getKycLink() {
+    fun generateKycLink() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -185,10 +186,11 @@ internal class CustomerServiceTest {
         val customerService = client.customers()
 
         val response =
-            customerService.getKycLink(
-                CustomerGetKycLinkParams.builder()
-                    .platformCustomerId("platformCustomerId")
-                    .redirectUri("redirectUri")
+            customerService.generateKycLink(
+                CustomerGenerateKycLinkParams.builder()
+                    .customerId("customerId")
+                    .idempotencyKey("<uuid>")
+                    .redirectUri("https://app.example.com/onboarding/completed")
                     .build()
             )
 
@@ -208,5 +210,30 @@ internal class CustomerServiceTest {
         val page = customerService.listInternalAccounts()
 
         page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun updateInternalAccount() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val customerService = client.customers()
+
+        val internalAccount =
+            customerService.updateInternalAccount(
+                CustomerUpdateInternalAccountParams.builder()
+                    .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .gridWalletSignature(
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                    )
+                    .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
+                    .privateEnabled(true)
+                    .build()
+            )
+
+        internalAccount.validate()
     }
 }

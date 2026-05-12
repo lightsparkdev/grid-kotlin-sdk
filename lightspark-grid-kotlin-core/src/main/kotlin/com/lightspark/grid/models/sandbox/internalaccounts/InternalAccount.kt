@@ -31,6 +31,7 @@ private constructor(
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val customerId: JsonField<String>,
+    private val privateEnabled: JsonField<Boolean>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -50,7 +51,12 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("customerId") @ExcludeMissing customerId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("customerId")
+        @ExcludeMissing
+        customerId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("privateEnabled")
+        @ExcludeMissing
+        privateEnabled: JsonField<Boolean> = JsonMissing.of(),
     ) : this(
         id,
         balance,
@@ -59,6 +65,7 @@ private constructor(
         type,
         updatedAt,
         customerId,
+        privateEnabled,
         mutableMapOf(),
     )
 
@@ -126,6 +133,15 @@ private constructor(
     fun customerId(): String? = customerId.getNullable("customerId")
 
     /**
+     * Whether wallet privacy is enabled for the Embedded Wallet. Only present for `EMBEDDED_WALLET`
+     * internal accounts.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun privateEnabled(): Boolean? = privateEnabled.getNullable("privateEnabled")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -182,6 +198,15 @@ private constructor(
      */
     @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
 
+    /**
+     * Returns the raw JSON value of [privateEnabled].
+     *
+     * Unlike [privateEnabled], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("privateEnabled")
+    @ExcludeMissing
+    fun _privateEnabled(): JsonField<Boolean> = privateEnabled
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -222,6 +247,7 @@ private constructor(
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
+        private var privateEnabled: JsonField<Boolean> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(internalAccount: InternalAccount) = apply {
@@ -233,6 +259,7 @@ private constructor(
             type = internalAccount.type
             updatedAt = internalAccount.updatedAt
             customerId = internalAccount.customerId
+            privateEnabled = internalAccount.privateEnabled
             additionalProperties = internalAccount.additionalProperties.toMutableMap()
         }
 
@@ -346,6 +373,23 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
+        /**
+         * Whether wallet privacy is enabled for the Embedded Wallet. Only present for
+         * `EMBEDDED_WALLET` internal accounts.
+         */
+        fun privateEnabled(privateEnabled: Boolean) = privateEnabled(JsonField.of(privateEnabled))
+
+        /**
+         * Sets [Builder.privateEnabled] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.privateEnabled] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun privateEnabled(privateEnabled: JsonField<Boolean>) = apply {
+            this.privateEnabled = privateEnabled
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -393,6 +437,7 @@ private constructor(
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
                 customerId,
+                privateEnabled,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -419,6 +464,7 @@ private constructor(
         type().validate()
         updatedAt()
         customerId()
+        privateEnabled()
         validated = true
     }
 
@@ -442,7 +488,8 @@ private constructor(
             (fundingPaymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
-            (if (customerId.asKnown() == null) 0 else 1)
+            (if (customerId.asKnown() == null) 0 else 1) +
+            (if (privateEnabled.asKnown() == null) 0 else 1)
 
     /**
      * Classification of an internal account.
@@ -607,6 +654,7 @@ private constructor(
             type == other.type &&
             updatedAt == other.updatedAt &&
             customerId == other.customerId &&
+            privateEnabled == other.privateEnabled &&
             additionalProperties == other.additionalProperties
     }
 
@@ -619,6 +667,7 @@ private constructor(
             type,
             updatedAt,
             customerId,
+            privateEnabled,
             additionalProperties,
         )
     }
@@ -626,5 +675,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, type=$type, updatedAt=$updatedAt, customerId=$customerId, additionalProperties=$additionalProperties}"
+        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, type=$type, updatedAt=$updatedAt, customerId=$customerId, privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
 }
