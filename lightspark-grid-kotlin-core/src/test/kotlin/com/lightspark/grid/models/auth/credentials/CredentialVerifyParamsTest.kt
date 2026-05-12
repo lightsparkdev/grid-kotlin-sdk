@@ -12,7 +12,7 @@ internal class CredentialVerifyParamsTest {
     fun create() {
         CredentialVerifyParams.builder()
             .id("id")
-            .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+            .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
             .authCredentialVerifyRequest(
                 EmailOtpCredentialVerifyRequestFields.builder()
                     .clientPublicKey(
@@ -51,7 +51,7 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .authCredentialVerifyRequest(
                     EmailOtpCredentialVerifyRequestFields.builder()
                         .clientPublicKey(
@@ -67,7 +67,9 @@ internal class CredentialVerifyParamsTest {
 
         assertThat(headers)
             .isEqualTo(
-                Headers.builder().put("Request-Id", "7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21").build()
+                Headers.builder()
+                    .put("Request-Id", "Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .build()
             )
     }
 
@@ -97,7 +99,7 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .authCredentialVerifyRequest(
                     EmailOtpCredentialVerifyRequestFields.builder()
                         .clientPublicKey(

@@ -170,9 +170,10 @@ private constructor(
     fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
 
     /**
-     * Unique identifier for this pending passkey authentication request. Must be echoed as the
-     * `Request-Id` header on the subsequent `POST /auth/credentials/{id}/verify` call so Grid can
-     * correlate the assertion with the issued challenge.
+     * Grid-issued `Request:<uuid>` identifier for this pending passkey authentication request. Echo
+     * this value exactly as the `Request-Id` header on the subsequent `POST
+     * /auth/credentials/{id}/verify` call so Grid can correlate the assertion with the issued
+     * challenge.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -452,9 +453,10 @@ private constructor(
         fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply { this.expiresAt = expiresAt }
 
         /**
-         * Unique identifier for this pending passkey authentication request. Must be echoed as the
-         * `Request-Id` header on the subsequent `POST /auth/credentials/{id}/verify` call so Grid
-         * can correlate the assertion with the issued challenge.
+         * Grid-issued `Request:<uuid>` identifier for this pending passkey authentication request.
+         * Echo this value exactly as the `Request-Id` header on the subsequent `POST
+         * /auth/credentials/{id}/verify` call so Grid can correlate the assertion with the issued
+         * challenge.
          */
         fun requestId(requestId: String) = requestId(JsonField.of(requestId))
 

@@ -79,7 +79,7 @@ internal class AuthCredentialResponseOneOfTest {
                 )
                 .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 
         val authCredentialResponseOneOf =
@@ -107,7 +107,7 @@ internal class AuthCredentialResponseOneOfTest {
                     )
                     .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
                     .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
-                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
             )
 

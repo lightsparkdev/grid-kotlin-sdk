@@ -16,7 +16,7 @@ internal class SignedRequestChallengeTest {
             SignedRequestChallenge.builder()
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .payloadToSign("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 
         assertThat(signedRequestChallenge.expiresAt())
@@ -24,7 +24,7 @@ internal class SignedRequestChallengeTest {
         assertThat(signedRequestChallenge.payloadToSign())
             .isEqualTo("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
         assertThat(signedRequestChallenge.requestId())
-            .isEqualTo("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+            .isEqualTo("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class SignedRequestChallengeTest {
             SignedRequestChallenge.builder()
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .payloadToSign("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 
         val roundtrippedSignedRequestChallenge =
