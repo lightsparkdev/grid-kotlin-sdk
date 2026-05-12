@@ -18,9 +18,10 @@ import java.util.Objects
 
 /**
  * An authentication session on an Embedded Wallet internal account. Returned from `GET
- * /auth/sessions` (list) and `POST /auth/credentials/{id}/verify` (on credential verification).
- * Only the verify response includes `encryptedSessionSigningKey` — it is delivered exactly once at
- * the moment the session is issued and is never returned by the list endpoint.
+ * /auth/sessions` (list) and `POST /auth/credentials/{id}/verify` (on credential verification) or
+ * `POST /auth/sessions/{id}/refresh` (on mid-session refresh). Only session-issuing responses
+ * include `encryptedSessionSigningKey` — it is delivered exactly once at the moment the session is
+ * issued and is never returned by the list endpoint.
  */
 class AuthSession
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -156,14 +157,16 @@ private constructor(
     fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
 
     /**
-     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the verify
-     * request. Encoded as a base58check string: the decoded payload is a 33-byte compressed P-256
-     * encapsulated public key followed by AES-256-GCM ciphertext. The client decrypts this key with
-     * its private key and uses it to sign subsequent Embedded Wallet requests until `expiresAt`.
+     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
+     * verification or refresh request. Encoded as a base58check string: the decoded payload is a
+     * 33-byte compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The
+     * client decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
+     * requests until `expiresAt`.
      *
-     * Only returned from `POST /auth/credentials/{id}/verify` (where the session is first issued).
-     * Omitted from responses that simply surface existing sessions (e.g. `GET /auth/sessions`) —
-     * Grid does not retain the plaintext key after the client has decrypted it.
+     * Only returned from session-issuing responses like `POST /auth/credentials/{id}/verify` and
+     * `POST /auth/sessions/{id}/refresh`. Omitted from responses that simply surface existing
+     * sessions (e.g. `GET /auth/sessions`) — Grid does not retain the plaintext key after the
+     * client has decrypted it.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -419,15 +422,15 @@ private constructor(
 
         /**
          * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
-         * verify request. Encoded as a base58check string: the decoded payload is a 33-byte
-         * compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The client
-         * decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
-         * requests until `expiresAt`.
+         * verification or refresh request. Encoded as a base58check string: the decoded payload is
+         * a 33-byte compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext.
+         * The client decrypts this key with its private key and uses it to sign subsequent Embedded
+         * Wallet requests until `expiresAt`.
          *
-         * Only returned from `POST /auth/credentials/{id}/verify` (where the session is first
-         * issued). Omitted from responses that simply surface existing sessions (e.g. `GET
-         * /auth/sessions`) — Grid does not retain the plaintext key after the client has decrypted
-         * it.
+         * Only returned from session-issuing responses like `POST /auth/credentials/{id}/verify`
+         * and `POST /auth/sessions/{id}/refresh`. Omitted from responses that simply surface
+         * existing sessions (e.g. `GET /auth/sessions`) — Grid does not retain the plaintext key
+         * after the client has decrypted it.
          */
         fun encryptedSessionSigningKey(encryptedSessionSigningKey: String) =
             encryptedSessionSigningKey(JsonField.of(encryptedSessionSigningKey))
