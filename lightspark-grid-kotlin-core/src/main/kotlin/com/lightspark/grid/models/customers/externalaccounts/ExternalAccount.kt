@@ -575,6 +575,12 @@ private constructor(
         fun accountInfo(pkrAccount: PkrExternalAccountInfo) =
             accountInfo(ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofSlvAccount(slvAccount)`.
+         */
+        fun accountInfo(slvAccount: ExternalAccountInfoOneOf.SlvAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofSlvAccount(slvAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
