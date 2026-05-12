@@ -15,16 +15,13 @@ internal class CopExternalAccountInfoTest {
     fun create() {
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -45,21 +42,17 @@ internal class CopExternalAccountInfoTest {
                 )
                 .build()
 
-        assertThat(copExternalAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(copExternalAccountInfo.accountType())
             .isEqualTo(CopAccountInfo.AccountType.COP_ACCOUNT)
-        assertThat(copExternalAccountInfo.bankAccountType())
-            .isEqualTo(CopAccountInfo.BankAccountType.CHECKING)
-        assertThat(copExternalAccountInfo.bankName()).isEqualTo("x")
         assertThat(copExternalAccountInfo.paymentRails())
             .containsExactly(CopAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(copExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(copExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(copExternalAccountInfo.beneficiary())
             .isEqualTo(
                 CopExternalAccountInfo.Beneficiary.ofIndividual(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -86,16 +79,13 @@ internal class CopExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
-                .accountNumber("x")
                 .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .phoneNumber("+1234567890")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
                         .fullName("fullName")
                         .address(
                             Address.builder()

@@ -21,8 +21,6 @@ class CopBeneficiary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val beneficiaryType: JsonField<BeneficiaryType>,
-    private val documentNumber: JsonField<String>,
-    private val documentType: JsonField<String>,
     private val fullName: JsonField<String>,
     private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
@@ -38,12 +36,6 @@ private constructor(
         @JsonProperty("beneficiaryType")
         @ExcludeMissing
         beneficiaryType: JsonField<BeneficiaryType> = JsonMissing.of(),
-        @JsonProperty("documentNumber")
-        @ExcludeMissing
-        documentNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("documentType")
-        @ExcludeMissing
-        documentType: JsonField<String> = JsonMissing.of(),
         @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
@@ -59,8 +51,6 @@ private constructor(
         phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
-        documentNumber,
-        documentType,
         fullName,
         address,
         birthDate,
@@ -76,22 +66,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiaryType(): BeneficiaryType = beneficiaryType.getRequired("beneficiaryType")
-
-    /**
-     * The identity document number
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun documentNumber(): String = documentNumber.getRequired("documentNumber")
-
-    /**
-     * The type of identity document (e.g., national ID, passport)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun documentType(): String = documentType.getRequired("documentType")
 
     /**
      * The full name of the beneficiary
@@ -155,24 +129,6 @@ private constructor(
     @JsonProperty("beneficiaryType")
     @ExcludeMissing
     fun _beneficiaryType(): JsonField<BeneficiaryType> = beneficiaryType
-
-    /**
-     * Returns the raw JSON value of [documentNumber].
-     *
-     * Unlike [documentNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("documentNumber")
-    @ExcludeMissing
-    fun _documentNumber(): JsonField<String> = documentNumber
-
-    /**
-     * Returns the raw JSON value of [documentType].
-     *
-     * Unlike [documentType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("documentType")
-    @ExcludeMissing
-    fun _documentType(): JsonField<String> = documentType
 
     /**
      * Returns the raw JSON value of [fullName].
@@ -246,8 +202,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
          * .fullName()
          * ```
          */
@@ -258,8 +212,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
-        private var documentNumber: JsonField<String>? = null
-        private var documentType: JsonField<String>? = null
         private var fullName: JsonField<String>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
@@ -271,8 +223,6 @@ private constructor(
 
         internal fun from(copBeneficiary: CopBeneficiary) = apply {
             beneficiaryType = copBeneficiary.beneficiaryType
-            documentNumber = copBeneficiary.documentNumber
-            documentType = copBeneficiary.documentType
             fullName = copBeneficiary.fullName
             address = copBeneficiary.address
             birthDate = copBeneficiary.birthDate
@@ -295,34 +245,6 @@ private constructor(
          */
         fun beneficiaryType(beneficiaryType: JsonField<BeneficiaryType>) = apply {
             this.beneficiaryType = beneficiaryType
-        }
-
-        /** The identity document number */
-        fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
-
-        /**
-         * Sets [Builder.documentNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.documentNumber] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun documentNumber(documentNumber: JsonField<String>) = apply {
-            this.documentNumber = documentNumber
-        }
-
-        /** The type of identity document (e.g., national ID, passport) */
-        fun documentType(documentType: String) = documentType(JsonField.of(documentType))
-
-        /**
-         * Sets [Builder.documentType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.documentType] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun documentType(documentType: JsonField<String>) = apply {
-            this.documentType = documentType
         }
 
         /** The full name of the beneficiary */
@@ -435,8 +357,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
          * .fullName()
          * ```
          *
@@ -445,8 +365,6 @@ private constructor(
         fun build(): CopBeneficiary =
             CopBeneficiary(
                 checkRequired("beneficiaryType", beneficiaryType),
-                checkRequired("documentNumber", documentNumber),
-                checkRequired("documentType", documentType),
                 checkRequired("fullName", fullName),
                 address,
                 birthDate,
@@ -474,8 +392,6 @@ private constructor(
         }
 
         beneficiaryType().validate()
-        documentNumber()
-        documentType()
         fullName()
         address()?.validate()
         birthDate()
@@ -501,8 +417,6 @@ private constructor(
      */
     internal fun validity(): Int =
         (beneficiaryType.asKnown()?.validity() ?: 0) +
-            (if (documentNumber.asKnown() == null) 0 else 1) +
-            (if (documentType.asKnown() == null) 0 else 1) +
             (if (fullName.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
@@ -650,8 +564,6 @@ private constructor(
 
         return other is CopBeneficiary &&
             beneficiaryType == other.beneficiaryType &&
-            documentNumber == other.documentNumber &&
-            documentType == other.documentType &&
             fullName == other.fullName &&
             address == other.address &&
             birthDate == other.birthDate &&
@@ -665,8 +577,6 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             beneficiaryType,
-            documentNumber,
-            documentType,
             fullName,
             address,
             birthDate,
@@ -681,5 +591,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CopBeneficiary{beneficiaryType=$beneficiaryType, documentNumber=$documentNumber, documentType=$documentType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "CopBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }
