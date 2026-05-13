@@ -18,10 +18,10 @@ import java.util.Objects
 
 /**
  * Common base for two-step signed-retry challenge responses on Embedded Wallet endpoints
- * (credential registration or revocation, session refresh or revocation, wallet export, and
- * similar). Holds the signing fields shared across every challenge shape; each variant composes
- * this base via `allOf` and adds its own resource `id` (and `type`, when applicable) with
- * variant-specific description and example.
+ * (credential registration or revocation, session refresh or revocation, wallet export, customer
+ * email updates, and similar). Holds the signing fields shared across every challenge shape; each
+ * variant composes this base via `allOf` and adds its own resource `id` (and `type`, when
+ * applicable) with variant-specific description and example.
  */
 class SignedRequestChallenge
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

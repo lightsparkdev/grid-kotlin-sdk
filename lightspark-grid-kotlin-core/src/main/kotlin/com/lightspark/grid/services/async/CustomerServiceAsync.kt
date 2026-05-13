@@ -93,7 +93,29 @@ interface CustomerServiceAsync {
     suspend fun retrieve(customerId: String, requestOptions: RequestOptions): CustomerOneOf =
         retrieve(customerId, CustomerRetrieveParams.none(), requestOptions)
 
-    /** Update a customer's metadata by their system-generated ID */
+    /**
+     * Update a customer's metadata by their system-generated ID.
+     *
+     * Most customer updates complete synchronously and return `200` with the updated customer. If
+     * the request changes `email` for a customer that has one or more tied Embedded Wallet internal
+     * accounts with `EMAIL_OTP` credentials, the email change uses the two-step signed-retry flow
+     * so the customer's wallet session authorizes the authentication credential update. On the
+     * signed retry, Grid updates the customer email and every tied `EMAIL_OTP` credential across
+     * all tied Embedded Wallets as one logical operation. If any tied credential cannot be updated,
+     * the customer email is not changed.
+     *
+     * For an Embedded Wallet email update:
+     * 1. Call `PATCH /customers/{customerId}` with the full update body and no signature headers.
+     *    Grid returns `202` with `payloadToSign`, `requestId`, and `expiresAt`. The pending
+     *    challenge binds the submitted update fields and the set of tied Embedded Wallet email OTP
+     *    credentials that must be updated.
+     * 2. Use the session API keypair of a verified authentication credential on one of the
+     *    customer's tied Embedded Wallets to build an API-key stamp over `payloadToSign`, then
+     *    retry the same request with that full stamp as the `Grid-Wallet-Signature` header and the
+     *    `requestId` echoed back as the `Request-Id` header. The retry body must carry the same
+     *    update fields submitted in step 1. The signed retry returns `200` with the updated
+     *    customer.
+     */
     suspend fun update(
         customerId: String,
         params: CustomerUpdateParams,
