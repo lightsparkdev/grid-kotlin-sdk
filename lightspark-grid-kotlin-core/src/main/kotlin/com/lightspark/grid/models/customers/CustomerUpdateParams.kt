@@ -32,10 +32,33 @@ import java.time.LocalDate
 import java.util.Collections
 import java.util.Objects
 
-/** Update a customer's metadata by their system-generated ID */
+/**
+ * Update a customer's metadata by their system-generated ID.
+ *
+ * Most customer updates complete synchronously and return `200` with the updated customer. If the
+ * request changes `email` for a customer that has one or more tied Embedded Wallet internal
+ * accounts with `EMAIL_OTP` credentials, the email change uses the two-step signed-retry flow so
+ * the customer's wallet session authorizes the authentication credential update. On the signed
+ * retry, Grid updates the customer email and every tied `EMAIL_OTP` credential across all tied
+ * Embedded Wallets as one logical operation. If any tied credential cannot be updated, the customer
+ * email is not changed.
+ *
+ * For an Embedded Wallet email update:
+ * 1. Call `PATCH /customers/{customerId}` with the full update body and no signature headers. Grid
+ *    returns `202` with `payloadToSign`, `requestId`, and `expiresAt`. The pending challenge binds
+ *    the submitted update fields and the set of tied Embedded Wallet email OTP credentials that
+ *    must be updated.
+ * 2. Use the session API keypair of a verified authentication credential on one of the customer's
+ *    tied Embedded Wallets to build an API-key stamp over `payloadToSign`, then retry the same
+ *    request with that full stamp as the `Grid-Wallet-Signature` header and the `requestId` echoed
+ *    back as the `Request-Id` header. The retry body must carry the same update fields submitted in
+ *    step 1. The signed retry returns `200` with the updated customer.
+ */
 class CustomerUpdateParams
 private constructor(
     private val customerId: String?,
+    private val gridWalletSignature: String?,
+    private val requestId: String?,
     private val updateCustomerRequest: UpdateCustomerRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -43,6 +66,16 @@ private constructor(
 
     fun customerId(): String? = customerId
 
+    fun gridWalletSignature(): String? = gridWalletSignature
+
+    fun requestId(): String? = requestId
+
+    /**
+     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
+     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
+     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
+     * flow.
+     */
     fun updateCustomerRequest(): UpdateCustomerRequest = updateCustomerRequest
 
     /** Additional headers to send with the request. */
@@ -70,12 +103,16 @@ private constructor(
     class Builder internal constructor() {
 
         private var customerId: String? = null
+        private var gridWalletSignature: String? = null
+        private var requestId: String? = null
         private var updateCustomerRequest: UpdateCustomerRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(customerUpdateParams: CustomerUpdateParams) = apply {
             customerId = customerUpdateParams.customerId
+            gridWalletSignature = customerUpdateParams.gridWalletSignature
+            requestId = customerUpdateParams.requestId
             updateCustomerRequest = customerUpdateParams.updateCustomerRequest
             additionalHeaders = customerUpdateParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerUpdateParams.additionalQueryParams.toBuilder()
@@ -83,6 +120,18 @@ private constructor(
 
         fun customerId(customerId: String?) = apply { this.customerId = customerId }
 
+        fun gridWalletSignature(gridWalletSignature: String?) = apply {
+            this.gridWalletSignature = gridWalletSignature
+        }
+
+        fun requestId(requestId: String?) = apply { this.requestId = requestId }
+
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         fun updateCustomerRequest(updateCustomerRequest: UpdateCustomerRequest) = apply {
             this.updateCustomerRequest = updateCustomerRequest
         }
@@ -214,6 +263,8 @@ private constructor(
         fun build(): CustomerUpdateParams =
             CustomerUpdateParams(
                 customerId,
+                gridWalletSignature,
+                requestId,
                 checkRequired("updateCustomerRequest", updateCustomerRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -228,10 +279,23 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
+                requestId?.let { put("Request-Id", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /**
+     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
+     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
+     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
+     * flow.
+     */
     @JsonDeserialize(using = UpdateCustomerRequest.Deserializer::class)
     @JsonSerialize(using = UpdateCustomerRequest.Serializer::class)
     class UpdateCustomerRequest
@@ -241,16 +305,40 @@ private constructor(
         private val _json: JsonValue? = null,
     ) {
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         fun individual(): Individual? = individual
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         fun business(): Business? = business
 
         fun isIndividual(): Boolean = individual != null
 
         fun isBusiness(): Boolean = business != null
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         fun asIndividual(): Individual = individual.getOrThrow("individual")
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         fun asBusiness(): Business = business.getOrThrow("business")
 
         fun _json(): JsonValue? = _json
@@ -363,9 +451,21 @@ private constructor(
 
         companion object {
 
+            /**
+             * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+             * with tied Embedded Wallet internal accounts, Grid updates the customer email and
+             * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
+             * endpoint's signed-retry flow.
+             */
             fun ofIndividual(individual: Individual) =
                 UpdateCustomerRequest(individual = individual)
 
+            /**
+             * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+             * with tied Embedded Wallet internal accounts, Grid updates the customer email and
+             * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
+             * endpoint's signed-retry flow.
+             */
             fun ofBusiness(business: Business) = UpdateCustomerRequest(business = business)
         }
 
@@ -375,8 +475,20 @@ private constructor(
          */
         interface Visitor<out T> {
 
+            /**
+             * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+             * with tied Embedded Wallet internal accounts, Grid updates the customer email and
+             * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
+             * endpoint's signed-retry flow.
+             */
             fun visitIndividual(individual: Individual): T
 
+            /**
+             * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+             * with tied Embedded Wallet internal accounts, Grid updates the customer email and
+             * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
+             * endpoint's signed-retry flow.
+             */
             fun visitBusiness(business: Business): T
 
             /**
@@ -435,6 +547,12 @@ private constructor(
             }
         }
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         class Individual
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -519,7 +637,9 @@ private constructor(
             fun currencies(): List<String>? = currencies.getNullable("currencies")
 
             /**
-             * Email address for the customer.
+             * Email address for the customer. For customers with tied Embedded Wallet internal
+             * accounts, changing this value also updates every tied `EMAIL_OTP` credential across
+             * all tied Embedded Wallets.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -748,7 +868,11 @@ private constructor(
                         }
                 }
 
-                /** Email address for the customer. */
+                /**
+                 * Email address for the customer. For customers with tied Embedded Wallet internal
+                 * accounts, changing this value also updates every tied `EMAIL_OTP` credential
+                 * across all tied Embedded Wallets.
+                 */
                 fun email(email: String) = email(JsonField.of(email))
 
                 /**
@@ -1000,6 +1124,12 @@ private constructor(
                 "Individual{currencies=$currencies, email=$email, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
         }
 
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
         class Business
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
@@ -1072,7 +1202,9 @@ private constructor(
             fun currencies(): List<String>? = currencies.getNullable("currencies")
 
             /**
-             * Email address for the customer.
+             * Email address for the customer. For customers with tied Embedded Wallet internal
+             * accounts, changing this value also updates every tied `EMAIL_OTP` credential across
+             * all tied Embedded Wallets.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1264,7 +1396,11 @@ private constructor(
                         }
                 }
 
-                /** Email address for the customer. */
+                /**
+                 * Email address for the customer. For customers with tied Embedded Wallet internal
+                 * accounts, changing this value also updates every tied `EMAIL_OTP` credential
+                 * across all tied Embedded Wallets.
+                 */
                 fun email(email: String) = email(JsonField.of(email))
 
                 /**
@@ -1490,14 +1626,23 @@ private constructor(
 
         return other is CustomerUpdateParams &&
             customerId == other.customerId &&
+            gridWalletSignature == other.gridWalletSignature &&
+            requestId == other.requestId &&
             updateCustomerRequest == other.updateCustomerRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(customerId, updateCustomerRequest, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            customerId,
+            gridWalletSignature,
+            requestId,
+            updateCustomerRequest,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "CustomerUpdateParams{customerId=$customerId, updateCustomerRequest=$updateCustomerRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerUpdateParams{customerId=$customerId, gridWalletSignature=$gridWalletSignature, requestId=$requestId, updateCustomerRequest=$updateCustomerRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

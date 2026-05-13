@@ -86,6 +86,10 @@ internal class CustomerServiceTest {
             customerService.update(
                 CustomerUpdateParams.builder()
                     .customerId("customerId")
+                    .gridWalletSignature(
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                    )
+                    .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                     .updateCustomerRequest(
                         CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
                             .currencies(listOf("USD", "EUR", "USDC"))

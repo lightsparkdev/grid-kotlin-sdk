@@ -16,6 +16,11 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with tied
+ * Embedded Wallet internal accounts, Grid updates the customer email and every tied `EMAIL_OTP`
+ * credential across all tied Embedded Wallets through the endpoint's signed-retry flow.
+ */
 class CustomerUpdate
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -46,7 +51,9 @@ private constructor(
     fun currencies(): List<String>? = currencies.getNullable("currencies")
 
     /**
-     * Email address for the customer.
+     * Email address for the customer. For customers with tied Embedded Wallet internal accounts,
+     * changing this value also updates every tied `EMAIL_OTP` credential across all tied Embedded
+     * Wallets.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -149,7 +156,11 @@ private constructor(
                 }
         }
 
-        /** Email address for the customer. */
+        /**
+         * Email address for the customer. For customers with tied Embedded Wallet internal
+         * accounts, changing this value also updates every tied `EMAIL_OTP` credential across all
+         * tied Embedded Wallets.
+         */
         fun email(email: String) = email(JsonField.of(email))
 
         /**
