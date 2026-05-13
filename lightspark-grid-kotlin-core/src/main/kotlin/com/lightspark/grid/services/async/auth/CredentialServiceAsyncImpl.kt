@@ -25,7 +25,6 @@ import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
-import com.lightspark.grid.models.auth.credentials.CredentialUpdateParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 
 /**
@@ -50,13 +49,6 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
     ): AuthMethodResponse =
         // post /auth/credentials
         withRawResponse().create(params, requestOptions).parse()
-
-    override suspend fun update(
-        params: CredentialUpdateParams,
-        requestOptions: RequestOptions,
-    ): AuthMethodResponse =
-        // patch /auth/credentials/{id}
-        withRawResponse().update(params, requestOptions).parse()
 
     override suspend fun list(
         params: CredentialListParams,
@@ -119,37 +111,6 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
             return errorHandler.handle(response).parseable {
                 response
                     .use { createHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val updateHandler: Handler<AuthMethodResponse> =
-            jsonHandler<AuthMethodResponse>(clientOptions.jsonMapper)
-
-        override suspend fun update(
-            params: CredentialUpdateParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthMethodResponse> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("id", params.id())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.PATCH)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("auth", "credentials", params._pathParam(0))
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepareAsync(clientOptions, params)
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { updateHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
