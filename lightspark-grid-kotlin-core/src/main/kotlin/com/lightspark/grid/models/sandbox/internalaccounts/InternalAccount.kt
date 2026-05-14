@@ -28,6 +28,7 @@ private constructor(
     private val balance: JsonField<CurrencyAmount>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val fundingPaymentInstructions: JsonField<List<PaymentInstructions>>,
+    private val status: JsonField<Status>,
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val customerId: JsonField<String>,
@@ -47,6 +48,7 @@ private constructor(
         @JsonProperty("fundingPaymentInstructions")
         @ExcludeMissing
         fundingPaymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -62,6 +64,7 @@ private constructor(
         balance,
         createdAt,
         fundingPaymentInstructions,
+        status,
         type,
         updatedAt,
         customerId,
@@ -99,6 +102,23 @@ private constructor(
      */
     fun fundingPaymentInstructions(): List<PaymentInstructions> =
         fundingPaymentInstructions.getRequired("fundingPaymentInstructions")
+
+    /**
+     * Status of a Grid internal account. The status determines whether the account can send or
+     * receive payments.
+     * - `PENDING`: The account is under review and is being provisioned. The account cannot send or
+     *   receive payments until provisioning completes.
+     * - `ACTIVE`: The account is ready to send and receive payments.
+     * - `CLOSED`: The account cannot send or receive payments. A customer can initiate the closing
+     *   of an internal account, after which the account transitions to this status.
+     * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
+     *   response to compliance or fraud signals; payments are blocked while the account remains
+     *   frozen.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun status(): Status = status.getRequired("status")
 
     /**
      * Classification of an internal account.
@@ -176,6 +196,13 @@ private constructor(
         fundingPaymentInstructions
 
     /**
+     * Returns the raw JSON value of [status].
+     *
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+    /**
      * Returns the raw JSON value of [type].
      *
      * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
@@ -230,6 +257,7 @@ private constructor(
          * .balance()
          * .createdAt()
          * .fundingPaymentInstructions()
+         * .status()
          * .type()
          * .updatedAt()
          * ```
@@ -244,6 +272,7 @@ private constructor(
         private var balance: JsonField<CurrencyAmount>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var fundingPaymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
+        private var status: JsonField<Status>? = null
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
@@ -256,6 +285,7 @@ private constructor(
             createdAt = internalAccount.createdAt
             fundingPaymentInstructions =
                 internalAccount.fundingPaymentInstructions.map { it.toMutableList() }
+            status = internalAccount.status
             type = internalAccount.type
             updatedAt = internalAccount.updatedAt
             customerId = internalAccount.customerId
@@ -325,6 +355,28 @@ private constructor(
                     checkKnown("fundingPaymentInstructions", it).add(fundingPaymentInstruction)
                 }
         }
+
+        /**
+         * Status of a Grid internal account. The status determines whether the account can send or
+         * receive payments.
+         * - `PENDING`: The account is under review and is being provisioned. The account cannot
+         *   send or receive payments until provisioning completes.
+         * - `ACTIVE`: The account is ready to send and receive payments.
+         * - `CLOSED`: The account cannot send or receive payments. A customer can initiate the
+         *   closing of an internal account, after which the account transitions to this status.
+         * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
+         *   response to compliance or fraud signals; payments are blocked while the account remains
+         *   frozen.
+         */
+        fun status(status: Status) = status(JsonField.of(status))
+
+        /**
+         * Sets [Builder.status] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /**
          * Classification of an internal account.
@@ -420,6 +472,7 @@ private constructor(
          * .balance()
          * .createdAt()
          * .fundingPaymentInstructions()
+         * .status()
          * .type()
          * .updatedAt()
          * ```
@@ -434,6 +487,7 @@ private constructor(
                 checkRequired("fundingPaymentInstructions", fundingPaymentInstructions).map {
                     it.toImmutable()
                 },
+                checkRequired("status", status),
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
                 customerId,
@@ -461,6 +515,7 @@ private constructor(
         balance().validate()
         createdAt()
         fundingPaymentInstructions().forEach { it.validate() }
+        status().validate()
         type().validate()
         updatedAt()
         customerId()
@@ -486,10 +541,169 @@ private constructor(
             (balance.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (fundingPaymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (status.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (privateEnabled.asKnown() == null) 0 else 1)
+
+    /**
+     * Status of a Grid internal account. The status determines whether the account can send or
+     * receive payments.
+     * - `PENDING`: The account is under review and is being provisioned. The account cannot send or
+     *   receive payments until provisioning completes.
+     * - `ACTIVE`: The account is ready to send and receive payments.
+     * - `CLOSED`: The account cannot send or receive payments. A customer can initiate the closing
+     *   of an internal account, after which the account transitions to this status.
+     * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
+     *   response to compliance or fraud signals; payments are blocked while the account remains
+     *   frozen.
+     */
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val PENDING = of("PENDING")
+
+            val ACTIVE = of("ACTIVE")
+
+            val CLOSED = of("CLOSED")
+
+            val FROZEN = of("FROZEN")
+
+            fun of(value: String) = Status(JsonField.of(value))
+        }
+
+        /** An enum containing [Status]'s known values. */
+        enum class Known {
+            PENDING,
+            ACTIVE,
+            CLOSED,
+            FROZEN,
+        }
+
+        /**
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Status] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            PENDING,
+            ACTIVE,
+            CLOSED,
+            FROZEN,
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                PENDING -> Value.PENDING
+                ACTIVE -> Value.ACTIVE
+                CLOSED -> Value.CLOSED
+                FROZEN -> Value.FROZEN
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                PENDING -> Known.PENDING
+                ACTIVE -> Known.ACTIVE
+                CLOSED -> Known.CLOSED
+                FROZEN -> Known.FROZEN
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Status = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Status && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /**
      * Classification of an internal account.
@@ -651,6 +865,7 @@ private constructor(
             balance == other.balance &&
             createdAt == other.createdAt &&
             fundingPaymentInstructions == other.fundingPaymentInstructions &&
+            status == other.status &&
             type == other.type &&
             updatedAt == other.updatedAt &&
             customerId == other.customerId &&
@@ -664,6 +879,7 @@ private constructor(
             balance,
             createdAt,
             fundingPaymentInstructions,
+            status,
             type,
             updatedAt,
             customerId,
@@ -675,5 +891,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, type=$type, updatedAt=$updatedAt, customerId=$customerId, privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
+        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, status=$status, type=$type, updatedAt=$updatedAt, customerId=$customerId, privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
 }
