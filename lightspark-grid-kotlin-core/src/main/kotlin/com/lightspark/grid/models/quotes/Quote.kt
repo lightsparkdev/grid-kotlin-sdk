@@ -149,6 +149,9 @@ private constructor(
 
     /**
      * The fees associated with the quote in the smallest unit of the sending currency (eg. cents).
+     * Note: this value may fluctuate between quotes — some underlying fee components are defined in
+     * the receiving currency, so their equivalent in the sending currency moves with the FX rate.
+     * The fees shown here are locked only for the lifetime of this quote.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -540,7 +543,9 @@ private constructor(
 
         /**
          * The fees associated with the quote in the smallest unit of the sending currency (eg.
-         * cents).
+         * cents). Note: this value may fluctuate between quotes — some underlying fee components
+         * are defined in the receiving currency, so their equivalent in the sending currency moves
+         * with the FX rate. The fees shown here are locked only for the lifetime of this quote.
          */
         fun feesIncluded(feesIncluded: Long) = feesIncluded(JsonField.of(feesIncluded))
 
