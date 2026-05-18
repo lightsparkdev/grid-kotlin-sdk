@@ -23,6 +23,7 @@ import com.lightspark.grid.models.MwkBeneficiary
 import com.lightspark.grid.models.NgnBeneficiary
 import com.lightspark.grid.models.PkrBeneficiary
 import com.lightspark.grid.models.RwfBeneficiary
+import com.lightspark.grid.models.SlvBeneficiary
 import com.lightspark.grid.models.TzsBeneficiary
 import com.lightspark.grid.models.UgxBeneficiary
 import com.lightspark.grid.models.XafBeneficiary
@@ -4895,7 +4896,8 @@ internal class ExternalAccountInfoOneOfTest {
         val slvAccount =
             ExternalAccountInfoOneOf.SlvAccount.builder()
                 .beneficiary(
-                    ExternalAccountInfoOneOf.SlvAccount.Beneficiary.Individual.builder()
+                    SlvBeneficiary.builder()
+                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -4975,7 +4977,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.ofSlvAccount(
                 ExternalAccountInfoOneOf.SlvAccount.builder()
                     .beneficiary(
-                        ExternalAccountInfoOneOf.SlvAccount.Beneficiary.Individual.builder()
+                        SlvBeneficiary.builder()
+                            .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()
