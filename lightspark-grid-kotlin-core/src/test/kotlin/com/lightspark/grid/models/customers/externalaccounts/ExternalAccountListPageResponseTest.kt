@@ -4,7 +4,8 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.platform.externalaccounts.AedAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,16 +19,13 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                .pixKey("x")
-                                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                                .taxId("26912511571360")
+                            AedExternalAccountInfo.builder()
+                                .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                                .iban("AE070331234567890123456")
+                                .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                                .swiftCode("EBILAEAD")
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("fullName")
+                                    AedBeneficiary.builder()
                                         .address(
                                             Address.builder()
                                                 .country("US")
@@ -38,6 +36,8 @@ internal class ExternalAccountListPageResponseTest {
                                                 .state("CA")
                                                 .build()
                                         )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
                                         .birthDate("birthDate")
                                         .countryOfResidence("countryOfResidence")
                                         .email("email")
@@ -70,16 +70,13 @@ internal class ExternalAccountListPageResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                            .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                            .pixKey("x")
-                            .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                            .taxId("26912511571360")
+                        AedExternalAccountInfo.builder()
+                            .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                            .iban("AE070331234567890123456")
+                            .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                            .swiftCode("EBILAEAD")
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("fullName")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -90,6 +87,8 @@ internal class ExternalAccountListPageResponseTest {
                                             .state("CA")
                                             .build()
                                     )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
                                     .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
@@ -126,16 +125,13 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                .pixKey("x")
-                                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                                .taxId("26912511571360")
+                            AedExternalAccountInfo.builder()
+                                .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                                .iban("AE070331234567890123456")
+                                .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                                .swiftCode("EBILAEAD")
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("fullName")
+                                    AedBeneficiary.builder()
                                         .address(
                                             Address.builder()
                                                 .country("US")
@@ -146,6 +142,8 @@ internal class ExternalAccountListPageResponseTest {
                                                 .state("CA")
                                                 .build()
                                         )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
                                         .birthDate("birthDate")
                                         .countryOfResidence("countryOfResidence")
                                         .email("email")
