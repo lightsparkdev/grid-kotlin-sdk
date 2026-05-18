@@ -12,6 +12,18 @@ internal class ConfigUpdateParamsTest {
     @Test
     fun create() {
         ConfigUpdateParams.builder()
+            .embeddedWalletConfig(
+                ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                    .alphanumeric(false)
+                    .appName("Acme Wallet")
+                    .expirationSeconds(300L)
+                    .logoUrl("https://acme.com/logo.png")
+                    .otpLength(6L)
+                    .replyToEmailAddress("support@acme.com")
+                    .sendFromEmailAddress("noreply@acme.com")
+                    .sendFromEmailSenderName("Acme Notifications")
+                    .build()
+            )
             .addSupportedCurrency(
                 PlatformCurrencyConfig.builder()
                     .currencyCode("USD")
@@ -52,6 +64,18 @@ internal class ConfigUpdateParamsTest {
     fun body() {
         val params =
             ConfigUpdateParams.builder()
+                .embeddedWalletConfig(
+                    ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                        .alphanumeric(false)
+                        .appName("Acme Wallet")
+                        .expirationSeconds(300L)
+                        .logoUrl("https://acme.com/logo.png")
+                        .otpLength(6L)
+                        .replyToEmailAddress("support@acme.com")
+                        .sendFromEmailAddress("noreply@acme.com")
+                        .sendFromEmailSenderName("Acme Notifications")
+                        .build()
+                )
                 .addSupportedCurrency(
                     PlatformCurrencyConfig.builder()
                         .currencyCode("USD")
@@ -91,6 +115,19 @@ internal class ConfigUpdateParamsTest {
 
         val body = params._body()
 
+        assertThat(body.embeddedWalletConfig())
+            .isEqualTo(
+                ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                    .alphanumeric(false)
+                    .appName("Acme Wallet")
+                    .expirationSeconds(300L)
+                    .logoUrl("https://acme.com/logo.png")
+                    .otpLength(6L)
+                    .replyToEmailAddress("support@acme.com")
+                    .sendFromEmailAddress("noreply@acme.com")
+                    .sendFromEmailSenderName("Acme Notifications")
+                    .build()
+            )
         assertThat(body.supportedCurrencies())
             .containsExactly(
                 PlatformCurrencyConfig.builder()

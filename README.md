@@ -634,11 +634,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```kotlin
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.models.transferin.InternalAccountReference
-import com.lightspark.grid.models.transferin.TransferInCreateParams
+import com.lightspark.grid.models.config.ConfigUpdateParams
 
-val params: TransferInCreateParams = TransferInCreateParams.builder()
-    .destination(InternalAccountReference.builder()
+val params: ConfigUpdateParams = ConfigUpdateParams.builder()
+    .embeddedWalletConfig(ConfigUpdateParams.EmbeddedWalletConfig.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build()
