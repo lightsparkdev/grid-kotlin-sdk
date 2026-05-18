@@ -41,6 +41,18 @@ internal class ConfigServiceTest {
         val platformConfig =
             configService.update(
                 ConfigUpdateParams.builder()
+                    .embeddedWalletConfig(
+                        ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                            .alphanumeric(false)
+                            .appName("Acme Wallet")
+                            .expirationSeconds(300L)
+                            .logoUrl("https://acme.com/logo.png")
+                            .otpLength(6L)
+                            .replyToEmailAddress("support@acme.com")
+                            .sendFromEmailAddress("noreply@acme.com")
+                            .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
                     .addSupportedCurrency(
                         PlatformCurrencyConfig.builder()
                             .currencyCode("USD")
