@@ -30,7 +30,6 @@ private constructor(
     private val nationality: JsonField<String>,
     private val countryOfIssuance: JsonField<String>,
     private val email: JsonField<String>,
-    private val issuingAuthority: JsonField<String>,
     private val middleName: JsonField<String>,
     private val phoneNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -55,9 +54,6 @@ private constructor(
         @ExcludeMissing
         countryOfIssuance: JsonField<String> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("issuingAuthority")
-        @ExcludeMissing
-        issuingAuthority: JsonField<String> = JsonMissing.of(),
         @JsonProperty("middleName")
         @ExcludeMissing
         middleName: JsonField<String> = JsonMissing.of(),
@@ -74,7 +70,6 @@ private constructor(
         nationality,
         countryOfIssuance,
         email,
-        issuingAuthority,
         middleName,
         phoneNumber,
         mutableMapOf(),
@@ -149,14 +144,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun email(): String? = email.getNullable("email")
-
-    /**
-     * Name of the government agency or organization that issued the identification
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun issuingAuthority(): String? = issuingAuthority.getNullable("issuingAuthority")
 
     /**
      * Middle name of the individual
@@ -241,16 +228,6 @@ private constructor(
     @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     /**
-     * Returns the raw JSON value of [issuingAuthority].
-     *
-     * Unlike [issuingAuthority], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("issuingAuthority")
-    @ExcludeMissing
-    fun _issuingAuthority(): JsonField<String> = issuingAuthority
-
-    /**
      * Returns the raw JSON value of [middleName].
      *
      * Unlike [middleName], this method doesn't throw if the JSON field has an unexpected type.
@@ -307,7 +284,6 @@ private constructor(
         private var nationality: JsonField<String>? = null
         private var countryOfIssuance: JsonField<String> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
-        private var issuingAuthority: JsonField<String> = JsonMissing.of()
         private var middleName: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -322,7 +298,6 @@ private constructor(
             nationality = beneficialOwnerPersonalInfo.nationality
             countryOfIssuance = beneficialOwnerPersonalInfo.countryOfIssuance
             email = beneficialOwnerPersonalInfo.email
-            issuingAuthority = beneficialOwnerPersonalInfo.issuingAuthority
             middleName = beneficialOwnerPersonalInfo.middleName
             phoneNumber = beneficialOwnerPersonalInfo.phoneNumber
             additionalProperties = beneficialOwnerPersonalInfo.additionalProperties.toMutableMap()
@@ -434,21 +409,6 @@ private constructor(
          */
         fun email(email: JsonField<String>) = apply { this.email = email }
 
-        /** Name of the government agency or organization that issued the identification */
-        fun issuingAuthority(issuingAuthority: String) =
-            issuingAuthority(JsonField.of(issuingAuthority))
-
-        /**
-         * Sets [Builder.issuingAuthority] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun issuingAuthority(issuingAuthority: JsonField<String>) = apply {
-            this.issuingAuthority = issuingAuthority
-        }
-
         /** Middle name of the individual */
         fun middleName(middleName: String) = middleName(JsonField.of(middleName))
 
@@ -521,7 +481,6 @@ private constructor(
                 checkRequired("nationality", nationality),
                 countryOfIssuance,
                 email,
-                issuingAuthority,
                 middleName,
                 phoneNumber,
                 additionalProperties.toMutableMap(),
@@ -552,7 +511,6 @@ private constructor(
         nationality()
         countryOfIssuance()
         email()
-        issuingAuthority()
         middleName()
         phoneNumber()
         validated = true
@@ -581,7 +539,6 @@ private constructor(
             (if (nationality.asKnown() == null) 0 else 1) +
             (if (countryOfIssuance.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
-            (if (issuingAuthority.asKnown() == null) 0 else 1) +
             (if (middleName.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
 
@@ -747,7 +704,6 @@ private constructor(
             nationality == other.nationality &&
             countryOfIssuance == other.countryOfIssuance &&
             email == other.email &&
-            issuingAuthority == other.issuingAuthority &&
             middleName == other.middleName &&
             phoneNumber == other.phoneNumber &&
             additionalProperties == other.additionalProperties
@@ -764,7 +720,6 @@ private constructor(
             nationality,
             countryOfIssuance,
             email,
-            issuingAuthority,
             middleName,
             phoneNumber,
             additionalProperties,
@@ -774,5 +729,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BeneficialOwnerPersonalInfo{address=$address, birthDate=$birthDate, firstName=$firstName, identifier=$identifier, idType=$idType, lastName=$lastName, nationality=$nationality, countryOfIssuance=$countryOfIssuance, email=$email, issuingAuthority=$issuingAuthority, middleName=$middleName, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "BeneficialOwnerPersonalInfo{address=$address, birthDate=$birthDate, firstName=$firstName, identifier=$identifier, idType=$idType, lastName=$lastName, nationality=$nationality, countryOfIssuance=$countryOfIssuance, email=$email, middleName=$middleName, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

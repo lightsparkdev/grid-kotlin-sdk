@@ -596,7 +596,6 @@ private constructor(
         private val firstName: JsonField<String>,
         private val identifier: JsonField<String>,
         private val idType: JsonField<IdType>,
-        private val issuingAuthority: JsonField<String>,
         private val lastName: JsonField<String>,
         private val middleName: JsonField<String>,
         private val nationality: JsonField<String>,
@@ -621,9 +620,6 @@ private constructor(
             @ExcludeMissing
             identifier: JsonField<String> = JsonMissing.of(),
             @JsonProperty("idType") @ExcludeMissing idType: JsonField<IdType> = JsonMissing.of(),
-            @JsonProperty("issuingAuthority")
-            @ExcludeMissing
-            issuingAuthority: JsonField<String> = JsonMissing.of(),
             @JsonProperty("lastName")
             @ExcludeMissing
             lastName: JsonField<String> = JsonMissing.of(),
@@ -644,7 +640,6 @@ private constructor(
             firstName,
             identifier,
             idType,
-            issuingAuthority,
             lastName,
             middleName,
             nationality,
@@ -705,14 +700,6 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun idType(): IdType? = idType.getNullable("idType")
-
-        /**
-         * Name of the government agency or organization that issued the identification
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun issuingAuthority(): String? = issuingAuthority.getNullable("issuingAuthority")
 
         /**
          * Last name of the individual
@@ -803,16 +790,6 @@ private constructor(
         @JsonProperty("idType") @ExcludeMissing fun _idType(): JsonField<IdType> = idType
 
         /**
-         * Returns the raw JSON value of [issuingAuthority].
-         *
-         * Unlike [issuingAuthority], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("issuingAuthority")
-        @ExcludeMissing
-        fun _issuingAuthority(): JsonField<String> = issuingAuthority
-
-        /**
          * Returns the raw JSON value of [lastName].
          *
          * Unlike [lastName], this method doesn't throw if the JSON field has an unexpected type.
@@ -874,7 +851,6 @@ private constructor(
             private var firstName: JsonField<String> = JsonMissing.of()
             private var identifier: JsonField<String> = JsonMissing.of()
             private var idType: JsonField<IdType> = JsonMissing.of()
-            private var issuingAuthority: JsonField<String> = JsonMissing.of()
             private var lastName: JsonField<String> = JsonMissing.of()
             private var middleName: JsonField<String> = JsonMissing.of()
             private var nationality: JsonField<String> = JsonMissing.of()
@@ -889,7 +865,6 @@ private constructor(
                 firstName = personalInfo.firstName
                 identifier = personalInfo.identifier
                 idType = personalInfo.idType
-                issuingAuthority = personalInfo.issuingAuthority
                 lastName = personalInfo.lastName
                 middleName = personalInfo.middleName
                 nationality = personalInfo.nationality
@@ -983,21 +958,6 @@ private constructor(
              */
             fun idType(idType: JsonField<IdType>) = apply { this.idType = idType }
 
-            /** Name of the government agency or organization that issued the identification */
-            fun issuingAuthority(issuingAuthority: String) =
-                issuingAuthority(JsonField.of(issuingAuthority))
-
-            /**
-             * Sets [Builder.issuingAuthority] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun issuingAuthority(issuingAuthority: JsonField<String>) = apply {
-                this.issuingAuthority = issuingAuthority
-            }
-
             /** Last name of the individual */
             fun lastName(lastName: String) = lastName(JsonField.of(lastName))
 
@@ -1083,7 +1043,6 @@ private constructor(
                     firstName,
                     identifier,
                     idType,
-                    issuingAuthority,
                     lastName,
                     middleName,
                     nationality,
@@ -1115,7 +1074,6 @@ private constructor(
             firstName()
             identifier()
             idType()?.validate()
-            issuingAuthority()
             lastName()
             middleName()
             nationality()
@@ -1145,7 +1103,6 @@ private constructor(
                 (if (firstName.asKnown() == null) 0 else 1) +
                 (if (identifier.asKnown() == null) 0 else 1) +
                 (idType.asKnown()?.validity() ?: 0) +
-                (if (issuingAuthority.asKnown() == null) 0 else 1) +
                 (if (lastName.asKnown() == null) 0 else 1) +
                 (if (middleName.asKnown() == null) 0 else 1) +
                 (if (nationality.asKnown() == null) 0 else 1) +
@@ -1315,7 +1272,6 @@ private constructor(
                 firstName == other.firstName &&
                 identifier == other.identifier &&
                 idType == other.idType &&
-                issuingAuthority == other.issuingAuthority &&
                 lastName == other.lastName &&
                 middleName == other.middleName &&
                 nationality == other.nationality &&
@@ -1332,7 +1288,6 @@ private constructor(
                 firstName,
                 identifier,
                 idType,
-                issuingAuthority,
                 lastName,
                 middleName,
                 nationality,
@@ -1344,7 +1299,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "PersonalInfo{address=$address, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, email=$email, firstName=$firstName, identifier=$identifier, idType=$idType, issuingAuthority=$issuingAuthority, lastName=$lastName, middleName=$middleName, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+            "PersonalInfo{address=$address, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, email=$email, firstName=$firstName, identifier=$identifier, idType=$idType, lastName=$lastName, middleName=$middleName, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
     }
 
     /** Role of the beneficial owner within the business */
