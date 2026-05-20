@@ -27,6 +27,7 @@ private constructor(
     private val documentType: JsonField<DocumentType>,
     private val fileName: JsonField<String>,
     private val documentNumber: JsonField<String>,
+    private val issuingAuthority: JsonField<String>,
     private val side: JsonField<Side>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -49,6 +50,9 @@ private constructor(
         @JsonProperty("documentNumber")
         @ExcludeMissing
         documentNumber: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("issuingAuthority")
+        @ExcludeMissing
+        issuingAuthority: JsonField<String> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -61,6 +65,7 @@ private constructor(
         documentType,
         fileName,
         documentNumber,
+        issuingAuthority,
         side,
         updatedAt,
         mutableMapOf(),
@@ -128,6 +133,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun documentNumber(): String? = documentNumber.getNullable("documentNumber")
+
+    /**
+     * Name of the government agency or organization that issued the document
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun issuingAuthority(): String? = issuingAuthority.getNullable("issuingAuthority")
 
     /**
      * Which side of the document this upload represents. Relevant for two-sided documents like
@@ -204,6 +217,16 @@ private constructor(
     fun _documentNumber(): JsonField<String> = documentNumber
 
     /**
+     * Returns the raw JSON value of [issuingAuthority].
+     *
+     * Unlike [issuingAuthority], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("issuingAuthority")
+    @ExcludeMissing
+    fun _issuingAuthority(): JsonField<String> = issuingAuthority
+
+    /**
      * Returns the raw JSON value of [side].
      *
      * Unlike [side], this method doesn't throw if the JSON field has an unexpected type.
@@ -259,6 +282,7 @@ private constructor(
         private var documentType: JsonField<DocumentType>? = null
         private var fileName: JsonField<String>? = null
         private var documentNumber: JsonField<String> = JsonMissing.of()
+        private var issuingAuthority: JsonField<String> = JsonMissing.of()
         private var side: JsonField<Side> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -271,6 +295,7 @@ private constructor(
             documentType = documentReplaceResponse.documentType
             fileName = documentReplaceResponse.fileName
             documentNumber = documentReplaceResponse.documentNumber
+            issuingAuthority = documentReplaceResponse.issuingAuthority
             side = documentReplaceResponse.side
             updatedAt = documentReplaceResponse.updatedAt
             additionalProperties = documentReplaceResponse.additionalProperties.toMutableMap()
@@ -374,6 +399,21 @@ private constructor(
             this.documentNumber = documentNumber
         }
 
+        /** Name of the government agency or organization that issued the document */
+        fun issuingAuthority(issuingAuthority: String) =
+            issuingAuthority(JsonField.of(issuingAuthority))
+
+        /**
+         * Sets [Builder.issuingAuthority] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun issuingAuthority(issuingAuthority: JsonField<String>) = apply {
+            this.issuingAuthority = issuingAuthority
+        }
+
         /**
          * Which side of the document this upload represents. Relevant for two-sided documents like
          * driver's licenses or national IDs.
@@ -445,6 +485,7 @@ private constructor(
                 checkRequired("documentType", documentType),
                 checkRequired("fileName", fileName),
                 documentNumber,
+                issuingAuthority,
                 side,
                 updatedAt,
                 additionalProperties.toMutableMap(),
@@ -473,6 +514,7 @@ private constructor(
         documentType().validate()
         fileName()
         documentNumber()
+        issuingAuthority()
         side()?.validate()
         updatedAt()
         validated = true
@@ -499,6 +541,7 @@ private constructor(
             (documentType.asKnown()?.validity() ?: 0) +
             (if (fileName.asKnown() == null) 0 else 1) +
             (if (documentNumber.asKnown() == null) 0 else 1) +
+            (if (issuingAuthority.asKnown() == null) 0 else 1) +
             (side.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1)
 
@@ -944,6 +987,7 @@ private constructor(
             documentType == other.documentType &&
             fileName == other.fileName &&
             documentNumber == other.documentNumber &&
+            issuingAuthority == other.issuingAuthority &&
             side == other.side &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
@@ -958,6 +1002,7 @@ private constructor(
             documentType,
             fileName,
             documentNumber,
+            issuingAuthority,
             side,
             updatedAt,
             additionalProperties,
@@ -967,5 +1012,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DocumentReplaceResponse{id=$id, country=$country, createdAt=$createdAt, documentHolder=$documentHolder, documentType=$documentType, fileName=$fileName, documentNumber=$documentNumber, side=$side, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "DocumentReplaceResponse{id=$id, country=$country, createdAt=$createdAt, documentHolder=$documentHolder, documentType=$documentType, fileName=$fileName, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
