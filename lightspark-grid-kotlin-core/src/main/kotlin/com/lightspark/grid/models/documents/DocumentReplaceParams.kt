@@ -78,6 +78,14 @@ private constructor(
     fun documentNumber(): String? = body.documentNumber()
 
     /**
+     * Name of the government agency or organization that issued the document
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun issuingAuthority(): String? = body.issuingAuthority()
+
+    /**
      * Which side of the document (for two-sided documents like driver's licenses)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -114,6 +122,14 @@ private constructor(
      * type.
      */
     fun _documentNumber(): MultipartField<String> = body._documentNumber()
+
+    /**
+     * Returns the raw multipart value of [issuingAuthority].
+     *
+     * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an unexpected
+     * type.
+     */
+    fun _issuingAuthority(): MultipartField<String> = body._issuingAuthority()
 
     /**
      * Returns the raw multipart value of [side].
@@ -173,7 +189,7 @@ private constructor(
          * - [documentType]
          * - [file]
          * - [documentNumber]
-         * - [side]
+         * - [issuingAuthority]
          * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
@@ -242,6 +258,22 @@ private constructor(
          */
         fun documentNumber(documentNumber: MultipartField<String>) = apply {
             body.documentNumber(documentNumber)
+        }
+
+        /** Name of the government agency or organization that issued the document */
+        fun issuingAuthority(issuingAuthority: String) = apply {
+            body.issuingAuthority(issuingAuthority)
+        }
+
+        /**
+         * Sets [Builder.issuingAuthority] to an arbitrary multipart value.
+         *
+         * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
+            body.issuingAuthority(issuingAuthority)
         }
 
         /** Which side of the document (for two-sided documents like driver's licenses) */
@@ -401,6 +433,7 @@ private constructor(
                 "documentType" to _documentType(),
                 "file" to _file(),
                 "documentNumber" to _documentNumber(),
+                "issuingAuthority" to _issuingAuthority(),
                 "side" to _side(),
             ) + _additionalBodyProperties().mapValues { (_, value) -> MultipartField.of(value) })
             .toImmutable()
@@ -421,6 +454,7 @@ private constructor(
         private val documentType: MultipartField<DocumentType>,
         private val file: MultipartField<InputStream>,
         private val documentNumber: MultipartField<String>,
+        private val issuingAuthority: MultipartField<String>,
         private val side: MultipartField<Side>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -463,6 +497,14 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun documentNumber(): String? = documentNumber.value.getNullable("documentNumber")
+
+        /**
+         * Name of the government agency or organization that issued the document
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun issuingAuthority(): String? = issuingAuthority.value.getNullable("issuingAuthority")
 
         /**
          * Which side of the document (for two-sided documents like driver's licenses)
@@ -508,6 +550,16 @@ private constructor(
         fun _documentNumber(): MultipartField<String> = documentNumber
 
         /**
+         * Returns the raw multipart value of [issuingAuthority].
+         *
+         * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an
+         * unexpected type.
+         */
+        @JsonProperty("issuingAuthority")
+        @ExcludeMissing
+        fun _issuingAuthority(): MultipartField<String> = issuingAuthority
+
+        /**
          * Returns the raw multipart value of [side].
          *
          * Unlike [side], this method doesn't throw if the multipart field has an unexpected type.
@@ -548,6 +600,7 @@ private constructor(
             private var documentType: MultipartField<DocumentType>? = null
             private var file: MultipartField<InputStream>? = null
             private var documentNumber: MultipartField<String> = MultipartField.of(null)
+            private var issuingAuthority: MultipartField<String> = MultipartField.of(null)
             private var side: MultipartField<Side> = MultipartField.of(null)
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -556,6 +609,7 @@ private constructor(
                 documentType = body.documentType
                 file = body.file
                 documentNumber = body.documentNumber
+                issuingAuthority = body.issuingAuthority
                 side = body.side
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -635,6 +689,21 @@ private constructor(
                 this.documentNumber = documentNumber
             }
 
+            /** Name of the government agency or organization that issued the document */
+            fun issuingAuthority(issuingAuthority: String) =
+                issuingAuthority(MultipartField.of(issuingAuthority))
+
+            /**
+             * Sets [Builder.issuingAuthority] to an arbitrary multipart value.
+             *
+             * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
+                this.issuingAuthority = issuingAuthority
+            }
+
             /** Which side of the document (for two-sided documents like driver's licenses) */
             fun side(side: Side) = side(MultipartField.of(side))
 
@@ -686,6 +755,7 @@ private constructor(
                     checkRequired("documentType", documentType),
                     checkRequired("file", file),
                     documentNumber,
+                    issuingAuthority,
                     side,
                     additionalProperties.toMutableMap(),
                 )
@@ -711,6 +781,7 @@ private constructor(
             documentType().validate()
             file()
             documentNumber()
+            issuingAuthority()
             side()?.validate()
             validated = true
         }
@@ -733,18 +804,27 @@ private constructor(
                 documentType == other.documentType &&
                 file == other.file &&
                 documentNumber == other.documentNumber &&
+                issuingAuthority == other.issuingAuthority &&
                 side == other.side &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(country, documentType, file, documentNumber, side, additionalProperties)
+            Objects.hash(
+                country,
+                documentType,
+                file,
+                documentNumber,
+                issuingAuthority,
+                side,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{country=$country, documentType=$documentType, file=$file, documentNumber=$documentNumber, side=$side, additionalProperties=$additionalProperties}"
+            "Body{country=$country, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
     }
 
     /**

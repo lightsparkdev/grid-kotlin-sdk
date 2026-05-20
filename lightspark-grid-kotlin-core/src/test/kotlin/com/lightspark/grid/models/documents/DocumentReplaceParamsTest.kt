@@ -17,6 +17,7 @@ internal class DocumentReplaceParamsTest {
             .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
             .file("Example data".byteInputStream())
             .documentNumber("A12345678")
+            .issuingAuthority("U.S. Department of State")
             .side(DocumentReplaceParams.Side.FRONT)
             .build()
     }
@@ -45,6 +46,7 @@ internal class DocumentReplaceParamsTest {
                 .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
                 .file("Example data".byteInputStream())
                 .documentNumber("A12345678")
+                .issuingAuthority("U.S. Department of State")
                 .side(DocumentReplaceParams.Side.FRONT)
                 .build()
 
@@ -65,6 +67,7 @@ internal class DocumentReplaceParamsTest {
                             MultipartField.of(DocumentReplaceParams.DocumentType.PASSPORT),
                         "file" to MultipartField.of("Example data".byteInputStream()),
                         "documentNumber" to MultipartField.of("A12345678"),
+                        "issuingAuthority" to MultipartField.of("U.S. Department of State"),
                         "side" to MultipartField.of(DocumentReplaceParams.Side.FRONT),
                     )
                     .mapValues { (_, field) ->
