@@ -353,6 +353,10 @@ private constructor(
 
             val BULK_UPLOAD_FAILED = of("BULK_UPLOAD.FAILED")
 
+            val CARD_STATE_CHANGE = of("CARD.STATE_CHANGE")
+
+            val CARD_FUNDING_SOURCE_CHANGE = of("CARD.FUNDING_SOURCE_CHANGE")
+
             val TEST = of("TEST")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -389,6 +393,8 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            CARD_STATE_CHANGE,
+            CARD_FUNDING_SOURCE_CHANGE,
             TEST,
         }
 
@@ -431,6 +437,8 @@ private constructor(
             INVITATION_CLAIMED,
             BULK_UPLOAD_COMPLETED,
             BULK_UPLOAD_FAILED,
+            CARD_STATE_CHANGE,
+            CARD_FUNDING_SOURCE_CHANGE,
             TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -474,6 +482,8 @@ private constructor(
                 INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Value.BULK_UPLOAD_FAILED
+                CARD_STATE_CHANGE -> Value.CARD_STATE_CHANGE
+                CARD_FUNDING_SOURCE_CHANGE -> Value.CARD_FUNDING_SOURCE_CHANGE
                 TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
@@ -518,6 +528,8 @@ private constructor(
                 INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
                 BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
                 BULK_UPLOAD_FAILED -> Known.BULK_UPLOAD_FAILED
+                CARD_STATE_CHANGE -> Known.CARD_STATE_CHANGE
+                CARD_FUNDING_SOURCE_CHANGE -> Known.CARD_FUNDING_SOURCE_CHANGE
                 TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }

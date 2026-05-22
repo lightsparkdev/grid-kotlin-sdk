@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.services.async.sandbox.CardServiceAsync
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
 import com.lightspark.grid.services.async.sandbox.WebhookServiceAsync
@@ -35,6 +36,8 @@ interface SandboxServiceAsync {
 
     /** Endpoints to trigger test cases in sandbox */
     fun webhooks(): WebhookServiceAsync
+
+    fun cards(): CardServiceAsync
 
     /**
      * Simulate sending funds to the bank account as instructed in the quote. This endpoint is only
@@ -67,6 +70,8 @@ interface SandboxServiceAsync {
 
         /** Endpoints to trigger test cases in sandbox */
         fun webhooks(): WebhookServiceAsync.WithRawResponse
+
+        fun cards(): CardServiceAsync.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /sandbox/send`, but is otherwise the same as

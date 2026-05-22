@@ -30,6 +30,8 @@ private constructor(
     private val customerUpdate: CustomerUpdateWebhookEvent? = null,
     private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
     private val verificationUpdate: VerificationUpdateWebhookEvent? = null,
+    private val cardStateChange: CardStateChangeWebhookEvent? = null,
+    private val cardFundingSourceChange: CardFundingSourceChangeWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -51,6 +53,10 @@ private constructor(
 
     fun verificationUpdate(): VerificationUpdateWebhookEvent? = verificationUpdate
 
+    fun cardStateChange(): CardStateChangeWebhookEvent? = cardStateChange
+
+    fun cardFundingSourceChange(): CardFundingSourceChangeWebhookEvent? = cardFundingSourceChange
+
     fun isAgentAction(): Boolean = agentAction != null
 
     fun isIncomingPayment(): Boolean = incomingPayment != null
@@ -68,6 +74,10 @@ private constructor(
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
 
     fun isVerificationUpdate(): Boolean = verificationUpdate != null
+
+    fun isCardStateChange(): Boolean = cardStateChange != null
+
+    fun isCardFundingSourceChange(): Boolean = cardFundingSourceChange != null
 
     fun asAgentAction(): AgentActionWebhookEvent = agentAction.getOrThrow("agentAction")
 
@@ -91,6 +101,12 @@ private constructor(
 
     fun asVerificationUpdate(): VerificationUpdateWebhookEvent =
         verificationUpdate.getOrThrow("verificationUpdate")
+
+    fun asCardStateChange(): CardStateChangeWebhookEvent =
+        cardStateChange.getOrThrow("cardStateChange")
+
+    fun asCardFundingSourceChange(): CardFundingSourceChangeWebhookEvent =
+        cardFundingSourceChange.getOrThrow("cardFundingSourceChange")
 
     fun _json(): JsonValue? = _json
 
@@ -130,6 +146,9 @@ private constructor(
             internalAccountStatus != null ->
                 visitor.visitInternalAccountStatus(internalAccountStatus)
             verificationUpdate != null -> visitor.visitVerificationUpdate(verificationUpdate)
+            cardStateChange != null -> visitor.visitCardStateChange(cardStateChange)
+            cardFundingSourceChange != null ->
+                visitor.visitCardFundingSourceChange(cardFundingSourceChange)
             else -> visitor.unknown(_json)
         }
 
@@ -191,6 +210,16 @@ private constructor(
                 ) {
                     verificationUpdate.validate()
                 }
+
+                override fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent) {
+                    cardStateChange.validate()
+                }
+
+                override fun visitCardFundingSourceChange(
+                    cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+                ) {
+                    cardFundingSourceChange.validate()
+                }
             }
         )
         validated = true
@@ -242,6 +271,13 @@ private constructor(
                     verificationUpdate: VerificationUpdateWebhookEvent
                 ) = verificationUpdate.validity()
 
+                override fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent) =
+                    cardStateChange.validity()
+
+                override fun visitCardFundingSourceChange(
+                    cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+                ) = cardFundingSourceChange.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -260,7 +296,9 @@ private constructor(
             invitationClaimed == other.invitationClaimed &&
             customerUpdate == other.customerUpdate &&
             internalAccountStatus == other.internalAccountStatus &&
-            verificationUpdate == other.verificationUpdate
+            verificationUpdate == other.verificationUpdate &&
+            cardStateChange == other.cardStateChange &&
+            cardFundingSourceChange == other.cardFundingSourceChange
     }
 
     override fun hashCode(): Int =
@@ -274,6 +312,8 @@ private constructor(
             customerUpdate,
             internalAccountStatus,
             verificationUpdate,
+            cardStateChange,
+            cardFundingSourceChange,
         )
 
     override fun toString(): String =
@@ -289,6 +329,9 @@ private constructor(
                 "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
             verificationUpdate != null ->
                 "UnwrapWebhookEvent{verificationUpdate=$verificationUpdate}"
+            cardStateChange != null -> "UnwrapWebhookEvent{cardStateChange=$cardStateChange}"
+            cardFundingSourceChange != null ->
+                "UnwrapWebhookEvent{cardFundingSourceChange=$cardFundingSourceChange}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
         }
@@ -321,6 +364,13 @@ private constructor(
 
         fun ofVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent) =
             UnwrapWebhookEvent(verificationUpdate = verificationUpdate)
+
+        fun ofCardStateChange(cardStateChange: CardStateChangeWebhookEvent) =
+            UnwrapWebhookEvent(cardStateChange = cardStateChange)
+
+        fun ofCardFundingSourceChange(
+            cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+        ) = UnwrapWebhookEvent(cardFundingSourceChange = cardFundingSourceChange)
     }
 
     /**
@@ -346,6 +396,12 @@ private constructor(
         fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
 
         fun visitVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent): T
+
+        fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent): T
+
+        fun visitCardFundingSourceChange(
+            cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+        ): T
 
         /**
          * Maps an unknown variant of [UnwrapWebhookEvent] to a value of type [T].
@@ -394,6 +450,11 @@ private constructor(
                             ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
                         tryDeserialize(node, jacksonTypeRef<VerificationUpdateWebhookEvent>())
                             ?.let { UnwrapWebhookEvent(verificationUpdate = it, _json = json) },
+                        tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(cardStateChange = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<CardFundingSourceChangeWebhookEvent>())
+                            ?.let { UnwrapWebhookEvent(cardFundingSourceChange = it, _json = json) },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -428,6 +489,9 @@ private constructor(
                 value.internalAccountStatus != null ->
                     generator.writeObject(value.internalAccountStatus)
                 value.verificationUpdate != null -> generator.writeObject(value.verificationUpdate)
+                value.cardStateChange != null -> generator.writeObject(value.cardStateChange)
+                value.cardFundingSourceChange != null ->
+                    generator.writeObject(value.cardFundingSourceChange)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
             }

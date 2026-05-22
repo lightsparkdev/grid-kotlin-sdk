@@ -261,6 +261,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -591,6 +593,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -824,6 +828,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -994,6 +1000,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1064,6 +1072,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1160,6 +1170,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1258,6 +1270,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1371,6 +1385,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1477,6 +1493,8 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
     }
 
     @Test
@@ -1511,6 +1529,195 @@ internal class UnwrapWebhookEventTest {
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(VerificationUpdateWebhookEvent.Type.VERIFICATION_APPROVED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofCardStateChange() {
+        val cardStateChange =
+            CardStateChangeWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    CardStateChangeWebhookEvent.Data.builder()
+                        .id("Card:019542f5-b3e7-1d02-0000-000000000010")
+                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                        .form(CardStateChangeWebhookEvent.Data.Form.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .state(CardStateChangeWebhookEvent.Data.State.PENDING_KYC)
+                        .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                        .brand(CardStateChangeWebhookEvent.Data.Brand.VISA)
+                        .currency("USD")
+                        .expMonth(12L)
+                        .expYear(2029L)
+                        .issuerRef("lithic_card_4f8d3a2b1c")
+                        .last4("4242")
+                        .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
+                        .platformCardId("card-emp-aary-001")
+                        .stateReason(CardStateChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED)
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChange(cardStateChange)
+
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+    }
+
+    @Test
+    fun ofCardStateChangeRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofCardStateChange(
+                CardStateChangeWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        CardStateChangeWebhookEvent.Data.builder()
+                            .id("Card:019542f5-b3e7-1d02-0000-000000000010")
+                            .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                            .form(CardStateChangeWebhookEvent.Data.Form.VIRTUAL)
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                            )
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
+                            )
+                            .state(CardStateChangeWebhookEvent.Data.State.PENDING_KYC)
+                            .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                            .brand(CardStateChangeWebhookEvent.Data.Brand.VISA)
+                            .currency("USD")
+                            .expMonth(12L)
+                            .expYear(2029L)
+                            .issuerRef("lithic_card_4f8d3a2b1c")
+                            .last4("4242")
+                            .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
+                            .platformCardId("card-emp-aary-001")
+                            .stateReason(
+                                CardStateChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
+                            )
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofCardFundingSourceChange() {
+        val cardFundingSourceChange =
+            CardFundingSourceChangeWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    CardFundingSourceChangeWebhookEvent.Data.builder()
+                        .id("Card:019542f5-b3e7-1d02-0000-000000000010")
+                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                        .form(CardFundingSourceChangeWebhookEvent.Data.Form.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .state(CardFundingSourceChangeWebhookEvent.Data.State.PENDING_KYC)
+                        .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                        .brand(CardFundingSourceChangeWebhookEvent.Data.Brand.VISA)
+                        .currency("USD")
+                        .expMonth(12L)
+                        .expYear(2029L)
+                        .issuerRef("lithic_card_4f8d3a2b1c")
+                        .last4("4242")
+                        .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
+                        .platformCardId("card-emp-aary-001")
+                        .stateReason(
+                            CardFundingSourceChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
+                        )
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
+                .build()
+
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofCardFundingSourceChange(cardFundingSourceChange)
+
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isEqualTo(cardFundingSourceChange)
+    }
+
+    @Test
+    fun ofCardFundingSourceChangeRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofCardFundingSourceChange(
+                CardFundingSourceChangeWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        CardFundingSourceChangeWebhookEvent.Data.builder()
+                            .id("Card:019542f5-b3e7-1d02-0000-000000000010")
+                            .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                            .form(CardFundingSourceChangeWebhookEvent.Data.Form.VIRTUAL)
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                            )
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
+                            )
+                            .state(CardFundingSourceChangeWebhookEvent.Data.State.PENDING_KYC)
+                            .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                            .brand(CardFundingSourceChangeWebhookEvent.Data.Brand.VISA)
+                            .currency("USD")
+                            .expMonth(12L)
+                            .expYear(2029L)
+                            .issuerRef("lithic_card_4f8d3a2b1c")
+                            .last4("4242")
+                            .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
+                            .platformCardId("card-emp-aary-001")
+                            .stateReason(
+                                CardFundingSourceChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
+                            )
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
                     .build()
             )
 

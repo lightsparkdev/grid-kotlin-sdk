@@ -10,6 +10,8 @@ import com.lightspark.grid.services.blocking.AuthService
 import com.lightspark.grid.services.blocking.AuthServiceImpl
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
 import com.lightspark.grid.services.blocking.BeneficialOwnerServiceImpl
+import com.lightspark.grid.services.blocking.CardService
+import com.lightspark.grid.services.blocking.CardServiceImpl
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.ConfigServiceImpl
 import com.lightspark.grid.services.blocking.CryptoService
@@ -134,6 +136,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     private val agents: AgentService by lazy { AgentServiceImpl(clientOptionsWithUserAgent) }
 
+    private val cards: CardService by lazy { CardServiceImpl(clientOptionsWithUserAgent) }
+
     override fun async(): LightsparkGridClientAsync = async
 
     override fun withRawResponse(): LightsparkGridClient.WithRawResponse = withRawResponse
@@ -229,6 +233,12 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
      */
     override fun agents(): AgentService = agents
 
+    /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    override fun cards(): CardService = cards
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -316,6 +326,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         private val agents: AgentService.WithRawResponse by lazy {
             AgentServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val cards: CardService.WithRawResponse by lazy {
+            CardServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -412,5 +426,11 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
          * rejecting transactions initiated by agents.
          */
         override fun agents(): AgentService.WithRawResponse = agents
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        override fun cards(): CardService.WithRawResponse = cards
     }
 }
