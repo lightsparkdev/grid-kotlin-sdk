@@ -17,6 +17,8 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.services.async.sandbox.CardServiceAsync
+import com.lightspark.grid.services.async.sandbox.CardServiceAsyncImpl
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsyncImpl
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
@@ -40,6 +42,8 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     private val webhooks: WebhookServiceAsync by lazy { WebhookServiceAsyncImpl(clientOptions) }
 
+    private val cards: CardServiceAsync by lazy { CardServiceAsyncImpl(clientOptions) }
+
     override fun withRawResponse(): SandboxServiceAsync.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxServiceAsync =
@@ -53,6 +57,8 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
     /** Endpoints to trigger test cases in sandbox */
     override fun webhooks(): WebhookServiceAsync = webhooks
+
+    override fun cards(): CardServiceAsync = cards
 
     override suspend fun sendFunds(
         params: SandboxSendFundsParams,
@@ -79,6 +85,10 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
             WebhookServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val cards: CardServiceAsync.WithRawResponse by lazy {
+            CardServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): SandboxServiceAsync.WithRawResponse =
@@ -95,6 +105,8 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
 
         /** Endpoints to trigger test cases in sandbox */
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
+
+        override fun cards(): CardServiceAsync.WithRawResponse = cards
 
         private val sendFundsHandler: Handler<OutgoingTransaction> =
             jsonHandler<OutgoingTransaction>(clientOptions.jsonMapper)

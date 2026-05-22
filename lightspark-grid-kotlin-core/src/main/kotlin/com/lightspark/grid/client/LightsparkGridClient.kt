@@ -6,6 +6,7 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.services.blocking.AgentService
 import com.lightspark.grid.services.blocking.AuthService
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
+import com.lightspark.grid.services.blocking.CardService
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CustomerService
@@ -150,6 +151,12 @@ interface LightsparkGridClient {
     fun agents(): AgentService
 
     /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    fun cards(): CardService
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -263,5 +270,11 @@ interface LightsparkGridClient {
          * rejecting transactions initiated by agents.
          */
         fun agents(): AgentService.WithRawResponse
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        fun cards(): CardService.WithRawResponse
     }
 }

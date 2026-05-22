@@ -10,6 +10,8 @@ import com.lightspark.grid.services.async.AuthServiceAsync
 import com.lightspark.grid.services.async.AuthServiceAsyncImpl
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsyncImpl
+import com.lightspark.grid.services.async.CardServiceAsync
+import com.lightspark.grid.services.async.CardServiceAsyncImpl
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsyncImpl
 import com.lightspark.grid.services.async.CryptoServiceAsync
@@ -147,6 +149,8 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         AgentServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val cards: CardServiceAsync by lazy { CardServiceAsyncImpl(clientOptionsWithUserAgent) }
+
     override fun sync(): LightsparkGridClient = sync
 
     override fun withRawResponse(): LightsparkGridClientAsync.WithRawResponse = withRawResponse
@@ -242,6 +246,12 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
      */
     override fun agents(): AgentServiceAsync = agents
 
+    /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    override fun cards(): CardServiceAsync = cards
+
     override fun close() = clientOptions.close()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -329,6 +339,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         private val agents: AgentServiceAsync.WithRawResponse by lazy {
             AgentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val cards: CardServiceAsync.WithRawResponse by lazy {
+            CardServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -426,5 +440,11 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
          * rejecting transactions initiated by agents.
          */
         override fun agents(): AgentServiceAsync.WithRawResponse = agents
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        override fun cards(): CardServiceAsync.WithRawResponse = cards
     }
 }

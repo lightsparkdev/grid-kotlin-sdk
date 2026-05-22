@@ -6,6 +6,7 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.services.async.AgentServiceAsync
 import com.lightspark.grid.services.async.AuthServiceAsync
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
+import com.lightspark.grid.services.async.CardServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.CryptoServiceAsync
 import com.lightspark.grid.services.async.CustomerServiceAsync
@@ -150,6 +151,12 @@ interface LightsparkGridClientAsync {
     fun agents(): AgentServiceAsync
 
     /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    fun cards(): CardServiceAsync
+
+    /**
      * Closes this client, relinquishing any underlying resources.
      *
      * This is purposefully not inherited from [AutoCloseable] because the client is long-lived and
@@ -264,5 +271,11 @@ interface LightsparkGridClientAsync {
          * rejecting transactions initiated by agents.
          */
         fun agents(): AgentServiceAsync.WithRawResponse
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        fun cards(): CardServiceAsync.WithRawResponse
     }
 }
