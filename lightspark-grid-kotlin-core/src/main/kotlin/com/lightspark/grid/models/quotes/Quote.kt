@@ -140,7 +140,11 @@ private constructor(
     fun exchangeRate(): Double = exchangeRate.getRequired("exchangeRate")
 
     /**
-     * When this quote expires (typically 1-5 minutes after creation)
+     * Absolute UTC timestamp when the rate locked in this quote becomes invalid and the quote can
+     * no longer be executed. The window depends on the rail and corridor: instant rails (Lightning,
+     * Spark, USDC on Solana/Base/Polygon, RTP, SEPA Instant) typically expire in 1–5 minutes;
+     * corridors with longer settlement guarantees may have longer windows. Always rely on this
+     * timestamp rather than assuming a fixed window.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -529,7 +533,13 @@ private constructor(
             this.exchangeRate = exchangeRate
         }
 
-        /** When this quote expires (typically 1-5 minutes after creation) */
+        /**
+         * Absolute UTC timestamp when the rate locked in this quote becomes invalid and the quote
+         * can no longer be executed. The window depends on the rail and corridor: instant rails
+         * (Lightning, Spark, USDC on Solana/Base/Polygon, RTP, SEPA Instant) typically expire in
+         * 1–5 minutes; corridors with longer settlement guarantees may have longer windows. Always
+         * rely on this timestamp rather than assuming a fixed window.
+         */
         fun expiresAt(expiresAt: OffsetDateTime) = expiresAt(JsonField.of(expiresAt))
 
         /**
