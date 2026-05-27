@@ -125,7 +125,9 @@ internal class CustomerOneOfTest {
                 )
                 .businessInfo(
                     BusinessCustomerFields.BusinessInfo.builder()
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
+                        .taxId("47-1234567")
                         .businessType(
                             BusinessCustomerFields.BusinessInfo.BusinessType
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
@@ -143,13 +145,11 @@ internal class CustomerOneOfTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
-                        .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .purposeOfAccount(
                             BusinessCustomerFields.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
-                        .taxId("47-1234567")
                         .build()
                 )
                 .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
@@ -226,7 +226,9 @@ internal class CustomerOneOfTest {
                     )
                     .businessInfo(
                         BusinessCustomerFields.BusinessInfo.builder()
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .legalName("Acme Corporation, Inc.")
+                            .taxId("47-1234567")
                             .businessType(
                                 BusinessCustomerFields.BusinessInfo.BusinessType
                                     .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
@@ -244,7 +246,6 @@ internal class CustomerOneOfTest {
                                     .VOLUME_100_K_TO_1_M
                             )
                             .addExpectedRecipientJurisdiction("US")
-                            .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .purposeOfAccount(
                                 BusinessCustomerFields.BusinessInfo.PurposeOfAccount
                                     .CONTRACTOR_PAYOUTS
@@ -253,7 +254,6 @@ internal class CustomerOneOfTest {
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
-                            .taxId("47-1234567")
                             .build()
                     )
                     .kybStatus(BusinessCustomerFields.KybStatus.APPROVED)
