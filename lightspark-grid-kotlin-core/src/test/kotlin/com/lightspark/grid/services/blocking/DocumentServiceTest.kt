@@ -67,12 +67,22 @@ internal class DocumentServiceTest {
             documentService.replace(
                 DocumentReplaceParams.builder()
                     .documentId("documentId")
-                    .country("US")
-                    .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
-                    .file("Example data".byteInputStream())
-                    .documentNumber("A12345678")
-                    .issuingAuthority("U.S. Department of State")
-                    .side(DocumentReplaceParams.Side.FRONT)
+                    .body(
+                        DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+                            .country("US")
+                            .documentNumber("A12345678")
+                            .documentType(
+                                DocumentReplaceParams.Body.IdentityDocumentReplaceRequest
+                                    .DocumentType
+                                    .PASSPORT
+                            )
+                            .file("Example data".byteInputStream())
+                            .issuingAuthority("U.S. Department of State")
+                            .side(
+                                DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.Side.FRONT
+                            )
+                            .build()
+                    )
                     .build()
             )
 
@@ -91,14 +101,17 @@ internal class DocumentServiceTest {
 
         val response =
             documentService.upload(
-                DocumentUploadParams.builder()
+                DocumentUploadParams.Body.IdentityDocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentType(DocumentUploadParams.DocumentType.PASSPORT)
-                    .file("Example data".byteInputStream())
                     .documentNumber("A12345678")
+                    .documentType(
+                        DocumentUploadParams.Body.IdentityDocumentUploadRequest.DocumentType
+                            .PASSPORT
+                    )
+                    .file("Example data".byteInputStream())
                     .issuingAuthority("U.S. Department of State")
-                    .side(DocumentUploadParams.Side.FRONT)
+                    .side(DocumentUploadParams.Body.IdentityDocumentUploadRequest.Side.FRONT)
                     .build()
             )
 
