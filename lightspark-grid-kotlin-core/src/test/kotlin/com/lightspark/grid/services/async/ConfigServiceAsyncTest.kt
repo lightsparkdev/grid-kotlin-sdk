@@ -5,6 +5,7 @@ package com.lightspark.grid.services.async
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.config.EmbeddedWalletConfig
 import com.lightspark.grid.models.config.PlatformCurrencyConfig
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
@@ -42,7 +43,7 @@ internal class ConfigServiceAsyncTest {
             configServiceAsync.update(
                 ConfigUpdateParams.builder()
                     .embeddedWalletConfig(
-                        ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                        EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
                             .appName("Acme Wallet")
                             .expirationSeconds(300L)
