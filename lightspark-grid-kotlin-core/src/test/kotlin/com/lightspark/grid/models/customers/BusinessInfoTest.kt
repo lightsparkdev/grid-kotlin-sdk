@@ -14,7 +14,9 @@ internal class BusinessInfoTest {
     fun create() {
         val businessInfo =
             BusinessInfo.builder()
+                .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .legalName("Acme Corporation, Inc.")
+                .taxId("47-1234567")
                 .businessType(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .addCountriesOfOperation("US")
                 .country("US")
@@ -27,14 +29,14 @@ internal class BusinessInfoTest {
                     BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                 )
                 .addExpectedRecipientJurisdiction("US")
-                .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .purposeOfAccount(BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS)
                 .registrationNumber("5523041")
                 .sourceOfFunds("Funds derived from customer payments for software services")
-                .taxId("47-1234567")
                 .build()
 
+        assertThat(businessInfo.incorporatedOn()).isEqualTo(LocalDate.parse("2018-03-14"))
         assertThat(businessInfo.legalName()).isEqualTo("Acme Corporation, Inc.")
+        assertThat(businessInfo.taxId()).isEqualTo("47-1234567")
         assertThat(businessInfo.businessType())
             .isEqualTo(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
         assertThat(businessInfo.countriesOfOperation()).containsExactly("US")
@@ -46,13 +48,11 @@ internal class BusinessInfoTest {
         assertThat(businessInfo.expectedMonthlyTransactionVolume())
             .isEqualTo(BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M)
         assertThat(businessInfo.expectedRecipientJurisdictions()).containsExactly("US")
-        assertThat(businessInfo.incorporatedOn()).isEqualTo(LocalDate.parse("2018-03-14"))
         assertThat(businessInfo.purposeOfAccount())
             .isEqualTo(BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS)
         assertThat(businessInfo.registrationNumber()).isEqualTo("5523041")
         assertThat(businessInfo.sourceOfFunds())
             .isEqualTo("Funds derived from customer payments for software services")
-        assertThat(businessInfo.taxId()).isEqualTo("47-1234567")
     }
 
     @Test
@@ -60,7 +60,9 @@ internal class BusinessInfoTest {
         val jsonMapper = jsonMapper()
         val businessInfo =
             BusinessInfo.builder()
+                .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .legalName("Acme Corporation, Inc.")
+                .taxId("47-1234567")
                 .businessType(BusinessInfo.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .addCountriesOfOperation("US")
                 .country("US")
@@ -73,11 +75,9 @@ internal class BusinessInfoTest {
                     BusinessInfo.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                 )
                 .addExpectedRecipientJurisdiction("US")
-                .incorporatedOn(LocalDate.parse("2018-03-14"))
                 .purposeOfAccount(BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS)
                 .registrationNumber("5523041")
                 .sourceOfFunds("Funds derived from customer payments for software services")
-                .taxId("47-1234567")
                 .build()
 
         val roundtrippedBusinessInfo =
