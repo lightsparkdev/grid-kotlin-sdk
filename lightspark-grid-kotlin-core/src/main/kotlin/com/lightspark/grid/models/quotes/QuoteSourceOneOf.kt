@@ -565,7 +565,7 @@ private constructor(
 
         /**
          * Currency code for the funding source. See
-         * [Supported Currencies](https://grid.lightspark.com/platform-overview/core-concepts/currencies-and-rails)
+         * [Supported Currencies](https://docs.lightspark.com/platform-overview/core-concepts/currencies-and-rails)
          * for the full list of supported fiat and crypto currencies.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -677,7 +677,7 @@ private constructor(
 
             /**
              * Currency code for the funding source. See
-             * [Supported Currencies](https://grid.lightspark.com/platform-overview/core-concepts/currencies-and-rails)
+             * [Supported Currencies](https://docs.lightspark.com/platform-overview/core-concepts/currencies-and-rails)
              * for the full list of supported fiat and crypto currencies.
              */
             fun currency(currency: String) = currency(JsonField.of(currency))
