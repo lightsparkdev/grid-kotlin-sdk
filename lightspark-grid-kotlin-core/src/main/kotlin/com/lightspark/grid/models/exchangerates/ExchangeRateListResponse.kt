@@ -783,6 +783,8 @@ private constructor(
 
                 val SPEI = of("SPEI")
 
+                val SWIFT = of("SWIFT")
+
                 val UPI = of("UPI")
 
                 val WIRE = of("WIRE")
@@ -804,6 +806,7 @@ private constructor(
                 SEPA,
                 SEPA_INSTANT,
                 SPEI,
+                SWIFT,
                 UPI,
                 WIRE,
             }
@@ -832,6 +835,7 @@ private constructor(
                 SEPA,
                 SEPA_INSTANT,
                 SPEI,
+                SWIFT,
                 UPI,
                 WIRE,
                 /**
@@ -862,6 +866,7 @@ private constructor(
                     SEPA -> Value.SEPA
                     SEPA_INSTANT -> Value.SEPA_INSTANT
                     SPEI -> Value.SPEI
+                    SWIFT -> Value.SWIFT
                     UPI -> Value.UPI
                     WIRE -> Value.WIRE
                     else -> Value._UNKNOWN
@@ -890,6 +895,7 @@ private constructor(
                     SEPA -> Known.SEPA
                     SEPA_INSTANT -> Known.SEPA_INSTANT
                     SPEI -> Known.SPEI
+                    SWIFT -> Known.SWIFT
                     UPI -> Known.UPI
                     WIRE -> Known.WIRE
                     else ->
