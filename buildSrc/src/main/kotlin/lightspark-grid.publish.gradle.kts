@@ -43,7 +43,7 @@ configure<MavenPublishBaseExtension> {
 
     pom {
         name.set("Grid API")
-        description.set("API for managing global payments on the open Money Grid. Built by Lightspark.\nSee the full documentation at https://grid.lightspark.com/.")
+        description.set("API for managing global payments on the open Money Grid. Built by Lightspark.\nSee the full documentation at https://docs.lightspark.com/.")
         url.set("grid.lightspark.com")
 
         licenses {
