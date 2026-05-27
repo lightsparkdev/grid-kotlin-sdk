@@ -114,6 +114,38 @@ interface DocumentServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): DocumentUploadResponse
 
+    /** @see upload */
+    suspend fun upload(
+        body: DocumentUploadParams.Body,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): DocumentUploadResponse =
+        upload(DocumentUploadParams.builder().body(body).build(), requestOptions)
+
+    /** @see upload */
+    suspend fun upload(
+        identityDocumentUploadRequest: DocumentUploadParams.Body.IdentityDocumentUploadRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): DocumentUploadResponse =
+        upload(
+            DocumentUploadParams.Body.ofIdentityDocumentUploadRequest(
+                identityDocumentUploadRequest
+            ),
+            requestOptions,
+        )
+
+    /** @see upload */
+    suspend fun upload(
+        nonIdentityDocumentUploadRequest:
+            DocumentUploadParams.Body.NonIdentityDocumentUploadRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): DocumentUploadResponse =
+        upload(
+            DocumentUploadParams.Body.ofNonIdentityDocumentUploadRequest(
+                nonIdentityDocumentUploadRequest
+            ),
+            requestOptions,
+        )
+
     /**
      * A view of [DocumentServiceAsync] that provides access to raw HTTP responses for each method.
      */
@@ -221,5 +253,40 @@ interface DocumentServiceAsync {
             params: DocumentUploadParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<DocumentUploadResponse>
+
+        /** @see upload */
+        @MustBeClosed
+        suspend fun upload(
+            body: DocumentUploadParams.Body,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<DocumentUploadResponse> =
+            upload(DocumentUploadParams.builder().body(body).build(), requestOptions)
+
+        /** @see upload */
+        @MustBeClosed
+        suspend fun upload(
+            identityDocumentUploadRequest: DocumentUploadParams.Body.IdentityDocumentUploadRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<DocumentUploadResponse> =
+            upload(
+                DocumentUploadParams.Body.ofIdentityDocumentUploadRequest(
+                    identityDocumentUploadRequest
+                ),
+                requestOptions,
+            )
+
+        /** @see upload */
+        @MustBeClosed
+        suspend fun upload(
+            nonIdentityDocumentUploadRequest:
+                DocumentUploadParams.Body.NonIdentityDocumentUploadRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<DocumentUploadResponse> =
+            upload(
+                DocumentUploadParams.Body.ofNonIdentityDocumentUploadRequest(
+                    nonIdentityDocumentUploadRequest
+                ),
+                requestOptions,
+            )
     }
 }
