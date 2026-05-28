@@ -2,21 +2,11 @@
 
 package com.lightspark.grid.models.sandbox.cards.simulate
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonField
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.quotes.Currency
-import java.util.Collections
 import java.util.Objects
 
 /**
@@ -38,7 +28,7 @@ import java.util.Objects
 class SimulateAuthorizationParams
 private constructor(
     private val id: String?,
-    private val body: Body,
+    private val authorizationRequest: AuthorizationRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -46,47 +36,15 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Authorization amount in the smallest unit of `currency` (e.g. cents for USD).
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives the
+     * same internal authorization + reconcile paths that the issuer would call in production. The
+     * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see
+     * the endpoint documentation for the suffix table.
      */
-    fun amount(): Long = body.amount()
+    fun authorizationRequest(): AuthorizationRequest = authorizationRequest
 
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun currency(): Currency = body.currency()
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun merchant(): CardMerchant = body.merchant()
-
-    /**
-     * Returns the raw JSON value of [amount].
-     *
-     * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _amount(): JsonField<Long> = body._amount()
-
-    /**
-     * Returns the raw JSON value of [currency].
-     *
-     * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _currency(): JsonField<Currency> = body._currency()
-
-    /**
-     * Returns the raw JSON value of [merchant].
-     *
-     * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _merchant(): JsonField<CardMerchant> = body._merchant()
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        authorizationRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -103,9 +61,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .amount()
-         * .currency()
-         * .merchant()
+         * .authorizationRequest()
          * ```
          */
         fun builder() = Builder()
@@ -115,13 +71,13 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var body: Body.Builder = Body.builder()
+        private var authorizationRequest: AuthorizationRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(simulateAuthorizationParams: SimulateAuthorizationParams) = apply {
             id = simulateAuthorizationParams.id
-            body = simulateAuthorizationParams.body.toBuilder()
+            authorizationRequest = simulateAuthorizationParams.authorizationRequest
             additionalHeaders = simulateAuthorizationParams.additionalHeaders.toBuilder()
             additionalQueryParams = simulateAuthorizationParams.additionalQueryParams.toBuilder()
         }
@@ -129,66 +85,13 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Sets the entire request body.
-         *
-         * This is generally only useful if you are already constructing the body separately.
-         * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [amount]
-         * - [currency]
-         * - [merchant]
+         * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives
+         * the same internal authorization + reconcile paths that the issuer would call in
+         * production. The decisioning outcome is controlled by the last three characters of
+         * `merchant.descriptor` — see the endpoint documentation for the suffix table.
          */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        /** Authorization amount in the smallest unit of `currency` (e.g. cents for USD). */
-        fun amount(amount: Long) = apply { body.amount(amount) }
-
-        /**
-         * Sets [Builder.amount] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.amount] with a well-typed [Long] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun amount(amount: JsonField<Long>) = apply { body.amount(amount) }
-
-        fun currency(currency: Currency) = apply { body.currency(currency) }
-
-        /**
-         * Sets [Builder.currency] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.currency] with a well-typed [Currency] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun currency(currency: JsonField<Currency>) = apply { body.currency(currency) }
-
-        fun merchant(merchant: CardMerchant) = apply { body.merchant(merchant) }
-
-        /**
-         * Sets [Builder.merchant] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.merchant] with a well-typed [CardMerchant] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun merchant(merchant: JsonField<CardMerchant>) = apply { body.merchant(merchant) }
-
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
+        fun authorizationRequest(authorizationRequest: AuthorizationRequest) = apply {
+            this.authorizationRequest = authorizationRequest
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -296,9 +199,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .amount()
-         * .currency()
-         * .merchant()
+         * .authorizationRequest()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -306,13 +207,13 @@ private constructor(
         fun build(): SimulateAuthorizationParams =
             SimulateAuthorizationParams(
                 id,
-                body.build(),
+                checkRequired("authorizationRequest", authorizationRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): Body = body
+    fun _body(): AuthorizationRequest = authorizationRequest
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -324,256 +225,6 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /**
-     * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives the
-     * same internal authorization + reconcile paths that the issuer would call in production. The
-     * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see
-     * the endpoint documentation for the suffix table.
-     */
-    class Body
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val amount: JsonField<Long>,
-        private val currency: JsonField<Currency>,
-        private val merchant: JsonField<CardMerchant>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("currency")
-            @ExcludeMissing
-            currency: JsonField<Currency> = JsonMissing.of(),
-            @JsonProperty("merchant")
-            @ExcludeMissing
-            merchant: JsonField<CardMerchant> = JsonMissing.of(),
-        ) : this(amount, currency, merchant, mutableMapOf())
-
-        /**
-         * Authorization amount in the smallest unit of `currency` (e.g. cents for USD).
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun amount(): Long = amount.getRequired("amount")
-
-        /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun currency(): Currency = currency.getRequired("currency")
-
-        /**
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun merchant(): CardMerchant = merchant.getRequired("merchant")
-
-        /**
-         * Returns the raw JSON value of [amount].
-         *
-         * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
-
-        /**
-         * Returns the raw JSON value of [currency].
-         *
-         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<Currency> = currency
-
-        /**
-         * Returns the raw JSON value of [merchant].
-         *
-         * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("merchant")
-        @ExcludeMissing
-        fun _merchant(): JsonField<CardMerchant> = merchant
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Body].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .amount()
-             * .currency()
-             * .merchant()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Body]. */
-        class Builder internal constructor() {
-
-            private var amount: JsonField<Long>? = null
-            private var currency: JsonField<Currency>? = null
-            private var merchant: JsonField<CardMerchant>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(body: Body) = apply {
-                amount = body.amount
-                currency = body.currency
-                merchant = body.merchant
-                additionalProperties = body.additionalProperties.toMutableMap()
-            }
-
-            /** Authorization amount in the smallest unit of `currency` (e.g. cents for USD). */
-            fun amount(amount: Long) = amount(JsonField.of(amount))
-
-            /**
-             * Sets [Builder.amount] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.amount] with a well-typed [Long] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
-
-            fun currency(currency: Currency) = currency(JsonField.of(currency))
-
-            /**
-             * Sets [Builder.currency] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.currency] with a well-typed [Currency] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
-
-            fun merchant(merchant: CardMerchant) = merchant(JsonField.of(merchant))
-
-            /**
-             * Sets [Builder.merchant] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.merchant] with a well-typed [CardMerchant] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun merchant(merchant: JsonField<CardMerchant>) = apply { this.merchant = merchant }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Body].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .amount()
-             * .currency()
-             * .merchant()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Body =
-                Body(
-                    checkRequired("amount", amount),
-                    checkRequired("currency", currency),
-                    checkRequired("merchant", merchant),
-                    additionalProperties.toMutableMap(),
-                )
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Body = apply {
-            if (validated) {
-                return@apply
-            }
-
-            amount()
-            currency().validate()
-            merchant().validate()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            (if (amount.asKnown() == null) 0 else 1) +
-                (currency.asKnown()?.validity() ?: 0) +
-                (merchant.asKnown()?.validity() ?: 0)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Body &&
-                amount == other.amount &&
-                currency == other.currency &&
-                merchant == other.merchant &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(amount, currency, merchant, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Body{amount=$amount, currency=$currency, merchant=$merchant, additionalProperties=$additionalProperties}"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -581,13 +232,14 @@ private constructor(
 
         return other is SimulateAuthorizationParams &&
             id == other.id &&
-            body == other.body &&
+            authorizationRequest == other.authorizationRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(id, body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(id, authorizationRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SimulateAuthorizationParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SimulateAuthorizationParams{id=$id, authorizationRequest=$authorizationRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

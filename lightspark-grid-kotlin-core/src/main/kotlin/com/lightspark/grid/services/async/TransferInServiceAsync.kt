@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferin.TransferInCreateParams
+import com.lightspark.grid.models.transferin.TransferInRequest
 
 /**
  * Endpoints for transferring funds between internal and external accounts with the same currency
@@ -36,6 +37,16 @@ interface TransferInServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Transaction
 
+    /** @see create */
+    suspend fun create(
+        transferInRequest: TransferInRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Transaction =
+        create(
+            TransferInCreateParams.builder().transferInRequest(transferInRequest).build(),
+            requestOptions,
+        )
+
     /**
      * A view of [TransferInServiceAsync] that provides access to raw HTTP responses for each
      * method.
@@ -60,5 +71,16 @@ interface TransferInServiceAsync {
             params: TransferInCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Transaction>
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            transferInRequest: TransferInRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Transaction> =
+            create(
+                TransferInCreateParams.builder().transferInRequest(transferInRequest).build(),
+                requestOptions,
+            )
     }
 }

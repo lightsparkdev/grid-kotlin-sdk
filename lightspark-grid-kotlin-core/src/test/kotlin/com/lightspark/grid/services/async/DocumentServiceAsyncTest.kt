@@ -4,7 +4,9 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.documents.DocumentReplaceParams
-import com.lightspark.grid.models.documents.DocumentUploadParams
+import com.lightspark.grid.models.documents.DocumentReplaceRequest
+import com.lightspark.grid.models.documents.DocumentType
+import com.lightspark.grid.models.documents.DocumentUploadRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -71,20 +73,24 @@ internal class DocumentServiceAsyncTest {
                 .build()
         val documentServiceAsync = client.documents()
 
-        val response =
+        val document =
             documentServiceAsync.replace(
                 DocumentReplaceParams.builder()
                     .documentId("documentId")
-                    .country("US")
-                    .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
-                    .file("Example data".byteInputStream())
-                    .documentNumber("A12345678")
-                    .issuingAuthority("U.S. Department of State")
-                    .side(DocumentReplaceParams.Side.FRONT)
+                    .documentReplaceRequest(
+                        DocumentReplaceRequest.builder()
+                            .country("US")
+                            .documentType(DocumentType.PASSPORT)
+                            .file("Example data")
+                            .documentNumber("A12345678")
+                            .issuingAuthority("U.S. Department of State")
+                            .side(DocumentReplaceRequest.Side.FRONT)
+                            .build()
+                    )
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -99,19 +105,19 @@ internal class DocumentServiceAsyncTest {
                 .build()
         val documentServiceAsync = client.documents()
 
-        val response =
+        val document =
             documentServiceAsync.upload(
-                DocumentUploadParams.builder()
+                DocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentType(DocumentUploadParams.DocumentType.PASSPORT)
-                    .file("Example data".byteInputStream())
+                    .documentType(DocumentType.PASSPORT)
+                    .file("Example data")
                     .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
-                    .side(DocumentUploadParams.Side.FRONT)
+                    .side(DocumentUploadRequest.Side.FRONT)
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 }

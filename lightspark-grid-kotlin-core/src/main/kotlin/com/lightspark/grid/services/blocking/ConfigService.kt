@@ -9,6 +9,7 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.config.ConfigRetrieveParams
 import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.PlatformConfig
+import com.lightspark.grid.models.config.PlatformConfigUpdateRequest
 
 /**
  * Platform configuration endpoints for managing global settings. You can also configure these
@@ -40,13 +41,21 @@ interface ConfigService {
 
     /** Update the platform configuration settings */
     fun update(
-        params: ConfigUpdateParams = ConfigUpdateParams.none(),
+        params: ConfigUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): PlatformConfig
 
     /** @see update */
-    fun update(requestOptions: RequestOptions): PlatformConfig =
-        update(ConfigUpdateParams.none(), requestOptions)
+    fun update(
+        platformConfigUpdateRequest: PlatformConfigUpdateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): PlatformConfig =
+        update(
+            ConfigUpdateParams.builder()
+                .platformConfigUpdateRequest(platformConfigUpdateRequest)
+                .build(),
+            requestOptions,
+        )
 
     /** A view of [ConfigService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -79,13 +88,21 @@ interface ConfigService {
          */
         @MustBeClosed
         fun update(
-            params: ConfigUpdateParams = ConfigUpdateParams.none(),
+            params: ConfigUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<PlatformConfig>
 
         /** @see update */
         @MustBeClosed
-        fun update(requestOptions: RequestOptions): HttpResponseFor<PlatformConfig> =
-            update(ConfigUpdateParams.none(), requestOptions)
+        fun update(
+            platformConfigUpdateRequest: PlatformConfigUpdateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<PlatformConfig> =
+            update(
+                ConfigUpdateParams.builder()
+                    .platformConfigUpdateRequest(platformConfigUpdateRequest)
+                    .build(),
+                requestOptions,
+            )
     }
 }

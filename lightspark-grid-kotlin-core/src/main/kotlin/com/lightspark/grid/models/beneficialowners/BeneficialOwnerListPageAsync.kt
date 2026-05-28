@@ -14,34 +14,34 @@ class BeneficialOwnerListPageAsync
 private constructor(
     private val service: BeneficialOwnerServiceAsync,
     private val params: BeneficialOwnerListParams,
-    private val response: BeneficialOwnerListPageResponse,
+    private val response: BeneficialOwnerListResponse,
 ) : PageAsync<BeneficialOwner> {
 
     /**
-     * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
+     * Delegates to [BeneficialOwnerListResponse], but gracefully handles missing data.
      *
-     * @see BeneficialOwnerListPageResponse.data
+     * @see BeneficialOwnerListResponse.data
      */
     fun data(): List<BeneficialOwner> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
+     * Delegates to [BeneficialOwnerListResponse], but gracefully handles missing data.
      *
-     * @see BeneficialOwnerListPageResponse.nextCursor
+     * @see BeneficialOwnerListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
+     * Delegates to [BeneficialOwnerListResponse], but gracefully handles missing data.
      *
-     * @see BeneficialOwnerListPageResponse.hasMore
+     * @see BeneficialOwnerListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
+     * Delegates to [BeneficialOwnerListResponse], but gracefully handles missing data.
      *
-     * @see BeneficialOwnerListPageResponse.totalCount
+     * @see BeneficialOwnerListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -63,7 +63,7 @@ private constructor(
     fun params(): BeneficialOwnerListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): BeneficialOwnerListPageResponse = response
+    fun response(): BeneficialOwnerListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -87,7 +87,7 @@ private constructor(
 
         private var service: BeneficialOwnerServiceAsync? = null
         private var params: BeneficialOwnerListParams? = null
-        private var response: BeneficialOwnerListPageResponse? = null
+        private var response: BeneficialOwnerListResponse? = null
 
         internal fun from(beneficialOwnerListPageAsync: BeneficialOwnerListPageAsync) = apply {
             service = beneficialOwnerListPageAsync.service
@@ -101,7 +101,7 @@ private constructor(
         fun params(params: BeneficialOwnerListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: BeneficialOwnerListPageResponse) = apply { this.response = response }
+        fun response(response: BeneficialOwnerListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [BeneficialOwnerListPageAsync].

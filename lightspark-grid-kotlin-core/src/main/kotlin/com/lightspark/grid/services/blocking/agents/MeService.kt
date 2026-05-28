@@ -13,6 +13,8 @@ import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPage
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.transferin.TransferInRequest
+import com.lightspark.grid.models.transferout.TransferOutRequest
 import com.lightspark.grid.services.blocking.agents.me.ActionService
 import com.lightspark.grid.services.blocking.agents.me.ExternalAccountService
 import com.lightspark.grid.services.blocking.agents.me.QuoteService
@@ -103,6 +105,16 @@ interface MeService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AgentAction
 
+    /** @see createTransferIn */
+    fun createTransferIn(
+        transferInRequest: TransferInRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AgentAction =
+        createTransferIn(
+            MeCreateTransferInParams.builder().transferInRequest(transferInRequest).build(),
+            requestOptions,
+        )
+
     /**
      * Transfer funds from an internal account to an external account for the authenticated agent's
      * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS
@@ -114,6 +126,16 @@ interface MeService {
         params: MeCreateTransferOutParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AgentAction
+
+    /** @see createTransferOut */
+    fun createTransferOut(
+        transferOutRequest: TransferOutRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AgentAction =
+        createTransferOut(
+            MeCreateTransferOutParams.builder().transferOutRequest(transferOutRequest).build(),
+            requestOptions,
+        )
 
     /**
      * Retrieve the internal accounts belonging to the customer this agent operates on behalf of.
@@ -200,6 +222,17 @@ interface MeService {
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AgentAction>
 
+        /** @see createTransferIn */
+        @MustBeClosed
+        fun createTransferIn(
+            transferInRequest: TransferInRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AgentAction> =
+            createTransferIn(
+                MeCreateTransferInParams.builder().transferInRequest(transferInRequest).build(),
+                requestOptions,
+            )
+
         /**
          * Returns a raw HTTP response for `post /agents/me/transfer-out`, but is otherwise the same
          * as [MeService.createTransferOut].
@@ -209,6 +242,17 @@ interface MeService {
             params: MeCreateTransferOutParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AgentAction>
+
+        /** @see createTransferOut */
+        @MustBeClosed
+        fun createTransferOut(
+            transferOutRequest: TransferOutRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AgentAction> =
+            createTransferOut(
+                MeCreateTransferOutParams.builder().transferOutRequest(transferOutRequest).build(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /agents/me/internal-accounts`, but is otherwise the

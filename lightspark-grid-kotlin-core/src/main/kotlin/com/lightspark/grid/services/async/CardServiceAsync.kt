@@ -6,14 +6,13 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.cards.Card
+import com.lightspark.grid.models.cards.CardCreateRequest
 import com.lightspark.grid.models.cards.CardIssueParams
-import com.lightspark.grid.models.cards.CardIssueResponse
 import com.lightspark.grid.models.cards.CardListPageAsync
 import com.lightspark.grid.models.cards.CardListParams
 import com.lightspark.grid.models.cards.CardRetrieveParams
-import com.lightspark.grid.models.cards.CardRetrieveResponse
 import com.lightspark.grid.models.cards.CardUpdateParams
-import com.lightspark.grid.models.cards.CardUpdateResponse
 
 /**
  * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
@@ -38,16 +37,16 @@ interface CardServiceAsync {
         id: String,
         params: CardRetrieveParams = CardRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardRetrieveResponse = retrieve(params.toBuilder().id(id).build(), requestOptions)
+    ): Card = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: CardRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardRetrieveResponse
+    ): Card
 
     /** @see retrieve */
-    suspend fun retrieve(id: String, requestOptions: RequestOptions): CardRetrieveResponse =
+    suspend fun retrieve(id: String, requestOptions: RequestOptions): Card =
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
@@ -91,19 +90,15 @@ interface CardServiceAsync {
      */
     suspend fun update(
         id: String,
-        params: CardUpdateParams = CardUpdateParams.none(),
+        params: CardUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardUpdateResponse = update(params.toBuilder().id(id).build(), requestOptions)
+    ): Card = update(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see update */
     suspend fun update(
         params: CardUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardUpdateResponse
-
-    /** @see update */
-    suspend fun update(id: String, requestOptions: RequestOptions): CardUpdateResponse =
-        update(id, CardUpdateParams.none(), requestOptions)
+    ): Card
 
     /**
      * Retrieve a paginated list of cards. Cards can be filtered by cardholder, bound funding-source
@@ -131,7 +126,17 @@ interface CardServiceAsync {
     suspend fun issue(
         params: CardIssueParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardIssueResponse
+    ): Card
+
+    /** @see issue */
+    suspend fun issue(
+        cardCreateRequest: CardCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Card =
+        issue(
+            CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
+            requestOptions,
+        )
 
     /** A view of [CardServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -152,22 +157,18 @@ interface CardServiceAsync {
             id: String,
             params: CardRetrieveParams = CardRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardRetrieveResponse> =
-            retrieve(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Card> = retrieve(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             params: CardRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardRetrieveResponse>
+        ): HttpResponseFor<Card>
 
         /** @see retrieve */
         @MustBeClosed
-        suspend fun retrieve(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CardRetrieveResponse> =
+        suspend fun retrieve(id: String, requestOptions: RequestOptions): HttpResponseFor<Card> =
             retrieve(id, CardRetrieveParams.none(), requestOptions)
 
         /**
@@ -177,24 +178,16 @@ interface CardServiceAsync {
         @MustBeClosed
         suspend fun update(
             id: String,
-            params: CardUpdateParams = CardUpdateParams.none(),
+            params: CardUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardUpdateResponse> =
-            update(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<Card> = update(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see update */
         @MustBeClosed
         suspend fun update(
             params: CardUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardUpdateResponse>
-
-        /** @see update */
-        @MustBeClosed
-        suspend fun update(
-            id: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CardUpdateResponse> = update(id, CardUpdateParams.none(), requestOptions)
+        ): HttpResponseFor<Card>
 
         /**
          * Returns a raw HTTP response for `get /cards`, but is otherwise the same as
@@ -219,6 +212,17 @@ interface CardServiceAsync {
         suspend fun issue(
             params: CardIssueParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CardIssueResponse>
+        ): HttpResponseFor<Card>
+
+        /** @see issue */
+        @MustBeClosed
+        suspend fun issue(
+            cardCreateRequest: CardCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Card> =
+            issue(
+                CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
+                requestOptions,
+            )
     }
 }

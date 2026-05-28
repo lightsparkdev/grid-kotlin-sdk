@@ -22,8 +22,8 @@ import com.lightspark.grid.models.tokens.ApiToken
 import com.lightspark.grid.models.tokens.TokenCreateParams
 import com.lightspark.grid.models.tokens.TokenDeleteParams
 import com.lightspark.grid.models.tokens.TokenListPage
-import com.lightspark.grid.models.tokens.TokenListPageResponse
 import com.lightspark.grid.models.tokens.TokenListParams
+import com.lightspark.grid.models.tokens.TokenListResponse
 import com.lightspark.grid.models.tokens.TokenRetrieveParams
 
 /** Endpoints to programmatically manage API tokens */
@@ -133,8 +133,8 @@ class TokenServiceImpl internal constructor(private val clientOptions: ClientOpt
             }
         }
 
-        private val listHandler: Handler<TokenListPageResponse> =
-            jsonHandler<TokenListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<TokenListResponse> =
+            jsonHandler<TokenListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: TokenListParams,

@@ -17,7 +17,7 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeParams
-import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeResponse
+import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeResponse
 
 /** Endpoints for creating and confirming quotes for cross-currency transfers */
 class CryptoServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -35,7 +35,7 @@ class CryptoServiceAsyncImpl internal constructor(private val clientOptions: Cli
     override suspend fun estimateWithdrawalFee(
         params: CryptoEstimateWithdrawalFeeParams,
         requestOptions: RequestOptions,
-    ): CryptoEstimateWithdrawalFeeResponse =
+    ): EstimateCryptoWithdrawalFeeResponse =
         // post /crypto/estimate-withdrawal-fee
         withRawResponse().estimateWithdrawalFee(params, requestOptions).parse()
 
@@ -52,13 +52,13 @@ class CryptoServiceAsyncImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val estimateWithdrawalFeeHandler: Handler<CryptoEstimateWithdrawalFeeResponse> =
-            jsonHandler<CryptoEstimateWithdrawalFeeResponse>(clientOptions.jsonMapper)
+        private val estimateWithdrawalFeeHandler: Handler<EstimateCryptoWithdrawalFeeResponse> =
+            jsonHandler<EstimateCryptoWithdrawalFeeResponse>(clientOptions.jsonMapper)
 
         override suspend fun estimateWithdrawalFee(
             params: CryptoEstimateWithdrawalFeeParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CryptoEstimateWithdrawalFeeResponse> {
+        ): HttpResponseFor<EstimateCryptoWithdrawalFeeResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

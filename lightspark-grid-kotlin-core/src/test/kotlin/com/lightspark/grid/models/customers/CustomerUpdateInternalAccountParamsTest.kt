@@ -16,7 +16,9 @@ internal class CustomerUpdateInternalAccountParamsTest {
                 "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
             )
             .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
-            .privateEnabled(true)
+            .internalAccountUpdateRequest(
+                InternalAccountUpdateRequest.builder().privateEnabled(true).build()
+            )
             .build()
     }
 
@@ -25,6 +27,7 @@ internal class CustomerUpdateInternalAccountParamsTest {
         val params =
             CustomerUpdateInternalAccountParams.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .internalAccountUpdateRequest(InternalAccountUpdateRequest.builder().build())
                 .build()
 
         assertThat(params._pathParam(0))
@@ -42,7 +45,9 @@ internal class CustomerUpdateInternalAccountParamsTest {
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
-                .privateEnabled(true)
+                .internalAccountUpdateRequest(
+                    InternalAccountUpdateRequest.builder().privateEnabled(true).build()
+                )
                 .build()
 
         val headers = params._headers()
@@ -64,6 +69,7 @@ internal class CustomerUpdateInternalAccountParamsTest {
         val params =
             CustomerUpdateInternalAccountParams.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .internalAccountUpdateRequest(InternalAccountUpdateRequest.builder().build())
                 .build()
 
         val headers = params._headers()
@@ -80,12 +86,15 @@ internal class CustomerUpdateInternalAccountParamsTest {
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
-                .privateEnabled(true)
+                .internalAccountUpdateRequest(
+                    InternalAccountUpdateRequest.builder().privateEnabled(true).build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.privateEnabled()).isEqualTo(true)
+        assertThat(body)
+            .isEqualTo(InternalAccountUpdateRequest.builder().privateEnabled(true).build())
     }
 
     @Test
@@ -93,8 +102,11 @@ internal class CustomerUpdateInternalAccountParamsTest {
         val params =
             CustomerUpdateInternalAccountParams.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .internalAccountUpdateRequest(InternalAccountUpdateRequest.builder().build())
                 .build()
 
         val body = params._body()
+
+        assertThat(body).isEqualTo(InternalAccountUpdateRequest.builder().build())
     }
 }

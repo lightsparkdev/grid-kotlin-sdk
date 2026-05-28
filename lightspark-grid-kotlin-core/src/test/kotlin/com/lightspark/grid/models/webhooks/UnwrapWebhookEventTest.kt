@@ -11,8 +11,20 @@ import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.IndividualCustomer
 import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.agents.AgentAction
+import com.lightspark.grid.models.agents.AgentActionStatus
+import com.lightspark.grid.models.agents.AgentActionType
+import com.lightspark.grid.models.cards.Card
+import com.lightspark.grid.models.cards.CardBrand
+import com.lightspark.grid.models.cards.CardForm
+import com.lightspark.grid.models.cards.CardState
+import com.lightspark.grid.models.cards.CardStateReason
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.InternalAccountStatus
+import com.lightspark.grid.models.customers.InternalAccountType
+import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
+import com.lightspark.grid.models.documents.DocumentType
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.quotes.Currency
@@ -22,13 +34,21 @@ import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
+import com.lightspark.grid.models.sandbox.webhooks.TestWebhookRequest
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
+import com.lightspark.grid.models.transactions.IncomingTransactionFailureReason
 import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.models.transactions.OutgoingTransactionFailureReason
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
+import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
+import com.lightspark.grid.models.verifications.Verification
+import com.lightspark.grid.models.verifications.VerificationErrorType
+import com.lightspark.grid.models.verifications.VerificationStatus
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -40,10 +60,12 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class UnwrapWebhookEventTest {
 
     @Test
-    fun ofAgentActionPendingApproval() {
-        val agentActionPendingApproval =
-            AgentActionWebhookEvent.builder()
+    fun ofAgentActionWebhook() {
+        val agentActionWebhook =
+            AgentActionWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("AGENT_ACTION.PENDING_APPROVAL"))
                 .data(
                     AgentAction.builder()
                         .id("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
@@ -51,8 +73,8 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                         .platformCustomerId("user-a1b2c3")
-                        .status(AgentAction.Status.PENDING_APPROVAL)
-                        .type(AgentAction.Type.EXECUTE_QUOTE)
+                        .status(AgentActionStatus.PENDING_APPROVAL)
+                        .type(AgentActionType.EXECUTE_QUOTE)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                         .quote(
                             Quote.builder()
@@ -84,7 +106,7 @@ internal class UnwrapWebhookEventTest {
                                 .totalSendingAmount(123010L)
                                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                                 .counterpartyInformation(
-                                    Quote.CounterpartyInformation.builder()
+                                    CounterpartyInformation.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -173,7 +195,7 @@ internal class UnwrapWebhookEventTest {
                             IncomingTransaction.builder()
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .destination(JsonValue.from(mapOf<String, Any>()))
+                                .destination(TransactionDestinationOneOf.builder().build())
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .receivedAmount(
                                     CurrencyAmount.builder()
@@ -192,7 +214,7 @@ internal class UnwrapWebhookEventTest {
                                 .type(IncomingTransaction.Type.INCOMING)
                                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                                 .counterpartyInformation(
-                                    IncomingTransaction.CounterpartyInformation.builder()
+                                    CounterpartyInformation.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -200,7 +222,7 @@ internal class UnwrapWebhookEventTest {
                                 )
                                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                                 .description("Payment for invoice #1234")
-                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                                .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
                                 .fees(10L)
                                 .rateDetails(
                                     IncomingRateDetails.builder()
@@ -237,34 +259,32 @@ internal class UnwrapWebhookEventTest {
                         )
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(AgentActionWebhookEvent.Type.AGENT_ACTION_PENDING_APPROVAL)
                 .build()
 
-        val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofAgentActionPendingApproval(agentActionPendingApproval)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofAgentActionWebhook(agentActionWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval())
-            .isEqualTo(agentActionPendingApproval)
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isEqualTo(agentActionWebhook)
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofAgentActionPendingApprovalRoundtrip() {
+    fun ofAgentActionWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofAgentActionPendingApproval(
-                AgentActionWebhookEvent.builder()
+            UnwrapWebhookEvent.ofAgentActionWebhook(
+                AgentActionWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("AGENT_ACTION.PENDING_APPROVAL"))
                     .data(
                         AgentAction.builder()
                             .id("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
@@ -272,8 +292,8 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                             .platformCustomerId("user-a1b2c3")
-                            .status(AgentAction.Status.PENDING_APPROVAL)
-                            .type(AgentAction.Type.EXECUTE_QUOTE)
+                            .status(AgentActionStatus.PENDING_APPROVAL)
+                            .type(AgentActionType.EXECUTE_QUOTE)
                             .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                             .quote(
                                 Quote.builder()
@@ -307,7 +327,7 @@ internal class UnwrapWebhookEventTest {
                                         "Transaction:019542f5-b3e7-1d02-0000-000000000005"
                                     )
                                     .counterpartyInformation(
-                                        Quote.CounterpartyInformation.builder()
+                                        CounterpartyInformation.builder()
                                             .putAdditionalProperty(
                                                 "FULL_NAME",
                                                 JsonValue.from("bar"),
@@ -405,7 +425,7 @@ internal class UnwrapWebhookEventTest {
                                 IncomingTransaction.builder()
                                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                    .destination(JsonValue.from(mapOf<String, Any>()))
+                                    .destination(TransactionDestinationOneOf.builder().build())
                                     .platformCustomerId("18d3e5f7b4a9c2")
                                     .receivedAmount(
                                         CurrencyAmount.builder()
@@ -424,7 +444,7 @@ internal class UnwrapWebhookEventTest {
                                     .type(IncomingTransaction.Type.INCOMING)
                                     .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                                     .counterpartyInformation(
-                                        IncomingTransaction.CounterpartyInformation.builder()
+                                        CounterpartyInformation.builder()
                                             .putAdditionalProperty(
                                                 "FULL_NAME",
                                                 JsonValue.from("bar"),
@@ -441,7 +461,7 @@ internal class UnwrapWebhookEventTest {
                                     )
                                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                                     .description("Payment for invoice #1234")
-                                    .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                                    .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
                                     .fees(10L)
                                     .rateDetails(
                                         IncomingRateDetails.builder()
@@ -478,8 +498,6 @@ internal class UnwrapWebhookEventTest {
                             )
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(AgentActionWebhookEvent.Type.AGENT_ACTION_PENDING_APPROVAL)
                     .build()
             )
 
@@ -493,15 +511,17 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofIncomingPayment() {
-        val incomingPayment =
-            IncomingPaymentWebhookEvent.builder()
+    fun ofIncomingPaymentWebhook() {
+        val incomingPaymentWebhook =
+            IncomingPaymentWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("INCOMING_PAYMENT.PENDING"))
                 .data(
-                    IncomingPaymentWebhookEvent.Data.builder()
+                    IncomingPaymentWebhook.Data.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(TransactionDestinationOneOf.builder().build())
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -520,7 +540,7 @@ internal class UnwrapWebhookEventTest {
                         .type(IncomingTransaction.Type.INCOMING)
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
-                            IncomingTransaction.CounterpartyInformation.builder()
+                            CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -528,7 +548,7 @@ internal class UnwrapWebhookEventTest {
                         )
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
-                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
                         .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
@@ -557,37 +577,37 @@ internal class UnwrapWebhookEventTest {
                         )
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT_PENDING)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofIncomingPayment(incomingPayment)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofIncomingPaymentWebhook(incomingPaymentWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isEqualTo(incomingPayment)
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isEqualTo(incomingPaymentWebhook)
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofIncomingPaymentRoundtrip() {
+    fun ofIncomingPaymentWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofIncomingPayment(
-                IncomingPaymentWebhookEvent.builder()
+            UnwrapWebhookEvent.ofIncomingPaymentWebhook(
+                IncomingPaymentWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("INCOMING_PAYMENT.PENDING"))
                     .data(
-                        IncomingPaymentWebhookEvent.Data.builder()
+                        IncomingPaymentWebhook.Data.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .destination(JsonValue.from(mapOf<String, Any>()))
+                            .destination(TransactionDestinationOneOf.builder().build())
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .receivedAmount(
                                 CurrencyAmount.builder()
@@ -606,7 +626,7 @@ internal class UnwrapWebhookEventTest {
                             .type(IncomingTransaction.Type.INCOMING)
                             .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                             .counterpartyInformation(
-                                IncomingTransaction.CounterpartyInformation.builder()
+                                CounterpartyInformation.builder()
                                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -614,7 +634,7 @@ internal class UnwrapWebhookEventTest {
                             )
                             .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                             .description("Payment for invoice #1234")
-                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                            .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
                             .fees(10L)
                             .rateDetails(
                                 IncomingRateDetails.builder()
@@ -643,8 +663,6 @@ internal class UnwrapWebhookEventTest {
                             )
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(IncomingPaymentWebhookEvent.Type.INCOMING_PAYMENT_PENDING)
                     .build()
             )
 
@@ -658,15 +676,17 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofOutgoingPayment() {
-        val outgoingPayment =
-            OutgoingPaymentWebhookEvent.builder()
+    fun ofOutgoingPaymentWebhook() {
+        val outgoingPaymentWebhook =
+            OutgoingPaymentWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("OUTGOING_PAYMENT.PENDING"))
                 .data(
                     OutgoingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(JsonValue.from(mapOf<String, Any>()))
+                        .destination(TransactionDestinationOneOf.builder().build())
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -686,7 +706,7 @@ internal class UnwrapWebhookEventTest {
                         .type(OutgoingTransaction.Type.OUTGOING)
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
-                            OutgoingTransaction.CounterpartyInformation.builder()
+                            CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -695,7 +715,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
-                        .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                        .failureReason(OutgoingTransactionFailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
                             PaymentInstructions.builder()
@@ -785,11 +805,11 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingTransaction.Refund.builder()
+                            Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                                .status(Refund.Status.COMPLETED)
+                                .reason(Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -797,37 +817,37 @@ internal class UnwrapWebhookEventTest {
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT_PENDING)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofOutgoingPayment(outgoingPayment)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofOutgoingPaymentWebhook(outgoingPaymentWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isEqualTo(outgoingPayment)
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isEqualTo(outgoingPaymentWebhook)
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofOutgoingPaymentRoundtrip() {
+    fun ofOutgoingPaymentWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofOutgoingPayment(
-                OutgoingPaymentWebhookEvent.builder()
+            UnwrapWebhookEvent.ofOutgoingPaymentWebhook(
+                OutgoingPaymentWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("OUTGOING_PAYMENT.PENDING"))
                     .data(
                         OutgoingTransaction.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .destination(JsonValue.from(mapOf<String, Any>()))
+                            .destination(TransactionDestinationOneOf.builder().build())
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .sentAmount(
                                 CurrencyAmount.builder()
@@ -847,7 +867,7 @@ internal class UnwrapWebhookEventTest {
                             .type(OutgoingTransaction.Type.OUTGOING)
                             .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                             .counterpartyInformation(
-                                OutgoingTransaction.CounterpartyInformation.builder()
+                                CounterpartyInformation.builder()
                                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -856,7 +876,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                             .description("Payment for invoice #1234")
                             .exchangeRate(1.08)
-                            .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                            .failureReason(OutgoingTransactionFailureReason.QUOTE_EXPIRED)
                             .fees(10L)
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
@@ -946,11 +966,11 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .refund(
-                                OutgoingTransaction.Refund.builder()
+                                Refund.builder()
                                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                     .reference("UMA-Q12345-REFUND")
-                                    .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                                    .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                                    .status(Refund.Status.COMPLETED)
+                                    .reason(Refund.Reason.TRANSACTION_FAILED)
                                     .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                     .build()
                             )
@@ -958,8 +978,6 @@ internal class UnwrapWebhookEventTest {
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(OutgoingPaymentWebhookEvent.Type.OUTGOING_PAYMENT_PENDING)
                     .build()
             )
 
@@ -973,38 +991,38 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofTest() {
-        val test =
-            TestWebhookWebhookEvent.builder()
+    fun ofTestWebhookRequest() {
+        val testWebhookRequest =
+            TestWebhookRequest.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(TestWebhookWebhookEvent.Type.TEST)
+                .type(JsonValue.from("TEST"))
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofTest(test)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofTestWebhookRequest(testWebhookRequest)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isEqualTo(test)
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isEqualTo(testWebhookRequest)
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofTestRoundtrip() {
+    fun ofTestWebhookRequestRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofTest(
-                TestWebhookWebhookEvent.builder()
+            UnwrapWebhookEvent.ofTestWebhookRequest(
+                TestWebhookRequest.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(TestWebhookWebhookEvent.Type.TEST)
+                    .type(JsonValue.from("TEST"))
                     .build()
             )
 
@@ -1018,22 +1036,24 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofBulkUpload() {
-        val bulkUpload =
-            BulkUploadWebhookEvent.builder()
+    fun ofBulkUploadWebhook() {
+        val bulkUploadWebhook =
+            BulkUploadWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("BULK_UPLOAD.COMPLETED"))
                 .data(
-                    BulkUploadWebhookEvent.Data.builder()
+                    BulkUploadWebhook.Data.builder()
                         .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                         .progress(
-                            BulkUploadWebhookEvent.Data.Progress.builder()
+                            BulkUploadWebhook.Data.Progress.builder()
                                 .failed(50L)
                                 .processed(2500L)
                                 .successful(2450L)
                                 .total(5000L)
                                 .build()
                         )
-                        .status(BulkUploadWebhookEvent.Data.Status.PROCESSING)
+                        .status(BulkUploadWebhook.Data.Status.PROCESSING)
                         .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                         .addError(
                             BulkCustomerImportErrorEntry.builder()
@@ -1049,44 +1069,44 @@ internal class UnwrapWebhookEventTest {
                         )
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD_COMPLETED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofBulkUpload(bulkUpload)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofBulkUploadWebhook(bulkUploadWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isEqualTo(bulkUpload)
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isEqualTo(bulkUploadWebhook)
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofBulkUploadRoundtrip() {
+    fun ofBulkUploadWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofBulkUpload(
-                BulkUploadWebhookEvent.builder()
+            UnwrapWebhookEvent.ofBulkUploadWebhook(
+                BulkUploadWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("BULK_UPLOAD.COMPLETED"))
                     .data(
-                        BulkUploadWebhookEvent.Data.builder()
+                        BulkUploadWebhook.Data.builder()
                             .id("Job:019542f5-b3e7-1d02-0000-000000000006")
                             .progress(
-                                BulkUploadWebhookEvent.Data.Progress.builder()
+                                BulkUploadWebhook.Data.Progress.builder()
                                     .failed(50L)
                                     .processed(2500L)
                                     .successful(2450L)
                                     .total(5000L)
                                     .build()
                             )
-                            .status(BulkUploadWebhookEvent.Data.Status.PROCESSING)
+                            .status(BulkUploadWebhook.Data.Status.PROCESSING)
                             .completedAt(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                             .addError(
                                 BulkCustomerImportErrorEntry.builder()
@@ -1102,8 +1122,6 @@ internal class UnwrapWebhookEventTest {
                             )
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(BulkUploadWebhookEvent.Type.BULK_UPLOAD_COMPLETED)
                     .build()
             )
 
@@ -1117,10 +1135,12 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofInvitationClaimed() {
-        val invitationClaimed =
-            InvitationClaimedWebhookEvent.builder()
+    fun ofInvitationClaimedWebhook() {
+        val invitationClaimedWebhook =
+            InvitationClaimedWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("INVITATION.CLAIMED"))
                 .data(
                     UmaInvitation.builder()
                         .code("019542f5")
@@ -1147,32 +1167,34 @@ internal class UnwrapWebhookEventTest {
                         .inviteeUma("\$invitee@uma.domain")
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofInvitationClaimed(invitationClaimed)
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofInvitationClaimedWebhook(invitationClaimedWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook())
+            .isEqualTo(invitationClaimedWebhook)
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofInvitationClaimedRoundtrip() {
+    fun ofInvitationClaimedWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofInvitationClaimed(
-                InvitationClaimedWebhookEvent.builder()
+            UnwrapWebhookEvent.ofInvitationClaimedWebhook(
+                InvitationClaimedWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("INVITATION.CLAIMED"))
                     .data(
                         UmaInvitation.builder()
                             .code("019542f5")
@@ -1199,8 +1221,6 @@ internal class UnwrapWebhookEventTest {
                             .inviteeUma("\$invitee@uma.domain")
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(InvitationClaimedWebhookEvent.Type.INVITATION_CLAIMED)
                     .build()
             )
 
@@ -1214,16 +1234,25 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCustomerUpdate() {
-        val customerUpdate =
-            CustomerUpdateWebhookEvent.builder()
+    fun ofCustomerWebhook() {
+        val customerWebhook =
+            CustomerWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("CUSTOMER.KYC_APPROVED"))
                 .data(
                     IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
                             Address.builder()
                                 .country("US")
@@ -1235,50 +1264,50 @@ internal class UnwrapWebhookEventTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
-                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                        .kycStatus(KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CustomerUpdateWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCustomerUpdate(customerUpdate)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCustomerWebhook(customerWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isEqualTo(customerWebhook)
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofCustomerUpdateRoundtrip() {
+    fun ofCustomerWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCustomerUpdate(
-                CustomerUpdateWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCustomerWebhook(
+                CustomerWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("CUSTOMER.KYC_APPROVED"))
                     .data(
                         IndividualCustomer.builder()
-                            .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                            .customerType(JsonValue.from("INDIVIDUAL"))
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                            .addCurrency("USD")
+                            .addCurrency("USDC")
+                            .email("john.doe@example.com")
+                            .isDeleted(false)
+                            .region("US")
+                            .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -1290,20 +1319,11 @@ internal class UnwrapWebhookEventTest {
                                     .build()
                             )
                             .birthDate(LocalDate.parse("1990-01-15"))
-                            .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                            .addCurrency("USD")
-                            .addCurrency("USDC")
-                            .email("john.doe@example.com")
                             .fullName("John Michael Doe")
-                            .isDeleted(false)
-                            .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                            .kycStatus(KycStatus.APPROVED)
                             .nationality("US")
-                            .region("US")
-                            .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CustomerUpdateWebhookEvent.Type.CUSTOMER_KYC_APPROVED)
                     .build()
             )
 
@@ -1317,10 +1337,12 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofInternalAccountStatus() {
-        val internalAccountStatus =
-            InternalAccountStatusWebhookEvent.builder()
+    fun ofInternalAccountStatusWebhook() {
+        val internalAccountStatusWebhook =
+            InternalAccountStatusWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("INTERNAL_ACCOUNT.BALANCE_UPDATED"))
                 .data(
                     InternalAccount.builder()
                         .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -1364,39 +1386,41 @@ internal class UnwrapWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
-                        .status(InternalAccount.Status.ACTIVE)
-                        .type(InternalAccount.Type.INTERNAL_FIAT)
+                        .status(InternalAccountStatus.ACTIVE)
+                        .type(InternalAccountType.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .privateEnabled(true)
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(InternalAccountStatusWebhookEvent.Type.INTERNAL_ACCOUNT_BALANCE_UPDATED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofInternalAccountStatus(internalAccountStatus)
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofInternalAccountStatusWebhook(internalAccountStatusWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook())
+            .isEqualTo(internalAccountStatusWebhook)
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofInternalAccountStatusRoundtrip() {
+    fun ofInternalAccountStatusWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofInternalAccountStatus(
-                InternalAccountStatusWebhookEvent.builder()
+            UnwrapWebhookEvent.ofInternalAccountStatusWebhook(
+                InternalAccountStatusWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("INTERNAL_ACCOUNT.BALANCE_UPDATED"))
                     .data(
                         InternalAccount.builder()
                             .id("InternalAccount:12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -1440,15 +1464,13 @@ internal class UnwrapWebhookEventTest {
                                     .isPlatformAccount(true)
                                     .build()
                             )
-                            .status(InternalAccount.Status.ACTIVE)
-                            .type(InternalAccount.Type.INTERNAL_FIAT)
+                            .status(InternalAccountStatus.ACTIVE)
+                            .type(InternalAccountType.INTERNAL_FIAT)
                             .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .privateEnabled(true)
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(InternalAccountStatusWebhookEvent.Type.INTERNAL_ACCOUNT_BALANCE_UPDATED)
                     .build()
             )
 
@@ -1462,12 +1484,14 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofVerificationUpdate() {
-        val verificationUpdate =
-            VerificationUpdateWebhookEvent.builder()
+    fun ofVerificationWebhook() {
+        val verificationWebhook =
+            VerificationWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("VERIFICATION.APPROVED"))
                 .data(
-                    VerificationUpdateWebhookEvent.Data.builder()
+                    Verification.builder()
                         .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -1475,47 +1499,43 @@ internal class UnwrapWebhookEventTest {
                             VerificationError.builder()
                                 .reason("Business address line 1 is required")
                                 .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .type(VerificationError.Type.MISSING_FIELD)
-                                .addAcceptedDocumentType(
-                                    VerificationError.AcceptedDocumentType.PASSPORT
-                                )
+                                .type(VerificationErrorType.MISSING_FIELD)
+                                .addAcceptedDocumentType(DocumentType.PASSPORT)
                                 .field("customer.address.line1")
                                 .build()
                         )
-                        .verificationStatus(
-                            VerificationUpdateWebhookEvent.Data.VerificationStatus.RESOLVE_ERRORS
-                        )
+                        .verificationStatus(VerificationStatus.RESOLVE_ERRORS)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(VerificationUpdateWebhookEvent.Type.VERIFICATION_APPROVED)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofVerificationUpdate(verificationUpdate)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofVerificationWebhook(verificationWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isEqualTo(verificationWebhook)
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofVerificationUpdateRoundtrip() {
+    fun ofVerificationWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofVerificationUpdate(
-                VerificationUpdateWebhookEvent.builder()
+            UnwrapWebhookEvent.ofVerificationWebhook(
+                VerificationWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("VERIFICATION.APPROVED"))
                     .data(
-                        VerificationUpdateWebhookEvent.Data.builder()
+                        Verification.builder()
                             .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
                             .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -1523,22 +1543,15 @@ internal class UnwrapWebhookEventTest {
                                 VerificationError.builder()
                                     .reason("Business address line 1 is required")
                                     .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                    .type(VerificationError.Type.MISSING_FIELD)
-                                    .addAcceptedDocumentType(
-                                        VerificationError.AcceptedDocumentType.PASSPORT
-                                    )
+                                    .type(VerificationErrorType.MISSING_FIELD)
+                                    .addAcceptedDocumentType(DocumentType.PASSPORT)
                                     .field("customer.address.line1")
                                     .build()
                             )
-                            .verificationStatus(
-                                VerificationUpdateWebhookEvent.Data.VerificationStatus
-                                    .RESOLVE_ERRORS
-                            )
+                            .verificationStatus(VerificationStatus.RESOLVE_ERRORS)
                             .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(VerificationUpdateWebhookEvent.Type.VERIFICATION_APPROVED)
                     .build()
             )
 
@@ -1552,76 +1565,84 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCardStateChange() {
-        val cardStateChange =
-            CardStateChangeWebhookEvent.builder()
+    fun ofCardStateChangeWebhook() {
+        val cardStateChangeWebhook =
+            CardStateChangeWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("CARD.STATE_CHANGE"))
                 .data(
-                    CardStateChangeWebhookEvent.Data.builder()
+                    Card.builder()
+                        .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                         .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .form(CardStateChangeWebhookEvent.Data.Form.VIRTUAL)
+                        .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                        .form(CardForm.VIRTUAL)
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
-                        .state(CardStateChangeWebhookEvent.Data.State.PENDING_KYC)
-                        .brand(CardStateChangeWebhookEvent.Data.Brand.VISA)
+                        .state(CardState.PENDING_KYC)
+                        .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                        .brand(CardBrand.VISA)
+                        .currency("USD")
                         .expMonth(12L)
                         .expYear(2029L)
+                        .issuerRef("lithic_card_4f8d3a2b1c")
                         .last4("4242")
                         .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                         .platformCardId("card-emp-aary-001")
-                        .stateReason(CardStateChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED)
+                        .stateReason(CardStateReason.ISSUER_REJECTED)
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChange(cardStateChange)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChangeWebhook(cardStateChangeWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isEqualTo(cardStateChangeWebhook)
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook()).isNull()
     }
 
     @Test
-    fun ofCardStateChangeRoundtrip() {
+    fun ofCardStateChangeWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardStateChange(
-                CardStateChangeWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCardStateChangeWebhook(
+                CardStateChangeWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("CARD.STATE_CHANGE"))
                     .data(
-                        CardStateChangeWebhookEvent.Data.builder()
+                        Card.builder()
+                            .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                             .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .form(CardStateChangeWebhookEvent.Data.Form.VIRTUAL)
+                            .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                            .form(CardForm.VIRTUAL)
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
                             )
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
-                            .state(CardStateChangeWebhookEvent.Data.State.PENDING_KYC)
-                            .brand(CardStateChangeWebhookEvent.Data.Brand.VISA)
+                            .state(CardState.PENDING_KYC)
+                            .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                            .brand(CardBrand.VISA)
+                            .currency("USD")
                             .expMonth(12L)
                             .expYear(2029L)
+                            .issuerRef("lithic_card_4f8d3a2b1c")
                             .last4("4242")
                             .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                             .platformCardId("card-emp-aary-001")
-                            .stateReason(
-                                CardStateChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
-                            )
+                            .stateReason(CardStateReason.ISSUER_REJECTED)
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
                     .build()
             )
 
@@ -1635,79 +1656,86 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCardFundingSourceChange() {
-        val cardFundingSourceChange =
-            CardFundingSourceChangeWebhookEvent.builder()
+    fun ofCardFundingSourceChangeWebhook() {
+        val cardFundingSourceChangeWebhook =
+            CardFundingSourceChangeWebhook.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(JsonValue.from("CARD.FUNDING_SOURCE_CHANGE"))
                 .data(
-                    CardFundingSourceChangeWebhookEvent.Data.builder()
+                    Card.builder()
+                        .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                         .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .form(CardFundingSourceChangeWebhookEvent.Data.Form.VIRTUAL)
+                        .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                        .form(CardForm.VIRTUAL)
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
-                        .state(CardFundingSourceChangeWebhookEvent.Data.State.PENDING_KYC)
-                        .brand(CardFundingSourceChangeWebhookEvent.Data.Brand.VISA)
+                        .state(CardState.PENDING_KYC)
+                        .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                        .brand(CardBrand.VISA)
+                        .currency("USD")
                         .expMonth(12L)
                         .expYear(2029L)
+                        .issuerRef("lithic_card_4f8d3a2b1c")
                         .last4("4242")
                         .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                         .platformCardId("card-emp-aary-001")
-                        .stateReason(
-                            CardFundingSourceChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
-                        )
+                        .stateReason(CardStateReason.ISSUER_REJECTED)
                         .build()
                 )
-                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
                 .build()
 
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardFundingSourceChange(cardFundingSourceChange)
+            UnwrapWebhookEvent.ofCardFundingSourceChangeWebhook(cardFundingSourceChangeWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
-        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
-        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
-        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
-        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
-        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
-        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isEqualTo(cardFundingSourceChange)
+        assertThat(unwrapWebhookEvent.agentActionWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPaymentWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhookRequest()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUploadWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimedWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.customerWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatusWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.verificationWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChangeWebhook()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChangeWebhook())
+            .isEqualTo(cardFundingSourceChangeWebhook)
     }
 
     @Test
-    fun ofCardFundingSourceChangeRoundtrip() {
+    fun ofCardFundingSourceChangeWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardFundingSourceChange(
-                CardFundingSourceChangeWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCardFundingSourceChangeWebhook(
+                CardFundingSourceChangeWebhook.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(JsonValue.from("CARD.FUNDING_SOURCE_CHANGE"))
                     .data(
-                        CardFundingSourceChangeWebhookEvent.Data.builder()
+                        Card.builder()
+                            .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                             .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .form(CardFundingSourceChangeWebhookEvent.Data.Form.VIRTUAL)
+                            .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
+                            .form(CardForm.VIRTUAL)
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
                             )
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
-                            .state(CardFundingSourceChangeWebhookEvent.Data.State.PENDING_KYC)
-                            .brand(CardFundingSourceChangeWebhookEvent.Data.Brand.VISA)
+                            .state(CardState.PENDING_KYC)
+                            .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
+                            .brand(CardBrand.VISA)
+                            .currency("USD")
                             .expMonth(12L)
                             .expYear(2029L)
+                            .issuerRef("lithic_card_4f8d3a2b1c")
                             .last4("4242")
                             .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                             .platformCardId("card-emp-aary-001")
-                            .stateReason(
-                                CardFundingSourceChangeWebhookEvent.Data.StateReason.ISSUER_REJECTED
-                            )
+                            .stateReason(CardStateReason.ISSUER_REJECTED)
                             .build()
                     )
-                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CardFundingSourceChangeWebhookEvent.Type.CARD_FUNDING_SOURCE_CHANGE)
                     .build()
             )
 

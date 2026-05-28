@@ -14,34 +14,34 @@ class CustomerListInternalAccountsPage
 private constructor(
     private val service: CustomerService,
     private val params: CustomerListInternalAccountsParams,
-    private val response: CustomerListInternalAccountsPageResponse,
+    private val response: InternalAccountListResponse,
 ) : Page<InternalAccount> {
 
     /**
-     * Delegates to [CustomerListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListInternalAccountsPageResponse.data
+     * @see InternalAccountListResponse.data
      */
     fun data(): List<InternalAccount> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [CustomerListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListInternalAccountsPageResponse.nextCursor
+     * @see InternalAccountListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [CustomerListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListInternalAccountsPageResponse.hasMore
+     * @see InternalAccountListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [CustomerListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListInternalAccountsPageResponse.totalCount
+     * @see InternalAccountListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -64,7 +64,7 @@ private constructor(
     fun params(): CustomerListInternalAccountsParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): CustomerListInternalAccountsPageResponse = response
+    fun response(): InternalAccountListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -89,7 +89,7 @@ private constructor(
 
         private var service: CustomerService? = null
         private var params: CustomerListInternalAccountsParams? = null
-        private var response: CustomerListInternalAccountsPageResponse? = null
+        private var response: InternalAccountListResponse? = null
 
         internal fun from(customerListInternalAccountsPage: CustomerListInternalAccountsPage) =
             apply {
@@ -104,9 +104,7 @@ private constructor(
         fun params(params: CustomerListInternalAccountsParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: CustomerListInternalAccountsPageResponse) = apply {
-            this.response = response
-        }
+        fun response(response: InternalAccountListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [CustomerListInternalAccountsPage].

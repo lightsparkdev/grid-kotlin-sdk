@@ -17,7 +17,7 @@ internal class ExchangeRateListResponseTest {
         val exchangeRateListResponse =
             ExchangeRateListResponse.builder()
                 .addData(
-                    ExchangeRateListResponse.Data.builder()
+                    ExchangeRate.builder()
                         .destinationCurrency(
                             Currency.builder()
                                 .code("USD")
@@ -28,7 +28,7 @@ internal class ExchangeRateListResponseTest {
                         )
                         .destinationPaymentRail(JsonValue.from("ACH"))
                         .exchangeRate(82.5)
-                        .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
+                        .fees(ExchangeRateFees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)
                         .minSendingAmount(100L)
                         .receivingAmount(1650000L)
@@ -48,7 +48,7 @@ internal class ExchangeRateListResponseTest {
 
         assertThat(exchangeRateListResponse.data())
             .containsExactly(
-                ExchangeRateListResponse.Data.builder()
+                ExchangeRate.builder()
                     .destinationCurrency(
                         Currency.builder()
                             .code("USD")
@@ -59,7 +59,7 @@ internal class ExchangeRateListResponseTest {
                     )
                     .destinationPaymentRail(JsonValue.from("ACH"))
                     .exchangeRate(82.5)
-                    .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
+                    .fees(ExchangeRateFees.builder().fixed(100L).build())
                     .maxSendingAmount(10000000L)
                     .minSendingAmount(100L)
                     .receivingAmount(1650000L)
@@ -83,7 +83,7 @@ internal class ExchangeRateListResponseTest {
         val exchangeRateListResponse =
             ExchangeRateListResponse.builder()
                 .addData(
-                    ExchangeRateListResponse.Data.builder()
+                    ExchangeRate.builder()
                         .destinationCurrency(
                             Currency.builder()
                                 .code("USD")
@@ -94,7 +94,7 @@ internal class ExchangeRateListResponseTest {
                         )
                         .destinationPaymentRail(JsonValue.from("ACH"))
                         .exchangeRate(82.5)
-                        .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
+                        .fees(ExchangeRateFees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)
                         .minSendingAmount(100L)
                         .receivingAmount(1650000L)

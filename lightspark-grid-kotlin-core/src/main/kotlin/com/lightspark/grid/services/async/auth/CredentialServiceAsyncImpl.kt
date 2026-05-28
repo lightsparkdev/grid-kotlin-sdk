@@ -205,7 +205,7 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("auth", "credentials", params._pathParam(0), "challenge")
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepareAsync(
                         clientOptions,

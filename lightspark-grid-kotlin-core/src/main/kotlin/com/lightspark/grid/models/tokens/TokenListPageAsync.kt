@@ -13,34 +13,34 @@ class TokenListPageAsync
 private constructor(
     private val service: TokenServiceAsync,
     private val params: TokenListParams,
-    private val response: TokenListPageResponse,
+    private val response: TokenListResponse,
 ) : PageAsync<ApiToken> {
 
     /**
-     * Delegates to [TokenListPageResponse], but gracefully handles missing data.
+     * Delegates to [TokenListResponse], but gracefully handles missing data.
      *
-     * @see TokenListPageResponse.data
+     * @see TokenListResponse.data
      */
     fun data(): List<ApiToken> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [TokenListPageResponse], but gracefully handles missing data.
+     * Delegates to [TokenListResponse], but gracefully handles missing data.
      *
-     * @see TokenListPageResponse.nextCursor
+     * @see TokenListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [TokenListPageResponse], but gracefully handles missing data.
+     * Delegates to [TokenListResponse], but gracefully handles missing data.
      *
-     * @see TokenListPageResponse.hasMore
+     * @see TokenListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [TokenListPageResponse], but gracefully handles missing data.
+     * Delegates to [TokenListResponse], but gracefully handles missing data.
      *
-     * @see TokenListPageResponse.totalCount
+     * @see TokenListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -62,7 +62,7 @@ private constructor(
     fun params(): TokenListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): TokenListPageResponse = response
+    fun response(): TokenListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: TokenServiceAsync? = null
         private var params: TokenListParams? = null
-        private var response: TokenListPageResponse? = null
+        private var response: TokenListResponse? = null
 
         internal fun from(tokenListPageAsync: TokenListPageAsync) = apply {
             service = tokenListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: TokenListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: TokenListPageResponse) = apply { this.response = response }
+        fun response(response: TokenListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [TokenListPageAsync].
