@@ -18,14 +18,16 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.multipartFormData
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
-import com.lightspark.grid.models.documents.Document
 import com.lightspark.grid.models.documents.DocumentDeleteParams
 import com.lightspark.grid.models.documents.DocumentListPageAsync
+import com.lightspark.grid.models.documents.DocumentListPageResponse
 import com.lightspark.grid.models.documents.DocumentListParams
-import com.lightspark.grid.models.documents.DocumentListResponse
 import com.lightspark.grid.models.documents.DocumentReplaceParams
+import com.lightspark.grid.models.documents.DocumentReplaceResponse
 import com.lightspark.grid.models.documents.DocumentRetrieveParams
+import com.lightspark.grid.models.documents.DocumentRetrieveResponse
 import com.lightspark.grid.models.documents.DocumentUploadParams
+import com.lightspark.grid.models.documents.DocumentUploadResponse
 
 /**
  * Endpoints for uploading and managing verification documents for customers and beneficial owners.
@@ -46,7 +48,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun retrieve(
         params: DocumentRetrieveParams,
         requestOptions: RequestOptions,
-    ): Document =
+    ): DocumentRetrieveResponse =
         // get /documents/{documentId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -65,14 +67,14 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun replace(
         params: DocumentReplaceParams,
         requestOptions: RequestOptions,
-    ): Document =
+    ): DocumentReplaceResponse =
         // put /documents/{documentId}
         withRawResponse().replace(params, requestOptions).parse()
 
     override suspend fun upload(
         params: DocumentUploadParams,
         requestOptions: RequestOptions,
-    ): Document =
+    ): DocumentUploadResponse =
         // post /documents
         withRawResponse().upload(params, requestOptions).parse()
 
@@ -89,13 +91,13 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<Document> =
-            jsonHandler<Document>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<DocumentRetrieveResponse> =
+            jsonHandler<DocumentRetrieveResponse>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: DocumentRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Document> {
+        ): HttpResponseFor<DocumentRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("documentId", params.documentId())
@@ -119,8 +121,8 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val listHandler: Handler<DocumentListResponse> =
-            jsonHandler<DocumentListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<DocumentListPageResponse> =
+            jsonHandler<DocumentListPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: DocumentListParams,
@@ -177,13 +179,13 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val replaceHandler: Handler<Document> =
-            jsonHandler<Document>(clientOptions.jsonMapper)
+        private val replaceHandler: Handler<DocumentReplaceResponse> =
+            jsonHandler<DocumentReplaceResponse>(clientOptions.jsonMapper)
 
         override suspend fun replace(
             params: DocumentReplaceParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Document> {
+        ): HttpResponseFor<DocumentReplaceResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("documentId", params.documentId())
@@ -208,13 +210,13 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val uploadHandler: Handler<Document> =
-            jsonHandler<Document>(clientOptions.jsonMapper)
+        private val uploadHandler: Handler<DocumentUploadResponse> =
+            jsonHandler<DocumentUploadResponse>(clientOptions.jsonMapper)
 
         override suspend fun upload(
             params: DocumentUploadParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<Document> {
+        ): HttpResponseFor<DocumentUploadResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

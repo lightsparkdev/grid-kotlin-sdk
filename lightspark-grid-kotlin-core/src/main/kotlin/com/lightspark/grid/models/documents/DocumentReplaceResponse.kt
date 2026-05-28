@@ -13,32 +13,40 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class DocumentUploadRequest
+class DocumentReplaceResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val id: JsonField<String>,
     private val country: JsonField<String>,
+    private val createdAt: JsonField<OffsetDateTime>,
     private val documentHolder: JsonField<String>,
     private val documentType: JsonField<DocumentType>,
-    private val file: JsonField<String>,
+    private val fileName: JsonField<String>,
     private val documentNumber: JsonField<String>,
     private val issuingAuthority: JsonField<String>,
     private val side: JsonField<Side>,
+    private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
+        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
         @JsonProperty("country") @ExcludeMissing country: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("createdAt")
+        @ExcludeMissing
+        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("documentHolder")
         @ExcludeMissing
         documentHolder: JsonField<String> = JsonMissing.of(),
         @JsonProperty("documentType")
         @ExcludeMissing
         documentType: JsonField<DocumentType> = JsonMissing.of(),
-        @JsonProperty("file") @ExcludeMissing file: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("fileName") @ExcludeMissing fileName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("documentNumber")
         @ExcludeMissing
         documentNumber: JsonField<String> = JsonMissing.of(),
@@ -46,16 +54,30 @@ private constructor(
         @ExcludeMissing
         issuingAuthority: JsonField<String> = JsonMissing.of(),
         @JsonProperty("side") @ExcludeMissing side: JsonField<Side> = JsonMissing.of(),
+        @JsonProperty("updatedAt")
+        @ExcludeMissing
+        updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
     ) : this(
+        id,
         country,
+        createdAt,
         documentHolder,
         documentType,
-        file,
+        fileName,
         documentNumber,
         issuingAuthority,
         side,
+        updatedAt,
         mutableMapOf(),
     )
+
+    /**
+     * Unique identifier for this document
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun id(): String = id.getRequired("id")
 
     /**
      * Country that issued the document (ISO 3166-1 alpha-2)
@@ -64,6 +86,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun country(): String = country.getRequired("country")
+
+    /**
+     * When this document was uploaded
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
      * ID of the entity that owns this document. Can be a Customer ID or a BeneficialOwner ID.
@@ -89,12 +119,12 @@ private constructor(
     fun documentType(): DocumentType = documentType.getRequired("documentType")
 
     /**
-     * The document file (PDF, JPEG, or PNG, max 10 MB)
+     * Original file name of the uploaded document
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun file(): String = file.getRequired("file")
+    fun fileName(): String = fileName.getRequired("fileName")
 
     /**
      * Document identification number (e.g., passport number)
@@ -113,7 +143,8 @@ private constructor(
     fun issuingAuthority(): String? = issuingAuthority.getNullable("issuingAuthority")
 
     /**
-     * Which side of the document (for two-sided documents like driver's licenses)
+     * Which side of the document this upload represents. Relevant for two-sided documents like
+     * driver's licenses or national IDs.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -121,11 +152,35 @@ private constructor(
     fun side(): Side? = side.getNullable("side")
 
     /**
+     * When this document was last updated
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
+
+    /**
+     * Returns the raw JSON value of [id].
+     *
+     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
      * Returns the raw JSON value of [country].
      *
      * Unlike [country], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+    /**
+     * Returns the raw JSON value of [createdAt].
+     *
+     * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("createdAt")
+    @ExcludeMissing
+    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
      * Returns the raw JSON value of [documentHolder].
@@ -146,11 +201,11 @@ private constructor(
     fun _documentType(): JsonField<DocumentType> = documentType
 
     /**
-     * Returns the raw JSON value of [file].
+     * Returns the raw JSON value of [fileName].
      *
-     * Unlike [file], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [fileName], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("file") @ExcludeMissing fun _file(): JsonField<String> = file
+    @JsonProperty("fileName") @ExcludeMissing fun _fileName(): JsonField<String> = fileName
 
     /**
      * Returns the raw JSON value of [documentNumber].
@@ -178,6 +233,15 @@ private constructor(
      */
     @JsonProperty("side") @ExcludeMissing fun _side(): JsonField<Side> = side
 
+    /**
+     * Returns the raw JSON value of [updatedAt].
+     *
+     * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("updatedAt")
+    @ExcludeMissing
+    fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -193,41 +257,60 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [DocumentUploadRequest].
+         * Returns a mutable builder for constructing an instance of [DocumentReplaceResponse].
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .country()
+         * .createdAt()
          * .documentHolder()
          * .documentType()
-         * .file()
+         * .fileName()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [DocumentUploadRequest]. */
+    /** A builder for [DocumentReplaceResponse]. */
     class Builder internal constructor() {
 
+        private var id: JsonField<String>? = null
         private var country: JsonField<String>? = null
+        private var createdAt: JsonField<OffsetDateTime>? = null
         private var documentHolder: JsonField<String>? = null
         private var documentType: JsonField<DocumentType>? = null
-        private var file: JsonField<String>? = null
+        private var fileName: JsonField<String>? = null
         private var documentNumber: JsonField<String> = JsonMissing.of()
         private var issuingAuthority: JsonField<String> = JsonMissing.of()
         private var side: JsonField<Side> = JsonMissing.of()
+        private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(documentUploadRequest: DocumentUploadRequest) = apply {
-            country = documentUploadRequest.country
-            documentHolder = documentUploadRequest.documentHolder
-            documentType = documentUploadRequest.documentType
-            file = documentUploadRequest.file
-            documentNumber = documentUploadRequest.documentNumber
-            issuingAuthority = documentUploadRequest.issuingAuthority
-            side = documentUploadRequest.side
-            additionalProperties = documentUploadRequest.additionalProperties.toMutableMap()
+        internal fun from(documentReplaceResponse: DocumentReplaceResponse) = apply {
+            id = documentReplaceResponse.id
+            country = documentReplaceResponse.country
+            createdAt = documentReplaceResponse.createdAt
+            documentHolder = documentReplaceResponse.documentHolder
+            documentType = documentReplaceResponse.documentType
+            fileName = documentReplaceResponse.fileName
+            documentNumber = documentReplaceResponse.documentNumber
+            issuingAuthority = documentReplaceResponse.issuingAuthority
+            side = documentReplaceResponse.side
+            updatedAt = documentReplaceResponse.updatedAt
+            additionalProperties = documentReplaceResponse.additionalProperties.toMutableMap()
         }
+
+        /** Unique identifier for this document */
+        fun id(id: String) = id(JsonField.of(id))
+
+        /**
+         * Sets [Builder.id] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.id] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun id(id: JsonField<String>) = apply { this.id = id }
 
         /** Country that issued the document (ISO 3166-1 alpha-2) */
         fun country(country: String) = country(JsonField.of(country))
@@ -239,6 +322,18 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun country(country: JsonField<String>) = apply { this.country = country }
+
+        /** When this document was uploaded */
+        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
+
+        /**
+         * Sets [Builder.createdAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
         /**
          * ID of the entity that owns this document. Can be a Customer ID or a BeneficialOwner ID.
@@ -279,16 +374,16 @@ private constructor(
             this.documentType = documentType
         }
 
-        /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(file: String) = file(JsonField.of(file))
+        /** Original file name of the uploaded document */
+        fun fileName(fileName: String) = fileName(JsonField.of(fileName))
 
         /**
-         * Sets [Builder.file] to an arbitrary JSON value.
+         * Sets [Builder.fileName] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.file] with a well-typed [String] value instead. This
+         * You should usually call [Builder.fileName] with a well-typed [String] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun file(file: JsonField<String>) = apply { this.file = file }
+        fun fileName(fileName: JsonField<String>) = apply { this.fileName = fileName }
 
         /** Document identification number (e.g., passport number) */
         fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
@@ -319,7 +414,10 @@ private constructor(
             this.issuingAuthority = issuingAuthority
         }
 
-        /** Which side of the document (for two-sided documents like driver's licenses) */
+        /**
+         * Which side of the document this upload represents. Relevant for two-sided documents like
+         * driver's licenses or national IDs.
+         */
         fun side(side: Side) = side(JsonField.of(side))
 
         /**
@@ -329,6 +427,18 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun side(side: JsonField<Side>) = apply { this.side = side }
+
+        /** When this document was last updated */
+        fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
+
+        /**
+         * Sets [Builder.updatedAt] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -350,29 +460,34 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [DocumentUploadRequest].
+         * Returns an immutable instance of [DocumentReplaceResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
+         * .id()
          * .country()
+         * .createdAt()
          * .documentHolder()
          * .documentType()
-         * .file()
+         * .fileName()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): DocumentUploadRequest =
-            DocumentUploadRequest(
+        fun build(): DocumentReplaceResponse =
+            DocumentReplaceResponse(
+                checkRequired("id", id),
                 checkRequired("country", country),
+                checkRequired("createdAt", createdAt),
                 checkRequired("documentHolder", documentHolder),
                 checkRequired("documentType", documentType),
-                checkRequired("file", file),
+                checkRequired("fileName", fileName),
                 documentNumber,
                 issuingAuthority,
                 side,
+                updatedAt,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -387,18 +502,21 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): DocumentUploadRequest = apply {
+    fun validate(): DocumentReplaceResponse = apply {
         if (validated) {
             return@apply
         }
 
+        id()
         country()
+        createdAt()
         documentHolder()
         documentType().validate()
-        file()
+        fileName()
         documentNumber()
         issuingAuthority()
         side()?.validate()
+        updatedAt()
         validated = true
     }
 
@@ -416,15 +534,312 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (country.asKnown() == null) 0 else 1) +
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (country.asKnown() == null) 0 else 1) +
+            (if (createdAt.asKnown() == null) 0 else 1) +
             (if (documentHolder.asKnown() == null) 0 else 1) +
             (documentType.asKnown()?.validity() ?: 0) +
-            (if (file.asKnown() == null) 0 else 1) +
+            (if (fileName.asKnown() == null) 0 else 1) +
             (if (documentNumber.asKnown() == null) 0 else 1) +
             (if (issuingAuthority.asKnown() == null) 0 else 1) +
-            (side.asKnown()?.validity() ?: 0)
+            (side.asKnown()?.validity() ?: 0) +
+            (if (updatedAt.asKnown() == null) 0 else 1)
 
-    /** Which side of the document (for two-sided documents like driver's licenses) */
+    /**
+     * Type of identity or business verification document. Document types are grouped by
+     * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
+     * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
+     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+     * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+     * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
+     */
+    class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val PASSPORT = of("PASSPORT")
+
+            val DRIVERS_LICENSE = of("DRIVERS_LICENSE")
+
+            val NATIONAL_ID = of("NATIONAL_ID")
+
+            val PROOF_OF_ADDRESS = of("PROOF_OF_ADDRESS")
+
+            val BANK_STATEMENT = of("BANK_STATEMENT")
+
+            val TAX_RETURN = of("TAX_RETURN")
+
+            val CERTIFICATE_OF_INCORPORATION = of("CERTIFICATE_OF_INCORPORATION")
+
+            val ARTICLES_OF_INCORPORATION = of("ARTICLES_OF_INCORPORATION")
+
+            val ARTICLES_OF_ASSOCIATION = of("ARTICLES_OF_ASSOCIATION")
+
+            val STATE_REGISTRY_EXCERPT = of("STATE_REGISTRY_EXCERPT")
+
+            val GOOD_STANDING_CERTIFICATE = of("GOOD_STANDING_CERTIFICATE")
+
+            val INFORMATION_STATEMENT = of("INFORMATION_STATEMENT")
+
+            val INCUMBENCY_CERTIFICATE = of("INCUMBENCY_CERTIFICATE")
+
+            val BUSINESS_LICENSE = of("BUSINESS_LICENSE")
+
+            val SHAREHOLDER_REGISTER = of("SHAREHOLDER_REGISTER")
+
+            val POWER_OF_ATTORNEY = of("POWER_OF_ATTORNEY")
+
+            val UTILITY_BILL = of("UTILITY_BILL")
+
+            val ELECTRICITY_BILL = of("ELECTRICITY_BILL")
+
+            val RENT_OR_LEASE_AGREEMENT = of("RENT_OR_LEASE_AGREEMENT")
+
+            val DIRECTOR_REGISTRY = of("DIRECTOR_REGISTRY")
+
+            val TRUST_AGREEMENT = of("TRUST_AGREEMENT")
+
+            val STATE_COMPANY_REGISTRY = of("STATE_COMPANY_REGISTRY")
+
+            val PARTNERSHIP_CONTROL_AGREEMENT = of("PARTNERSHIP_CONTROL_AGREEMENT")
+
+            val PARTNERSHIP_AGREEMENT = of("PARTNERSHIP_AGREEMENT")
+
+            val SELFIE = of("SELFIE")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = DocumentType(JsonField.of(value))
+        }
+
+        /** An enum containing [DocumentType]'s known values. */
+        enum class Known {
+            PASSPORT,
+            DRIVERS_LICENSE,
+            NATIONAL_ID,
+            PROOF_OF_ADDRESS,
+            BANK_STATEMENT,
+            TAX_RETURN,
+            CERTIFICATE_OF_INCORPORATION,
+            ARTICLES_OF_INCORPORATION,
+            ARTICLES_OF_ASSOCIATION,
+            STATE_REGISTRY_EXCERPT,
+            GOOD_STANDING_CERTIFICATE,
+            INFORMATION_STATEMENT,
+            INCUMBENCY_CERTIFICATE,
+            BUSINESS_LICENSE,
+            SHAREHOLDER_REGISTER,
+            POWER_OF_ATTORNEY,
+            UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
+            SELFIE,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [DocumentType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [DocumentType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            PASSPORT,
+            DRIVERS_LICENSE,
+            NATIONAL_ID,
+            PROOF_OF_ADDRESS,
+            BANK_STATEMENT,
+            TAX_RETURN,
+            CERTIFICATE_OF_INCORPORATION,
+            ARTICLES_OF_INCORPORATION,
+            ARTICLES_OF_ASSOCIATION,
+            STATE_REGISTRY_EXCERPT,
+            GOOD_STANDING_CERTIFICATE,
+            INFORMATION_STATEMENT,
+            INCUMBENCY_CERTIFICATE,
+            BUSINESS_LICENSE,
+            SHAREHOLDER_REGISTER,
+            POWER_OF_ATTORNEY,
+            UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
+            SELFIE,
+            OTHER,
+            /**
+             * An enum member indicating that [DocumentType] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                PASSPORT -> Value.PASSPORT
+                DRIVERS_LICENSE -> Value.DRIVERS_LICENSE
+                NATIONAL_ID -> Value.NATIONAL_ID
+                PROOF_OF_ADDRESS -> Value.PROOF_OF_ADDRESS
+                BANK_STATEMENT -> Value.BANK_STATEMENT
+                TAX_RETURN -> Value.TAX_RETURN
+                CERTIFICATE_OF_INCORPORATION -> Value.CERTIFICATE_OF_INCORPORATION
+                ARTICLES_OF_INCORPORATION -> Value.ARTICLES_OF_INCORPORATION
+                ARTICLES_OF_ASSOCIATION -> Value.ARTICLES_OF_ASSOCIATION
+                STATE_REGISTRY_EXCERPT -> Value.STATE_REGISTRY_EXCERPT
+                GOOD_STANDING_CERTIFICATE -> Value.GOOD_STANDING_CERTIFICATE
+                INFORMATION_STATEMENT -> Value.INFORMATION_STATEMENT
+                INCUMBENCY_CERTIFICATE -> Value.INCUMBENCY_CERTIFICATE
+                BUSINESS_LICENSE -> Value.BUSINESS_LICENSE
+                SHAREHOLDER_REGISTER -> Value.SHAREHOLDER_REGISTER
+                POWER_OF_ATTORNEY -> Value.POWER_OF_ATTORNEY
+                UTILITY_BILL -> Value.UTILITY_BILL
+                ELECTRICITY_BILL -> Value.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Value.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Value.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Value.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Value.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Value.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Value.PARTNERSHIP_AGREEMENT
+                SELFIE -> Value.SELFIE
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                PASSPORT -> Known.PASSPORT
+                DRIVERS_LICENSE -> Known.DRIVERS_LICENSE
+                NATIONAL_ID -> Known.NATIONAL_ID
+                PROOF_OF_ADDRESS -> Known.PROOF_OF_ADDRESS
+                BANK_STATEMENT -> Known.BANK_STATEMENT
+                TAX_RETURN -> Known.TAX_RETURN
+                CERTIFICATE_OF_INCORPORATION -> Known.CERTIFICATE_OF_INCORPORATION
+                ARTICLES_OF_INCORPORATION -> Known.ARTICLES_OF_INCORPORATION
+                ARTICLES_OF_ASSOCIATION -> Known.ARTICLES_OF_ASSOCIATION
+                STATE_REGISTRY_EXCERPT -> Known.STATE_REGISTRY_EXCERPT
+                GOOD_STANDING_CERTIFICATE -> Known.GOOD_STANDING_CERTIFICATE
+                INFORMATION_STATEMENT -> Known.INFORMATION_STATEMENT
+                INCUMBENCY_CERTIFICATE -> Known.INCUMBENCY_CERTIFICATE
+                BUSINESS_LICENSE -> Known.BUSINESS_LICENSE
+                SHAREHOLDER_REGISTER -> Known.SHAREHOLDER_REGISTER
+                POWER_OF_ATTORNEY -> Known.POWER_OF_ATTORNEY
+                UTILITY_BILL -> Known.UTILITY_BILL
+                ELECTRICITY_BILL -> Known.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Known.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Known.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Known.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Known.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Known.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Known.PARTNERSHIP_AGREEMENT
+                SELFIE -> Known.SELFIE
+                OTHER -> Known.OTHER
+                else -> throw LightsparkGridInvalidDataException("Unknown DocumentType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): DocumentType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is DocumentType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Which side of the document this upload represents. Relevant for two-sided documents like
+     * driver's licenses or national IDs.
+     */
     class Side @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -564,26 +979,32 @@ private constructor(
             return true
         }
 
-        return other is DocumentUploadRequest &&
+        return other is DocumentReplaceResponse &&
+            id == other.id &&
             country == other.country &&
+            createdAt == other.createdAt &&
             documentHolder == other.documentHolder &&
             documentType == other.documentType &&
-            file == other.file &&
+            fileName == other.fileName &&
             documentNumber == other.documentNumber &&
             issuingAuthority == other.issuingAuthority &&
             side == other.side &&
+            updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            id,
             country,
+            createdAt,
             documentHolder,
             documentType,
-            file,
+            fileName,
             documentNumber,
             issuingAuthority,
             side,
+            updatedAt,
             additionalProperties,
         )
     }
@@ -591,5 +1012,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DocumentUploadRequest{country=$country, documentHolder=$documentHolder, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
+        "DocumentReplaceResponse{id=$id, country=$country, createdAt=$createdAt, documentHolder=$documentHolder, documentType=$documentType, fileName=$fileName, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
