@@ -17,8 +17,6 @@ internal class ReceiverServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val receiverService = client.receiver()
 
@@ -41,8 +39,6 @@ internal class ReceiverServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val receiverService = client.receiver()
 

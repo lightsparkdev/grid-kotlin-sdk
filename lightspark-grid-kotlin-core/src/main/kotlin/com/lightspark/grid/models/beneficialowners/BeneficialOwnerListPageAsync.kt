@@ -5,7 +5,6 @@ package com.lightspark.grid.models.beneficialowners
 import com.lightspark.grid.core.AutoPagerAsync
 import com.lightspark.grid.core.PageAsync
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import java.util.Objects
 
@@ -15,14 +14,15 @@ private constructor(
     private val service: BeneficialOwnerServiceAsync,
     private val params: BeneficialOwnerListParams,
     private val response: BeneficialOwnerListPageResponse,
-) : PageAsync<BeneficialOwner> {
+) : PageAsync<BeneficialOwnerListResponse> {
 
     /**
      * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
      *
      * @see BeneficialOwnerListPageResponse.data
      */
-    fun data(): List<BeneficialOwner> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<BeneficialOwnerListResponse> =
+        response._data().getNullable("data") ?: emptyList()
 
     /**
      * Delegates to [BeneficialOwnerListPageResponse], but gracefully handles missing data.
@@ -45,7 +45,7 @@ private constructor(
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<BeneficialOwner> = data()
+    override fun items(): List<BeneficialOwnerListResponse> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -57,7 +57,7 @@ private constructor(
 
     override suspend fun nextPage(): BeneficialOwnerListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<BeneficialOwner> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<BeneficialOwnerListResponse> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): BeneficialOwnerListParams = params

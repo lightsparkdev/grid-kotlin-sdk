@@ -15,8 +15,6 @@ internal class UmaProviderServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val umaProviderService = client.umaProviders()
 

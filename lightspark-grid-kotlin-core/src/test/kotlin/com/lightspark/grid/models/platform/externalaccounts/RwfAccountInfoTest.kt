@@ -16,14 +16,14 @@ internal class RwfAccountInfoTest {
                 .accountType(RwfAccountInfo.AccountType.RWF_ACCOUNT)
                 .addPaymentRail(RwfAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+250781234567")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(rwfAccountInfo.accountType()).isEqualTo(RwfAccountInfo.AccountType.RWF_ACCOUNT)
         assertThat(rwfAccountInfo.paymentRails())
             .containsExactly(RwfAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(rwfAccountInfo.phoneNumber()).isEqualTo("+250781234567")
-        assertThat(rwfAccountInfo.provider()).isEqualTo("Example Provider")
+        assertThat(rwfAccountInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class RwfAccountInfoTest {
                 .accountType(RwfAccountInfo.AccountType.RWF_ACCOUNT)
                 .addPaymentRail(RwfAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+250781234567")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedRwfAccountInfo =

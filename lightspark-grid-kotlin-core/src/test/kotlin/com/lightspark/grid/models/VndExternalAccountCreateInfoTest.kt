@@ -17,7 +17,7 @@ internal class VndExternalAccountCreateInfoTest {
             VndExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(VndExternalAccountCreateInfo.AccountType.VND_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class VndExternalAccountCreateInfoTest {
         assertThat(vndExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(vndExternalAccountCreateInfo.accountType())
             .isEqualTo(VndExternalAccountCreateInfo.AccountType.VND_ACCOUNT)
-        assertThat(vndExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(vndExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(vndExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 VndExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class VndExternalAccountCreateInfoTest {
             VndExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(VndExternalAccountCreateInfo.AccountType.VND_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     VndBeneficiary.builder()
                         .beneficiaryType(VndBeneficiary.BeneficiaryType.INDIVIDUAL)

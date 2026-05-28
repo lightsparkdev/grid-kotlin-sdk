@@ -15,32 +15,28 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class AuthCredentialCreateRequestOneOfTest {
 
     @Test
-    fun ofEmailOtpCredentialCreateRequest() {
-        val emailOtpCredentialCreateRequest =
+    fun ofEmailOtp() {
+        val emailOtp =
             EmailOtpCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .type(JsonValue.from("EMAIL_OTP"))
+                .type(EmailOtpCredentialCreateRequestFields.Type.EMAIL_OTP)
                 .build()
 
-        val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
-                emailOtpCredentialCreateRequest
-            )
+        val authCredentialCreateRequestOneOf = AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp)
 
-        assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest())
-            .isEqualTo(emailOtpCredentialCreateRequest)
-        assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest()).isNull()
-        assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.emailOtp()).isEqualTo(emailOtp)
+        assertThat(authCredentialCreateRequestOneOf.oauth()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.passkey()).isNull()
     }
 
     @Test
-    fun ofEmailOtpCredentialCreateRequestRoundtrip() {
+    fun ofEmailOtpRoundtrip() {
         val jsonMapper = jsonMapper()
         val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+            AuthCredentialCreateRequestOneOf.ofEmailOtp(
                 EmailOtpCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .type(JsonValue.from("EMAIL_OTP"))
+                    .type(EmailOtpCredentialCreateRequestFields.Type.EMAIL_OTP)
                     .build()
             )
 
@@ -55,38 +51,34 @@ internal class AuthCredentialCreateRequestOneOfTest {
     }
 
     @Test
-    fun ofOAuthCredentialCreateRequest() {
-        val oauthCredentialCreateRequest =
+    fun ofOAuth() {
+        val oauth =
             OAuthCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .type(JsonValue.from("OAUTH"))
                 .oidcToken(
                     "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFiYzEyMyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJzdWIiOiIxMTIyMzM0NDU1IiwiYXVkIjoiMTIzNDU2Ny5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0NjczNjUwOSwiZXhwIjoxNzQ2NzQwMTA5fQ.signature"
                 )
+                .type(OAuthCredentialCreateRequestFields.Type.OAUTH)
                 .build()
 
-        val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
-                oauthCredentialCreateRequest
-            )
+        val authCredentialCreateRequestOneOf = AuthCredentialCreateRequestOneOf.ofOAuth(oauth)
 
-        assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest()).isNull()
-        assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest())
-            .isEqualTo(oauthCredentialCreateRequest)
-        assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.emailOtp()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.oauth()).isEqualTo(oauth)
+        assertThat(authCredentialCreateRequestOneOf.passkey()).isNull()
     }
 
     @Test
-    fun ofOAuthCredentialCreateRequestRoundtrip() {
+    fun ofOAuthRoundtrip() {
         val jsonMapper = jsonMapper()
         val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
+            AuthCredentialCreateRequestOneOf.ofOAuth(
                 OAuthCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .type(JsonValue.from("OAUTH"))
                     .oidcToken(
                         "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFiYzEyMyIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJzdWIiOiIxMTIyMzM0NDU1IiwiYXVkIjoiMTIzNDU2Ny5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImVtYWlsIjoidXNlckBleGFtcGxlLmNvbSIsImlhdCI6MTc0NjczNjUwOSwiZXhwIjoxNzQ2NzQwMTA5fQ.signature"
                     )
+                    .type(OAuthCredentialCreateRequestFields.Type.OAUTH)
                     .build()
             )
 
@@ -101,11 +93,10 @@ internal class AuthCredentialCreateRequestOneOfTest {
     }
 
     @Test
-    fun ofPasskeyCredentialCreateRequest() {
-        val passkeyCredentialCreateRequest =
+    fun ofPasskey() {
+        val passkey =
             PasskeyCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .type(JsonValue.from("PASSKEY"))
                 .attestation(
                     PasskeyAttestation.builder()
                         .attestationObject(
@@ -123,27 +114,23 @@ internal class AuthCredentialCreateRequestOneOfTest {
                 )
                 .challenge("ArkQi2yAYHPlgnJNFBlneIwchQdWXBOTrdB-AmMUB21Lx")
                 .nickname("iPhone Face-ID")
+                .type(PasskeyCredentialCreateRequestFields.Type.PASSKEY)
                 .build()
 
-        val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
-                passkeyCredentialCreateRequest
-            )
+        val authCredentialCreateRequestOneOf = AuthCredentialCreateRequestOneOf.ofPasskey(passkey)
 
-        assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest()).isNull()
-        assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest()).isNull()
-        assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest())
-            .isEqualTo(passkeyCredentialCreateRequest)
+        assertThat(authCredentialCreateRequestOneOf.emailOtp()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.oauth()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.passkey()).isEqualTo(passkey)
     }
 
     @Test
-    fun ofPasskeyCredentialCreateRequestRoundtrip() {
+    fun ofPasskeyRoundtrip() {
         val jsonMapper = jsonMapper()
         val authCredentialCreateRequestOneOf =
-            AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
+            AuthCredentialCreateRequestOneOf.ofPasskey(
                 PasskeyCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .type(JsonValue.from("PASSKEY"))
                     .attestation(
                         PasskeyAttestation.builder()
                             .attestationObject(
@@ -161,6 +148,7 @@ internal class AuthCredentialCreateRequestOneOfTest {
                     )
                     .challenge("ArkQi2yAYHPlgnJNFBlneIwchQdWXBOTrdB-AmMUB21Lx")
                     .nickname("iPhone Face-ID")
+                    .type(PasskeyCredentialCreateRequestFields.Type.PASSKEY)
                     .build()
             )
 

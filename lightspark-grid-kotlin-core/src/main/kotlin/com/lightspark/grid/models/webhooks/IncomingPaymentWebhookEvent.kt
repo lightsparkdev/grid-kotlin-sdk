@@ -69,8 +69,6 @@ private constructor(
     fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
 
     /**
-     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -184,10 +182,6 @@ private constructor(
          */
         fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
 
-        /**
-         * Status-specific event type in OBJECT.EVENT dot-notation (e.g.,
-         * OUTGOING_PAYMENT.COMPLETED)
-         */
         fun type(type: Type) = type(JsonField.of(type))
 
         /**
@@ -288,7 +282,7 @@ private constructor(
     private constructor(
         private val id: JsonField<String>,
         private val customerId: JsonField<String>,
-        private val destination: JsonValue,
+        private val destination: JsonField<IncomingTransaction.Destination>,
         private val platformCustomerId: JsonField<String>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val status: JsonField<TransactionStatus>,
@@ -315,7 +309,9 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
+            @JsonProperty("destination")
+            @ExcludeMissing
+            destination: JsonField<IncomingTransaction.Destination> = JsonMissing.of(),
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -424,12 +420,12 @@ private constructor(
         fun customerId(): String = customerId.getRequired("customerId")
 
         /**
-         * This arbitrary value can be deserialized into a custom type using the `convert` method:
-         * ```kotlin
-         * val myObject: MyClass = data.destination().convert(MyClass::class.java)
-         * ```
+         * Destination account details
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
+        fun destination(): IncomingTransaction.Destination = destination.getRequired("destination")
 
         /**
          * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -467,8 +463,6 @@ private constructor(
         fun status(): TransactionStatus = status.getRequired("status")
 
         /**
-         * Type of transaction (incoming payment or outgoing payment)
-         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -553,6 +547,8 @@ private constructor(
         fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
 
         /**
+         * Source account details
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
@@ -592,6 +588,15 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         fun _customerId(): JsonField<String> = customerId
+
+        /**
+         * Returns the raw JSON value of [destination].
+         *
+         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("destination")
+        @ExcludeMissing
+        fun _destination(): JsonField<IncomingTransaction.Destination> = destination
 
         /**
          * Returns the raw JSON value of [platformCustomerId].
@@ -776,7 +781,7 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var customerId: JsonField<String>? = null
-            private var destination: JsonValue? = null
+            private var destination: JsonField<IncomingTransaction.Destination>? = null
             private var platformCustomerId: JsonField<String>? = null
             private var receivedAmount: JsonField<CurrencyAmount>? = null
             private var status: JsonField<TransactionStatus>? = null
@@ -849,7 +854,43 @@ private constructor(
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-            fun destination(destination: JsonValue) = apply { this.destination = destination }
+            /** Destination account details */
+            fun destination(destination: IncomingTransaction.Destination) =
+                destination(JsonField.of(destination))
+
+            /**
+             * Sets [Builder.destination] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.destination] with a well-typed
+             * [IncomingTransaction.Destination] value instead. This method is primarily for setting
+             * the field to an undocumented or not yet supported value.
+             */
+            fun destination(destination: JsonField<IncomingTransaction.Destination>) = apply {
+                this.destination = destination
+            }
+
+            /**
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)`.
+             */
+            fun destination(
+                accountTransaction: IncomingTransaction.Destination.AccountTransactionDestination
+            ) =
+                destination(
+                    IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)
+                )
+
+            /**
+             * Alias for calling [destination] with
+             * `IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)`.
+             */
+            fun destination(
+                umaAddressTransaction:
+                    IncomingTransaction.Destination.UmaAddressTransactionDestination
+            ) =
+                destination(
+                    IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)
+                )
 
             /**
              * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -908,7 +949,6 @@ private constructor(
              */
             fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
 
-            /** Type of transaction (incoming payment or outgoing payment) */
             fun type(type: IncomingTransaction.Type) = type(JsonField.of(type))
 
             /**
@@ -1056,6 +1096,7 @@ private constructor(
                 this.settledAt = settledAt
             }
 
+            /** Source account details */
             fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
             /**
@@ -1066,6 +1107,40 @@ private constructor(
              * not yet supported value.
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
+             */
+            fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
+                source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
+             */
+            fun source(
+                umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
+            ) =
+                source(
+                    TransactionSourceOneOf.ofUmaAddressTransactionSource(
+                        umaAddressTransactionSource
+                    )
+                )
+
+            /**
+             * Alias for calling [source] with
+             * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
+             */
+            fun source(
+                realtimeFundingTransactionSource:
+                    TransactionSourceOneOf.RealtimeFundingTransactionSource
+            ) =
+                source(
+                    TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
+                        realtimeFundingTransactionSource
+                    )
+                )
 
             /** When the transaction was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1204,6 +1279,7 @@ private constructor(
 
             id()
             customerId()
+            destination().validate()
             platformCustomerId()
             receivedAmount().validate()
             status().validate()
@@ -1217,6 +1293,7 @@ private constructor(
             rateDetails()?.validate()
             reconciliationInstructions()?.validate()
             settledAt()
+            source()?.validate()
             updatedAt()
             requestedReceiverCustomerInfoFields()?.forEach { it.validate() }
             validated = true
@@ -1239,6 +1316,7 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (customerId.asKnown() == null) 0 else 1) +
+                (destination.asKnown()?.validity() ?: 0) +
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (receivedAmount.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
@@ -1252,6 +1330,7 @@ private constructor(
                 (rateDetails.asKnown()?.validity() ?: 0) +
                 (reconciliationInstructions.asKnown()?.validity() ?: 0) +
                 (if (settledAt.asKnown() == null) 0 else 1) +
+                (source.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (requestedReceiverCustomerInfoFields.asKnown()?.sumOf { it.validity().toInt() }
                     ?: 0)
@@ -1315,9 +1394,6 @@ private constructor(
             "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
-     */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -1338,6 +1414,64 @@ private constructor(
 
             val INCOMING_PAYMENT_FAILED = of("INCOMING_PAYMENT.FAILED")
 
+            val OUTGOING_PAYMENT_PENDING = of("OUTGOING_PAYMENT.PENDING")
+
+            val OUTGOING_PAYMENT_PROCESSING = of("OUTGOING_PAYMENT.PROCESSING")
+
+            val OUTGOING_PAYMENT_COMPLETED = of("OUTGOING_PAYMENT.COMPLETED")
+
+            val OUTGOING_PAYMENT_FAILED = of("OUTGOING_PAYMENT.FAILED")
+
+            val OUTGOING_PAYMENT_EXPIRED = of("OUTGOING_PAYMENT.EXPIRED")
+
+            val OUTGOING_PAYMENT_REFUND_PENDING = of("OUTGOING_PAYMENT.REFUND_PENDING")
+
+            val OUTGOING_PAYMENT_REFUND_COMPLETED = of("OUTGOING_PAYMENT.REFUND_COMPLETED")
+
+            val OUTGOING_PAYMENT_REFUND_FAILED = of("OUTGOING_PAYMENT.REFUND_FAILED")
+
+            val CUSTOMER_KYC_APPROVED = of("CUSTOMER.KYC_APPROVED")
+
+            val CUSTOMER_KYC_REJECTED = of("CUSTOMER.KYC_REJECTED")
+
+            val CUSTOMER_KYC_PENDING = of("CUSTOMER.KYC_PENDING")
+
+            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
+
+            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
+
+            val CUSTOMER_KYB_PENDING = of("CUSTOMER.KYB_PENDING")
+
+            val VERIFICATION_APPROVED = of("VERIFICATION.APPROVED")
+
+            val VERIFICATION_REJECTED = of("VERIFICATION.REJECTED")
+
+            val VERIFICATION_RESOLVE_ERRORS = of("VERIFICATION.RESOLVE_ERRORS")
+
+            val VERIFICATION_IN_PROGRESS = of("VERIFICATION.IN_PROGRESS")
+
+            val VERIFICATION_PENDING_MANUAL_REVIEW = of("VERIFICATION.PENDING_MANUAL_REVIEW")
+
+            val VERIFICATION_READY_FOR_VERIFICATION = of("VERIFICATION.READY_FOR_VERIFICATION")
+
+            val INTERNAL_ACCOUNT_BALANCE_UPDATED = of("INTERNAL_ACCOUNT.BALANCE_UPDATED")
+
+            val INTERNAL_ACCOUNT_STATUS_UPDATED = of("INTERNAL_ACCOUNT.STATUS_UPDATED")
+
+            val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
+
+            val BULK_UPLOAD_COMPLETED = of("BULK_UPLOAD.COMPLETED")
+
+            val BULK_UPLOAD_FAILED = of("BULK_UPLOAD.FAILED")
+
+            val AGENT_ACTION_PENDING_APPROVAL = of("AGENT_ACTION.PENDING_APPROVAL")
+
+            val CARD_STATE_CHANGE = of("CARD.STATE_CHANGE")
+
+            val CARD_FUNDING_SOURCE_CHANGE = of("CARD.FUNDING_SOURCE_CHANGE")
+
+            val TEST = of("TEST")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -1346,6 +1480,35 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
+            OUTGOING_PAYMENT_PENDING,
+            OUTGOING_PAYMENT_PROCESSING,
+            OUTGOING_PAYMENT_COMPLETED,
+            OUTGOING_PAYMENT_FAILED,
+            OUTGOING_PAYMENT_EXPIRED,
+            OUTGOING_PAYMENT_REFUND_PENDING,
+            OUTGOING_PAYMENT_REFUND_COMPLETED,
+            OUTGOING_PAYMENT_REFUND_FAILED,
+            CUSTOMER_KYC_APPROVED,
+            CUSTOMER_KYC_REJECTED,
+            CUSTOMER_KYC_PENDING,
+            CUSTOMER_KYB_APPROVED,
+            CUSTOMER_KYB_REJECTED,
+            CUSTOMER_KYB_PENDING,
+            VERIFICATION_APPROVED,
+            VERIFICATION_REJECTED,
+            VERIFICATION_RESOLVE_ERRORS,
+            VERIFICATION_IN_PROGRESS,
+            VERIFICATION_PENDING_MANUAL_REVIEW,
+            VERIFICATION_READY_FOR_VERIFICATION,
+            INTERNAL_ACCOUNT_BALANCE_UPDATED,
+            INTERNAL_ACCOUNT_STATUS_UPDATED,
+            INVITATION_CLAIMED,
+            BULK_UPLOAD_COMPLETED,
+            BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
+            CARD_STATE_CHANGE,
+            CARD_FUNDING_SOURCE_CHANGE,
+            TEST,
         }
 
         /**
@@ -1361,6 +1524,35 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
+            OUTGOING_PAYMENT_PENDING,
+            OUTGOING_PAYMENT_PROCESSING,
+            OUTGOING_PAYMENT_COMPLETED,
+            OUTGOING_PAYMENT_FAILED,
+            OUTGOING_PAYMENT_EXPIRED,
+            OUTGOING_PAYMENT_REFUND_PENDING,
+            OUTGOING_PAYMENT_REFUND_COMPLETED,
+            OUTGOING_PAYMENT_REFUND_FAILED,
+            CUSTOMER_KYC_APPROVED,
+            CUSTOMER_KYC_REJECTED,
+            CUSTOMER_KYC_PENDING,
+            CUSTOMER_KYB_APPROVED,
+            CUSTOMER_KYB_REJECTED,
+            CUSTOMER_KYB_PENDING,
+            VERIFICATION_APPROVED,
+            VERIFICATION_REJECTED,
+            VERIFICATION_RESOLVE_ERRORS,
+            VERIFICATION_IN_PROGRESS,
+            VERIFICATION_PENDING_MANUAL_REVIEW,
+            VERIFICATION_READY_FOR_VERIFICATION,
+            INTERNAL_ACCOUNT_BALANCE_UPDATED,
+            INTERNAL_ACCOUNT_STATUS_UPDATED,
+            INVITATION_CLAIMED,
+            BULK_UPLOAD_COMPLETED,
+            BULK_UPLOAD_FAILED,
+            AGENT_ACTION_PENDING_APPROVAL,
+            CARD_STATE_CHANGE,
+            CARD_FUNDING_SOURCE_CHANGE,
+            TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -1377,6 +1569,35 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Value.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Value.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Value.INCOMING_PAYMENT_FAILED
+                OUTGOING_PAYMENT_PENDING -> Value.OUTGOING_PAYMENT_PENDING
+                OUTGOING_PAYMENT_PROCESSING -> Value.OUTGOING_PAYMENT_PROCESSING
+                OUTGOING_PAYMENT_COMPLETED -> Value.OUTGOING_PAYMENT_COMPLETED
+                OUTGOING_PAYMENT_FAILED -> Value.OUTGOING_PAYMENT_FAILED
+                OUTGOING_PAYMENT_EXPIRED -> Value.OUTGOING_PAYMENT_EXPIRED
+                OUTGOING_PAYMENT_REFUND_PENDING -> Value.OUTGOING_PAYMENT_REFUND_PENDING
+                OUTGOING_PAYMENT_REFUND_COMPLETED -> Value.OUTGOING_PAYMENT_REFUND_COMPLETED
+                OUTGOING_PAYMENT_REFUND_FAILED -> Value.OUTGOING_PAYMENT_REFUND_FAILED
+                CUSTOMER_KYC_APPROVED -> Value.CUSTOMER_KYC_APPROVED
+                CUSTOMER_KYC_REJECTED -> Value.CUSTOMER_KYC_REJECTED
+                CUSTOMER_KYC_PENDING -> Value.CUSTOMER_KYC_PENDING
+                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
+                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
+                CUSTOMER_KYB_PENDING -> Value.CUSTOMER_KYB_PENDING
+                VERIFICATION_APPROVED -> Value.VERIFICATION_APPROVED
+                VERIFICATION_REJECTED -> Value.VERIFICATION_REJECTED
+                VERIFICATION_RESOLVE_ERRORS -> Value.VERIFICATION_RESOLVE_ERRORS
+                VERIFICATION_IN_PROGRESS -> Value.VERIFICATION_IN_PROGRESS
+                VERIFICATION_PENDING_MANUAL_REVIEW -> Value.VERIFICATION_PENDING_MANUAL_REVIEW
+                VERIFICATION_READY_FOR_VERIFICATION -> Value.VERIFICATION_READY_FOR_VERIFICATION
+                INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
+                INTERNAL_ACCOUNT_STATUS_UPDATED -> Value.INTERNAL_ACCOUNT_STATUS_UPDATED
+                INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
+                BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
+                BULK_UPLOAD_FAILED -> Value.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Value.AGENT_ACTION_PENDING_APPROVAL
+                CARD_STATE_CHANGE -> Value.CARD_STATE_CHANGE
+                CARD_FUNDING_SOURCE_CHANGE -> Value.CARD_FUNDING_SOURCE_CHANGE
+                TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
 
@@ -1394,6 +1615,35 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Known.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Known.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Known.INCOMING_PAYMENT_FAILED
+                OUTGOING_PAYMENT_PENDING -> Known.OUTGOING_PAYMENT_PENDING
+                OUTGOING_PAYMENT_PROCESSING -> Known.OUTGOING_PAYMENT_PROCESSING
+                OUTGOING_PAYMENT_COMPLETED -> Known.OUTGOING_PAYMENT_COMPLETED
+                OUTGOING_PAYMENT_FAILED -> Known.OUTGOING_PAYMENT_FAILED
+                OUTGOING_PAYMENT_EXPIRED -> Known.OUTGOING_PAYMENT_EXPIRED
+                OUTGOING_PAYMENT_REFUND_PENDING -> Known.OUTGOING_PAYMENT_REFUND_PENDING
+                OUTGOING_PAYMENT_REFUND_COMPLETED -> Known.OUTGOING_PAYMENT_REFUND_COMPLETED
+                OUTGOING_PAYMENT_REFUND_FAILED -> Known.OUTGOING_PAYMENT_REFUND_FAILED
+                CUSTOMER_KYC_APPROVED -> Known.CUSTOMER_KYC_APPROVED
+                CUSTOMER_KYC_REJECTED -> Known.CUSTOMER_KYC_REJECTED
+                CUSTOMER_KYC_PENDING -> Known.CUSTOMER_KYC_PENDING
+                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
+                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
+                CUSTOMER_KYB_PENDING -> Known.CUSTOMER_KYB_PENDING
+                VERIFICATION_APPROVED -> Known.VERIFICATION_APPROVED
+                VERIFICATION_REJECTED -> Known.VERIFICATION_REJECTED
+                VERIFICATION_RESOLVE_ERRORS -> Known.VERIFICATION_RESOLVE_ERRORS
+                VERIFICATION_IN_PROGRESS -> Known.VERIFICATION_IN_PROGRESS
+                VERIFICATION_PENDING_MANUAL_REVIEW -> Known.VERIFICATION_PENDING_MANUAL_REVIEW
+                VERIFICATION_READY_FOR_VERIFICATION -> Known.VERIFICATION_READY_FOR_VERIFICATION
+                INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
+                INTERNAL_ACCOUNT_STATUS_UPDATED -> Known.INTERNAL_ACCOUNT_STATUS_UPDATED
+                INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
+                BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
+                BULK_UPLOAD_FAILED -> Known.BULK_UPLOAD_FAILED
+                AGENT_ACTION_PENDING_APPROVAL -> Known.AGENT_ACTION_PENDING_APPROVAL
+                CARD_STATE_CHANGE -> Known.CARD_STATE_CHANGE
+                CARD_FUNDING_SOURCE_CHANGE -> Known.CARD_FUNDING_SOURCE_CHANGE
+                TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 

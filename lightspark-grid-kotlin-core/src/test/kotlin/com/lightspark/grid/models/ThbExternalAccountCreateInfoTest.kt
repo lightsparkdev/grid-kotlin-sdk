@@ -17,7 +17,7 @@ internal class ThbExternalAccountCreateInfoTest {
             ThbExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ThbExternalAccountCreateInfo.AccountType.THB_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class ThbExternalAccountCreateInfoTest {
         assertThat(thbExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(thbExternalAccountCreateInfo.accountType())
             .isEqualTo(ThbExternalAccountCreateInfo.AccountType.THB_ACCOUNT)
-        assertThat(thbExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(thbExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(thbExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 ThbExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class ThbExternalAccountCreateInfoTest {
             ThbExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ThbExternalAccountCreateInfo.AccountType.THB_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     ThbBeneficiary.builder()
                         .beneficiaryType(ThbBeneficiary.BeneficiaryType.INDIVIDUAL)

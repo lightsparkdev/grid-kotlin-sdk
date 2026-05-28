@@ -15,13 +15,13 @@ internal class IncomingRateDetailsTest {
             IncomingRateDetails.builder()
                 .gridApiFixedFee(10L)
                 .gridApiMultiplier(0.925)
-                .gridApiVariableFeeAmount(30L)
+                .gridApiVariableFeeAmount(30.0)
                 .gridApiVariableFeeRate(0.003)
                 .build()
 
         assertThat(incomingRateDetails.gridApiFixedFee()).isEqualTo(10L)
         assertThat(incomingRateDetails.gridApiMultiplier()).isEqualTo(0.925)
-        assertThat(incomingRateDetails.gridApiVariableFeeAmount()).isEqualTo(30L)
+        assertThat(incomingRateDetails.gridApiVariableFeeAmount()).isEqualTo(30.0)
         assertThat(incomingRateDetails.gridApiVariableFeeRate()).isEqualTo(0.003)
     }
 
@@ -32,7 +32,7 @@ internal class IncomingRateDetailsTest {
             IncomingRateDetails.builder()
                 .gridApiFixedFee(10L)
                 .gridApiMultiplier(0.925)
-                .gridApiVariableFeeAmount(30L)
+                .gridApiVariableFeeAmount(30.0)
                 .gridApiVariableFeeRate(0.003)
                 .build()
 

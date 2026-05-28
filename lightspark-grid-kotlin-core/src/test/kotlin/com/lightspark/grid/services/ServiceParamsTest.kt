@@ -36,8 +36,6 @@ internal class ServiceParamsTest {
                 .baseUrl(wmRuntimeInfo.httpBaseUrl)
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
     }
 
@@ -51,23 +49,17 @@ internal class ServiceParamsTest {
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
                 .destination(
-                    QuoteDestinationOneOf.builder()
-                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                        .putAdditionalProperty(
-                            "accountId",
-                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
-                        )
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
                         .build()
                 )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.builder()
-                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                        .putAdditionalProperty(
-                            "accountId",
-                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
-                        )
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .build()
                 )
                 .description("Transfer between accounts, either internal or external.")

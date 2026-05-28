@@ -8,6 +8,7 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
@@ -44,7 +45,16 @@ internal class AgentActionWebhookEventTest {
                             Quote.builder()
                                 .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.AccountDestination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
                                 .exchangeRate(1.0)
                                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                                 .feesIncluded(10L)
@@ -64,7 +74,14 @@ internal class AgentActionWebhookEventTest {
                                         .symbol("\$")
                                         .build()
                                 )
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .status(Quote.Status.PENDING)
                                 .totalReceivingAmount(1000L)
                                 .totalSendingAmount(123010L)
@@ -79,30 +96,14 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                                 .builder()
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .BANK_TRANSFER
-                                                )
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .MOBILE_MONEY
-                                                )
-                                                .reference("UMA-Q12345-REF")
                                                 .accountNumber("1234567890")
-                                                .bankAccountType(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .BankAccountType
-                                                        .CHECKING
-                                                )
-                                                .bankName("Chase Bank")
-                                                .phoneNumber("+50312345678")
+                                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                                .routingNumber("021000021")
+                                                .reference("UMA-Q12345-REF")
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -114,24 +115,21 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo
+                                                .PaymentSparkWalletInfo
                                                 .builder()
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .BANK_TRANSFER
+                                                .address(
+                                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                                 )
-                                                .reference("UMA-Q12345-REF")
-                                                .accountNumber("0123456789")
-                                                .bankAccountType(
+                                                .assetType(
                                                     PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .BankAccountType
-                                                        .CHECKING
+                                                        .PaymentSparkWalletInfo
+                                                        .AssetType
+                                                        .BTC
                                                 )
-                                                .bankName("Banco Cuscatlan")
-                                                .phoneNumber("+50312345678")
+                                                .invoice(
+                                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                                )
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -146,7 +144,7 @@ internal class AgentActionWebhookEventTest {
                                         .counterpartyMultiplier(1.08)
                                         .gridApiFixedFee(10L)
                                         .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
+                                        .gridApiVariableFeeAmount(30.0)
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
@@ -159,7 +157,14 @@ internal class AgentActionWebhookEventTest {
                             IncomingTransaction.builder()
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .destination(JsonValue.from(mapOf<String, Any>()))
+                                .destination(
+                                    IncomingTransaction.Destination.AccountTransactionDestination
+                                        .builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .build()
+                                )
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .receivedAmount(
                                     CurrencyAmount.builder()
@@ -192,7 +197,7 @@ internal class AgentActionWebhookEventTest {
                                     IncomingRateDetails.builder()
                                         .gridApiFixedFee(10L)
                                         .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
+                                        .gridApiVariableFeeAmount(30.0)
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
@@ -205,7 +210,13 @@ internal class AgentActionWebhookEventTest {
                                         .build()
                                 )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .source(TransactionSourceOneOf.builder().build())
+                                .source(
+                                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .build()
+                                )
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .build()
                         )
@@ -244,7 +255,16 @@ internal class AgentActionWebhookEventTest {
                         Quote.builder()
                             .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                             .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                            .destination(QuoteDestinationOneOf.builder().build())
+                            .destination(
+                                QuoteDestinationOneOf.AccountDestination.builder()
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .paymentRail(
+                                        QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH
+                                    )
+                                    .build()
+                            )
                             .exchangeRate(1.0)
                             .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                             .feesIncluded(10L)
@@ -264,7 +284,14 @@ internal class AgentActionWebhookEventTest {
                                     .symbol("\$")
                                     .build()
                             )
-                            .source(QuoteSourceOneOf.builder().build())
+                            .source(
+                                QuoteSourceOneOf.AccountQuoteSource.builder()
+                                    .accountId(
+                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                    .build()
+                            )
                             .status(Quote.Status.PENDING)
                             .totalReceivingAmount(1000L)
                             .totalSendingAmount(123010L)
@@ -279,26 +306,13 @@ internal class AgentActionWebhookEventTest {
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
                                     .accountOrWalletInfo(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                    .PaymentRail
-                                                    .BANK_TRANSFER
-                                            )
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                    .PaymentRail
-                                                    .MOBILE_MONEY
-                                            )
-                                            .reference("UMA-Q12345-REF")
+                                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
                                             .accountNumber("1234567890")
-                                            .bankAccountType(
-                                                PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                    .BankAccountType
-                                                    .CHECKING
-                                            )
-                                            .bankName("Chase Bank")
-                                            .phoneNumber("+50312345678")
+                                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                            .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                            .routingNumber("021000021")
+                                            .reference("UMA-Q12345-REF")
                                             .build()
                                     )
                                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -308,21 +322,21 @@ internal class AgentActionWebhookEventTest {
                             .addPaymentInstruction(
                                 PaymentInstructions.builder()
                                     .accountOrWalletInfo(
-                                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                            .addPaymentRail(
-                                                PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                    .PaymentRail
-                                                    .BANK_TRANSFER
+                                        PaymentInstructions.AccountOrWalletInfo
+                                            .PaymentSparkWalletInfo
+                                            .builder()
+                                            .address(
+                                                "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                             )
-                                            .reference("UMA-Q12345-REF")
-                                            .accountNumber("0123456789")
-                                            .bankAccountType(
-                                                PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                                    .BankAccountType
-                                                    .CHECKING
+                                            .assetType(
+                                                PaymentInstructions.AccountOrWalletInfo
+                                                    .PaymentSparkWalletInfo
+                                                    .AssetType
+                                                    .BTC
                                             )
-                                            .bankName("Banco Cuscatlan")
-                                            .phoneNumber("+50312345678")
+                                            .invoice(
+                                                "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                            )
                                             .build()
                                     )
                                     .instructionsNotes(
@@ -337,7 +351,7 @@ internal class AgentActionWebhookEventTest {
                                     .counterpartyMultiplier(1.08)
                                     .gridApiFixedFee(10L)
                                     .gridApiMultiplier(0.925)
-                                    .gridApiVariableFeeAmount(30L)
+                                    .gridApiVariableFeeAmount(30.0)
                                     .gridApiVariableFeeRate(0.003)
                                     .build()
                             )
@@ -348,7 +362,14 @@ internal class AgentActionWebhookEventTest {
                         IncomingTransaction.builder()
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                            .destination(JsonValue.from(mapOf<String, Any>()))
+                            .destination(
+                                IncomingTransaction.Destination.AccountTransactionDestination
+                                    .builder()
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .build()
+                            )
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .receivedAmount(
                                 CurrencyAmount.builder()
@@ -381,7 +402,7 @@ internal class AgentActionWebhookEventTest {
                                 IncomingRateDetails.builder()
                                     .gridApiFixedFee(10L)
                                     .gridApiMultiplier(0.925)
-                                    .gridApiVariableFeeAmount(30L)
+                                    .gridApiVariableFeeAmount(30.0)
                                     .gridApiVariableFeeRate(0.003)
                                     .build()
                             )
@@ -394,7 +415,13 @@ internal class AgentActionWebhookEventTest {
                                     .build()
                             )
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                            .source(TransactionSourceOneOf.builder().build())
+                            .source(
+                                TransactionSourceOneOf.AccountTransactionSource.builder()
+                                    .accountId(
+                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .build()
+                            )
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .build()
                     )
@@ -436,7 +463,16 @@ internal class AgentActionWebhookEventTest {
                             Quote.builder()
                                 .id("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                                .destination(QuoteDestinationOneOf.builder().build())
+                                .destination(
+                                    QuoteDestinationOneOf.AccountDestination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
                                 .exchangeRate(1.0)
                                 .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
                                 .feesIncluded(10L)
@@ -456,7 +492,14 @@ internal class AgentActionWebhookEventTest {
                                         .symbol("\$")
                                         .build()
                                 )
-                                .source(QuoteSourceOneOf.builder().build())
+                                .source(
+                                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                        .build()
+                                )
                                 .status(Quote.Status.PENDING)
                                 .totalReceivingAmount(1000L)
                                 .totalSendingAmount(123010L)
@@ -471,30 +514,14 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo.UsdAccount
                                                 .builder()
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .BANK_TRANSFER
-                                                )
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .MOBILE_MONEY
-                                                )
-                                                .reference("UMA-Q12345-REF")
                                                 .accountNumber("1234567890")
-                                                .bankAccountType(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .BankAccountType
-                                                        .CHECKING
-                                                )
-                                                .bankName("Chase Bank")
-                                                .phoneNumber("+50312345678")
+                                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
+                                                .routingNumber("021000021")
+                                                .reference("UMA-Q12345-REF")
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -506,24 +533,21 @@ internal class AgentActionWebhookEventTest {
                                 .addPaymentInstruction(
                                     PaymentInstructions.builder()
                                         .accountOrWalletInfo(
-                                            PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                            PaymentInstructions.AccountOrWalletInfo
+                                                .PaymentSparkWalletInfo
                                                 .builder()
-                                                .addPaymentRail(
-                                                    PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .PaymentRail
-                                                        .BANK_TRANSFER
+                                                .address(
+                                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
                                                 )
-                                                .reference("UMA-Q12345-REF")
-                                                .accountNumber("0123456789")
-                                                .bankAccountType(
+                                                .assetType(
                                                     PaymentInstructions.AccountOrWalletInfo
-                                                        .SlvAccount
-                                                        .BankAccountType
-                                                        .CHECKING
+                                                        .PaymentSparkWalletInfo
+                                                        .AssetType
+                                                        .BTC
                                                 )
-                                                .bankName("Banco Cuscatlan")
-                                                .phoneNumber("+50312345678")
+                                                .invoice(
+                                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
+                                                )
                                                 .build()
                                         )
                                         .instructionsNotes(
@@ -538,7 +562,7 @@ internal class AgentActionWebhookEventTest {
                                         .counterpartyMultiplier(1.08)
                                         .gridApiFixedFee(10L)
                                         .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
+                                        .gridApiVariableFeeAmount(30.0)
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
@@ -551,7 +575,14 @@ internal class AgentActionWebhookEventTest {
                             IncomingTransaction.builder()
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                                .destination(JsonValue.from(mapOf<String, Any>()))
+                                .destination(
+                                    IncomingTransaction.Destination.AccountTransactionDestination
+                                        .builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .build()
+                                )
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .receivedAmount(
                                     CurrencyAmount.builder()
@@ -584,7 +615,7 @@ internal class AgentActionWebhookEventTest {
                                     IncomingRateDetails.builder()
                                         .gridApiFixedFee(10L)
                                         .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
+                                        .gridApiVariableFeeAmount(30.0)
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
@@ -597,7 +628,13 @@ internal class AgentActionWebhookEventTest {
                                         .build()
                                 )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .source(TransactionSourceOneOf.builder().build())
+                                .source(
+                                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                                        .accountId(
+                                            "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                        )
+                                        .build()
+                                )
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .build()
                         )

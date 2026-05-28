@@ -15,13 +15,13 @@ internal class ZarAccountInfoTest {
             ZarAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ZarAccountInfo.AccountType.ZAR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .addPaymentRail(ZarAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         assertThat(zarAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(zarAccountInfo.accountType()).isEqualTo(ZarAccountInfo.AccountType.ZAR_ACCOUNT)
-        assertThat(zarAccountInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(zarAccountInfo.bankName()).isEqualTo("x")
         assertThat(zarAccountInfo.paymentRails())
             .containsExactly(ZarAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -33,7 +33,7 @@ internal class ZarAccountInfoTest {
             ZarAccountInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ZarAccountInfo.AccountType.ZAR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .addPaymentRail(ZarAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

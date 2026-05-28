@@ -13,13 +13,13 @@ internal class GtqAccountInfoTest {
     fun create() {
         val gtqAccountInfo =
             GtqAccountInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
-        assertThat(gtqAccountInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(gtqAccountInfo.accountNumber()).isEqualTo("x")
         assertThat(gtqAccountInfo.accountType()).isEqualTo(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
         assertThat(gtqAccountInfo.bankAccountType())
             .isEqualTo(GtqAccountInfo.BankAccountType.CHECKING)
@@ -32,7 +32,7 @@ internal class GtqAccountInfoTest {
         val jsonMapper = jsonMapper()
         val gtqAccountInfo =
             GtqAccountInfo.builder()
-                .accountNumber("1234567890")
+                .accountNumber("x")
                 .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
                 .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)

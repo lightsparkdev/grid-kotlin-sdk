@@ -3,8 +3,9 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.GhsBeneficiary
+import com.lightspark.grid.models.platform.externalaccounts.GhsAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,10 +15,63 @@ internal class GhsExternalAccountInfoTest {
     fun create() {
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("GHS_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
+                .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .phoneNumber("+1234567890")
+                .beneficiary(
+                    GhsBeneficiary.builder()
+                        .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
+
+        assertThat(ghsExternalAccountInfo.accountType())
+            .isEqualTo(GhsAccountInfo.AccountType.GHS_ACCOUNT)
+        assertThat(ghsExternalAccountInfo.paymentRails())
+            .containsExactly(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(ghsExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(ghsExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(ghsExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                GhsExternalAccountInfo.Beneficiary.ofIndividual(
+                    GhsBeneficiary.builder()
+                        .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -25,9 +79,31 @@ internal class GhsExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val ghsExternalAccountInfo =
             GhsExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("GHS_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(GhsAccountInfo.AccountType.GHS_ACCOUNT)
+                .addPaymentRail(GhsAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .phoneNumber("+1234567890")
+                .beneficiary(
+                    GhsBeneficiary.builder()
+                        .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
 
         val roundtrippedGhsExternalAccountInfo =

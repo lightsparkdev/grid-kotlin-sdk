@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.auth.credentials
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -15,7 +14,6 @@ internal class PasskeyCredentialCreateRequestTest {
         val passkeyCredentialCreateRequest =
             PasskeyCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .type(JsonValue.from("PASSKEY"))
                 .attestation(
                     PasskeyAttestation.builder()
                         .attestationObject(
@@ -33,11 +31,11 @@ internal class PasskeyCredentialCreateRequestTest {
                 )
                 .challenge("ArkQi2yAYHPlgnJNFBlneIwchQdWXBOTrdB-AmMUB21Lx")
                 .nickname("iPhone Face-ID")
+                .type(PasskeyCredentialCreateRequestFields.Type.PASSKEY)
                 .build()
 
         assertThat(passkeyCredentialCreateRequest.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-        assertThat(passkeyCredentialCreateRequest._type()).isEqualTo(JsonValue.from("PASSKEY"))
         assertThat(passkeyCredentialCreateRequest.attestation())
             .isEqualTo(
                 PasskeyAttestation.builder()
@@ -57,6 +55,8 @@ internal class PasskeyCredentialCreateRequestTest {
         assertThat(passkeyCredentialCreateRequest.challenge())
             .isEqualTo("ArkQi2yAYHPlgnJNFBlneIwchQdWXBOTrdB-AmMUB21Lx")
         assertThat(passkeyCredentialCreateRequest.nickname()).isEqualTo("iPhone Face-ID")
+        assertThat(passkeyCredentialCreateRequest.type())
+            .isEqualTo(PasskeyCredentialCreateRequestFields.Type.PASSKEY)
     }
 
     @Test
@@ -65,7 +65,6 @@ internal class PasskeyCredentialCreateRequestTest {
         val passkeyCredentialCreateRequest =
             PasskeyCredentialCreateRequest.builder()
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .type(JsonValue.from("PASSKEY"))
                 .attestation(
                     PasskeyAttestation.builder()
                         .attestationObject(
@@ -83,6 +82,7 @@ internal class PasskeyCredentialCreateRequestTest {
                 )
                 .challenge("ArkQi2yAYHPlgnJNFBlneIwchQdWXBOTrdB-AmMUB21Lx")
                 .nickname("iPhone Face-ID")
+                .type(PasskeyCredentialCreateRequestFields.Type.PASSKEY)
                 .build()
 
         val roundtrippedPasskeyCredentialCreateRequest =

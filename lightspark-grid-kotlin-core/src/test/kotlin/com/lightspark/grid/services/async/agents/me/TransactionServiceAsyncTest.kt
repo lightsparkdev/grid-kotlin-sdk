@@ -15,8 +15,6 @@ internal class TransactionServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val transactionServiceAsync = client.agents().me().transactions()
 
@@ -32,8 +30,6 @@ internal class TransactionServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val transactionServiceAsync = client.agents().me().transactions()
 

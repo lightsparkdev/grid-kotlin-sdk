@@ -57,7 +57,6 @@ This library requires Java 8 or later.
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
@@ -68,15 +67,13 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
-    .destination(QuoteDestinationOneOf.builder()
-        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"))
+    .destination(QuoteDestinationOneOf.AccountDestination.builder()
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
         .build())
     .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .build()
 val quote: Quote = client.quotes().create(params)
@@ -104,8 +101,6 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.builder()
     .username("My Username")
     .password("My Password")
-    .agentAccessToken("My Agent Access Token")
-    .webhookSignature("My Webhook Signature")
     .build()
 ```
 
@@ -175,7 +170,6 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
@@ -186,15 +180,13 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
-    .destination(QuoteDestinationOneOf.builder()
-        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"))
+    .destination(QuoteDestinationOneOf.AccountDestination.builder()
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
         .build())
     .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .build()
 val quote: Quote = client.async().quotes().create(params)
@@ -205,7 +197,6 @@ Or create an asynchronous client from the beginning:
 ```kotlin
 import com.lightspark.grid.client.LightsparkGridClientAsync
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
@@ -216,15 +207,13 @@ import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 val client: LightsparkGridClientAsync = LightsparkGridOkHttpClientAsync.fromEnv()
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
-    .destination(QuoteDestinationOneOf.builder()
-        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"))
+    .destination(QuoteDestinationOneOf.AccountDestination.builder()
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
         .build())
     .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .build()
 val quote: Quote = client.quotes().create(params)
@@ -299,7 +288,6 @@ The SDK defines methods that deserialize responses into instances of Kotlin clas
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```kotlin
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.quotes.Quote
@@ -308,15 +296,13 @@ import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
-    .destination(QuoteDestinationOneOf.builder()
-        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"))
+    .destination(QuoteDestinationOneOf.AccountDestination.builder()
+        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
         .build())
     .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .build()
 val quote: HttpResponseFor<Quote> = client.quotes().withRawResponse().create(params)
@@ -395,7 +381,7 @@ To access individual page items and manually request the next page, use the `ite
 
 ```kotlin
 import com.lightspark.grid.models.customers.CustomerListPage
-import com.lightspark.grid.models.customers.CustomerListResponse
+import com.lightspark.grid.models.customers.CustomerOneOf
 
 val page: CustomerListPage = client.customers().list()
 while (true) {
@@ -649,10 +635,9 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 ```kotlin
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.config.ConfigUpdateParams
-import com.lightspark.grid.models.config.EmbeddedWalletConfig
 
 val params: ConfigUpdateParams = ConfigUpdateParams.builder()
-    .embeddedWalletConfig(EmbeddedWalletConfig.builder()
+    .embeddedWalletConfig(ConfigUpdateParams.EmbeddedWalletConfig.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build()
@@ -665,19 +650,14 @@ To set a documented parameter or property to an undocumented or not yet supporte
 ```kotlin
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
-import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
-    .destination(QuoteDestinationOneOf.builder()
-        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"))
-        .build())
-    .lockedCurrencyAmount(JsonValue.from(3.14))
+    .destination(JsonValue.from(42))
+    .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .build()
 ```
@@ -723,16 +703,14 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](lightspa
 
 ```kotlin
 import com.lightspark.grid.core.JsonMissing
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteCreateParams = QuoteCreateParams.builder()
     .lockedCurrencyAmount(10000L)
     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-    .source(QuoteSourceOneOf.builder()
-        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-        .putAdditionalProperty("accountId", JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"))
+    .source(QuoteSourceOneOf.AccountQuoteSource.builder()
+        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         .build())
     .destination(JsonMissing.of())
     .build()

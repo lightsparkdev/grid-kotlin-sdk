@@ -4,7 +4,6 @@ package com.lightspark.grid.services.async.sandbox.cards
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.quotes.Currency
-import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
@@ -20,8 +19,6 @@ internal class SimulateServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateServiceAsync = client.sandbox().cards().simulate()
 
@@ -39,7 +36,7 @@ internal class SimulateServiceAsyncTest {
                             .build()
                     )
                     .merchant(
-                        CardMerchant.builder()
+                        SimulateAuthorizationParams.Merchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
                             .country("US")
                             .mcc("5814")
@@ -58,8 +55,6 @@ internal class SimulateServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateServiceAsync = client.sandbox().cards().simulate()
 
@@ -82,8 +77,6 @@ internal class SimulateServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateServiceAsync = client.sandbox().cards().simulate()
 

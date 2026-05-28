@@ -3,8 +3,9 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.BdtBeneficiary
+import com.lightspark.grid.models.platform.externalaccounts.BdtAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,12 +15,67 @@ internal class BdtExternalAccountInfoTest {
     fun create() {
         val bdtExternalAccountInfo =
             BdtExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("BDT_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("branchCode", JsonValue.from("11111"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DEUTDEFF"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
+                .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .branchCode("21029")
+                .phoneNumber("+1234567890")
+                .swiftCode("DEUTDEFF")
+                .beneficiary(
+                    BdtBeneficiary.builder()
+                        .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
+
+        assertThat(bdtExternalAccountInfo.accountType())
+            .isEqualTo(BdtAccountInfo.AccountType.BDT_ACCOUNT)
+        assertThat(bdtExternalAccountInfo.paymentRails())
+            .containsExactly(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(bdtExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(bdtExternalAccountInfo.branchCode()).isEqualTo("21029")
+        assertThat(bdtExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
+        assertThat(bdtExternalAccountInfo.swiftCode()).isEqualTo("DEUTDEFF")
+        assertThat(bdtExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                BdtExternalAccountInfo.Beneficiary.ofIndividual(
+                    BdtBeneficiary.builder()
+                        .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -27,11 +83,33 @@ internal class BdtExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val bdtExternalAccountInfo =
             BdtExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("BDT_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("branchCode", JsonValue.from("11111"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DEUTDEFF"))
-                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
+                .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
+                .accountNumber("x")
+                .branchCode("21029")
+                .phoneNumber("+1234567890")
+                .swiftCode("DEUTDEFF")
+                .beneficiary(
+                    BdtBeneficiary.builder()
+                        .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
                 .build()
 
         val roundtrippedBdtExternalAccountInfo =
