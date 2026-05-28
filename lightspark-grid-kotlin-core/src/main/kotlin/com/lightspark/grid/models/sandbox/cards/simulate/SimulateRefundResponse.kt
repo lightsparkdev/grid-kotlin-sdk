@@ -24,7 +24,7 @@ import java.util.Objects
  * `settlementSummary` aggregates. Delivered as the payload of the generic transaction webhook
  * stream (extends the Transaction model with a card destination type) on every transition.
  */
-class SimulateReturnResponse
+class SimulateRefundResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -387,7 +387,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SimulateReturnResponse].
+         * Returns a mutable builder for constructing an instance of [SimulateRefundResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -408,7 +408,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [SimulateReturnResponse]. */
+    /** A builder for [SimulateRefundResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -429,24 +429,24 @@ private constructor(
         private var settledAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(simulateReturnResponse: SimulateReturnResponse) = apply {
-            id = simulateReturnResponse.id
-            accountId = simulateReturnResponse.accountId
-            authorizedAmount = simulateReturnResponse.authorizedAmount
-            authorizedAt = simulateReturnResponse.authorizedAt
-            cardId = simulateReturnResponse.cardId
-            createdAt = simulateReturnResponse.createdAt
-            merchant = simulateReturnResponse.merchant
-            pullSummary = simulateReturnResponse.pullSummary
-            refundSummary = simulateReturnResponse.refundSummary
-            settlementSummary = simulateReturnResponse.settlementSummary
-            status = simulateReturnResponse.status
-            updatedAt = simulateReturnResponse.updatedAt
-            issuerTransactionToken = simulateReturnResponse.issuerTransactionToken
-            lastEventAt = simulateReturnResponse.lastEventAt
-            refundedAmount = simulateReturnResponse.refundedAmount
-            settledAmount = simulateReturnResponse.settledAmount
-            additionalProperties = simulateReturnResponse.additionalProperties.toMutableMap()
+        internal fun from(simulateRefundResponse: SimulateRefundResponse) = apply {
+            id = simulateRefundResponse.id
+            accountId = simulateRefundResponse.accountId
+            authorizedAmount = simulateRefundResponse.authorizedAmount
+            authorizedAt = simulateRefundResponse.authorizedAt
+            cardId = simulateRefundResponse.cardId
+            createdAt = simulateRefundResponse.createdAt
+            merchant = simulateRefundResponse.merchant
+            pullSummary = simulateRefundResponse.pullSummary
+            refundSummary = simulateRefundResponse.refundSummary
+            settlementSummary = simulateRefundResponse.settlementSummary
+            status = simulateRefundResponse.status
+            updatedAt = simulateRefundResponse.updatedAt
+            issuerTransactionToken = simulateRefundResponse.issuerTransactionToken
+            lastEventAt = simulateRefundResponse.lastEventAt
+            refundedAmount = simulateRefundResponse.refundedAmount
+            settledAmount = simulateRefundResponse.settledAmount
+            additionalProperties = simulateRefundResponse.additionalProperties.toMutableMap()
         }
 
         /** System-generated unique card transaction identifier */
@@ -694,7 +694,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SimulateReturnResponse].
+         * Returns an immutable instance of [SimulateRefundResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -716,8 +716,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SimulateReturnResponse =
-            SimulateReturnResponse(
+        fun build(): SimulateRefundResponse =
+            SimulateRefundResponse(
                 checkRequired("id", id),
                 checkRequired("accountId", accountId),
                 checkRequired("authorizedAmount", authorizedAmount),
@@ -748,7 +748,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): SimulateReturnResponse = apply {
+    fun validate(): SimulateRefundResponse = apply {
         if (validated) {
             return@apply
         }
@@ -971,7 +971,7 @@ private constructor(
             return true
         }
 
-        return other is SimulateReturnResponse &&
+        return other is SimulateRefundResponse &&
             id == other.id &&
             accountId == other.accountId &&
             authorizedAmount == other.authorizedAmount &&
@@ -1016,5 +1016,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SimulateReturnResponse{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, cardId=$cardId, createdAt=$createdAt, merchant=$merchant, pullSummary=$pullSummary, refundSummary=$refundSummary, settlementSummary=$settlementSummary, status=$status, updatedAt=$updatedAt, issuerTransactionToken=$issuerTransactionToken, lastEventAt=$lastEventAt, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "SimulateRefundResponse{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, cardId=$cardId, createdAt=$createdAt, merchant=$merchant, pullSummary=$pullSummary, refundSummary=$refundSummary, settlementSummary=$settlementSummary, status=$status, updatedAt=$updatedAt, issuerTransactionToken=$issuerTransactionToken, lastEventAt=$lastEventAt, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
 }
