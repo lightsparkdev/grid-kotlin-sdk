@@ -2,7 +2,6 @@
 
 package com.lightspark.grid.models.customers
 
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
@@ -14,14 +13,7 @@ internal class CustomerCreateParamsTest {
     fun create() {
         CustomerCreateParams.builder()
             .createCustomerRequest(
-                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest.builder()
-                    .customerType(JsonValue.from("INDIVIDUAL"))
-                    .addCurrency("USD")
-                    .addCurrency("USDC")
-                    .email("john.doe@example.com")
-                    .platformCustomerId("ind-9f84e0c2")
-                    .region("US")
-                    .umaAddress("\$john.doe@uma.domain.com")
+                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -33,9 +25,17 @@ internal class CustomerCreateParamsTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
                     .fullName("Jane Smith")
-                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                    .kycStatus(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                    )
                     .nationality("US")
+                    .platformCustomerId("ind-9f84e0c2")
+                    .region("US")
+                    .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
             .build()
@@ -46,15 +46,7 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
-                        .builder()
-                        .customerType(JsonValue.from("INDIVIDUAL"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
-                        .platformCustomerId("ind-9f84e0c2")
-                        .region("US")
-                        .umaAddress("\$john.doe@uma.domain.com")
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -66,9 +58,17 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
                         .fullName("Jane Smith")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
+                        .platformCustomerId("ind-9f84e0c2")
+                        .region("US")
+                        .umaAddress("\$john.doe@uma.domain.com")
                         .build()
                 )
                 .build()
@@ -77,16 +77,8 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
-                        .builder()
-                        .customerType(JsonValue.from("INDIVIDUAL"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
-                        .platformCustomerId("ind-9f84e0c2")
-                        .region("US")
-                        .umaAddress("\$john.doe@uma.domain.com")
+                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -98,9 +90,17 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
                         .fullName("Jane Smith")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
+                        .platformCustomerId("ind-9f84e0c2")
+                        .region("US")
+                        .umaAddress("\$john.doe@uma.domain.com")
                         .build()
                 )
             )
@@ -111,10 +111,7 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
-                        .builder()
-                        .customerType(JsonValue.from("INDIVIDUAL"))
-                        .build()
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
                 )
                 .build()
 
@@ -122,11 +119,8 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
-                        .builder()
-                        .customerType(JsonValue.from("INDIVIDUAL"))
-                        .build()
+                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
                 )
             )
     }

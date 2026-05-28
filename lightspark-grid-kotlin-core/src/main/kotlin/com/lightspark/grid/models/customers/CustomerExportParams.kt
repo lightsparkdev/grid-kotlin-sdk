@@ -2,11 +2,20 @@
 
 package com.lightspark.grid.models.customers
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.ExcludeMissing
+import com.lightspark.grid.core.JsonField
+import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import java.util.Collections
 import java.util.Objects
 
 /**
@@ -36,7 +45,7 @@ private constructor(
     private val id: String?,
     private val gridWalletSignature: String?,
     private val requestId: String?,
-    private val internalAccountExportRequest: InternalAccountExportRequest,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -48,16 +57,23 @@ private constructor(
     fun requestId(): String? = requestId
 
     /**
-     * Request body for `POST /internal-accounts/{id}/export`. The `clientPublicKey` is required on
-     * both steps of the signed-retry flow. On step 1 Grid binds it into `payloadToSign` so the
-     * subsequent stamp in `Grid-Wallet-Signature` commits to the target pubkey; on step 2 the
-     * client echoes the same `clientPublicKey` back and Grid uses it to encrypt the wallet
-     * credentials returned in the `200` response.
+     * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are `04`
+     * (the uncompressed-point indicator). Generate a new keypair for each export and discard the
+     * private key after decrypting the response.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun internalAccountExportRequest(): InternalAccountExportRequest = internalAccountExportRequest
+    fun clientPublicKey(): String = body.clientPublicKey()
 
-    fun _additionalBodyProperties(): Map<String, JsonValue> =
-        internalAccountExportRequest._additionalProperties()
+    /**
+     * Returns the raw JSON value of [clientPublicKey].
+     *
+     * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _clientPublicKey(): JsonField<String> = body._clientPublicKey()
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -74,7 +90,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .internalAccountExportRequest()
+         * .clientPublicKey()
          * ```
          */
         fun builder() = Builder()
@@ -86,7 +102,7 @@ private constructor(
         private var id: String? = null
         private var gridWalletSignature: String? = null
         private var requestId: String? = null
-        private var internalAccountExportRequest: InternalAccountExportRequest? = null
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -94,7 +110,7 @@ private constructor(
             id = customerExportParams.id
             gridWalletSignature = customerExportParams.gridWalletSignature
             requestId = customerExportParams.requestId
-            internalAccountExportRequest = customerExportParams.internalAccountExportRequest
+            body = customerExportParams.body.toBuilder()
             additionalHeaders = customerExportParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerExportParams.additionalQueryParams.toBuilder()
         }
@@ -108,15 +124,52 @@ private constructor(
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         /**
-         * Request body for `POST /internal-accounts/{id}/export`. The `clientPublicKey` is required
-         * on both steps of the signed-retry flow. On step 1 Grid binds it into `payloadToSign` so
-         * the subsequent stamp in `Grid-Wallet-Signature` commits to the target pubkey; on step 2
-         * the client echoes the same `clientPublicKey` back and Grid uses it to encrypt the wallet
-         * credentials returned in the `200` response.
+         * Sets the entire request body.
+         *
+         * This is generally only useful if you are already constructing the body separately.
+         * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [clientPublicKey]
          */
-        fun internalAccountExportRequest(
-            internalAccountExportRequest: InternalAccountExportRequest
-        ) = apply { this.internalAccountExportRequest = internalAccountExportRequest }
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /**
+         * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are
+         * `04` (the uncompressed-point indicator). Generate a new keypair for each export and
+         * discard the private key after decrypting the response.
+         */
+        fun clientPublicKey(clientPublicKey: String) = apply {
+            body.clientPublicKey(clientPublicKey)
+        }
+
+        /**
+         * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+            body.clientPublicKey(clientPublicKey)
+        }
+
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            body.additionalProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            body.putAdditionalProperty(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                body.putAllAdditionalProperties(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            body.removeAllAdditionalProperties(keys)
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -223,7 +276,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .internalAccountExportRequest()
+         * .clientPublicKey()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -233,13 +286,13 @@ private constructor(
                 id,
                 gridWalletSignature,
                 requestId,
-                checkRequired("internalAccountExportRequest", internalAccountExportRequest),
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): InternalAccountExportRequest = internalAccountExportRequest
+    fun _body(): Body = body
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -258,6 +311,194 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
+    /**
+     * Request body for `POST /internal-accounts/{id}/export`. The `clientPublicKey` is required on
+     * both steps of the signed-retry flow. On step 1 Grid binds it into `payloadToSign` so the
+     * subsequent stamp in `Grid-Wallet-Signature` commits to the target pubkey; on step 2 the
+     * client echoes the same `clientPublicKey` back and Grid uses it to encrypt the wallet
+     * credentials returned in the `200` response.
+     */
+    class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val clientPublicKey: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("clientPublicKey")
+            @ExcludeMissing
+            clientPublicKey: JsonField<String> = JsonMissing.of()
+        ) : this(clientPublicKey, mutableMapOf())
+
+        /**
+         * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are
+         * `04` (the uncompressed-point indicator). Generate a new keypair for each export and
+         * discard the private key after decrypting the response.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
+
+        /**
+         * Returns the raw JSON value of [clientPublicKey].
+         *
+         * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("clientPublicKey")
+        @ExcludeMissing
+        fun _clientPublicKey(): JsonField<String> = clientPublicKey
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Body].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .clientPublicKey()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Body]. */
+        class Builder internal constructor() {
+
+            private var clientPublicKey: JsonField<String>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(body: Body) = apply {
+                clientPublicKey = body.clientPublicKey
+                additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are
+             * `04` (the uncompressed-point indicator). Generate a new keypair for each export and
+             * discard the private key after decrypting the response.
+             */
+            fun clientPublicKey(clientPublicKey: String) =
+                clientPublicKey(JsonField.of(clientPublicKey))
+
+            /**
+             * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+                this.clientPublicKey = clientPublicKey
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Body].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .clientPublicKey()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Body =
+                Body(
+                    checkRequired("clientPublicKey", clientPublicKey),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Body = apply {
+            if (validated) {
+                return@apply
+            }
+
+            clientPublicKey()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = (if (clientPublicKey.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Body &&
+                clientPublicKey == other.clientPublicKey &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(clientPublicKey, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Body{clientPublicKey=$clientPublicKey, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -267,7 +508,7 @@ private constructor(
             id == other.id &&
             gridWalletSignature == other.gridWalletSignature &&
             requestId == other.requestId &&
-            internalAccountExportRequest == other.internalAccountExportRequest &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -277,11 +518,11 @@ private constructor(
             id,
             gridWalletSignature,
             requestId,
-            internalAccountExportRequest,
+            body,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CustomerExportParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, internalAccountExportRequest=$internalAccountExportRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerExportParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

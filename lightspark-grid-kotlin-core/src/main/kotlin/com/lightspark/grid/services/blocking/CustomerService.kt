@@ -7,19 +7,22 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.CustomerCreateParams
+import com.lightspark.grid.models.customers.CustomerCreateResponse
 import com.lightspark.grid.models.customers.CustomerDeleteParams
+import com.lightspark.grid.models.customers.CustomerDeleteResponse
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
 import com.lightspark.grid.models.customers.CustomerListParams
-import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
+import com.lightspark.grid.models.customers.CustomerRetrieveResponse
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.customers.CustomerUpdateResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.blocking.customers.BulkService
 import com.lightspark.grid.services.blocking.customers.ExternalAccountService
@@ -50,13 +53,13 @@ interface CustomerService {
     fun create(
         params: CustomerCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf
+    ): CustomerCreateResponse
 
     /** @see create */
     fun create(
         createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf =
+    ): CustomerCreateResponse =
         create(
             CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
             requestOptions,
@@ -64,45 +67,34 @@ interface CustomerService {
 
     /** @see create */
     fun create(
-        individualCustomerCreate:
-            CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest,
+        individual: CustomerCreateParams.CreateCustomerRequest.Individual,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf =
-        create(
-            CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                individualCustomerCreate
-            ),
-            requestOptions,
-        )
+    ): CustomerCreateResponse =
+        create(CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual), requestOptions)
 
     /** @see create */
     fun create(
-        businessCustomerCreate:
-            CustomerCreateParams.CreateCustomerRequest.BusinessCustomerCreateRequest,
+        business: CustomerCreateParams.CreateCustomerRequest.Business,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf =
-        create(
-            CustomerCreateParams.CreateCustomerRequest.ofBusinessCustomerCreate(
-                businessCustomerCreate
-            ),
-            requestOptions,
-        )
+    ): CustomerCreateResponse =
+        create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
     /** Retrieve a customer by their system-generated ID */
     fun retrieve(
         customerId: String,
         params: CustomerRetrieveParams = CustomerRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf = retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerRetrieveResponse =
+        retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf
+    ): CustomerRetrieveResponse
 
     /** @see retrieve */
-    fun retrieve(customerId: String, requestOptions: RequestOptions): CustomerOneOf =
+    fun retrieve(customerId: String, requestOptions: RequestOptions): CustomerRetrieveResponse =
         retrieve(customerId, CustomerRetrieveParams.none(), requestOptions)
 
     /**
@@ -132,13 +124,14 @@ interface CustomerService {
         customerId: String,
         params: CustomerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf = update(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerUpdateResponse =
+        update(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see update */
     fun update(
         params: CustomerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf
+    ): CustomerUpdateResponse
 
     /**
      * Retrieve a list of customers with optional filtering parameters. Returns all customers that
@@ -158,16 +151,17 @@ interface CustomerService {
         customerId: String,
         params: CustomerDeleteParams = CustomerDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf = delete(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerDeleteResponse =
+        delete(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see delete */
     fun delete(
         params: CustomerDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerOneOf
+    ): CustomerDeleteResponse
 
     /** @see delete */
-    fun delete(customerId: String, requestOptions: RequestOptions): CustomerOneOf =
+    fun delete(customerId: String, requestOptions: RequestOptions): CustomerDeleteResponse =
         delete(customerId, CustomerDeleteParams.none(), requestOptions)
 
     /**
@@ -198,13 +192,13 @@ interface CustomerService {
         id: String,
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
+    ): CustomerExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see export */
     fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse
+    ): CustomerExportResponse
 
     /**
      * Generate a single-use hosted URL the customer can complete to verify their identity, and
@@ -312,14 +306,14 @@ interface CustomerService {
         fun create(
             params: CustomerCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf>
+        ): HttpResponseFor<CustomerCreateResponse>
 
         /** @see create */
         @MustBeClosed
         fun create(
             createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerCreateResponse> =
             create(
                 CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
                 requestOptions,
@@ -328,30 +322,21 @@ interface CustomerService {
         /** @see create */
         @MustBeClosed
         fun create(
-            individualCustomerCreate:
-                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest,
+            individual: CustomerCreateParams.CreateCustomerRequest.Individual,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerCreateResponse> =
             create(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
-                    individualCustomerCreate
-                ),
+                CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual),
                 requestOptions,
             )
 
         /** @see create */
         @MustBeClosed
         fun create(
-            businessCustomerCreate:
-                CustomerCreateParams.CreateCustomerRequest.BusinessCustomerCreateRequest,
+            business: CustomerCreateParams.CreateCustomerRequest.Business,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
-            create(
-                CustomerCreateParams.CreateCustomerRequest.ofBusinessCustomerCreate(
-                    businessCustomerCreate
-                ),
-                requestOptions,
-            )
+        ): HttpResponseFor<CustomerCreateResponse> =
+            create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /customers/{customerId}`, but is otherwise the same
@@ -362,7 +347,7 @@ interface CustomerService {
             customerId: String,
             params: CustomerRetrieveParams = CustomerRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerRetrieveResponse> =
             retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see retrieve */
@@ -370,14 +355,14 @@ interface CustomerService {
         fun retrieve(
             params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf>
+        ): HttpResponseFor<CustomerRetrieveResponse>
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             customerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerRetrieveResponse> =
             retrieve(customerId, CustomerRetrieveParams.none(), requestOptions)
 
         /**
@@ -389,7 +374,7 @@ interface CustomerService {
             customerId: String,
             params: CustomerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerUpdateResponse> =
             update(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see update */
@@ -397,7 +382,7 @@ interface CustomerService {
         fun update(
             params: CustomerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf>
+        ): HttpResponseFor<CustomerUpdateResponse>
 
         /**
          * Returns a raw HTTP response for `get /customers`, but is otherwise the same as
@@ -423,7 +408,7 @@ interface CustomerService {
             customerId: String,
             params: CustomerDeleteParams = CustomerDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerDeleteResponse> =
             delete(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see delete */
@@ -431,14 +416,14 @@ interface CustomerService {
         fun delete(
             params: CustomerDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerOneOf>
+        ): HttpResponseFor<CustomerDeleteResponse>
 
         /** @see delete */
         @MustBeClosed
         fun delete(
             customerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> =
+        ): HttpResponseFor<CustomerDeleteResponse> =
             delete(customerId, CustomerDeleteParams.none(), requestOptions)
 
         /**
@@ -450,7 +435,7 @@ interface CustomerService {
             id: String,
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse> =
+        ): HttpResponseFor<CustomerExportResponse> =
             export(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see export */
@@ -458,7 +443,7 @@ interface CustomerService {
         fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse>
+        ): HttpResponseFor<CustomerExportResponse>
 
         /**
          * Returns a raw HTTP response for `post /customers/{customerId}/kyc-link`, but is otherwise

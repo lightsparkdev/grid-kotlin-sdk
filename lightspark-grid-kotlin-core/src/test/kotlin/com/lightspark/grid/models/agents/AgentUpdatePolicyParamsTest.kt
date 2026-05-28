@@ -12,15 +12,11 @@ internal class AgentUpdatePolicyParamsTest {
         AgentUpdatePolicyParams.builder()
             .agentId("agentId")
             .accountRestrictions(
-                AgentUpdatePolicyParams.AccountRestrictions.builder()
+                AgentAccountRestrictions.builder()
                     .addAccountRule(
-                        AgentUpdatePolicyParams.AccountRestrictions.AccountRule.builder()
+                        AgentAccountRule.builder()
                             .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(
-                                AgentUpdatePolicyParams.AccountRestrictions.AccountRule
-                                    .ExecutionMode
-                                    .AUTO
-                            )
+                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                             .perTransactionLimit(10000L)
                             .build()
                     )
@@ -28,10 +24,7 @@ internal class AgentUpdatePolicyParamsTest {
                     .build()
             )
             .approvalThresholds(
-                AgentUpdatePolicyParams.ApprovalThresholds.builder()
-                    .amount(100000L)
-                    .currency("USD")
-                    .build()
+                AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
             )
             .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
             .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
@@ -62,15 +55,11 @@ internal class AgentUpdatePolicyParamsTest {
             AgentUpdatePolicyParams.builder()
                 .agentId("agentId")
                 .accountRestrictions(
-                    AgentUpdatePolicyParams.AccountRestrictions.builder()
+                    AgentAccountRestrictions.builder()
                         .addAccountRule(
-                            AgentUpdatePolicyParams.AccountRestrictions.AccountRule.builder()
+                            AgentAccountRule.builder()
                                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                .executionMode(
-                                    AgentUpdatePolicyParams.AccountRestrictions.AccountRule
-                                        .ExecutionMode
-                                        .AUTO
-                                )
+                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                 .perTransactionLimit(10000L)
                                 .build()
                         )
@@ -78,10 +67,7 @@ internal class AgentUpdatePolicyParamsTest {
                         .build()
                 )
                 .approvalThresholds(
-                    AgentUpdatePolicyParams.ApprovalThresholds.builder()
-                        .amount(100000L)
-                        .currency("USD")
-                        .build()
+                    AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                 )
                 .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
                 .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
@@ -100,15 +86,11 @@ internal class AgentUpdatePolicyParamsTest {
 
         assertThat(body.accountRestrictions())
             .isEqualTo(
-                AgentUpdatePolicyParams.AccountRestrictions.builder()
+                AgentAccountRestrictions.builder()
                     .addAccountRule(
-                        AgentUpdatePolicyParams.AccountRestrictions.AccountRule.builder()
+                        AgentAccountRule.builder()
                             .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(
-                                AgentUpdatePolicyParams.AccountRestrictions.AccountRule
-                                    .ExecutionMode
-                                    .AUTO
-                            )
+                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                             .perTransactionLimit(10000L)
                             .build()
                     )
@@ -116,12 +98,7 @@ internal class AgentUpdatePolicyParamsTest {
                     .build()
             )
         assertThat(body.approvalThresholds())
-            .isEqualTo(
-                AgentUpdatePolicyParams.ApprovalThresholds.builder()
-                    .amount(100000L)
-                    .currency("USD")
-                    .build()
-            )
+            .isEqualTo(AgentApprovalThresholds.builder().amount(100000L).currency("USD").build())
         assertThat(body.defaultExecutionMode())
             .isEqualTo(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
         assertThat(body.permissions())

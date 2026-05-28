@@ -3,6 +3,9 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.agents.AgentAccountRestrictions
+import com.lightspark.grid.models.agents.AgentAccountRule
+import com.lightspark.grid.models.agents.AgentApprovalThresholds
 import com.lightspark.grid.models.agents.AgentCreateRequest
 import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentUpdateParams
@@ -44,17 +47,13 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .accountRestrictions(
-                                AgentPolicy.AccountRestrictions.builder()
+                                AgentAccountRestrictions.builder()
                                     .addAccountRule(
-                                        AgentPolicy.AccountRestrictions.AccountRule.builder()
+                                        AgentAccountRule.builder()
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
-                                            .executionMode(
-                                                AgentPolicy.AccountRestrictions.AccountRule
-                                                    .ExecutionMode
-                                                    .AUTO
-                                            )
+                                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                             .perTransactionLimit(10000L)
                                             .build()
                                     )
@@ -64,7 +63,7 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .approvalThresholds(
-                                AgentPolicy.ApprovalThresholds.builder()
+                                AgentApprovalThresholds.builder()
                                     .amount(100000L)
                                     .currency("USD")
                                     .build()
@@ -188,15 +187,11 @@ internal class AgentServiceTest {
                 AgentUpdatePolicyParams.builder()
                     .agentId("agentId")
                     .accountRestrictions(
-                        AgentUpdatePolicyParams.AccountRestrictions.builder()
+                        AgentAccountRestrictions.builder()
                             .addAccountRule(
-                                AgentUpdatePolicyParams.AccountRestrictions.AccountRule.builder()
+                                AgentAccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                    .executionMode(
-                                        AgentUpdatePolicyParams.AccountRestrictions.AccountRule
-                                            .ExecutionMode
-                                            .AUTO
-                                    )
+                                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                     .perTransactionLimit(10000L)
                                     .build()
                             )
@@ -204,10 +199,7 @@ internal class AgentServiceTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentUpdatePolicyParams.ApprovalThresholds.builder()
-                            .amount(100000L)
-                            .currency("USD")
-                            .build()
+                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                     )
                     .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
                     .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
