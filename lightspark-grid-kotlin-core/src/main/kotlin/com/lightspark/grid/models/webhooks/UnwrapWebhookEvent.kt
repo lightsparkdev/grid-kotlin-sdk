@@ -422,6 +422,9 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): UnwrapWebhookEvent {
             val json = JsonValue.fromJsonNode(node)
+            val type = json.asObject()?.get("type")?.asString()
+
+            when (type) {}
 
             val bestMatches =
                 sequenceOf(
