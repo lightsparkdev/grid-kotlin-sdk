@@ -27,6 +27,11 @@ import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Required fields depend on the selected paymentRails:
+ * - BANK_TRANSFER: bankAccountType, accountNumber
+ * - MOBILE_MONEY: phoneNumber
+ */
 class SlvExternalAccountCreateInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

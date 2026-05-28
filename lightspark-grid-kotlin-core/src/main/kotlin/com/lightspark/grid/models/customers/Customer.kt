@@ -21,6 +21,7 @@ import java.util.Objects
 class Customer
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val customerType: JsonValue,
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
@@ -35,6 +36,7 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -55,6 +57,7 @@ private constructor(
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
     ) : this(
+        customerType,
         platformCustomerId,
         umaAddress,
         id,
@@ -66,6 +69,14 @@ private constructor(
         updatedAt,
         mutableMapOf(),
     )
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = customer.customerType().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * Platform-specific customer identifier
@@ -232,6 +243,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -242,6 +254,7 @@ private constructor(
     /** A builder for [Customer]. */
     class Builder internal constructor() {
 
+        private var customerType: JsonValue? = null
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
@@ -254,6 +267,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customer: Customer) = apply {
+            customerType = customer.customerType
             platformCustomerId = customer.platformCustomerId
             umaAddress = customer.umaAddress
             id = customer.id
@@ -265,6 +279,8 @@ private constructor(
             updatedAt = customer.updatedAt
             additionalProperties = customer.additionalProperties.toMutableMap()
         }
+
+        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /** Platform-specific customer identifier */
         fun platformCustomerId(platformCustomerId: String) =
@@ -420,6 +436,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .customerType()
          * .platformCustomerId()
          * .umaAddress()
          * ```
@@ -428,6 +445,7 @@ private constructor(
          */
         fun build(): Customer =
             Customer(
+                checkRequired("customerType", customerType),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
@@ -498,6 +516,7 @@ private constructor(
         }
 
         return other is Customer &&
+            customerType == other.customerType &&
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
@@ -512,6 +531,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            customerType,
             platformCustomerId,
             umaAddress,
             id,
@@ -528,5 +548,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Customer{platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "Customer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

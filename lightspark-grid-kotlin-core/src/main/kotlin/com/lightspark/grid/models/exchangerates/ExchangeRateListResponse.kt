@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -185,7 +184,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val destinationCurrency: JsonField<Currency>,
-        private val destinationPaymentRail: JsonField<DestinationPaymentRail>,
+        private val destinationPaymentRail: JsonValue,
         private val exchangeRate: JsonField<Double>,
         private val fees: JsonField<Fees>,
         private val maxSendingAmount: JsonField<Long>,
@@ -204,7 +203,7 @@ private constructor(
             destinationCurrency: JsonField<Currency> = JsonMissing.of(),
             @JsonProperty("destinationPaymentRail")
             @ExcludeMissing
-            destinationPaymentRail: JsonField<DestinationPaymentRail> = JsonMissing.of(),
+            destinationPaymentRail: JsonValue = JsonMissing.of(),
             @JsonProperty("exchangeRate")
             @ExcludeMissing
             exchangeRate: JsonField<Double> = JsonMissing.of(),
@@ -248,14 +247,17 @@ private constructor(
         fun destinationCurrency(): Currency = destinationCurrency.getRequired("destinationCurrency")
 
         /**
-         * The payment rail used for the transfer. Payment rails represent the underlying payment
-         * network or system used to move funds between accounts.
+         * The payment rail used for the destination (e.g., UPI, SEPA_INSTANT, MOBILE_MONEY,
+         * FASTER_PAYMENTS)
          *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```kotlin
+         * val myObject: MyClass = data.destinationPaymentRail().convert(MyClass::class.java)
+         * ```
          */
-        fun destinationPaymentRail(): DestinationPaymentRail =
-            destinationPaymentRail.getRequired("destinationPaymentRail")
+        @JsonProperty("destinationPaymentRail")
+        @ExcludeMissing
+        fun _destinationPaymentRail(): JsonValue = destinationPaymentRail
 
         /**
          * Number of sending currency units per receiving currency unit.
@@ -329,16 +331,6 @@ private constructor(
         @JsonProperty("destinationCurrency")
         @ExcludeMissing
         fun _destinationCurrency(): JsonField<Currency> = destinationCurrency
-
-        /**
-         * Returns the raw JSON value of [destinationPaymentRail].
-         *
-         * Unlike [destinationPaymentRail], this method doesn't throw if the JSON field has an
-         * unexpected type.
-         */
-        @JsonProperty("destinationPaymentRail")
-        @ExcludeMissing
-        fun _destinationPaymentRail(): JsonField<DestinationPaymentRail> = destinationPaymentRail
 
         /**
          * Returns the raw JSON value of [exchangeRate].
@@ -454,7 +446,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var destinationCurrency: JsonField<Currency>? = null
-            private var destinationPaymentRail: JsonField<DestinationPaymentRail>? = null
+            private var destinationPaymentRail: JsonValue? = null
             private var exchangeRate: JsonField<Double>? = null
             private var fees: JsonField<Fees>? = null
             private var maxSendingAmount: JsonField<Long>? = null
@@ -494,23 +486,12 @@ private constructor(
             }
 
             /**
-             * The payment rail used for the transfer. Payment rails represent the underlying
-             * payment network or system used to move funds between accounts.
+             * The payment rail used for the destination (e.g., UPI, SEPA_INSTANT, MOBILE_MONEY,
+             * FASTER_PAYMENTS)
              */
-            fun destinationPaymentRail(destinationPaymentRail: DestinationPaymentRail) =
-                destinationPaymentRail(JsonField.of(destinationPaymentRail))
-
-            /**
-             * Sets [Builder.destinationPaymentRail] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.destinationPaymentRail] with a well-typed
-             * [DestinationPaymentRail] value instead. This method is primarily for setting the
-             * field to an undocumented or not yet supported value.
-             */
-            fun destinationPaymentRail(destinationPaymentRail: JsonField<DestinationPaymentRail>) =
-                apply {
-                    this.destinationPaymentRail = destinationPaymentRail
-                }
+            fun destinationPaymentRail(destinationPaymentRail: JsonValue) = apply {
+                this.destinationPaymentRail = destinationPaymentRail
+            }
 
             /** Number of sending currency units per receiving currency unit. */
             fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
@@ -701,7 +682,6 @@ private constructor(
             }
 
             destinationCurrency().validate()
-            destinationPaymentRail().validate()
             exchangeRate()
             fees().validate()
             maxSendingAmount()
@@ -729,7 +709,6 @@ private constructor(
          */
         internal fun validity(): Int =
             (destinationCurrency.asKnown()?.validity() ?: 0) +
-                (destinationPaymentRail.asKnown()?.validity() ?: 0) +
                 (if (exchangeRate.asKnown() == null) 0 else 1) +
                 (fees.asKnown()?.validity() ?: 0) +
                 (if (maxSendingAmount.asKnown() == null) 0 else 1) +
@@ -738,234 +717,6 @@ private constructor(
                 (if (sendingAmount.asKnown() == null) 0 else 1) +
                 (sourceCurrency.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1)
-
-        /**
-         * The payment rail used for the transfer. Payment rails represent the underlying payment
-         * network or system used to move funds between accounts.
-         */
-        class DestinationPaymentRail
-        @JsonCreator
-        private constructor(private val value: JsonField<String>) : Enum {
-
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-            companion object {
-
-                val ACH = of("ACH")
-
-                val BANK_TRANSFER = of("BANK_TRANSFER")
-
-                val FAST = of("FAST")
-
-                val FASTER_PAYMENTS = of("FASTER_PAYMENTS")
-
-                val FEDNOW = of("FEDNOW")
-
-                val MOBILE_MONEY = of("MOBILE_MONEY")
-
-                val PAYNOW = of("PAYNOW")
-
-                val PIX = of("PIX")
-
-                val RTP = of("RTP")
-
-                val SEPA = of("SEPA")
-
-                val SEPA_INSTANT = of("SEPA_INSTANT")
-
-                val SPEI = of("SPEI")
-
-                val SWIFT = of("SWIFT")
-
-                val UPI = of("UPI")
-
-                val WIRE = of("WIRE")
-
-                fun of(value: String) = DestinationPaymentRail(JsonField.of(value))
-            }
-
-            /** An enum containing [DestinationPaymentRail]'s known values. */
-            enum class Known {
-                ACH,
-                BANK_TRANSFER,
-                FAST,
-                FASTER_PAYMENTS,
-                FEDNOW,
-                MOBILE_MONEY,
-                PAYNOW,
-                PIX,
-                RTP,
-                SEPA,
-                SEPA_INSTANT,
-                SPEI,
-                SWIFT,
-                UPI,
-                WIRE,
-            }
-
-            /**
-             * An enum containing [DestinationPaymentRail]'s known values, as well as an [_UNKNOWN]
-             * member.
-             *
-             * An instance of [DestinationPaymentRail] can contain an unknown value in a couple of
-             * cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                ACH,
-                BANK_TRANSFER,
-                FAST,
-                FASTER_PAYMENTS,
-                FEDNOW,
-                MOBILE_MONEY,
-                PAYNOW,
-                PIX,
-                RTP,
-                SEPA,
-                SEPA_INSTANT,
-                SPEI,
-                SWIFT,
-                UPI,
-                WIRE,
-                /**
-                 * An enum member indicating that [DestinationPaymentRail] was instantiated with an
-                 * unknown value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    ACH -> Value.ACH
-                    BANK_TRANSFER -> Value.BANK_TRANSFER
-                    FAST -> Value.FAST
-                    FASTER_PAYMENTS -> Value.FASTER_PAYMENTS
-                    FEDNOW -> Value.FEDNOW
-                    MOBILE_MONEY -> Value.MOBILE_MONEY
-                    PAYNOW -> Value.PAYNOW
-                    PIX -> Value.PIX
-                    RTP -> Value.RTP
-                    SEPA -> Value.SEPA
-                    SEPA_INSTANT -> Value.SEPA_INSTANT
-                    SPEI -> Value.SPEI
-                    SWIFT -> Value.SWIFT
-                    UPI -> Value.UPI
-                    WIRE -> Value.WIRE
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    ACH -> Known.ACH
-                    BANK_TRANSFER -> Known.BANK_TRANSFER
-                    FAST -> Known.FAST
-                    FASTER_PAYMENTS -> Known.FASTER_PAYMENTS
-                    FEDNOW -> Known.FEDNOW
-                    MOBILE_MONEY -> Known.MOBILE_MONEY
-                    PAYNOW -> Known.PAYNOW
-                    PIX -> Known.PIX
-                    RTP -> Known.RTP
-                    SEPA -> Known.SEPA
-                    SEPA_INSTANT -> Known.SEPA_INSTANT
-                    SPEI -> Known.SPEI
-                    SWIFT -> Known.SWIFT
-                    UPI -> Known.UPI
-                    WIRE -> Known.WIRE
-                    else ->
-                        throw LightsparkGridInvalidDataException(
-                            "Unknown DestinationPaymentRail: $value"
-                        )
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            /**
-             * Validates that the types of all values in this object match their expected types
-             * recursively.
-             *
-             * This method is _not_ forwards compatible with new types from the API for existing
-             * fields.
-             *
-             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
-             *   match its expected type.
-             */
-            fun validate(): DestinationPaymentRail = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is DestinationPaymentRail && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
-        }
 
         /** Fees associated with an exchange rate */
         class Fees

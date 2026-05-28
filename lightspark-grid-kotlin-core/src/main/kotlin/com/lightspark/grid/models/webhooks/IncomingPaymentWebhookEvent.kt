@@ -282,7 +282,7 @@ private constructor(
     private constructor(
         private val id: JsonField<String>,
         private val customerId: JsonField<String>,
-        private val destination: JsonField<IncomingTransaction.Destination>,
+        private val destination: JsonValue,
         private val platformCustomerId: JsonField<String>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val status: JsonField<TransactionStatus>,
@@ -309,9 +309,7 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("destination")
-            @ExcludeMissing
-            destination: JsonField<IncomingTransaction.Destination> = JsonMissing.of(),
+            @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -420,12 +418,12 @@ private constructor(
         fun customerId(): String = customerId.getRequired("customerId")
 
         /**
-         * Destination account details
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```kotlin
+         * val myObject: MyClass = data.destination().convert(MyClass::class.java)
+         * ```
          */
-        fun destination(): IncomingTransaction.Destination = destination.getRequired("destination")
+        @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
 
         /**
          * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -463,6 +461,8 @@ private constructor(
         fun status(): TransactionStatus = status.getRequired("status")
 
         /**
+         * Type of transaction (incoming payment or outgoing payment)
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -547,8 +547,6 @@ private constructor(
         fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
 
         /**
-         * Source account details
-         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
@@ -588,15 +586,6 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         fun _customerId(): JsonField<String> = customerId
-
-        /**
-         * Returns the raw JSON value of [destination].
-         *
-         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("destination")
-        @ExcludeMissing
-        fun _destination(): JsonField<IncomingTransaction.Destination> = destination
 
         /**
          * Returns the raw JSON value of [platformCustomerId].
@@ -781,7 +770,7 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var customerId: JsonField<String>? = null
-            private var destination: JsonField<IncomingTransaction.Destination>? = null
+            private var destination: JsonValue? = null
             private var platformCustomerId: JsonField<String>? = null
             private var receivedAmount: JsonField<CurrencyAmount>? = null
             private var status: JsonField<TransactionStatus>? = null
@@ -854,43 +843,7 @@ private constructor(
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-            /** Destination account details */
-            fun destination(destination: IncomingTransaction.Destination) =
-                destination(JsonField.of(destination))
-
-            /**
-             * Sets [Builder.destination] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.destination] with a well-typed
-             * [IncomingTransaction.Destination] value instead. This method is primarily for setting
-             * the field to an undocumented or not yet supported value.
-             */
-            fun destination(destination: JsonField<IncomingTransaction.Destination>) = apply {
-                this.destination = destination
-            }
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)`.
-             */
-            fun destination(
-                accountTransaction: IncomingTransaction.Destination.AccountTransactionDestination
-            ) =
-                destination(
-                    IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)
-                )
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)`.
-             */
-            fun destination(
-                umaAddressTransaction:
-                    IncomingTransaction.Destination.UmaAddressTransactionDestination
-            ) =
-                destination(
-                    IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)
-                )
+            fun destination(destination: JsonValue) = apply { this.destination = destination }
 
             /**
              * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -949,6 +902,7 @@ private constructor(
              */
             fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
 
+            /** Type of transaction (incoming payment or outgoing payment) */
             fun type(type: IncomingTransaction.Type) = type(JsonField.of(type))
 
             /**
@@ -1096,7 +1050,6 @@ private constructor(
                 this.settledAt = settledAt
             }
 
-            /** Source account details */
             fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
             /**
@@ -1107,40 +1060,6 @@ private constructor(
              * not yet supported value.
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
-             */
-            fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
-                source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
-             */
-            fun source(
-                umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
-            ) =
-                source(
-                    TransactionSourceOneOf.ofUmaAddressTransactionSource(
-                        umaAddressTransactionSource
-                    )
-                )
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
-             */
-            fun source(
-                realtimeFundingTransactionSource:
-                    TransactionSourceOneOf.RealtimeFundingTransactionSource
-            ) =
-                source(
-                    TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
-                        realtimeFundingTransactionSource
-                    )
-                )
 
             /** When the transaction was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1279,7 +1198,6 @@ private constructor(
 
             id()
             customerId()
-            destination().validate()
             platformCustomerId()
             receivedAmount().validate()
             status().validate()
@@ -1293,7 +1211,6 @@ private constructor(
             rateDetails()?.validate()
             reconciliationInstructions()?.validate()
             settledAt()
-            source()?.validate()
             updatedAt()
             requestedReceiverCustomerInfoFields()?.forEach { it.validate() }
             validated = true
@@ -1316,7 +1233,6 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (customerId.asKnown() == null) 0 else 1) +
-                (destination.asKnown()?.validity() ?: 0) +
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (receivedAmount.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
@@ -1330,7 +1246,6 @@ private constructor(
                 (rateDetails.asKnown()?.validity() ?: 0) +
                 (reconciliationInstructions.asKnown()?.validity() ?: 0) +
                 (if (settledAt.asKnown() == null) 0 else 1) +
-                (source.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (requestedReceiverCustomerInfoFields.asKnown()?.sumOf { it.validity().toInt() }
                     ?: 0)

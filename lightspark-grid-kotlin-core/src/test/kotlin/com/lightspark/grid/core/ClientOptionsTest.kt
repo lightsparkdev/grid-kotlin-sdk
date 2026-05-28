@@ -24,29 +24,11 @@ internal class ClientOptionsTest {
                 .putHeader("User-Agent", "My User Agent")
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
 
         assertThat(clientOptions.headers.values("User-Agent")).containsExactly("My User Agent")
-    }
-
-    @Test
-    fun toBuilder_basicAuthCanBeUpdated() {
-        var clientOptions =
-            ClientOptions.builder()
-                .httpClient(httpClient)
-                .username("My Username")
-                .password("My Password")
-                .build()
-
-        clientOptions =
-            clientOptions
-                .toBuilder()
-                .username("another My Username")
-                .password("another My Password")
-                .build()
-
-        assertThat(clientOptions.headers.values("Authorization"))
-            .containsExactly("Basic YW5vdGhlciBNeSBVc2VybmFtZTphbm90aGVyIE15IFBhc3N3b3Jk")
     }
 
     @Test
@@ -56,6 +38,8 @@ internal class ClientOptionsTest {
                 .httpClient(httpClient)
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         verify(httpClient, never()).close()
 

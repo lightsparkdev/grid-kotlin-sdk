@@ -19,6 +19,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
@@ -55,6 +57,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
@@ -77,6 +81,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 

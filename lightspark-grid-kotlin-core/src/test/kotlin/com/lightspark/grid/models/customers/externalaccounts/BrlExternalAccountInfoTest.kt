@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,65 +14,11 @@ internal class BrlExternalAccountInfoTest {
     fun create() {
         val brlExternalAccountInfo =
             BrlExternalAccountInfo.builder()
-                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("x")
-                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                .taxId("26912511571360")
-                .beneficiary(
-                    BrlBeneficiary.builder()
-                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("BRL_ACCOUNT"))
+                .putAdditionalProperty("pixKey", JsonValue.from("user@example.com"))
+                .putAdditionalProperty("pixKeyType", JsonValue.from("CPF"))
+                .putAdditionalProperty("taxId", JsonValue.from("11111111111"))
                 .build()
-
-        assertThat(brlExternalAccountInfo.accountType())
-            .isEqualTo(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-        assertThat(brlExternalAccountInfo.paymentRails())
-            .containsExactly(BrlAccountInfo.PaymentRail.PIX)
-        assertThat(brlExternalAccountInfo.pixKey()).isEqualTo("x")
-        assertThat(brlExternalAccountInfo.pixKeyType()).isEqualTo(BrlAccountInfo.PixKeyType.CPF)
-        assertThat(brlExternalAccountInfo.taxId()).isEqualTo("26912511571360")
-        assertThat(brlExternalAccountInfo.beneficiary())
-            .isEqualTo(
-                BrlExternalAccountInfo.Beneficiary.ofIndividual(
-                    BrlBeneficiary.builder()
-                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
-            )
     }
 
     @Test
@@ -80,32 +26,10 @@ internal class BrlExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val brlExternalAccountInfo =
             BrlExternalAccountInfo.builder()
-                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                .pixKey("x")
-                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                .taxId("26912511571360")
-                .beneficiary(
-                    BrlBeneficiary.builder()
-                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("BRL_ACCOUNT"))
+                .putAdditionalProperty("pixKey", JsonValue.from("user@example.com"))
+                .putAdditionalProperty("pixKeyType", JsonValue.from("CPF"))
+                .putAdditionalProperty("taxId", JsonValue.from("11111111111"))
                 .build()
 
         val roundtrippedBrlExternalAccountInfo =

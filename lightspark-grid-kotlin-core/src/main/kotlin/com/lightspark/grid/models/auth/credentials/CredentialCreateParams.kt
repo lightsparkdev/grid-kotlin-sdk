@@ -91,41 +91,42 @@ private constructor(
 
         /**
          * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp)`.
+         * `AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(emailOtpCredentialCreateRequest)`.
          */
-        fun authCredentialCreateRequest(emailOtp: EmailOtpCredentialCreateRequest) =
-            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp))
-
-        /**
-         * Alias for calling [authCredentialCreateRequest] with the following:
-         * ```kotlin
-         * EmailOtpCredentialCreateRequest.builder()
-         *     .type(EmailOtpCredentialCreateRequestFields.Type.EMAIL_OTP)
-         *     .accountId(accountId)
-         *     .build()
-         * ```
-         */
-        fun emailOtpAuthCredentialCreateRequest(accountId: String) =
+        fun authCredentialCreateRequest(
+            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
+        ) =
             authCredentialCreateRequest(
-                EmailOtpCredentialCreateRequest.builder()
-                    .type(EmailOtpCredentialCreateRequestFields.Type.EMAIL_OTP)
-                    .accountId(accountId)
-                    .build()
+                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                    emailOtpCredentialCreateRequest
+                )
             )
 
         /**
          * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofOAuth(oauth)`.
+         * `AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(oauthCredentialCreateRequest)`.
          */
-        fun authCredentialCreateRequest(oauth: OAuthCredentialCreateRequest) =
-            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofOAuth(oauth))
+        fun authCredentialCreateRequest(
+            oauthCredentialCreateRequest: OAuthCredentialCreateRequest
+        ) =
+            authCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
+                    oauthCredentialCreateRequest
+                )
+            )
 
         /**
          * Alias for calling [authCredentialCreateRequest] with
-         * `AuthCredentialCreateRequestOneOf.ofPasskey(passkey)`.
+         * `AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(passkeyCredentialCreateRequest)`.
          */
-        fun authCredentialCreateRequest(passkey: PasskeyCredentialCreateRequest) =
-            authCredentialCreateRequest(AuthCredentialCreateRequestOneOf.ofPasskey(passkey))
+        fun authCredentialCreateRequest(
+            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
+        ) =
+            authCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
+                    passkeyCredentialCreateRequest
+                )
+            )
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()

@@ -16,7 +16,7 @@ internal class NgnExternalAccountCreateInfoTest {
             NgnExternalAccountCreateInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(NgnExternalAccountCreateInfo.AccountType.NGN_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     NgnBeneficiary.builder()
                         .beneficiaryType(NgnBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -43,7 +43,7 @@ internal class NgnExternalAccountCreateInfoTest {
         assertThat(ngnExternalAccountCreateInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(ngnExternalAccountCreateInfo.accountType())
             .isEqualTo(NgnExternalAccountCreateInfo.AccountType.NGN_ACCOUNT)
-        assertThat(ngnExternalAccountCreateInfo.bankName()).isEqualTo("x")
+        assertThat(ngnExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(ngnExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 NgnExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -77,7 +77,7 @@ internal class NgnExternalAccountCreateInfoTest {
             NgnExternalAccountCreateInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(NgnExternalAccountCreateInfo.AccountType.NGN_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     NgnBeneficiary.builder()
                         .beneficiaryType(NgnBeneficiary.BeneficiaryType.INDIVIDUAL)

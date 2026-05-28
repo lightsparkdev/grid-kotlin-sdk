@@ -11,6 +11,7 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkKnown
+import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
@@ -19,6 +20,7 @@ import java.util.Objects
 class CustomerCreate
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val customerType: JsonValue,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
     private val platformCustomerId: JsonField<String>,
@@ -29,6 +31,7 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("currencies")
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
@@ -38,7 +41,23 @@ private constructor(
         platformCustomerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
         @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
-    ) : this(currencies, email, platformCustomerId, region, umaAddress, mutableMapOf())
+    ) : this(
+        customerType,
+        currencies,
+        email,
+        platformCustomerId,
+        region,
+        umaAddress,
+        mutableMapOf(),
+    )
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = customerCreate.customerType().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR"; tickers
@@ -145,13 +164,21 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [CustomerCreate]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [CustomerCreate].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerType()
+         * ```
+         */
         fun builder() = Builder()
     }
 
     /** A builder for [CustomerCreate]. */
     class Builder internal constructor() {
 
+        private var customerType: JsonValue? = null
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
         private var platformCustomerId: JsonField<String> = JsonMissing.of()
@@ -160,6 +187,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customerCreate: CustomerCreate) = apply {
+            customerType = customerCreate.customerType
             currencies = customerCreate.currencies.map { it.toMutableList() }
             email = customerCreate.email
             platformCustomerId = customerCreate.platformCustomerId
@@ -167,6 +195,8 @@ private constructor(
             umaAddress = customerCreate.umaAddress
             additionalProperties = customerCreate.additionalProperties.toMutableMap()
         }
+
+        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /**
          * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
@@ -287,9 +317,17 @@ private constructor(
          * Returns an immutable instance of [CustomerCreate].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerType()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): CustomerCreate =
             CustomerCreate(
+                checkRequired("customerType", customerType),
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
                 platformCustomerId,
@@ -348,6 +386,7 @@ private constructor(
         }
 
         return other is CustomerCreate &&
+            customerType == other.customerType &&
             currencies == other.currencies &&
             email == other.email &&
             platformCustomerId == other.platformCustomerId &&
@@ -358,6 +397,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            customerType,
             currencies,
             email,
             platformCustomerId,
@@ -370,5 +410,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerCreate{currencies=$currencies, email=$email, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "CustomerCreate{customerType=$customerType, currencies=$currencies, email=$email, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }

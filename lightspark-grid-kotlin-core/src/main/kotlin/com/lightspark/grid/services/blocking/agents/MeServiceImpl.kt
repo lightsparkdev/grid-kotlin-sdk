@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.agents
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
 import com.lightspark.grid.core.handlers.jsonHandler
@@ -196,7 +197,11 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("agents", "me")
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().agentAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -224,7 +229,11 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
                     .addPathSegments("agents", "me", "transfer-in")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().agentAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -252,7 +261,11 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
                     .addPathSegments("agents", "me", "transfer-out")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().agentAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -279,7 +292,11 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("agents", "me", "internal-accounts")
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().agentAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

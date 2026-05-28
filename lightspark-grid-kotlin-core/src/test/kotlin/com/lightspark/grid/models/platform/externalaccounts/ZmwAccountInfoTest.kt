@@ -16,14 +16,14 @@ internal class ZmwAccountInfoTest {
                 .accountType(ZmwAccountInfo.AccountType.ZMW_ACCOUNT)
                 .addPaymentRail(ZmwAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+260971234567")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         assertThat(zmwAccountInfo.accountType()).isEqualTo(ZmwAccountInfo.AccountType.ZMW_ACCOUNT)
         assertThat(zmwAccountInfo.paymentRails())
             .containsExactly(ZmwAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(zmwAccountInfo.phoneNumber()).isEqualTo("+260971234567")
-        assertThat(zmwAccountInfo.provider()).isEqualTo("x")
+        assertThat(zmwAccountInfo.provider()).isEqualTo("Example Provider")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class ZmwAccountInfoTest {
                 .accountType(ZmwAccountInfo.AccountType.ZMW_ACCOUNT)
                 .addPaymentRail(ZmwAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+260971234567")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         val roundtrippedZmwAccountInfo =

@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.customers
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
@@ -13,14 +14,14 @@ internal class CustomerCreateParamsTest {
     fun create() {
         CustomerCreateParams.builder()
             .createCustomerRequest(
-                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest.builder()
+                    .customerType(JsonValue.from("INDIVIDUAL"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .platformCustomerId("ind-9f84e0c2")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -45,14 +46,15 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .platformCustomerId("ind-9f84e0c2")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -75,15 +77,16 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .platformCustomerId("ind-9f84e0c2")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -108,8 +111,9 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
                 .build()
@@ -118,9 +122,10 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                CustomerCreateParams.CreateCustomerRequest.ofIndividualCustomerCreate(
+                    CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
             )

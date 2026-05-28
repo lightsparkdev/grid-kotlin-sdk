@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.exchangerates
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.quotes.Currency
 import java.time.OffsetDateTime
@@ -25,9 +26,7 @@ internal class ExchangeRateListResponseTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .destinationPaymentRail(
-                            ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
-                        )
+                        .destinationPaymentRail(JsonValue.from("ACH"))
                         .exchangeRate(82.5)
                         .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)
@@ -58,9 +57,7 @@ internal class ExchangeRateListResponseTest {
                             .symbol("\$")
                             .build()
                     )
-                    .destinationPaymentRail(
-                        ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
-                    )
+                    .destinationPaymentRail(JsonValue.from("ACH"))
                     .exchangeRate(82.5)
                     .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                     .maxSendingAmount(10000000L)
@@ -95,9 +92,7 @@ internal class ExchangeRateListResponseTest {
                                 .symbol("\$")
                                 .build()
                         )
-                        .destinationPaymentRail(
-                            ExchangeRateListResponse.Data.DestinationPaymentRail.ACH
-                        )
+                        .destinationPaymentRail(JsonValue.from("ACH"))
                         .exchangeRate(82.5)
                         .fees(ExchangeRateListResponse.Data.Fees.builder().fixed(100L).build())
                         .maxSendingAmount(10000000L)

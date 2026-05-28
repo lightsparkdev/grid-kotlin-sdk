@@ -11,26 +11,13 @@ internal class PolygonWalletInfoTest {
 
     @Test
     fun create() {
-        val polygonWalletInfo =
-            PolygonWalletInfo.builder()
-                .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
-                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
-                .build()
-
-        assertThat(polygonWalletInfo.accountType())
-            .isEqualTo(PolygonWalletInfo.AccountType.POLYGON_WALLET)
-        assertThat(polygonWalletInfo.address())
-            .isEqualTo("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+        val polygonWalletInfo = PolygonWalletInfo.builder().build()
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val polygonWalletInfo =
-            PolygonWalletInfo.builder()
-                .accountType(PolygonWalletInfo.AccountType.POLYGON_WALLET)
-                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
-                .build()
+        val polygonWalletInfo = PolygonWalletInfo.builder().build()
 
         val roundtrippedPolygonWalletInfo =
             jsonMapper.readValue(

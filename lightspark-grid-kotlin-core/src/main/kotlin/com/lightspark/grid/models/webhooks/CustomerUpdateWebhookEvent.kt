@@ -163,12 +163,15 @@ private constructor(
          */
         fun data(data: JsonField<CustomerOneOf>) = apply { this.data = data }
 
-        /** Alias for calling [data] with `CustomerOneOf.ofIndividual(individual)`. */
-        fun data(individual: CustomerOneOf.Individual) =
-            data(CustomerOneOf.ofIndividual(individual))
+        /**
+         * Alias for calling [data] with `CustomerOneOf.ofIndividualCustomer(individualCustomer)`.
+         */
+        fun data(individualCustomer: CustomerOneOf.IndividualCustomer) =
+            data(CustomerOneOf.ofIndividualCustomer(individualCustomer))
 
-        /** Alias for calling [data] with `CustomerOneOf.ofBusiness(business)`. */
-        fun data(business: CustomerOneOf.Business) = data(CustomerOneOf.ofBusiness(business))
+        /** Alias for calling [data] with `CustomerOneOf.ofBusinessCustomer(businessCustomer)`. */
+        fun data(businessCustomer: CustomerOneOf.BusinessCustomer) =
+            data(CustomerOneOf.ofBusinessCustomer(businessCustomer))
 
         /** ISO 8601 timestamp of when the webhook was sent */
         fun timestamp(timestamp: OffsetDateTime) = timestamp(JsonField.of(timestamp))

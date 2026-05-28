@@ -38,9 +38,9 @@ internal class CopExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
+                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 
@@ -72,10 +72,10 @@ internal class CopExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(copExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
+        assertThat(copExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(copExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("x")
+        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("Bancolombia")
         assertThat(copExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -108,9 +108,9 @@ internal class CopExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
+                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 

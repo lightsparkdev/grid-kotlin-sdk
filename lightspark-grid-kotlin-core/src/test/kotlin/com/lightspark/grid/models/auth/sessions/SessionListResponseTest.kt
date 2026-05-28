@@ -18,7 +18,7 @@ internal class SessionListResponseTest {
             SessionListResponse.builder()
                 .addData(
                     AuthSession.builder()
-                        .id("Session:019542f5-b3e7-1d02-0000-000000000003")
+                        .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                         .nickname("example@lightspark.com")
@@ -38,7 +38,7 @@ internal class SessionListResponseTest {
         assertThat(sessionListResponse.data())
             .containsExactly(
                 AuthSession.builder()
-                    .id("Session:019542f5-b3e7-1d02-0000-000000000003")
+                    .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                     .nickname("example@lightspark.com")
@@ -62,7 +62,7 @@ internal class SessionListResponseTest {
             SessionListResponse.builder()
                 .addData(
                     AuthSession.builder()
-                        .id("Session:019542f5-b3e7-1d02-0000-000000000003")
+                        .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                         .nickname("example@lightspark.com")
