@@ -10,6 +10,7 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -17,14 +18,24 @@ import java.util.Objects
 class BaseTransactionSource
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val sourceType: JsonValue,
     private val currency: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of()
-    ) : this(currency, mutableMapOf())
+        @JsonProperty("sourceType") @ExcludeMissing sourceType: JsonValue = JsonMissing.of(),
+        @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+    ) : this(sourceType, currency, mutableMapOf())
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = baseTransactionSource.sourceType().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
 
     /**
      * Currency code for the source
@@ -55,20 +66,31 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [BaseTransactionSource]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [BaseTransactionSource].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .sourceType()
+         * ```
+         */
         fun builder() = Builder()
     }
 
     /** A builder for [BaseTransactionSource]. */
     class Builder internal constructor() {
 
+        private var sourceType: JsonValue? = null
         private var currency: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(baseTransactionSource: BaseTransactionSource) = apply {
+            sourceType = baseTransactionSource.sourceType
             currency = baseTransactionSource.currency
             additionalProperties = baseTransactionSource.additionalProperties.toMutableMap()
         }
+
+        fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
 
         /** Currency code for the source */
         fun currency(currency: String) = currency(JsonField.of(currency))
@@ -104,9 +126,20 @@ private constructor(
          * Returns an immutable instance of [BaseTransactionSource].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .sourceType()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): BaseTransactionSource =
-            BaseTransactionSource(currency, additionalProperties.toMutableMap())
+            BaseTransactionSource(
+                checkRequired("sourceType", sourceType),
+                currency,
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -149,14 +182,15 @@ private constructor(
         }
 
         return other is BaseTransactionSource &&
+            sourceType == other.sourceType &&
             currency == other.currency &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(currency, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(sourceType, currency, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BaseTransactionSource{currency=$currency, additionalProperties=$additionalProperties}"
+        "BaseTransactionSource{sourceType=$sourceType, currency=$currency, additionalProperties=$additionalProperties}"
 }

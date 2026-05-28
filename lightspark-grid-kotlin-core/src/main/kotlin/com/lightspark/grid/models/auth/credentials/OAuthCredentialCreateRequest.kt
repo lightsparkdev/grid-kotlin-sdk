@@ -19,22 +19,20 @@ class OAuthCredentialCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
+    private val type: JsonValue,
     private val oidcToken: JsonField<String>,
-    private val type: JsonField<OAuthCredentialCreateRequestFields.Type>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
         @JsonProperty("oidcToken") @ExcludeMissing oidcToken: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("type")
-        @ExcludeMissing
-        type: JsonField<OAuthCredentialCreateRequestFields.Type> = JsonMissing.of(),
-    ) : this(accountId, oidcToken, type, mutableMapOf())
+    ) : this(accountId, type, oidcToken, mutableMapOf())
 
     fun toAuthCredentialCreateRequest(): AuthCredentialCreateRequest =
-        AuthCredentialCreateRequest.builder().accountId(accountId).build()
+        AuthCredentialCreateRequest.builder().accountId(accountId).type(type).build()
 
     fun toOAuthCredentialCreateRequestFields(): OAuthCredentialCreateRequestFields =
         OAuthCredentialCreateRequestFields.builder().oidcToken(oidcToken).type(type).build()
@@ -46,6 +44,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountId(): String = accountId.getRequired("accountId")
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = oauthCredentialCreateRequest.type().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
     /**
      * OIDC ID token issued by the identity provider (e.g. Google, Apple). The token's `iss`, `aud`,
@@ -61,14 +67,6 @@ private constructor(
     fun oidcToken(): String = oidcToken.getRequired("oidcToken")
 
     /**
-     * Discriminator value identifying this as an OAuth credential.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun type(): OAuthCredentialCreateRequestFields.Type = type.getRequired("type")
-
-    /**
      * Returns the raw JSON value of [accountId].
      *
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
@@ -81,15 +79,6 @@ private constructor(
      * Unlike [oidcToken], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("oidcToken") @ExcludeMissing fun _oidcToken(): JsonField<String> = oidcToken
-
-    /**
-     * Returns the raw JSON value of [type].
-     *
-     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("type")
-    @ExcludeMissing
-    fun _type(): JsonField<OAuthCredentialCreateRequestFields.Type> = type
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -111,8 +100,8 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
-         * .oidcToken()
          * .type()
+         * .oidcToken()
          * ```
          */
         fun builder() = Builder()
@@ -122,14 +111,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<String>? = null
+        private var type: JsonValue? = null
         private var oidcToken: JsonField<String>? = null
-        private var type: JsonField<OAuthCredentialCreateRequestFields.Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(oauthCredentialCreateRequest: OAuthCredentialCreateRequest) = apply {
             accountId = oauthCredentialCreateRequest.accountId
-            oidcToken = oauthCredentialCreateRequest.oidcToken
             type = oauthCredentialCreateRequest.type
+            oidcToken = oauthCredentialCreateRequest.oidcToken
             additionalProperties = oauthCredentialCreateRequest.additionalProperties.toMutableMap()
         }
 
@@ -144,6 +133,8 @@ private constructor(
          * value.
          */
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
+
+        fun type(type: JsonValue) = apply { this.type = type }
 
         /**
          * OIDC ID token issued by the identity provider (e.g. Google, Apple). The token's `iss`,
@@ -163,20 +154,6 @@ private constructor(
          * value.
          */
         fun oidcToken(oidcToken: JsonField<String>) = apply { this.oidcToken = oidcToken }
-
-        /** Discriminator value identifying this as an OAuth credential. */
-        fun type(type: OAuthCredentialCreateRequestFields.Type) = type(JsonField.of(type))
-
-        /**
-         * Sets [Builder.type] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.type] with a well-typed
-         * [OAuthCredentialCreateRequestFields.Type] value instead. This method is primarily for
-         * setting the field to an undocumented or not yet supported value.
-         */
-        fun type(type: JsonField<OAuthCredentialCreateRequestFields.Type>) = apply {
-            this.type = type
-        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -205,8 +182,8 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
-         * .oidcToken()
          * .type()
+         * .oidcToken()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -214,8 +191,8 @@ private constructor(
         fun build(): OAuthCredentialCreateRequest =
             OAuthCredentialCreateRequest(
                 checkRequired("accountId", accountId),
-                checkRequired("oidcToken", oidcToken),
                 checkRequired("type", type),
+                checkRequired("oidcToken", oidcToken),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -237,7 +214,6 @@ private constructor(
 
         accountId()
         oidcToken()
-        type().validate()
         validated = true
     }
 
@@ -255,9 +231,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountId.asKnown() == null) 0 else 1) +
-            (if (oidcToken.asKnown() == null) 0 else 1) +
-            (type.asKnown()?.validity() ?: 0)
+        (if (accountId.asKnown() == null) 0 else 1) + (if (oidcToken.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -266,17 +240,17 @@ private constructor(
 
         return other is OAuthCredentialCreateRequest &&
             accountId == other.accountId &&
-            oidcToken == other.oidcToken &&
             type == other.type &&
+            oidcToken == other.oidcToken &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountId, oidcToken, type, additionalProperties)
+        Objects.hash(accountId, type, oidcToken, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OAuthCredentialCreateRequest{accountId=$accountId, oidcToken=$oidcToken, type=$type, additionalProperties=$additionalProperties}"
+        "OAuthCredentialCreateRequest{accountId=$accountId, type=$type, oidcToken=$oidcToken, additionalProperties=$additionalProperties}"
 }

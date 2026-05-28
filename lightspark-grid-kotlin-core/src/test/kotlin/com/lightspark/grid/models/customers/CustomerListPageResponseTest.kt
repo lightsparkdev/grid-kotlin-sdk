@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -17,7 +18,8 @@ internal class CustomerListPageResponseTest {
         val customerListPageResponse =
             CustomerListPageResponse.builder()
                 .addData(
-                    CustomerOneOf.Individual.builder()
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -28,7 +30,6 @@ internal class CustomerListPageResponseTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -52,8 +53,9 @@ internal class CustomerListPageResponseTest {
 
         assertThat(customerListPageResponse.data())
             .containsExactly(
-                CustomerOneOf.ofIndividual(
-                    CustomerOneOf.Individual.builder()
+                CustomerOneOf.ofIndividualCustomer(
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -64,7 +66,6 @@ internal class CustomerListPageResponseTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -93,7 +94,8 @@ internal class CustomerListPageResponseTest {
         val customerListPageResponse =
             CustomerListPageResponse.builder()
                 .addData(
-                    CustomerOneOf.Individual.builder()
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -104,7 +106,6 @@ internal class CustomerListPageResponseTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")

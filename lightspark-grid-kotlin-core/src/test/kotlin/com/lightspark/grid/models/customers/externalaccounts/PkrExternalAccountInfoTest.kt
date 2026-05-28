@@ -3,9 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.PkrBeneficiary
-import com.lightspark.grid.models.platform.externalaccounts.PkrAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,67 +14,12 @@ internal class PkrExternalAccountInfoTest {
     fun create() {
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
-                .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .accountNumber("x")
-                .bankName("x")
-                .iban("PK36SCBL0000001123456702")
-                .phoneNumber("+1234567890")
-                .beneficiary(
-                    PkrBeneficiary.builder()
-                        .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("PKR_ACCOUNT"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("iban", JsonValue.from("PK36SCBL0000001123456702"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
-
-        assertThat(pkrExternalAccountInfo.accountType())
-            .isEqualTo(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrExternalAccountInfo.paymentRails())
-            .containsExactly(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(pkrExternalAccountInfo.accountNumber()).isEqualTo("x")
-        assertThat(pkrExternalAccountInfo.bankName()).isEqualTo("x")
-        assertThat(pkrExternalAccountInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
-        assertThat(pkrExternalAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(pkrExternalAccountInfo.beneficiary())
-            .isEqualTo(
-                PkrExternalAccountInfo.Beneficiary.ofIndividual(
-                    PkrBeneficiary.builder()
-                        .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
-            )
     }
 
     @Test
@@ -83,33 +27,11 @@ internal class PkrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
-                .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
-                .accountNumber("x")
-                .bankName("x")
-                .iban("PK36SCBL0000001123456702")
-                .phoneNumber("+1234567890")
-                .beneficiary(
-                    PkrBeneficiary.builder()
-                        .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("PKR_ACCOUNT"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("iban", JsonValue.from("PK36SCBL0000001123456702"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
 
         val roundtrippedPkrExternalAccountInfo =

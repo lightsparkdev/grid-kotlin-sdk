@@ -17,7 +17,7 @@ internal class HkdExternalAccountCreateInfoTest {
             HkdExternalAccountCreateInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class HkdExternalAccountCreateInfoTest {
         assertThat(hkdExternalAccountCreateInfo.accountNumber()).isEqualTo("123456789012")
         assertThat(hkdExternalAccountCreateInfo.accountType())
             .isEqualTo(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-        assertThat(hkdExternalAccountCreateInfo.bankName()).isEqualTo("x")
+        assertThat(hkdExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(hkdExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 HkdExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class HkdExternalAccountCreateInfoTest {
             HkdExternalAccountCreateInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdExternalAccountCreateInfo.AccountType.HKD_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     HkdBeneficiary.builder()
                         .beneficiaryType(HkdBeneficiary.BeneficiaryType.INDIVIDUAL)

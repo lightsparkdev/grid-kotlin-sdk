@@ -77,23 +77,39 @@ interface CredentialService {
 
     /** @see create */
     fun create(
-        emailOtp: EmailOtpCredentialCreateRequest,
+        emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AuthMethodResponse =
-        create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
+        create(
+            AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                emailOtpCredentialCreateRequest
+            ),
+            requestOptions,
+        )
 
     /** @see create */
     fun create(
-        oauth: OAuthCredentialCreateRequest,
+        oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse = create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
+    ): AuthMethodResponse =
+        create(
+            AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
+                oauthCredentialCreateRequest
+            ),
+            requestOptions,
+        )
 
     /** @see create */
     fun create(
-        passkey: PasskeyCredentialCreateRequest,
+        passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): AuthMethodResponse =
-        create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
+        create(
+            AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
+                passkeyCredentialCreateRequest
+            ),
+            requestOptions,
+        )
 
     /**
      * Retrieve all authentication credentials registered on an Embedded Wallet internal account.
@@ -246,26 +262,41 @@ interface CredentialService {
         /** @see create */
         @MustBeClosed
         fun create(
-            emailOtp: EmailOtpCredentialCreateRequest,
+            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AuthMethodResponse> =
-            create(AuthCredentialCreateRequestOneOf.ofEmailOtp(emailOtp), requestOptions)
+            create(
+                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                    emailOtpCredentialCreateRequest
+                ),
+                requestOptions,
+            )
 
         /** @see create */
         @MustBeClosed
         fun create(
-            oauth: OAuthCredentialCreateRequest,
+            oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AuthMethodResponse> =
-            create(AuthCredentialCreateRequestOneOf.ofOAuth(oauth), requestOptions)
+            create(
+                AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
+                    oauthCredentialCreateRequest
+                ),
+                requestOptions,
+            )
 
         /** @see create */
         @MustBeClosed
         fun create(
-            passkey: PasskeyCredentialCreateRequest,
+            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<AuthMethodResponse> =
-            create(AuthCredentialCreateRequestOneOf.ofPasskey(passkey), requestOptions)
+            create(
+                AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
+                    passkeyCredentialCreateRequest
+                ),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /auth/credentials`, but is otherwise the same as

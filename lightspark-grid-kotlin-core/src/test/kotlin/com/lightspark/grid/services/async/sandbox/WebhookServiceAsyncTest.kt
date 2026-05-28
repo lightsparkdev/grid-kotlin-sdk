@@ -15,6 +15,8 @@ internal class WebhookServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val webhookServiceAsync = client.sandbox().webhooks()
 

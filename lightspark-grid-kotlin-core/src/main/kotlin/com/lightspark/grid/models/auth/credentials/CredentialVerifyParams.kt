@@ -89,45 +89,6 @@ private constructor(
             authCredentialVerifyRequest: AuthCredentialVerifyRequestOneOf
         ) = apply { this.authCredentialVerifyRequest = authCredentialVerifyRequest }
 
-        /**
-         * Alias for calling [authCredentialVerifyRequest] with
-         * `AuthCredentialVerifyRequestOneOf.ofEmailOtpCredentialVerifyRequestFields(emailOtpCredentialVerifyRequestFields)`.
-         */
-        fun authCredentialVerifyRequest(
-            emailOtpCredentialVerifyRequestFields: EmailOtpCredentialVerifyRequestFields
-        ) =
-            authCredentialVerifyRequest(
-                AuthCredentialVerifyRequestOneOf.ofEmailOtpCredentialVerifyRequestFields(
-                    emailOtpCredentialVerifyRequestFields
-                )
-            )
-
-        /**
-         * Alias for calling [authCredentialVerifyRequest] with
-         * `AuthCredentialVerifyRequestOneOf.ofOAuthCredentialVerifyRequestFields(oauthCredentialVerifyRequestFields)`.
-         */
-        fun authCredentialVerifyRequest(
-            oauthCredentialVerifyRequestFields: OAuthCredentialVerifyRequestFields
-        ) =
-            authCredentialVerifyRequest(
-                AuthCredentialVerifyRequestOneOf.ofOAuthCredentialVerifyRequestFields(
-                    oauthCredentialVerifyRequestFields
-                )
-            )
-
-        /**
-         * Alias for calling [authCredentialVerifyRequest] with
-         * `AuthCredentialVerifyRequestOneOf.ofPasskeyCredentialVerifyRequestFields(passkeyCredentialVerifyRequestFields)`.
-         */
-        fun authCredentialVerifyRequest(
-            passkeyCredentialVerifyRequestFields: PasskeyCredentialVerifyRequestFields
-        ) =
-            authCredentialVerifyRequest(
-                AuthCredentialVerifyRequestOneOf.ofPasskeyCredentialVerifyRequestFields(
-                    passkeyCredentialVerifyRequestFields
-                )
-            )
-
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)

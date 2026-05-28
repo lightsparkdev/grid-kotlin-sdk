@@ -16,6 +16,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/** Error information for a failed bulk import entry */
 class BulkCustomerImportErrorEntry
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

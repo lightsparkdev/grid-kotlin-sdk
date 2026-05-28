@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.sandbox.cards
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.quotes.Currency
+import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
@@ -19,6 +20,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
@@ -36,7 +39,7 @@ internal class SimulateServiceTest {
                             .build()
                     )
                     .merchant(
-                        SimulateAuthorizationParams.Merchant.builder()
+                        CardMerchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
                             .country("US")
                             .mcc("5814")
@@ -55,6 +58,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
@@ -77,6 +82,8 @@ internal class SimulateServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 

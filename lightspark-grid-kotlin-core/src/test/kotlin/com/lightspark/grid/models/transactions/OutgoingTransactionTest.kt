@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
-import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
@@ -22,11 +21,7 @@ internal class OutgoingTransactionTest {
             OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(
-                    OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
                     CurrencyAmount.builder()
@@ -41,12 +36,8 @@ internal class OutgoingTransactionTest {
                         )
                         .build()
                 )
-                .source(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-                .status(OutgoingTransactionStatus.PENDING)
+                .source(TransactionSourceOneOf.builder().build())
+                .status(OutgoingTransaction.Status.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
@@ -64,13 +55,24 @@ internal class OutgoingTransactionTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("1234567890")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
-                                .routingNumber("021000021")
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .MOBILE_MONEY
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .accountNumber("1234567890")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
+                                )
+                                .bankName("Chase Bank")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -80,18 +82,20 @@ internal class OutgoingTransactionTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo.builder()
-                                .address(
-                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
                                 )
-                                .assetType(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo
-                                        .AssetType
-                                        .BTC
+                                .reference("UMA-Q12345-REF")
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
                                 )
-                                .invoice(
-                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
-                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -107,7 +111,7 @@ internal class OutgoingTransactionTest {
                         .counterpartyMultiplier(1.08)
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30.0)
+                        .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
@@ -149,14 +153,8 @@ internal class OutgoingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(outgoingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(outgoingTransaction.destination())
-            .isEqualTo(
-                OutgoingTransaction.Destination.ofAccountTransaction(
-                    OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
-            )
+        assertThat(outgoingTransaction._destination())
+            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(outgoingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(outgoingTransaction.sentAmount())
             .isEqualTo(
@@ -172,15 +170,8 @@ internal class OutgoingTransactionTest {
                     )
                     .build()
             )
-        assertThat(outgoingTransaction.source())
-            .isEqualTo(
-                TransactionSourceOneOf.ofAccountTransactionSource(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-            )
-        assertThat(outgoingTransaction.status()).isEqualTo(OutgoingTransactionStatus.PENDING)
+        assertThat(outgoingTransaction.source()).isEqualTo(TransactionSourceOneOf.builder().build())
+        assertThat(outgoingTransaction.status()).isEqualTo(OutgoingTransaction.Status.PENDING)
         assertThat(outgoingTransaction.type()).isEqualTo(OutgoingTransaction.Type.OUTGOING)
         assertThat(outgoingTransaction.agentId())
             .isEqualTo("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -203,13 +194,23 @@ internal class OutgoingTransactionTest {
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                            .accountNumber("1234567890")
-                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
-                            .routingNumber("021000021")
+                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                    .BANK_TRANSFER
+                            )
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                    .MOBILE_MONEY
+                            )
                             .reference("UMA-Q12345-REF")
+                            .accountNumber("1234567890")
+                            .bankAccountType(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
+                                    .CHECKING
+                            )
+                            .bankName("Chase Bank")
+                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -217,18 +218,19 @@ internal class OutgoingTransactionTest {
                     .build(),
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo.builder()
-                            .address(
-                                "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
+                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                    .BANK_TRANSFER
                             )
-                            .assetType(
-                                PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo
-                                    .AssetType
-                                    .BTC
+                            .reference("UMA-Q12345-REF")
+                            .accountNumber("0123456789")
+                            .bankAccountType(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
+                                    .CHECKING
                             )
-                            .invoice(
-                                "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
-                            )
+                            .bankName("Banco Cuscatlan")
+                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .instructionsNotes(
@@ -246,7 +248,7 @@ internal class OutgoingTransactionTest {
                     .counterpartyMultiplier(1.08)
                     .gridApiFixedFee(10L)
                     .gridApiMultiplier(0.925)
-                    .gridApiVariableFeeAmount(30.0)
+                    .gridApiVariableFeeAmount(30L)
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
@@ -296,11 +298,7 @@ internal class OutgoingTransactionTest {
             OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(
-                    OutgoingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
                     CurrencyAmount.builder()
@@ -315,12 +313,8 @@ internal class OutgoingTransactionTest {
                         )
                         .build()
                 )
-                .source(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-                .status(OutgoingTransactionStatus.PENDING)
+                .source(TransactionSourceOneOf.builder().build())
+                .status(OutgoingTransaction.Status.PENDING)
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
@@ -338,13 +332,24 @@ internal class OutgoingTransactionTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("1234567890")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.WIRE)
-                                .routingNumber("021000021")
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
+                                )
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .MOBILE_MONEY
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .accountNumber("1234567890")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
+                                )
+                                .bankName("Chase Bank")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes("Include reference UMA-Q12345-REF in memo")
@@ -354,18 +359,20 @@ internal class OutgoingTransactionTest {
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo.builder()
-                                .address(
-                                    "spark1pgssyuuuhnrrdjswal5c3s3rafw9w3y5dd4cjy3duxlf7hjzkp0rqx6dj6mrhu"
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
                                 )
-                                .assetType(
-                                    PaymentInstructions.AccountOrWalletInfo.PaymentSparkWalletInfo
-                                        .AssetType
-                                        .BTC
+                                .reference("UMA-Q12345-REF")
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
                                 )
-                                .invoice(
-                                    "lnbc15u1p3xnhl2pp5jptserfk3zk4qy42tlucycrfwxhydvlemu9pqr93tuzlv9cc7g3sdqsvfhkcap3xyhx7un8cqzpgxqzjcsp5f8c52y2stc300gl6s4xswtjpc37hrnnr3c9wvtgjfuvqmpm35evq9qyyssqy4lgd8tj637qcjp05rdpxxykjenthxftej7a2zzmwrmrl70fyj9hvj0rewhzj7jfyuwkwcg9g2jpwtk3wkjtwnkdks84hsnu8xps5vsq4gj5hs"
-                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -381,7 +388,7 @@ internal class OutgoingTransactionTest {
                         .counterpartyMultiplier(1.08)
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30.0)
+                        .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )

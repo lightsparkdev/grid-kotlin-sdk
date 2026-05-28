@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -13,11 +14,13 @@ internal class CustomerUpdateTest {
     fun create() {
         val customerUpdate =
             CustomerUpdate.builder()
+                .customerType(JsonValue.from(mapOf<String, Any>()))
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
+        assertThat(customerUpdate._customerType()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(customerUpdate.currencies()).containsExactly("USD", "EUR", "USDC")
         assertThat(customerUpdate.email()).isEqualTo("john.doe@example.com")
         assertThat(customerUpdate.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
@@ -28,6 +31,7 @@ internal class CustomerUpdateTest {
         val jsonMapper = jsonMapper()
         val customerUpdate =
             CustomerUpdate.builder()
+                .customerType(JsonValue.from(mapOf<String, Any>()))
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .umaAddress("\$john.doe@uma.domain.com")

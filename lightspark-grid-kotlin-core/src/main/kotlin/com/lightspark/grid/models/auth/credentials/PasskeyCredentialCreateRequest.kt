@@ -19,28 +19,26 @@ class PasskeyCredentialCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
+    private val type: JsonValue,
     private val attestation: JsonField<PasskeyAttestation>,
     private val challenge: JsonField<String>,
     private val nickname: JsonField<String>,
-    private val type: JsonField<PasskeyCredentialCreateRequestFields.Type>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
         @JsonProperty("attestation")
         @ExcludeMissing
         attestation: JsonField<PasskeyAttestation> = JsonMissing.of(),
         @JsonProperty("challenge") @ExcludeMissing challenge: JsonField<String> = JsonMissing.of(),
         @JsonProperty("nickname") @ExcludeMissing nickname: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("type")
-        @ExcludeMissing
-        type: JsonField<PasskeyCredentialCreateRequestFields.Type> = JsonMissing.of(),
-    ) : this(accountId, attestation, challenge, nickname, type, mutableMapOf())
+    ) : this(accountId, type, attestation, challenge, nickname, mutableMapOf())
 
     fun toAuthCredentialCreateRequest(): AuthCredentialCreateRequest =
-        AuthCredentialCreateRequest.builder().accountId(accountId).build()
+        AuthCredentialCreateRequest.builder().accountId(accountId).type(type).build()
 
     fun toPasskeyCredentialCreateRequestFields(): PasskeyCredentialCreateRequestFields =
         PasskeyCredentialCreateRequestFields.builder()
@@ -57,6 +55,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountId(): String = accountId.getRequired("accountId")
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = passkeyCredentialCreateRequest.type().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -88,14 +94,6 @@ private constructor(
     fun nickname(): String = nickname.getRequired("nickname")
 
     /**
-     * Discriminator value identifying this as a passkey credential.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun type(): PasskeyCredentialCreateRequestFields.Type = type.getRequired("type")
-
-    /**
      * Returns the raw JSON value of [accountId].
      *
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
@@ -125,15 +123,6 @@ private constructor(
      */
     @JsonProperty("nickname") @ExcludeMissing fun _nickname(): JsonField<String> = nickname
 
-    /**
-     * Returns the raw JSON value of [type].
-     *
-     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("type")
-    @ExcludeMissing
-    fun _type(): JsonField<PasskeyCredentialCreateRequestFields.Type> = type
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -155,10 +144,10 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
+         * .type()
          * .attestation()
          * .challenge()
          * .nickname()
-         * .type()
          * ```
          */
         fun builder() = Builder()
@@ -168,18 +157,18 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<String>? = null
+        private var type: JsonValue? = null
         private var attestation: JsonField<PasskeyAttestation>? = null
         private var challenge: JsonField<String>? = null
         private var nickname: JsonField<String>? = null
-        private var type: JsonField<PasskeyCredentialCreateRequestFields.Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest) = apply {
             accountId = passkeyCredentialCreateRequest.accountId
+            type = passkeyCredentialCreateRequest.type
             attestation = passkeyCredentialCreateRequest.attestation
             challenge = passkeyCredentialCreateRequest.challenge
             nickname = passkeyCredentialCreateRequest.nickname
-            type = passkeyCredentialCreateRequest.type
             additionalProperties =
                 passkeyCredentialCreateRequest.additionalProperties.toMutableMap()
         }
@@ -195,6 +184,8 @@ private constructor(
          * value.
          */
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
+
+        fun type(type: JsonValue) = apply { this.type = type }
 
         fun attestation(attestation: PasskeyAttestation) = attestation(JsonField.of(attestation))
 
@@ -243,20 +234,6 @@ private constructor(
          */
         fun nickname(nickname: JsonField<String>) = apply { this.nickname = nickname }
 
-        /** Discriminator value identifying this as a passkey credential. */
-        fun type(type: PasskeyCredentialCreateRequestFields.Type) = type(JsonField.of(type))
-
-        /**
-         * Sets [Builder.type] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.type] with a well-typed
-         * [PasskeyCredentialCreateRequestFields.Type] value instead. This method is primarily for
-         * setting the field to an undocumented or not yet supported value.
-         */
-        fun type(type: JsonField<PasskeyCredentialCreateRequestFields.Type>) = apply {
-            this.type = type
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -284,10 +261,10 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
+         * .type()
          * .attestation()
          * .challenge()
          * .nickname()
-         * .type()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -295,10 +272,10 @@ private constructor(
         fun build(): PasskeyCredentialCreateRequest =
             PasskeyCredentialCreateRequest(
                 checkRequired("accountId", accountId),
+                checkRequired("type", type),
                 checkRequired("attestation", attestation),
                 checkRequired("challenge", challenge),
                 checkRequired("nickname", nickname),
-                checkRequired("type", type),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -322,7 +299,6 @@ private constructor(
         attestation().validate()
         challenge()
         nickname()
-        type().validate()
         validated = true
     }
 
@@ -343,8 +319,7 @@ private constructor(
         (if (accountId.asKnown() == null) 0 else 1) +
             (attestation.asKnown()?.validity() ?: 0) +
             (if (challenge.asKnown() == null) 0 else 1) +
-            (if (nickname.asKnown() == null) 0 else 1) +
-            (type.asKnown()?.validity() ?: 0)
+            (if (nickname.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -353,19 +328,19 @@ private constructor(
 
         return other is PasskeyCredentialCreateRequest &&
             accountId == other.accountId &&
+            type == other.type &&
             attestation == other.attestation &&
             challenge == other.challenge &&
             nickname == other.nickname &&
-            type == other.type &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountId, attestation, challenge, nickname, type, additionalProperties)
+        Objects.hash(accountId, type, attestation, challenge, nickname, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PasskeyCredentialCreateRequest{accountId=$accountId, attestation=$attestation, challenge=$challenge, nickname=$nickname, type=$type, additionalProperties=$additionalProperties}"
+        "PasskeyCredentialCreateRequest{accountId=$accountId, type=$type, attestation=$attestation, challenge=$challenge, nickname=$nickname, additionalProperties=$additionalProperties}"
 }

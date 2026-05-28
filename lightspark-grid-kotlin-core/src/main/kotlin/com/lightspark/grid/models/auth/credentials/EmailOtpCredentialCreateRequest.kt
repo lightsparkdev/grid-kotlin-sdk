@@ -19,20 +19,18 @@ class EmailOtpCredentialCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
-    private val type: JsonField<EmailOtpCredentialCreateRequestFields.Type>,
+    private val type: JsonValue,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("type")
-        @ExcludeMissing
-        type: JsonField<EmailOtpCredentialCreateRequestFields.Type> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
     ) : this(accountId, type, mutableMapOf())
 
     fun toAuthCredentialCreateRequest(): AuthCredentialCreateRequest =
-        AuthCredentialCreateRequest.builder().accountId(accountId).build()
+        AuthCredentialCreateRequest.builder().accountId(accountId).type(type).build()
 
     fun toEmailOtpCredentialCreateRequestFields(): EmailOtpCredentialCreateRequestFields =
         EmailOtpCredentialCreateRequestFields.builder().type(type).build()
@@ -46,12 +44,12 @@ private constructor(
     fun accountId(): String = accountId.getRequired("accountId")
 
     /**
-     * Discriminator value identifying this as an email OTP credential.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = emailOtpCredentialCreateRequest.type().convert(MyClass::class.java)
+     * ```
      */
-    fun type(): EmailOtpCredentialCreateRequestFields.Type = type.getRequired("type")
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
     /**
      * Returns the raw JSON value of [accountId].
@@ -59,15 +57,6 @@ private constructor(
      * Unlike [accountId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("accountId") @ExcludeMissing fun _accountId(): JsonField<String> = accountId
-
-    /**
-     * Returns the raw JSON value of [type].
-     *
-     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("type")
-    @ExcludeMissing
-    fun _type(): JsonField<EmailOtpCredentialCreateRequestFields.Type> = type
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -100,7 +89,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<String>? = null
-        private var type: JsonField<EmailOtpCredentialCreateRequestFields.Type>? = null
+        private var type: JsonValue? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest) =
@@ -123,19 +112,7 @@ private constructor(
          */
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
-        /** Discriminator value identifying this as an email OTP credential. */
-        fun type(type: EmailOtpCredentialCreateRequestFields.Type) = type(JsonField.of(type))
-
-        /**
-         * Sets [Builder.type] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.type] with a well-typed
-         * [EmailOtpCredentialCreateRequestFields.Type] value instead. This method is primarily for
-         * setting the field to an undocumented or not yet supported value.
-         */
-        fun type(type: JsonField<EmailOtpCredentialCreateRequestFields.Type>) = apply {
-            this.type = type
-        }
+        fun type(type: JsonValue) = apply { this.type = type }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -193,7 +170,6 @@ private constructor(
         }
 
         accountId()
-        type().validate()
         validated = true
     }
 
@@ -210,8 +186,7 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int =
-        (if (accountId.asKnown() == null) 0 else 1) + (type.asKnown()?.validity() ?: 0)
+    internal fun validity(): Int = (if (accountId.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
