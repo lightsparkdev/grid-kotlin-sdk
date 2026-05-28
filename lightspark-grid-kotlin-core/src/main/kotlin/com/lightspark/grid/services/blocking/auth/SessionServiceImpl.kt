@@ -4,7 +4,6 @@ package com.lightspark.grid.services.blocking.auth
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
@@ -87,11 +86,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("auth", "sessions")
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -122,11 +117,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .addPathSegments("auth", "sessions", params._pathParam(0))
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -157,11 +148,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .addPathSegments("auth", "sessions", params._pathParam(0), "refresh")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

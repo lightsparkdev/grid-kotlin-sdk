@@ -4,15 +4,10 @@ package com.lightspark.grid.proguard
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.IndividualCustomer
-import com.lightspark.grid.models.config.CustomerInfoFieldName
-import com.lightspark.grid.models.customers.CustomerCreateResponse
-import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.quotes.BaseDestination
-import java.time.LocalDate
-import java.time.OffsetDateTime
+import com.lightspark.grid.models.customers.CustomerType
+import com.lightspark.grid.models.quotes.Currency
+import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -57,8 +52,6 @@ internal class ProGuardCompatibilityTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
 
         assertThat(client).isNotNull()
@@ -87,74 +80,56 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun baseDestinationRoundtrip() {
+    fun currencyRoundtrip() {
         val jsonMapper = jsonMapper()
-        val baseDestination =
-            BaseDestination.builder().destinationType(JsonValue.from(mapOf<String, Any>())).build()
+        val currency =
+            Currency.builder()
+                .code("USD")
+                .decimals(2L)
+                .name("United States Dollar")
+                .symbol("\$")
+                .build()
 
-        val roundtrippedBaseDestination =
+        val roundtrippedCurrency =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(baseDestination),
-                jacksonTypeRef<BaseDestination>(),
+                jsonMapper.writeValueAsString(currency),
+                jacksonTypeRef<Currency>(),
             )
 
-        assertThat(roundtrippedBaseDestination).isEqualTo(baseDestination)
+        assertThat(roundtrippedCurrency).isEqualTo(currency)
     }
 
     @Test
-    fun customerCreateResponseRoundtrip() {
+    fun quoteDestinationOneOfRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerCreateResponse =
-            CustomerCreateResponse.ofIndividual(
-                IndividualCustomer.builder()
-                    .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
-                    .platformCustomerId("9f84e0c2a72c4fa")
-                    .umaAddress("\$john.doe@uma.domain.com")
-                    .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .address(
-                        Address.builder()
-                            .country("US")
-                            .line1("123 Main Street")
-                            .postalCode("94105")
-                            .city("San Francisco")
-                            .line2("Apt 4B")
-                            .state("CA")
-                            .build()
-                    )
-                    .birthDate(LocalDate.parse("1990-01-15"))
-                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .addCurrency("USD")
-                    .addCurrency("USDC")
-                    .email("john.doe@example.com")
-                    .fullName("John Michael Doe")
-                    .isDeleted(false)
-                    .kycStatus(IndividualCustomer.KycStatus.APPROVED)
-                    .nationality("US")
-                    .region("US")
-                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+        val quoteDestinationOneOf =
+            QuoteDestinationOneOf.ofAccountDestination(
+                QuoteDestinationOneOf.AccountDestination.builder()
+                    .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
                     .build()
             )
 
-        val roundtrippedCustomerCreateResponse =
+        val roundtrippedQuoteDestinationOneOf =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerCreateResponse),
-                jacksonTypeRef<CustomerCreateResponse>(),
+                jsonMapper.writeValueAsString(quoteDestinationOneOf),
+                jacksonTypeRef<QuoteDestinationOneOf>(),
             )
 
-        assertThat(roundtrippedCustomerCreateResponse).isEqualTo(customerCreateResponse)
+        assertThat(roundtrippedQuoteDestinationOneOf).isEqualTo(quoteDestinationOneOf)
     }
 
     @Test
-    fun customerInfoFieldNameRoundtrip() {
+    fun customerTypeRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
+        val customerType = CustomerType.INDIVIDUAL
 
-        val roundtrippedCustomerInfoFieldName =
+        val roundtrippedCustomerType =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerInfoFieldName),
-                jacksonTypeRef<CustomerInfoFieldName>(),
+                jsonMapper.writeValueAsString(customerType),
+                jacksonTypeRef<CustomerType>(),
             )
 
-        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
+        assertThat(roundtrippedCustomerType).isEqualTo(customerType)
     }
 }

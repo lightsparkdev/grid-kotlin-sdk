@@ -4,7 +4,6 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.emptyHandler
 import com.lightspark.grid.core.handlers.errorBodyHandler
@@ -108,11 +107,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("documents", params._pathParam(0))
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -139,11 +134,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("documents")
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -180,11 +171,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                     .addPathSegments("documents", params._pathParam(0))
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -209,11 +196,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                     .addPathSegments("documents", params._pathParam(0))
                     .body(multipartFormData(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -241,11 +224,7 @@ class DocumentServiceAsyncImpl internal constructor(private val clientOptions: C
                     .addPathSegments("documents")
                     .body(multipartFormData(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {

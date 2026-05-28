@@ -33,10 +33,10 @@ private constructor(
     private val authorizedAt: JsonField<OffsetDateTime>,
     private val cardId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
-    private val merchant: JsonField<CardMerchant>,
-    private val pullSummary: JsonField<CardPullSummary>,
-    private val refundSummary: JsonField<CardRefundSummary>,
-    private val settlementSummary: JsonField<CardSettlementSummary>,
+    private val merchant: JsonField<Merchant>,
+    private val pullSummary: JsonField<PullSummary>,
+    private val refundSummary: JsonField<RefundSummary>,
+    private val settlementSummary: JsonField<SettlementSummary>,
     private val status: JsonField<Status>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val issuerTransactionToken: JsonField<String>,
@@ -60,18 +60,16 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("merchant")
-        @ExcludeMissing
-        merchant: JsonField<CardMerchant> = JsonMissing.of(),
+        @JsonProperty("merchant") @ExcludeMissing merchant: JsonField<Merchant> = JsonMissing.of(),
         @JsonProperty("pullSummary")
         @ExcludeMissing
-        pullSummary: JsonField<CardPullSummary> = JsonMissing.of(),
+        pullSummary: JsonField<PullSummary> = JsonMissing.of(),
         @JsonProperty("refundSummary")
         @ExcludeMissing
-        refundSummary: JsonField<CardRefundSummary> = JsonMissing.of(),
+        refundSummary: JsonField<RefundSummary> = JsonMissing.of(),
         @JsonProperty("settlementSummary")
         @ExcludeMissing
-        settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of(),
+        settlementSummary: JsonField<SettlementSummary> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -159,26 +157,25 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun merchant(): CardMerchant = merchant.getRequired("merchant")
+    fun merchant(): Merchant = merchant.getRequired("merchant")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun pullSummary(): CardPullSummary = pullSummary.getRequired("pullSummary")
+    fun pullSummary(): PullSummary = pullSummary.getRequired("pullSummary")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun refundSummary(): CardRefundSummary = refundSummary.getRequired("refundSummary")
+    fun refundSummary(): RefundSummary = refundSummary.getRequired("refundSummary")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun settlementSummary(): CardSettlementSummary =
-        settlementSummary.getRequired("settlementSummary")
+    fun settlementSummary(): SettlementSummary = settlementSummary.getRequired("settlementSummary")
 
     /**
      * Lifecycle status of a card transaction.
@@ -289,7 +286,7 @@ private constructor(
      *
      * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("merchant") @ExcludeMissing fun _merchant(): JsonField<CardMerchant> = merchant
+    @JsonProperty("merchant") @ExcludeMissing fun _merchant(): JsonField<Merchant> = merchant
 
     /**
      * Returns the raw JSON value of [pullSummary].
@@ -298,7 +295,7 @@ private constructor(
      */
     @JsonProperty("pullSummary")
     @ExcludeMissing
-    fun _pullSummary(): JsonField<CardPullSummary> = pullSummary
+    fun _pullSummary(): JsonField<PullSummary> = pullSummary
 
     /**
      * Returns the raw JSON value of [refundSummary].
@@ -307,7 +304,7 @@ private constructor(
      */
     @JsonProperty("refundSummary")
     @ExcludeMissing
-    fun _refundSummary(): JsonField<CardRefundSummary> = refundSummary
+    fun _refundSummary(): JsonField<RefundSummary> = refundSummary
 
     /**
      * Returns the raw JSON value of [settlementSummary].
@@ -317,7 +314,7 @@ private constructor(
      */
     @JsonProperty("settlementSummary")
     @ExcludeMissing
-    fun _settlementSummary(): JsonField<CardSettlementSummary> = settlementSummary
+    fun _settlementSummary(): JsonField<SettlementSummary> = settlementSummary
 
     /**
      * Returns the raw JSON value of [status].
@@ -417,10 +414,10 @@ private constructor(
         private var authorizedAt: JsonField<OffsetDateTime>? = null
         private var cardId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
-        private var merchant: JsonField<CardMerchant>? = null
-        private var pullSummary: JsonField<CardPullSummary>? = null
-        private var refundSummary: JsonField<CardRefundSummary>? = null
-        private var settlementSummary: JsonField<CardSettlementSummary>? = null
+        private var merchant: JsonField<Merchant>? = null
+        private var pullSummary: JsonField<PullSummary>? = null
+        private var refundSummary: JsonField<RefundSummary>? = null
+        private var settlementSummary: JsonField<SettlementSummary>? = null
         private var status: JsonField<Status>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
@@ -526,55 +523,54 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        fun merchant(merchant: CardMerchant) = merchant(JsonField.of(merchant))
+        fun merchant(merchant: Merchant) = merchant(JsonField.of(merchant))
 
         /**
          * Sets [Builder.merchant] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.merchant] with a well-typed [CardMerchant] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.merchant] with a well-typed [Merchant] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun merchant(merchant: JsonField<CardMerchant>) = apply { this.merchant = merchant }
+        fun merchant(merchant: JsonField<Merchant>) = apply { this.merchant = merchant }
 
-        fun pullSummary(pullSummary: CardPullSummary) = pullSummary(JsonField.of(pullSummary))
+        fun pullSummary(pullSummary: PullSummary) = pullSummary(JsonField.of(pullSummary))
 
         /**
          * Sets [Builder.pullSummary] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.pullSummary] with a well-typed [CardPullSummary] value
+         * You should usually call [Builder.pullSummary] with a well-typed [PullSummary] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun pullSummary(pullSummary: JsonField<CardPullSummary>) = apply {
+        fun pullSummary(pullSummary: JsonField<PullSummary>) = apply {
             this.pullSummary = pullSummary
         }
 
-        fun refundSummary(refundSummary: CardRefundSummary) =
-            refundSummary(JsonField.of(refundSummary))
+        fun refundSummary(refundSummary: RefundSummary) = refundSummary(JsonField.of(refundSummary))
 
         /**
          * Sets [Builder.refundSummary] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.refundSummary] with a well-typed [CardRefundSummary]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.refundSummary] with a well-typed [RefundSummary] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun refundSummary(refundSummary: JsonField<CardRefundSummary>) = apply {
+        fun refundSummary(refundSummary: JsonField<RefundSummary>) = apply {
             this.refundSummary = refundSummary
         }
 
-        fun settlementSummary(settlementSummary: CardSettlementSummary) =
+        fun settlementSummary(settlementSummary: SettlementSummary) =
             settlementSummary(JsonField.of(settlementSummary))
 
         /**
          * Sets [Builder.settlementSummary] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.settlementSummary] with a well-typed
-         * [CardSettlementSummary] value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
+         * You should usually call [Builder.settlementSummary] with a well-typed [SettlementSummary]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun settlementSummary(settlementSummary: JsonField<CardSettlementSummary>) = apply {
+        fun settlementSummary(settlementSummary: JsonField<SettlementSummary>) = apply {
             this.settlementSummary = settlementSummary
         }
 
@@ -802,6 +798,930 @@ private constructor(
             (if (lastEventAt.asKnown() == null) 0 else 1) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
             (settledAmount.asKnown()?.validity() ?: 0)
+
+    class Merchant
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val descriptor: JsonField<String>,
+        private val country: JsonField<String>,
+        private val mcc: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("descriptor")
+            @ExcludeMissing
+            descriptor: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("country") @ExcludeMissing country: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("mcc") @ExcludeMissing mcc: JsonField<String> = JsonMissing.of(),
+        ) : this(descriptor, country, mcc, mutableMapOf())
+
+        /**
+         * Merchant descriptor string captured from the card network at authorization time.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun descriptor(): String = descriptor.getRequired("descriptor")
+
+        /**
+         * Two-letter ISO 3166-1 alpha-2 country code of the merchant.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun country(): String? = country.getNullable("country")
+
+        /**
+         * Merchant Category Code (ISO 18245) — four-digit numeric string.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun mcc(): String? = mcc.getNullable("mcc")
+
+        /**
+         * Returns the raw JSON value of [descriptor].
+         *
+         * Unlike [descriptor], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("descriptor")
+        @ExcludeMissing
+        fun _descriptor(): JsonField<String> = descriptor
+
+        /**
+         * Returns the raw JSON value of [country].
+         *
+         * Unlike [country], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+        /**
+         * Returns the raw JSON value of [mcc].
+         *
+         * Unlike [mcc], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("mcc") @ExcludeMissing fun _mcc(): JsonField<String> = mcc
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Merchant].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .descriptor()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Merchant]. */
+        class Builder internal constructor() {
+
+            private var descriptor: JsonField<String>? = null
+            private var country: JsonField<String> = JsonMissing.of()
+            private var mcc: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(merchant: Merchant) = apply {
+                descriptor = merchant.descriptor
+                country = merchant.country
+                mcc = merchant.mcc
+                additionalProperties = merchant.additionalProperties.toMutableMap()
+            }
+
+            /** Merchant descriptor string captured from the card network at authorization time. */
+            fun descriptor(descriptor: String) = descriptor(JsonField.of(descriptor))
+
+            /**
+             * Sets [Builder.descriptor] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.descriptor] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun descriptor(descriptor: JsonField<String>) = apply { this.descriptor = descriptor }
+
+            /** Two-letter ISO 3166-1 alpha-2 country code of the merchant. */
+            fun country(country: String) = country(JsonField.of(country))
+
+            /**
+             * Sets [Builder.country] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.country] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun country(country: JsonField<String>) = apply { this.country = country }
+
+            /** Merchant Category Code (ISO 18245) — four-digit numeric string. */
+            fun mcc(mcc: String) = mcc(JsonField.of(mcc))
+
+            /**
+             * Sets [Builder.mcc] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.mcc] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun mcc(mcc: JsonField<String>) = apply { this.mcc = mcc }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Merchant].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .descriptor()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Merchant =
+                Merchant(
+                    checkRequired("descriptor", descriptor),
+                    country,
+                    mcc,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Merchant = apply {
+            if (validated) {
+                return@apply
+            }
+
+            descriptor()
+            country()
+            mcc()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (descriptor.asKnown() == null) 0 else 1) +
+                (if (country.asKnown() == null) 0 else 1) +
+                (if (mcc.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Merchant &&
+                descriptor == other.descriptor &&
+                country == other.country &&
+                mcc == other.mcc &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(descriptor, country, mcc, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Merchant{descriptor=$descriptor, country=$country, mcc=$mcc, additionalProperties=$additionalProperties}"
+    }
+
+    class PullSummary
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val count: JsonField<Long>,
+        private val totalAmount: JsonField<Long>,
+        private val pendingCount: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("count") @ExcludeMissing count: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("totalAmount")
+            @ExcludeMissing
+            totalAmount: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("pendingCount")
+            @ExcludeMissing
+            pendingCount: JsonField<Long> = JsonMissing.of(),
+        ) : this(count, totalAmount, pendingCount, mutableMapOf())
+
+        /**
+         * Total number of pulls (debits) executed against the funding source for this transaction.
+         * `> 1` indicates one or more post-hoc pulls — e.g. restaurant tip / over-auth clearings.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun count(): Long = count.getRequired("count")
+
+        /**
+         * Sum of all pull amounts in the smallest unit of the funding source's currency.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun totalAmount(): Long = totalAmount.getRequired("totalAmount")
+
+        /**
+         * Number of pulls still in the `PENDING` state. Drops to zero when every pull has reached a
+         * terminal state. Non-zero values that persist beyond the expected settlement window are an
+         * early signal for the `EXCEPTION` path.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun pendingCount(): Long? = pendingCount.getNullable("pendingCount")
+
+        /**
+         * Returns the raw JSON value of [count].
+         *
+         * Unlike [count], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("count") @ExcludeMissing fun _count(): JsonField<Long> = count
+
+        /**
+         * Returns the raw JSON value of [totalAmount].
+         *
+         * Unlike [totalAmount], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("totalAmount")
+        @ExcludeMissing
+        fun _totalAmount(): JsonField<Long> = totalAmount
+
+        /**
+         * Returns the raw JSON value of [pendingCount].
+         *
+         * Unlike [pendingCount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("pendingCount")
+        @ExcludeMissing
+        fun _pendingCount(): JsonField<Long> = pendingCount
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [PullSummary].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [PullSummary]. */
+        class Builder internal constructor() {
+
+            private var count: JsonField<Long>? = null
+            private var totalAmount: JsonField<Long>? = null
+            private var pendingCount: JsonField<Long> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(pullSummary: PullSummary) = apply {
+                count = pullSummary.count
+                totalAmount = pullSummary.totalAmount
+                pendingCount = pullSummary.pendingCount
+                additionalProperties = pullSummary.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Total number of pulls (debits) executed against the funding source for this
+             * transaction. `> 1` indicates one or more post-hoc pulls — e.g. restaurant tip /
+             * over-auth clearings.
+             */
+            fun count(count: Long) = count(JsonField.of(count))
+
+            /**
+             * Sets [Builder.count] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.count] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun count(count: JsonField<Long>) = apply { this.count = count }
+
+            /** Sum of all pull amounts in the smallest unit of the funding source's currency. */
+            fun totalAmount(totalAmount: Long) = totalAmount(JsonField.of(totalAmount))
+
+            /**
+             * Sets [Builder.totalAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.totalAmount] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun totalAmount(totalAmount: JsonField<Long>) = apply { this.totalAmount = totalAmount }
+
+            /**
+             * Number of pulls still in the `PENDING` state. Drops to zero when every pull has
+             * reached a terminal state. Non-zero values that persist beyond the expected settlement
+             * window are an early signal for the `EXCEPTION` path.
+             */
+            fun pendingCount(pendingCount: Long) = pendingCount(JsonField.of(pendingCount))
+
+            /**
+             * Sets [Builder.pendingCount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.pendingCount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun pendingCount(pendingCount: JsonField<Long>) = apply {
+                this.pendingCount = pendingCount
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [PullSummary].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): PullSummary =
+                PullSummary(
+                    checkRequired("count", count),
+                    checkRequired("totalAmount", totalAmount),
+                    pendingCount,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PullSummary = apply {
+            if (validated) {
+                return@apply
+            }
+
+            count()
+            totalAmount()
+            pendingCount()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (count.asKnown() == null) 0 else 1) +
+                (if (totalAmount.asKnown() == null) 0 else 1) +
+                (if (pendingCount.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PullSummary &&
+                count == other.count &&
+                totalAmount == other.totalAmount &&
+                pendingCount == other.pendingCount &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(count, totalAmount, pendingCount, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "PullSummary{count=$count, totalAmount=$totalAmount, pendingCount=$pendingCount, additionalProperties=$additionalProperties}"
+    }
+
+    class RefundSummary
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val count: JsonField<Long>,
+        private val totalAmount: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("count") @ExcludeMissing count: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("totalAmount")
+            @ExcludeMissing
+            totalAmount: JsonField<Long> = JsonMissing.of(),
+        ) : this(count, totalAmount, mutableMapOf())
+
+        /**
+         * Number of refund (return) events received for this transaction.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun count(): Long = count.getRequired("count")
+
+        /**
+         * Sum of all refund amounts in the smallest unit of the funding source's currency.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun totalAmount(): Long = totalAmount.getRequired("totalAmount")
+
+        /**
+         * Returns the raw JSON value of [count].
+         *
+         * Unlike [count], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("count") @ExcludeMissing fun _count(): JsonField<Long> = count
+
+        /**
+         * Returns the raw JSON value of [totalAmount].
+         *
+         * Unlike [totalAmount], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("totalAmount")
+        @ExcludeMissing
+        fun _totalAmount(): JsonField<Long> = totalAmount
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [RefundSummary].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [RefundSummary]. */
+        class Builder internal constructor() {
+
+            private var count: JsonField<Long>? = null
+            private var totalAmount: JsonField<Long>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(refundSummary: RefundSummary) = apply {
+                count = refundSummary.count
+                totalAmount = refundSummary.totalAmount
+                additionalProperties = refundSummary.additionalProperties.toMutableMap()
+            }
+
+            /** Number of refund (return) events received for this transaction. */
+            fun count(count: Long) = count(JsonField.of(count))
+
+            /**
+             * Sets [Builder.count] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.count] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun count(count: JsonField<Long>) = apply { this.count = count }
+
+            /** Sum of all refund amounts in the smallest unit of the funding source's currency. */
+            fun totalAmount(totalAmount: Long) = totalAmount(JsonField.of(totalAmount))
+
+            /**
+             * Sets [Builder.totalAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.totalAmount] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun totalAmount(totalAmount: JsonField<Long>) = apply { this.totalAmount = totalAmount }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [RefundSummary].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): RefundSummary =
+                RefundSummary(
+                    checkRequired("count", count),
+                    checkRequired("totalAmount", totalAmount),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): RefundSummary = apply {
+            if (validated) {
+                return@apply
+            }
+
+            count()
+            totalAmount()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (count.asKnown() == null) 0 else 1) + (if (totalAmount.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is RefundSummary &&
+                count == other.count &&
+                totalAmount == other.totalAmount &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(count, totalAmount, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "RefundSummary{count=$count, totalAmount=$totalAmount, additionalProperties=$additionalProperties}"
+    }
+
+    class SettlementSummary
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val count: JsonField<Long>,
+        private val totalAmount: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("count") @ExcludeMissing count: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("totalAmount")
+            @ExcludeMissing
+            totalAmount: JsonField<Long> = JsonMissing.of(),
+        ) : this(count, totalAmount, mutableMapOf())
+
+        /**
+         * Number of settlement (clearing) events received for this transaction.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun count(): Long = count.getRequired("count")
+
+        /**
+         * Sum of all settled amounts in the smallest unit of the funding source's currency.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun totalAmount(): Long = totalAmount.getRequired("totalAmount")
+
+        /**
+         * Returns the raw JSON value of [count].
+         *
+         * Unlike [count], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("count") @ExcludeMissing fun _count(): JsonField<Long> = count
+
+        /**
+         * Returns the raw JSON value of [totalAmount].
+         *
+         * Unlike [totalAmount], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("totalAmount")
+        @ExcludeMissing
+        fun _totalAmount(): JsonField<Long> = totalAmount
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [SettlementSummary].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [SettlementSummary]. */
+        class Builder internal constructor() {
+
+            private var count: JsonField<Long>? = null
+            private var totalAmount: JsonField<Long>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(settlementSummary: SettlementSummary) = apply {
+                count = settlementSummary.count
+                totalAmount = settlementSummary.totalAmount
+                additionalProperties = settlementSummary.additionalProperties.toMutableMap()
+            }
+
+            /** Number of settlement (clearing) events received for this transaction. */
+            fun count(count: Long) = count(JsonField.of(count))
+
+            /**
+             * Sets [Builder.count] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.count] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun count(count: JsonField<Long>) = apply { this.count = count }
+
+            /** Sum of all settled amounts in the smallest unit of the funding source's currency. */
+            fun totalAmount(totalAmount: Long) = totalAmount(JsonField.of(totalAmount))
+
+            /**
+             * Sets [Builder.totalAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.totalAmount] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun totalAmount(totalAmount: JsonField<Long>) = apply { this.totalAmount = totalAmount }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [SettlementSummary].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .count()
+             * .totalAmount()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): SettlementSummary =
+                SettlementSummary(
+                    checkRequired("count", count),
+                    checkRequired("totalAmount", totalAmount),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): SettlementSummary = apply {
+            if (validated) {
+                return@apply
+            }
+
+            count()
+            totalAmount()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (count.asKnown() == null) 0 else 1) + (if (totalAmount.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is SettlementSummary &&
+                count == other.count &&
+                totalAmount == other.totalAmount &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(count, totalAmount, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "SettlementSummary{count=$count, totalAmount=$totalAmount, additionalProperties=$additionalProperties}"
+    }
 
     /**
      * Lifecycle status of a card transaction.

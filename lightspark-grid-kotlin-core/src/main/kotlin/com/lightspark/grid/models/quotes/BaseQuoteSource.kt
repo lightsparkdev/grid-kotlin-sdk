@@ -5,34 +5,17 @@ package com.lightspark.grid.models.quotes
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
 class BaseQuoteSource
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-private constructor(
-    private val sourceType: JsonValue,
-    private val additionalProperties: MutableMap<String, JsonValue>,
-) {
+private constructor(private val additionalProperties: MutableMap<String, JsonValue>) {
 
-    @JsonCreator
-    private constructor(
-        @JsonProperty("sourceType") @ExcludeMissing sourceType: JsonValue = JsonMissing.of()
-    ) : this(sourceType, mutableMapOf())
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = baseQuoteSource.sourceType().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("sourceType") @ExcludeMissing fun _sourceType(): JsonValue = sourceType
+    @JsonCreator private constructor() : this(mutableMapOf())
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -48,29 +31,18 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [BaseQuoteSource].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .sourceType()
-         * ```
-         */
+        /** Returns a mutable builder for constructing an instance of [BaseQuoteSource]. */
         fun builder() = Builder()
     }
 
     /** A builder for [BaseQuoteSource]. */
     class Builder internal constructor() {
 
-        private var sourceType: JsonValue? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(baseQuoteSource: BaseQuoteSource) = apply {
-            sourceType = baseQuoteSource.sourceType
             additionalProperties = baseQuoteSource.additionalProperties.toMutableMap()
         }
-
-        fun sourceType(sourceType: JsonValue) = apply { this.sourceType = sourceType }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -95,19 +67,8 @@ private constructor(
          * Returns an immutable instance of [BaseQuoteSource].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .sourceType()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): BaseQuoteSource =
-            BaseQuoteSource(
-                checkRequired("sourceType", sourceType),
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): BaseQuoteSource = BaseQuoteSource(additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -148,15 +109,12 @@ private constructor(
             return true
         }
 
-        return other is BaseQuoteSource &&
-            sourceType == other.sourceType &&
-            additionalProperties == other.additionalProperties
+        return other is BaseQuoteSource && additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(sourceType, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
-    override fun toString() =
-        "BaseQuoteSource{sourceType=$sourceType, additionalProperties=$additionalProperties}"
+    override fun toString() = "BaseQuoteSource{additionalProperties=$additionalProperties}"
 }

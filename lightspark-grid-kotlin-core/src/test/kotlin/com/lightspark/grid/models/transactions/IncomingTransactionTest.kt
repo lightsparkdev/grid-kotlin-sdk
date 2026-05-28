@@ -19,7 +19,11 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -52,7 +56,7 @@ internal class IncomingTransactionTest {
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30L)
+                        .gridApiVariableFeeAmount(30.0)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
@@ -65,7 +69,11 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
@@ -73,8 +81,14 @@ internal class IncomingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(incomingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(incomingTransaction._destination())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(incomingTransaction.destination())
+            .isEqualTo(
+                IncomingTransaction.Destination.ofAccountTransaction(
+                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
+            )
         assertThat(incomingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(incomingTransaction.receivedAmount())
             .isEqualTo(
@@ -113,7 +127,7 @@ internal class IncomingTransactionTest {
                 IncomingRateDetails.builder()
                     .gridApiFixedFee(10L)
                     .gridApiMultiplier(0.925)
-                    .gridApiVariableFeeAmount(30L)
+                    .gridApiVariableFeeAmount(30.0)
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
@@ -128,7 +142,14 @@ internal class IncomingTransactionTest {
             )
         assertThat(incomingTransaction.settledAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(incomingTransaction.source()).isEqualTo(TransactionSourceOneOf.builder().build())
+        assertThat(incomingTransaction.source())
+            .isEqualTo(
+                TransactionSourceOneOf.ofAccountTransactionSource(
+                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
+            )
         assertThat(incomingTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
     }
@@ -140,7 +161,11 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(
+                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -173,7 +198,7 @@ internal class IncomingTransactionTest {
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30L)
+                        .gridApiVariableFeeAmount(30.0)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
@@ -186,7 +211,11 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(TransactionSourceOneOf.builder().build())
+                .source(
+                    TransactionSourceOneOf.AccountTransactionSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 

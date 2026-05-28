@@ -3,8 +3,9 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.GtqBeneficiary
+import com.lightspark.grid.models.platform.externalaccounts.GtqAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,10 +15,64 @@ internal class GtqExternalAccountInfoTest {
     fun create() {
         val gtqExternalAccountInfo =
             GtqExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("GTQ_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .accountNumber("x")
+                .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
+                .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
+                .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+                .beneficiary(
+                    GtqBeneficiary.builder()
+                        .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .phoneNumber("phoneNumber")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .build()
+                )
                 .build()
+
+        assertThat(gtqExternalAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(gtqExternalAccountInfo.accountType())
+            .isEqualTo(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
+        assertThat(gtqExternalAccountInfo.bankAccountType())
+            .isEqualTo(GtqAccountInfo.BankAccountType.CHECKING)
+        assertThat(gtqExternalAccountInfo.paymentRails())
+            .containsExactly(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(gtqExternalAccountInfo.beneficiary())
+            .isEqualTo(
+                GtqExternalAccountInfo.Beneficiary.ofIndividual(
+                    GtqBeneficiary.builder()
+                        .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .phoneNumber("phoneNumber")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .build()
+                )
+            )
     }
 
     @Test
@@ -25,9 +80,31 @@ internal class GtqExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val gtqExternalAccountInfo =
             GtqExternalAccountInfo.builder()
-                .putAdditionalProperty("accountType", JsonValue.from("GTQ_ACCOUNT"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .accountNumber("x")
+                .accountType(GtqAccountInfo.AccountType.GTQ_ACCOUNT)
+                .bankAccountType(GtqAccountInfo.BankAccountType.CHECKING)
+                .addPaymentRail(GtqAccountInfo.PaymentRail.BANK_TRANSFER)
+                .beneficiary(
+                    GtqBeneficiary.builder()
+                        .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .phoneNumber("phoneNumber")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .build()
+                )
                 .build()
 
         val roundtrippedGtqExternalAccountInfo =

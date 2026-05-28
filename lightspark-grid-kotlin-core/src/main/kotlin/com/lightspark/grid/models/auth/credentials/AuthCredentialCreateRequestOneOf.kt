@@ -12,7 +12,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Objects
@@ -21,34 +20,29 @@ import java.util.Objects
 @JsonSerialize(using = AuthCredentialCreateRequestOneOf.Serializer::class)
 class AuthCredentialCreateRequestOneOf
 private constructor(
-    private val emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest? = null,
-    private val oauthCredentialCreateRequest: OAuthCredentialCreateRequest? = null,
-    private val passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest? = null,
+    private val emailOtp: EmailOtpCredentialCreateRequest? = null,
+    private val oauth: OAuthCredentialCreateRequest? = null,
+    private val passkey: PasskeyCredentialCreateRequest? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    fun emailOtpCredentialCreateRequest(): EmailOtpCredentialCreateRequest? =
-        emailOtpCredentialCreateRequest
+    fun emailOtp(): EmailOtpCredentialCreateRequest? = emailOtp
 
-    fun oauthCredentialCreateRequest(): OAuthCredentialCreateRequest? = oauthCredentialCreateRequest
+    fun oauth(): OAuthCredentialCreateRequest? = oauth
 
-    fun passkeyCredentialCreateRequest(): PasskeyCredentialCreateRequest? =
-        passkeyCredentialCreateRequest
+    fun passkey(): PasskeyCredentialCreateRequest? = passkey
 
-    fun isEmailOtpCredentialCreateRequest(): Boolean = emailOtpCredentialCreateRequest != null
+    fun isEmailOtp(): Boolean = emailOtp != null
 
-    fun isOAuthCredentialCreateRequest(): Boolean = oauthCredentialCreateRequest != null
+    fun isOAuth(): Boolean = oauth != null
 
-    fun isPasskeyCredentialCreateRequest(): Boolean = passkeyCredentialCreateRequest != null
+    fun isPasskey(): Boolean = passkey != null
 
-    fun asEmailOtpCredentialCreateRequest(): EmailOtpCredentialCreateRequest =
-        emailOtpCredentialCreateRequest.getOrThrow("emailOtpCredentialCreateRequest")
+    fun asEmailOtp(): EmailOtpCredentialCreateRequest = emailOtp.getOrThrow("emailOtp")
 
-    fun asOAuthCredentialCreateRequest(): OAuthCredentialCreateRequest =
-        oauthCredentialCreateRequest.getOrThrow("oauthCredentialCreateRequest")
+    fun asOAuth(): OAuthCredentialCreateRequest = oauth.getOrThrow("oauth")
 
-    fun asPasskeyCredentialCreateRequest(): PasskeyCredentialCreateRequest =
-        passkeyCredentialCreateRequest.getOrThrow("passkeyCredentialCreateRequest")
+    fun asPasskey(): PasskeyCredentialCreateRequest = passkey.getOrThrow("passkey")
 
     fun _json(): JsonValue? = _json
 
@@ -62,7 +56,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = authCredentialCreateRequestOneOf.accept(object : AuthCredentialCreateRequestOneOf.Visitor<String?> {
-     *     override fun visitEmailOtpCredentialCreateRequest(emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest): String? = emailOtpCredentialCreateRequest.toString()
+     *     override fun visitEmailOtp(emailOtp: EmailOtpCredentialCreateRequest): String? = emailOtp.toString()
      *
      *     // ...
      *
@@ -78,12 +72,9 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            emailOtpCredentialCreateRequest != null ->
-                visitor.visitEmailOtpCredentialCreateRequest(emailOtpCredentialCreateRequest)
-            oauthCredentialCreateRequest != null ->
-                visitor.visitOAuthCredentialCreateRequest(oauthCredentialCreateRequest)
-            passkeyCredentialCreateRequest != null ->
-                visitor.visitPasskeyCredentialCreateRequest(passkeyCredentialCreateRequest)
+            emailOtp != null -> visitor.visitEmailOtp(emailOtp)
+            oauth != null -> visitor.visitOAuth(oauth)
+            passkey != null -> visitor.visitPasskey(passkey)
             else -> visitor.unknown(_json)
         }
 
@@ -104,22 +95,16 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitEmailOtpCredentialCreateRequest(
-                    emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
-                ) {
-                    emailOtpCredentialCreateRequest.validate()
+                override fun visitEmailOtp(emailOtp: EmailOtpCredentialCreateRequest) {
+                    emailOtp.validate()
                 }
 
-                override fun visitOAuthCredentialCreateRequest(
-                    oauthCredentialCreateRequest: OAuthCredentialCreateRequest
-                ) {
-                    oauthCredentialCreateRequest.validate()
+                override fun visitOAuth(oauth: OAuthCredentialCreateRequest) {
+                    oauth.validate()
                 }
 
-                override fun visitPasskeyCredentialCreateRequest(
-                    passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
-                ) {
-                    passkeyCredentialCreateRequest.validate()
+                override fun visitPasskey(passkey: PasskeyCredentialCreateRequest) {
+                    passkey.validate()
                 }
             }
         )
@@ -142,17 +127,13 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitEmailOtpCredentialCreateRequest(
-                    emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
-                ) = emailOtpCredentialCreateRequest.validity()
+                override fun visitEmailOtp(emailOtp: EmailOtpCredentialCreateRequest) =
+                    emailOtp.validity()
 
-                override fun visitOAuthCredentialCreateRequest(
-                    oauthCredentialCreateRequest: OAuthCredentialCreateRequest
-                ) = oauthCredentialCreateRequest.validity()
+                override fun visitOAuth(oauth: OAuthCredentialCreateRequest) = oauth.validity()
 
-                override fun visitPasskeyCredentialCreateRequest(
-                    passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
-                ) = passkeyCredentialCreateRequest.validity()
+                override fun visitPasskey(passkey: PasskeyCredentialCreateRequest) =
+                    passkey.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -164,52 +145,32 @@ private constructor(
         }
 
         return other is AuthCredentialCreateRequestOneOf &&
-            emailOtpCredentialCreateRequest == other.emailOtpCredentialCreateRequest &&
-            oauthCredentialCreateRequest == other.oauthCredentialCreateRequest &&
-            passkeyCredentialCreateRequest == other.passkeyCredentialCreateRequest
+            emailOtp == other.emailOtp &&
+            oauth == other.oauth &&
+            passkey == other.passkey
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            emailOtpCredentialCreateRequest,
-            oauthCredentialCreateRequest,
-            passkeyCredentialCreateRequest,
-        )
+    override fun hashCode(): Int = Objects.hash(emailOtp, oauth, passkey)
 
     override fun toString(): String =
         when {
-            emailOtpCredentialCreateRequest != null ->
-                "AuthCredentialCreateRequestOneOf{emailOtpCredentialCreateRequest=$emailOtpCredentialCreateRequest}"
-            oauthCredentialCreateRequest != null ->
-                "AuthCredentialCreateRequestOneOf{oauthCredentialCreateRequest=$oauthCredentialCreateRequest}"
-            passkeyCredentialCreateRequest != null ->
-                "AuthCredentialCreateRequestOneOf{passkeyCredentialCreateRequest=$passkeyCredentialCreateRequest}"
+            emailOtp != null -> "AuthCredentialCreateRequestOneOf{emailOtp=$emailOtp}"
+            oauth != null -> "AuthCredentialCreateRequestOneOf{oauth=$oauth}"
+            passkey != null -> "AuthCredentialCreateRequestOneOf{passkey=$passkey}"
             _json != null -> "AuthCredentialCreateRequestOneOf{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid AuthCredentialCreateRequestOneOf")
         }
 
     companion object {
 
-        fun ofEmailOtpCredentialCreateRequest(
-            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
-        ) =
-            AuthCredentialCreateRequestOneOf(
-                emailOtpCredentialCreateRequest = emailOtpCredentialCreateRequest
-            )
+        fun ofEmailOtp(emailOtp: EmailOtpCredentialCreateRequest) =
+            AuthCredentialCreateRequestOneOf(emailOtp = emailOtp)
 
-        fun ofOAuthCredentialCreateRequest(
-            oauthCredentialCreateRequest: OAuthCredentialCreateRequest
-        ) =
-            AuthCredentialCreateRequestOneOf(
-                oauthCredentialCreateRequest = oauthCredentialCreateRequest
-            )
+        fun ofOAuth(oauth: OAuthCredentialCreateRequest) =
+            AuthCredentialCreateRequestOneOf(oauth = oauth)
 
-        fun ofPasskeyCredentialCreateRequest(
-            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
-        ) =
-            AuthCredentialCreateRequestOneOf(
-                passkeyCredentialCreateRequest = passkeyCredentialCreateRequest
-            )
+        fun ofPasskey(passkey: PasskeyCredentialCreateRequest) =
+            AuthCredentialCreateRequestOneOf(passkey = passkey)
     }
 
     /**
@@ -218,17 +179,11 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitEmailOtpCredentialCreateRequest(
-            emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest
-        ): T
+        fun visitEmailOtp(emailOtp: EmailOtpCredentialCreateRequest): T
 
-        fun visitOAuthCredentialCreateRequest(
-            oauthCredentialCreateRequest: OAuthCredentialCreateRequest
-        ): T
+        fun visitOAuth(oauth: OAuthCredentialCreateRequest): T
 
-        fun visitPasskeyCredentialCreateRequest(
-            passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest
-        ): T
+        fun visitPasskey(passkey: PasskeyCredentialCreateRequest): T
 
         /**
          * Maps an unknown variant of [AuthCredentialCreateRequestOneOf] to a value of type [T].
@@ -256,43 +211,25 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val type = json.asObject()?.get("type")?.asString()
 
-            when (type) {}
-
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<EmailOtpCredentialCreateRequest>())
-                            ?.let {
-                                AuthCredentialCreateRequestOneOf(
-                                    emailOtpCredentialCreateRequest = it,
-                                    _json = json,
-                                )
-                            },
-                        tryDeserialize(node, jacksonTypeRef<OAuthCredentialCreateRequest>())?.let {
-                            AuthCredentialCreateRequestOneOf(
-                                oauthCredentialCreateRequest = it,
-                                _json = json,
-                            )
-                        },
-                        tryDeserialize(node, jacksonTypeRef<PasskeyCredentialCreateRequest>())
-                            ?.let {
-                                AuthCredentialCreateRequestOneOf(
-                                    passkeyCredentialCreateRequest = it,
-                                    _json = json,
-                                )
-                            },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> AuthCredentialCreateRequestOneOf(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (type) {
+                "EMAIL_OTP" -> {
+                    return tryDeserialize(node, jacksonTypeRef<EmailOtpCredentialCreateRequest>())
+                        ?.let { AuthCredentialCreateRequestOneOf(emailOtp = it, _json = json) }
+                        ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+                "OAUTH" -> {
+                    return tryDeserialize(node, jacksonTypeRef<OAuthCredentialCreateRequest>())
+                        ?.let { AuthCredentialCreateRequestOneOf(oauth = it, _json = json) }
+                        ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
+                "PASSKEY" -> {
+                    return tryDeserialize(node, jacksonTypeRef<PasskeyCredentialCreateRequest>())
+                        ?.let { AuthCredentialCreateRequestOneOf(passkey = it, _json = json) }
+                        ?: AuthCredentialCreateRequestOneOf(_json = json)
+                }
             }
+
+            return AuthCredentialCreateRequestOneOf(_json = json)
         }
     }
 
@@ -305,12 +242,9 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.emailOtpCredentialCreateRequest != null ->
-                    generator.writeObject(value.emailOtpCredentialCreateRequest)
-                value.oauthCredentialCreateRequest != null ->
-                    generator.writeObject(value.oauthCredentialCreateRequest)
-                value.passkeyCredentialCreateRequest != null ->
-                    generator.writeObject(value.passkeyCredentialCreateRequest)
+                value.emailOtp != null -> generator.writeObject(value.emailOtp)
+                value.oauth != null -> generator.writeObject(value.oauth)
+                value.passkey != null -> generator.writeObject(value.passkey)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid AuthCredentialCreateRequestOneOf")
             }

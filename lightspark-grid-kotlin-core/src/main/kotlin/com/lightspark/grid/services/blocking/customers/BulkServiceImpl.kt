@@ -4,7 +4,6 @@ package com.lightspark.grid.services.blocking.customers
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
@@ -75,11 +74,7 @@ class BulkServiceImpl internal constructor(private val clientOptions: ClientOpti
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("customers", "bulk", "jobs", params._pathParam(0))
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -107,11 +102,7 @@ class BulkServiceImpl internal constructor(private val clientOptions: ClientOpti
                     .addPathSegments("customers", "bulk", "csv")
                     .body(multipartFormData(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

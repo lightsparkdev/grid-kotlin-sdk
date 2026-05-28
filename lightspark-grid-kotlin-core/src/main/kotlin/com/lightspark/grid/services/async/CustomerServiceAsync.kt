@@ -7,22 +7,19 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.customers.CustomerCreateParams
-import com.lightspark.grid.models.customers.CustomerCreateResponse
 import com.lightspark.grid.models.customers.CustomerDeleteParams
-import com.lightspark.grid.models.customers.CustomerDeleteResponse
 import com.lightspark.grid.models.customers.CustomerExportParams
-import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPageAsync
 import com.lightspark.grid.models.customers.CustomerListParams
+import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
-import com.lightspark.grid.models.customers.CustomerRetrieveResponse
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.CustomerUpdateResponse
+import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.async.customers.BulkServiceAsync
 import com.lightspark.grid.services.async.customers.ExternalAccountServiceAsync
@@ -53,13 +50,13 @@ interface CustomerServiceAsync {
     suspend fun create(
         params: CustomerCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerCreateResponse
+    ): CustomerOneOf
 
     /** @see create */
     suspend fun create(
         createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerCreateResponse =
+    ): CustomerOneOf =
         create(
             CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
             requestOptions,
@@ -69,14 +66,14 @@ interface CustomerServiceAsync {
     suspend fun create(
         individual: CustomerCreateParams.CreateCustomerRequest.Individual,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerCreateResponse =
+    ): CustomerOneOf =
         create(CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual), requestOptions)
 
     /** @see create */
     suspend fun create(
         business: CustomerCreateParams.CreateCustomerRequest.Business,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerCreateResponse =
+    ): CustomerOneOf =
         create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
     /** Retrieve a customer by their system-generated ID */
@@ -84,20 +81,16 @@ interface CustomerServiceAsync {
         customerId: String,
         params: CustomerRetrieveParams = CustomerRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerRetrieveResponse =
-        retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerOneOf = retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerRetrieveResponse
+    ): CustomerOneOf
 
     /** @see retrieve */
-    suspend fun retrieve(
-        customerId: String,
-        requestOptions: RequestOptions,
-    ): CustomerRetrieveResponse =
+    suspend fun retrieve(customerId: String, requestOptions: RequestOptions): CustomerOneOf =
         retrieve(customerId, CustomerRetrieveParams.none(), requestOptions)
 
     /**
@@ -127,14 +120,13 @@ interface CustomerServiceAsync {
         customerId: String,
         params: CustomerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerUpdateResponse =
-        update(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerOneOf = update(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see update */
     suspend fun update(
         params: CustomerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerUpdateResponse
+    ): CustomerOneOf
 
     /**
      * Retrieve a list of customers with optional filtering parameters. Returns all customers that
@@ -154,17 +146,16 @@ interface CustomerServiceAsync {
         customerId: String,
         params: CustomerDeleteParams = CustomerDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerDeleteResponse =
-        delete(params.toBuilder().customerId(customerId).build(), requestOptions)
+    ): CustomerOneOf = delete(params.toBuilder().customerId(customerId).build(), requestOptions)
 
     /** @see delete */
     suspend fun delete(
         params: CustomerDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerDeleteResponse
+    ): CustomerOneOf
 
     /** @see delete */
-    suspend fun delete(customerId: String, requestOptions: RequestOptions): CustomerDeleteResponse =
+    suspend fun delete(customerId: String, requestOptions: RequestOptions): CustomerOneOf =
         delete(customerId, CustomerDeleteParams.none(), requestOptions)
 
     /**
@@ -195,13 +186,13 @@ interface CustomerServiceAsync {
         id: String,
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
+    ): InternalAccountExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see export */
     suspend fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CustomerExportResponse
+    ): InternalAccountExportResponse
 
     /**
      * Generate a single-use hosted URL the customer can complete to verify their identity, and
@@ -315,14 +306,14 @@ interface CustomerServiceAsync {
         suspend fun create(
             params: CustomerCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerCreateResponse>
+        ): HttpResponseFor<CustomerOneOf>
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
             createCustomerRequest: CustomerCreateParams.CreateCustomerRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerCreateResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             create(
                 CustomerCreateParams.builder().createCustomerRequest(createCustomerRequest).build(),
                 requestOptions,
@@ -333,7 +324,7 @@ interface CustomerServiceAsync {
         suspend fun create(
             individual: CustomerCreateParams.CreateCustomerRequest.Individual,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerCreateResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             create(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(individual),
                 requestOptions,
@@ -344,7 +335,7 @@ interface CustomerServiceAsync {
         suspend fun create(
             business: CustomerCreateParams.CreateCustomerRequest.Business,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerCreateResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             create(CustomerCreateParams.CreateCustomerRequest.ofBusiness(business), requestOptions)
 
         /**
@@ -356,7 +347,7 @@ interface CustomerServiceAsync {
             customerId: String,
             params: CustomerRetrieveParams = CustomerRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerRetrieveResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             retrieve(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see retrieve */
@@ -364,14 +355,14 @@ interface CustomerServiceAsync {
         suspend fun retrieve(
             params: CustomerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerRetrieveResponse>
+        ): HttpResponseFor<CustomerOneOf>
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             customerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerRetrieveResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             retrieve(customerId, CustomerRetrieveParams.none(), requestOptions)
 
         /**
@@ -383,7 +374,7 @@ interface CustomerServiceAsync {
             customerId: String,
             params: CustomerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerUpdateResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             update(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see update */
@@ -391,7 +382,7 @@ interface CustomerServiceAsync {
         suspend fun update(
             params: CustomerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerUpdateResponse>
+        ): HttpResponseFor<CustomerOneOf>
 
         /**
          * Returns a raw HTTP response for `get /customers`, but is otherwise the same as
@@ -417,7 +408,7 @@ interface CustomerServiceAsync {
             customerId: String,
             params: CustomerDeleteParams = CustomerDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerDeleteResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             delete(params.toBuilder().customerId(customerId).build(), requestOptions)
 
         /** @see delete */
@@ -425,14 +416,14 @@ interface CustomerServiceAsync {
         suspend fun delete(
             params: CustomerDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerDeleteResponse>
+        ): HttpResponseFor<CustomerOneOf>
 
         /** @see delete */
         @MustBeClosed
         suspend fun delete(
             customerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerDeleteResponse> =
+        ): HttpResponseFor<CustomerOneOf> =
             delete(customerId, CustomerDeleteParams.none(), requestOptions)
 
         /**
@@ -444,7 +435,7 @@ interface CustomerServiceAsync {
             id: String,
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerExportResponse> =
+        ): HttpResponseFor<InternalAccountExportResponse> =
             export(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see export */
@@ -452,7 +443,7 @@ interface CustomerServiceAsync {
         suspend fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CustomerExportResponse>
+        ): HttpResponseFor<InternalAccountExportResponse>
 
         /**
          * Returns a raw HTTP response for `post /customers/{customerId}/kyc-link`, but is otherwise

@@ -4,7 +4,6 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
 import com.lightspark.grid.core.handlers.jsonHandler
@@ -123,11 +122,7 @@ class SandboxServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .addPathSegments("sandbox", "send")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {

@@ -40,6 +40,8 @@ private constructor(
     fun idempotencyKey(): String? = idempotencyKey
 
     /**
+     * Destination account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -66,6 +68,8 @@ private constructor(
     fun lockedCurrencySide(): LockedCurrencySide = body.lockedCurrencySide()
 
     /**
+     * Source account details
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -89,8 +93,8 @@ private constructor(
      * supported when the `source` is an internal account of type `EMBEDDED_WALLET`: those transfers
      * require a `Grid-Wallet-Signature` over the `payloadToSign` returned in the quote response,
      * which is not available in a combined create-and-execute call. Create the quote first with
-     * `immediatelyExecute: false` and then call `POST /quotes/{quoteId}/execute` with the signature
-     * header.
+     * `immediatelyExecute: false` and then call `POST /quotes/{quoteId}/execute` with the
+     * `Grid-Wallet-Signature` stamp header.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -256,6 +260,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
+        /** Destination account details */
         fun destination(destination: QuoteDestinationOneOf) = apply {
             body.destination(destination)
         }
@@ -270,6 +275,23 @@ private constructor(
         fun destination(destination: JsonField<QuoteDestinationOneOf>) = apply {
             body.destination(destination)
         }
+
+        /**
+         * Alias for calling [destination] with
+         * `QuoteDestinationOneOf.ofAccountDestination(accountDestination)`.
+         */
+        fun destination(accountDestination: QuoteDestinationOneOf.AccountDestination) = apply {
+            body.destination(accountDestination)
+        }
+
+        /**
+         * Alias for calling [destination] with
+         * `QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination)`.
+         */
+        fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
+            apply {
+                body.destination(umaAddressDestination)
+            }
 
         /**
          * The amount to send/receive in the smallest unit of the locked currency (eg. cents). See
@@ -312,6 +334,7 @@ private constructor(
             body.lockedCurrencySide(lockedCurrencySide)
         }
 
+        /** Source account details */
         fun source(source: QuoteSourceOneOf) = apply { body.source(source) }
 
         /**
@@ -322,6 +345,23 @@ private constructor(
          * supported value.
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { body.source(source) }
+
+        /**
+         * Alias for calling [source] with
+         * `QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource)`.
+         */
+        fun source(accountQuoteSource: QuoteSourceOneOf.AccountQuoteSource) = apply {
+            body.source(accountQuoteSource)
+        }
+
+        /**
+         * Alias for calling [source] with
+         * `QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource)`.
+         */
+        fun source(realtimeFundingQuoteSource: QuoteSourceOneOf.RealtimeFundingQuoteSource) =
+            apply {
+                body.source(realtimeFundingQuoteSource)
+            }
 
         /** Optional description/memo for the transfer */
         fun description(description: String) = apply { body.description(description) }
@@ -346,7 +386,7 @@ private constructor(
          * `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature` over the
          * `payloadToSign` returned in the quote response, which is not available in a combined
          * create-and-execute call. Create the quote first with `immediatelyExecute: false` and then
-         * call `POST /quotes/{quoteId}/execute` with the signature header.
+         * call `POST /quotes/{quoteId}/execute` with the `Grid-Wallet-Signature` stamp header.
          */
         fun immediatelyExecute(immediatelyExecute: Boolean) = apply {
             body.immediatelyExecute(immediatelyExecute)
@@ -633,6 +673,8 @@ private constructor(
         )
 
         /**
+         * Destination account details
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -661,6 +703,8 @@ private constructor(
             lockedCurrencySide.getRequired("lockedCurrencySide")
 
         /**
+         * Source account details
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
@@ -685,7 +729,7 @@ private constructor(
          * `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature` over the
          * `payloadToSign` returned in the quote response, which is not available in a combined
          * create-and-execute call. Create the quote first with `immediatelyExecute: false` and then
-         * call `POST /quotes/{quoteId}/execute` with the signature header.
+         * call `POST /quotes/{quoteId}/execute` with the `Grid-Wallet-Signature` stamp header.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -864,6 +908,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
+            /** Destination account details */
             fun destination(destination: QuoteDestinationOneOf) =
                 destination(JsonField.of(destination))
 
@@ -877,6 +922,20 @@ private constructor(
             fun destination(destination: JsonField<QuoteDestinationOneOf>) = apply {
                 this.destination = destination
             }
+
+            /**
+             * Alias for calling [destination] with
+             * `QuoteDestinationOneOf.ofAccountDestination(accountDestination)`.
+             */
+            fun destination(accountDestination: QuoteDestinationOneOf.AccountDestination) =
+                destination(QuoteDestinationOneOf.ofAccountDestination(accountDestination))
+
+            /**
+             * Alias for calling [destination] with
+             * `QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination)`.
+             */
+            fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
+                destination(QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination))
 
             /**
              * The amount to send/receive in the smallest unit of the locked currency (eg. cents).
@@ -917,6 +976,7 @@ private constructor(
                 this.lockedCurrencySide = lockedCurrencySide
             }
 
+            /** Source account details */
             fun source(source: QuoteSourceOneOf) = source(JsonField.of(source))
 
             /**
@@ -927,6 +987,20 @@ private constructor(
              * supported value.
              */
             fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
+
+            /**
+             * Alias for calling [source] with
+             * `QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource)`.
+             */
+            fun source(accountQuoteSource: QuoteSourceOneOf.AccountQuoteSource) =
+                source(QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource))
+
+            /**
+             * Alias for calling [source] with
+             * `QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource)`.
+             */
+            fun source(realtimeFundingQuoteSource: QuoteSourceOneOf.RealtimeFundingQuoteSource) =
+                source(QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource))
 
             /** Optional description/memo for the transfer */
             fun description(description: String) = description(JsonField.of(description))
@@ -953,7 +1027,8 @@ private constructor(
              * account of type `EMBEDDED_WALLET`: those transfers require a `Grid-Wallet-Signature`
              * over the `payloadToSign` returned in the quote response, which is not available in a
              * combined create-and-execute call. Create the quote first with `immediatelyExecute:
-             * false` and then call `POST /quotes/{quoteId}/execute` with the signature header.
+             * false` and then call `POST /quotes/{quoteId}/execute` with the
+             * `Grid-Wallet-Signature` stamp header.
              */
             fun immediatelyExecute(immediatelyExecute: Boolean) =
                 immediatelyExecute(JsonField.of(immediatelyExecute))
@@ -1092,8 +1167,10 @@ private constructor(
                 return@apply
             }
 
+            destination().validate()
             lockedCurrencyAmount()
             lockedCurrencySide().validate()
+            source().validate()
             description()
             immediatelyExecute()
             lookupId()
@@ -1117,8 +1194,10 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (lockedCurrencyAmount.asKnown() == null) 0 else 1) +
+            (destination.asKnown()?.validity() ?: 0) +
+                (if (lockedCurrencyAmount.asKnown() == null) 0 else 1) +
                 (lockedCurrencySide.asKnown()?.validity() ?: 0) +
+                (source.asKnown()?.validity() ?: 0) +
                 (if (description.asKnown() == null) 0 else 1) +
                 (if (immediatelyExecute.asKnown() == null) 0 else 1) +
                 (if (lookupId.asKnown() == null) 0 else 1) +

@@ -8,6 +8,8 @@ import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.IndividualCustomerFields
+import com.lightspark.grid.models.customers.InternalAccountExportRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -22,14 +24,19 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer =
+        val customerOneOf =
             customerServiceAsync.create(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
+                    .platformCustomerId("ind-9f84e0c2")
+                    .region("US")
+                    .umaAddress("\$john.doe@uma.domain.com")
+                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -41,21 +48,13 @@ internal class CustomerServiceAsyncTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
-                    .addCurrency("USD")
-                    .addCurrency("USDC")
-                    .email("john.doe@example.com")
                     .fullName("Jane Smith")
-                    .kycStatus(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                     .nationality("US")
-                    .platformCustomerId("ind-9f84e0c2")
-                    .region("US")
-                    .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -65,14 +64,12 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer = customerServiceAsync.retrieve("customerId")
+        val customerOneOf = customerServiceAsync.retrieve("customerId")
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -82,12 +79,10 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer =
+        val customerOneOf =
             customerServiceAsync.update(
                 CustomerUpdateParams.builder()
                     .customerId("customerId")
@@ -97,6 +92,10 @@ internal class CustomerServiceAsyncTest {
                     .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                     .updateCustomerRequest(
                         CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                            .currencies(listOf("USD", "EUR", "USDC"))
+                            .email("john.doe@example.com")
+                            .umaAddress("\$john.doe@uma.domain.com")
+                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -108,21 +107,15 @@ internal class CustomerServiceAsyncTest {
                                     .build()
                             )
                             .birthDate(LocalDate.parse("1985-06-15"))
-                            .currencies(listOf("USD", "EUR", "USDC"))
-                            .email("john.doe@example.com")
                             .fullName("John Smith")
-                            .kycStatus(
-                                CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus
-                                    .APPROVED
-                            )
+                            .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                             .nationality("US")
-                            .umaAddress("\$john.doe@uma.domain.com")
                             .build()
                     )
                     .build()
             )
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -132,8 +125,6 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -149,14 +140,12 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
-        val customer = customerServiceAsync.delete("customerId")
+        val customerOneOf = customerServiceAsync.delete("customerId")
 
-        customer.validate()
+        customerOneOf.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -166,12 +155,10 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
-        val response =
+        val internalAccountExportResponse =
             customerServiceAsync.export(
                 CustomerExportParams.builder()
                     .id("id")
@@ -179,13 +166,17 @@ internal class CustomerServiceAsyncTest {
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                     )
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                    .clientPublicKey(
-                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    .internalAccountExportRequest(
+                        InternalAccountExportRequest.builder()
+                            .clientPublicKey(
+                                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                            )
+                            .build()
                     )
                     .build()
             )
 
-        response.validate()
+        internalAccountExportResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -195,8 +186,6 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -219,8 +208,6 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -236,8 +223,6 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 

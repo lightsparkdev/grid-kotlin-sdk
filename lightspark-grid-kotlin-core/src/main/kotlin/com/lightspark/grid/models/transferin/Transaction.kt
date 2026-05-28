@@ -12,6 +12,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.transactions.IncomingTransaction
@@ -179,20 +180,29 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val type = json.asObject()?.get("type")?.asString()
 
-            when (type) {
-                "INCOMING" -> {
-                    return tryDeserialize(node, jacksonTypeRef<IncomingTransaction>())?.let {
-                        Transaction(incoming = it, _json = json)
-                    } ?: Transaction(_json = json)
-                }
-                "OUTGOING" -> {
-                    return tryDeserialize(node, jacksonTypeRef<OutgoingTransaction>())?.let {
-                        Transaction(outgoing = it, _json = json)
-                    } ?: Transaction(_json = json)
-                }
-            }
+            when (type) {}
 
-            return Transaction(_json = json)
+            val bestMatches =
+                sequenceOf(
+                        tryDeserialize(node, jacksonTypeRef<IncomingTransaction>())?.let {
+                            Transaction(incoming = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<OutgoingTransaction>())?.let {
+                            Transaction(outgoing = it, _json = json)
+                        },
+                    )
+                    .filterNotNull()
+                    .allMaxBy { it.validity() }
+                    .toList()
+            return when (bestMatches.size) {
+                // This can happen if what we're deserializing is completely incompatible with all
+                // the possible variants (e.g. deserializing from boolean).
+                0 -> Transaction(_json = json)
+                1 -> bestMatches.single()
+                // If there's more than one match with the highest validity, then use the first
+                // completely valid match, or simply the first match if none are completely valid.
+                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            }
         }
     }
 

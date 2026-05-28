@@ -4,7 +4,6 @@ package com.lightspark.grid.services.blocking.agents
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
-import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
@@ -92,11 +91,7 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("agents", "device-codes", params._pathParam(0), "status")
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -127,7 +122,7 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
                     .addPathSegments("agents", "device-codes", params._pathParam(0), "redeem")
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(clientOptions, params, SecurityOptions.none())
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -158,11 +153,7 @@ class DeviceCodeServiceImpl internal constructor(private val clientOptions: Clie
                     .addPathSegments("agents", params._pathParam(0), "device-codes")
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
+                    .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

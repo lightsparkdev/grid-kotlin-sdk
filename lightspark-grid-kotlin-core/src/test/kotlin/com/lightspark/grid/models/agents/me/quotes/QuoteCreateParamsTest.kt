@@ -15,10 +15,20 @@ internal class QuoteCreateParamsTest {
     fun create() {
         QuoteCreateParams.builder()
             .idempotencyKey("<uuid>")
-            .destination(QuoteDestinationOneOf.builder().build())
+            .destination(
+                QuoteDestinationOneOf.AccountDestination.builder()
+                    .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                    .build()
+            )
             .lockedCurrencyAmount(1000L)
             .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-            .source(QuoteSourceOneOf.builder().build())
+            .source(
+                QuoteSourceOneOf.AccountQuoteSource.builder()
+                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .build()
+            )
             .description("Invoice #1234 payment")
             .immediatelyExecute(false)
             .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
@@ -37,10 +47,20 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
                 .description("Invoice #1234 payment")
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
@@ -62,10 +82,18 @@ internal class QuoteCreateParamsTest {
     fun headersWithoutOptionalFields() {
         val params =
             QuoteCreateParams.builder()
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
                 .build()
 
         val headers = params._headers()
@@ -78,10 +106,20 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
                 .description("Invoice #1234 payment")
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
@@ -96,11 +134,27 @@ internal class QuoteCreateParamsTest {
 
         val body = params._body()
 
-        assertThat(body.destination()).isEqualTo(QuoteDestinationOneOf.builder().build())
+        assertThat(body.destination())
+            .isEqualTo(
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        .build()
+                )
+            )
         assertThat(body.lockedCurrencyAmount()).isEqualTo(1000L)
         assertThat(body.lockedCurrencySide())
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
-        assertThat(body.source()).isEqualTo(QuoteSourceOneOf.builder().build())
+        assertThat(body.source())
+            .isEqualTo(
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
+            )
         assertThat(body.description()).isEqualTo("Invoice #1234 payment")
         assertThat(body.immediatelyExecute()).isEqualTo(false)
         assertThat(body.lookupId()).isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
@@ -118,18 +172,40 @@ internal class QuoteCreateParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             QuoteCreateParams.builder()
-                .destination(QuoteDestinationOneOf.builder().build())
+                .destination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .lockedCurrencyAmount(1000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .source(QuoteSourceOneOf.builder().build())
+                .source(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.destination()).isEqualTo(QuoteDestinationOneOf.builder().build())
+        assertThat(body.destination())
+            .isEqualTo(
+                QuoteDestinationOneOf.ofAccountDestination(
+                    QuoteDestinationOneOf.AccountDestination.builder()
+                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
+            )
         assertThat(body.lockedCurrencyAmount()).isEqualTo(1000L)
         assertThat(body.lockedCurrencySide())
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
-        assertThat(body.source()).isEqualTo(QuoteSourceOneOf.builder().build())
+        assertThat(body.source())
+            .isEqualTo(
+                QuoteSourceOneOf.ofAccountQuoteSource(
+                    QuoteSourceOneOf.AccountQuoteSource.builder()
+                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .build()
+                )
+            )
     }
 }

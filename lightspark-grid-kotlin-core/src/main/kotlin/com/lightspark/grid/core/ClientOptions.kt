@@ -502,6 +502,26 @@ private constructor(
             // We replace after all the default headers to allow end-users to overwrite them.
             headers.replaceAll(this.headers.build())
             queryParams.replaceAll(this.queryParams.build())
+            username?.let { username ->
+                password?.let { password ->
+                    if (!username.isEmpty() && !password.isEmpty()) {
+                        headers.replace(
+                            "Authorization",
+                            "Basic ${Base64.getEncoder().encodeToString("$username:$password".toByteArray())}",
+                        )
+                    }
+                }
+            }
+            agentAccessToken?.let {
+                if (!it.isEmpty()) {
+                    headers.replace("Authorization", "Bearer $it")
+                }
+            }
+            webhookSignature?.let {
+                if (!it.isEmpty()) {
+                    headers.replace("X-Grid-Signature", it)
+                }
+            }
 
             return ClientOptions(
                 httpClient,
@@ -549,36 +569,5 @@ private constructor(
     fun close() {
         httpClient.close()
         sleeper.close()
-    }
-
-    internal fun securityHeaders(security: SecurityOptions): Headers {
-        val headers = Headers.builder()
-        if (security.basicAuth) {
-            username?.let { username ->
-                password?.let { password ->
-                    if (!username.isEmpty() && !password.isEmpty()) {
-                        headers.replace(
-                            "Authorization",
-                            "Basic ${Base64.getEncoder().encodeToString("$username:$password".toByteArray())}",
-                        )
-                    }
-                }
-            }
-        }
-        if (security.agentAuth) {
-            agentAccessToken?.let {
-                if (!it.isEmpty()) {
-                    headers.replace("Authorization", "Bearer $it")
-                }
-            }
-        }
-        if (security.webhookSignature) {
-            webhookSignature?.let {
-                if (!it.isEmpty()) {
-                    headers.replace("X-Grid-Signature", it)
-                }
-            }
-        }
-        return headers.build()
     }
 }

@@ -1192,8 +1192,8 @@ private constructor(
              * If set, restricts the agent to operate only on the specified internal account IDs.
              * Null means the agent can access all accounts.
              */
-            fun allowedAccountIds(allowedAccountIds: List<String>) =
-                allowedAccountIds(JsonField.of(allowedAccountIds))
+            fun allowedAccountIds(allowedAccountIds: List<String>?) =
+                allowedAccountIds(JsonField.ofNullable(allowedAccountIds))
 
             /**
              * Sets [Builder.allowedAccountIds] to an arbitrary JSON value.

@@ -37,9 +37,9 @@ internal class BrlExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .pixKey("user@example.com")
+                .pixKey("x")
                 .pixKeyType(BrlExternalAccountCreateInfo.PixKeyType.CPF)
-                .taxId("11111111111")
+                .taxId("26912511571360")
                 .build()
 
         assertThat(brlExternalAccountCreateInfo.accountType())
@@ -68,10 +68,10 @@ internal class BrlExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(brlExternalAccountCreateInfo.pixKey()).isEqualTo("user@example.com")
+        assertThat(brlExternalAccountCreateInfo.pixKey()).isEqualTo("x")
         assertThat(brlExternalAccountCreateInfo.pixKeyType())
             .isEqualTo(BrlExternalAccountCreateInfo.PixKeyType.CPF)
-        assertThat(brlExternalAccountCreateInfo.taxId()).isEqualTo("11111111111")
+        assertThat(brlExternalAccountCreateInfo.taxId()).isEqualTo("26912511571360")
     }
 
     @Test
@@ -101,9 +101,9 @@ internal class BrlExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .pixKey("user@example.com")
+                .pixKey("x")
                 .pixKeyType(BrlExternalAccountCreateInfo.PixKeyType.CPF)
-                .taxId("11111111111")
+                .taxId("26912511571360")
                 .build()
 
         val roundtrippedBrlExternalAccountCreateInfo =

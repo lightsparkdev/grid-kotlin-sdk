@@ -19,15 +19,13 @@ class AuthCredentialCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
-    private val type: JsonValue,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
-    ) : this(accountId, type, mutableMapOf())
+        @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of()
+    ) : this(accountId, mutableMapOf())
 
     /**
      * Identifier of the internal account that this credential will authenticate.
@@ -36,14 +34,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun accountId(): String = accountId.getRequired("accountId")
-
-    /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = authCredentialCreateRequest.type().convert(MyClass::class.java)
-     * ```
-     */
-    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
 
     /**
      * Returns the raw JSON value of [accountId].
@@ -72,7 +62,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
-         * .type()
          * ```
          */
         fun builder() = Builder()
@@ -82,12 +71,10 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<String>? = null
-        private var type: JsonValue? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(authCredentialCreateRequest: AuthCredentialCreateRequest) = apply {
             accountId = authCredentialCreateRequest.accountId
-            type = authCredentialCreateRequest.type
             additionalProperties = authCredentialCreateRequest.additionalProperties.toMutableMap()
         }
 
@@ -102,8 +89,6 @@ private constructor(
          * value.
          */
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
-
-        fun type(type: JsonValue) = apply { this.type = type }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -132,7 +117,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .accountId()
-         * .type()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -140,7 +124,6 @@ private constructor(
         fun build(): AuthCredentialCreateRequest =
             AuthCredentialCreateRequest(
                 checkRequired("accountId", accountId),
-                checkRequired("type", type),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -186,14 +169,13 @@ private constructor(
 
         return other is AuthCredentialCreateRequest &&
             accountId == other.accountId &&
-            type == other.type &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(accountId, type, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(accountId, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AuthCredentialCreateRequest{accountId=$accountId, type=$type, additionalProperties=$additionalProperties}"
+        "AuthCredentialCreateRequest{accountId=$accountId, additionalProperties=$additionalProperties}"
 }

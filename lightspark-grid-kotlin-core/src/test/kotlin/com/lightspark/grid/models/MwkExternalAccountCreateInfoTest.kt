@@ -37,7 +37,7 @@ internal class MwkExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(mwkExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class MwkExternalAccountCreateInfoTest {
                 )
             )
         assertThat(mwkExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(mwkExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(mwkExternalAccountCreateInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class MwkExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedMwkExternalAccountCreateInfo =

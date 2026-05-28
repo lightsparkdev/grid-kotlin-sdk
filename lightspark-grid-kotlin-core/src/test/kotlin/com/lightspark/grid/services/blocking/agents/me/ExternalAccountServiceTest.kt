@@ -3,10 +3,10 @@
 package com.lightspark.grid.services.blocking.agents.me
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.AedBeneficiary
-import com.lightspark.grid.models.AedExternalAccountCreateInfo
+import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -19,8 +19,6 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.agents().me().externalAccounts()
 
@@ -36,8 +34,6 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.agents().me().externalAccounts()
 
@@ -53,8 +49,6 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.agents().me().externalAccounts()
 
@@ -68,8 +62,6 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.agents().me().externalAccounts()
 
@@ -77,10 +69,13 @@ internal class ExternalAccountServiceTest {
             externalAccountService.add(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        AedExternalAccountCreateInfo.builder()
-                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                        UsdExternalAccountCreateInfo.builder()
+                            .accountNumber("12345678901")
+                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                             .beneficiary(
-                                AedBeneficiary.builder()
+                                UsdBeneficiary.builder()
+                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("John Doe")
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -91,17 +86,14 @@ internal class ExternalAccountServiceTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("fullName")
-                                    .birthDate("birthDate")
+                                    .birthDate("1990-01-15")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("nationality")
+                                    .nationality("US")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .iban("AE070331234567890123456")
-                            .swiftCode("EBILAEAD")
+                            .routingNumber("123456789")
                             .build()
                     )
                     .currency("USD")

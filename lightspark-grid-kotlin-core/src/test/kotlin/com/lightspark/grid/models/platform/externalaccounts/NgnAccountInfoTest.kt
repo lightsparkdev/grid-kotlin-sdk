@@ -15,13 +15,13 @@ internal class NgnAccountInfoTest {
             NgnAccountInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 
         assertThat(ngnAccountInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(ngnAccountInfo.accountType()).isEqualTo(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-        assertThat(ngnAccountInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(ngnAccountInfo.bankName()).isEqualTo("x")
         assertThat(ngnAccountInfo.paymentRails())
             .containsExactly(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
     }
@@ -33,7 +33,7 @@ internal class NgnAccountInfoTest {
             NgnAccountInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(NgnAccountInfo.AccountType.NGN_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .addPaymentRail(NgnAccountInfo.PaymentRail.BANK_TRANSFER)
                 .build()
 

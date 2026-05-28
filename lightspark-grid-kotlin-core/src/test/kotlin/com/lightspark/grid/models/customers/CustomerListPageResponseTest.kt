@@ -4,7 +4,6 @@ package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.IndividualCustomer
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -18,11 +17,18 @@ internal class CustomerListPageResponseTest {
         val customerListPageResponse =
             CustomerListPageResponse.builder()
                 .addData(
-                    IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                    CustomerOneOf.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -34,16 +40,9 @@ internal class CustomerListPageResponseTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
-                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
                 .hasMore(true)
@@ -53,12 +52,19 @@ internal class CustomerListPageResponseTest {
 
         assertThat(customerListPageResponse.data())
             .containsExactly(
-                CustomerListResponse.ofIndividual(
-                    IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                CustomerOneOf.ofIndividual(
+                    CustomerOneOf.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -70,16 +76,9 @@ internal class CustomerListPageResponseTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
-                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
             )
@@ -94,11 +93,18 @@ internal class CustomerListPageResponseTest {
         val customerListPageResponse =
             CustomerListPageResponse.builder()
                 .addData(
-                    IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                    CustomerOneOf.Individual.builder()
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -110,16 +116,9 @@ internal class CustomerListPageResponseTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
-                        .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
                 .hasMore(true)

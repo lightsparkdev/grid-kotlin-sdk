@@ -4,11 +4,12 @@ package com.lightspark.grid.models.agents.me.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.SlvBeneficiary
+import com.lightspark.grid.models.AedBeneficiary
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.AedExternalAccountInfo
 import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryVerifiedData
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
+import com.lightspark.grid.models.platform.externalaccounts.AedAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -22,11 +23,13 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.SlvAccount.builder()
+                            AedExternalAccountInfo.builder()
+                                .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                                .iban("AE070331234567890123456")
+                                .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                                .swiftCode("EBILAEAD")
                                 .beneficiary(
-                                    SlvBeneficiary.builder()
-                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("fullName")
+                                    AedBeneficiary.builder()
                                         .address(
                                             Address.builder()
                                                 .country("US")
@@ -37,6 +40,8 @@ internal class ExternalAccountListPageResponseTest {
                                                 .state("CA")
                                                 .build()
                                         )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
                                         .birthDate("birthDate")
                                         .countryOfResidence("countryOfResidence")
                                         .email("email")
@@ -44,15 +49,6 @@ internal class ExternalAccountListPageResponseTest {
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
-                                .addPaymentRail(
-                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
-                                )
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .currency("USD")
@@ -78,11 +74,13 @@ internal class ExternalAccountListPageResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        ExternalAccountInfoOneOf.SlvAccount.builder()
+                        AedExternalAccountInfo.builder()
+                            .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                            .iban("AE070331234567890123456")
+                            .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                            .swiftCode("EBILAEAD")
                             .beneficiary(
-                                SlvBeneficiary.builder()
-                                    .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("fullName")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -93,6 +91,8 @@ internal class ExternalAccountListPageResponseTest {
                                             .state("CA")
                                             .build()
                                     )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
                                     .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
@@ -100,15 +100,6 @@ internal class ExternalAccountListPageResponseTest {
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .addPaymentRail(
-                                ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
-                            )
-                            .accountNumber("0123456789")
-                            .bankAccountType(
-                                ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
-                            )
-                            .bankName("Banco Cuscatlan")
-                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .currency("USD")
@@ -138,11 +129,13 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            ExternalAccountInfoOneOf.SlvAccount.builder()
+                            AedExternalAccountInfo.builder()
+                                .accountType(AedAccountInfo.AccountType.AED_ACCOUNT)
+                                .iban("AE070331234567890123456")
+                                .addPaymentRail(AedAccountInfo.PaymentRail.BANK_TRANSFER)
+                                .swiftCode("EBILAEAD")
                                 .beneficiary(
-                                    SlvBeneficiary.builder()
-                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("fullName")
+                                    AedBeneficiary.builder()
                                         .address(
                                             Address.builder()
                                                 .country("US")
@@ -153,6 +146,8 @@ internal class ExternalAccountListPageResponseTest {
                                                 .state("CA")
                                                 .build()
                                         )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
                                         .birthDate("birthDate")
                                         .countryOfResidence("countryOfResidence")
                                         .email("email")
@@ -160,15 +155,6 @@ internal class ExternalAccountListPageResponseTest {
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
-                                .addPaymentRail(
-                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
-                                )
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .currency("USD")

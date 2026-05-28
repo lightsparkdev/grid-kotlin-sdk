@@ -17,7 +17,7 @@ internal class MyrExternalAccountCreateInfoTest {
             MyrExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(MyrExternalAccountCreateInfo.AccountType.MYR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class MyrExternalAccountCreateInfoTest {
         assertThat(myrExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(myrExternalAccountCreateInfo.accountType())
             .isEqualTo(MyrExternalAccountCreateInfo.AccountType.MYR_ACCOUNT)
-        assertThat(myrExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(myrExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(myrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 MyrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -80,7 +80,7 @@ internal class MyrExternalAccountCreateInfoTest {
             MyrExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(MyrExternalAccountCreateInfo.AccountType.MYR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("x")
                 .beneficiary(
                     MyrBeneficiary.builder()
                         .beneficiaryType(MyrBeneficiary.BeneficiaryType.INDIVIDUAL)

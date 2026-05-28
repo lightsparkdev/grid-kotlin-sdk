@@ -11,13 +11,26 @@ internal class EthereumWalletExternalAccountInfoTest {
 
     @Test
     fun create() {
-        val ethereumWalletExternalAccountInfo = EthereumWalletExternalAccountInfo.builder().build()
+        val ethereumWalletExternalAccountInfo =
+            EthereumWalletExternalAccountInfo.builder()
+                .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .build()
+
+        assertThat(ethereumWalletExternalAccountInfo.accountType())
+            .isEqualTo(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+        assertThat(ethereumWalletExternalAccountInfo.address())
+            .isEqualTo("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val ethereumWalletExternalAccountInfo = EthereumWalletExternalAccountInfo.builder().build()
+        val ethereumWalletExternalAccountInfo =
+            EthereumWalletExternalAccountInfo.builder()
+                .accountType(EthereumWalletExternalAccountInfo.AccountType.ETHEREUM_WALLET)
+                .address("0xAbCDEF1234567890aBCdEf1234567890ABcDef12")
+                .build()
 
         val roundtrippedEthereumWalletExternalAccountInfo =
             jsonMapper.readValue(

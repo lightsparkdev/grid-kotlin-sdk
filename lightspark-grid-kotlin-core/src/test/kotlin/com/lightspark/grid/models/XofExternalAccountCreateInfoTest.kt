@@ -37,7 +37,7 @@ internal class XofExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .region(XofExternalAccountCreateInfo.Region.BJ)
                 .build()
 
@@ -68,7 +68,7 @@ internal class XofExternalAccountCreateInfoTest {
                 )
             )
         assertThat(xofExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(xofExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(xofExternalAccountCreateInfo.provider()).isEqualTo("x")
         assertThat(xofExternalAccountCreateInfo.region())
             .isEqualTo(XofExternalAccountCreateInfo.Region.BJ)
     }
@@ -101,7 +101,7 @@ internal class XofExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .region(XofExternalAccountCreateInfo.Region.BJ)
                 .build()
 

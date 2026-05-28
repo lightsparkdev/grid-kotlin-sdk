@@ -19,7 +19,7 @@ internal class PlatformConfigTest {
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
                 .createdAt(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
                 .embeddedWalletConfig(
-                    EmbeddedWalletConfig.builder()
+                    PlatformConfig.EmbeddedWalletConfig.builder()
                         .alphanumeric(false)
                         .appName("Acme Wallet")
                         .expirationSeconds(300L)
@@ -76,7 +76,7 @@ internal class PlatformConfigTest {
             .isEqualTo(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
         assertThat(platformConfig.embeddedWalletConfig())
             .isEqualTo(
-                EmbeddedWalletConfig.builder()
+                PlatformConfig.EmbeddedWalletConfig.builder()
                     .alphanumeric(false)
                     .appName("Acme Wallet")
                     .expirationSeconds(300L)
@@ -136,7 +136,7 @@ internal class PlatformConfigTest {
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
                 .createdAt(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
                 .embeddedWalletConfig(
-                    EmbeddedWalletConfig.builder()
+                    PlatformConfig.EmbeddedWalletConfig.builder()
                         .alphanumeric(false)
                         .appName("Acme Wallet")
                         .expirationSeconds(300L)

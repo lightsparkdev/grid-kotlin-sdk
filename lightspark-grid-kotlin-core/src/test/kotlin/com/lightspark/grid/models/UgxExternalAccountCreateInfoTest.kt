@@ -37,7 +37,7 @@ internal class UgxExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         assertThat(ugxExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class UgxExternalAccountCreateInfoTest {
                 )
             )
         assertThat(ugxExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(ugxExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
+        assertThat(ugxExternalAccountCreateInfo.provider()).isEqualTo("x")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class UgxExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+1234567890")
-                .provider("Example Provider")
+                .provider("x")
                 .build()
 
         val roundtrippedUgxExternalAccountCreateInfo =

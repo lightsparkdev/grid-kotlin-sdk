@@ -5,7 +5,6 @@ package com.lightspark.grid.services.blocking
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.CustomerInfoFieldName
-import com.lightspark.grid.models.config.EmbeddedWalletConfig
 import com.lightspark.grid.models.config.PlatformCurrencyConfig
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
@@ -21,8 +20,6 @@ internal class ConfigServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val configService = client.config()
 
@@ -38,8 +35,6 @@ internal class ConfigServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
-                .agentAccessToken("My Agent Access Token")
-                .webhookSignature("My Webhook Signature")
                 .build()
         val configService = client.config()
 
@@ -47,7 +42,7 @@ internal class ConfigServiceTest {
             configService.update(
                 ConfigUpdateParams.builder()
                     .embeddedWalletConfig(
-                        EmbeddedWalletConfig.builder()
+                        ConfigUpdateParams.EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
                             .appName("Acme Wallet")
                             .expirationSeconds(300L)

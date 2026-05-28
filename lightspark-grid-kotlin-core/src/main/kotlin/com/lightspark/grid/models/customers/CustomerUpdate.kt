@@ -1,0 +1,281 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.lightspark.grid.models.customers
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.ExcludeMissing
+import com.lightspark.grid.core.JsonField
+import com.lightspark.grid.core.JsonMissing
+import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkKnown
+import com.lightspark.grid.core.toImmutable
+import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import java.util.Collections
+import java.util.Objects
+
+/**
+ * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with tied
+ * Embedded Wallet internal accounts, Grid updates the customer email and every tied `EMAIL_OTP`
+ * credential across all tied Embedded Wallets through the endpoint's signed-retry flow.
+ */
+class CustomerUpdate
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
+private constructor(
+    private val currencies: JsonField<List<String>>,
+    private val email: JsonField<String>,
+    private val umaAddress: JsonField<String>,
+    private val additionalProperties: MutableMap<String, JsonValue>,
+) {
+
+    @JsonCreator
+    private constructor(
+        @JsonProperty("currencies")
+        @ExcludeMissing
+        currencies: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
+    ) : this(currencies, email, umaAddress, mutableMapOf())
+
+    /**
+     * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
+     * tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some currency
+     * combinations may require separate customers — if so, the request will be rejected with
+     * details.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+    /**
+     * Email address for the customer. For customers with tied Embedded Wallet internal accounts,
+     * changing this value also updates every tied `EMAIL_OTP` credential across all tied Embedded
+     * Wallets.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun email(): String? = email.getNullable("email")
+
+    /**
+     * Optional UMA address identifier. If provided, the customer's UMA address will be updated.
+     * This is an optional identifier to route payments to the customer.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
+
+    /**
+     * Returns the raw JSON value of [currencies].
+     *
+     * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("currencies")
+    @ExcludeMissing
+    fun _currencies(): JsonField<List<String>> = currencies
+
+    /**
+     * Returns the raw JSON value of [email].
+     *
+     * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+    /**
+     * Returns the raw JSON value of [umaAddress].
+     *
+     * Unlike [umaAddress], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("umaAddress") @ExcludeMissing fun _umaAddress(): JsonField<String> = umaAddress
+
+    @JsonAnySetter
+    private fun putAdditionalProperty(key: String, value: JsonValue) {
+        additionalProperties.put(key, value)
+    }
+
+    @JsonAnyGetter
+    @ExcludeMissing
+    fun _additionalProperties(): Map<String, JsonValue> =
+        Collections.unmodifiableMap(additionalProperties)
+
+    fun toBuilder() = Builder().from(this)
+
+    companion object {
+
+        /** Returns a mutable builder for constructing an instance of [CustomerUpdate]. */
+        fun builder() = Builder()
+    }
+
+    /** A builder for [CustomerUpdate]. */
+    class Builder internal constructor() {
+
+        private var currencies: JsonField<MutableList<String>>? = null
+        private var email: JsonField<String> = JsonMissing.of()
+        private var umaAddress: JsonField<String> = JsonMissing.of()
+        private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+        internal fun from(customerUpdate: CustomerUpdate) = apply {
+            currencies = customerUpdate.currencies.map { it.toMutableList() }
+            email = customerUpdate.email
+            umaAddress = customerUpdate.umaAddress
+            additionalProperties = customerUpdate.additionalProperties.toMutableMap()
+        }
+
+        /**
+         * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+         * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Replaces the existing list. Some currency
+         * combinations may require separate customers — if so, the request will be rejected with
+         * details.
+         */
+        fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+        /**
+         * Sets [Builder.currencies] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.currencies] with a well-typed `List<String>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun currencies(currencies: JsonField<List<String>>) = apply {
+            this.currencies = currencies.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [String] to [currencies].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addCurrency(currency: String) = apply {
+            currencies =
+                (currencies ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("currencies", it).add(currency)
+                }
+        }
+
+        /**
+         * Email address for the customer. For customers with tied Embedded Wallet internal
+         * accounts, changing this value also updates every tied `EMAIL_OTP` credential across all
+         * tied Embedded Wallets.
+         */
+        fun email(email: String) = email(JsonField.of(email))
+
+        /**
+         * Sets [Builder.email] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.email] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun email(email: JsonField<String>) = apply { this.email = email }
+
+        /**
+         * Optional UMA address identifier. If provided, the customer's UMA address will be updated.
+         * This is an optional identifier to route payments to the customer.
+         */
+        fun umaAddress(umaAddress: String) = umaAddress(JsonField.of(umaAddress))
+
+        /**
+         * Sets [Builder.umaAddress] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.umaAddress] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun umaAddress(umaAddress: JsonField<String>) = apply { this.umaAddress = umaAddress }
+
+        fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.clear()
+            putAllAdditionalProperties(additionalProperties)
+        }
+
+        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+            additionalProperties.put(key, value)
+        }
+
+        fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.putAll(additionalProperties)
+        }
+
+        fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+            keys.forEach(::removeAdditionalProperty)
+        }
+
+        /**
+         * Returns an immutable instance of [CustomerUpdate].
+         *
+         * Further updates to this [Builder] will not mutate the returned instance.
+         */
+        fun build(): CustomerUpdate =
+            CustomerUpdate(
+                (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                email,
+                umaAddress,
+                additionalProperties.toMutableMap(),
+            )
+    }
+
+    private var validated: Boolean = false
+
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
+    fun validate(): CustomerUpdate = apply {
+        if (validated) {
+            return@apply
+        }
+
+        currencies()
+        email()
+        umaAddress()
+        validated = true
+    }
+
+    fun isValid(): Boolean =
+        try {
+            validate()
+            true
+        } catch (e: LightsparkGridInvalidDataException) {
+            false
+        }
+
+    /**
+     * Returns a score indicating how many valid values are contained in this object recursively.
+     *
+     * Used for best match union deserialization.
+     */
+    internal fun validity(): Int =
+        (currencies.asKnown()?.size ?: 0) +
+            (if (email.asKnown() == null) 0 else 1) +
+            (if (umaAddress.asKnown() == null) 0 else 1)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+
+        return other is CustomerUpdate &&
+            currencies == other.currencies &&
+            email == other.email &&
+            umaAddress == other.umaAddress &&
+            additionalProperties == other.additionalProperties
+    }
+
+    private val hashCode: Int by lazy {
+        Objects.hash(currencies, email, umaAddress, additionalProperties)
+    }
+
+    override fun hashCode(): Int = hashCode
+
+    override fun toString() =
+        "CustomerUpdate{currencies=$currencies, email=$email, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+}

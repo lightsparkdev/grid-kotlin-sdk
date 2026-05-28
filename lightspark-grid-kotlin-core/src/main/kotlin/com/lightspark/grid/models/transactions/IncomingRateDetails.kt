@@ -26,7 +26,7 @@ class IncomingRateDetails
 private constructor(
     private val gridApiFixedFee: JsonField<Long>,
     private val gridApiMultiplier: JsonField<Double>,
-    private val gridApiVariableFeeAmount: JsonField<Long>,
+    private val gridApiVariableFeeAmount: JsonField<Double>,
     private val gridApiVariableFeeRate: JsonField<Double>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -41,7 +41,7 @@ private constructor(
         gridApiMultiplier: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("gridApiVariableFeeAmount")
         @ExcludeMissing
-        gridApiVariableFeeAmount: JsonField<Long> = JsonMissing.of(),
+        gridApiVariableFeeAmount: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("gridApiVariableFeeRate")
         @ExcludeMissing
         gridApiVariableFeeRate: JsonField<Double> = JsonMissing.of(),
@@ -78,7 +78,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun gridApiVariableFeeAmount(): Long =
+    fun gridApiVariableFeeAmount(): Double =
         gridApiVariableFeeAmount.getRequired("gridApiVariableFeeAmount")
 
     /**
@@ -118,7 +118,7 @@ private constructor(
      */
     @JsonProperty("gridApiVariableFeeAmount")
     @ExcludeMissing
-    fun _gridApiVariableFeeAmount(): JsonField<Long> = gridApiVariableFeeAmount
+    fun _gridApiVariableFeeAmount(): JsonField<Double> = gridApiVariableFeeAmount
 
     /**
      * Returns the raw JSON value of [gridApiVariableFeeRate].
@@ -163,7 +163,7 @@ private constructor(
 
         private var gridApiFixedFee: JsonField<Long>? = null
         private var gridApiMultiplier: JsonField<Double>? = null
-        private var gridApiVariableFeeAmount: JsonField<Long>? = null
+        private var gridApiVariableFeeAmount: JsonField<Double>? = null
         private var gridApiVariableFeeRate: JsonField<Double>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -215,17 +215,17 @@ private constructor(
          * unit of the receiving currency (eg. cents). This is the receiving amount times
          * gridApiVariableFeeRate.
          */
-        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: Long) =
+        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: Double) =
             gridApiVariableFeeAmount(JsonField.of(gridApiVariableFeeAmount))
 
         /**
          * Sets [Builder.gridApiVariableFeeAmount] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.gridApiVariableFeeAmount] with a well-typed [Long] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.gridApiVariableFeeAmount] with a well-typed [Double]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: JsonField<Long>) = apply {
+        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: JsonField<Double>) = apply {
             this.gridApiVariableFeeAmount = gridApiVariableFeeAmount
         }
 

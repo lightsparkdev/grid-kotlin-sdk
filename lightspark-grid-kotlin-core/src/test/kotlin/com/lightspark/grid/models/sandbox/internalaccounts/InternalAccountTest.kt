@@ -5,6 +5,7 @@ package com.lightspark.grid.models.sandbox.internalaccounts
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import java.time.OffsetDateTime
@@ -35,20 +36,12 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
-                                )
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("x")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .routingNumber("021000021")
                                 .reference("UMA-Q12345-REF")
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -86,19 +79,12 @@ internal class InternalAccountTest {
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                            .addPaymentRail(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                    .BANK_TRANSFER
-                            )
+                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                            .accountNumber("x")
+                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                            .routingNumber("021000021")
                             .reference("UMA-Q12345-REF")
-                            .accountNumber("0123456789")
-                            .bankAccountType(
-                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
-                                    .CHECKING
-                            )
-                            .bankName("Banco Cuscatlan")
-                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .instructionsNotes(
@@ -139,20 +125,12 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
-                                .addPaymentRail(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
-                                        .BANK_TRANSFER
-                                )
+                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
+                                .accountNumber("x")
+                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
+                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
+                                .routingNumber("021000021")
                                 .reference("UMA-Q12345-REF")
-                                .accountNumber("0123456789")
-                                .bankAccountType(
-                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
-                                        .BankAccountType
-                                        .CHECKING
-                                )
-                                .bankName("Banco Cuscatlan")
-                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(

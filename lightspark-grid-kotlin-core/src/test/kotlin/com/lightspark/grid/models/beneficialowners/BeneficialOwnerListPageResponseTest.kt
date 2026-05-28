@@ -4,7 +4,6 @@ package com.lightspark.grid.models.beneficialowners
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -18,11 +17,11 @@ internal class BeneficialOwnerListPageResponseTest {
         val beneficialOwnerListPageResponse =
             BeneficialOwnerListPageResponse.builder()
                 .addData(
-                    BeneficialOwner.builder()
+                    BeneficialOwnerListResponse.builder()
                         .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                        .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
                         .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerPersonalInfo.builder()
@@ -48,8 +47,8 @@ internal class BeneficialOwnerListPageResponseTest {
                                 .phoneNumber("+14155550192")
                                 .build()
                         )
-                        .addRole(BeneficialOwner.Role.UBO)
-                        .addRole(BeneficialOwner.Role.DIRECTOR)
+                        .addRole(BeneficialOwnerListResponse.Role.UBO)
+                        .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
@@ -60,11 +59,11 @@ internal class BeneficialOwnerListPageResponseTest {
 
         assertThat(beneficialOwnerListPageResponse.data())
             .containsExactly(
-                BeneficialOwner.builder()
+                BeneficialOwnerListResponse.builder()
                     .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                    .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
                     .ownershipPercentage(51L)
                     .personalInfo(
                         BeneficialOwnerPersonalInfo.builder()
@@ -90,8 +89,8 @@ internal class BeneficialOwnerListPageResponseTest {
                             .phoneNumber("+14155550192")
                             .build()
                     )
-                    .addRole(BeneficialOwner.Role.UBO)
-                    .addRole(BeneficialOwner.Role.DIRECTOR)
+                    .addRole(BeneficialOwnerListResponse.Role.UBO)
+                    .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .build()
             )
@@ -106,11 +105,11 @@ internal class BeneficialOwnerListPageResponseTest {
         val beneficialOwnerListPageResponse =
             BeneficialOwnerListPageResponse.builder()
                 .addData(
-                    BeneficialOwner.builder()
+                    BeneficialOwnerListResponse.builder()
                         .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                        .kycStatus(BeneficialOwnerListResponse.KycStatus.APPROVED)
                         .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerPersonalInfo.builder()
@@ -136,8 +135,8 @@ internal class BeneficialOwnerListPageResponseTest {
                                 .phoneNumber("+14155550192")
                                 .build()
                         )
-                        .addRole(BeneficialOwner.Role.UBO)
-                        .addRole(BeneficialOwner.Role.DIRECTOR)
+                        .addRole(BeneficialOwnerListResponse.Role.UBO)
+                        .addRole(BeneficialOwnerListResponse.Role.DIRECTOR)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
