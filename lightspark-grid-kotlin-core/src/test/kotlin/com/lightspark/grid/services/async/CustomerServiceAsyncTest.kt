@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
@@ -10,6 +11,8 @@ import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.InternalAccountExportRequest
+import com.lightspark.grid.models.customers.InternalAccountUpdateRequest
+import com.lightspark.grid.models.customers.KycLinkCreate
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -150,6 +153,32 @@ internal class CustomerServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
+    suspend fun createKycLink() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .build()
+        val customerServiceAsync = client.customers()
+
+        val kycLinkResponse =
+            customerServiceAsync.createKycLink(
+                CustomerCreateKycLinkParams.builder()
+                    .customerId("customerId")
+                    .idempotencyKey("<uuid>")
+                    .kycLinkCreateRequest(
+                        KycLinkCreate.builder()
+                            .redirectUri("https://app.example.com/onboarding/completed")
+                            .build()
+                    )
+                    .build()
+            )
+
+        kycLinkResponse.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
     suspend fun export() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
@@ -189,16 +218,20 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val response =
+        val kycLinkResponse =
             customerServiceAsync.generateKycLink(
                 CustomerGenerateKycLinkParams.builder()
                     .customerId("customerId")
                     .idempotencyKey("<uuid>")
-                    .redirectUri("https://app.example.com/onboarding/completed")
+                    .kycLinkCreate(
+                        KycLinkCreate.builder()
+                            .redirectUri("https://app.example.com/onboarding/completed")
+                            .build()
+                    )
                     .build()
             )
 
-        response.validate()
+        kycLinkResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -234,7 +267,9 @@ internal class CustomerServiceAsyncTest {
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                     )
                     .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
-                    .privateEnabled(true)
+                    .internalAccountUpdateRequest(
+                        InternalAccountUpdateRequest.builder().privateEnabled(true).build()
+                    )
                     .build()
             )
 

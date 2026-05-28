@@ -8,46 +8,44 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class CustomerGenerateKycLinkResponseTest {
+internal class KycLinkResponseTest {
 
     @Test
     fun create() {
-        val customerGenerateKycLinkResponse =
-            CustomerGenerateKycLinkResponse.builder()
+        val kycLinkResponse =
+            KycLinkResponse.builder()
                 .expiresAt(OffsetDateTime.parse("2027-01-15T14:32:00Z"))
                 .kycUrl("https://kyc.lightspark.com/onboard/abc123def456")
-                .provider(CustomerGenerateKycLinkResponse.Provider.SUMSUB)
+                .provider(KycProvider.SUMSUB)
                 .token("_act-sbx-jwt-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
                 .build()
 
-        assertThat(customerGenerateKycLinkResponse.expiresAt())
+        assertThat(kycLinkResponse.expiresAt())
             .isEqualTo(OffsetDateTime.parse("2027-01-15T14:32:00Z"))
-        assertThat(customerGenerateKycLinkResponse.kycUrl())
+        assertThat(kycLinkResponse.kycUrl())
             .isEqualTo("https://kyc.lightspark.com/onboard/abc123def456")
-        assertThat(customerGenerateKycLinkResponse.provider())
-            .isEqualTo(CustomerGenerateKycLinkResponse.Provider.SUMSUB)
-        assertThat(customerGenerateKycLinkResponse.token())
+        assertThat(kycLinkResponse.provider()).isEqualTo(KycProvider.SUMSUB)
+        assertThat(kycLinkResponse.token())
             .isEqualTo("_act-sbx-jwt-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val customerGenerateKycLinkResponse =
-            CustomerGenerateKycLinkResponse.builder()
+        val kycLinkResponse =
+            KycLinkResponse.builder()
                 .expiresAt(OffsetDateTime.parse("2027-01-15T14:32:00Z"))
                 .kycUrl("https://kyc.lightspark.com/onboard/abc123def456")
-                .provider(CustomerGenerateKycLinkResponse.Provider.SUMSUB)
+                .provider(KycProvider.SUMSUB)
                 .token("_act-sbx-jwt-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
                 .build()
 
-        val roundtrippedCustomerGenerateKycLinkResponse =
+        val roundtrippedKycLinkResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerGenerateKycLinkResponse),
-                jacksonTypeRef<CustomerGenerateKycLinkResponse>(),
+                jsonMapper.writeValueAsString(kycLinkResponse),
+                jacksonTypeRef<KycLinkResponse>(),
             )
 
-        assertThat(roundtrippedCustomerGenerateKycLinkResponse)
-            .isEqualTo(customerGenerateKycLinkResponse)
+        assertThat(roundtrippedKycLinkResponse).isEqualTo(kycLinkResponse)
     }
 }

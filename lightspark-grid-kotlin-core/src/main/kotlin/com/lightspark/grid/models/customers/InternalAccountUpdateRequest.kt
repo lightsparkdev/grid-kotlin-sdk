@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth.sessions
+package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -10,39 +10,46 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
-import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class SessionListResponse
+/**
+ * Partial request body for `PATCH /internal-accounts/{id}`. At least one update field must be
+ * provided. On step 1 of the signed-retry flow Grid binds the submitted update fields into
+ * `payloadToSign`; on step 2 the client echoes the same fields back and Grid applies the update to
+ * the internal account.
+ */
+class InternalAccountUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val data: JsonField<List<AuthSession>>,
+    private val privateEnabled: JsonField<Boolean>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("data") @ExcludeMissing data: JsonField<List<AuthSession>> = JsonMissing.of()
-    ) : this(data, mutableMapOf())
+        @JsonProperty("privateEnabled")
+        @ExcludeMissing
+        privateEnabled: JsonField<Boolean> = JsonMissing.of()
+    ) : this(privateEnabled, mutableMapOf())
 
     /**
-     * List of active authentication sessions for the internal account.
+     * Whether wallet privacy should be enabled for the Embedded Wallet.
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun data(): List<AuthSession> = data.getRequired("data")
+    fun privateEnabled(): Boolean? = privateEnabled.getNullable("privateEnabled")
 
     /**
-     * Returns the raw JSON value of [data].
+     * Returns the raw JSON value of [privateEnabled].
      *
-     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [privateEnabled], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<AuthSession>> = data
+    @JsonProperty("privateEnabled")
+    @ExcludeMissing
+    fun _privateEnabled(): JsonField<Boolean> = privateEnabled
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -59,51 +66,34 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SessionListResponse].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .data()
-         * ```
+         * Returns a mutable builder for constructing an instance of [InternalAccountUpdateRequest].
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionListResponse]. */
+    /** A builder for [InternalAccountUpdateRequest]. */
     class Builder internal constructor() {
 
-        private var data: JsonField<MutableList<AuthSession>>? = null
+        private var privateEnabled: JsonField<Boolean> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sessionListResponse: SessionListResponse) = apply {
-            data = sessionListResponse.data.map { it.toMutableList() }
-            additionalProperties = sessionListResponse.additionalProperties.toMutableMap()
+        internal fun from(internalAccountUpdateRequest: InternalAccountUpdateRequest) = apply {
+            privateEnabled = internalAccountUpdateRequest.privateEnabled
+            additionalProperties = internalAccountUpdateRequest.additionalProperties.toMutableMap()
         }
 
-        /** List of active authentication sessions for the internal account. */
-        fun data(data: List<AuthSession>) = data(JsonField.of(data))
+        /** Whether wallet privacy should be enabled for the Embedded Wallet. */
+        fun privateEnabled(privateEnabled: Boolean) = privateEnabled(JsonField.of(privateEnabled))
 
         /**
-         * Sets [Builder.data] to an arbitrary JSON value.
+         * Sets [Builder.privateEnabled] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed `List<AuthSession>` value
+         * You should usually call [Builder.privateEnabled] with a well-typed [Boolean] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun data(data: JsonField<List<AuthSession>>) = apply {
-            this.data = data.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [AuthSession] to [Builder.data].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addData(data: AuthSession) = apply {
-            this.data =
-                (this.data ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("data", it).add(data)
-                }
+        fun privateEnabled(privateEnabled: JsonField<Boolean>) = apply {
+            this.privateEnabled = privateEnabled
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -126,22 +116,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionListResponse].
+         * Returns an immutable instance of [InternalAccountUpdateRequest].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .data()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionListResponse =
-            SessionListResponse(
-                checkRequired("data", data).map { it.toImmutable() },
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): InternalAccountUpdateRequest =
+            InternalAccountUpdateRequest(privateEnabled, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -154,12 +134,12 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): SessionListResponse = apply {
+    fun validate(): InternalAccountUpdateRequest = apply {
         if (validated) {
             return@apply
         }
 
-        data().forEach { it.validate() }
+        privateEnabled()
         validated = true
     }
 
@@ -176,22 +156,22 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+    internal fun validity(): Int = (if (privateEnabled.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is SessionListResponse &&
-            data == other.data &&
+        return other is InternalAccountUpdateRequest &&
+            privateEnabled == other.privateEnabled &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(data, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(privateEnabled, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SessionListResponse{data=$data, additionalProperties=$additionalProperties}"
+        "InternalAccountUpdateRequest{privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
 }

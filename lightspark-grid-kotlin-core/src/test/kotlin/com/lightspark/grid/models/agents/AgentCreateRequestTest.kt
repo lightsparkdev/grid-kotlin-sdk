@@ -29,14 +29,12 @@ internal class AgentCreateRequestTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            AgentPolicy.AccountRestrictions.builder()
+                            AgentAccountRestrictions.builder()
                                 .addAccountRule(
-                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
+                                    AgentAccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            AgentPolicy.AccountRestrictions.AccountRule
-                                                .ExecutionMode
-                                                .AUTO
+                                            AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
                                         )
                                         .perTransactionLimit(10000L)
                                         .build()
@@ -45,7 +43,7 @@ internal class AgentCreateRequestTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            AgentPolicy.ApprovalThresholds.builder()
+                            AgentApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()
@@ -72,13 +70,12 @@ internal class AgentCreateRequestTest {
                             .build()
                     )
                     .accountRestrictions(
-                        AgentPolicy.AccountRestrictions.builder()
+                        AgentAccountRestrictions.builder()
                             .addAccountRule(
-                                AgentPolicy.AccountRestrictions.AccountRule.builder()
+                                AgentAccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode
-                                            .AUTO
+                                        AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
                                     )
                                     .perTransactionLimit(10000L)
                                     .build()
@@ -87,10 +84,7 @@ internal class AgentCreateRequestTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentPolicy.ApprovalThresholds.builder()
-                            .amount(100000L)
-                            .currency("USD")
-                            .build()
+                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                     )
                     .build()
             )
@@ -117,14 +111,12 @@ internal class AgentCreateRequestTest {
                                 .build()
                         )
                         .accountRestrictions(
-                            AgentPolicy.AccountRestrictions.builder()
+                            AgentAccountRestrictions.builder()
                                 .addAccountRule(
-                                    AgentPolicy.AccountRestrictions.AccountRule.builder()
+                                    AgentAccountRestrictions.AccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                         .executionMode(
-                                            AgentPolicy.AccountRestrictions.AccountRule
-                                                .ExecutionMode
-                                                .AUTO
+                                            AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
                                         )
                                         .perTransactionLimit(10000L)
                                         .build()
@@ -133,7 +125,7 @@ internal class AgentCreateRequestTest {
                                 .build()
                         )
                         .approvalThresholds(
-                            AgentPolicy.ApprovalThresholds.builder()
+                            AgentApprovalThresholds.builder()
                                 .amount(100000L)
                                 .currency("USD")
                                 .build()

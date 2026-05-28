@@ -1,9 +1,10 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth.credentials
+package com.lightspark.grid.models.auth.sessions
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.auth.credentials.AuthMethodType
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
