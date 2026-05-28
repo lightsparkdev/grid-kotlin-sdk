@@ -63,8 +63,6 @@ private constructor(
     fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
 
     /**
-     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -180,10 +178,6 @@ private constructor(
          */
         fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
 
-        /**
-         * Status-specific event type in OBJECT.EVENT dot-notation (e.g.,
-         * OUTGOING_PAYMENT.COMPLETED)
-         */
         fun type(type: Type) = type(JsonField.of(type))
 
         /**
@@ -858,9 +852,6 @@ private constructor(
             "Data{id=$id, createdAt=$createdAt, customerId=$customerId, errors=$errors, verificationStatus=$verificationStatus, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
-     */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
