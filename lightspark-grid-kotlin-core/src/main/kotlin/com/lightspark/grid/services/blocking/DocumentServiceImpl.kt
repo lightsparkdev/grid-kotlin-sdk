@@ -18,16 +18,14 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.multipartFormData
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.documents.Document
 import com.lightspark.grid.models.documents.DocumentDeleteParams
 import com.lightspark.grid.models.documents.DocumentListPage
-import com.lightspark.grid.models.documents.DocumentListPageResponse
 import com.lightspark.grid.models.documents.DocumentListParams
+import com.lightspark.grid.models.documents.DocumentListResponse
 import com.lightspark.grid.models.documents.DocumentReplaceParams
-import com.lightspark.grid.models.documents.DocumentReplaceResponse
 import com.lightspark.grid.models.documents.DocumentRetrieveParams
-import com.lightspark.grid.models.documents.DocumentRetrieveResponse
 import com.lightspark.grid.models.documents.DocumentUploadParams
-import com.lightspark.grid.models.documents.DocumentUploadResponse
 
 /**
  * Endpoints for uploading and managing verification documents for customers and beneficial owners.
@@ -48,7 +46,7 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
     override fun retrieve(
         params: DocumentRetrieveParams,
         requestOptions: RequestOptions,
-    ): DocumentRetrieveResponse =
+    ): Document =
         // get /documents/{documentId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -64,17 +62,11 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
         withRawResponse().delete(params, requestOptions)
     }
 
-    override fun replace(
-        params: DocumentReplaceParams,
-        requestOptions: RequestOptions,
-    ): DocumentReplaceResponse =
+    override fun replace(params: DocumentReplaceParams, requestOptions: RequestOptions): Document =
         // put /documents/{documentId}
         withRawResponse().replace(params, requestOptions).parse()
 
-    override fun upload(
-        params: DocumentUploadParams,
-        requestOptions: RequestOptions,
-    ): DocumentUploadResponse =
+    override fun upload(params: DocumentUploadParams, requestOptions: RequestOptions): Document =
         // post /documents
         withRawResponse().upload(params, requestOptions).parse()
 
@@ -91,13 +83,13 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<DocumentRetrieveResponse> =
-            jsonHandler<DocumentRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Document> =
+            jsonHandler<Document>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: DocumentRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DocumentRetrieveResponse> {
+        ): HttpResponseFor<Document> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("documentId", params.documentId())
@@ -121,8 +113,8 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val listHandler: Handler<DocumentListPageResponse> =
-            jsonHandler<DocumentListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<DocumentListResponse> =
+            jsonHandler<DocumentListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: DocumentListParams,
@@ -179,13 +171,13 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val replaceHandler: Handler<DocumentReplaceResponse> =
-            jsonHandler<DocumentReplaceResponse>(clientOptions.jsonMapper)
+        private val replaceHandler: Handler<Document> =
+            jsonHandler<Document>(clientOptions.jsonMapper)
 
         override fun replace(
             params: DocumentReplaceParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DocumentReplaceResponse> {
+        ): HttpResponseFor<Document> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("documentId", params.documentId())
@@ -210,13 +202,13 @@ class DocumentServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val uploadHandler: Handler<DocumentUploadResponse> =
-            jsonHandler<DocumentUploadResponse>(clientOptions.jsonMapper)
+        private val uploadHandler: Handler<Document> =
+            jsonHandler<Document>(clientOptions.jsonMapper)
 
         override fun upload(
             params: DocumentUploadParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<DocumentUploadResponse> {
+        ): HttpResponseFor<Document> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

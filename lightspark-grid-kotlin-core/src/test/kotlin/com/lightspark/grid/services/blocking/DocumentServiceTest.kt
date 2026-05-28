@@ -4,7 +4,9 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.documents.DocumentReplaceParams
-import com.lightspark.grid.models.documents.DocumentUploadParams
+import com.lightspark.grid.models.documents.IdentityDocumentReplaceRequest
+import com.lightspark.grid.models.documents.IdentityDocumentType
+import com.lightspark.grid.models.documents.IdentityDocumentUploadRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -63,30 +65,24 @@ internal class DocumentServiceTest {
                 .build()
         val documentService = client.documents()
 
-        val response =
+        val document =
             documentService.replace(
                 DocumentReplaceParams.builder()
                     .documentId("documentId")
-                    .body(
-                        DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+                    .documentReplaceRequest(
+                        IdentityDocumentReplaceRequest.builder()
                             .country("US")
                             .documentNumber("A12345678")
-                            .documentType(
-                                DocumentReplaceParams.Body.IdentityDocumentReplaceRequest
-                                    .DocumentType
-                                    .PASSPORT
-                            )
-                            .file("Example data".byteInputStream())
+                            .documentType(IdentityDocumentType.PASSPORT)
+                            .file("Example data")
                             .issuingAuthority("U.S. Department of State")
-                            .side(
-                                DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.Side.FRONT
-                            )
+                            .side(IdentityDocumentReplaceRequest.Side.FRONT)
                             .build()
                     )
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -99,22 +95,19 @@ internal class DocumentServiceTest {
                 .build()
         val documentService = client.documents()
 
-        val response =
+        val document =
             documentService.upload(
-                DocumentUploadParams.Body.IdentityDocumentUploadRequest.builder()
+                IdentityDocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                     .documentNumber("A12345678")
-                    .documentType(
-                        DocumentUploadParams.Body.IdentityDocumentUploadRequest.DocumentType
-                            .PASSPORT
-                    )
-                    .file("Example data".byteInputStream())
+                    .documentType(IdentityDocumentType.PASSPORT)
+                    .file("Example data")
                     .issuingAuthority("U.S. Department of State")
-                    .side(DocumentUploadParams.Body.IdentityDocumentUploadRequest.Side.FRONT)
+                    .side(IdentityDocumentUploadRequest.Side.FRONT)
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 }
