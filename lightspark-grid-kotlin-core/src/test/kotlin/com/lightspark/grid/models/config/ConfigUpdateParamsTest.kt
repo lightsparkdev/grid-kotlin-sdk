@@ -13,7 +13,7 @@ internal class ConfigUpdateParamsTest {
     fun create() {
         ConfigUpdateParams.builder()
             .embeddedWalletConfig(
-                ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                EmbeddedWalletConfig.builder()
                     .alphanumeric(false)
                     .appName("Acme Wallet")
                     .expirationSeconds(300L)
@@ -65,7 +65,7 @@ internal class ConfigUpdateParamsTest {
         val params =
             ConfigUpdateParams.builder()
                 .embeddedWalletConfig(
-                    ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                    EmbeddedWalletConfig.builder()
                         .alphanumeric(false)
                         .appName("Acme Wallet")
                         .expirationSeconds(300L)
@@ -117,7 +117,7 @@ internal class ConfigUpdateParamsTest {
 
         assertThat(body.embeddedWalletConfig())
             .isEqualTo(
-                ConfigUpdateParams.EmbeddedWalletConfig.builder()
+                EmbeddedWalletConfig.builder()
                     .alphanumeric(false)
                     .appName("Acme Wallet")
                     .expirationSeconds(300L)

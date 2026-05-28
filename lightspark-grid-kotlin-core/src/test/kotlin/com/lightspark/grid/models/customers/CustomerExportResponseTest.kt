@@ -7,21 +7,21 @@ import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class InternalAccountExportResponseTest {
+internal class CustomerExportResponseTest {
 
     @Test
     fun create() {
-        val internalAccountExportResponse =
-            InternalAccountExportResponse.builder()
+        val customerExportResponse =
+            CustomerExportResponse.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .encryptedWalletCredentials(
                     "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
                 )
                 .build()
 
-        assertThat(internalAccountExportResponse.id())
+        assertThat(customerExportResponse.id())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-        assertThat(internalAccountExportResponse.encryptedWalletCredentials())
+        assertThat(customerExportResponse.encryptedWalletCredentials())
             .isEqualTo(
                 "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
             )
@@ -30,21 +30,20 @@ internal class InternalAccountExportResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val internalAccountExportResponse =
-            InternalAccountExportResponse.builder()
+        val customerExportResponse =
+            CustomerExportResponse.builder()
                 .id("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .encryptedWalletCredentials(
                     "{\"version\":\"v1.0.0\",\"data\":\"7b22656e6361707065645075626c6963223a22303433...\",\"dataSignature\":\"3045022100c9...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
                 )
                 .build()
 
-        val roundtrippedInternalAccountExportResponse =
+        val roundtrippedCustomerExportResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(internalAccountExportResponse),
-                jacksonTypeRef<InternalAccountExportResponse>(),
+                jsonMapper.writeValueAsString(customerExportResponse),
+                jacksonTypeRef<CustomerExportResponse>(),
             )
 
-        assertThat(roundtrippedInternalAccountExportResponse)
-            .isEqualTo(internalAccountExportResponse)
+        assertThat(roundtrippedCustomerExportResponse).isEqualTo(customerExportResponse)
     }
 }

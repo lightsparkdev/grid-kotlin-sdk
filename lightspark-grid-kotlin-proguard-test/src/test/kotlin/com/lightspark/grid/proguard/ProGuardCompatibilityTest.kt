@@ -6,9 +6,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.CustomerOneOf
-import com.lightspark.grid.models.customers.CustomerType
-import com.lightspark.grid.models.customers.IndividualCustomerFields
+import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.CustomerCreateResponse
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
 import java.time.LocalDate
@@ -102,22 +102,15 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun customerOneOfRoundtrip() {
+    fun customerCreateResponseRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerOneOf =
-            CustomerOneOf.ofIndividualCustomer(
-                CustomerOneOf.IndividualCustomer.builder()
-                    .customerType(JsonValue.from("INDIVIDUAL"))
+        val customerCreateResponse =
+            CustomerCreateResponse.ofIndividual(
+                IndividualCustomer.builder()
+                    .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                    .addCurrency("USD")
-                    .addCurrency("USDC")
-                    .email("john.doe@example.com")
-                    .isDeleted(false)
-                    .region("US")
-                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .address(
                         Address.builder()
                             .country("US")
@@ -129,32 +122,39 @@ internal class ProGuardCompatibilityTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
                     .fullName("John Michael Doe")
-                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                    .isDeleted(false)
+                    .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                     .nationality("US")
+                    .region("US")
+                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .build()
             )
 
-        val roundtrippedCustomerOneOf =
+        val roundtrippedCustomerCreateResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerOneOf),
-                jacksonTypeRef<CustomerOneOf>(),
+                jsonMapper.writeValueAsString(customerCreateResponse),
+                jacksonTypeRef<CustomerCreateResponse>(),
             )
 
-        assertThat(roundtrippedCustomerOneOf).isEqualTo(customerOneOf)
+        assertThat(roundtrippedCustomerCreateResponse).isEqualTo(customerCreateResponse)
     }
 
     @Test
-    fun customerTypeRoundtrip() {
+    fun customerInfoFieldNameRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerType = CustomerType.INDIVIDUAL
+        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
 
-        val roundtrippedCustomerType =
+        val roundtrippedCustomerInfoFieldName =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerType),
-                jacksonTypeRef<CustomerType>(),
+                jsonMapper.writeValueAsString(customerInfoFieldName),
+                jacksonTypeRef<CustomerInfoFieldName>(),
             )
 
-        assertThat(roundtrippedCustomerType).isEqualTo(customerType)
+        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
     }
 }
