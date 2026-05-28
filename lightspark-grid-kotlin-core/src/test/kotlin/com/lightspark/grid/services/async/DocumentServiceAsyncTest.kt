@@ -4,9 +4,9 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.documents.DocumentReplaceParams
-import com.lightspark.grid.models.documents.IdentityDocumentReplaceRequest
-import com.lightspark.grid.models.documents.IdentityDocumentType
-import com.lightspark.grid.models.documents.IdentityDocumentUploadRequest
+import com.lightspark.grid.models.documents.DocumentReplaceRequest
+import com.lightspark.grid.models.documents.DocumentType
+import com.lightspark.grid.models.documents.DocumentUploadRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -70,13 +70,13 @@ internal class DocumentServiceAsyncTest {
                 DocumentReplaceParams.builder()
                     .documentId("documentId")
                     .documentReplaceRequest(
-                        IdentityDocumentReplaceRequest.builder()
+                        DocumentReplaceRequest.builder()
                             .country("US")
-                            .documentNumber("A12345678")
-                            .documentType(IdentityDocumentType.PASSPORT)
+                            .documentType(DocumentType.PASSPORT)
                             .file("Example data")
+                            .documentNumber("A12345678")
                             .issuingAuthority("U.S. Department of State")
-                            .side(IdentityDocumentReplaceRequest.Side.FRONT)
+                            .side(DocumentReplaceRequest.Side.FRONT)
                             .build()
                     )
                     .build()
@@ -97,14 +97,14 @@ internal class DocumentServiceAsyncTest {
 
         val document =
             documentServiceAsync.upload(
-                IdentityDocumentUploadRequest.builder()
+                DocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentNumber("A12345678")
-                    .documentType(IdentityDocumentType.PASSPORT)
+                    .documentType(DocumentType.PASSPORT)
                     .file("Example data")
+                    .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
-                    .side(IdentityDocumentUploadRequest.Side.FRONT)
+                    .side(DocumentUploadRequest.Side.FRONT)
                     .build()
             )
 

@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.documents
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.MultipartField
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
@@ -23,8 +24,10 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** Upload a verification document. */
     fun documentUploadRequest(): DocumentUploadRequest = documentUploadRequest
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        documentUploadRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -60,24 +63,9 @@ private constructor(
             additionalQueryParams = documentUploadParams.additionalQueryParams.toBuilder()
         }
 
-        /** Upload a verification document. */
         fun documentUploadRequest(documentUploadRequest: DocumentUploadRequest) = apply {
             this.documentUploadRequest = documentUploadRequest
         }
-
-        /**
-         * Alias for calling [documentUploadRequest] with
-         * `DocumentUploadRequest.ofIdentity(identity)`.
-         */
-        fun documentUploadRequest(identity: IdentityDocumentUploadRequest) =
-            documentUploadRequest(DocumentUploadRequest.ofIdentity(identity))
-
-        /**
-         * Alias for calling [documentUploadRequest] with
-         * `DocumentUploadRequest.ofNonIdentity(nonIdentity)`.
-         */
-        fun documentUploadRequest(nonIdentity: NonIdentityDocumentUploadRequest) =
-            documentUploadRequest(DocumentUploadRequest.ofNonIdentity(nonIdentity))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()

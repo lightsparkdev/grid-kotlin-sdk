@@ -15,8 +15,6 @@ import com.lightspark.grid.models.documents.DocumentReplaceParams
 import com.lightspark.grid.models.documents.DocumentRetrieveParams
 import com.lightspark.grid.models.documents.DocumentUploadParams
 import com.lightspark.grid.models.documents.DocumentUploadRequest
-import com.lightspark.grid.models.documents.IdentityDocumentUploadRequest
-import com.lightspark.grid.models.documents.NonIdentityDocumentUploadRequest
 
 /**
  * Endpoints for uploading and managing verification documents for customers and beneficial owners.
@@ -116,18 +114,6 @@ interface DocumentService {
             DocumentUploadParams.builder().documentUploadRequest(documentUploadRequest).build(),
             requestOptions,
         )
-
-    /** @see upload */
-    fun upload(
-        identity: IdentityDocumentUploadRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Document = upload(DocumentUploadRequest.ofIdentity(identity), requestOptions)
-
-    /** @see upload */
-    fun upload(
-        nonIdentity: NonIdentityDocumentUploadRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Document = upload(DocumentUploadRequest.ofNonIdentity(nonIdentity), requestOptions)
 
     /** A view of [DocumentService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -243,21 +229,5 @@ interface DocumentService {
                 DocumentUploadParams.builder().documentUploadRequest(documentUploadRequest).build(),
                 requestOptions,
             )
-
-        /** @see upload */
-        @MustBeClosed
-        fun upload(
-            identity: IdentityDocumentUploadRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Document> =
-            upload(DocumentUploadRequest.ofIdentity(identity), requestOptions)
-
-        /** @see upload */
-        @MustBeClosed
-        fun upload(
-            nonIdentity: NonIdentityDocumentUploadRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Document> =
-            upload(DocumentUploadRequest.ofNonIdentity(nonIdentity), requestOptions)
     }
 }

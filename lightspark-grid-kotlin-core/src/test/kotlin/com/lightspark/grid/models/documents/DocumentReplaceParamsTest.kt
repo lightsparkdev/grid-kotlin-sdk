@@ -14,13 +14,13 @@ internal class DocumentReplaceParamsTest {
         DocumentReplaceParams.builder()
             .documentId("documentId")
             .documentReplaceRequest(
-                IdentityDocumentReplaceRequest.builder()
+                DocumentReplaceRequest.builder()
                     .country("US")
-                    .documentNumber("A12345678")
-                    .documentType(IdentityDocumentType.PASSPORT)
+                    .documentType(DocumentType.PASSPORT)
                     .file("Example data")
+                    .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
-                    .side(IdentityDocumentReplaceRequest.Side.FRONT)
+                    .side(DocumentReplaceRequest.Side.FRONT)
                     .build()
             )
             .build()
@@ -32,12 +32,10 @@ internal class DocumentReplaceParamsTest {
             DocumentReplaceParams.builder()
                 .documentId("documentId")
                 .documentReplaceRequest(
-                    IdentityDocumentReplaceRequest.builder()
+                    DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentNumber("A12345678")
-                        .documentType(IdentityDocumentType.PASSPORT)
+                        .documentType(DocumentType.PASSPORT)
                         .file("Example data")
-                        .issuingAuthority("U.S. Department of State")
                         .build()
                 )
                 .build()
@@ -53,13 +51,13 @@ internal class DocumentReplaceParamsTest {
             DocumentReplaceParams.builder()
                 .documentId("documentId")
                 .documentReplaceRequest(
-                    IdentityDocumentReplaceRequest.builder()
+                    DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentNumber("A12345678")
-                        .documentType(IdentityDocumentType.PASSPORT)
+                        .documentType(DocumentType.PASSPORT)
                         .file("Example data")
+                        .documentNumber("A12345678")
                         .issuingAuthority("U.S. Department of State")
-                        .side(IdentityDocumentReplaceRequest.Side.FRONT)
+                        .side(DocumentReplaceRequest.Side.FRONT)
                         .build()
                 )
                 .build()
@@ -77,18 +75,19 @@ internal class DocumentReplaceParamsTest {
             .isEqualTo(
                 mapOf(
                         "DocumentReplaceRequest" to
-                            MultipartField.of(
-                                DocumentReplaceRequest.ofIdentity(
-                                    IdentityDocumentReplaceRequest.builder()
+                            MultipartField.builder<DocumentReplaceRequest>()
+                                .value(
+                                    DocumentReplaceRequest.builder()
                                         .country("US")
-                                        .documentNumber("A12345678")
-                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .documentType(DocumentType.PASSPORT)
                                         .file("Example data")
+                                        .documentNumber("A12345678")
                                         .issuingAuthority("U.S. Department of State")
-                                        .side(IdentityDocumentReplaceRequest.Side.FRONT)
+                                        .side(DocumentReplaceRequest.Side.FRONT)
                                         .build()
                                 )
-                            )
+                                .contentType("application/octet-stream")
+                                .build()
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }
@@ -102,12 +101,10 @@ internal class DocumentReplaceParamsTest {
             DocumentReplaceParams.builder()
                 .documentId("documentId")
                 .documentReplaceRequest(
-                    IdentityDocumentReplaceRequest.builder()
+                    DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentNumber("A12345678")
-                        .documentType(IdentityDocumentType.PASSPORT)
+                        .documentType(DocumentType.PASSPORT)
                         .file("Example data")
-                        .issuingAuthority("U.S. Department of State")
                         .build()
                 )
                 .build()
@@ -125,17 +122,16 @@ internal class DocumentReplaceParamsTest {
             .isEqualTo(
                 mapOf(
                         "DocumentReplaceRequest" to
-                            MultipartField.of(
-                                DocumentReplaceRequest.ofIdentity(
-                                    IdentityDocumentReplaceRequest.builder()
+                            MultipartField.builder<DocumentReplaceRequest>()
+                                .value(
+                                    DocumentReplaceRequest.builder()
                                         .country("US")
-                                        .documentNumber("A12345678")
-                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .documentType(DocumentType.PASSPORT)
                                         .file("Example data")
-                                        .issuingAuthority("U.S. Department of State")
                                         .build()
                                 )
-                            )
+                                .contentType("application/octet-stream")
+                                .build()
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }
