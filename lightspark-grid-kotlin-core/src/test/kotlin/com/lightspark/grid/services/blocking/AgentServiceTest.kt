@@ -3,8 +3,6 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.agents.AgentAccountRestrictions
-import com.lightspark.grid.models.agents.AgentApprovalThresholds
 import com.lightspark.grid.models.agents.AgentCreateRequest
 import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentUpdateParams
@@ -44,14 +42,15 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .accountRestrictions(
-                                AgentAccountRestrictions.builder()
+                                AgentPolicy.AccountRestrictions.builder()
                                     .addAccountRule(
-                                        AgentAccountRestrictions.AccountRule.builder()
+                                        AgentPolicy.AccountRestrictions.AccountRule.builder()
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
                                             .executionMode(
-                                                AgentAccountRestrictions.AccountRule.ExecutionMode
+                                                AgentPolicy.AccountRestrictions.AccountRule
+                                                    .ExecutionMode
                                                     .AUTO
                                             )
                                             .perTransactionLimit(10000L)
@@ -63,7 +62,7 @@ internal class AgentServiceTest {
                                     .build()
                             )
                             .approvalThresholds(
-                                AgentApprovalThresholds.builder()
+                                AgentPolicy.ApprovalThresholds.builder()
                                     .amount(100000L)
                                     .currency("USD")
                                     .build()
@@ -175,12 +174,14 @@ internal class AgentServiceTest {
                 AgentUpdatePolicyParams.builder()
                     .agentId("agentId")
                     .accountRestrictions(
-                        AgentAccountRestrictions.builder()
+                        AgentUpdatePolicyParams.AccountRestrictions.builder()
                             .addAccountRule(
-                                AgentAccountRestrictions.AccountRule.builder()
+                                AgentUpdatePolicyParams.AccountRestrictions.AccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                     .executionMode(
-                                        AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
+                                        AgentUpdatePolicyParams.AccountRestrictions.AccountRule
+                                            .ExecutionMode
+                                            .AUTO
                                     )
                                     .perTransactionLimit(10000L)
                                     .build()
@@ -189,7 +190,10 @@ internal class AgentServiceTest {
                             .build()
                     )
                     .approvalThresholds(
-                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
+                        AgentUpdatePolicyParams.ApprovalThresholds.builder()
+                            .amount(100000L)
+                            .currency("USD")
+                            .build()
                     )
                     .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
                     .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)

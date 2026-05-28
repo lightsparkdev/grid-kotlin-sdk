@@ -22,7 +22,7 @@ internal class SimulateAuthorizationParamsTest {
                     .build()
             )
             .merchant(
-                CardMerchant.builder()
+                SimulateAuthorizationParams.Merchant.builder()
                     .descriptor("BLUE BOTTLE COFFEE SF")
                     .country("US")
                     .mcc("5814")
@@ -38,7 +38,11 @@ internal class SimulateAuthorizationParamsTest {
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .amount(1250L)
                 .currency(Currency.builder().build())
-                .merchant(CardMerchant.builder().descriptor("BLUE BOTTLE COFFEE SF").build())
+                .merchant(
+                    SimulateAuthorizationParams.Merchant.builder()
+                        .descriptor("BLUE BOTTLE COFFEE SF")
+                        .build()
+                )
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -61,7 +65,7 @@ internal class SimulateAuthorizationParamsTest {
                         .build()
                 )
                 .merchant(
-                    CardMerchant.builder()
+                    SimulateAuthorizationParams.Merchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
                         .country("US")
                         .mcc("5814")
@@ -83,7 +87,7 @@ internal class SimulateAuthorizationParamsTest {
             )
         assertThat(body.merchant())
             .isEqualTo(
-                CardMerchant.builder()
+                SimulateAuthorizationParams.Merchant.builder()
                     .descriptor("BLUE BOTTLE COFFEE SF")
                     .country("US")
                     .mcc("5814")
@@ -98,7 +102,11 @@ internal class SimulateAuthorizationParamsTest {
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .amount(1250L)
                 .currency(Currency.builder().build())
-                .merchant(CardMerchant.builder().descriptor("BLUE BOTTLE COFFEE SF").build())
+                .merchant(
+                    SimulateAuthorizationParams.Merchant.builder()
+                        .descriptor("BLUE BOTTLE COFFEE SF")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
@@ -106,6 +114,10 @@ internal class SimulateAuthorizationParamsTest {
         assertThat(body.amount()).isEqualTo(1250L)
         assertThat(body.currency()).isEqualTo(Currency.builder().build())
         assertThat(body.merchant())
-            .isEqualTo(CardMerchant.builder().descriptor("BLUE BOTTLE COFFEE SF").build())
+            .isEqualTo(
+                SimulateAuthorizationParams.Merchant.builder()
+                    .descriptor("BLUE BOTTLE COFFEE SF")
+                    .build()
+            )
     }
 }

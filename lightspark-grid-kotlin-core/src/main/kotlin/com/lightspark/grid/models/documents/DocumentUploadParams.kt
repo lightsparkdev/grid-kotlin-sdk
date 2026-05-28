@@ -32,7 +32,7 @@ import kotlin.io.path.name
  */
 class DocumentUploadParams
 private constructor(
-    private val documentUploadRequest: DocumentUploadRequest,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -43,7 +43,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun country(): String = documentUploadRequest.country()
+    fun country(): String = body.country()
 
     /**
      * ID of the entity that owns this document. Can be a Customer ID or a BeneficialOwner ID.
@@ -51,7 +51,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun documentHolder(): String = documentUploadRequest.documentHolder()
+    fun documentHolder(): String = body.documentHolder()
 
     /**
      * Type of identity or business verification document. Document types are grouped by
@@ -66,7 +66,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun documentType(): DocumentType = documentUploadRequest.documentType()
+    fun documentType(): DocumentType = body.documentType()
 
     /**
      * The document file (PDF, JPEG, or PNG, max 10 MB)
@@ -74,7 +74,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun file(): InputStream = documentUploadRequest.file()
+    fun file(): InputStream = body.file()
 
     /**
      * Document identification number (e.g., passport number)
@@ -82,7 +82,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun documentNumber(): String? = documentUploadRequest.documentNumber()
+    fun documentNumber(): String? = body.documentNumber()
 
     /**
      * Name of the government agency or organization that issued the document
@@ -90,7 +90,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun issuingAuthority(): String? = documentUploadRequest.issuingAuthority()
+    fun issuingAuthority(): String? = body.issuingAuthority()
 
     /**
      * Which side of the document (for two-sided documents like driver's licenses)
@@ -98,14 +98,14 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun side(): Side? = documentUploadRequest.side()
+    fun side(): Side? = body.side()
 
     /**
      * Returns the raw multipart value of [country].
      *
      * Unlike [country], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _country(): MultipartField<String> = documentUploadRequest._country()
+    fun _country(): MultipartField<String> = body._country()
 
     /**
      * Returns the raw multipart value of [documentHolder].
@@ -113,7 +113,7 @@ private constructor(
      * Unlike [documentHolder], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _documentHolder(): MultipartField<String> = documentUploadRequest._documentHolder()
+    fun _documentHolder(): MultipartField<String> = body._documentHolder()
 
     /**
      * Returns the raw multipart value of [documentType].
@@ -121,14 +121,14 @@ private constructor(
      * Unlike [documentType], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _documentType(): MultipartField<DocumentType> = documentUploadRequest._documentType()
+    fun _documentType(): MultipartField<DocumentType> = body._documentType()
 
     /**
      * Returns the raw multipart value of [file].
      *
      * Unlike [file], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _file(): MultipartField<InputStream> = documentUploadRequest._file()
+    fun _file(): MultipartField<InputStream> = body._file()
 
     /**
      * Returns the raw multipart value of [documentNumber].
@@ -136,7 +136,7 @@ private constructor(
      * Unlike [documentNumber], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _documentNumber(): MultipartField<String> = documentUploadRequest._documentNumber()
+    fun _documentNumber(): MultipartField<String> = body._documentNumber()
 
     /**
      * Returns the raw multipart value of [issuingAuthority].
@@ -144,17 +144,16 @@ private constructor(
      * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _issuingAuthority(): MultipartField<String> = documentUploadRequest._issuingAuthority()
+    fun _issuingAuthority(): MultipartField<String> = body._issuingAuthority()
 
     /**
      * Returns the raw multipart value of [side].
      *
      * Unlike [side], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _side(): MultipartField<Side> = documentUploadRequest._side()
+    fun _side(): MultipartField<Side> = body._side()
 
-    fun _additionalBodyProperties(): Map<String, JsonValue> =
-        documentUploadRequest._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -183,13 +182,12 @@ private constructor(
     /** A builder for [DocumentUploadParams]. */
     class Builder internal constructor() {
 
-        private var documentUploadRequest: DocumentUploadRequest.Builder =
-            DocumentUploadRequest.builder()
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(documentUploadParams: DocumentUploadParams) = apply {
-            documentUploadRequest = documentUploadParams.documentUploadRequest.toBuilder()
+            body = documentUploadParams.body.toBuilder()
             additionalHeaders = documentUploadParams.additionalHeaders.toBuilder()
             additionalQueryParams = documentUploadParams.additionalQueryParams.toBuilder()
         }
@@ -206,12 +204,10 @@ private constructor(
          * - [documentNumber]
          * - etc.
          */
-        fun documentUploadRequest(documentUploadRequest: DocumentUploadRequest) = apply {
-            this.documentUploadRequest = documentUploadRequest.toBuilder()
-        }
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /** Country that issued the document (ISO 3166-1 alpha-2) */
-        fun country(country: String) = apply { documentUploadRequest.country(country) }
+        fun country(country: String) = apply { body.country(country) }
 
         /**
          * Sets [Builder.country] to an arbitrary multipart value.
@@ -219,16 +215,12 @@ private constructor(
          * You should usually call [Builder.country] with a well-typed [String] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun country(country: MultipartField<String>) = apply {
-            documentUploadRequest.country(country)
-        }
+        fun country(country: MultipartField<String>) = apply { body.country(country) }
 
         /**
          * ID of the entity that owns this document. Can be a Customer ID or a BeneficialOwner ID.
          */
-        fun documentHolder(documentHolder: String) = apply {
-            documentUploadRequest.documentHolder(documentHolder)
-        }
+        fun documentHolder(documentHolder: String) = apply { body.documentHolder(documentHolder) }
 
         /**
          * Sets [Builder.documentHolder] to an arbitrary multipart value.
@@ -238,7 +230,7 @@ private constructor(
          * supported value.
          */
         fun documentHolder(documentHolder: MultipartField<String>) = apply {
-            documentUploadRequest.documentHolder(documentHolder)
+            body.documentHolder(documentHolder)
         }
 
         /**
@@ -251,9 +243,7 @@ private constructor(
          * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
          * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          */
-        fun documentType(documentType: DocumentType) = apply {
-            documentUploadRequest.documentType(documentType)
-        }
+        fun documentType(documentType: DocumentType) = apply { body.documentType(documentType) }
 
         /**
          * Sets [Builder.documentType] to an arbitrary multipart value.
@@ -263,11 +253,11 @@ private constructor(
          * supported value.
          */
         fun documentType(documentType: MultipartField<DocumentType>) = apply {
-            documentUploadRequest.documentType(documentType)
+            body.documentType(documentType)
         }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(file: InputStream) = apply { documentUploadRequest.file(file) }
+        fun file(file: InputStream) = apply { body.file(file) }
 
         /**
          * Sets [Builder.file] to an arbitrary multipart value.
@@ -276,18 +266,16 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun file(file: MultipartField<InputStream>) = apply { documentUploadRequest.file(file) }
+        fun file(file: MultipartField<InputStream>) = apply { body.file(file) }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(file: ByteArray) = apply { documentUploadRequest.file(file) }
+        fun file(file: ByteArray) = apply { body.file(file) }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(path: Path) = apply { documentUploadRequest.file(path) }
+        fun file(path: Path) = apply { body.file(path) }
 
         /** Document identification number (e.g., passport number) */
-        fun documentNumber(documentNumber: String) = apply {
-            documentUploadRequest.documentNumber(documentNumber)
-        }
+        fun documentNumber(documentNumber: String) = apply { body.documentNumber(documentNumber) }
 
         /**
          * Sets [Builder.documentNumber] to an arbitrary multipart value.
@@ -297,12 +285,12 @@ private constructor(
          * supported value.
          */
         fun documentNumber(documentNumber: MultipartField<String>) = apply {
-            documentUploadRequest.documentNumber(documentNumber)
+            body.documentNumber(documentNumber)
         }
 
         /** Name of the government agency or organization that issued the document */
         fun issuingAuthority(issuingAuthority: String) = apply {
-            documentUploadRequest.issuingAuthority(issuingAuthority)
+            body.issuingAuthority(issuingAuthority)
         }
 
         /**
@@ -313,11 +301,11 @@ private constructor(
          * supported value.
          */
         fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
-            documentUploadRequest.issuingAuthority(issuingAuthority)
+            body.issuingAuthority(issuingAuthority)
         }
 
         /** Which side of the document (for two-sided documents like driver's licenses) */
-        fun side(side: Side) = apply { documentUploadRequest.side(side) }
+        fun side(side: Side) = apply { body.side(side) }
 
         /**
          * Sets [Builder.side] to an arbitrary multipart value.
@@ -325,27 +313,25 @@ private constructor(
          * You should usually call [Builder.side] with a well-typed [Side] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun side(side: MultipartField<Side>) = apply { documentUploadRequest.side(side) }
+        fun side(side: MultipartField<Side>) = apply { body.side(side) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            documentUploadRequest.additionalProperties(additionalBodyProperties)
+            body.additionalProperties(additionalBodyProperties)
         }
 
         fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            documentUploadRequest.putAdditionalProperty(key, value)
+            body.putAdditionalProperty(key, value)
         }
 
         fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
             apply {
-                documentUploadRequest.putAllAdditionalProperties(additionalBodyProperties)
+                body.putAllAdditionalProperties(additionalBodyProperties)
             }
 
-        fun removeAdditionalBodyProperty(key: String) = apply {
-            documentUploadRequest.removeAdditionalProperty(key)
-        }
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
 
         fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            documentUploadRequest.removeAllAdditionalProperties(keys)
+            body.removeAllAdditionalProperties(keys)
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -463,7 +449,7 @@ private constructor(
          */
         fun build(): DocumentUploadParams =
             DocumentUploadParams(
-                documentUploadRequest.build(),
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -485,7 +471,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    class DocumentUploadRequest
+    class Body
     private constructor(
         private val country: MultipartField<String>,
         private val documentHolder: MultipartField<String>,
@@ -637,7 +623,7 @@ private constructor(
         companion object {
 
             /**
-             * Returns a mutable builder for constructing an instance of [DocumentUploadRequest].
+             * Returns a mutable builder for constructing an instance of [Body].
              *
              * The following fields are required:
              * ```kotlin
@@ -650,7 +636,7 @@ private constructor(
             fun builder() = Builder()
         }
 
-        /** A builder for [DocumentUploadRequest]. */
+        /** A builder for [Body]. */
         class Builder internal constructor() {
 
             private var country: MultipartField<String>? = null
@@ -662,15 +648,15 @@ private constructor(
             private var side: MultipartField<Side> = MultipartField.of(null)
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(documentUploadRequest: DocumentUploadRequest) = apply {
-                country = documentUploadRequest.country
-                documentHolder = documentUploadRequest.documentHolder
-                documentType = documentUploadRequest.documentType
-                file = documentUploadRequest.file
-                documentNumber = documentUploadRequest.documentNumber
-                issuingAuthority = documentUploadRequest.issuingAuthority
-                side = documentUploadRequest.side
-                additionalProperties = documentUploadRequest.additionalProperties.toMutableMap()
+            internal fun from(body: Body) = apply {
+                country = body.country
+                documentHolder = body.documentHolder
+                documentType = body.documentType
+                file = body.file
+                documentNumber = body.documentNumber
+                issuingAuthority = body.issuingAuthority
+                side = body.side
+                additionalProperties = body.additionalProperties.toMutableMap()
             }
 
             /** Country that issued the document (ISO 3166-1 alpha-2) */
@@ -813,7 +799,7 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [DocumentUploadRequest].
+             * Returns an immutable instance of [Body].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              *
@@ -827,8 +813,8 @@ private constructor(
              *
              * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): DocumentUploadRequest =
-                DocumentUploadRequest(
+            fun build(): Body =
+                Body(
                     checkRequired("country", country),
                     checkRequired("documentHolder", documentHolder),
                     checkRequired("documentType", documentType),
@@ -851,7 +837,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): DocumentUploadRequest = apply {
+        fun validate(): Body = apply {
             if (validated) {
                 return@apply
             }
@@ -879,7 +865,7 @@ private constructor(
                 return true
             }
 
-            return other is DocumentUploadRequest &&
+            return other is Body &&
                 country == other.country &&
                 documentHolder == other.documentHolder &&
                 documentType == other.documentType &&
@@ -906,7 +892,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "DocumentUploadRequest{country=$country, documentHolder=$documentHolder, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
+            "Body{country=$country, documentHolder=$documentHolder, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
     }
 
     /**
@@ -1341,14 +1327,13 @@ private constructor(
         }
 
         return other is DocumentUploadParams &&
-            documentUploadRequest == other.documentUploadRequest &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(documentUploadRequest, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "DocumentUploadParams{documentUploadRequest=$documentUploadRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "DocumentUploadParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

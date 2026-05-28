@@ -37,14 +37,14 @@ internal class AgentListResponseTest {
                                         .build()
                                 )
                                 .accountRestrictions(
-                                    AgentAccountRestrictions.builder()
+                                    AgentPolicy.AccountRestrictions.builder()
                                         .addAccountRule(
-                                            AgentAccountRestrictions.AccountRule.builder()
+                                            AgentPolicy.AccountRestrictions.AccountRule.builder()
                                                 .accountId(
                                                     "Account:019542f5-b3e7-1d02-0000-000000000001"
                                                 )
                                                 .executionMode(
-                                                    AgentAccountRestrictions.AccountRule
+                                                    AgentPolicy.AccountRestrictions.AccountRule
                                                         .ExecutionMode
                                                         .AUTO
                                                 )
@@ -57,7 +57,7 @@ internal class AgentListResponseTest {
                                         .build()
                                 )
                                 .approvalThresholds(
-                                    AgentApprovalThresholds.builder()
+                                    AgentPolicy.ApprovalThresholds.builder()
                                         .amount(100000L)
                                         .currency("USD")
                                         .build()
@@ -104,14 +104,15 @@ internal class AgentListResponseTest {
                                     .build()
                             )
                             .accountRestrictions(
-                                AgentAccountRestrictions.builder()
+                                AgentPolicy.AccountRestrictions.builder()
                                     .addAccountRule(
-                                        AgentAccountRestrictions.AccountRule.builder()
+                                        AgentPolicy.AccountRestrictions.AccountRule.builder()
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
                                             .executionMode(
-                                                AgentAccountRestrictions.AccountRule.ExecutionMode
+                                                AgentPolicy.AccountRestrictions.AccountRule
+                                                    .ExecutionMode
                                                     .AUTO
                                             )
                                             .perTransactionLimit(10000L)
@@ -123,7 +124,7 @@ internal class AgentListResponseTest {
                                     .build()
                             )
                             .approvalThresholds(
-                                AgentApprovalThresholds.builder()
+                                AgentPolicy.ApprovalThresholds.builder()
                                     .amount(100000L)
                                     .currency("USD")
                                     .build()
@@ -174,14 +175,14 @@ internal class AgentListResponseTest {
                                         .build()
                                 )
                                 .accountRestrictions(
-                                    AgentAccountRestrictions.builder()
+                                    AgentPolicy.AccountRestrictions.builder()
                                         .addAccountRule(
-                                            AgentAccountRestrictions.AccountRule.builder()
+                                            AgentPolicy.AccountRestrictions.AccountRule.builder()
                                                 .accountId(
                                                     "Account:019542f5-b3e7-1d02-0000-000000000001"
                                                 )
                                                 .executionMode(
-                                                    AgentAccountRestrictions.AccountRule
+                                                    AgentPolicy.AccountRestrictions.AccountRule
                                                         .ExecutionMode
                                                         .AUTO
                                                 )
@@ -194,7 +195,7 @@ internal class AgentListResponseTest {
                                         .build()
                                 )
                                 .approvalThresholds(
-                                    AgentApprovalThresholds.builder()
+                                    AgentPolicy.ApprovalThresholds.builder()
                                         .amount(100000L)
                                         .currency("USD")
                                         .build()

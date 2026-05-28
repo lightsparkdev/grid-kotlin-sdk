@@ -5,6 +5,7 @@ package com.lightspark.grid.models.auth.sessions
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.auth.credentials.AuthMethodType
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

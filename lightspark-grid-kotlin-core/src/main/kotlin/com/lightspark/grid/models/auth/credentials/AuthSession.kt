@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth.sessions
+package com.lightspark.grid.models.auth.credentials
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -12,8 +12,6 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.auth.credentials.AuthMethod
-import com.lightspark.grid.models.auth.credentials.AuthMethodType
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects

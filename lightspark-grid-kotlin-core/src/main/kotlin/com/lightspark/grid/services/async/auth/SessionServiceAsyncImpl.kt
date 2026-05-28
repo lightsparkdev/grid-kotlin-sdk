@@ -16,8 +16,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
-import com.lightspark.grid.models.auth.sessions.AuthSession
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse

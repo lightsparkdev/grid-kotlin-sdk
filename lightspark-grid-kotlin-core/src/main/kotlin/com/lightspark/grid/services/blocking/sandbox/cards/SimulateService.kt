@@ -10,8 +10,8 @@ import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationPa
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundResponse
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
 
 /** Endpoints to trigger test cases in sandbox */
 interface SimulateService {
@@ -90,17 +90,17 @@ interface SimulateService {
      *
      * Production returns `404` on this path.
      */
-    fun refund(
+    fun return_(
         id: String,
-        params: SimulateRefundParams,
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateRefundResponse = refund(params.toBuilder().id(id).build(), requestOptions)
+    ): SimulateReturnResponse = return_(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see refund */
-    fun refund(
-        params: SimulateRefundParams,
+    /** @see return_ */
+    fun return_(
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateRefundResponse
+    ): SimulateReturnResponse
 
     /** A view of [SimulateService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -152,21 +152,21 @@ interface SimulateService {
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/return`, but is
-         * otherwise the same as [SimulateService.refund].
+         * otherwise the same as [SimulateService.return_].
          */
         @MustBeClosed
-        fun refund(
+        fun return_(
             id: String,
-            params: SimulateRefundParams,
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateRefundResponse> =
-            refund(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SimulateReturnResponse> =
+            return_(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see refund */
+        /** @see return_ */
         @MustBeClosed
-        fun refund(
-            params: SimulateRefundParams,
+        fun return_(
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateRefundResponse>
+        ): HttpResponseFor<SimulateReturnResponse>
     }
 }

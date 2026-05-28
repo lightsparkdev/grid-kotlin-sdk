@@ -4,10 +4,9 @@ package com.lightspark.grid.services.async.sandbox.cards
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.quotes.Currency
-import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -37,7 +36,7 @@ internal class SimulateServiceAsyncTest {
                             .build()
                     )
                     .merchant(
-                        CardMerchant.builder()
+                        SimulateAuthorizationParams.Merchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
                             .country("US")
                             .mcc("5814")
@@ -73,7 +72,7 @@ internal class SimulateServiceAsyncTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    suspend fun refund() {
+    suspend fun return_() {
         val client =
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
@@ -82,8 +81,8 @@ internal class SimulateServiceAsyncTest {
         val simulateServiceAsync = client.sandbox().cards().simulate()
 
         val response =
-            simulateServiceAsync.refund(
-                SimulateRefundParams.builder()
+            simulateServiceAsync.return_(
+                SimulateReturnParams.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                     .amount(1500L)
                     .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")

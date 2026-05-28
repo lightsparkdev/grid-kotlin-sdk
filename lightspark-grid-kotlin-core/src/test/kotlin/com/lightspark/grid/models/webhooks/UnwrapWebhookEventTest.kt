@@ -43,8 +43,8 @@ import org.junit.jupiter.params.provider.EnumSource
 internal class UnwrapWebhookEventTest {
 
     @Test
-    fun ofAgentActionPendingApproval() {
-        val agentActionPendingApproval =
+    fun ofAgentAction() {
+        val agentAction =
             AgentActionWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
@@ -254,14 +254,12 @@ internal class UnwrapWebhookEventTest {
                 .type(AgentActionWebhookEvent.Type.AGENT_ACTION_PENDING_APPROVAL)
                 .build()
 
-        val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofAgentActionPendingApproval(agentActionPendingApproval)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofAgentAction(agentAction)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval())
-            .isEqualTo(agentActionPendingApproval)
+        assertThat(unwrapWebhookEvent.agentAction()).isEqualTo(agentAction)
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -272,10 +270,10 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofAgentActionPendingApprovalRoundtrip() {
+    fun ofAgentActionRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofAgentActionPendingApproval(
+            UnwrapWebhookEvent.ofAgentAction(
                 AgentActionWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
@@ -600,10 +598,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofIncomingPayment(incomingPayment)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isEqualTo(incomingPayment)
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -847,10 +845,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofOutgoingPayment(outgoingPayment)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isEqualTo(outgoingPayment)
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1017,20 +1015,20 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofTest() {
-        val test =
+    fun ofTestWebhook() {
+        val testWebhook =
             TestWebhookWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                 .type(TestWebhookWebhookEvent.Type.TEST)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofTest(test)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofTestWebhook(testWebhook)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isEqualTo(test)
+        assertThat(unwrapWebhookEvent.testWebhook()).isEqualTo(testWebhook)
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1041,10 +1039,10 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofTestRoundtrip() {
+    fun ofTestWebhookRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofTest(
+            UnwrapWebhookEvent.ofTestWebhook(
                 TestWebhookWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -1099,10 +1097,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofBulkUpload(bulkUpload)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isEqualTo(bulkUpload)
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1197,10 +1195,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofInvitationClaimed(invitationClaimed)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1297,10 +1295,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofCustomerUpdate(customerUpdate)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
@@ -1412,10 +1410,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofInternalAccountStatus(internalAccountStatus)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1520,10 +1518,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofVerificationUpdate(verificationUpdate)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1609,10 +1607,10 @@ internal class UnwrapWebhookEventTest {
 
         val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChange(cardStateChange)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
@@ -1705,10 +1703,10 @@ internal class UnwrapWebhookEventTest {
         val unwrapWebhookEvent =
             UnwrapWebhookEvent.ofCardFundingSourceChange(cardFundingSourceChange)
 
-        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.agentAction()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
         assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
-        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.testWebhook()).isNull()
         assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()

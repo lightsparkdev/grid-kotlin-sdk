@@ -25,7 +25,7 @@ import java.util.Objects
  *
  * Production returns `404` on this path.
  */
-class SimulateRefundParams
+class SimulateReturnParams
 private constructor(
     private val id: String?,
     private val body: Body,
@@ -80,7 +80,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SimulateRefundParams].
+         * Returns a mutable builder for constructing an instance of [SimulateReturnParams].
          *
          * The following fields are required:
          * ```kotlin
@@ -91,7 +91,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [SimulateRefundParams]. */
+    /** A builder for [SimulateReturnParams]. */
     class Builder internal constructor() {
 
         private var id: String? = null
@@ -99,11 +99,11 @@ private constructor(
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(simulateRefundParams: SimulateRefundParams) = apply {
-            id = simulateRefundParams.id
-            body = simulateRefundParams.body.toBuilder()
-            additionalHeaders = simulateRefundParams.additionalHeaders.toBuilder()
-            additionalQueryParams = simulateRefundParams.additionalQueryParams.toBuilder()
+        internal fun from(simulateReturnParams: SimulateReturnParams) = apply {
+            id = simulateReturnParams.id
+            body = simulateReturnParams.body.toBuilder()
+            additionalHeaders = simulateReturnParams.additionalHeaders.toBuilder()
+            additionalQueryParams = simulateReturnParams.additionalQueryParams.toBuilder()
         }
 
         fun id(id: String?) = apply { this.id = id }
@@ -269,7 +269,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SimulateRefundParams].
+         * Returns an immutable instance of [SimulateReturnParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -281,8 +281,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SimulateRefundParams =
-            SimulateRefundParams(
+        fun build(): SimulateReturnParams =
+            SimulateReturnParams(
                 id,
                 body.build(),
                 additionalHeaders.build(),
@@ -535,7 +535,7 @@ private constructor(
             return true
         }
 
-        return other is SimulateRefundParams &&
+        return other is SimulateReturnParams &&
             id == other.id &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -545,5 +545,5 @@ private constructor(
     override fun hashCode(): Int = Objects.hash(id, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SimulateRefundParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SimulateReturnParams{id=$id, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
