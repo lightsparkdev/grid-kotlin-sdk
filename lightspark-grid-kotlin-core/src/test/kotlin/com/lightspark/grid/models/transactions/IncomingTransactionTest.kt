@@ -19,11 +19,7 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(
-                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -40,6 +36,7 @@ internal class IncomingTransactionTest {
                 )
                 .status(TransactionStatus.CREATED)
                 .type(IncomingTransaction.Type.INCOMING)
+                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
                     IncomingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -50,23 +47,25 @@ internal class IncomingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30.0)
+                        .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
                 .reconciliationInstructions(
-                    ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
-                )
-                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
                         .build()
                 )
+                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                .source(TransactionSourceOneOf.builder().build())
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
@@ -74,14 +73,8 @@ internal class IncomingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(incomingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(incomingTransaction.destination())
-            .isEqualTo(
-                IncomingTransaction.Destination.ofAccountTransaction(
-                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
-            )
+        assertThat(incomingTransaction._destination())
+            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(incomingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(incomingTransaction.receivedAmount())
             .isEqualTo(
@@ -99,6 +92,8 @@ internal class IncomingTransactionTest {
             )
         assertThat(incomingTransaction.status()).isEqualTo(TransactionStatus.CREATED)
         assertThat(incomingTransaction.type()).isEqualTo(IncomingTransaction.Type.INCOMING)
+        assertThat(incomingTransaction.agentId())
+            .isEqualTo("Agent:019542f5-b3e7-1d02-0000-000000000042")
         assertThat(incomingTransaction.counterpartyInformation())
             .isEqualTo(
                 IncomingTransaction.CounterpartyInformation.builder()
@@ -112,27 +107,28 @@ internal class IncomingTransactionTest {
         assertThat(incomingTransaction.description()).isEqualTo("Payment for invoice #1234")
         assertThat(incomingTransaction.failureReason())
             .isEqualTo(IncomingTransaction.FailureReason.LNURLP_FAILED)
+        assertThat(incomingTransaction.fees()).isEqualTo(10L)
         assertThat(incomingTransaction.rateDetails())
             .isEqualTo(
                 IncomingRateDetails.builder()
                     .gridApiFixedFee(10L)
                     .gridApiMultiplier(0.925)
-                    .gridApiVariableFeeAmount(30.0)
+                    .gridApiVariableFeeAmount(30L)
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
         assertThat(incomingTransaction.reconciliationInstructions())
-            .isEqualTo(ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build())
+            .isEqualTo(
+                ReconciliationInstructions.builder()
+                    .reference("UMA-Q12345-REF")
+                    .transactionHash(
+                        "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                    )
+                    .build()
+            )
         assertThat(incomingTransaction.settledAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-        assertThat(incomingTransaction.source())
-            .isEqualTo(
-                TransactionSourceOneOf.ofAccountTransactionSource(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-            )
+        assertThat(incomingTransaction.source()).isEqualTo(TransactionSourceOneOf.builder().build())
         assertThat(incomingTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
     }
@@ -144,11 +140,7 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(
-                    IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -165,6 +157,7 @@ internal class IncomingTransactionTest {
                 )
                 .status(TransactionStatus.CREATED)
                 .type(IncomingTransaction.Type.INCOMING)
+                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
                     IncomingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -175,23 +168,25 @@ internal class IncomingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
                         .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30.0)
+                        .gridApiVariableFeeAmount(30L)
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
                 .reconciliationInstructions(
-                    ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
-                )
-                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                .source(
-                    TransactionSourceOneOf.AccountTransactionSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
                         .build()
                 )
+                .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                .source(TransactionSourceOneOf.builder().build())
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 

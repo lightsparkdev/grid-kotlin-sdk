@@ -16,6 +16,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/** Error information for a failed bulk import entry */
 class BulkCustomerImportErrorEntry
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -230,6 +231,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): BulkCustomerImportErrorEntry = apply {
         if (validated) {
             return@apply
@@ -319,6 +328,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Details = apply {
             if (validated) {
                 return@apply

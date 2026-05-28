@@ -20,6 +20,8 @@ internal class QuoteServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val quoteService = client.quotes()
 
@@ -28,17 +30,27 @@ internal class QuoteServiceTest {
                 QuoteCreateParams.builder()
                     .idempotencyKey("<uuid>")
                     .destination(
-                        QuoteDestinationOneOf.AccountDestination.builder()
-                            .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                            .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                        QuoteDestinationOneOf.builder()
+                            .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                            .putAdditionalProperty(
+                                "accountId",
+                                JsonValue.from(
+                                    "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                ),
+                            )
                             .build()
                     )
                     .lockedCurrencyAmount(10000L)
                     .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                     .source(
-                        QuoteSourceOneOf.AccountQuoteSource.builder()
-                            .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        QuoteSourceOneOf.builder()
+                            .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                            .putAdditionalProperty(
+                                "accountId",
+                                JsonValue.from(
+                                    "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                ),
+                            )
                             .build()
                     )
                     .description("Transfer between accounts, either internal or external.")
@@ -64,6 +76,8 @@ internal class QuoteServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val quoteService = client.quotes()
 
@@ -79,6 +93,8 @@ internal class QuoteServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val quoteService = client.quotes()
 
@@ -87,7 +103,7 @@ internal class QuoteServiceTest {
                 QuoteExecuteParams.builder()
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000001")
                     .gridWalletSignature(
-                        "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                     )
                     .idempotencyKey("<uuid>")
                     .build()

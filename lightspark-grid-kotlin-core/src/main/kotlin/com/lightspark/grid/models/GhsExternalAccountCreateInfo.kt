@@ -27,41 +27,36 @@ import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Required fields depend on the selected paymentRails:
+ * - BANK_TRANSFER: accountNumber
+ * - MOBILE_MONEY: phoneNumber
+ */
 class GhsExternalAccountCreateInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
-    private val bankName: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
+    private val accountNumber: JsonField<String>,
     private val phoneNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("accountNumber")
-        @ExcludeMissing
-        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<AccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
+        @JsonProperty("accountNumber")
+        @ExcludeMissing
+        accountNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, bankName, beneficiary, phoneNumber, mutableMapOf())
-
-    /**
-     * The account number of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountNumber(): String = accountNumber.getRequired("accountNumber")
+    ) : this(accountType, beneficiary, accountNumber, phoneNumber, mutableMapOf())
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -70,35 +65,26 @@ private constructor(
     fun accountType(): AccountType = accountType.getRequired("accountType")
 
     /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
-
-    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
     /**
-     * The phone number in international format
+     * The account number of the bank
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
+    fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
 
     /**
-     * Returns the raw JSON value of [accountNumber].
+     * The phone number in international format
      *
-     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    @JsonProperty("accountNumber")
-    @ExcludeMissing
-    fun _accountNumber(): JsonField<String> = accountNumber
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * Returns the raw JSON value of [accountType].
@@ -110,13 +96,6 @@ private constructor(
     fun _accountType(): JsonField<AccountType> = accountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [beneficiary].
      *
      * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
@@ -124,6 +103,15 @@ private constructor(
     @JsonProperty("beneficiary")
     @ExcludeMissing
     fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+
+    /**
+     * Returns the raw JSON value of [accountNumber].
+     *
+     * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("accountNumber")
+    @ExcludeMissing
+    fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
      * Returns the raw JSON value of [phoneNumber].
@@ -151,11 +139,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
-         * .phoneNumber()
          * ```
          */
         fun builder() = Builder()
@@ -164,34 +149,18 @@ private constructor(
     /** A builder for [GhsExternalAccountCreateInfo]. */
     class Builder internal constructor() {
 
-        private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
-        private var phoneNumber: JsonField<String>? = null
+        private var accountNumber: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(ghsExternalAccountCreateInfo: GhsExternalAccountCreateInfo) = apply {
-            accountNumber = ghsExternalAccountCreateInfo.accountNumber
             accountType = ghsExternalAccountCreateInfo.accountType
-            bankName = ghsExternalAccountCreateInfo.bankName
             beneficiary = ghsExternalAccountCreateInfo.beneficiary
+            accountNumber = ghsExternalAccountCreateInfo.accountNumber
             phoneNumber = ghsExternalAccountCreateInfo.phoneNumber
             additionalProperties = ghsExternalAccountCreateInfo.additionalProperties.toMutableMap()
-        }
-
-        /** The account number of the bank */
-        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
-
-        /**
-         * Sets [Builder.accountNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun accountNumber(accountNumber: JsonField<String>) = apply {
-            this.accountNumber = accountNumber
         }
 
         fun accountType(accountType: AccountType) = accountType(JsonField.of(accountType))
@@ -206,17 +175,6 @@ private constructor(
         fun accountType(accountType: JsonField<AccountType>) = apply {
             this.accountType = accountType
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -273,6 +231,20 @@ private constructor(
                     .build()
             )
 
+        /** The account number of the bank */
+        fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
+
+        /**
+         * Sets [Builder.accountNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.accountNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun accountNumber(accountNumber: JsonField<String>) = apply {
+            this.accountNumber = accountNumber
+        }
+
         /** The phone number in international format */
         fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
 
@@ -311,37 +283,40 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .accountNumber()
          * .accountType()
-         * .bankName()
          * .beneficiary()
-         * .phoneNumber()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): GhsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo(
-                checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
-                checkRequired("bankName", bankName),
                 checkRequired("beneficiary", beneficiary),
-                checkRequired("phoneNumber", phoneNumber),
+                accountNumber,
+                phoneNumber,
                 additionalProperties.toMutableMap(),
             )
     }
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): GhsExternalAccountCreateInfo = apply {
         if (validated) {
             return@apply
         }
 
-        accountNumber()
         accountType().validate()
-        bankName()
         beneficiary().validate()
+        accountNumber()
         phoneNumber()
         validated = true
     }
@@ -360,10 +335,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (accountNumber.asKnown() == null) 0 else 1) +
-            (accountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
+        (accountType.asKnown()?.validity() ?: 0) +
             (beneficiary.asKnown()?.validity() ?: 0) +
+            (if (accountNumber.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
 
     class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -450,6 +424,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): AccountType = apply {
             if (validated) {
                 return@apply
@@ -511,6 +494,30 @@ private constructor(
 
         fun _json(): JsonValue? = _json
 
+        /**
+         * Maps this instance's current variant to a value of type [T] using the given [visitor].
+         *
+         * Note that this method is _not_ forwards compatible with new variants from the API, unless
+         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
+         * the SDK gracefully, consider overriding [Visitor.unknown]:
+         * ```kotlin
+         * import com.lightspark.grid.core.JsonValue
+         *
+         * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
+         *     override fun visitIndividual(individual: GhsBeneficiary): String? = individual.toString()
+         *
+         *     // ...
+         *
+         *     override fun unknown(json: JsonValue?): String? {
+         *         // Or inspect the `json`.
+         *         return null
+         *     }
+         * })
+         * ```
+         *
+         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+         *   [visitor] and the current variant is unknown.
+         */
         fun <T> accept(visitor: Visitor<T>): T =
             when {
                 individual != null -> visitor.visitIndividual(individual)
@@ -520,6 +527,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Beneficiary = apply {
             if (validated) {
                 return@apply
@@ -662,27 +678,19 @@ private constructor(
         }
 
         return other is GhsExternalAccountCreateInfo &&
-            accountNumber == other.accountNumber &&
             accountType == other.accountType &&
-            bankName == other.bankName &&
             beneficiary == other.beneficiary &&
+            accountNumber == other.accountNumber &&
             phoneNumber == other.phoneNumber &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            accountNumber,
-            accountType,
-            bankName,
-            beneficiary,
-            phoneNumber,
-            additionalProperties,
-        )
+        Objects.hash(accountType, beneficiary, accountNumber, phoneNumber, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GhsExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, beneficiary=$beneficiary, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "GhsExternalAccountCreateInfo{accountType=$accountType, beneficiary=$beneficiary, accountNumber=$accountNumber, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

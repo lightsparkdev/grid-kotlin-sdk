@@ -69,6 +69,8 @@ private constructor(
     fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
 
     /**
+     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -182,6 +184,10 @@ private constructor(
          */
         fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
 
+        /**
+         * Status-specific event type in OBJECT.EVENT dot-notation (e.g.,
+         * OUTGOING_PAYMENT.COMPLETED)
+         */
         fun type(type: Type) = type(JsonField.of(type))
 
         /**
@@ -238,6 +244,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): IncomingPaymentWebhookEvent = apply {
         if (validated) {
             return@apply
@@ -274,15 +288,17 @@ private constructor(
     private constructor(
         private val id: JsonField<String>,
         private val customerId: JsonField<String>,
-        private val destination: JsonField<IncomingTransaction.Destination>,
+        private val destination: JsonValue,
         private val platformCustomerId: JsonField<String>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val status: JsonField<TransactionStatus>,
         private val type: JsonField<IncomingTransaction.Type>,
+        private val agentId: JsonField<String>,
         private val counterpartyInformation: JsonField<IncomingTransaction.CounterpartyInformation>,
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
         private val failureReason: JsonField<IncomingTransaction.FailureReason>,
+        private val fees: JsonField<Long>,
         private val rateDetails: JsonField<IncomingRateDetails>,
         private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
         private val settledAt: JsonField<OffsetDateTime>,
@@ -299,9 +315,7 @@ private constructor(
             @JsonProperty("customerId")
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("destination")
-            @ExcludeMissing
-            destination: JsonField<IncomingTransaction.Destination> = JsonMissing.of(),
+            @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -314,6 +328,7 @@ private constructor(
             @JsonProperty("type")
             @ExcludeMissing
             type: JsonField<IncomingTransaction.Type> = JsonMissing.of(),
+            @JsonProperty("agentId") @ExcludeMissing agentId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("counterpartyInformation")
             @ExcludeMissing
             counterpartyInformation: JsonField<IncomingTransaction.CounterpartyInformation> =
@@ -327,6 +342,7 @@ private constructor(
             @JsonProperty("failureReason")
             @ExcludeMissing
             failureReason: JsonField<IncomingTransaction.FailureReason> = JsonMissing.of(),
+            @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("rateDetails")
             @ExcludeMissing
             rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of(),
@@ -354,10 +370,12 @@ private constructor(
             receivedAmount,
             status,
             type,
+            agentId,
             counterpartyInformation,
             createdAt,
             description,
             failureReason,
+            fees,
             rateDetails,
             reconciliationInstructions,
             settledAt,
@@ -376,10 +394,12 @@ private constructor(
                 .receivedAmount(receivedAmount)
                 .status(status)
                 .type(type)
+                .agentId(agentId)
                 .counterpartyInformation(counterpartyInformation)
                 .createdAt(createdAt)
                 .description(description)
                 .failureReason(failureReason)
+                .fees(fees)
                 .rateDetails(rateDetails)
                 .reconciliationInstructions(reconciliationInstructions)
                 .settledAt(settledAt)
@@ -404,12 +424,12 @@ private constructor(
         fun customerId(): String = customerId.getRequired("customerId")
 
         /**
-         * Destination account details
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```kotlin
+         * val myObject: MyClass = data.destination().convert(MyClass::class.java)
+         * ```
          */
-        fun destination(): IncomingTransaction.Destination = destination.getRequired("destination")
+        @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
 
         /**
          * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -447,10 +467,21 @@ private constructor(
         fun status(): TransactionStatus = status.getRequired("status")
 
         /**
+         * Type of transaction (incoming payment or outgoing payment)
+         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun type(): IncomingTransaction.Type = type.getRequired("type")
+
+        /**
+         * If this transaction was initiated by an agent, the system-generated ID of that agent.
+         * Absent for platform-initiated transactions.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun agentId(): String? = agentId.getNullable("agentId")
 
         /**
          * Additional information about the counterparty, if available and relevant to the
@@ -488,6 +519,15 @@ private constructor(
             failureReason.getNullable("failureReason")
 
         /**
+         * The total fees available from the receive quote in the smallest unit of the receiving
+         * currency (eg. cents).
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun fees(): Long? = fees.getNullable("fees")
+
+        /**
          * Details about the rate and fees for the transaction.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -513,8 +553,6 @@ private constructor(
         fun settledAt(): OffsetDateTime? = settledAt.getNullable("settledAt")
 
         /**
-         * Source account details
-         *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
@@ -556,15 +594,6 @@ private constructor(
         fun _customerId(): JsonField<String> = customerId
 
         /**
-         * Returns the raw JSON value of [destination].
-         *
-         * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("destination")
-        @ExcludeMissing
-        fun _destination(): JsonField<IncomingTransaction.Destination> = destination
-
-        /**
          * Returns the raw JSON value of [platformCustomerId].
          *
          * Unlike [platformCustomerId], this method doesn't throw if the JSON field has an
@@ -599,6 +628,13 @@ private constructor(
         @JsonProperty("type")
         @ExcludeMissing
         fun _type(): JsonField<IncomingTransaction.Type> = type
+
+        /**
+         * Returns the raw JSON value of [agentId].
+         *
+         * Unlike [agentId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("agentId") @ExcludeMissing fun _agentId(): JsonField<String> = agentId
 
         /**
          * Returns the raw JSON value of [counterpartyInformation].
@@ -638,6 +674,13 @@ private constructor(
         @JsonProperty("failureReason")
         @ExcludeMissing
         fun _failureReason(): JsonField<IncomingTransaction.FailureReason> = failureReason
+
+        /**
+         * Returns the raw JSON value of [fees].
+         *
+         * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
 
         /**
          * Returns the raw JSON value of [rateDetails].
@@ -733,11 +776,12 @@ private constructor(
 
             private var id: JsonField<String>? = null
             private var customerId: JsonField<String>? = null
-            private var destination: JsonField<IncomingTransaction.Destination>? = null
+            private var destination: JsonValue? = null
             private var platformCustomerId: JsonField<String>? = null
             private var receivedAmount: JsonField<CurrencyAmount>? = null
             private var status: JsonField<TransactionStatus>? = null
             private var type: JsonField<IncomingTransaction.Type>? = null
+            private var agentId: JsonField<String> = JsonMissing.of()
             private var counterpartyInformation:
                 JsonField<IncomingTransaction.CounterpartyInformation> =
                 JsonMissing.of()
@@ -745,6 +789,7 @@ private constructor(
             private var description: JsonField<String> = JsonMissing.of()
             private var failureReason: JsonField<IncomingTransaction.FailureReason> =
                 JsonMissing.of()
+            private var fees: JsonField<Long> = JsonMissing.of()
             private var rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of()
             private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
                 JsonMissing.of()
@@ -764,10 +809,12 @@ private constructor(
                 receivedAmount = data.receivedAmount
                 status = data.status
                 type = data.type
+                agentId = data.agentId
                 counterpartyInformation = data.counterpartyInformation
                 createdAt = data.createdAt
                 description = data.description
                 failureReason = data.failureReason
+                fees = data.fees
                 rateDetails = data.rateDetails
                 reconciliationInstructions = data.reconciliationInstructions
                 settledAt = data.settledAt
@@ -802,43 +849,7 @@ private constructor(
              */
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-            /** Destination account details */
-            fun destination(destination: IncomingTransaction.Destination) =
-                destination(JsonField.of(destination))
-
-            /**
-             * Sets [Builder.destination] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.destination] with a well-typed
-             * [IncomingTransaction.Destination] value instead. This method is primarily for setting
-             * the field to an undocumented or not yet supported value.
-             */
-            fun destination(destination: JsonField<IncomingTransaction.Destination>) = apply {
-                this.destination = destination
-            }
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)`.
-             */
-            fun destination(
-                accountTransaction: IncomingTransaction.Destination.AccountTransactionDestination
-            ) =
-                destination(
-                    IncomingTransaction.Destination.ofAccountTransaction(accountTransaction)
-                )
-
-            /**
-             * Alias for calling [destination] with
-             * `IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)`.
-             */
-            fun destination(
-                umaAddressTransaction:
-                    IncomingTransaction.Destination.UmaAddressTransactionDestination
-            ) =
-                destination(
-                    IncomingTransaction.Destination.ofUmaAddressTransaction(umaAddressTransaction)
-                )
+            fun destination(destination: JsonValue) = apply { this.destination = destination }
 
             /**
              * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -897,6 +908,7 @@ private constructor(
              */
             fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
 
+            /** Type of transaction (incoming payment or outgoing payment) */
             fun type(type: IncomingTransaction.Type) = type(JsonField.of(type))
 
             /**
@@ -907,6 +919,21 @@ private constructor(
              * not yet supported value.
              */
             fun type(type: JsonField<IncomingTransaction.Type>) = apply { this.type = type }
+
+            /**
+             * If this transaction was initiated by an agent, the system-generated ID of that agent.
+             * Absent for platform-initiated transactions.
+             */
+            fun agentId(agentId: String) = agentId(JsonField.of(agentId))
+
+            /**
+             * Sets [Builder.agentId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.agentId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun agentId(agentId: JsonField<String>) = apply { this.agentId = agentId }
 
             /**
              * Additional information about the counterparty, if available and relevant to the
@@ -970,6 +997,21 @@ private constructor(
                 this.failureReason = failureReason
             }
 
+            /**
+             * The total fees available from the receive quote in the smallest unit of the receiving
+             * currency (eg. cents).
+             */
+            fun fees(fees: Long) = fees(JsonField.of(fees))
+
+            /**
+             * Sets [Builder.fees] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.fees] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
+
             /** Details about the rate and fees for the transaction. */
             fun rateDetails(rateDetails: IncomingRateDetails) =
                 rateDetails(JsonField.of(rateDetails))
@@ -1014,7 +1056,6 @@ private constructor(
                 this.settledAt = settledAt
             }
 
-            /** Source account details */
             fun source(source: TransactionSourceOneOf) = source(JsonField.of(source))
 
             /**
@@ -1025,40 +1066,6 @@ private constructor(
              * not yet supported value.
              */
             fun source(source: JsonField<TransactionSourceOneOf>) = apply { this.source = source }
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource)`.
-             */
-            fun source(accountTransactionSource: TransactionSourceOneOf.AccountTransactionSource) =
-                source(TransactionSourceOneOf.ofAccountTransactionSource(accountTransactionSource))
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofUmaAddressTransactionSource(umaAddressTransactionSource)`.
-             */
-            fun source(
-                umaAddressTransactionSource: TransactionSourceOneOf.UmaAddressTransactionSource
-            ) =
-                source(
-                    TransactionSourceOneOf.ofUmaAddressTransactionSource(
-                        umaAddressTransactionSource
-                    )
-                )
-
-            /**
-             * Alias for calling [source] with
-             * `TransactionSourceOneOf.ofRealtimeFundingTransactionSource(realtimeFundingTransactionSource)`.
-             */
-            fun source(
-                realtimeFundingTransactionSource:
-                    TransactionSourceOneOf.RealtimeFundingTransactionSource
-            ) =
-                source(
-                    TransactionSourceOneOf.ofRealtimeFundingTransactionSource(
-                        realtimeFundingTransactionSource
-                    )
-                )
 
             /** When the transaction was last updated */
             fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -1161,10 +1168,12 @@ private constructor(
                     checkRequired("receivedAmount", receivedAmount),
                     checkRequired("status", status),
                     checkRequired("type", type),
+                    agentId,
                     counterpartyInformation,
                     createdAt,
                     description,
                     failureReason,
+                    fees,
                     rateDetails,
                     reconciliationInstructions,
                     settledAt,
@@ -1179,6 +1188,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Data = apply {
             if (validated) {
                 return@apply
@@ -1186,19 +1204,19 @@ private constructor(
 
             id()
             customerId()
-            destination().validate()
             platformCustomerId()
             receivedAmount().validate()
             status().validate()
             type().validate()
+            agentId()
             counterpartyInformation()?.validate()
             createdAt()
             description()
             failureReason()?.validate()
+            fees()
             rateDetails()?.validate()
             reconciliationInstructions()?.validate()
             settledAt()
-            source()?.validate()
             updatedAt()
             requestedReceiverCustomerInfoFields()?.forEach { it.validate() }
             validated = true
@@ -1221,19 +1239,19 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (customerId.asKnown() == null) 0 else 1) +
-                (destination.asKnown()?.validity() ?: 0) +
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (receivedAmount.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
                 (type.asKnown()?.validity() ?: 0) +
+                (if (agentId.asKnown() == null) 0 else 1) +
                 (counterpartyInformation.asKnown()?.validity() ?: 0) +
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (description.asKnown() == null) 0 else 1) +
                 (failureReason.asKnown()?.validity() ?: 0) +
+                (if (fees.asKnown() == null) 0 else 1) +
                 (rateDetails.asKnown()?.validity() ?: 0) +
                 (reconciliationInstructions.asKnown()?.validity() ?: 0) +
                 (if (settledAt.asKnown() == null) 0 else 1) +
-                (source.asKnown()?.validity() ?: 0) +
                 (if (updatedAt.asKnown() == null) 0 else 1) +
                 (requestedReceiverCustomerInfoFields.asKnown()?.sumOf { it.validity().toInt() }
                     ?: 0)
@@ -1251,10 +1269,12 @@ private constructor(
                 receivedAmount == other.receivedAmount &&
                 status == other.status &&
                 type == other.type &&
+                agentId == other.agentId &&
                 counterpartyInformation == other.counterpartyInformation &&
                 createdAt == other.createdAt &&
                 description == other.description &&
                 failureReason == other.failureReason &&
+                fees == other.fees &&
                 rateDetails == other.rateDetails &&
                 reconciliationInstructions == other.reconciliationInstructions &&
                 settledAt == other.settledAt &&
@@ -1273,10 +1293,12 @@ private constructor(
                 receivedAmount,
                 status,
                 type,
+                agentId,
                 counterpartyInformation,
                 createdAt,
                 description,
                 failureReason,
+                fees,
                 rateDetails,
                 reconciliationInstructions,
                 settledAt,
@@ -1290,9 +1312,12 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
+    /**
+     * Status-specific event type in OBJECT.EVENT dot-notation (e.g., OUTGOING_PAYMENT.COMPLETED)
+     */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -1313,56 +1338,6 @@ private constructor(
 
             val INCOMING_PAYMENT_FAILED = of("INCOMING_PAYMENT.FAILED")
 
-            val OUTGOING_PAYMENT_PENDING = of("OUTGOING_PAYMENT.PENDING")
-
-            val OUTGOING_PAYMENT_PROCESSING = of("OUTGOING_PAYMENT.PROCESSING")
-
-            val OUTGOING_PAYMENT_COMPLETED = of("OUTGOING_PAYMENT.COMPLETED")
-
-            val OUTGOING_PAYMENT_FAILED = of("OUTGOING_PAYMENT.FAILED")
-
-            val OUTGOING_PAYMENT_EXPIRED = of("OUTGOING_PAYMENT.EXPIRED")
-
-            val OUTGOING_PAYMENT_REFUND_PENDING = of("OUTGOING_PAYMENT.REFUND_PENDING")
-
-            val OUTGOING_PAYMENT_REFUND_COMPLETED = of("OUTGOING_PAYMENT.REFUND_COMPLETED")
-
-            val OUTGOING_PAYMENT_REFUND_FAILED = of("OUTGOING_PAYMENT.REFUND_FAILED")
-
-            val CUSTOMER_KYC_APPROVED = of("CUSTOMER.KYC_APPROVED")
-
-            val CUSTOMER_KYC_REJECTED = of("CUSTOMER.KYC_REJECTED")
-
-            val CUSTOMER_KYC_PENDING = of("CUSTOMER.KYC_PENDING")
-
-            val CUSTOMER_KYB_APPROVED = of("CUSTOMER.KYB_APPROVED")
-
-            val CUSTOMER_KYB_REJECTED = of("CUSTOMER.KYB_REJECTED")
-
-            val CUSTOMER_KYB_PENDING = of("CUSTOMER.KYB_PENDING")
-
-            val VERIFICATION_APPROVED = of("VERIFICATION.APPROVED")
-
-            val VERIFICATION_REJECTED = of("VERIFICATION.REJECTED")
-
-            val VERIFICATION_RESOLVE_ERRORS = of("VERIFICATION.RESOLVE_ERRORS")
-
-            val VERIFICATION_IN_PROGRESS = of("VERIFICATION.IN_PROGRESS")
-
-            val VERIFICATION_PENDING_MANUAL_REVIEW = of("VERIFICATION.PENDING_MANUAL_REVIEW")
-
-            val VERIFICATION_READY_FOR_VERIFICATION = of("VERIFICATION.READY_FOR_VERIFICATION")
-
-            val INTERNAL_ACCOUNT_BALANCE_UPDATED = of("INTERNAL_ACCOUNT.BALANCE_UPDATED")
-
-            val INVITATION_CLAIMED = of("INVITATION.CLAIMED")
-
-            val BULK_UPLOAD_COMPLETED = of("BULK_UPLOAD.COMPLETED")
-
-            val BULK_UPLOAD_FAILED = of("BULK_UPLOAD.FAILED")
-
-            val TEST = of("TEST")
-
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -1371,31 +1346,6 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
-            OUTGOING_PAYMENT_PENDING,
-            OUTGOING_PAYMENT_PROCESSING,
-            OUTGOING_PAYMENT_COMPLETED,
-            OUTGOING_PAYMENT_FAILED,
-            OUTGOING_PAYMENT_EXPIRED,
-            OUTGOING_PAYMENT_REFUND_PENDING,
-            OUTGOING_PAYMENT_REFUND_COMPLETED,
-            OUTGOING_PAYMENT_REFUND_FAILED,
-            CUSTOMER_KYC_APPROVED,
-            CUSTOMER_KYC_REJECTED,
-            CUSTOMER_KYC_PENDING,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_PENDING,
-            VERIFICATION_APPROVED,
-            VERIFICATION_REJECTED,
-            VERIFICATION_RESOLVE_ERRORS,
-            VERIFICATION_IN_PROGRESS,
-            VERIFICATION_PENDING_MANUAL_REVIEW,
-            VERIFICATION_READY_FOR_VERIFICATION,
-            INTERNAL_ACCOUNT_BALANCE_UPDATED,
-            INVITATION_CLAIMED,
-            BULK_UPLOAD_COMPLETED,
-            BULK_UPLOAD_FAILED,
-            TEST,
         }
 
         /**
@@ -1411,31 +1361,6 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
-            OUTGOING_PAYMENT_PENDING,
-            OUTGOING_PAYMENT_PROCESSING,
-            OUTGOING_PAYMENT_COMPLETED,
-            OUTGOING_PAYMENT_FAILED,
-            OUTGOING_PAYMENT_EXPIRED,
-            OUTGOING_PAYMENT_REFUND_PENDING,
-            OUTGOING_PAYMENT_REFUND_COMPLETED,
-            OUTGOING_PAYMENT_REFUND_FAILED,
-            CUSTOMER_KYC_APPROVED,
-            CUSTOMER_KYC_REJECTED,
-            CUSTOMER_KYC_PENDING,
-            CUSTOMER_KYB_APPROVED,
-            CUSTOMER_KYB_REJECTED,
-            CUSTOMER_KYB_PENDING,
-            VERIFICATION_APPROVED,
-            VERIFICATION_REJECTED,
-            VERIFICATION_RESOLVE_ERRORS,
-            VERIFICATION_IN_PROGRESS,
-            VERIFICATION_PENDING_MANUAL_REVIEW,
-            VERIFICATION_READY_FOR_VERIFICATION,
-            INTERNAL_ACCOUNT_BALANCE_UPDATED,
-            INVITATION_CLAIMED,
-            BULK_UPLOAD_COMPLETED,
-            BULK_UPLOAD_FAILED,
-            TEST,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -1452,31 +1377,6 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Value.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Value.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Value.INCOMING_PAYMENT_FAILED
-                OUTGOING_PAYMENT_PENDING -> Value.OUTGOING_PAYMENT_PENDING
-                OUTGOING_PAYMENT_PROCESSING -> Value.OUTGOING_PAYMENT_PROCESSING
-                OUTGOING_PAYMENT_COMPLETED -> Value.OUTGOING_PAYMENT_COMPLETED
-                OUTGOING_PAYMENT_FAILED -> Value.OUTGOING_PAYMENT_FAILED
-                OUTGOING_PAYMENT_EXPIRED -> Value.OUTGOING_PAYMENT_EXPIRED
-                OUTGOING_PAYMENT_REFUND_PENDING -> Value.OUTGOING_PAYMENT_REFUND_PENDING
-                OUTGOING_PAYMENT_REFUND_COMPLETED -> Value.OUTGOING_PAYMENT_REFUND_COMPLETED
-                OUTGOING_PAYMENT_REFUND_FAILED -> Value.OUTGOING_PAYMENT_REFUND_FAILED
-                CUSTOMER_KYC_APPROVED -> Value.CUSTOMER_KYC_APPROVED
-                CUSTOMER_KYC_REJECTED -> Value.CUSTOMER_KYC_REJECTED
-                CUSTOMER_KYC_PENDING -> Value.CUSTOMER_KYC_PENDING
-                CUSTOMER_KYB_APPROVED -> Value.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Value.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_PENDING -> Value.CUSTOMER_KYB_PENDING
-                VERIFICATION_APPROVED -> Value.VERIFICATION_APPROVED
-                VERIFICATION_REJECTED -> Value.VERIFICATION_REJECTED
-                VERIFICATION_RESOLVE_ERRORS -> Value.VERIFICATION_RESOLVE_ERRORS
-                VERIFICATION_IN_PROGRESS -> Value.VERIFICATION_IN_PROGRESS
-                VERIFICATION_PENDING_MANUAL_REVIEW -> Value.VERIFICATION_PENDING_MANUAL_REVIEW
-                VERIFICATION_READY_FOR_VERIFICATION -> Value.VERIFICATION_READY_FOR_VERIFICATION
-                INTERNAL_ACCOUNT_BALANCE_UPDATED -> Value.INTERNAL_ACCOUNT_BALANCE_UPDATED
-                INVITATION_CLAIMED -> Value.INVITATION_CLAIMED
-                BULK_UPLOAD_COMPLETED -> Value.BULK_UPLOAD_COMPLETED
-                BULK_UPLOAD_FAILED -> Value.BULK_UPLOAD_FAILED
-                TEST -> Value.TEST
                 else -> Value._UNKNOWN
             }
 
@@ -1494,31 +1394,6 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Known.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Known.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Known.INCOMING_PAYMENT_FAILED
-                OUTGOING_PAYMENT_PENDING -> Known.OUTGOING_PAYMENT_PENDING
-                OUTGOING_PAYMENT_PROCESSING -> Known.OUTGOING_PAYMENT_PROCESSING
-                OUTGOING_PAYMENT_COMPLETED -> Known.OUTGOING_PAYMENT_COMPLETED
-                OUTGOING_PAYMENT_FAILED -> Known.OUTGOING_PAYMENT_FAILED
-                OUTGOING_PAYMENT_EXPIRED -> Known.OUTGOING_PAYMENT_EXPIRED
-                OUTGOING_PAYMENT_REFUND_PENDING -> Known.OUTGOING_PAYMENT_REFUND_PENDING
-                OUTGOING_PAYMENT_REFUND_COMPLETED -> Known.OUTGOING_PAYMENT_REFUND_COMPLETED
-                OUTGOING_PAYMENT_REFUND_FAILED -> Known.OUTGOING_PAYMENT_REFUND_FAILED
-                CUSTOMER_KYC_APPROVED -> Known.CUSTOMER_KYC_APPROVED
-                CUSTOMER_KYC_REJECTED -> Known.CUSTOMER_KYC_REJECTED
-                CUSTOMER_KYC_PENDING -> Known.CUSTOMER_KYC_PENDING
-                CUSTOMER_KYB_APPROVED -> Known.CUSTOMER_KYB_APPROVED
-                CUSTOMER_KYB_REJECTED -> Known.CUSTOMER_KYB_REJECTED
-                CUSTOMER_KYB_PENDING -> Known.CUSTOMER_KYB_PENDING
-                VERIFICATION_APPROVED -> Known.VERIFICATION_APPROVED
-                VERIFICATION_REJECTED -> Known.VERIFICATION_REJECTED
-                VERIFICATION_RESOLVE_ERRORS -> Known.VERIFICATION_RESOLVE_ERRORS
-                VERIFICATION_IN_PROGRESS -> Known.VERIFICATION_IN_PROGRESS
-                VERIFICATION_PENDING_MANUAL_REVIEW -> Known.VERIFICATION_PENDING_MANUAL_REVIEW
-                VERIFICATION_READY_FOR_VERIFICATION -> Known.VERIFICATION_READY_FOR_VERIFICATION
-                INTERNAL_ACCOUNT_BALANCE_UPDATED -> Known.INTERNAL_ACCOUNT_BALANCE_UPDATED
-                INVITATION_CLAIMED -> Known.INVITATION_CLAIMED
-                BULK_UPLOAD_COMPLETED -> Known.BULK_UPLOAD_COMPLETED
-                BULK_UPLOAD_FAILED -> Known.BULK_UPLOAD_FAILED
-                TEST -> Known.TEST
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
@@ -1536,6 +1411,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Type = apply {
             if (validated) {
                 return@apply

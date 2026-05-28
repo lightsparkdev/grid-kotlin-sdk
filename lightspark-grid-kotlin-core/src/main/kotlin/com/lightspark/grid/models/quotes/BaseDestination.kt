@@ -5,17 +5,38 @@ package com.lightspark.grid.models.quotes
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.lightspark.grid.core.ExcludeMissing
+import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
 class BaseDestination
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-private constructor(private val additionalProperties: MutableMap<String, JsonValue>) {
+private constructor(
+    private val destinationType: JsonValue,
+    private val additionalProperties: MutableMap<String, JsonValue>,
+) {
 
-    @JsonCreator private constructor() : this(mutableMapOf())
+    @JsonCreator
+    private constructor(
+        @JsonProperty("destinationType")
+        @ExcludeMissing
+        destinationType: JsonValue = JsonMissing.of()
+    ) : this(destinationType, mutableMapOf())
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = baseDestination.destinationType().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("destinationType")
+    @ExcludeMissing
+    fun _destinationType(): JsonValue = destinationType
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -31,17 +52,30 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [BaseDestination]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [BaseDestination].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .destinationType()
+         * ```
+         */
         fun builder() = Builder()
     }
 
     /** A builder for [BaseDestination]. */
     class Builder internal constructor() {
 
+        private var destinationType: JsonValue? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(baseDestination: BaseDestination) = apply {
+            destinationType = baseDestination.destinationType
             additionalProperties = baseDestination.additionalProperties.toMutableMap()
+        }
+
+        fun destinationType(destinationType: JsonValue) = apply {
+            this.destinationType = destinationType
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -67,12 +101,31 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
          * Returns an immutable instance of [BaseDestination].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .destinationType()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): BaseDestination = BaseDestination(additionalProperties.toMutableMap())
+        fun build(): BaseDestination =
+            BaseDestination(
+                checkRequired("destinationType", destinationType),
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): BaseDestination = apply {
         if (validated) {
             return@apply
@@ -101,12 +154,15 @@ private constructor(private val additionalProperties: MutableMap<String, JsonVal
             return true
         }
 
-        return other is BaseDestination && additionalProperties == other.additionalProperties
+        return other is BaseDestination &&
+            destinationType == other.destinationType &&
+            additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(destinationType, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
-    override fun toString() = "BaseDestination{additionalProperties=$additionalProperties}"
+    override fun toString() =
+        "BaseDestination{destinationType=$destinationType, additionalProperties=$additionalProperties}"
 }

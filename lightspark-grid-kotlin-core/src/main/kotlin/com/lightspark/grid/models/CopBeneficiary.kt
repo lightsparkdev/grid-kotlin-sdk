@@ -21,12 +21,12 @@ class CopBeneficiary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val beneficiaryType: JsonField<BeneficiaryType>,
-    private val documentNumber: JsonField<String>,
-    private val documentType: JsonField<String>,
     private val fullName: JsonField<String>,
     private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
     private val countryOfResidence: JsonField<String>,
+    private val documentNumber: JsonField<String>,
+    private val documentType: JsonField<DocumentType>,
     private val email: JsonField<String>,
     private val nationality: JsonField<String>,
     private val phoneNumber: JsonField<String>,
@@ -38,18 +38,18 @@ private constructor(
         @JsonProperty("beneficiaryType")
         @ExcludeMissing
         beneficiaryType: JsonField<BeneficiaryType> = JsonMissing.of(),
-        @JsonProperty("documentNumber")
-        @ExcludeMissing
-        documentNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("documentType")
-        @ExcludeMissing
-        documentType: JsonField<String> = JsonMissing.of(),
         @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("countryOfResidence")
         @ExcludeMissing
         countryOfResidence: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("documentNumber")
+        @ExcludeMissing
+        documentNumber: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("documentType")
+        @ExcludeMissing
+        documentType: JsonField<DocumentType> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("nationality")
         @ExcludeMissing
@@ -59,12 +59,12 @@ private constructor(
         phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
         beneficiaryType,
-        documentNumber,
-        documentType,
         fullName,
         address,
         birthDate,
         countryOfResidence,
+        documentNumber,
+        documentType,
         email,
         nationality,
         phoneNumber,
@@ -76,22 +76,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun beneficiaryType(): BeneficiaryType = beneficiaryType.getRequired("beneficiaryType")
-
-    /**
-     * The identity document number
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun documentNumber(): String = documentNumber.getRequired("documentNumber")
-
-    /**
-     * The type of identity document (e.g., national ID, passport)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun documentType(): String = documentType.getRequired("documentType")
 
     /**
      * The full name of the beneficiary
@@ -122,6 +106,24 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun countryOfResidence(): String? = countryOfResidence.getNullable("countryOfResidence")
+
+    /**
+     * Identity document number — required by most Colombian banks
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun documentNumber(): String? = documentNumber.getNullable("documentNumber")
+
+    /**
+     * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
+     * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación Tributaria,
+     * PP: Passport
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun documentType(): DocumentType? = documentType.getNullable("documentType")
 
     /**
      * The email of the beneficiary
@@ -157,24 +159,6 @@ private constructor(
     fun _beneficiaryType(): JsonField<BeneficiaryType> = beneficiaryType
 
     /**
-     * Returns the raw JSON value of [documentNumber].
-     *
-     * Unlike [documentNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("documentNumber")
-    @ExcludeMissing
-    fun _documentNumber(): JsonField<String> = documentNumber
-
-    /**
-     * Returns the raw JSON value of [documentType].
-     *
-     * Unlike [documentType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("documentType")
-    @ExcludeMissing
-    fun _documentType(): JsonField<String> = documentType
-
-    /**
      * Returns the raw JSON value of [fullName].
      *
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
@@ -204,6 +188,24 @@ private constructor(
     @JsonProperty("countryOfResidence")
     @ExcludeMissing
     fun _countryOfResidence(): JsonField<String> = countryOfResidence
+
+    /**
+     * Returns the raw JSON value of [documentNumber].
+     *
+     * Unlike [documentNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("documentNumber")
+    @ExcludeMissing
+    fun _documentNumber(): JsonField<String> = documentNumber
+
+    /**
+     * Returns the raw JSON value of [documentType].
+     *
+     * Unlike [documentType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("documentType")
+    @ExcludeMissing
+    fun _documentType(): JsonField<DocumentType> = documentType
 
     /**
      * Returns the raw JSON value of [email].
@@ -246,8 +248,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
          * .fullName()
          * ```
          */
@@ -258,12 +258,12 @@ private constructor(
     class Builder internal constructor() {
 
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
-        private var documentNumber: JsonField<String>? = null
-        private var documentType: JsonField<String>? = null
         private var fullName: JsonField<String>? = null
         private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
         private var countryOfResidence: JsonField<String> = JsonMissing.of()
+        private var documentNumber: JsonField<String> = JsonMissing.of()
+        private var documentType: JsonField<DocumentType> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
@@ -271,12 +271,12 @@ private constructor(
 
         internal fun from(copBeneficiary: CopBeneficiary) = apply {
             beneficiaryType = copBeneficiary.beneficiaryType
-            documentNumber = copBeneficiary.documentNumber
-            documentType = copBeneficiary.documentType
             fullName = copBeneficiary.fullName
             address = copBeneficiary.address
             birthDate = copBeneficiary.birthDate
             countryOfResidence = copBeneficiary.countryOfResidence
+            documentNumber = copBeneficiary.documentNumber
+            documentType = copBeneficiary.documentType
             email = copBeneficiary.email
             nationality = copBeneficiary.nationality
             phoneNumber = copBeneficiary.phoneNumber
@@ -295,34 +295,6 @@ private constructor(
          */
         fun beneficiaryType(beneficiaryType: JsonField<BeneficiaryType>) = apply {
             this.beneficiaryType = beneficiaryType
-        }
-
-        /** The identity document number */
-        fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
-
-        /**
-         * Sets [Builder.documentNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.documentNumber] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun documentNumber(documentNumber: JsonField<String>) = apply {
-            this.documentNumber = documentNumber
-        }
-
-        /** The type of identity document (e.g., national ID, passport) */
-        fun documentType(documentType: String) = documentType(JsonField.of(documentType))
-
-        /**
-         * Sets [Builder.documentType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.documentType] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun documentType(documentType: JsonField<String>) = apply {
-            this.documentType = documentType
         }
 
         /** The full name of the beneficiary */
@@ -371,6 +343,38 @@ private constructor(
          */
         fun countryOfResidence(countryOfResidence: JsonField<String>) = apply {
             this.countryOfResidence = countryOfResidence
+        }
+
+        /** Identity document number — required by most Colombian banks */
+        fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
+
+        /**
+         * Sets [Builder.documentNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.documentNumber] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun documentNumber(documentNumber: JsonField<String>) = apply {
+            this.documentNumber = documentNumber
+        }
+
+        /**
+         * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
+         * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación
+         * Tributaria, PP: Passport
+         */
+        fun documentType(documentType: DocumentType) = documentType(JsonField.of(documentType))
+
+        /**
+         * Sets [Builder.documentType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.documentType] with a well-typed [DocumentType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun documentType(documentType: JsonField<DocumentType>) = apply {
+            this.documentType = documentType
         }
 
         /** The email of the beneficiary */
@@ -435,8 +439,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .beneficiaryType()
-         * .documentNumber()
-         * .documentType()
          * .fullName()
          * ```
          *
@@ -445,12 +447,12 @@ private constructor(
         fun build(): CopBeneficiary =
             CopBeneficiary(
                 checkRequired("beneficiaryType", beneficiaryType),
-                checkRequired("documentNumber", documentNumber),
-                checkRequired("documentType", documentType),
                 checkRequired("fullName", fullName),
                 address,
                 birthDate,
                 countryOfResidence,
+                documentNumber,
+                documentType,
                 email,
                 nationality,
                 phoneNumber,
@@ -460,18 +462,26 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): CopBeneficiary = apply {
         if (validated) {
             return@apply
         }
 
         beneficiaryType().validate()
-        documentNumber()
-        documentType()
         fullName()
         address()?.validate()
         birthDate()
         countryOfResidence()
+        documentNumber()
+        documentType()?.validate()
         email()
         nationality()
         phoneNumber()
@@ -493,12 +503,12 @@ private constructor(
      */
     internal fun validity(): Int =
         (beneficiaryType.asKnown()?.validity() ?: 0) +
-            (if (documentNumber.asKnown() == null) 0 else 1) +
-            (if (documentType.asKnown() == null) 0 else 1) +
             (if (fullName.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
             (if (countryOfResidence.asKnown() == null) 0 else 1) +
+            (if (documentNumber.asKnown() == null) 0 else 1) +
+            (documentType.asKnown()?.validity() ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
             (if (nationality.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
@@ -588,6 +598,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): BeneficiaryType = apply {
             if (validated) {
                 return@apply
@@ -626,6 +645,166 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /**
+     * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
+     * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación Tributaria,
+     * PP: Passport
+     */
+    class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CC = of("CC")
+
+            val CE = of("CE")
+
+            val TI = of("TI")
+
+            val NIT = of("NIT")
+
+            val PP = of("PP")
+
+            fun of(value: String) = DocumentType(JsonField.of(value))
+        }
+
+        /** An enum containing [DocumentType]'s known values. */
+        enum class Known {
+            CC,
+            CE,
+            TI,
+            NIT,
+            PP,
+        }
+
+        /**
+         * An enum containing [DocumentType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [DocumentType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CC,
+            CE,
+            TI,
+            NIT,
+            PP,
+            /**
+             * An enum member indicating that [DocumentType] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CC -> Value.CC
+                CE -> Value.CE
+                TI -> Value.TI
+                NIT -> Value.NIT
+                PP -> Value.PP
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CC -> Known.CC
+                CE -> Known.CE
+                TI -> Known.TI
+                NIT -> Known.NIT
+                PP -> Known.PP
+                else -> throw LightsparkGridInvalidDataException("Unknown DocumentType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): DocumentType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is DocumentType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -633,12 +812,12 @@ private constructor(
 
         return other is CopBeneficiary &&
             beneficiaryType == other.beneficiaryType &&
-            documentNumber == other.documentNumber &&
-            documentType == other.documentType &&
             fullName == other.fullName &&
             address == other.address &&
             birthDate == other.birthDate &&
             countryOfResidence == other.countryOfResidence &&
+            documentNumber == other.documentNumber &&
+            documentType == other.documentType &&
             email == other.email &&
             nationality == other.nationality &&
             phoneNumber == other.phoneNumber &&
@@ -648,12 +827,12 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             beneficiaryType,
-            documentNumber,
-            documentType,
             fullName,
             address,
             birthDate,
             countryOfResidence,
+            documentNumber,
+            documentType,
             email,
             nationality,
             phoneNumber,
@@ -664,5 +843,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CopBeneficiary{beneficiaryType=$beneficiaryType, documentNumber=$documentNumber, documentType=$documentType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "CopBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, documentNumber=$documentNumber, documentType=$documentType, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

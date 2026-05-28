@@ -5,6 +5,7 @@ package com.lightspark.grid.core
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpClient
+import com.lightspark.grid.core.http.LoggingHttpClient
 import com.lightspark.grid.core.http.PhantomReachableClosingHttpClient
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.http.RetryingHttpClient
@@ -65,6 +66,9 @@ private constructor(
     /**
      * Whether to call `validate` on every response before returning it.
      *
+     * Setting this to `true` is _not_ forwards compatible with new types from the API for existing
+     * fields.
+     *
      * Defaults to false, which means the shape of the response will not be validated upfront.
      * Instead, validation will only occur for the parts of the response that are accessed.
      */
@@ -92,10 +96,23 @@ private constructor(
      * Defaults to 2.
      */
     val maxRetries: Int,
+    /**
+     * The level at which to log request and response information.
+     *
+     * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+     *
+     * Defaults to [LogLevel.fromEnv].
+     */
+    val logLevel: LogLevel,
     /** API token authentication using format `<api token id>:<api client secret>` */
-    val username: String,
+    val username: String?,
     /** API token authentication using format `<api token id>:<api client secret>` */
-    val password: String,
+    val password: String?,
+    /**
+     * Bearer access token obtained by redeeming a device code. Required when calling agent-scoped
+     * endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped operations.
+     */
+    val agentAccessToken: String?,
     /**
      * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to verify
      * that the webhook was sent by Grid.
@@ -137,8 +154,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .username()
-         * .password()
          * ```
          */
         fun builder() = Builder()
@@ -165,8 +180,10 @@ private constructor(
         private var responseValidation: Boolean = false
         private var timeout: Timeout = Timeout.default()
         private var maxRetries: Int = 2
+        private var logLevel: LogLevel = LogLevel.fromEnv()
         private var username: String? = null
         private var password: String? = null
+        private var agentAccessToken: String? = null
         private var webhookSignature: String? = null
 
         internal fun from(clientOptions: ClientOptions) = apply {
@@ -181,8 +198,10 @@ private constructor(
             responseValidation = clientOptions.responseValidation
             timeout = clientOptions.timeout
             maxRetries = clientOptions.maxRetries
+            logLevel = clientOptions.logLevel
             username = clientOptions.username
             password = clientOptions.password
+            agentAccessToken = clientOptions.agentAccessToken
             webhookSignature = clientOptions.webhookSignature
         }
 
@@ -246,6 +265,9 @@ private constructor(
         /**
          * Whether to call `validate` on every response before returning it.
          *
+         * Setting this to `true` is _not_ forwards compatible with new types from the API for
+         * existing fields.
+         *
          * Defaults to false, which means the shape of the response will not be validated upfront.
          * Instead, validation will only occur for the parts of the response that are accessed.
          */
@@ -287,11 +309,29 @@ private constructor(
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
-        /** API token authentication using format `<api token id>:<api client secret>` */
-        fun username(username: String) = apply { this.username = username }
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { this.logLevel = logLevel }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun password(password: String) = apply { this.password = password }
+        fun username(username: String?) = apply { this.username = username }
+
+        /** API token authentication using format `<api token id>:<api client secret>` */
+        fun password(password: String?) = apply { this.password = password }
+
+        /**
+         * Bearer access token obtained by redeeming a device code. Required when calling
+         * agent-scoped endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped
+         * operations.
+         */
+        fun agentAccessToken(agentAccessToken: String?) = apply {
+            this.agentAccessToken = agentAccessToken
+        }
 
         /**
          * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to
@@ -397,16 +437,18 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter            |System property                   |Environment variable      |Required|Default value                                 |
-         * |------------------|----------------------------------|--------------------------|--------|----------------------------------------------|
-         * |`username`        |`lightsparkgrid.gridClientId`     |`GRID_CLIENT_ID`          |true    |-                                             |
-         * |`password`        |`lightsparkgrid.gridClientSecret` |`GRID_CLIENT_SECRET`      |true    |-                                             |
-         * |`webhookSignature`|`lightsparkgrid.gridWebhookPubkey`|`GRID_WEBHOOK_PUBKEY`     |false   |-                                             |
-         * |`baseUrl`         |`lightsparkgrid.baseUrl`          |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
+         * |Setter            |System property                      |Environment variable      |Required|Default value                                 |
+         * |------------------|-------------------------------------|--------------------------|--------|----------------------------------------------|
+         * |`username`        |`lightsparkgrid.gridClientId`        |`GRID_CLIENT_ID`          |false   |-                                             |
+         * |`password`        |`lightsparkgrid.gridClientSecret`    |`GRID_CLIENT_SECRET`      |false   |-                                             |
+         * |`agentAccessToken`|`lightsparkgrid.gridAgentAccessToken`|`GRID_AGENT_ACCESS_TOKEN` |false   |-                                             |
+         * |`webhookSignature`|`lightsparkgrid.gridWebhookPubkey`   |`GRID_WEBHOOK_PUBKEY`     |false   |-                                             |
+         * |`baseUrl`         |`lightsparkgrid.baseUrl`             |`LIGHTSPARK_GRID_BASE_URL`|true    |`"https://api.lightspark.com/grid/2025-10-13"`|
          *
          * System properties take precedence over environment variables.
          */
         fun fromEnv() = apply {
+            logLevel(LogLevel.fromEnv())
             (System.getProperty("lightsparkgrid.baseUrl")
                     ?: System.getenv("LIGHTSPARK_GRID_BASE_URL"))
                 ?.let { baseUrl(it) }
@@ -415,6 +457,9 @@ private constructor(
             (System.getProperty("lightsparkgrid.gridClientSecret")
                     ?: System.getenv("GRID_CLIENT_SECRET"))
                 ?.let { password(it) }
+            (System.getProperty("lightsparkgrid.gridAgentAccessToken")
+                    ?: System.getenv("GRID_AGENT_ACCESS_TOKEN"))
+                ?.let { agentAccessToken(it) }
             (System.getProperty("lightsparkgrid.gridWebhookPubkey")
                     ?: System.getenv("GRID_WEBHOOK_PUBKEY"))
                 ?.let { webhookSignature(it) }
@@ -436,8 +481,6 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .httpClient()
-         * .username()
-         * .password()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -445,8 +488,6 @@ private constructor(
         fun build(): ClientOptions {
             val httpClient = checkRequired("httpClient", httpClient)
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
-            val username = checkRequired("username", username)
-            val password = checkRequired("password", password)
 
             val headers = Headers.builder()
             val queryParams = QueryParams.builder()
@@ -461,26 +502,17 @@ private constructor(
             // We replace after all the default headers to allow end-users to overwrite them.
             headers.replaceAll(this.headers.build())
             queryParams.replaceAll(this.queryParams.build())
-            username.let { username ->
-                password.let { password ->
-                    if (!username.isEmpty() && !password.isEmpty()) {
-                        headers.replace(
-                            "Authorization",
-                            "Basic ${Base64.getEncoder().encodeToString("$username:$password".toByteArray())}",
-                        )
-                    }
-                }
-            }
-            webhookSignature?.let {
-                if (!it.isEmpty()) {
-                    headers.replace("X-Grid-Signature", it)
-                }
-            }
 
             return ClientOptions(
                 httpClient,
                 RetryingHttpClient.builder()
-                    .httpClient(httpClient)
+                    .httpClient(
+                        LoggingHttpClient.builder()
+                            .httpClient(httpClient)
+                            .clock(clock)
+                            .level(logLevel)
+                            .build()
+                    )
                     .sleeper(sleeper)
                     .clock(clock)
                     .maxRetries(maxRetries)
@@ -495,8 +527,10 @@ private constructor(
                 responseValidation,
                 timeout,
                 maxRetries,
+                logLevel,
                 username,
                 password,
+                agentAccessToken,
                 webhookSignature,
             )
         }
@@ -515,5 +549,36 @@ private constructor(
     fun close() {
         httpClient.close()
         sleeper.close()
+    }
+
+    internal fun securityHeaders(security: SecurityOptions): Headers {
+        val headers = Headers.builder()
+        if (security.basicAuth) {
+            username?.let { username ->
+                password?.let { password ->
+                    if (!username.isEmpty() && !password.isEmpty()) {
+                        headers.replace(
+                            "Authorization",
+                            "Basic ${Base64.getEncoder().encodeToString("$username:$password".toByteArray())}",
+                        )
+                    }
+                }
+            }
+        }
+        if (security.agentAuth) {
+            agentAccessToken?.let {
+                if (!it.isEmpty()) {
+                    headers.replace("Authorization", "Bearer $it")
+                }
+            }
+        }
+        if (security.webhookSignature) {
+            webhookSignature?.let {
+                if (!it.isEmpty()) {
+                    headers.replace("X-Grid-Signature", it)
+                }
+            }
+        }
+        return headers.build()
     }
 }

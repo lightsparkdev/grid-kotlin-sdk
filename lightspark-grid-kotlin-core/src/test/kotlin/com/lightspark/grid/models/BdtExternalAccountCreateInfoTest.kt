@@ -14,9 +14,7 @@ internal class BdtExternalAccountCreateInfoTest {
     fun create() {
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,15 +36,14 @@ internal class BdtExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .branchCode("21029")
+                .accountNumber("1234567890")
+                .branchCode("11111")
                 .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()
 
-        assertThat(bdtExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.accountType())
             .isEqualTo(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-        assertThat(bdtExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(bdtExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -71,7 +68,8 @@ internal class BdtExternalAccountCreateInfoTest {
                         .build()
                 )
             )
-        assertThat(bdtExternalAccountCreateInfo.branchCode()).isEqualTo("21029")
+        assertThat(bdtExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(bdtExternalAccountCreateInfo.branchCode()).isEqualTo("11111")
         assertThat(bdtExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
         assertThat(bdtExternalAccountCreateInfo.swiftCode()).isEqualTo("DEUTDEFF")
     }
@@ -81,9 +79,7 @@ internal class BdtExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -105,7 +101,8 @@ internal class BdtExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .branchCode("21029")
+                .accountNumber("1234567890")
+                .branchCode("11111")
                 .phoneNumber("+1234567890")
                 .swiftCode("DEUTDEFF")
                 .build()

@@ -4,6 +4,7 @@ package com.lightspark.grid.services.async.platform
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.emptyHandler
 import com.lightspark.grid.core.handlers.errorBodyHandler
@@ -20,8 +21,9 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageAsync
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -56,7 +58,7 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
     override suspend fun list(
         params: ExternalAccountListParams,
         requestOptions: RequestOptions,
-    ): ExternalAccountListResponse =
+    ): ExternalAccountListPageAsync =
         // get /platform/external-accounts
         withRawResponse().list(params, requestOptions).parse()
 
@@ -95,7 +97,11 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
                     .addPathSegments("platform", "external-accounts")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -125,7 +131,11 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("platform", "external-accounts", params._pathParam(0))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -139,20 +149,24 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListResponse> =
-            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListPageResponse> =
+            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: ExternalAccountListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccountListResponse> {
+        ): HttpResponseFor<ExternalAccountListPageAsync> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("platform", "external-accounts")
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -162,6 +176,13 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        ExternalAccountListPageAsync.builder()
+                            .service(ExternalAccountServiceAsyncImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
@@ -182,7 +203,11 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
                     .addPathSegments("platform", "external-accounts", params._pathParam(0))
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {

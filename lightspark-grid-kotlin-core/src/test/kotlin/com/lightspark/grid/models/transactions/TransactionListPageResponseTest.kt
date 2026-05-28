@@ -22,11 +22,7 @@ internal class TransactionListPageResponseTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(
-                            IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .build()
-                        )
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -43,6 +39,7 @@ internal class TransactionListPageResponseTest {
                         )
                         .status(TransactionStatus.CREATED)
                         .type(IncomingTransaction.Type.INCOMING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
                             IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -53,23 +50,25 @@ internal class TransactionListPageResponseTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
                                 .gridApiFixedFee(10L)
                                 .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30.0)
+                                .gridApiVariableFeeAmount(30L)
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
                         .reconciliationInstructions(
-                            ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
-                        )
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(
-                            TransactionSourceOneOf.AccountTransactionSource.builder()
-                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .transactionHash(
+                                    "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                                )
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .source(TransactionSourceOneOf.builder().build())
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -84,11 +83,7 @@ internal class TransactionListPageResponseTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(
-                            IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .build()
-                        )
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -105,6 +100,7 @@ internal class TransactionListPageResponseTest {
                         )
                         .status(TransactionStatus.CREATED)
                         .type(IncomingTransaction.Type.INCOMING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
                             IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -115,23 +111,25 @@ internal class TransactionListPageResponseTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
                                 .gridApiFixedFee(10L)
                                 .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30.0)
+                                .gridApiVariableFeeAmount(30L)
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
                         .reconciliationInstructions(
-                            ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
-                        )
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(
-                            TransactionSourceOneOf.AccountTransactionSource.builder()
-                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .transactionHash(
+                                    "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                                )
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .source(TransactionSourceOneOf.builder().build())
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -150,11 +148,7 @@ internal class TransactionListPageResponseTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(
-                            IncomingTransaction.Destination.AccountTransactionDestination.builder()
-                                .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                                .build()
-                        )
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -171,6 +165,7 @@ internal class TransactionListPageResponseTest {
                         )
                         .status(TransactionStatus.CREATED)
                         .type(IncomingTransaction.Type.INCOMING)
+                        .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
                             IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -181,23 +176,25 @@ internal class TransactionListPageResponseTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                        .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
                                 .gridApiFixedFee(10L)
                                 .gridApiMultiplier(0.925)
-                                .gridApiVariableFeeAmount(30.0)
+                                .gridApiVariableFeeAmount(30L)
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
                         .reconciliationInstructions(
-                            ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
-                        )
-                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .source(
-                            TransactionSourceOneOf.AccountTransactionSource.builder()
-                                .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .transactionHash(
+                                    "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                                )
                                 .build()
                         )
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .source(TransactionSourceOneOf.builder().build())
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )

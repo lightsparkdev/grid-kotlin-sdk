@@ -37,7 +37,7 @@ internal class TzsExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+255712345678")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         assertThat(tzsExternalAccountCreateInfo.accountType())
@@ -67,7 +67,7 @@ internal class TzsExternalAccountCreateInfoTest {
                 )
             )
         assertThat(tzsExternalAccountCreateInfo.phoneNumber()).isEqualTo("+255712345678")
-        assertThat(tzsExternalAccountCreateInfo.provider()).isEqualTo("x")
+        assertThat(tzsExternalAccountCreateInfo.provider()).isEqualTo("Example Provider")
     }
 
     @Test
@@ -98,7 +98,7 @@ internal class TzsExternalAccountCreateInfoTest {
                         .build()
                 )
                 .phoneNumber("+255712345678")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         val roundtrippedTzsExternalAccountCreateInfo =

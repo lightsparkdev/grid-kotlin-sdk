@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
 import com.lightspark.grid.core.handlers.jsonHandler
@@ -17,6 +18,8 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.services.blocking.sandbox.CardService
+import com.lightspark.grid.services.blocking.sandbox.CardServiceImpl
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountServiceImpl
 import com.lightspark.grid.services.blocking.sandbox.UmaService
@@ -40,6 +43,8 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
 
     private val webhooks: WebhookService by lazy { WebhookServiceImpl(clientOptions) }
 
+    private val cards: CardService by lazy { CardServiceImpl(clientOptions) }
+
     override fun withRawResponse(): SandboxService.WithRawResponse = withRawResponse
 
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): SandboxService =
@@ -53,6 +58,8 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
 
     /** Endpoints to trigger test cases in sandbox */
     override fun webhooks(): WebhookService = webhooks
+
+    override fun cards(): CardService = cards
 
     override fun sendFunds(
         params: SandboxSendFundsParams,
@@ -79,6 +86,10 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
             WebhookServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val cards: CardService.WithRawResponse by lazy {
+            CardServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         override fun withOptions(
             modifier: (ClientOptions.Builder) -> Unit
         ): SandboxService.WithRawResponse =
@@ -95,6 +106,8 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
         /** Endpoints to trigger test cases in sandbox */
         override fun webhooks(): WebhookService.WithRawResponse = webhooks
 
+        override fun cards(): CardService.WithRawResponse = cards
+
         private val sendFundsHandler: Handler<OutgoingTransaction> =
             jsonHandler<OutgoingTransaction>(clientOptions.jsonMapper)
 
@@ -109,7 +122,11 @@ class SandboxServiceImpl internal constructor(private val clientOptions: ClientO
                     .addPathSegments("sandbox", "send")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

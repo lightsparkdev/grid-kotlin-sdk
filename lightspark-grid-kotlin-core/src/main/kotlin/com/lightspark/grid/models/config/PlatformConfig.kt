@@ -22,6 +22,7 @@ class PlatformConfig
 private constructor(
     private val id: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val embeddedWalletConfig: JsonField<EmbeddedWalletConfig>,
     private val isRegulatedFinancialInstitution: JsonField<Boolean>,
     private val proxyUmaSubdomain: JsonField<String>,
     private val supportedCurrencies: JsonField<List<PlatformCurrencyConfig>>,
@@ -37,6 +38,9 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("embeddedWalletConfig")
+        @ExcludeMissing
+        embeddedWalletConfig: JsonField<EmbeddedWalletConfig> = JsonMissing.of(),
         @JsonProperty("isRegulatedFinancialInstitution")
         @ExcludeMissing
         isRegulatedFinancialInstitution: JsonField<Boolean> = JsonMissing.of(),
@@ -56,6 +60,7 @@ private constructor(
     ) : this(
         id,
         createdAt,
+        embeddedWalletConfig,
         isRegulatedFinancialInstitution,
         proxyUmaSubdomain,
         supportedCurrencies,
@@ -80,6 +85,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime? = createdAt.getNullable("createdAt")
+
+    /**
+     * Embedded-wallet branding and OTP settings for this platform. Present only when the platform
+     * has configured embedded-wallet support; omitted otherwise.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun embeddedWalletConfig(): EmbeddedWalletConfig? =
+        embeddedWalletConfig.getNullable("embeddedWalletConfig")
 
     /**
      * Whether the platform is a regulated financial institution. This is used to determine if the
@@ -149,6 +164,16 @@ private constructor(
     @JsonProperty("createdAt")
     @ExcludeMissing
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+
+    /**
+     * Returns the raw JSON value of [embeddedWalletConfig].
+     *
+     * Unlike [embeddedWalletConfig], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("embeddedWalletConfig")
+    @ExcludeMissing
+    fun _embeddedWalletConfig(): JsonField<EmbeddedWalletConfig> = embeddedWalletConfig
 
     /**
      * Returns the raw JSON value of [isRegulatedFinancialInstitution].
@@ -228,6 +253,7 @@ private constructor(
 
         private var id: JsonField<String> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var embeddedWalletConfig: JsonField<EmbeddedWalletConfig> = JsonMissing.of()
         private var isRegulatedFinancialInstitution: JsonField<Boolean> = JsonMissing.of()
         private var proxyUmaSubdomain: JsonField<String> = JsonMissing.of()
         private var supportedCurrencies: JsonField<MutableList<PlatformCurrencyConfig>>? = null
@@ -239,6 +265,7 @@ private constructor(
         internal fun from(platformConfig: PlatformConfig) = apply {
             id = platformConfig.id
             createdAt = platformConfig.createdAt
+            embeddedWalletConfig = platformConfig.embeddedWalletConfig
             isRegulatedFinancialInstitution = platformConfig.isRegulatedFinancialInstitution
             proxyUmaSubdomain = platformConfig.proxyUmaSubdomain
             supportedCurrencies = platformConfig.supportedCurrencies.map { it.toMutableList() }
@@ -270,6 +297,24 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+
+        /**
+         * Embedded-wallet branding and OTP settings for this platform. Present only when the
+         * platform has configured embedded-wallet support; omitted otherwise.
+         */
+        fun embeddedWalletConfig(embeddedWalletConfig: EmbeddedWalletConfig) =
+            embeddedWalletConfig(JsonField.of(embeddedWalletConfig))
+
+        /**
+         * Sets [Builder.embeddedWalletConfig] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.embeddedWalletConfig] with a well-typed
+         * [EmbeddedWalletConfig] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun embeddedWalletConfig(embeddedWalletConfig: JsonField<EmbeddedWalletConfig>) = apply {
+            this.embeddedWalletConfig = embeddedWalletConfig
+        }
 
         /**
          * Whether the platform is a regulated financial institution. This is used to determine if
@@ -404,6 +449,7 @@ private constructor(
             PlatformConfig(
                 id,
                 createdAt,
+                embeddedWalletConfig,
                 isRegulatedFinancialInstitution,
                 proxyUmaSubdomain,
                 (supportedCurrencies ?: JsonMissing.of()).map { it.toImmutable() },
@@ -416,6 +462,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): PlatformConfig = apply {
         if (validated) {
             return@apply
@@ -423,6 +477,7 @@ private constructor(
 
         id()
         createdAt()
+        embeddedWalletConfig()?.validate()
         isRegulatedFinancialInstitution()
         proxyUmaSubdomain()
         supportedCurrencies()?.forEach { it.validate() }
@@ -448,6 +503,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (embeddedWalletConfig.asKnown()?.validity() ?: 0) +
             (if (isRegulatedFinancialInstitution.asKnown() == null) 0 else 1) +
             (if (proxyUmaSubdomain.asKnown() == null) 0 else 1) +
             (supportedCurrencies.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
@@ -463,6 +519,7 @@ private constructor(
         return other is PlatformConfig &&
             id == other.id &&
             createdAt == other.createdAt &&
+            embeddedWalletConfig == other.embeddedWalletConfig &&
             isRegulatedFinancialInstitution == other.isRegulatedFinancialInstitution &&
             proxyUmaSubdomain == other.proxyUmaSubdomain &&
             supportedCurrencies == other.supportedCurrencies &&
@@ -476,6 +533,7 @@ private constructor(
         Objects.hash(
             id,
             createdAt,
+            embeddedWalletConfig,
             isRegulatedFinancialInstitution,
             proxyUmaSubdomain,
             supportedCurrencies,
@@ -489,5 +547,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PlatformConfig{id=$id, createdAt=$createdAt, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
+        "PlatformConfig{id=$id, createdAt=$createdAt, embeddedWalletConfig=$embeddedWalletConfig, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
 }

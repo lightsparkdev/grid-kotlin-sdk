@@ -17,6 +17,7 @@ internal class DocumentUploadParamsTest {
             .documentType(DocumentUploadParams.DocumentType.PASSPORT)
             .file("Example data".byteInputStream())
             .documentNumber("A12345678")
+            .issuingAuthority("U.S. Department of State")
             .side(DocumentUploadParams.Side.FRONT)
             .build()
     }
@@ -30,6 +31,7 @@ internal class DocumentUploadParamsTest {
                 .documentType(DocumentUploadParams.DocumentType.PASSPORT)
                 .file("Example data".byteInputStream())
                 .documentNumber("A12345678")
+                .issuingAuthority("U.S. Department of State")
                 .side(DocumentUploadParams.Side.FRONT)
                 .build()
 
@@ -54,6 +56,7 @@ internal class DocumentUploadParamsTest {
                             MultipartField.of(DocumentUploadParams.DocumentType.PASSPORT),
                         "file" to MultipartField.of("Example data".byteInputStream()),
                         "documentNumber" to MultipartField.of("A12345678"),
+                        "issuingAuthority" to MultipartField.of("U.S. Department of State"),
                         "side" to MultipartField.of(DocumentUploadParams.Side.FRONT),
                     )
                     .mapValues { (_, field) ->

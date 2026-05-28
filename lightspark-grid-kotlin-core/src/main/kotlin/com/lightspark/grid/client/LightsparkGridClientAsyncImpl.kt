@@ -4,10 +4,14 @@ package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.getPackageVersion
+import com.lightspark.grid.services.async.AgentServiceAsync
+import com.lightspark.grid.services.async.AgentServiceAsyncImpl
 import com.lightspark.grid.services.async.AuthServiceAsync
 import com.lightspark.grid.services.async.AuthServiceAsyncImpl
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsync
 import com.lightspark.grid.services.async.BeneficialOwnerServiceAsyncImpl
+import com.lightspark.grid.services.async.CardServiceAsync
+import com.lightspark.grid.services.async.CardServiceAsyncImpl
 import com.lightspark.grid.services.async.ConfigServiceAsync
 import com.lightspark.grid.services.async.ConfigServiceAsyncImpl
 import com.lightspark.grid.services.async.CryptoServiceAsync
@@ -20,8 +24,6 @@ import com.lightspark.grid.services.async.DocumentServiceAsync
 import com.lightspark.grid.services.async.DocumentServiceAsyncImpl
 import com.lightspark.grid.services.async.ExchangeRateServiceAsync
 import com.lightspark.grid.services.async.ExchangeRateServiceAsyncImpl
-import com.lightspark.grid.services.async.InternalAccountServiceAsync
-import com.lightspark.grid.services.async.InternalAccountServiceAsyncImpl
 import com.lightspark.grid.services.async.InvitationServiceAsync
 import com.lightspark.grid.services.async.InvitationServiceAsyncImpl
 import com.lightspark.grid.services.async.PlatformServiceAsync
@@ -143,9 +145,11 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     private val auth: AuthServiceAsync by lazy { AuthServiceAsyncImpl(clientOptionsWithUserAgent) }
 
-    private val internalAccounts: InternalAccountServiceAsync by lazy {
-        InternalAccountServiceAsyncImpl(clientOptionsWithUserAgent)
+    private val agents: AgentServiceAsync by lazy {
+        AgentServiceAsyncImpl(clientOptionsWithUserAgent)
     }
+
+    private val cards: CardServiceAsync by lazy { CardServiceAsyncImpl(clientOptionsWithUserAgent) }
 
     override fun sync(): LightsparkGridClient = sync
 
@@ -234,8 +238,19 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     override fun auth(): AuthServiceAsync = auth
 
-    /** Internal account management endpoints for creating and managing internal accounts */
-    override fun internalAccounts(): InternalAccountServiceAsync = internalAccounts
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
+    override fun agents(): AgentServiceAsync = agents
+
+    /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    override fun cards(): CardServiceAsync = cards
 
     override fun close() = clientOptions.close()
 
@@ -322,8 +337,12 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
             AuthServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val internalAccounts: InternalAccountServiceAsync.WithRawResponse by lazy {
-            InternalAccountServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        private val agents: AgentServiceAsync.WithRawResponse by lazy {
+            AgentServiceAsyncImpl.WithRawResponseImpl(clientOptions)
+        }
+
+        private val cards: CardServiceAsync.WithRawResponse by lazy {
+            CardServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
         override fun withOptions(
@@ -414,8 +433,18 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         override fun auth(): AuthServiceAsync.WithRawResponse = auth
 
-        /** Internal account management endpoints for creating and managing internal accounts */
-        override fun internalAccounts(): InternalAccountServiceAsync.WithRawResponse =
-            internalAccounts
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
+        override fun agents(): AgentServiceAsync.WithRawResponse = agents
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        override fun cards(): CardServiceAsync.WithRawResponse = cards
     }
 }

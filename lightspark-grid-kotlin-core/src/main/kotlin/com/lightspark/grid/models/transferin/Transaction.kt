@@ -12,7 +12,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.transactions.IncomingTransaction
@@ -42,6 +41,30 @@ private constructor(
 
     fun _json(): JsonValue? = _json
 
+    /**
+     * Maps this instance's current variant to a value of type [T] using the given [visitor].
+     *
+     * Note that this method is _not_ forwards compatible with new variants from the API, unless
+     * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of the
+     * SDK gracefully, consider overriding [Visitor.unknown]:
+     * ```kotlin
+     * import com.lightspark.grid.core.JsonValue
+     *
+     * val result: String? = transaction.accept(object : Transaction.Visitor<String?> {
+     *     override fun visitIncoming(incoming: IncomingTransaction): String? = incoming.toString()
+     *
+     *     // ...
+     *
+     *     override fun unknown(json: JsonValue?): String? {
+     *         // Or inspect the `json`.
+     *         return null
+     *     }
+     * })
+     * ```
+     *
+     * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+     *   [visitor] and the current variant is unknown.
+     */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
             incoming != null -> visitor.visitIncoming(incoming)
@@ -51,6 +74,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): Transaction = apply {
         if (validated) {
             return@apply
@@ -148,29 +179,20 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val type = json.asObject()?.get("type")?.asString()
 
-            when (type) {}
-
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<IncomingTransaction>())?.let {
-                            Transaction(incoming = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<OutgoingTransaction>())?.let {
-                            Transaction(outgoing = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> Transaction(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+            when (type) {
+                "INCOMING" -> {
+                    return tryDeserialize(node, jacksonTypeRef<IncomingTransaction>())?.let {
+                        Transaction(incoming = it, _json = json)
+                    } ?: Transaction(_json = json)
+                }
+                "OUTGOING" -> {
+                    return tryDeserialize(node, jacksonTypeRef<OutgoingTransaction>())?.let {
+                        Transaction(outgoing = it, _json = json)
+                    } ?: Transaction(_json = json)
+                }
             }
+
+            return Transaction(_json = json)
         }
     }
 

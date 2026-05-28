@@ -15,13 +15,18 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-/** Details about the rate and fees for an incoming transaction. */
+/**
+ * Details about the rate and fees for an incoming transaction. Note: `gridApiFixedFee` is
+ * denominated in the receiving currency, so its equivalent value in the sending currency fluctuates
+ * with the FX rate. As a result, the total fee on a subsequent quote for the same transfer may
+ * differ even if the underlying fee structure is unchanged.
+ */
 class IncomingRateDetails
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val gridApiFixedFee: JsonField<Long>,
     private val gridApiMultiplier: JsonField<Double>,
-    private val gridApiVariableFeeAmount: JsonField<Double>,
+    private val gridApiVariableFeeAmount: JsonField<Long>,
     private val gridApiVariableFeeRate: JsonField<Double>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -36,7 +41,7 @@ private constructor(
         gridApiMultiplier: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("gridApiVariableFeeAmount")
         @ExcludeMissing
-        gridApiVariableFeeAmount: JsonField<Double> = JsonMissing.of(),
+        gridApiVariableFeeAmount: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("gridApiVariableFeeRate")
         @ExcludeMissing
         gridApiVariableFeeRate: JsonField<Double> = JsonMissing.of(),
@@ -73,7 +78,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun gridApiVariableFeeAmount(): Double =
+    fun gridApiVariableFeeAmount(): Long =
         gridApiVariableFeeAmount.getRequired("gridApiVariableFeeAmount")
 
     /**
@@ -113,7 +118,7 @@ private constructor(
      */
     @JsonProperty("gridApiVariableFeeAmount")
     @ExcludeMissing
-    fun _gridApiVariableFeeAmount(): JsonField<Double> = gridApiVariableFeeAmount
+    fun _gridApiVariableFeeAmount(): JsonField<Long> = gridApiVariableFeeAmount
 
     /**
      * Returns the raw JSON value of [gridApiVariableFeeRate].
@@ -158,7 +163,7 @@ private constructor(
 
         private var gridApiFixedFee: JsonField<Long>? = null
         private var gridApiMultiplier: JsonField<Double>? = null
-        private var gridApiVariableFeeAmount: JsonField<Double>? = null
+        private var gridApiVariableFeeAmount: JsonField<Long>? = null
         private var gridApiVariableFeeRate: JsonField<Double>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -210,17 +215,17 @@ private constructor(
          * unit of the receiving currency (eg. cents). This is the receiving amount times
          * gridApiVariableFeeRate.
          */
-        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: Double) =
+        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: Long) =
             gridApiVariableFeeAmount(JsonField.of(gridApiVariableFeeAmount))
 
         /**
          * Sets [Builder.gridApiVariableFeeAmount] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.gridApiVariableFeeAmount] with a well-typed [Double]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.gridApiVariableFeeAmount] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: JsonField<Double>) = apply {
+        fun gridApiVariableFeeAmount(gridApiVariableFeeAmount: JsonField<Long>) = apply {
             this.gridApiVariableFeeAmount = gridApiVariableFeeAmount
         }
 
@@ -288,6 +293,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): IncomingRateDetails = apply {
         if (validated) {
             return@apply

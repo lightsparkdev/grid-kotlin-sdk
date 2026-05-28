@@ -124,8 +124,6 @@ private constructor(
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
-     * Destination account details
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -140,7 +138,11 @@ private constructor(
     fun exchangeRate(): Double = exchangeRate.getRequired("exchangeRate")
 
     /**
-     * When this quote expires (typically 1-5 minutes after creation)
+     * Absolute UTC timestamp when the rate locked in this quote becomes invalid and the quote can
+     * no longer be executed. The window depends on the rail and corridor: instant rails (Lightning,
+     * Spark, USDC on Solana/Base/Polygon, RTP, SEPA Instant) typically expire in 1–5 minutes;
+     * corridors with longer settlement guarantees may have longer windows. Always rely on this
+     * timestamp rather than assuming a fixed window.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -149,6 +151,9 @@ private constructor(
 
     /**
      * The fees associated with the quote in the smallest unit of the sending currency (eg. cents).
+     * Note: this value may fluctuate between quotes — some underlying fee components are defined in
+     * the receiving currency, so their equivalent in the sending currency moves with the FX rate.
+     * The fees shown here are locked only for the lifetime of this quote.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -172,8 +177,6 @@ private constructor(
     fun sendingCurrency(): Currency = sendingCurrency.getRequired("sendingCurrency")
 
     /**
-     * Source account details
-     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -484,7 +487,6 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
-        /** Destination account details */
         fun destination(destination: QuoteDestinationOneOf) = destination(JsonField.of(destination))
 
         /**
@@ -497,20 +499,6 @@ private constructor(
         fun destination(destination: JsonField<QuoteDestinationOneOf>) = apply {
             this.destination = destination
         }
-
-        /**
-         * Alias for calling [destination] with
-         * `QuoteDestinationOneOf.ofAccountDestination(accountDestination)`.
-         */
-        fun destination(accountDestination: QuoteDestinationOneOf.AccountDestination) =
-            destination(QuoteDestinationOneOf.ofAccountDestination(accountDestination))
-
-        /**
-         * Alias for calling [destination] with
-         * `QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination)`.
-         */
-        fun destination(umaAddressDestination: QuoteDestinationOneOf.UmaAddressDestination) =
-            destination(QuoteDestinationOneOf.ofUmaAddressDestination(umaAddressDestination))
 
         /** Number of sending currency units per receiving currency unit. */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
@@ -526,7 +514,13 @@ private constructor(
             this.exchangeRate = exchangeRate
         }
 
-        /** When this quote expires (typically 1-5 minutes after creation) */
+        /**
+         * Absolute UTC timestamp when the rate locked in this quote becomes invalid and the quote
+         * can no longer be executed. The window depends on the rail and corridor: instant rails
+         * (Lightning, Spark, USDC on Solana/Base/Polygon, RTP, SEPA Instant) typically expire in
+         * 1–5 minutes; corridors with longer settlement guarantees may have longer windows. Always
+         * rely on this timestamp rather than assuming a fixed window.
+         */
         fun expiresAt(expiresAt: OffsetDateTime) = expiresAt(JsonField.of(expiresAt))
 
         /**
@@ -540,7 +534,9 @@ private constructor(
 
         /**
          * The fees associated with the quote in the smallest unit of the sending currency (eg.
-         * cents).
+         * cents). Note: this value may fluctuate between quotes — some underlying fee components
+         * are defined in the receiving currency, so their equivalent in the sending currency moves
+         * with the FX rate. The fees shown here are locked only for the lifetime of this quote.
          */
         fun feesIncluded(feesIncluded: Long) = feesIncluded(JsonField.of(feesIncluded))
 
@@ -583,7 +579,6 @@ private constructor(
             this.sendingCurrency = sendingCurrency
         }
 
-        /** Source account details */
         fun source(source: QuoteSourceOneOf) = source(JsonField.of(source))
 
         /**
@@ -594,20 +589,6 @@ private constructor(
          * supported value.
          */
         fun source(source: JsonField<QuoteSourceOneOf>) = apply { this.source = source }
-
-        /**
-         * Alias for calling [source] with
-         * `QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource)`.
-         */
-        fun source(accountQuoteSource: QuoteSourceOneOf.AccountQuoteSource) =
-            source(QuoteSourceOneOf.ofAccountQuoteSource(accountQuoteSource))
-
-        /**
-         * Alias for calling [source] with
-         * `QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource)`.
-         */
-        fun source(realtimeFundingQuoteSource: QuoteSourceOneOf.RealtimeFundingQuoteSource) =
-            source(QuoteSourceOneOf.ofRealtimeFundingQuoteSource(realtimeFundingQuoteSource))
 
         /** Current status of the quote */
         fun status(status: Status) = status(JsonField.of(status))
@@ -800,6 +781,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): Quote = apply {
         if (validated) {
             return@apply
@@ -807,13 +796,11 @@ private constructor(
 
         id()
         createdAt()
-        destination().validate()
         exchangeRate()
         expiresAt()
         feesIncluded()
         receivingCurrency().validate()
         sendingCurrency().validate()
-        source().validate()
         status().validate()
         totalReceivingAmount()
         totalSendingAmount()
@@ -840,13 +827,11 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
-            (destination.asKnown()?.validity() ?: 0) +
             (if (exchangeRate.asKnown() == null) 0 else 1) +
             (if (expiresAt.asKnown() == null) 0 else 1) +
             (if (feesIncluded.asKnown() == null) 0 else 1) +
             (receivingCurrency.asKnown()?.validity() ?: 0) +
             (sendingCurrency.asKnown()?.validity() ?: 0) +
-            (source.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (if (totalReceivingAmount.asKnown() == null) 0 else 1) +
             (if (totalSendingAmount.asKnown() == null) 0 else 1) +
@@ -961,6 +946,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Status = apply {
             if (validated) {
                 return@apply
@@ -1063,6 +1057,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): CounterpartyInformation = apply {
             if (validated) {
                 return@apply

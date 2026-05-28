@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.GbpAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,63 +14,10 @@ internal class GbpExternalAccountInfoTest {
     fun create() {
         val gbpExternalAccountInfo =
             GbpExternalAccountInfo.builder()
-                .accountNumber("12345678")
-                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
-                .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("123456")
-                .beneficiary(
-                    GbpBeneficiary.builder()
-                        .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("GBP_ACCOUNT"))
+                .putAdditionalProperty("sortCode", JsonValue.from("123456"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("12345678"))
                 .build()
-
-        assertThat(gbpExternalAccountInfo.accountNumber()).isEqualTo("12345678")
-        assertThat(gbpExternalAccountInfo.accountType())
-            .isEqualTo(GbpAccountInfo.AccountType.GBP_ACCOUNT)
-        assertThat(gbpExternalAccountInfo.paymentRails())
-            .containsExactly(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-        assertThat(gbpExternalAccountInfo.sortCode()).isEqualTo("123456")
-        assertThat(gbpExternalAccountInfo.beneficiary())
-            .isEqualTo(
-                GbpExternalAccountInfo.Beneficiary.ofIndividual(
-                    GbpBeneficiary.builder()
-                        .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
-            )
     }
 
     @Test
@@ -78,31 +25,9 @@ internal class GbpExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val gbpExternalAccountInfo =
             GbpExternalAccountInfo.builder()
-                .accountNumber("12345678")
-                .accountType(GbpAccountInfo.AccountType.GBP_ACCOUNT)
-                .addPaymentRail(GbpAccountInfo.PaymentRail.FASTER_PAYMENTS)
-                .sortCode("123456")
-                .beneficiary(
-                    GbpBeneficiary.builder()
-                        .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("GBP_ACCOUNT"))
+                .putAdditionalProperty("sortCode", JsonValue.from("123456"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("12345678"))
                 .build()
 
         val roundtrippedGbpExternalAccountInfo =

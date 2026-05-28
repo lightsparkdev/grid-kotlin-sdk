@@ -14,10 +14,9 @@ internal class GtqExternalAccountCreateInfoTest {
     fun create() {
         val gtqExternalAccountCreateInfo =
             GtqExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -41,12 +40,11 @@ internal class GtqExternalAccountCreateInfoTest {
                 )
                 .build()
 
-        assertThat(gtqExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
+        assertThat(gtqExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(gtqExternalAccountCreateInfo.accountType())
             .isEqualTo(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
         assertThat(gtqExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(gtqExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(gtqExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 GtqExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -78,10 +76,9 @@ internal class GtqExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val gtqExternalAccountCreateInfo =
             GtqExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("x")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)

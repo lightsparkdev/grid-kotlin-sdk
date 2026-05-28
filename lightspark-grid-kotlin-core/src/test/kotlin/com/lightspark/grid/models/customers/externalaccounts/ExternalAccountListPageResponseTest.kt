@@ -4,7 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
+import com.lightspark.grid.models.SlvBeneficiary
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -18,15 +18,10 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                .pixKey("x")
-                                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                                .taxId("26912511571360")
+                            ExternalAccountInfoOneOf.SlvAccount.builder()
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    SlvBeneficiary.builder()
+                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                         .fullName("fullName")
                                         .address(
                                             Address.builder()
@@ -45,6 +40,15 @@ internal class ExternalAccountListPageResponseTest {
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
+                                .addPaymentRail(
+                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                                )
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .currency("USD")
@@ -55,7 +59,6 @@ internal class ExternalAccountListPageResponseTest {
                         .beneficiaryVerifiedData(
                             BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
-                        .cryptoNetwork("SOLANA_MAINNET")
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")
@@ -71,15 +74,10 @@ internal class ExternalAccountListPageResponseTest {
                 ExternalAccount.builder()
                     .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                     .accountInfo(
-                        BrlExternalAccountInfo.builder()
-                            .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                            .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                            .pixKey("x")
-                            .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                            .taxId("26912511571360")
+                        ExternalAccountInfoOneOf.SlvAccount.builder()
                             .beneficiary(
-                                BrlBeneficiary.builder()
-                                    .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                SlvBeneficiary.builder()
+                                    .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                     .fullName("fullName")
                                     .address(
                                         Address.builder()
@@ -98,6 +96,15 @@ internal class ExternalAccountListPageResponseTest {
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
+                            .addPaymentRail(
+                                ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                            )
+                            .accountNumber("0123456789")
+                            .bankAccountType(
+                                ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                            )
+                            .bankName("Banco Cuscatlan")
+                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .currency("USD")
@@ -108,7 +115,6 @@ internal class ExternalAccountListPageResponseTest {
                     .beneficiaryVerifiedData(
                         BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                     )
-                    .cryptoNetwork("SOLANA_MAINNET")
                     .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                     .defaultUmaDepositAccount(false)
                     .platformAccountId("acc_123456789")
@@ -128,15 +134,10 @@ internal class ExternalAccountListPageResponseTest {
                     ExternalAccount.builder()
                         .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                         .accountInfo(
-                            BrlExternalAccountInfo.builder()
-                                .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                                .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                                .pixKey("x")
-                                .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                                .taxId("26912511571360")
+                            ExternalAccountInfoOneOf.SlvAccount.builder()
                                 .beneficiary(
-                                    BrlBeneficiary.builder()
-                                        .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    SlvBeneficiary.builder()
+                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                         .fullName("fullName")
                                         .address(
                                             Address.builder()
@@ -155,6 +156,15 @@ internal class ExternalAccountListPageResponseTest {
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
+                                .addPaymentRail(
+                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                                )
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .currency("USD")
@@ -165,7 +175,6 @@ internal class ExternalAccountListPageResponseTest {
                         .beneficiaryVerifiedData(
                             BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                         )
-                        .cryptoNetwork("SOLANA_MAINNET")
                         .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                         .defaultUmaDepositAccount(false)
                         .platformAccountId("acc_123456789")

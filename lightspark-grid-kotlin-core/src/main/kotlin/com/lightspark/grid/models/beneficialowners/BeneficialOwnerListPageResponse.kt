@@ -14,13 +14,14 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.BeneficialOwner
 import java.util.Collections
 import java.util.Objects
 
 class BeneficialOwnerListPageResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val data: JsonField<List<BeneficialOwnerListResponse>>,
+    private val data: JsonField<List<BeneficialOwner>>,
     private val hasMore: JsonField<Boolean>,
     private val nextCursor: JsonField<String>,
     private val totalCount: JsonField<Long>,
@@ -31,7 +32,7 @@ private constructor(
     private constructor(
         @JsonProperty("data")
         @ExcludeMissing
-        data: JsonField<List<BeneficialOwnerListResponse>> = JsonMissing.of(),
+        data: JsonField<List<BeneficialOwner>> = JsonMissing.of(),
         @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("nextCursor")
         @ExcludeMissing
@@ -45,7 +46,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): List<BeneficialOwnerListResponse> = data.getRequired("data")
+    fun data(): List<BeneficialOwner> = data.getRequired("data")
 
     /**
      * Indicates if more results are available beyond this page
@@ -76,9 +77,7 @@ private constructor(
      *
      * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data")
-    @ExcludeMissing
-    fun _data(): JsonField<List<BeneficialOwnerListResponse>> = data
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<BeneficialOwner>> = data
 
     /**
      * Returns the raw JSON value of [hasMore].
@@ -131,7 +130,7 @@ private constructor(
     /** A builder for [BeneficialOwnerListPageResponse]. */
     class Builder internal constructor() {
 
-        private var data: JsonField<MutableList<BeneficialOwnerListResponse>>? = null
+        private var data: JsonField<MutableList<BeneficialOwner>>? = null
         private var hasMore: JsonField<Boolean>? = null
         private var nextCursor: JsonField<String> = JsonMissing.of()
         private var totalCount: JsonField<Long> = JsonMissing.of()
@@ -148,25 +147,25 @@ private constructor(
             }
 
         /** List of beneficial owners matching the filter criteria */
-        fun data(data: List<BeneficialOwnerListResponse>) = data(JsonField.of(data))
+        fun data(data: List<BeneficialOwner>) = data(JsonField.of(data))
 
         /**
          * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed
-         * `List<BeneficialOwnerListResponse>` value instead. This method is primarily for setting
-         * the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.data] with a well-typed `List<BeneficialOwner>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun data(data: JsonField<List<BeneficialOwnerListResponse>>) = apply {
+        fun data(data: JsonField<List<BeneficialOwner>>) = apply {
             this.data = data.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [BeneficialOwnerListResponse] to [Builder.data].
+         * Adds a single [BeneficialOwner] to [Builder.data].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addData(data: BeneficialOwnerListResponse) = apply {
+        fun addData(data: BeneficialOwner) = apply {
             this.data =
                 (this.data ?: JsonField.of(mutableListOf())).also {
                     checkKnown("data", it).add(data)
@@ -251,6 +250,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): BeneficialOwnerListPageResponse = apply {
         if (validated) {
             return@apply

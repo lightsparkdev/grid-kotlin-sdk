@@ -14,9 +14,7 @@ internal class GhsExternalAccountCreateInfoTest {
     fun create() {
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -38,13 +36,12 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("1234567890")
                 .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
         assertThat(ghsExternalAccountCreateInfo.accountType())
             .isEqualTo(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-        assertThat(ghsExternalAccountCreateInfo.bankName()).isEqualTo("x")
         assertThat(ghsExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -69,6 +66,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .build()
                 )
             )
+        assertThat(ghsExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(ghsExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -77,9 +75,7 @@ internal class GhsExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val ghsExternalAccountCreateInfo =
             GhsExternalAccountCreateInfo.builder()
-                .accountNumber("x")
                 .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-                .bankName("x")
                 .beneficiary(
                     GhsBeneficiary.builder()
                         .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -101,6 +97,7 @@ internal class GhsExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .accountNumber("1234567890")
                 .phoneNumber("+1234567890")
                 .build()
 

@@ -20,23 +20,24 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.AedExternalAccountCreateInfo
+import com.lightspark.grid.models.BdtBeneficiary
 import com.lightspark.grid.models.BdtExternalAccountCreateInfo
 import com.lightspark.grid.models.BrlExternalAccountCreateInfo
 import com.lightspark.grid.models.BwpExternalAccountCreateInfo
 import com.lightspark.grid.models.CadExternalAccountCreateInfo
+import com.lightspark.grid.models.CopBeneficiary
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
-import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
+import com.lightspark.grid.models.GhsBeneficiary
 import com.lightspark.grid.models.GhsExternalAccountCreateInfo
 import com.lightspark.grid.models.GtqExternalAccountCreateInfo
 import com.lightspark.grid.models.HkdExternalAccountCreateInfo
@@ -50,9 +51,13 @@ import com.lightspark.grid.models.MxnExternalAccountCreateInfo
 import com.lightspark.grid.models.MyrExternalAccountCreateInfo
 import com.lightspark.grid.models.NgnExternalAccountCreateInfo
 import com.lightspark.grid.models.PhpExternalAccountCreateInfo
+import com.lightspark.grid.models.PkrBeneficiary
 import com.lightspark.grid.models.PkrExternalAccountCreateInfo
 import com.lightspark.grid.models.RwfExternalAccountCreateInfo
 import com.lightspark.grid.models.SgdExternalAccountCreateInfo
+import com.lightspark.grid.models.SlvBeneficiary
+import com.lightspark.grid.models.SlvExternalAccountCreateInfo
+import com.lightspark.grid.models.SwiftExternalAccountCreateInfo
 import com.lightspark.grid.models.ThbExternalAccountCreateInfo
 import com.lightspark.grid.models.TzsExternalAccountCreateInfo
 import com.lightspark.grid.models.UgxExternalAccountCreateInfo
@@ -62,12 +67,7 @@ import com.lightspark.grid.models.XafExternalAccountCreateInfo
 import com.lightspark.grid.models.XofExternalAccountCreateInfo
 import com.lightspark.grid.models.ZarExternalAccountCreateInfo
 import com.lightspark.grid.models.ZmwExternalAccountCreateInfo
-import com.lightspark.grid.models.customers.externalaccounts.BaseWalletInfo
-import com.lightspark.grid.models.customers.externalaccounts.LightningWalletInfo
-import com.lightspark.grid.models.customers.externalaccounts.PolygonWalletInfo
-import com.lightspark.grid.models.customers.externalaccounts.SolanaWalletInfo
-import com.lightspark.grid.models.customers.externalaccounts.SparkWalletInfo
-import com.lightspark.grid.models.customers.externalaccounts.TronWalletInfo
+import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
 import java.util.Collections
 import java.util.Objects
 
@@ -80,8 +80,9 @@ private constructor(
 ) : Params {
 
     /**
-     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
-     * be provided.
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: accountNumber
+     * - MOBILE_MONEY: phoneNumber
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -176,8 +177,9 @@ private constructor(
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
          */
         fun accountInfo(accountInfo: AccountInfo) = apply { body.accountInfo(accountInfo) }
 
@@ -197,6 +199,66 @@ private constructor(
             body.accountInfo(aedAccount)
         }
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
+        fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) = apply {
+            body.accountInfo(bdtAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * BdtExternalAccountCreateInfo.builder()
+         *     .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun bdtAccountAccountInfo(beneficiary: BdtExternalAccountCreateInfo.Beneficiary) = apply {
+            body.bdtAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with
+         * `BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun bdtAccountAccountInfo(individual: BdtBeneficiary) = apply {
+            body.bdtAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with the following:
+         * ```kotlin
+         * BdtBeneficiary.builder()
+         *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualBdtAccountAccountInfo(fullName: String) = apply {
+            body.individualBdtAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with
+         * `BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun bdtAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.bdtAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [bdtAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessBdtAccountAccountInfo(legalName: String) = apply {
+            body.businessBdtAccountAccountInfo(legalName)
+        }
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofBrlAccount(brlAccount)`. */
         fun accountInfo(brlAccount: BrlExternalAccountCreateInfo) = apply {
             body.accountInfo(brlAccount)
@@ -212,9 +274,74 @@ private constructor(
             body.accountInfo(cadAccount)
         }
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
+        fun accountInfo(copAccount: CopExternalAccountCreateInfo) = apply {
+            body.accountInfo(copAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * CopExternalAccountCreateInfo.builder()
+         *     .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun copAccountAccountInfo(beneficiary: CopExternalAccountCreateInfo.Beneficiary) = apply {
+            body.copAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with
+         * `CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun copAccountAccountInfo(individual: CopBeneficiary) = apply {
+            body.copAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with the following:
+         * ```kotlin
+         * CopBeneficiary.builder()
+         *     .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualCopAccountAccountInfo(fullName: String) = apply {
+            body.individualCopAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with
+         * `CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun copAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.copAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [copAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessCopAccountAccountInfo(legalName: String) = apply {
+            body.businessCopAccountAccountInfo(legalName)
+        }
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofDkkAccount(dkkAccount)`. */
         fun accountInfo(dkkAccount: DkkExternalAccountCreateInfo) = apply {
             body.accountInfo(dkkAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
+        fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) = apply {
+            body.accountInfo(egpAccount)
         }
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
@@ -227,9 +354,79 @@ private constructor(
             body.accountInfo(gbpAccount)
         }
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
+        fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) = apply {
+            body.accountInfo(ghsAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * GhsExternalAccountCreateInfo.builder()
+         *     .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun ghsAccountAccountInfo(beneficiary: GhsExternalAccountCreateInfo.Beneficiary) = apply {
+            body.ghsAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with
+         * `GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun ghsAccountAccountInfo(individual: GhsBeneficiary) = apply {
+            body.ghsAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with the following:
+         * ```kotlin
+         * GhsBeneficiary.builder()
+         *     .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualGhsAccountAccountInfo(fullName: String) = apply {
+            body.individualGhsAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with
+         * `GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun ghsAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.ghsAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [ghsAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessGhsAccountAccountInfo(legalName: String) = apply {
+            body.businessGhsAccountAccountInfo(legalName)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
+        fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) = apply {
+            body.accountInfo(gtqAccount)
+        }
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofHkdAccount(hkdAccount)`. */
         fun accountInfo(hkdAccount: HkdExternalAccountCreateInfo) = apply {
             body.accountInfo(hkdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
+        fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) = apply {
+            body.accountInfo(htgAccount)
         }
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofIdrAccount(idrAccount)`. */
@@ -240,6 +437,11 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofInrAccount(inrAccount)`. */
         fun accountInfo(inrAccount: InrExternalAccountCreateInfo) = apply {
             body.accountInfo(inrAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
+        fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) = apply {
+            body.accountInfo(jmdAccount)
         }
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofKesAccount(kesAccount)`. */
@@ -272,6 +474,66 @@ private constructor(
             body.accountInfo(phpAccount)
         }
 
+        /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
+        fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) = apply {
+            body.accountInfo(pkrAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * PkrExternalAccountCreateInfo.builder()
+         *     .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun pkrAccountAccountInfo(beneficiary: PkrExternalAccountCreateInfo.Beneficiary) = apply {
+            body.pkrAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with
+         * `PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun pkrAccountAccountInfo(individual: PkrBeneficiary) = apply {
+            body.pkrAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with the following:
+         * ```kotlin
+         * PkrBeneficiary.builder()
+         *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualPkrAccountAccountInfo(fullName: String) = apply {
+            body.individualPkrAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with
+         * `PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun pkrAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.pkrAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [pkrAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessPkrAccountAccountInfo(legalName: String) = apply {
+            body.businessPkrAccountAccountInfo(legalName)
+        }
+
         /** Alias for calling [accountInfo] with `AccountInfo.ofRwfAccount(rwfAccount)`. */
         fun accountInfo(rwfAccount: RwfExternalAccountCreateInfo) = apply {
             body.accountInfo(rwfAccount)
@@ -280,6 +542,66 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofSgdAccount(sgdAccount)`. */
         fun accountInfo(sgdAccount: SgdExternalAccountCreateInfo) = apply {
             body.accountInfo(sgdAccount)
+        }
+
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSlvAccount(slvAccount)`. */
+        fun accountInfo(slvAccount: SlvExternalAccountCreateInfo) = apply {
+            body.accountInfo(slvAccount)
+        }
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * SlvExternalAccountCreateInfo.builder()
+         *     .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun slvAccountAccountInfo(beneficiary: SlvExternalAccountCreateInfo.Beneficiary) = apply {
+            body.slvAccountAccountInfo(beneficiary)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with
+         * `SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun slvAccountAccountInfo(individual: SlvBeneficiary) = apply {
+            body.slvAccountAccountInfo(individual)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with the following:
+         * ```kotlin
+         * SlvBeneficiary.builder()
+         *     .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualSlvAccountAccountInfo(fullName: String) = apply {
+            body.individualSlvAccountAccountInfo(fullName)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with
+         * `SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun slvAccountAccountInfo(business: BusinessBeneficiary) = apply {
+            body.slvAccountAccountInfo(business)
+        }
+
+        /**
+         * Alias for calling [slvAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessSlvAccountAccountInfo(legalName: String) = apply {
+            body.businessSlvAccountAccountInfo(legalName)
         }
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofThbAccount(thbAccount)`. */
@@ -327,76 +649,9 @@ private constructor(
             body.accountInfo(zmwAccount)
         }
 
-        /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
-        fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) = apply {
-            body.accountInfo(bdtAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
-        fun accountInfo(copAccount: CopExternalAccountCreateInfo) = apply {
-            body.accountInfo(copAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
-        fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) = apply {
-            body.accountInfo(egpAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
-        fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) = apply {
-            body.accountInfo(ghsAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
-        fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) = apply {
-            body.accountInfo(gtqAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
-        fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) = apply {
-            body.accountInfo(htgAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
-        fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) = apply {
-            body.accountInfo(jmdAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
-        fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) = apply {
-            body.accountInfo(pkrAccount)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofSparkWallet(sparkWallet)`. */
-        fun accountInfo(sparkWallet: SparkWalletInfo) = apply { body.accountInfo(sparkWallet) }
-
-        /**
-         * Alias for calling [accountInfo] with `AccountInfo.ofLightningWallet(lightningWallet)`.
-         */
-        fun accountInfo(lightningWallet: LightningWalletInfo) = apply {
-            body.accountInfo(lightningWallet)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofSolanaWallet(solanaWallet)`. */
-        fun accountInfo(solanaWallet: SolanaWalletInfo) = apply { body.accountInfo(solanaWallet) }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofTronWallet(tronWallet)`. */
-        fun accountInfo(tronWallet: TronWalletInfo) = apply { body.accountInfo(tronWallet) }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofPolygonWallet(polygonWallet)`. */
-        fun accountInfo(polygonWallet: PolygonWalletInfo) = apply {
-            body.accountInfo(polygonWallet)
-        }
-
-        /** Alias for calling [accountInfo] with `AccountInfo.ofBaseWallet(baseWallet)`. */
-        fun accountInfo(baseWallet: BaseWalletInfo) = apply { body.accountInfo(baseWallet) }
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal)`.
-         */
-        fun accountInfo(ethereumWalletExternal: EthereumWalletExternalAccountInfo) = apply {
-            body.accountInfo(ethereumWalletExternal)
+        /** Alias for calling [accountInfo] with `AccountInfo.ofSwiftAccount(swiftAccount)`. */
+        fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) = apply {
+            body.accountInfo(swiftAccount)
         }
 
         /** The ISO 4217 currency code */
@@ -596,8 +851,9 @@ private constructor(
         ) : this(accountInfo, currency, platformAccountId, mutableMapOf())
 
         /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -689,8 +945,9 @@ private constructor(
             }
 
             /**
-             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
-             * `lightningAddress` must be provided.
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: phoneNumber
              */
             fun accountInfo(accountInfo: AccountInfo) = accountInfo(JsonField.of(accountInfo))
 
@@ -709,6 +966,77 @@ private constructor(
             fun accountInfo(aedAccount: AedExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofAedAccount(aedAccount))
 
+            /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
+            fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofBdtAccount(bdtAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * BdtExternalAccountCreateInfo.builder()
+             *     .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun bdtAccountAccountInfo(beneficiary: BdtExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    BdtExternalAccountCreateInfo.builder()
+                        .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [bdtAccountAccountInfo] with
+             * `BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun bdtAccountAccountInfo(individual: BdtBeneficiary) =
+                bdtAccountAccountInfo(
+                    BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [bdtAccountAccountInfo] with the following:
+             * ```kotlin
+             * BdtBeneficiary.builder()
+             *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualBdtAccountAccountInfo(fullName: String) =
+                bdtAccountAccountInfo(
+                    BdtBeneficiary.builder()
+                        .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [bdtAccountAccountInfo] with
+             * `BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun bdtAccountAccountInfo(business: BusinessBeneficiary) =
+                bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [bdtAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessBdtAccountAccountInfo(legalName: String) =
+                bdtAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
+
             /** Alias for calling [accountInfo] with `AccountInfo.ofBrlAccount(brlAccount)`. */
             fun accountInfo(brlAccount: BrlExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofBrlAccount(brlAccount))
@@ -721,9 +1049,84 @@ private constructor(
             fun accountInfo(cadAccount: CadExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofCadAccount(cadAccount))
 
+            /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
+            fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofCopAccount(copAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * CopExternalAccountCreateInfo.builder()
+             *     .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun copAccountAccountInfo(beneficiary: CopExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    CopExternalAccountCreateInfo.builder()
+                        .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with
+             * `CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun copAccountAccountInfo(individual: CopBeneficiary) =
+                copAccountAccountInfo(
+                    CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with the following:
+             * ```kotlin
+             * CopBeneficiary.builder()
+             *     .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualCopAccountAccountInfo(fullName: String) =
+                copAccountAccountInfo(
+                    CopBeneficiary.builder()
+                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with
+             * `CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun copAccountAccountInfo(business: BusinessBeneficiary) =
+                copAccountAccountInfo(CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [copAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessCopAccountAccountInfo(legalName: String) =
+                copAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
+
             /** Alias for calling [accountInfo] with `AccountInfo.ofDkkAccount(dkkAccount)`. */
             fun accountInfo(dkkAccount: DkkExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofDkkAccount(dkkAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
+            fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofEgpAccount(egpAccount))
 
             /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
             fun accountInfo(eurAccount: EurExternalAccountCreateInfo) =
@@ -733,9 +1136,88 @@ private constructor(
             fun accountInfo(gbpAccount: GbpExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofGbpAccount(gbpAccount))
 
+            /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
+            fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofGhsAccount(ghsAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * GhsExternalAccountCreateInfo.builder()
+             *     .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun ghsAccountAccountInfo(beneficiary: GhsExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    GhsExternalAccountCreateInfo.builder()
+                        .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [ghsAccountAccountInfo] with
+             * `GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun ghsAccountAccountInfo(individual: GhsBeneficiary) =
+                ghsAccountAccountInfo(
+                    GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [ghsAccountAccountInfo] with the following:
+             * ```kotlin
+             * GhsBeneficiary.builder()
+             *     .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualGhsAccountAccountInfo(fullName: String) =
+                ghsAccountAccountInfo(
+                    GhsBeneficiary.builder()
+                        .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [ghsAccountAccountInfo] with
+             * `GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun ghsAccountAccountInfo(business: BusinessBeneficiary) =
+                ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [ghsAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessGhsAccountAccountInfo(legalName: String) =
+                ghsAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
+            fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofGtqAccount(gtqAccount))
+
             /** Alias for calling [accountInfo] with `AccountInfo.ofHkdAccount(hkdAccount)`. */
             fun accountInfo(hkdAccount: HkdExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofHkdAccount(hkdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
+            fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofHtgAccount(htgAccount))
 
             /** Alias for calling [accountInfo] with `AccountInfo.ofIdrAccount(idrAccount)`. */
             fun accountInfo(idrAccount: IdrExternalAccountCreateInfo) =
@@ -744,6 +1226,10 @@ private constructor(
             /** Alias for calling [accountInfo] with `AccountInfo.ofInrAccount(inrAccount)`. */
             fun accountInfo(inrAccount: InrExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofInrAccount(inrAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
+            fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofJmdAccount(jmdAccount))
 
             /** Alias for calling [accountInfo] with `AccountInfo.ofKesAccount(kesAccount)`. */
             fun accountInfo(kesAccount: KesExternalAccountCreateInfo) =
@@ -769,6 +1255,77 @@ private constructor(
             fun accountInfo(phpAccount: PhpExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofPhpAccount(phpAccount))
 
+            /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
+            fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofPkrAccount(pkrAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * PkrExternalAccountCreateInfo.builder()
+             *     .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun pkrAccountAccountInfo(beneficiary: PkrExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    PkrExternalAccountCreateInfo.builder()
+                        .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [pkrAccountAccountInfo] with
+             * `PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun pkrAccountAccountInfo(individual: PkrBeneficiary) =
+                pkrAccountAccountInfo(
+                    PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [pkrAccountAccountInfo] with the following:
+             * ```kotlin
+             * PkrBeneficiary.builder()
+             *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualPkrAccountAccountInfo(fullName: String) =
+                pkrAccountAccountInfo(
+                    PkrBeneficiary.builder()
+                        .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [pkrAccountAccountInfo] with
+             * `PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun pkrAccountAccountInfo(business: BusinessBeneficiary) =
+                pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [pkrAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessPkrAccountAccountInfo(legalName: String) =
+                pkrAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
+
             /** Alias for calling [accountInfo] with `AccountInfo.ofRwfAccount(rwfAccount)`. */
             fun accountInfo(rwfAccount: RwfExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofRwfAccount(rwfAccount))
@@ -776,6 +1333,77 @@ private constructor(
             /** Alias for calling [accountInfo] with `AccountInfo.ofSgdAccount(sgdAccount)`. */
             fun accountInfo(sgdAccount: SgdExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofSgdAccount(sgdAccount))
+
+            /** Alias for calling [accountInfo] with `AccountInfo.ofSlvAccount(slvAccount)`. */
+            fun accountInfo(slvAccount: SlvExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofSlvAccount(slvAccount))
+
+            /**
+             * Alias for calling [accountInfo] with the following:
+             * ```kotlin
+             * SlvExternalAccountCreateInfo.builder()
+             *     .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+             *     .beneficiary(beneficiary)
+             *     .build()
+             * ```
+             */
+            fun slvAccountAccountInfo(beneficiary: SlvExternalAccountCreateInfo.Beneficiary) =
+                accountInfo(
+                    SlvExternalAccountCreateInfo.builder()
+                        .accountType(SlvExternalAccountCreateInfo.AccountType.SLV_ACCOUNT)
+                        .beneficiary(beneficiary)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with
+             * `SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+             */
+            fun slvAccountAccountInfo(individual: SlvBeneficiary) =
+                slvAccountAccountInfo(
+                    SlvExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with the following:
+             * ```kotlin
+             * SlvBeneficiary.builder()
+             *     .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+             *     .fullName(fullName)
+             *     .build()
+             * ```
+             */
+            fun individualSlvAccountAccountInfo(fullName: String) =
+                slvAccountAccountInfo(
+                    SlvBeneficiary.builder()
+                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName(fullName)
+                        .build()
+                )
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with
+             * `SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+             */
+            fun slvAccountAccountInfo(business: BusinessBeneficiary) =
+                slvAccountAccountInfo(SlvExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+            /**
+             * Alias for calling [slvAccountAccountInfo] with the following:
+             * ```kotlin
+             * BusinessBeneficiary.builder()
+             *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+             *     .legalName(legalName)
+             *     .build()
+             * ```
+             */
+            fun businessSlvAccountAccountInfo(legalName: String) =
+                slvAccountAccountInfo(
+                    BusinessBeneficiary.builder()
+                        .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                        .legalName(legalName)
+                        .build()
+                )
 
             /** Alias for calling [accountInfo] with `AccountInfo.ofThbAccount(thbAccount)`. */
             fun accountInfo(thbAccount: ThbExternalAccountCreateInfo) =
@@ -813,73 +1441,9 @@ private constructor(
             fun accountInfo(zmwAccount: ZmwExternalAccountCreateInfo) =
                 accountInfo(AccountInfo.ofZmwAccount(zmwAccount))
 
-            /** Alias for calling [accountInfo] with `AccountInfo.ofBdtAccount(bdtAccount)`. */
-            fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofBdtAccount(bdtAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofCopAccount(copAccount)`. */
-            fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofCopAccount(copAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
-            fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofEgpAccount(egpAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
-            fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofGhsAccount(ghsAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
-            fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofGtqAccount(gtqAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofHtgAccount(htgAccount)`. */
-            fun accountInfo(htgAccount: HtgExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofHtgAccount(htgAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
-            fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofJmdAccount(jmdAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
-            fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) =
-                accountInfo(AccountInfo.ofPkrAccount(pkrAccount))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofSparkWallet(sparkWallet)`. */
-            fun accountInfo(sparkWallet: SparkWalletInfo) =
-                accountInfo(AccountInfo.ofSparkWallet(sparkWallet))
-
-            /**
-             * Alias for calling [accountInfo] with
-             * `AccountInfo.ofLightningWallet(lightningWallet)`.
-             */
-            fun accountInfo(lightningWallet: LightningWalletInfo) =
-                accountInfo(AccountInfo.ofLightningWallet(lightningWallet))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofSolanaWallet(solanaWallet)`. */
-            fun accountInfo(solanaWallet: SolanaWalletInfo) =
-                accountInfo(AccountInfo.ofSolanaWallet(solanaWallet))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofTronWallet(tronWallet)`. */
-            fun accountInfo(tronWallet: TronWalletInfo) =
-                accountInfo(AccountInfo.ofTronWallet(tronWallet))
-
-            /**
-             * Alias for calling [accountInfo] with `AccountInfo.ofPolygonWallet(polygonWallet)`.
-             */
-            fun accountInfo(polygonWallet: PolygonWalletInfo) =
-                accountInfo(AccountInfo.ofPolygonWallet(polygonWallet))
-
-            /** Alias for calling [accountInfo] with `AccountInfo.ofBaseWallet(baseWallet)`. */
-            fun accountInfo(baseWallet: BaseWalletInfo) =
-                accountInfo(AccountInfo.ofBaseWallet(baseWallet))
-
-            /**
-             * Alias for calling [accountInfo] with
-             * `AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal)`.
-             */
-            fun accountInfo(ethereumWalletExternal: EthereumWalletExternalAccountInfo) =
-                accountInfo(AccountInfo.ofEthereumWalletExternal(ethereumWalletExternal))
+            /** Alias for calling [accountInfo] with `AccountInfo.ofSwiftAccount(swiftAccount)`. */
+            fun accountInfo(swiftAccount: SwiftExternalAccountCreateInfo) =
+                accountInfo(AccountInfo.ofSwiftAccount(swiftAccount))
 
             /** The ISO 4217 currency code */
             fun currency(currency: String) = currency(JsonField.of(currency))
@@ -954,6 +1518,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
@@ -1007,31 +1580,41 @@ private constructor(
     }
 
     /**
-     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
-     * be provided.
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: accountNumber
+     * - MOBILE_MONEY: phoneNumber
      */
     @JsonDeserialize(using = AccountInfo.Deserializer::class)
     @JsonSerialize(using = AccountInfo.Serializer::class)
     class AccountInfo
     private constructor(
         private val aedAccount: AedExternalAccountCreateInfo? = null,
+        private val bdtAccount: BdtExternalAccountCreateInfo? = null,
         private val brlAccount: BrlExternalAccountCreateInfo? = null,
         private val bwpAccount: BwpExternalAccountCreateInfo? = null,
         private val cadAccount: CadExternalAccountCreateInfo? = null,
+        private val copAccount: CopExternalAccountCreateInfo? = null,
         private val dkkAccount: DkkExternalAccountCreateInfo? = null,
+        private val egpAccount: EgpExternalAccountCreateInfo? = null,
         private val eurAccount: EurExternalAccountCreateInfo? = null,
         private val gbpAccount: GbpExternalAccountCreateInfo? = null,
+        private val ghsAccount: GhsExternalAccountCreateInfo? = null,
+        private val gtqAccount: GtqExternalAccountCreateInfo? = null,
         private val hkdAccount: HkdExternalAccountCreateInfo? = null,
+        private val htgAccount: HtgExternalAccountCreateInfo? = null,
         private val idrAccount: IdrExternalAccountCreateInfo? = null,
         private val inrAccount: InrExternalAccountCreateInfo? = null,
+        private val jmdAccount: JmdExternalAccountCreateInfo? = null,
         private val kesAccount: KesExternalAccountCreateInfo? = null,
         private val mwkAccount: MwkExternalAccountCreateInfo? = null,
         private val mxnAccount: MxnExternalAccountCreateInfo? = null,
         private val myrAccount: MyrExternalAccountCreateInfo? = null,
         private val ngnAccount: NgnExternalAccountCreateInfo? = null,
         private val phpAccount: PhpExternalAccountCreateInfo? = null,
+        private val pkrAccount: PkrExternalAccountCreateInfo? = null,
         private val rwfAccount: RwfExternalAccountCreateInfo? = null,
         private val sgdAccount: SgdExternalAccountCreateInfo? = null,
+        private val slvAccount: SlvExternalAccountCreateInfo? = null,
         private val thbAccount: ThbExternalAccountCreateInfo? = null,
         private val tzsAccount: TzsExternalAccountCreateInfo? = null,
         private val ugxAccount: UgxExternalAccountCreateInfo? = null,
@@ -1041,25 +1624,18 @@ private constructor(
         private val xofAccount: XofExternalAccountCreateInfo? = null,
         private val zarAccount: ZarExternalAccountCreateInfo? = null,
         private val zmwAccount: ZmwExternalAccountCreateInfo? = null,
-        private val bdtAccount: BdtExternalAccountCreateInfo? = null,
-        private val copAccount: CopExternalAccountCreateInfo? = null,
-        private val egpAccount: EgpExternalAccountCreateInfo? = null,
-        private val ghsAccount: GhsExternalAccountCreateInfo? = null,
-        private val gtqAccount: GtqExternalAccountCreateInfo? = null,
-        private val htgAccount: HtgExternalAccountCreateInfo? = null,
-        private val jmdAccount: JmdExternalAccountCreateInfo? = null,
-        private val pkrAccount: PkrExternalAccountCreateInfo? = null,
-        private val sparkWallet: SparkWalletInfo? = null,
-        private val lightningWallet: LightningWalletInfo? = null,
-        private val solanaWallet: SolanaWalletInfo? = null,
-        private val tronWallet: TronWalletInfo? = null,
-        private val polygonWallet: PolygonWalletInfo? = null,
-        private val baseWallet: BaseWalletInfo? = null,
-        private val ethereumWalletExternal: EthereumWalletExternalAccountInfo? = null,
+        private val swiftAccount: SwiftExternalAccountCreateInfo? = null,
         private val _json: JsonValue? = null,
     ) {
 
         fun aedAccount(): AedExternalAccountCreateInfo? = aedAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun bdtAccount(): BdtExternalAccountCreateInfo? = bdtAccount
 
         fun brlAccount(): BrlExternalAccountCreateInfo? = brlAccount
 
@@ -1067,17 +1643,39 @@ private constructor(
 
         fun cadAccount(): CadExternalAccountCreateInfo? = cadAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun copAccount(): CopExternalAccountCreateInfo? = copAccount
+
         fun dkkAccount(): DkkExternalAccountCreateInfo? = dkkAccount
+
+        fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
 
         fun eurAccount(): EurExternalAccountCreateInfo? = eurAccount
 
         fun gbpAccount(): GbpExternalAccountCreateInfo? = gbpAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun ghsAccount(): GhsExternalAccountCreateInfo? = ghsAccount
+
+        fun gtqAccount(): GtqExternalAccountCreateInfo? = gtqAccount
+
         fun hkdAccount(): HkdExternalAccountCreateInfo? = hkdAccount
+
+        fun htgAccount(): HtgExternalAccountCreateInfo? = htgAccount
 
         fun idrAccount(): IdrExternalAccountCreateInfo? = idrAccount
 
         fun inrAccount(): InrExternalAccountCreateInfo? = inrAccount
+
+        fun jmdAccount(): JmdExternalAccountCreateInfo? = jmdAccount
 
         fun kesAccount(): KesExternalAccountCreateInfo? = kesAccount
 
@@ -1091,9 +1689,23 @@ private constructor(
 
         fun phpAccount(): PhpExternalAccountCreateInfo? = phpAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun pkrAccount(): PkrExternalAccountCreateInfo? = pkrAccount
+
         fun rwfAccount(): RwfExternalAccountCreateInfo? = rwfAccount
 
         fun sgdAccount(): SgdExternalAccountCreateInfo? = sgdAccount
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun slvAccount(): SlvExternalAccountCreateInfo? = slvAccount
 
         fun thbAccount(): ThbExternalAccountCreateInfo? = thbAccount
 
@@ -1113,41 +1725,11 @@ private constructor(
 
         fun zmwAccount(): ZmwExternalAccountCreateInfo? = zmwAccount
 
-        fun bdtAccount(): BdtExternalAccountCreateInfo? = bdtAccount
-
-        fun copAccount(): CopExternalAccountCreateInfo? = copAccount
-
-        fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
-
-        fun ghsAccount(): GhsExternalAccountCreateInfo? = ghsAccount
-
-        fun gtqAccount(): GtqExternalAccountCreateInfo? = gtqAccount
-
-        fun htgAccount(): HtgExternalAccountCreateInfo? = htgAccount
-
-        fun jmdAccount(): JmdExternalAccountCreateInfo? = jmdAccount
-
-        fun pkrAccount(): PkrExternalAccountCreateInfo? = pkrAccount
-
-        fun sparkWallet(): SparkWalletInfo? = sparkWallet
-
-        /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
-         */
-        fun lightningWallet(): LightningWalletInfo? = lightningWallet
-
-        fun solanaWallet(): SolanaWalletInfo? = solanaWallet
-
-        fun tronWallet(): TronWalletInfo? = tronWallet
-
-        fun polygonWallet(): PolygonWalletInfo? = polygonWallet
-
-        fun baseWallet(): BaseWalletInfo? = baseWallet
-
-        fun ethereumWalletExternal(): EthereumWalletExternalAccountInfo? = ethereumWalletExternal
+        fun swiftAccount(): SwiftExternalAccountCreateInfo? = swiftAccount
 
         fun isAedAccount(): Boolean = aedAccount != null
+
+        fun isBdtAccount(): Boolean = bdtAccount != null
 
         fun isBrlAccount(): Boolean = brlAccount != null
 
@@ -1155,17 +1737,29 @@ private constructor(
 
         fun isCadAccount(): Boolean = cadAccount != null
 
+        fun isCopAccount(): Boolean = copAccount != null
+
         fun isDkkAccount(): Boolean = dkkAccount != null
+
+        fun isEgpAccount(): Boolean = egpAccount != null
 
         fun isEurAccount(): Boolean = eurAccount != null
 
         fun isGbpAccount(): Boolean = gbpAccount != null
 
+        fun isGhsAccount(): Boolean = ghsAccount != null
+
+        fun isGtqAccount(): Boolean = gtqAccount != null
+
         fun isHkdAccount(): Boolean = hkdAccount != null
+
+        fun isHtgAccount(): Boolean = htgAccount != null
 
         fun isIdrAccount(): Boolean = idrAccount != null
 
         fun isInrAccount(): Boolean = inrAccount != null
+
+        fun isJmdAccount(): Boolean = jmdAccount != null
 
         fun isKesAccount(): Boolean = kesAccount != null
 
@@ -1179,9 +1773,13 @@ private constructor(
 
         fun isPhpAccount(): Boolean = phpAccount != null
 
+        fun isPkrAccount(): Boolean = pkrAccount != null
+
         fun isRwfAccount(): Boolean = rwfAccount != null
 
         fun isSgdAccount(): Boolean = sgdAccount != null
+
+        fun isSlvAccount(): Boolean = slvAccount != null
 
         fun isThbAccount(): Boolean = thbAccount != null
 
@@ -1201,37 +1799,16 @@ private constructor(
 
         fun isZmwAccount(): Boolean = zmwAccount != null
 
-        fun isBdtAccount(): Boolean = bdtAccount != null
-
-        fun isCopAccount(): Boolean = copAccount != null
-
-        fun isEgpAccount(): Boolean = egpAccount != null
-
-        fun isGhsAccount(): Boolean = ghsAccount != null
-
-        fun isGtqAccount(): Boolean = gtqAccount != null
-
-        fun isHtgAccount(): Boolean = htgAccount != null
-
-        fun isJmdAccount(): Boolean = jmdAccount != null
-
-        fun isPkrAccount(): Boolean = pkrAccount != null
-
-        fun isSparkWallet(): Boolean = sparkWallet != null
-
-        fun isLightningWallet(): Boolean = lightningWallet != null
-
-        fun isSolanaWallet(): Boolean = solanaWallet != null
-
-        fun isTronWallet(): Boolean = tronWallet != null
-
-        fun isPolygonWallet(): Boolean = polygonWallet != null
-
-        fun isBaseWallet(): Boolean = baseWallet != null
-
-        fun isEthereumWalletExternal(): Boolean = ethereumWalletExternal != null
+        fun isSwiftAccount(): Boolean = swiftAccount != null
 
         fun asAedAccount(): AedExternalAccountCreateInfo = aedAccount.getOrThrow("aedAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun asBdtAccount(): BdtExternalAccountCreateInfo = bdtAccount.getOrThrow("bdtAccount")
 
         fun asBrlAccount(): BrlExternalAccountCreateInfo = brlAccount.getOrThrow("brlAccount")
 
@@ -1239,17 +1816,39 @@ private constructor(
 
         fun asCadAccount(): CadExternalAccountCreateInfo = cadAccount.getOrThrow("cadAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
+
         fun asDkkAccount(): DkkExternalAccountCreateInfo = dkkAccount.getOrThrow("dkkAccount")
+
+        fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
 
         fun asEurAccount(): EurExternalAccountCreateInfo = eurAccount.getOrThrow("eurAccount")
 
         fun asGbpAccount(): GbpExternalAccountCreateInfo = gbpAccount.getOrThrow("gbpAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun asGhsAccount(): GhsExternalAccountCreateInfo = ghsAccount.getOrThrow("ghsAccount")
+
+        fun asGtqAccount(): GtqExternalAccountCreateInfo = gtqAccount.getOrThrow("gtqAccount")
+
         fun asHkdAccount(): HkdExternalAccountCreateInfo = hkdAccount.getOrThrow("hkdAccount")
+
+        fun asHtgAccount(): HtgExternalAccountCreateInfo = htgAccount.getOrThrow("htgAccount")
 
         fun asIdrAccount(): IdrExternalAccountCreateInfo = idrAccount.getOrThrow("idrAccount")
 
         fun asInrAccount(): InrExternalAccountCreateInfo = inrAccount.getOrThrow("inrAccount")
+
+        fun asJmdAccount(): JmdExternalAccountCreateInfo = jmdAccount.getOrThrow("jmdAccount")
 
         fun asKesAccount(): KesExternalAccountCreateInfo = kesAccount.getOrThrow("kesAccount")
 
@@ -1263,9 +1862,23 @@ private constructor(
 
         fun asPhpAccount(): PhpExternalAccountCreateInfo = phpAccount.getOrThrow("phpAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber
+         * - MOBILE_MONEY: bankName, phoneNumber
+         */
+        fun asPkrAccount(): PkrExternalAccountCreateInfo = pkrAccount.getOrThrow("pkrAccount")
+
         fun asRwfAccount(): RwfExternalAccountCreateInfo = rwfAccount.getOrThrow("rwfAccount")
 
         fun asSgdAccount(): SgdExternalAccountCreateInfo = sgdAccount.getOrThrow("sgdAccount")
+
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
+        fun asSlvAccount(): SlvExternalAccountCreateInfo = slvAccount.getOrThrow("slvAccount")
 
         fun asThbAccount(): ThbExternalAccountCreateInfo = thbAccount.getOrThrow("thbAccount")
 
@@ -1285,63 +1898,64 @@ private constructor(
 
         fun asZmwAccount(): ZmwExternalAccountCreateInfo = zmwAccount.getOrThrow("zmwAccount")
 
-        fun asBdtAccount(): BdtExternalAccountCreateInfo = bdtAccount.getOrThrow("bdtAccount")
-
-        fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
-
-        fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
-
-        fun asGhsAccount(): GhsExternalAccountCreateInfo = ghsAccount.getOrThrow("ghsAccount")
-
-        fun asGtqAccount(): GtqExternalAccountCreateInfo = gtqAccount.getOrThrow("gtqAccount")
-
-        fun asHtgAccount(): HtgExternalAccountCreateInfo = htgAccount.getOrThrow("htgAccount")
-
-        fun asJmdAccount(): JmdExternalAccountCreateInfo = jmdAccount.getOrThrow("jmdAccount")
-
-        fun asPkrAccount(): PkrExternalAccountCreateInfo = pkrAccount.getOrThrow("pkrAccount")
-
-        fun asSparkWallet(): SparkWalletInfo = sparkWallet.getOrThrow("sparkWallet")
-
-        /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
-         */
-        fun asLightningWallet(): LightningWalletInfo = lightningWallet.getOrThrow("lightningWallet")
-
-        fun asSolanaWallet(): SolanaWalletInfo = solanaWallet.getOrThrow("solanaWallet")
-
-        fun asTronWallet(): TronWalletInfo = tronWallet.getOrThrow("tronWallet")
-
-        fun asPolygonWallet(): PolygonWalletInfo = polygonWallet.getOrThrow("polygonWallet")
-
-        fun asBaseWallet(): BaseWalletInfo = baseWallet.getOrThrow("baseWallet")
-
-        fun asEthereumWalletExternal(): EthereumWalletExternalAccountInfo =
-            ethereumWalletExternal.getOrThrow("ethereumWalletExternal")
+        fun asSwiftAccount(): SwiftExternalAccountCreateInfo =
+            swiftAccount.getOrThrow("swiftAccount")
 
         fun _json(): JsonValue? = _json
 
+        /**
+         * Maps this instance's current variant to a value of type [T] using the given [visitor].
+         *
+         * Note that this method is _not_ forwards compatible with new variants from the API, unless
+         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
+         * the SDK gracefully, consider overriding [Visitor.unknown]:
+         * ```kotlin
+         * import com.lightspark.grid.core.JsonValue
+         *
+         * val result: String? = accountInfo.accept(object : AccountInfo.Visitor<String?> {
+         *     override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo): String? = aedAccount.toString()
+         *
+         *     // ...
+         *
+         *     override fun unknown(json: JsonValue?): String? {
+         *         // Or inspect the `json`.
+         *         return null
+         *     }
+         * })
+         * ```
+         *
+         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+         *   [visitor] and the current variant is unknown.
+         */
         fun <T> accept(visitor: Visitor<T>): T =
             when {
                 aedAccount != null -> visitor.visitAedAccount(aedAccount)
+                bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
                 brlAccount != null -> visitor.visitBrlAccount(brlAccount)
                 bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
                 cadAccount != null -> visitor.visitCadAccount(cadAccount)
+                copAccount != null -> visitor.visitCopAccount(copAccount)
                 dkkAccount != null -> visitor.visitDkkAccount(dkkAccount)
+                egpAccount != null -> visitor.visitEgpAccount(egpAccount)
                 eurAccount != null -> visitor.visitEurAccount(eurAccount)
                 gbpAccount != null -> visitor.visitGbpAccount(gbpAccount)
+                ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
+                gtqAccount != null -> visitor.visitGtqAccount(gtqAccount)
                 hkdAccount != null -> visitor.visitHkdAccount(hkdAccount)
+                htgAccount != null -> visitor.visitHtgAccount(htgAccount)
                 idrAccount != null -> visitor.visitIdrAccount(idrAccount)
                 inrAccount != null -> visitor.visitInrAccount(inrAccount)
+                jmdAccount != null -> visitor.visitJmdAccount(jmdAccount)
                 kesAccount != null -> visitor.visitKesAccount(kesAccount)
                 mwkAccount != null -> visitor.visitMwkAccount(mwkAccount)
                 mxnAccount != null -> visitor.visitMxnAccount(mxnAccount)
                 myrAccount != null -> visitor.visitMyrAccount(myrAccount)
                 ngnAccount != null -> visitor.visitNgnAccount(ngnAccount)
                 phpAccount != null -> visitor.visitPhpAccount(phpAccount)
+                pkrAccount != null -> visitor.visitPkrAccount(pkrAccount)
                 rwfAccount != null -> visitor.visitRwfAccount(rwfAccount)
                 sgdAccount != null -> visitor.visitSgdAccount(sgdAccount)
+                slvAccount != null -> visitor.visitSlvAccount(slvAccount)
                 thbAccount != null -> visitor.visitThbAccount(thbAccount)
                 tzsAccount != null -> visitor.visitTzsAccount(tzsAccount)
                 ugxAccount != null -> visitor.visitUgxAccount(ugxAccount)
@@ -1351,27 +1965,21 @@ private constructor(
                 xofAccount != null -> visitor.visitXofAccount(xofAccount)
                 zarAccount != null -> visitor.visitZarAccount(zarAccount)
                 zmwAccount != null -> visitor.visitZmwAccount(zmwAccount)
-                bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
-                copAccount != null -> visitor.visitCopAccount(copAccount)
-                egpAccount != null -> visitor.visitEgpAccount(egpAccount)
-                ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
-                gtqAccount != null -> visitor.visitGtqAccount(gtqAccount)
-                htgAccount != null -> visitor.visitHtgAccount(htgAccount)
-                jmdAccount != null -> visitor.visitJmdAccount(jmdAccount)
-                pkrAccount != null -> visitor.visitPkrAccount(pkrAccount)
-                sparkWallet != null -> visitor.visitSparkWallet(sparkWallet)
-                lightningWallet != null -> visitor.visitLightningWallet(lightningWallet)
-                solanaWallet != null -> visitor.visitSolanaWallet(solanaWallet)
-                tronWallet != null -> visitor.visitTronWallet(tronWallet)
-                polygonWallet != null -> visitor.visitPolygonWallet(polygonWallet)
-                baseWallet != null -> visitor.visitBaseWallet(baseWallet)
-                ethereumWalletExternal != null ->
-                    visitor.visitEthereumWalletExternal(ethereumWalletExternal)
+                swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
                 else -> visitor.unknown(_json)
             }
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): AccountInfo = apply {
             if (validated) {
                 return@apply
@@ -1381,6 +1989,10 @@ private constructor(
                 object : Visitor<Unit> {
                     override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo) {
                         aedAccount.validate()
+                    }
+
+                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) {
+                        bdtAccount.validate()
                     }
 
                     override fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo) {
@@ -1395,8 +2007,16 @@ private constructor(
                         cadAccount.validate()
                     }
 
+                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) {
+                        copAccount.validate()
+                    }
+
                     override fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) {
                         dkkAccount.validate()
+                    }
+
+                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) {
+                        egpAccount.validate()
                     }
 
                     override fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo) {
@@ -1407,8 +2027,20 @@ private constructor(
                         gbpAccount.validate()
                     }
 
+                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) {
+                        ghsAccount.validate()
+                    }
+
+                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) {
+                        gtqAccount.validate()
+                    }
+
                     override fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) {
                         hkdAccount.validate()
+                    }
+
+                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) {
+                        htgAccount.validate()
                     }
 
                     override fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo) {
@@ -1417,6 +2049,10 @@ private constructor(
 
                     override fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo) {
                         inrAccount.validate()
+                    }
+
+                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) {
+                        jmdAccount.validate()
                     }
 
                     override fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo) {
@@ -1443,12 +2079,20 @@ private constructor(
                         phpAccount.validate()
                     }
 
+                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) {
+                        pkrAccount.validate()
+                    }
+
                     override fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) {
                         rwfAccount.validate()
                     }
 
                     override fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) {
                         sgdAccount.validate()
+                    }
+
+                    override fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo) {
+                        slvAccount.validate()
                     }
 
                     override fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo) {
@@ -1487,66 +2131,8 @@ private constructor(
                         zmwAccount.validate()
                     }
 
-                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) {
-                        bdtAccount.validate()
-                    }
-
-                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) {
-                        copAccount.validate()
-                    }
-
-                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) {
-                        egpAccount.validate()
-                    }
-
-                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) {
-                        ghsAccount.validate()
-                    }
-
-                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) {
-                        gtqAccount.validate()
-                    }
-
-                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) {
-                        htgAccount.validate()
-                    }
-
-                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) {
-                        jmdAccount.validate()
-                    }
-
-                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) {
-                        pkrAccount.validate()
-                    }
-
-                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) {
-                        sparkWallet.validate()
-                    }
-
-                    override fun visitLightningWallet(lightningWallet: LightningWalletInfo) {
-                        lightningWallet.validate()
-                    }
-
-                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) {
-                        solanaWallet.validate()
-                    }
-
-                    override fun visitTronWallet(tronWallet: TronWalletInfo) {
-                        tronWallet.validate()
-                    }
-
-                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) {
-                        polygonWallet.validate()
-                    }
-
-                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) {
-                        baseWallet.validate()
-                    }
-
-                    override fun visitEthereumWalletExternal(
-                        ethereumWalletExternal: EthereumWalletExternalAccountInfo
-                    ) {
-                        ethereumWalletExternal.validate()
+                    override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) {
+                        swiftAccount.validate()
                     }
                 }
             )
@@ -1573,6 +2159,9 @@ private constructor(
                     override fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo) =
                         aedAccount.validity()
 
+                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
+                        bdtAccount.validity()
+
                     override fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo) =
                         brlAccount.validity()
 
@@ -1582,8 +2171,14 @@ private constructor(
                     override fun visitCadAccount(cadAccount: CadExternalAccountCreateInfo) =
                         cadAccount.validity()
 
+                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) =
+                        copAccount.validity()
+
                     override fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
                         dkkAccount.validity()
+
+                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
+                        egpAccount.validity()
 
                     override fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo) =
                         eurAccount.validity()
@@ -1591,14 +2186,26 @@ private constructor(
                     override fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) =
                         gbpAccount.validity()
 
+                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
+                        ghsAccount.validity()
+
+                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
+                        gtqAccount.validity()
+
                     override fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) =
                         hkdAccount.validity()
+
+                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
+                        htgAccount.validity()
 
                     override fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
                         idrAccount.validity()
 
                     override fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo) =
                         inrAccount.validity()
+
+                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
+                        jmdAccount.validity()
 
                     override fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo) =
                         kesAccount.validity()
@@ -1618,11 +2225,17 @@ private constructor(
                     override fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo) =
                         phpAccount.validity()
 
+                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
+                        pkrAccount.validity()
+
                     override fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) =
                         rwfAccount.validity()
 
                     override fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) =
                         sgdAccount.validity()
+
+                    override fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo) =
+                        slvAccount.validity()
 
                     override fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo) =
                         thbAccount.validity()
@@ -1651,49 +2264,8 @@ private constructor(
                     override fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
                         zmwAccount.validity()
 
-                    override fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
-                        bdtAccount.validity()
-
-                    override fun visitCopAccount(copAccount: CopExternalAccountCreateInfo) =
-                        copAccount.validity()
-
-                    override fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
-                        egpAccount.validity()
-
-                    override fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
-                        ghsAccount.validity()
-
-                    override fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
-                        gtqAccount.validity()
-
-                    override fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
-                        htgAccount.validity()
-
-                    override fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
-                        jmdAccount.validity()
-
-                    override fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
-                        pkrAccount.validity()
-
-                    override fun visitSparkWallet(sparkWallet: SparkWalletInfo) =
-                        sparkWallet.validity()
-
-                    override fun visitLightningWallet(lightningWallet: LightningWalletInfo) =
-                        lightningWallet.validity()
-
-                    override fun visitSolanaWallet(solanaWallet: SolanaWalletInfo) =
-                        solanaWallet.validity()
-
-                    override fun visitTronWallet(tronWallet: TronWalletInfo) = tronWallet.validity()
-
-                    override fun visitPolygonWallet(polygonWallet: PolygonWalletInfo) =
-                        polygonWallet.validity()
-
-                    override fun visitBaseWallet(baseWallet: BaseWalletInfo) = baseWallet.validity()
-
-                    override fun visitEthereumWalletExternal(
-                        ethereumWalletExternal: EthereumWalletExternalAccountInfo
-                    ) = ethereumWalletExternal.validity()
+                    override fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
+                        swiftAccount.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -1706,23 +2278,32 @@ private constructor(
 
             return other is AccountInfo &&
                 aedAccount == other.aedAccount &&
+                bdtAccount == other.bdtAccount &&
                 brlAccount == other.brlAccount &&
                 bwpAccount == other.bwpAccount &&
                 cadAccount == other.cadAccount &&
+                copAccount == other.copAccount &&
                 dkkAccount == other.dkkAccount &&
+                egpAccount == other.egpAccount &&
                 eurAccount == other.eurAccount &&
                 gbpAccount == other.gbpAccount &&
+                ghsAccount == other.ghsAccount &&
+                gtqAccount == other.gtqAccount &&
                 hkdAccount == other.hkdAccount &&
+                htgAccount == other.htgAccount &&
                 idrAccount == other.idrAccount &&
                 inrAccount == other.inrAccount &&
+                jmdAccount == other.jmdAccount &&
                 kesAccount == other.kesAccount &&
                 mwkAccount == other.mwkAccount &&
                 mxnAccount == other.mxnAccount &&
                 myrAccount == other.myrAccount &&
                 ngnAccount == other.ngnAccount &&
                 phpAccount == other.phpAccount &&
+                pkrAccount == other.pkrAccount &&
                 rwfAccount == other.rwfAccount &&
                 sgdAccount == other.sgdAccount &&
+                slvAccount == other.slvAccount &&
                 thbAccount == other.thbAccount &&
                 tzsAccount == other.tzsAccount &&
                 ugxAccount == other.ugxAccount &&
@@ -1732,43 +2313,38 @@ private constructor(
                 xofAccount == other.xofAccount &&
                 zarAccount == other.zarAccount &&
                 zmwAccount == other.zmwAccount &&
-                bdtAccount == other.bdtAccount &&
-                copAccount == other.copAccount &&
-                egpAccount == other.egpAccount &&
-                ghsAccount == other.ghsAccount &&
-                gtqAccount == other.gtqAccount &&
-                htgAccount == other.htgAccount &&
-                jmdAccount == other.jmdAccount &&
-                pkrAccount == other.pkrAccount &&
-                sparkWallet == other.sparkWallet &&
-                lightningWallet == other.lightningWallet &&
-                solanaWallet == other.solanaWallet &&
-                tronWallet == other.tronWallet &&
-                polygonWallet == other.polygonWallet &&
-                baseWallet == other.baseWallet &&
-                ethereumWalletExternal == other.ethereumWalletExternal
+                swiftAccount == other.swiftAccount
         }
 
         override fun hashCode(): Int =
             Objects.hash(
                 aedAccount,
+                bdtAccount,
                 brlAccount,
                 bwpAccount,
                 cadAccount,
+                copAccount,
                 dkkAccount,
+                egpAccount,
                 eurAccount,
                 gbpAccount,
+                ghsAccount,
+                gtqAccount,
                 hkdAccount,
+                htgAccount,
                 idrAccount,
                 inrAccount,
+                jmdAccount,
                 kesAccount,
                 mwkAccount,
                 mxnAccount,
                 myrAccount,
                 ngnAccount,
                 phpAccount,
+                pkrAccount,
                 rwfAccount,
                 sgdAccount,
+                slvAccount,
                 thbAccount,
                 tzsAccount,
                 ugxAccount,
@@ -1778,43 +2354,38 @@ private constructor(
                 xofAccount,
                 zarAccount,
                 zmwAccount,
-                bdtAccount,
-                copAccount,
-                egpAccount,
-                ghsAccount,
-                gtqAccount,
-                htgAccount,
-                jmdAccount,
-                pkrAccount,
-                sparkWallet,
-                lightningWallet,
-                solanaWallet,
-                tronWallet,
-                polygonWallet,
-                baseWallet,
-                ethereumWalletExternal,
+                swiftAccount,
             )
 
         override fun toString(): String =
             when {
                 aedAccount != null -> "AccountInfo{aedAccount=$aedAccount}"
+                bdtAccount != null -> "AccountInfo{bdtAccount=$bdtAccount}"
                 brlAccount != null -> "AccountInfo{brlAccount=$brlAccount}"
                 bwpAccount != null -> "AccountInfo{bwpAccount=$bwpAccount}"
                 cadAccount != null -> "AccountInfo{cadAccount=$cadAccount}"
+                copAccount != null -> "AccountInfo{copAccount=$copAccount}"
                 dkkAccount != null -> "AccountInfo{dkkAccount=$dkkAccount}"
+                egpAccount != null -> "AccountInfo{egpAccount=$egpAccount}"
                 eurAccount != null -> "AccountInfo{eurAccount=$eurAccount}"
                 gbpAccount != null -> "AccountInfo{gbpAccount=$gbpAccount}"
+                ghsAccount != null -> "AccountInfo{ghsAccount=$ghsAccount}"
+                gtqAccount != null -> "AccountInfo{gtqAccount=$gtqAccount}"
                 hkdAccount != null -> "AccountInfo{hkdAccount=$hkdAccount}"
+                htgAccount != null -> "AccountInfo{htgAccount=$htgAccount}"
                 idrAccount != null -> "AccountInfo{idrAccount=$idrAccount}"
                 inrAccount != null -> "AccountInfo{inrAccount=$inrAccount}"
+                jmdAccount != null -> "AccountInfo{jmdAccount=$jmdAccount}"
                 kesAccount != null -> "AccountInfo{kesAccount=$kesAccount}"
                 mwkAccount != null -> "AccountInfo{mwkAccount=$mwkAccount}"
                 mxnAccount != null -> "AccountInfo{mxnAccount=$mxnAccount}"
                 myrAccount != null -> "AccountInfo{myrAccount=$myrAccount}"
                 ngnAccount != null -> "AccountInfo{ngnAccount=$ngnAccount}"
                 phpAccount != null -> "AccountInfo{phpAccount=$phpAccount}"
+                pkrAccount != null -> "AccountInfo{pkrAccount=$pkrAccount}"
                 rwfAccount != null -> "AccountInfo{rwfAccount=$rwfAccount}"
                 sgdAccount != null -> "AccountInfo{sgdAccount=$sgdAccount}"
+                slvAccount != null -> "AccountInfo{slvAccount=$slvAccount}"
                 thbAccount != null -> "AccountInfo{thbAccount=$thbAccount}"
                 tzsAccount != null -> "AccountInfo{tzsAccount=$tzsAccount}"
                 ugxAccount != null -> "AccountInfo{ugxAccount=$ugxAccount}"
@@ -1824,22 +2395,7 @@ private constructor(
                 xofAccount != null -> "AccountInfo{xofAccount=$xofAccount}"
                 zarAccount != null -> "AccountInfo{zarAccount=$zarAccount}"
                 zmwAccount != null -> "AccountInfo{zmwAccount=$zmwAccount}"
-                bdtAccount != null -> "AccountInfo{bdtAccount=$bdtAccount}"
-                copAccount != null -> "AccountInfo{copAccount=$copAccount}"
-                egpAccount != null -> "AccountInfo{egpAccount=$egpAccount}"
-                ghsAccount != null -> "AccountInfo{ghsAccount=$ghsAccount}"
-                gtqAccount != null -> "AccountInfo{gtqAccount=$gtqAccount}"
-                htgAccount != null -> "AccountInfo{htgAccount=$htgAccount}"
-                jmdAccount != null -> "AccountInfo{jmdAccount=$jmdAccount}"
-                pkrAccount != null -> "AccountInfo{pkrAccount=$pkrAccount}"
-                sparkWallet != null -> "AccountInfo{sparkWallet=$sparkWallet}"
-                lightningWallet != null -> "AccountInfo{lightningWallet=$lightningWallet}"
-                solanaWallet != null -> "AccountInfo{solanaWallet=$solanaWallet}"
-                tronWallet != null -> "AccountInfo{tronWallet=$tronWallet}"
-                polygonWallet != null -> "AccountInfo{polygonWallet=$polygonWallet}"
-                baseWallet != null -> "AccountInfo{baseWallet=$baseWallet}"
-                ethereumWalletExternal != null ->
-                    "AccountInfo{ethereumWalletExternal=$ethereumWalletExternal}"
+                swiftAccount != null -> "AccountInfo{swiftAccount=$swiftAccount}"
                 _json != null -> "AccountInfo{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid AccountInfo")
             }
@@ -1848,6 +2404,14 @@ private constructor(
 
             fun ofAedAccount(aedAccount: AedExternalAccountCreateInfo) =
                 AccountInfo(aedAccount = aedAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun ofBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
+                AccountInfo(bdtAccount = bdtAccount)
 
             fun ofBrlAccount(brlAccount: BrlExternalAccountCreateInfo) =
                 AccountInfo(brlAccount = brlAccount)
@@ -1858,8 +2422,19 @@ private constructor(
             fun ofCadAccount(cadAccount: CadExternalAccountCreateInfo) =
                 AccountInfo(cadAccount = cadAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
+                AccountInfo(copAccount = copAccount)
+
             fun ofDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
                 AccountInfo(dkkAccount = dkkAccount)
+
+            fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
+                AccountInfo(egpAccount = egpAccount)
 
             fun ofEurAccount(eurAccount: EurExternalAccountCreateInfo) =
                 AccountInfo(eurAccount = eurAccount)
@@ -1867,14 +2442,31 @@ private constructor(
             fun ofGbpAccount(gbpAccount: GbpExternalAccountCreateInfo) =
                 AccountInfo(gbpAccount = gbpAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun ofGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
+                AccountInfo(ghsAccount = ghsAccount)
+
+            fun ofGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
+                AccountInfo(gtqAccount = gtqAccount)
+
             fun ofHkdAccount(hkdAccount: HkdExternalAccountCreateInfo) =
                 AccountInfo(hkdAccount = hkdAccount)
+
+            fun ofHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
+                AccountInfo(htgAccount = htgAccount)
 
             fun ofIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
                 AccountInfo(idrAccount = idrAccount)
 
             fun ofInrAccount(inrAccount: InrExternalAccountCreateInfo) =
                 AccountInfo(inrAccount = inrAccount)
+
+            fun ofJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
+                AccountInfo(jmdAccount = jmdAccount)
 
             fun ofKesAccount(kesAccount: KesExternalAccountCreateInfo) =
                 AccountInfo(kesAccount = kesAccount)
@@ -1894,11 +2486,27 @@ private constructor(
             fun ofPhpAccount(phpAccount: PhpExternalAccountCreateInfo) =
                 AccountInfo(phpAccount = phpAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun ofPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
+                AccountInfo(pkrAccount = pkrAccount)
+
             fun ofRwfAccount(rwfAccount: RwfExternalAccountCreateInfo) =
                 AccountInfo(rwfAccount = rwfAccount)
 
             fun ofSgdAccount(sgdAccount: SgdExternalAccountCreateInfo) =
                 AccountInfo(sgdAccount = sgdAccount)
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankAccountType, accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun ofSlvAccount(slvAccount: SlvExternalAccountCreateInfo) =
+                AccountInfo(slvAccount = slvAccount)
 
             fun ofThbAccount(thbAccount: ThbExternalAccountCreateInfo) =
                 AccountInfo(thbAccount = thbAccount)
@@ -1927,52 +2535,8 @@ private constructor(
             fun ofZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
                 AccountInfo(zmwAccount = zmwAccount)
 
-            fun ofBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
-                AccountInfo(bdtAccount = bdtAccount)
-
-            fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
-                AccountInfo(copAccount = copAccount)
-
-            fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
-                AccountInfo(egpAccount = egpAccount)
-
-            fun ofGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
-                AccountInfo(ghsAccount = ghsAccount)
-
-            fun ofGtqAccount(gtqAccount: GtqExternalAccountCreateInfo) =
-                AccountInfo(gtqAccount = gtqAccount)
-
-            fun ofHtgAccount(htgAccount: HtgExternalAccountCreateInfo) =
-                AccountInfo(htgAccount = htgAccount)
-
-            fun ofJmdAccount(jmdAccount: JmdExternalAccountCreateInfo) =
-                AccountInfo(jmdAccount = jmdAccount)
-
-            fun ofPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
-                AccountInfo(pkrAccount = pkrAccount)
-
-            fun ofSparkWallet(sparkWallet: SparkWalletInfo) = AccountInfo(sparkWallet = sparkWallet)
-
-            /**
-             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
-             * `lightningAddress` must be provided.
-             */
-            fun ofLightningWallet(lightningWallet: LightningWalletInfo) =
-                AccountInfo(lightningWallet = lightningWallet)
-
-            fun ofSolanaWallet(solanaWallet: SolanaWalletInfo) =
-                AccountInfo(solanaWallet = solanaWallet)
-
-            fun ofTronWallet(tronWallet: TronWalletInfo) = AccountInfo(tronWallet = tronWallet)
-
-            fun ofPolygonWallet(polygonWallet: PolygonWalletInfo) =
-                AccountInfo(polygonWallet = polygonWallet)
-
-            fun ofBaseWallet(baseWallet: BaseWalletInfo) = AccountInfo(baseWallet = baseWallet)
-
-            fun ofEthereumWalletExternal(
-                ethereumWalletExternal: EthereumWalletExternalAccountInfo
-            ) = AccountInfo(ethereumWalletExternal = ethereumWalletExternal)
+            fun ofSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
+                AccountInfo(swiftAccount = swiftAccount)
         }
 
         /**
@@ -1983,23 +2547,52 @@ private constructor(
 
             fun visitAedAccount(aedAccount: AedExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo): T
+
             fun visitBrlAccount(brlAccount: BrlExternalAccountCreateInfo): T
 
             fun visitBwpAccount(bwpAccount: BwpExternalAccountCreateInfo): T
 
             fun visitCadAccount(cadAccount: CadExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
+
             fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo): T
+
+            fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
 
             fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo): T
 
             fun visitGbpAccount(gbpAccount: GbpExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo): T
+
+            fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo): T
+
             fun visitHkdAccount(hkdAccount: HkdExternalAccountCreateInfo): T
+
+            fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo): T
 
             fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo): T
 
             fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo): T
+
+            fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo): T
 
             fun visitKesAccount(kesAccount: KesExternalAccountCreateInfo): T
 
@@ -2013,9 +2606,23 @@ private constructor(
 
             fun visitPhpAccount(phpAccount: PhpExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber
+             * - MOBILE_MONEY: bankName, phoneNumber
+             */
+            fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo): T
+
             fun visitRwfAccount(rwfAccount: RwfExternalAccountCreateInfo): T
 
             fun visitSgdAccount(sgdAccount: SgdExternalAccountCreateInfo): T
+
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: bankAccountType, accountNumber
+             * - MOBILE_MONEY: phoneNumber
+             */
+            fun visitSlvAccount(slvAccount: SlvExternalAccountCreateInfo): T
 
             fun visitThbAccount(thbAccount: ThbExternalAccountCreateInfo): T
 
@@ -2035,41 +2642,7 @@ private constructor(
 
             fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo): T
 
-            fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo): T
-
-            fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
-
-            fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
-
-            fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo): T
-
-            fun visitGtqAccount(gtqAccount: GtqExternalAccountCreateInfo): T
-
-            fun visitHtgAccount(htgAccount: HtgExternalAccountCreateInfo): T
-
-            fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo): T
-
-            fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo): T
-
-            fun visitSparkWallet(sparkWallet: SparkWalletInfo): T
-
-            /**
-             * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or
-             * `lightningAddress` must be provided.
-             */
-            fun visitLightningWallet(lightningWallet: LightningWalletInfo): T
-
-            fun visitSolanaWallet(solanaWallet: SolanaWalletInfo): T
-
-            fun visitTronWallet(tronWallet: TronWalletInfo): T
-
-            fun visitPolygonWallet(polygonWallet: PolygonWalletInfo): T
-
-            fun visitBaseWallet(baseWallet: BaseWalletInfo): T
-
-            fun visitEthereumWalletExternal(
-                ethereumWalletExternal: EthereumWalletExternalAccountInfo
-            ): T
+            fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo): T
 
             /**
              * Maps an unknown variant of [AccountInfo] to a value of type [T].
@@ -2098,6 +2671,11 @@ private constructor(
                             ?.let { AccountInfo(aedAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "BDT_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BdtExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(bdtAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
                     "BRL_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<BrlExternalAccountCreateInfo>())
                             ?.let { AccountInfo(brlAccount = it, _json = json) }
@@ -2113,9 +2691,19 @@ private constructor(
                             ?.let { AccountInfo(cadAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "COP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<CopExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(copAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
                     "DKK_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<DkkExternalAccountCreateInfo>())
                             ?.let { AccountInfo(dkkAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "EGP_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<EgpExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(egpAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
                     "EUR_ACCOUNT" -> {
@@ -2128,9 +2716,24 @@ private constructor(
                             ?.let { AccountInfo(gbpAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "GHS_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<GhsExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(ghsAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "GTQ_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<GtqExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(gtqAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
                     "HKD_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<HkdExternalAccountCreateInfo>())
                             ?.let { AccountInfo(hkdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "HTG_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<HtgExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(htgAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
                     "IDR_ACCOUNT" -> {
@@ -2141,6 +2744,11 @@ private constructor(
                     "INR_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<InrExternalAccountCreateInfo>())
                             ?.let { AccountInfo(inrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "JMD_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<JmdExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(jmdAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
                     "KES_ACCOUNT" -> {
@@ -2173,6 +2781,11 @@ private constructor(
                             ?.let { AccountInfo(phpAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
+                    "PKR_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<PkrExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(pkrAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
                     "RWF_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<RwfExternalAccountCreateInfo>())
                             ?.let { AccountInfo(rwfAccount = it, _json = json) }
@@ -2181,6 +2794,11 @@ private constructor(
                     "SGD_ACCOUNT" -> {
                         return tryDeserialize(node, jacksonTypeRef<SgdExternalAccountCreateInfo>())
                             ?.let { AccountInfo(sgdAccount = it, _json = json) }
+                            ?: AccountInfo(_json = json)
+                    }
+                    "SLV_ACCOUNT" -> {
+                        return tryDeserialize(node, jacksonTypeRef<SlvExternalAccountCreateInfo>())
+                            ?.let { AccountInfo(slvAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
                     "THB_ACCOUNT" -> {
@@ -2228,87 +2846,17 @@ private constructor(
                             ?.let { AccountInfo(zmwAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
-                    "BDT_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<BdtExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(bdtAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "COP_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<CopExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(copAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "EGP_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<EgpExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(egpAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "GHS_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<GhsExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(ghsAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "GTQ_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<GtqExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(gtqAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "HTG_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<HtgExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(htgAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "JMD_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<JmdExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(jmdAccount = it, _json = json) }
-                            ?: AccountInfo(_json = json)
-                    }
-                    "PKR_ACCOUNT" -> {
-                        return tryDeserialize(node, jacksonTypeRef<PkrExternalAccountCreateInfo>())
-                            ?.let { AccountInfo(pkrAccount = it, _json = json) }
+                    "SWIFT_ACCOUNT" -> {
+                        return tryDeserialize(
+                                node,
+                                jacksonTypeRef<SwiftExternalAccountCreateInfo>(),
+                            )
+                            ?.let { AccountInfo(swiftAccount = it, _json = json) }
                             ?: AccountInfo(_json = json)
                     }
                 }
 
-                val bestMatches =
-                    sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
-                                AccountInfo(sparkWallet = it, _json = json)
-                            },
-                            tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
-                                AccountInfo(lightningWallet = it, _json = json)
-                            },
-                            tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
-                                AccountInfo(solanaWallet = it, _json = json)
-                            },
-                            tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
-                                AccountInfo(tronWallet = it, _json = json)
-                            },
-                            tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
-                                AccountInfo(polygonWallet = it, _json = json)
-                            },
-                            tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
-                                AccountInfo(baseWallet = it, _json = json)
-                            },
-                            tryDeserialize(
-                                    node,
-                                    jacksonTypeRef<EthereumWalletExternalAccountInfo>(),
-                                )
-                                ?.let { AccountInfo(ethereumWalletExternal = it, _json = json) },
-                        )
-                        .filterNotNull()
-                        .allMaxBy { it.validity() }
-                        .toList()
-                return when (bestMatches.size) {
-                    // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from boolean).
-                    0 -> AccountInfo(_json = json)
-                    1 -> bestMatches.single()
-                    // If there's more than one match with the highest validity, then use the first
-                    // completely valid match, or simply the first match if none are completely
-                    // valid.
-                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
-                }
+                return AccountInfo(_json = json)
             }
         }
 
@@ -2321,23 +2869,32 @@ private constructor(
             ) {
                 when {
                     value.aedAccount != null -> generator.writeObject(value.aedAccount)
+                    value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
                     value.brlAccount != null -> generator.writeObject(value.brlAccount)
                     value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
                     value.cadAccount != null -> generator.writeObject(value.cadAccount)
+                    value.copAccount != null -> generator.writeObject(value.copAccount)
                     value.dkkAccount != null -> generator.writeObject(value.dkkAccount)
+                    value.egpAccount != null -> generator.writeObject(value.egpAccount)
                     value.eurAccount != null -> generator.writeObject(value.eurAccount)
                     value.gbpAccount != null -> generator.writeObject(value.gbpAccount)
+                    value.ghsAccount != null -> generator.writeObject(value.ghsAccount)
+                    value.gtqAccount != null -> generator.writeObject(value.gtqAccount)
                     value.hkdAccount != null -> generator.writeObject(value.hkdAccount)
+                    value.htgAccount != null -> generator.writeObject(value.htgAccount)
                     value.idrAccount != null -> generator.writeObject(value.idrAccount)
                     value.inrAccount != null -> generator.writeObject(value.inrAccount)
+                    value.jmdAccount != null -> generator.writeObject(value.jmdAccount)
                     value.kesAccount != null -> generator.writeObject(value.kesAccount)
                     value.mwkAccount != null -> generator.writeObject(value.mwkAccount)
                     value.mxnAccount != null -> generator.writeObject(value.mxnAccount)
                     value.myrAccount != null -> generator.writeObject(value.myrAccount)
                     value.ngnAccount != null -> generator.writeObject(value.ngnAccount)
                     value.phpAccount != null -> generator.writeObject(value.phpAccount)
+                    value.pkrAccount != null -> generator.writeObject(value.pkrAccount)
                     value.rwfAccount != null -> generator.writeObject(value.rwfAccount)
                     value.sgdAccount != null -> generator.writeObject(value.sgdAccount)
+                    value.slvAccount != null -> generator.writeObject(value.slvAccount)
                     value.thbAccount != null -> generator.writeObject(value.thbAccount)
                     value.tzsAccount != null -> generator.writeObject(value.tzsAccount)
                     value.ugxAccount != null -> generator.writeObject(value.ugxAccount)
@@ -2347,22 +2904,7 @@ private constructor(
                     value.xofAccount != null -> generator.writeObject(value.xofAccount)
                     value.zarAccount != null -> generator.writeObject(value.zarAccount)
                     value.zmwAccount != null -> generator.writeObject(value.zmwAccount)
-                    value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
-                    value.copAccount != null -> generator.writeObject(value.copAccount)
-                    value.egpAccount != null -> generator.writeObject(value.egpAccount)
-                    value.ghsAccount != null -> generator.writeObject(value.ghsAccount)
-                    value.gtqAccount != null -> generator.writeObject(value.gtqAccount)
-                    value.htgAccount != null -> generator.writeObject(value.htgAccount)
-                    value.jmdAccount != null -> generator.writeObject(value.jmdAccount)
-                    value.pkrAccount != null -> generator.writeObject(value.pkrAccount)
-                    value.sparkWallet != null -> generator.writeObject(value.sparkWallet)
-                    value.lightningWallet != null -> generator.writeObject(value.lightningWallet)
-                    value.solanaWallet != null -> generator.writeObject(value.solanaWallet)
-                    value.tronWallet != null -> generator.writeObject(value.tronWallet)
-                    value.polygonWallet != null -> generator.writeObject(value.polygonWallet)
-                    value.baseWallet != null -> generator.writeObject(value.baseWallet)
-                    value.ethereumWalletExternal != null ->
-                        generator.writeObject(value.ethereumWalletExternal)
+                    value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid AccountInfo")
                 }

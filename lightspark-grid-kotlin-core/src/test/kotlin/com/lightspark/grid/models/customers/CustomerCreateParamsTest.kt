@@ -14,13 +14,6 @@ internal class CustomerCreateParamsTest {
         CustomerCreateParams.builder()
             .createCustomerRequest(
                 CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                    .addCurrency("USD")
-                    .addCurrency("USDC")
-                    .email("john.doe@example.com")
-                    .platformCustomerId("ind-9f84e0c2")
-                    .region("US")
-                    .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -32,9 +25,17 @@ internal class CustomerCreateParamsTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .addCurrency("USD")
+                    .addCurrency("USDC")
+                    .email("john.doe@example.com")
                     .fullName("Jane Smith")
-                    .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                    .kycStatus(
+                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                    )
                     .nationality("US")
+                    .platformCustomerId("ind-9f84e0c2")
+                    .region("US")
+                    .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
             .build()
@@ -46,13 +47,6 @@ internal class CustomerCreateParamsTest {
             CustomerCreateParams.builder()
                 .createCustomerRequest(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
-                        .platformCustomerId("ind-9f84e0c2")
-                        .region("US")
-                        .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -64,9 +58,17 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
                         .fullName("Jane Smith")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
+                        .platformCustomerId("ind-9f84e0c2")
+                        .region("US")
+                        .umaAddress("\$john.doe@uma.domain.com")
                         .build()
                 )
                 .build()
@@ -77,13 +79,6 @@ internal class CustomerCreateParamsTest {
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
                     CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
-                        .platformCustomerId("ind-9f84e0c2")
-                        .region("US")
-                        .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -95,9 +90,17 @@ internal class CustomerCreateParamsTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
                         .fullName("Jane Smith")
-                        .kycStatus(IndividualCustomerFields.KycStatus.APPROVED)
+                        .kycStatus(
+                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
+                        )
                         .nationality("US")
+                        .platformCustomerId("ind-9f84e0c2")
+                        .region("US")
+                        .umaAddress("\$john.doe@uma.domain.com")
                         .build()
                 )
             )
@@ -108,9 +111,7 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
-                        .build()
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
                 )
                 .build()
 
@@ -119,9 +120,7 @@ internal class CustomerCreateParamsTest {
         assertThat(body)
             .isEqualTo(
                 CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
-                        .build()
+                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
                 )
             )
     }

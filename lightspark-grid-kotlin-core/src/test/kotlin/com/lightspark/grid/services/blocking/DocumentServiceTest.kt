@@ -17,6 +17,8 @@ internal class DocumentServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val documentService = client.documents()
 
@@ -32,6 +34,8 @@ internal class DocumentServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val documentService = client.documents()
 
@@ -47,6 +51,8 @@ internal class DocumentServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val documentService = client.documents()
 
@@ -60,6 +66,8 @@ internal class DocumentServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val documentService = client.documents()
 
@@ -71,6 +79,7 @@ internal class DocumentServiceTest {
                     .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
                     .file("Example data".byteInputStream())
                     .documentNumber("A12345678")
+                    .issuingAuthority("U.S. Department of State")
                     .side(DocumentReplaceParams.Side.FRONT)
                     .build()
             )
@@ -85,6 +94,8 @@ internal class DocumentServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val documentService = client.documents()
 
@@ -96,6 +107,7 @@ internal class DocumentServiceTest {
                     .documentType(DocumentUploadParams.DocumentType.PASSPORT)
                     .file("Example data".byteInputStream())
                     .documentNumber("A12345678")
+                    .issuingAuthority("U.S. Department of State")
                     .side(DocumentUploadParams.Side.FRONT)
                     .build()
             )

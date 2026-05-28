@@ -4,7 +4,7 @@ package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.BrlAccountInfo
+import com.lightspark.grid.models.SlvBeneficiary
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -16,15 +16,10 @@ internal class ExternalAccountTest {
             ExternalAccount.builder()
                 .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                    ExternalAccountInfoOneOf.SlvAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            SlvBeneficiary.builder()
+                                .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -43,6 +38,15 @@ internal class ExternalAccountTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .addPaymentRail(
+                            ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                        )
+                        .accountNumber("0123456789")
+                        .bankAccountType(
+                            ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                        )
+                        .bankName("Banco Cuscatlan")
+                        .phoneNumber("+50312345678")
                         .build()
                 )
                 .currency("USD")
@@ -53,7 +57,6 @@ internal class ExternalAccountTest {
                 .beneficiaryVerifiedData(
                     BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
-                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")
@@ -63,16 +66,11 @@ internal class ExternalAccountTest {
             .isEqualTo("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
         assertThat(externalAccount.accountInfo())
             .isEqualTo(
-                ExternalAccountInfoOneOf.ofBrlAccount(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                ExternalAccountInfoOneOf.ofSlvAccount(
+                    ExternalAccountInfoOneOf.SlvAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            SlvBeneficiary.builder()
+                                .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -91,6 +89,15 @@ internal class ExternalAccountTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .addPaymentRail(
+                            ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                        )
+                        .accountNumber("0123456789")
+                        .bankAccountType(
+                            ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                        )
+                        .bankName("Banco Cuscatlan")
+                        .phoneNumber("+50312345678")
                         .build()
                 )
             )
@@ -100,7 +107,6 @@ internal class ExternalAccountTest {
             .isEqualTo(ExternalAccount.BeneficiaryVerificationStatus.MATCHED)
         assertThat(externalAccount.beneficiaryVerifiedData())
             .isEqualTo(BeneficiaryVerifiedData.builder().fullName("John Doe").build())
-        assertThat(externalAccount.cryptoNetwork()).isEqualTo("SOLANA_MAINNET")
         assertThat(externalAccount.customerId())
             .isEqualTo("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
         assertThat(externalAccount.defaultUmaDepositAccount()).isEqualTo(false)
@@ -114,15 +120,10 @@ internal class ExternalAccountTest {
             ExternalAccount.builder()
                 .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .accountInfo(
-                    BrlExternalAccountInfo.builder()
-                        .accountType(BrlAccountInfo.AccountType.BRL_ACCOUNT)
-                        .addPaymentRail(BrlAccountInfo.PaymentRail.PIX)
-                        .pixKey("x")
-                        .pixKeyType(BrlAccountInfo.PixKeyType.CPF)
-                        .taxId("26912511571360")
+                    ExternalAccountInfoOneOf.SlvAccount.builder()
                         .beneficiary(
-                            BrlBeneficiary.builder()
-                                .beneficiaryType(BrlBeneficiary.BeneficiaryType.INDIVIDUAL)
+                            SlvBeneficiary.builder()
+                                .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
                                 .fullName("fullName")
                                 .address(
                                     Address.builder()
@@ -141,6 +142,15 @@ internal class ExternalAccountTest {
                                 .phoneNumber("phoneNumber")
                                 .build()
                         )
+                        .addPaymentRail(
+                            ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                        )
+                        .accountNumber("0123456789")
+                        .bankAccountType(
+                            ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                        )
+                        .bankName("Banco Cuscatlan")
+                        .phoneNumber("+50312345678")
                         .build()
                 )
                 .currency("USD")
@@ -151,7 +161,6 @@ internal class ExternalAccountTest {
                 .beneficiaryVerifiedData(
                     BeneficiaryVerifiedData.builder().fullName("John Doe").build()
                 )
-                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
                 .platformAccountId("acc_123456789")

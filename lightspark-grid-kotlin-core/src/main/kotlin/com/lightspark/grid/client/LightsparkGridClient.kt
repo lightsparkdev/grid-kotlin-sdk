@@ -3,15 +3,16 @@
 package com.lightspark.grid.client
 
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.services.blocking.AgentService
 import com.lightspark.grid.services.blocking.AuthService
 import com.lightspark.grid.services.blocking.BeneficialOwnerService
+import com.lightspark.grid.services.blocking.CardService
 import com.lightspark.grid.services.blocking.ConfigService
 import com.lightspark.grid.services.blocking.CryptoService
 import com.lightspark.grid.services.blocking.CustomerService
 import com.lightspark.grid.services.blocking.DiscoveryService
 import com.lightspark.grid.services.blocking.DocumentService
 import com.lightspark.grid.services.blocking.ExchangeRateService
-import com.lightspark.grid.services.blocking.InternalAccountService
 import com.lightspark.grid.services.blocking.InvitationService
 import com.lightspark.grid.services.blocking.PlatformService
 import com.lightspark.grid.services.blocking.QuoteService
@@ -141,8 +142,19 @@ interface LightsparkGridClient {
 
     fun auth(): AuthService
 
-    /** Internal account management endpoints for creating and managing internal accounts */
-    fun internalAccounts(): InternalAccountService
+    /**
+     * Endpoints for creating and managing agents (experimental), called by the partner's backend
+     * using platform credentials. Covers the full agent lifecycle: creation, policy configuration,
+     * pausing, deletion, the device code installation flow, and approving or rejecting transactions
+     * initiated by agents.
+     */
+    fun agents(): AgentService
+
+    /**
+     * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
+     * close, manage card funding sources, and list card transactions.
+     */
+    fun cards(): CardService
 
     /**
      * Closes this client, relinquishing any underlying resources.
@@ -251,7 +263,18 @@ interface LightsparkGridClient {
 
         fun auth(): AuthService.WithRawResponse
 
-        /** Internal account management endpoints for creating and managing internal accounts */
-        fun internalAccounts(): InternalAccountService.WithRawResponse
+        /**
+         * Endpoints for creating and managing agents (experimental), called by the partner's
+         * backend using platform credentials. Covers the full agent lifecycle: creation, policy
+         * configuration, pausing, deletion, the device code installation flow, and approving or
+         * rejecting transactions initiated by agents.
+         */
+        fun agents(): AgentService.WithRawResponse
+
+        /**
+         * Card management endpoints. Issue debit cards against an internal account, freeze /
+         * unfreeze, close, manage card funding sources, and list card transactions.
+         */
+        fun cards(): CardService.WithRawResponse
     }
 }

@@ -33,7 +33,6 @@ private constructor(
     private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
     private val bankAccountType: JsonField<BankAccountType>,
-    private val bankName: JsonField<String>,
     private val beneficiary: JsonField<Beneficiary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -49,11 +48,10 @@ private constructor(
         @JsonProperty("bankAccountType")
         @ExcludeMissing
         bankAccountType: JsonField<BankAccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("beneficiary")
         @ExcludeMissing
         beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, bankAccountType, bankName, beneficiary, mutableMapOf())
+    ) : this(accountNumber, accountType, bankAccountType, beneficiary, mutableMapOf())
 
     /**
      * The account number of the bank
@@ -76,14 +74,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun bankAccountType(): BankAccountType = bankAccountType.getRequired("bankAccountType")
-
-    /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -119,13 +109,6 @@ private constructor(
     fun _bankAccountType(): JsonField<BankAccountType> = bankAccountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [beneficiary].
      *
      * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
@@ -156,7 +139,6 @@ private constructor(
          * .accountNumber()
          * .accountType()
          * .bankAccountType()
-         * .bankName()
          * .beneficiary()
          * ```
          */
@@ -169,7 +151,6 @@ private constructor(
         private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
         private var bankAccountType: JsonField<BankAccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -177,7 +158,6 @@ private constructor(
             accountNumber = gtqExternalAccountCreateInfo.accountNumber
             accountType = gtqExternalAccountCreateInfo.accountType
             bankAccountType = gtqExternalAccountCreateInfo.bankAccountType
-            bankName = gtqExternalAccountCreateInfo.bankName
             beneficiary = gtqExternalAccountCreateInfo.beneficiary
             additionalProperties = gtqExternalAccountCreateInfo.additionalProperties.toMutableMap()
         }
@@ -223,17 +203,6 @@ private constructor(
         fun bankAccountType(bankAccountType: JsonField<BankAccountType>) = apply {
             this.bankAccountType = bankAccountType
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
 
@@ -302,7 +271,6 @@ private constructor(
          * .accountNumber()
          * .accountType()
          * .bankAccountType()
-         * .bankName()
          * .beneficiary()
          * ```
          *
@@ -313,7 +281,6 @@ private constructor(
                 checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
                 checkRequired("bankAccountType", bankAccountType),
-                checkRequired("bankName", bankName),
                 checkRequired("beneficiary", beneficiary),
                 additionalProperties.toMutableMap(),
             )
@@ -321,6 +288,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): GtqExternalAccountCreateInfo = apply {
         if (validated) {
             return@apply
@@ -329,7 +304,6 @@ private constructor(
         accountNumber()
         accountType().validate()
         bankAccountType().validate()
-        bankName()
         beneficiary().validate()
         validated = true
     }
@@ -351,7 +325,6 @@ private constructor(
         (if (accountNumber.asKnown() == null) 0 else 1) +
             (accountType.asKnown()?.validity() ?: 0) +
             (bankAccountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
             (beneficiary.asKnown()?.validity() ?: 0)
 
     class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -438,6 +411,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): AccountType = apply {
             if (validated) {
                 return@apply
@@ -568,6 +550,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): BankAccountType = apply {
             if (validated) {
                 return@apply
@@ -629,6 +620,30 @@ private constructor(
 
         fun _json(): JsonValue? = _json
 
+        /**
+         * Maps this instance's current variant to a value of type [T] using the given [visitor].
+         *
+         * Note that this method is _not_ forwards compatible with new variants from the API, unless
+         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
+         * the SDK gracefully, consider overriding [Visitor.unknown]:
+         * ```kotlin
+         * import com.lightspark.grid.core.JsonValue
+         *
+         * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
+         *     override fun visitIndividual(individual: GtqBeneficiary): String? = individual.toString()
+         *
+         *     // ...
+         *
+         *     override fun unknown(json: JsonValue?): String? {
+         *         // Or inspect the `json`.
+         *         return null
+         *     }
+         * })
+         * ```
+         *
+         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+         *   [visitor] and the current variant is unknown.
+         */
         fun <T> accept(visitor: Visitor<T>): T =
             when {
                 individual != null -> visitor.visitIndividual(individual)
@@ -638,6 +653,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Beneficiary = apply {
             if (validated) {
                 return@apply
@@ -783,24 +807,16 @@ private constructor(
             accountNumber == other.accountNumber &&
             accountType == other.accountType &&
             bankAccountType == other.bankAccountType &&
-            bankName == other.bankName &&
             beneficiary == other.beneficiary &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            accountNumber,
-            accountType,
-            bankAccountType,
-            bankName,
-            beneficiary,
-            additionalProperties,
-        )
+        Objects.hash(accountNumber, accountType, bankAccountType, beneficiary, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "GtqExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankAccountType=$bankAccountType, bankName=$bankName, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+        "GtqExternalAccountCreateInfo{accountNumber=$accountNumber, accountType=$accountType, bankAccountType=$bankAccountType, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
 }

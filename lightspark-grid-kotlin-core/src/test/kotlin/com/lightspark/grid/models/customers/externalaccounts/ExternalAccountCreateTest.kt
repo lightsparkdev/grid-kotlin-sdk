@@ -20,8 +20,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -32,6 +30,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -44,7 +44,6 @@ internal class ExternalAccountCreateTest {
                         .build()
                 )
                 .currency("USD")
-                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .defaultUmaDepositAccount(true)
                 .platformAccountId("ext_acc_123456")
@@ -57,8 +56,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -69,6 +66,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -82,7 +81,6 @@ internal class ExternalAccountCreateTest {
                 )
             )
         assertThat(externalAccountCreate.currency()).isEqualTo("USD")
-        assertThat(externalAccountCreate.cryptoNetwork()).isEqualTo("SOLANA_MAINNET")
         assertThat(externalAccountCreate.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(externalAccountCreate.defaultUmaDepositAccount()).isEqualTo(true)
@@ -99,8 +97,6 @@ internal class ExternalAccountCreateTest {
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(
                             AedBeneficiary.builder()
-                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("fullName")
                                 .address(
                                     Address.builder()
                                         .country("US")
@@ -111,6 +107,8 @@ internal class ExternalAccountCreateTest {
                                         .state("CA")
                                         .build()
                                 )
+                                .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                .fullName("fullName")
                                 .birthDate("birthDate")
                                 .countryOfResidence("countryOfResidence")
                                 .email("email")
@@ -123,7 +121,6 @@ internal class ExternalAccountCreateTest {
                         .build()
                 )
                 .currency("USD")
-                .cryptoNetwork("SOLANA_MAINNET")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .defaultUmaDepositAccount(true)
                 .platformAccountId("ext_acc_123456")

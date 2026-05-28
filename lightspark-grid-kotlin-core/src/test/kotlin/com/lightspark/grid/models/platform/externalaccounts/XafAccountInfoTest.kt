@@ -16,7 +16,7 @@ internal class XafAccountInfoTest {
                 .accountType(XafAccountInfo.AccountType.XAF_ACCOUNT)
                 .addPaymentRail(XafAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .region(XafAccountInfo.Region.CM)
                 .build()
 
@@ -24,7 +24,7 @@ internal class XafAccountInfoTest {
         assertThat(xafAccountInfo.paymentRails())
             .containsExactly(XafAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(xafAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(xafAccountInfo.provider()).isEqualTo("x")
+        assertThat(xafAccountInfo.provider()).isEqualTo("Example Provider")
         assertThat(xafAccountInfo.region()).isEqualTo(XafAccountInfo.Region.CM)
     }
 
@@ -36,7 +36,7 @@ internal class XafAccountInfoTest {
                 .accountType(XafAccountInfo.AccountType.XAF_ACCOUNT)
                 .addPaymentRail(XafAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .region(XafAccountInfo.Region.CM)
                 .build()
 

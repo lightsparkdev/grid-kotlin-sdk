@@ -3,10 +3,10 @@
 package com.lightspark.grid.services.blocking.customers
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -19,6 +19,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.customers().externalAccounts()
 
@@ -26,13 +28,10 @@ internal class ExternalAccountServiceTest {
             externalAccountService.create(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountCreateInfo.builder()
-                            .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                             .beneficiary(
-                                UsdBeneficiary.builder()
-                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("John Doe")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -43,18 +42,20 @@ internal class ExternalAccountServiceTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("US")
+                                    .nationality("nationality")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .routingNumber("123456789")
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
                             .build()
                     )
                     .currency("USD")
-                    .cryptoNetwork("SOLANA_MAINNET")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .defaultUmaDepositAccount(true)
                     .platformAccountId("ext_acc_123456")
@@ -71,6 +72,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.customers().externalAccounts()
 
@@ -86,6 +89,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.customers().externalAccounts()
 
@@ -101,6 +106,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.customers().externalAccounts()
 

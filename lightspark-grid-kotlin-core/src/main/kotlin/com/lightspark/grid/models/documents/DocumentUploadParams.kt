@@ -57,14 +57,11 @@ private constructor(
      * Type of identity or business verification document. Document types are grouped by
      * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
      * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-     * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-     * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-     * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-     * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-     * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** — PROOF_OF_ADDRESS
+     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+     * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+     * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -86,6 +83,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun documentNumber(): String? = body.documentNumber()
+
+    /**
+     * Name of the government agency or organization that issued the document
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun issuingAuthority(): String? = body.issuingAuthority()
 
     /**
      * Which side of the document (for two-sided documents like driver's licenses)
@@ -132,6 +137,14 @@ private constructor(
      * type.
      */
     fun _documentNumber(): MultipartField<String> = body._documentNumber()
+
+    /**
+     * Returns the raw multipart value of [issuingAuthority].
+     *
+     * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an unexpected
+     * type.
+     */
+    fun _issuingAuthority(): MultipartField<String> = body._issuingAuthority()
 
     /**
      * Returns the raw multipart value of [side].
@@ -224,15 +237,11 @@ private constructor(
          * Type of identity or business verification document. Document types are grouped by
          * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
          * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-         * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-         * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-         * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-         * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-         * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** —
-         * PROOF_OF_ADDRESS
+         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+         * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+         * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+         * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+         * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          */
         fun documentType(documentType: DocumentType) = apply { body.documentType(documentType) }
 
@@ -277,6 +286,22 @@ private constructor(
          */
         fun documentNumber(documentNumber: MultipartField<String>) = apply {
             body.documentNumber(documentNumber)
+        }
+
+        /** Name of the government agency or organization that issued the document */
+        fun issuingAuthority(issuingAuthority: String) = apply {
+            body.issuingAuthority(issuingAuthority)
+        }
+
+        /**
+         * Sets [Builder.issuingAuthority] to an arbitrary multipart value.
+         *
+         * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
+            body.issuingAuthority(issuingAuthority)
         }
 
         /** Which side of the document (for two-sided documents like driver's licenses) */
@@ -437,6 +462,7 @@ private constructor(
                 "documentType" to _documentType(),
                 "file" to _file(),
                 "documentNumber" to _documentNumber(),
+                "issuingAuthority" to _issuingAuthority(),
                 "side" to _side(),
             ) + _additionalBodyProperties().mapValues { (_, value) -> MultipartField.of(value) })
             .toImmutable()
@@ -452,6 +478,7 @@ private constructor(
         private val documentType: MultipartField<DocumentType>,
         private val file: MultipartField<InputStream>,
         private val documentNumber: MultipartField<String>,
+        private val issuingAuthority: MultipartField<String>,
         private val side: MultipartField<Side>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -476,15 +503,11 @@ private constructor(
          * Type of identity or business verification document. Document types are grouped by
          * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
          * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-         * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-         * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-         * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-         * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-         * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-         * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** —
-         * PROOF_OF_ADDRESS
+         * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+         * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+         * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+         * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+         * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -506,6 +529,14 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun documentNumber(): String? = documentNumber.value.getNullable("documentNumber")
+
+        /**
+         * Name of the government agency or organization that issued the document
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun issuingAuthority(): String? = issuingAuthority.value.getNullable("issuingAuthority")
 
         /**
          * Which side of the document (for two-sided documents like driver's licenses)
@@ -561,6 +592,16 @@ private constructor(
         fun _documentNumber(): MultipartField<String> = documentNumber
 
         /**
+         * Returns the raw multipart value of [issuingAuthority].
+         *
+         * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an
+         * unexpected type.
+         */
+        @JsonProperty("issuingAuthority")
+        @ExcludeMissing
+        fun _issuingAuthority(): MultipartField<String> = issuingAuthority
+
+        /**
          * Returns the raw multipart value of [side].
          *
          * Unlike [side], this method doesn't throw if the multipart field has an unexpected type.
@@ -603,6 +644,7 @@ private constructor(
             private var documentType: MultipartField<DocumentType>? = null
             private var file: MultipartField<InputStream>? = null
             private var documentNumber: MultipartField<String> = MultipartField.of(null)
+            private var issuingAuthority: MultipartField<String> = MultipartField.of(null)
             private var side: MultipartField<Side> = MultipartField.of(null)
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -612,6 +654,7 @@ private constructor(
                 documentType = body.documentType
                 file = body.file
                 documentNumber = body.documentNumber
+                issuingAuthority = body.issuingAuthority
                 side = body.side
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
@@ -651,14 +694,10 @@ private constructor(
              * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID
              * **Business — Legal presence** — CERTIFICATE_OF_INCORPORATION,
              * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business
-             * — Company details** — INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT,
-             * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION,
-             * INCUMBENCY_CERTIFICATE, GOOD_STANDING_CERTIFICATE **Business — Control structure** —
-             * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE,
-             * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT **Business — Ownership structure** —
-             * SHAREHOLDER_REGISTER, INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE,
-             * STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of
-             * address** — PROOF_OF_ADDRESS
+             * — Control structure** — DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY,
+             * PARTNERSHIP_CONTROL_AGREEMENT **Business — Ownership structure** —
+             * SHAREHOLDER_REGISTER, TRUST_AGREEMENT, PARTNERSHIP_AGREEMENT **Proof of address** —
+             * UTILITY_BILL, RENT_OR_LEASE_AGREEMENT, ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
              */
             fun documentType(documentType: DocumentType) =
                 documentType(MultipartField.of(documentType))
@@ -711,6 +750,21 @@ private constructor(
              */
             fun documentNumber(documentNumber: MultipartField<String>) = apply {
                 this.documentNumber = documentNumber
+            }
+
+            /** Name of the government agency or organization that issued the document */
+            fun issuingAuthority(issuingAuthority: String) =
+                issuingAuthority(MultipartField.of(issuingAuthority))
+
+            /**
+             * Sets [Builder.issuingAuthority] to an arbitrary multipart value.
+             *
+             * You should usually call [Builder.issuingAuthority] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
+                this.issuingAuthority = issuingAuthority
             }
 
             /** Which side of the document (for two-sided documents like driver's licenses) */
@@ -766,6 +820,7 @@ private constructor(
                     checkRequired("documentType", documentType),
                     checkRequired("file", file),
                     documentNumber,
+                    issuingAuthority,
                     side,
                     additionalProperties.toMutableMap(),
                 )
@@ -773,6 +828,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
@@ -783,6 +847,7 @@ private constructor(
             documentType().validate()
             file()
             documentNumber()
+            issuingAuthority()
             side()?.validate()
             validated = true
         }
@@ -806,6 +871,7 @@ private constructor(
                 documentType == other.documentType &&
                 file == other.file &&
                 documentNumber == other.documentNumber &&
+                issuingAuthority == other.issuingAuthority &&
                 side == other.side &&
                 additionalProperties == other.additionalProperties
         }
@@ -817,6 +883,7 @@ private constructor(
                 documentType,
                 file,
                 documentNumber,
+                issuingAuthority,
                 side,
                 additionalProperties,
             )
@@ -825,21 +892,18 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{country=$country, documentHolder=$documentHolder, documentType=$documentType, file=$file, documentNumber=$documentNumber, side=$side, additionalProperties=$additionalProperties}"
+            "Body{country=$country, documentHolder=$documentHolder, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
     }
 
     /**
      * Type of identity or business verification document. Document types are grouped by
      * verification category: **Identity** — PASSPORT, DRIVERS_LICENSE, NATIONAL_ID **Business —
      * Legal presence** — CERTIFICATE_OF_INCORPORATION, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Company details** —
-     * INFORMATION_STATEMENT, STATE_REGISTRY_EXCERPT, ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, CERTIFICATE_OF_INCORPORATION, INCUMBENCY_CERTIFICATE,
-     * GOOD_STANDING_CERTIFICATE **Business — Control structure** — ARTICLES_OF_INCORPORATION,
-     * ARTICLES_OF_ASSOCIATION, INCUMBENCY_CERTIFICATE, INFORMATION_STATEMENT,
-     * STATE_REGISTRY_EXCERPT **Business — Ownership structure** — SHAREHOLDER_REGISTER,
-     * INFORMATION_STATEMENT, INCUMBENCY_CERTIFICATE, STATE_REGISTRY_EXCERPT,
-     * ARTICLES_OF_INCORPORATION, ARTICLES_OF_ASSOCIATION **Proof of address** — PROOF_OF_ADDRESS
+     * ARTICLES_OF_ASSOCIATION, STATE_REGISTRY_EXCERPT **Business — Control structure** —
+     * DIRECTOR_REGISTRY, TRUST_AGREEMENT, STATE_COMPANY_REGISTRY, PARTNERSHIP_CONTROL_AGREEMENT
+     * **Business — Ownership structure** — SHAREHOLDER_REGISTER, TRUST_AGREEMENT,
+     * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
+     * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
      */
     class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -890,6 +954,20 @@ private constructor(
 
             val UTILITY_BILL = of("UTILITY_BILL")
 
+            val ELECTRICITY_BILL = of("ELECTRICITY_BILL")
+
+            val RENT_OR_LEASE_AGREEMENT = of("RENT_OR_LEASE_AGREEMENT")
+
+            val DIRECTOR_REGISTRY = of("DIRECTOR_REGISTRY")
+
+            val TRUST_AGREEMENT = of("TRUST_AGREEMENT")
+
+            val STATE_COMPANY_REGISTRY = of("STATE_COMPANY_REGISTRY")
+
+            val PARTNERSHIP_CONTROL_AGREEMENT = of("PARTNERSHIP_CONTROL_AGREEMENT")
+
+            val PARTNERSHIP_AGREEMENT = of("PARTNERSHIP_AGREEMENT")
+
             val SELFIE = of("SELFIE")
 
             val OTHER = of("OTHER")
@@ -916,6 +994,13 @@ private constructor(
             SHAREHOLDER_REGISTER,
             POWER_OF_ATTORNEY,
             UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
             SELFIE,
             OTHER,
         }
@@ -947,6 +1032,13 @@ private constructor(
             SHAREHOLDER_REGISTER,
             POWER_OF_ATTORNEY,
             UTILITY_BILL,
+            ELECTRICITY_BILL,
+            RENT_OR_LEASE_AGREEMENT,
+            DIRECTOR_REGISTRY,
+            TRUST_AGREEMENT,
+            STATE_COMPANY_REGISTRY,
+            PARTNERSHIP_CONTROL_AGREEMENT,
+            PARTNERSHIP_AGREEMENT,
             SELFIE,
             OTHER,
             /**
@@ -981,6 +1073,13 @@ private constructor(
                 SHAREHOLDER_REGISTER -> Value.SHAREHOLDER_REGISTER
                 POWER_OF_ATTORNEY -> Value.POWER_OF_ATTORNEY
                 UTILITY_BILL -> Value.UTILITY_BILL
+                ELECTRICITY_BILL -> Value.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Value.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Value.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Value.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Value.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Value.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Value.PARTNERSHIP_AGREEMENT
                 SELFIE -> Value.SELFIE
                 OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
@@ -1014,6 +1113,13 @@ private constructor(
                 SHAREHOLDER_REGISTER -> Known.SHAREHOLDER_REGISTER
                 POWER_OF_ATTORNEY -> Known.POWER_OF_ATTORNEY
                 UTILITY_BILL -> Known.UTILITY_BILL
+                ELECTRICITY_BILL -> Known.ELECTRICITY_BILL
+                RENT_OR_LEASE_AGREEMENT -> Known.RENT_OR_LEASE_AGREEMENT
+                DIRECTOR_REGISTRY -> Known.DIRECTOR_REGISTRY
+                TRUST_AGREEMENT -> Known.TRUST_AGREEMENT
+                STATE_COMPANY_REGISTRY -> Known.STATE_COMPANY_REGISTRY
+                PARTNERSHIP_CONTROL_AGREEMENT -> Known.PARTNERSHIP_CONTROL_AGREEMENT
+                PARTNERSHIP_AGREEMENT -> Known.PARTNERSHIP_AGREEMENT
                 SELFIE -> Known.SELFIE
                 OTHER -> Known.OTHER
                 else -> throw LightsparkGridInvalidDataException("Unknown DocumentType: $value")
@@ -1033,6 +1139,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): DocumentType = apply {
             if (validated) {
                 return@apply
@@ -1159,6 +1274,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Side = apply {
             if (validated) {
                 return@apply

@@ -28,6 +28,16 @@ private constructor(
 ) : Params {
 
     /**
+     * Update or create the embedded-wallet configuration for this platform. Fields omitted from the
+     * nested object are left unchanged. Omit this field at the top level to leave the
+     * embedded-wallet configuration unchanged entirely.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun embeddedWalletConfig(): EmbeddedWalletConfig? = body.embeddedWalletConfig()
+
+    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
@@ -44,6 +54,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun webhookEndpoint(): String? = body.webhookEndpoint()
+
+    /**
+     * Returns the raw JSON value of [embeddedWalletConfig].
+     *
+     * Unlike [embeddedWalletConfig], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    fun _embeddedWalletConfig(): JsonField<EmbeddedWalletConfig> = body._embeddedWalletConfig()
 
     /**
      * Returns the raw JSON value of [supportedCurrencies].
@@ -104,11 +122,32 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [embeddedWalletConfig]
          * - [supportedCurrencies]
          * - [umaDomain]
          * - [webhookEndpoint]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /**
+         * Update or create the embedded-wallet configuration for this platform. Fields omitted from
+         * the nested object are left unchanged. Omit this field at the top level to leave the
+         * embedded-wallet configuration unchanged entirely.
+         */
+        fun embeddedWalletConfig(embeddedWalletConfig: EmbeddedWalletConfig) = apply {
+            body.embeddedWalletConfig(embeddedWalletConfig)
+        }
+
+        /**
+         * Sets [Builder.embeddedWalletConfig] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.embeddedWalletConfig] with a well-typed
+         * [EmbeddedWalletConfig] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun embeddedWalletConfig(embeddedWalletConfig: JsonField<EmbeddedWalletConfig>) = apply {
+            body.embeddedWalletConfig(embeddedWalletConfig)
+        }
 
         fun supportedCurrencies(supportedCurrencies: List<PlatformCurrencyConfig>) = apply {
             body.supportedCurrencies(supportedCurrencies)
@@ -300,6 +339,7 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val embeddedWalletConfig: JsonField<EmbeddedWalletConfig>,
         private val supportedCurrencies: JsonField<List<PlatformCurrencyConfig>>,
         private val umaDomain: JsonField<String>,
         private val webhookEndpoint: JsonField<String>,
@@ -308,6 +348,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("embeddedWalletConfig")
+            @ExcludeMissing
+            embeddedWalletConfig: JsonField<EmbeddedWalletConfig> = JsonMissing.of(),
             @JsonProperty("supportedCurrencies")
             @ExcludeMissing
             supportedCurrencies: JsonField<List<PlatformCurrencyConfig>> = JsonMissing.of(),
@@ -317,7 +360,24 @@ private constructor(
             @JsonProperty("webhookEndpoint")
             @ExcludeMissing
             webhookEndpoint: JsonField<String> = JsonMissing.of(),
-        ) : this(supportedCurrencies, umaDomain, webhookEndpoint, mutableMapOf())
+        ) : this(
+            embeddedWalletConfig,
+            supportedCurrencies,
+            umaDomain,
+            webhookEndpoint,
+            mutableMapOf(),
+        )
+
+        /**
+         * Update or create the embedded-wallet configuration for this platform. Fields omitted from
+         * the nested object are left unchanged. Omit this field at the top level to leave the
+         * embedded-wallet configuration unchanged entirely.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun embeddedWalletConfig(): EmbeddedWalletConfig? =
+            embeddedWalletConfig.getNullable("embeddedWalletConfig")
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -337,6 +397,16 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun webhookEndpoint(): String? = webhookEndpoint.getNullable("webhookEndpoint")
+
+        /**
+         * Returns the raw JSON value of [embeddedWalletConfig].
+         *
+         * Unlike [embeddedWalletConfig], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("embeddedWalletConfig")
+        @ExcludeMissing
+        fun _embeddedWalletConfig(): JsonField<EmbeddedWalletConfig> = embeddedWalletConfig
 
         /**
          * Returns the raw JSON value of [supportedCurrencies].
@@ -386,17 +456,39 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
+            private var embeddedWalletConfig: JsonField<EmbeddedWalletConfig> = JsonMissing.of()
             private var supportedCurrencies: JsonField<MutableList<PlatformCurrencyConfig>>? = null
             private var umaDomain: JsonField<String> = JsonMissing.of()
             private var webhookEndpoint: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(body: Body) = apply {
+                embeddedWalletConfig = body.embeddedWalletConfig
                 supportedCurrencies = body.supportedCurrencies.map { it.toMutableList() }
                 umaDomain = body.umaDomain
                 webhookEndpoint = body.webhookEndpoint
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
+
+            /**
+             * Update or create the embedded-wallet configuration for this platform. Fields omitted
+             * from the nested object are left unchanged. Omit this field at the top level to leave
+             * the embedded-wallet configuration unchanged entirely.
+             */
+            fun embeddedWalletConfig(embeddedWalletConfig: EmbeddedWalletConfig) =
+                embeddedWalletConfig(JsonField.of(embeddedWalletConfig))
+
+            /**
+             * Sets [Builder.embeddedWalletConfig] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.embeddedWalletConfig] with a well-typed
+             * [EmbeddedWalletConfig] value instead. This method is primarily for setting the field
+             * to an undocumented or not yet supported value.
+             */
+            fun embeddedWalletConfig(embeddedWalletConfig: JsonField<EmbeddedWalletConfig>) =
+                apply {
+                    this.embeddedWalletConfig = embeddedWalletConfig
+                }
 
             fun supportedCurrencies(supportedCurrencies: List<PlatformCurrencyConfig>) =
                 supportedCurrencies(JsonField.of(supportedCurrencies))
@@ -476,6 +568,7 @@ private constructor(
              */
             fun build(): Body =
                 Body(
+                    embeddedWalletConfig,
                     (supportedCurrencies ?: JsonMissing.of()).map { it.toImmutable() },
                     umaDomain,
                     webhookEndpoint,
@@ -485,11 +578,21 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply
             }
 
+            embeddedWalletConfig()?.validate()
             supportedCurrencies()?.forEach { it.validate() }
             umaDomain()
             webhookEndpoint()
@@ -511,7 +614,8 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (supportedCurrencies.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (embeddedWalletConfig.asKnown()?.validity() ?: 0) +
+                (supportedCurrencies.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
                 (if (umaDomain.asKnown() == null) 0 else 1) +
                 (if (webhookEndpoint.asKnown() == null) 0 else 1)
 
@@ -521,6 +625,7 @@ private constructor(
             }
 
             return other is Body &&
+                embeddedWalletConfig == other.embeddedWalletConfig &&
                 supportedCurrencies == other.supportedCurrencies &&
                 umaDomain == other.umaDomain &&
                 webhookEndpoint == other.webhookEndpoint &&
@@ -528,13 +633,19 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(supportedCurrencies, umaDomain, webhookEndpoint, additionalProperties)
+            Objects.hash(
+                embeddedWalletConfig,
+                supportedCurrencies,
+                umaDomain,
+                webhookEndpoint,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
+            "Body{embeddedWalletConfig=$embeddedWalletConfig, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

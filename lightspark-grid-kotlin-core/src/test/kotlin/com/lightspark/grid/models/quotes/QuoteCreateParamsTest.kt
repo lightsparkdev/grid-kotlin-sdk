@@ -14,17 +14,23 @@ internal class QuoteCreateParamsTest {
         QuoteCreateParams.builder()
             .idempotencyKey("<uuid>")
             .destination(
-                QuoteDestinationOneOf.AccountDestination.builder()
-                    .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                QuoteDestinationOneOf.builder()
+                    .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                    )
                     .build()
             )
             .lockedCurrencyAmount(10000L)
             .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
             .source(
-                QuoteSourceOneOf.AccountQuoteSource.builder()
-                    .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                QuoteSourceOneOf.builder()
+                    .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                    )
                     .build()
             )
             .description("Transfer between accounts, either internal or external.")
@@ -46,17 +52,23 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
                 .destination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                    QuoteDestinationOneOf.builder()
+                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                        )
                         .build()
                 )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    QuoteSourceOneOf.builder()
+                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                        )
                         .build()
                 )
                 .description("Transfer between accounts, either internal or external.")
@@ -81,15 +93,23 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .destination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    QuoteDestinationOneOf.builder()
+                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                        )
                         .build()
                 )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    QuoteSourceOneOf.builder()
+                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                        )
                         .build()
                 )
                 .build()
@@ -105,17 +125,23 @@ internal class QuoteCreateParamsTest {
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
                 .destination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
+                    QuoteDestinationOneOf.builder()
+                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                        )
                         .build()
                 )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    QuoteSourceOneOf.builder()
+                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                        )
                         .build()
                 )
                 .description("Transfer between accounts, either internal or external.")
@@ -134,24 +160,26 @@ internal class QuoteCreateParamsTest {
 
         assertThat(body.destination())
             .isEqualTo(
-                QuoteDestinationOneOf.ofAccountDestination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .paymentRail(QuoteDestinationOneOf.AccountDestination.PaymentRail.ACH)
-                        .build()
-                )
+                QuoteDestinationOneOf.builder()
+                    .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                    )
+                    .build()
             )
         assertThat(body.lockedCurrencyAmount()).isEqualTo(10000L)
         assertThat(body.lockedCurrencySide())
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteSourceOneOf.ofAccountQuoteSource(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .build()
-                )
+                QuoteSourceOneOf.builder()
+                    .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                    )
+                    .build()
             )
         assertThat(body.description())
             .isEqualTo("Transfer between accounts, either internal or external.")
@@ -172,15 +200,23 @@ internal class QuoteCreateParamsTest {
         val params =
             QuoteCreateParams.builder()
                 .destination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    QuoteDestinationOneOf.builder()
+                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                        )
                         .build()
                 )
                 .lockedCurrencyAmount(10000L)
                 .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
                 .source(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                    QuoteSourceOneOf.builder()
+                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                        .putAdditionalProperty(
+                            "accountId",
+                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                        )
                         .build()
                 )
                 .build()
@@ -189,22 +225,26 @@ internal class QuoteCreateParamsTest {
 
         assertThat(body.destination())
             .isEqualTo(
-                QuoteDestinationOneOf.ofAccountDestination(
-                    QuoteDestinationOneOf.AccountDestination.builder()
-                        .accountId("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
+                QuoteDestinationOneOf.builder()
+                    .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                    )
+                    .build()
             )
         assertThat(body.lockedCurrencyAmount()).isEqualTo(10000L)
         assertThat(body.lockedCurrencySide())
             .isEqualTo(QuoteCreateParams.LockedCurrencySide.SENDING)
         assertThat(body.source())
             .isEqualTo(
-                QuoteSourceOneOf.ofAccountQuoteSource(
-                    QuoteSourceOneOf.AccountQuoteSource.builder()
-                        .accountId("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
+                QuoteSourceOneOf.builder()
+                    .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
+                    .putAdditionalProperty(
+                        "accountId",
+                        JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
+                    )
+                    .build()
             )
     }
 }

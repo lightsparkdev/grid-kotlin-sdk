@@ -12,22 +12,8 @@ internal class CredentialVerifyParamsTest {
     fun create() {
         CredentialVerifyParams.builder()
             .id("id")
-            .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-            .authCredentialVerifyRequest(
-                CredentialVerifyParams.AuthCredentialVerifyRequest.EmailOtpCredentialVerifyRequest
-                    .builder()
-                    .otp("123456")
-                    .type(
-                        CredentialVerifyParams.AuthCredentialVerifyRequest
-                            .EmailOtpCredentialVerifyRequest
-                            .Type
-                            .EMAIL_OTP
-                    )
-                    .clientPublicKey(
-                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                    )
-                    .build()
-            )
+            .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+            .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
             .build()
     }
 
@@ -36,19 +22,7 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .authCredentialVerifyRequest(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .build()
-                )
+                .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("id")
@@ -61,30 +35,17 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                .authCredentialVerifyRequest(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .clientPublicKey(
-                            "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                        )
-                        .build()
-                )
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                 .build()
 
         val headers = params._headers()
 
         assertThat(headers)
             .isEqualTo(
-                Headers.builder().put("Request-Id", "7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21").build()
+                Headers.builder()
+                    .put("Request-Id", "Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .build()
             )
     }
 
@@ -93,19 +54,7 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .authCredentialVerifyRequest(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .build()
-                )
+                .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                 .build()
 
         val headers = params._headers()
@@ -118,46 +67,13 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                .authCredentialVerifyRequest(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .clientPublicKey(
-                            "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                        )
-                        .build()
-                )
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                CredentialVerifyParams.AuthCredentialVerifyRequest.ofEmailOtp(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .clientPublicKey(
-                            "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-                        )
-                        .build()
-                )
-            )
+        assertThat(body).isEqualTo(AuthCredentialVerifyRequestOneOf.builder().build())
     }
 
     @Test
@@ -165,38 +81,11 @@ internal class CredentialVerifyParamsTest {
         val params =
             CredentialVerifyParams.builder()
                 .id("id")
-                .authCredentialVerifyRequest(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .build()
-                )
+                .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                CredentialVerifyParams.AuthCredentialVerifyRequest.ofEmailOtp(
-                    CredentialVerifyParams.AuthCredentialVerifyRequest
-                        .EmailOtpCredentialVerifyRequest
-                        .builder()
-                        .otp("123456")
-                        .type(
-                            CredentialVerifyParams.AuthCredentialVerifyRequest
-                                .EmailOtpCredentialVerifyRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
-                        .build()
-                )
-            )
+        assertThat(body).isEqualTo(AuthCredentialVerifyRequestOneOf.builder().build())
     }
 }

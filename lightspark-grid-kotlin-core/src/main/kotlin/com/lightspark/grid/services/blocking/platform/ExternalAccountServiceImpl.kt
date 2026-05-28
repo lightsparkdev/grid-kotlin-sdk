@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.platform
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.emptyHandler
 import com.lightspark.grid.core.handlers.errorBodyHandler
@@ -20,8 +21,9 @@ import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPage
+import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -54,7 +56,7 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
     override fun list(
         params: ExternalAccountListParams,
         requestOptions: RequestOptions,
-    ): ExternalAccountListResponse =
+    ): ExternalAccountListPage =
         // get /platform/external-accounts
         withRawResponse().list(params, requestOptions).parse()
 
@@ -90,7 +92,11 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
                     .addPathSegments("platform", "external-accounts")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -120,7 +126,11 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("platform", "external-accounts", params._pathParam(0))
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -134,20 +144,24 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListResponse> =
-            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListPageResponse> =
+            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: ExternalAccountListParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ExternalAccountListResponse> {
+        ): HttpResponseFor<ExternalAccountListPage> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("platform", "external-accounts")
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -157,6 +171,13 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
                         if (requestOptions.responseValidation!!) {
                             it.validate()
                         }
+                    }
+                    .let {
+                        ExternalAccountListPage.builder()
+                            .service(ExternalAccountServiceImpl(clientOptions))
+                            .params(params)
+                            .response(it)
+                            .build()
                     }
             }
         }
@@ -177,7 +198,11 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
                     .addPathSegments("platform", "external-accounts", params._pathParam(0))
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

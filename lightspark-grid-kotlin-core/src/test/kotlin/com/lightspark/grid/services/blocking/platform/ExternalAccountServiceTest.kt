@@ -7,7 +7,6 @@ import com.lightspark.grid.models.UsdExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -20,6 +19,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.platform().externalAccounts()
 
@@ -69,6 +70,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.platform().externalAccounts()
 
@@ -84,15 +87,14 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.platform().externalAccounts()
 
-        val externalAccounts =
-            externalAccountService.list(
-                ExternalAccountListParams.builder().currency("currency").build()
-            )
+        val page = externalAccountService.list()
 
-        externalAccounts.validate()
+        page.response().validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -102,6 +104,8 @@ internal class ExternalAccountServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountService = client.platform().externalAccounts()
 

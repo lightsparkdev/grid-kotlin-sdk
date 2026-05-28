@@ -3,9 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.CopBeneficiary
-import com.lightspark.grid.models.platform.externalaccounts.CopAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,70 +14,11 @@ internal class CopExternalAccountInfoTest {
     fun create() {
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
-                .accountNumber("x")
-                .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
-                .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-                .beneficiary(
-                    CopBeneficiary.builder()
-                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
+                .putAdditionalProperty("bankName", JsonValue.from("Bancolombia"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
-
-        assertThat(copExternalAccountInfo.accountNumber()).isEqualTo("x")
-        assertThat(copExternalAccountInfo.accountType())
-            .isEqualTo(CopAccountInfo.AccountType.COP_ACCOUNT)
-        assertThat(copExternalAccountInfo.bankAccountType())
-            .isEqualTo(CopAccountInfo.BankAccountType.CHECKING)
-        assertThat(copExternalAccountInfo.bankName()).isEqualTo("x")
-        assertThat(copExternalAccountInfo.paymentRails())
-            .containsExactly(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-        assertThat(copExternalAccountInfo.beneficiary())
-            .isEqualTo(
-                CopExternalAccountInfo.Beneficiary.ofIndividual(
-                    CopBeneficiary.builder()
-                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
-            )
     }
 
     @Test
@@ -86,34 +26,10 @@ internal class CopExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
-                .accountNumber("x")
-                .accountType(CopAccountInfo.AccountType.COP_ACCOUNT)
-                .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("x")
-                .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
-                .beneficiary(
-                    CopBeneficiary.builder()
-                        .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .documentNumber("documentNumber")
-                        .documentType("documentType")
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
+                .putAdditionalProperty("bankName", JsonValue.from("Bancolombia"))
+                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
 
         val roundtrippedCopExternalAccountInfo =

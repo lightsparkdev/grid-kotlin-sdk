@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.services.blocking.sandbox.CardService
 import com.lightspark.grid.services.blocking.sandbox.InternalAccountService
 import com.lightspark.grid.services.blocking.sandbox.UmaService
 import com.lightspark.grid.services.blocking.sandbox.WebhookService
@@ -36,6 +37,8 @@ interface SandboxService {
     /** Endpoints to trigger test cases in sandbox */
     fun webhooks(): WebhookService
 
+    fun cards(): CardService
+
     /**
      * Simulate sending funds to the bank account as instructed in the quote. This endpoint is only
      * for the sandbox environment and will fail for production platforms/keys.
@@ -63,6 +66,8 @@ interface SandboxService {
 
         /** Endpoints to trigger test cases in sandbox */
         fun webhooks(): WebhookService.WithRawResponse
+
+        fun cards(): CardService.WithRawResponse
 
         /**
          * Returns a raw HTTP response for `post /sandbox/send`, but is otherwise the same as

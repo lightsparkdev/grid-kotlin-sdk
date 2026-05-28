@@ -73,10 +73,23 @@ private constructor(
     /** Filter by start date (inclusive) in ISO 8601 format */
     fun startDate(): OffsetDateTime? = startDate
 
-    /** Filter by transaction status */
+    /**
+     * Status of a payment transaction.
+     *
+     * |Status      |Description                                                                                       |
+     * |------------|--------------------------------------------------------------------------------------------------|
+     * |`CREATED`   |Initial lookup has been created                                                                   |
+     * |`PENDING`   |Quote has been created                                                                            |
+     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+     * |`FAILED`    |An error occurred during payment                                                                  |
+     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+     * |`EXPIRED`   |Quote has expired                                                                                 |
+     */
     fun status(): TransactionStatus? = status
 
-    /** Filter by transaction type */
+    /** Type of transaction (incoming payment or outgoing payment) */
     fun type(): TransactionType? = type
 
     /** Additional headers to send with the request. */
@@ -183,10 +196,23 @@ private constructor(
         /** Filter by start date (inclusive) in ISO 8601 format */
         fun startDate(startDate: OffsetDateTime?) = apply { this.startDate = startDate }
 
-        /** Filter by transaction status */
+        /**
+         * Status of a payment transaction.
+         *
+         * |Status      |Description                                                                                       |
+         * |------------|--------------------------------------------------------------------------------------------------|
+         * |`CREATED`   |Initial lookup has been created                                                                   |
+         * |`PENDING`   |Quote has been created                                                                            |
+         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
+         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
+         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
+         * |`FAILED`    |An error occurred during payment                                                                  |
+         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
+         * |`EXPIRED`   |Quote has expired                                                                                 |
+         */
         fun status(status: TransactionStatus?) = apply { this.status = status }
 
-        /** Filter by transaction type */
+        /** Type of transaction (incoming payment or outgoing payment) */
         fun type(type: TransactionType?) = apply { this.type = type }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -426,6 +452,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): SortOrder = apply {
             if (validated) {
                 return@apply

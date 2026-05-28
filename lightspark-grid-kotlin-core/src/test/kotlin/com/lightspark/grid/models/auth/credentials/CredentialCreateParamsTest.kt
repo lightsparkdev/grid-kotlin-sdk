@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.auth.credentials
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,17 +15,11 @@ internal class CredentialCreateParamsTest {
             .gridWalletSignature(
                 "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
             )
-            .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+            .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
             .authCredentialCreateRequest(
-                CredentialCreateParams.AuthCredentialCreateRequest.EmailOtpCredentialCreateRequest
-                    .builder()
+                EmailOtpCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .type(
-                        CredentialCreateParams.AuthCredentialCreateRequest
-                            .EmailOtpCredentialCreateRequest
-                            .Type
-                            .EMAIL_OTP
-                    )
+                    .type(JsonValue.from("EMAIL_OTP"))
                     .build()
             )
             .build()
@@ -37,18 +32,11 @@ internal class CredentialCreateParamsTest {
                 .gridWalletSignature(
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .authCredentialCreateRequest(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
                 .build()
@@ -62,7 +50,7 @@ internal class CredentialCreateParamsTest {
                         "Grid-Wallet-Signature",
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ",
                     )
-                    .put("Request-Id", "7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                    .put("Request-Id", "Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
             )
     }
@@ -72,16 +60,9 @@ internal class CredentialCreateParamsTest {
         val params =
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
                 .build()
@@ -98,18 +79,11 @@ internal class CredentialCreateParamsTest {
                 .gridWalletSignature(
                     "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                 )
-                .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
+                .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .authCredentialCreateRequest(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
                 .build()
@@ -118,17 +92,10 @@ internal class CredentialCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
             )
@@ -139,16 +106,9 @@ internal class CredentialCreateParamsTest {
         val params =
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
                 .build()
@@ -157,17 +117,10 @@ internal class CredentialCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CredentialCreateParams.AuthCredentialCreateRequest.ofEmailOtp(
-                    CredentialCreateParams.AuthCredentialCreateRequest
-                        .EmailOtpCredentialCreateRequest
-                        .builder()
+                AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
+                    EmailOtpCredentialCreateRequest.builder()
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .type(
-                            CredentialCreateParams.AuthCredentialCreateRequest
-                                .EmailOtpCredentialCreateRequest
-                                .Type
-                                .EMAIL_OTP
-                        )
+                        .type(JsonValue.from("EMAIL_OTP"))
                         .build()
                 )
             )

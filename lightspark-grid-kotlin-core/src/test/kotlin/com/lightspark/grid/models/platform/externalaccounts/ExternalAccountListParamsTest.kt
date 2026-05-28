@@ -10,16 +10,28 @@ internal class ExternalAccountListParamsTest {
 
     @Test
     fun create() {
-        ExternalAccountListParams.builder().currency("currency").build()
+        ExternalAccountListParams.builder().currency("currency").cursor("cursor").limit(1L).build()
     }
 
     @Test
     fun queryParams() {
-        val params = ExternalAccountListParams.builder().currency("currency").build()
+        val params =
+            ExternalAccountListParams.builder()
+                .currency("currency")
+                .cursor("cursor")
+                .limit(1L)
+                .build()
 
         val queryParams = params._queryParams()
 
-        assertThat(queryParams).isEqualTo(QueryParams.builder().put("currency", "currency").build())
+        assertThat(queryParams)
+            .isEqualTo(
+                QueryParams.builder()
+                    .put("currency", "currency")
+                    .put("cursor", "cursor")
+                    .put("limit", "1")
+                    .build()
+            )
     }
 
     @Test

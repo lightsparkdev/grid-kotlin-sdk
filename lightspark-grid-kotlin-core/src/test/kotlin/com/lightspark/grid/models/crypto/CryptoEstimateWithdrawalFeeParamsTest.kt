@@ -11,7 +11,7 @@ internal class CryptoEstimateWithdrawalFeeParamsTest {
     fun create() {
         CryptoEstimateWithdrawalFeeParams.builder()
             .amount(1000000L)
-            .cryptoNetwork("SOLANA_MAINNET")
+            .cryptoNetwork("SOLANA")
             .currency("USDC")
             .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
             .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -23,7 +23,7 @@ internal class CryptoEstimateWithdrawalFeeParamsTest {
         val params =
             CryptoEstimateWithdrawalFeeParams.builder()
                 .amount(1000000L)
-                .cryptoNetwork("SOLANA_MAINNET")
+                .cryptoNetwork("SOLANA")
                 .currency("USDC")
                 .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
                 .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
@@ -32,7 +32,7 @@ internal class CryptoEstimateWithdrawalFeeParamsTest {
         val body = params._body()
 
         assertThat(body.amount()).isEqualTo(1000000L)
-        assertThat(body.cryptoNetwork()).isEqualTo("SOLANA_MAINNET")
+        assertThat(body.cryptoNetwork()).isEqualTo("SOLANA")
         assertThat(body.currency()).isEqualTo("USDC")
         assertThat(body.destinationAddress())
             .isEqualTo("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")

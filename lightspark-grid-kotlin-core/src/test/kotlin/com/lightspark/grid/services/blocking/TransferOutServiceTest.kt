@@ -18,6 +18,8 @@ internal class TransferOutServiceTest {
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val transferOutService = client.transferOut()
 

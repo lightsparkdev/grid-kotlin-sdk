@@ -17,7 +17,7 @@ internal class OutgoingRateDetailsTest {
                 .counterpartyMultiplier(1.08)
                 .gridApiFixedFee(10L)
                 .gridApiMultiplier(0.925)
-                .gridApiVariableFeeAmount(30.0)
+                .gridApiVariableFeeAmount(30L)
                 .gridApiVariableFeeRate(0.003)
                 .build()
 
@@ -25,7 +25,7 @@ internal class OutgoingRateDetailsTest {
         assertThat(outgoingRateDetails.counterpartyMultiplier()).isEqualTo(1.08)
         assertThat(outgoingRateDetails.gridApiFixedFee()).isEqualTo(10L)
         assertThat(outgoingRateDetails.gridApiMultiplier()).isEqualTo(0.925)
-        assertThat(outgoingRateDetails.gridApiVariableFeeAmount()).isEqualTo(30.0)
+        assertThat(outgoingRateDetails.gridApiVariableFeeAmount()).isEqualTo(30L)
         assertThat(outgoingRateDetails.gridApiVariableFeeRate()).isEqualTo(0.003)
     }
 
@@ -38,7 +38,7 @@ internal class OutgoingRateDetailsTest {
                 .counterpartyMultiplier(1.08)
                 .gridApiFixedFee(10L)
                 .gridApiMultiplier(0.925)
-                .gridApiVariableFeeAmount(30.0)
+                .gridApiVariableFeeAmount(30L)
                 .gridApiVariableFeeRate(0.003)
                 .build()
 

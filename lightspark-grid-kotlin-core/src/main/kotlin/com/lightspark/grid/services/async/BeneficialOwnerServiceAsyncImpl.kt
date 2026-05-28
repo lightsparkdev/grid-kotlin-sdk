@@ -4,6 +4,7 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
@@ -16,15 +17,13 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateResponse
 
 /**
  * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
@@ -47,21 +46,21 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
     override suspend fun create(
         params: BeneficialOwnerCreateParams,
         requestOptions: RequestOptions,
-    ): BeneficialOwnerCreateResponse =
+    ): BeneficialOwner =
         // post /beneficial-owners
         withRawResponse().create(params, requestOptions).parse()
 
     override suspend fun retrieve(
         params: BeneficialOwnerRetrieveParams,
         requestOptions: RequestOptions,
-    ): BeneficialOwnerRetrieveResponse =
+    ): BeneficialOwner =
         // get /beneficial-owners/{beneficialOwnerId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override suspend fun update(
         params: BeneficialOwnerUpdateParams,
         requestOptions: RequestOptions,
-    ): BeneficialOwnerUpdateResponse =
+    ): BeneficialOwner =
         // patch /beneficial-owners/{beneficialOwnerId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -85,13 +84,13 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createHandler: Handler<BeneficialOwnerCreateResponse> =
-            jsonHandler<BeneficialOwnerCreateResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<BeneficialOwner> =
+            jsonHandler<BeneficialOwner>(clientOptions.jsonMapper)
 
         override suspend fun create(
             params: BeneficialOwnerCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwnerCreateResponse> {
+        ): HttpResponseFor<BeneficialOwner> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -99,7 +98,11 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
                     .addPathSegments("beneficial-owners")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -113,13 +116,13 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
             }
         }
 
-        private val retrieveHandler: Handler<BeneficialOwnerRetrieveResponse> =
-            jsonHandler<BeneficialOwnerRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<BeneficialOwner> =
+            jsonHandler<BeneficialOwner>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: BeneficialOwnerRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwnerRetrieveResponse> {
+        ): HttpResponseFor<BeneficialOwner> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("beneficialOwnerId", params.beneficialOwnerId())
@@ -129,7 +132,11 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("beneficial-owners", params._pathParam(0))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -143,13 +150,13 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
             }
         }
 
-        private val updateHandler: Handler<BeneficialOwnerUpdateResponse> =
-            jsonHandler<BeneficialOwnerUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<BeneficialOwner> =
+            jsonHandler<BeneficialOwner>(clientOptions.jsonMapper)
 
         override suspend fun update(
             params: BeneficialOwnerUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwnerUpdateResponse> {
+        ): HttpResponseFor<BeneficialOwner> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("beneficialOwnerId", params.beneficialOwnerId())
@@ -160,7 +167,11 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
                     .addPathSegments("beneficial-owners", params._pathParam(0))
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -187,7 +198,11 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("beneficial-owners")
                     .build()
-                    .prepareAsync(clientOptions, params)
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {

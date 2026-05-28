@@ -39,9 +39,8 @@ private constructor(
     fun amount(): Long = body.amount()
 
     /**
-     * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-     * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET,
-     * LIGHTNING_MAINNET, LIGHTNING_REGTEST.
+     * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE, POLYGON,
+     * SPARK, LIGHTNING, BITCOIN.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -178,9 +177,8 @@ private constructor(
         fun amount(amount: JsonField<Long>) = apply { body.amount(amount) }
 
         /**
-         * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
-         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
+         * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE,
+         * POLYGON, SPARK, LIGHTNING, BITCOIN.
          */
         fun cryptoNetwork(cryptoNetwork: String) = apply { body.cryptoNetwork(cryptoNetwork) }
 
@@ -429,9 +427,8 @@ private constructor(
         fun amount(): Long = amount.getRequired("amount")
 
         /**
-         * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
-         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
+         * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE,
+         * POLYGON, SPARK, LIGHTNING, BITCOIN.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -567,9 +564,8 @@ private constructor(
             fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
 
             /**
-             * The blockchain network for the withdrawal. Example values: SOLANA_MAINNET,
-             * SOLANA_DEVNET, ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET,
-             * SPARK_MAINNET, SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
+             * The blockchain network for the withdrawal. Example values: SOLANA, ETHEREUM, BASE,
+             * POLYGON, SPARK, LIGHTNING, BITCOIN.
              */
             fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
 
@@ -674,6 +670,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Body = apply {
             if (validated) {
                 return@apply

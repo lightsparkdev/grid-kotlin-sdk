@@ -6,10 +6,12 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.lightspark.grid.client.LightsparkGridClientAsync
 import com.lightspark.grid.client.LightsparkGridClientAsyncImpl
 import com.lightspark.grid.core.ClientOptions
+import com.lightspark.grid.core.LogLevel
 import com.lightspark.grid.core.Sleeper
 import com.lightspark.grid.core.Timeout
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpClient
+import com.lightspark.grid.core.http.ProxyAuthenticator
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.jsonMapper
 import java.net.Proxy
@@ -47,6 +49,7 @@ class LightsparkGridOkHttpClientAsync private constructor() {
         private var clientOptions: ClientOptions.Builder = ClientOptions.builder()
         private var dispatcherExecutorService: ExecutorService? = null
         private var proxy: Proxy? = null
+        private var proxyAuthenticator: ProxyAuthenticator? = null
         private var maxIdleConnections: Int? = null
         private var keepAliveDuration: Duration? = null
         private var sslSocketFactory: SSLSocketFactory? = null
@@ -66,6 +69,14 @@ class LightsparkGridOkHttpClientAsync private constructor() {
         }
 
         fun proxy(proxy: Proxy?) = apply { this.proxy = proxy }
+
+        /**
+         * Provides credentials when an HTTP proxy responds with `407 Proxy Authentication
+         * Required`.
+         */
+        fun proxyAuthenticator(proxyAuthenticator: ProxyAuthenticator?) = apply {
+            this.proxyAuthenticator = proxyAuthenticator
+        }
 
         /**
          * The maximum number of idle connections kept by the underlying OkHttp connection pool.
@@ -182,6 +193,9 @@ class LightsparkGridOkHttpClientAsync private constructor() {
         /**
          * Whether to call `validate` on every response before returning it.
          *
+         * Setting this to `true` is _not_ forwards compatible with new types from the API for
+         * existing fields.
+         *
          * Defaults to false, which means the shape of the response will not be validated upfront.
          * Instead, validation will only occur for the parts of the response that are accessed.
          */
@@ -223,11 +237,29 @@ class LightsparkGridOkHttpClientAsync private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
-        /** API token authentication using format `<api token id>:<api client secret>` */
-        fun username(username: String) = apply { clientOptions.username(username) }
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         /** API token authentication using format `<api token id>:<api client secret>` */
-        fun password(password: String) = apply { clientOptions.password(password) }
+        fun username(username: String?) = apply { clientOptions.username(username) }
+
+        /** API token authentication using format `<api token id>:<api client secret>` */
+        fun password(password: String?) = apply { clientOptions.password(password) }
+
+        /**
+         * Bearer access token obtained by redeeming a device code. Required when calling
+         * agent-scoped endpoints (e.g. `GET /agents/me/...`). Leave unset for platform-scoped
+         * operations.
+         */
+        fun agentAccessToken(agentAccessToken: String?) = apply {
+            clientOptions.agentAccessToken(agentAccessToken)
+        }
 
         /**
          * Secp256r1 (P-256) asymmetric signature of the webhook payload, which can be used to
@@ -345,6 +377,7 @@ class LightsparkGridOkHttpClientAsync private constructor() {
                         OkHttpClient.builder()
                             .timeout(clientOptions.timeout())
                             .proxy(proxy)
+                            .proxyAuthenticator(proxyAuthenticator)
                             .maxIdleConnections(maxIdleConnections)
                             .keepAliveDuration(keepAliveDuration)
                             .dispatcherExecutorService(dispatcherExecutorService)

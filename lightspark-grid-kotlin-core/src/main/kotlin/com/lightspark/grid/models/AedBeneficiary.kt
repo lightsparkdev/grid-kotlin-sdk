@@ -20,9 +20,9 @@ import java.util.Objects
 class AedBeneficiary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val address: JsonField<Address>,
     private val beneficiaryType: JsonField<BeneficiaryType>,
     private val fullName: JsonField<String>,
-    private val address: JsonField<Address>,
     private val birthDate: JsonField<String>,
     private val countryOfResidence: JsonField<String>,
     private val email: JsonField<String>,
@@ -33,11 +33,11 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("beneficiaryType")
         @ExcludeMissing
         beneficiaryType: JsonField<BeneficiaryType> = JsonMissing.of(),
         @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
         @JsonProperty("birthDate") @ExcludeMissing birthDate: JsonField<String> = JsonMissing.of(),
         @JsonProperty("countryOfResidence")
         @ExcludeMissing
@@ -50,9 +50,9 @@ private constructor(
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
     ) : this(
+        address,
         beneficiaryType,
         fullName,
-        address,
         birthDate,
         countryOfResidence,
         email,
@@ -60,6 +60,12 @@ private constructor(
         phoneNumber,
         mutableMapOf(),
     )
+
+    /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun address(): Address = address.getRequired("address")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -74,12 +80,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun fullName(): String = fullName.getRequired("fullName")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun address(): Address? = address.getNullable("address")
 
     /**
      * The birth date of the beneficiary
@@ -122,6 +122,13 @@ private constructor(
     fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
+     * Returns the raw JSON value of [address].
+     *
+     * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
+
+    /**
      * Returns the raw JSON value of [beneficiaryType].
      *
      * Unlike [beneficiaryType], this method doesn't throw if the JSON field has an unexpected type.
@@ -136,13 +143,6 @@ private constructor(
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
-
-    /**
-     * Returns the raw JSON value of [address].
-     *
-     * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
 
     /**
      * Returns the raw JSON value of [birthDate].
@@ -201,6 +201,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .address()
          * .beneficiaryType()
          * .fullName()
          * ```
@@ -211,9 +212,9 @@ private constructor(
     /** A builder for [AedBeneficiary]. */
     class Builder internal constructor() {
 
+        private var address: JsonField<Address>? = null
         private var beneficiaryType: JsonField<BeneficiaryType>? = null
         private var fullName: JsonField<String>? = null
-        private var address: JsonField<Address> = JsonMissing.of()
         private var birthDate: JsonField<String> = JsonMissing.of()
         private var countryOfResidence: JsonField<String> = JsonMissing.of()
         private var email: JsonField<String> = JsonMissing.of()
@@ -222,9 +223,9 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(aedBeneficiary: AedBeneficiary) = apply {
+            address = aedBeneficiary.address
             beneficiaryType = aedBeneficiary.beneficiaryType
             fullName = aedBeneficiary.fullName
-            address = aedBeneficiary.address
             birthDate = aedBeneficiary.birthDate
             countryOfResidence = aedBeneficiary.countryOfResidence
             email = aedBeneficiary.email
@@ -232,6 +233,16 @@ private constructor(
             phoneNumber = aedBeneficiary.phoneNumber
             additionalProperties = aedBeneficiary.additionalProperties.toMutableMap()
         }
+
+        fun address(address: Address) = address(JsonField.of(address))
+
+        /**
+         * Sets [Builder.address] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.address] with a well-typed [Address] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun address(address: JsonField<Address>) = apply { this.address = address }
 
         fun beneficiaryType(beneficiaryType: BeneficiaryType) =
             beneficiaryType(JsonField.of(beneficiaryType))
@@ -257,16 +268,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
-
-        fun address(address: Address) = address(JsonField.of(address))
-
-        /**
-         * Sets [Builder.address] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.address] with a well-typed [Address] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun address(address: JsonField<Address>) = apply { this.address = address }
 
         /** The birth date of the beneficiary */
         fun birthDate(birthDate: String) = birthDate(JsonField.of(birthDate))
@@ -356,6 +357,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .address()
          * .beneficiaryType()
          * .fullName()
          * ```
@@ -364,9 +366,9 @@ private constructor(
          */
         fun build(): AedBeneficiary =
             AedBeneficiary(
+                checkRequired("address", address),
                 checkRequired("beneficiaryType", beneficiaryType),
                 checkRequired("fullName", fullName),
-                address,
                 birthDate,
                 countryOfResidence,
                 email,
@@ -378,14 +380,22 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): AedBeneficiary = apply {
         if (validated) {
             return@apply
         }
 
+        address().validate()
         beneficiaryType().validate()
         fullName()
-        address()?.validate()
         birthDate()
         countryOfResidence()
         email()
@@ -408,9 +418,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (beneficiaryType.asKnown()?.validity() ?: 0) +
+        (address.asKnown()?.validity() ?: 0) +
+            (beneficiaryType.asKnown()?.validity() ?: 0) +
             (if (fullName.asKnown() == null) 0 else 1) +
-            (address.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
             (if (countryOfResidence.asKnown() == null) 0 else 1) +
             (if (email.asKnown() == null) 0 else 1) +
@@ -502,6 +512,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): BeneficiaryType = apply {
             if (validated) {
                 return@apply
@@ -546,9 +565,9 @@ private constructor(
         }
 
         return other is AedBeneficiary &&
+            address == other.address &&
             beneficiaryType == other.beneficiaryType &&
             fullName == other.fullName &&
-            address == other.address &&
             birthDate == other.birthDate &&
             countryOfResidence == other.countryOfResidence &&
             email == other.email &&
@@ -559,9 +578,9 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            address,
             beneficiaryType,
             fullName,
-            address,
             birthDate,
             countryOfResidence,
             email,
@@ -574,5 +593,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AedBeneficiary{beneficiaryType=$beneficiaryType, fullName=$fullName, address=$address, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "AedBeneficiary{address=$address, beneficiaryType=$beneficiaryType, fullName=$fullName, birthDate=$birthDate, countryOfResidence=$countryOfResidence, email=$email, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

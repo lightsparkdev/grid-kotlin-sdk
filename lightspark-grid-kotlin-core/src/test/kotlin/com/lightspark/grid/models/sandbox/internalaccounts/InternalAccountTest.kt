@@ -5,7 +5,6 @@ package com.lightspark.grid.models.sandbox.internalaccounts
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
-import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import java.time.OffsetDateTime
@@ -36,12 +35,20 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("x")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .routingNumber("021000021")
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -50,9 +57,11 @@ internal class InternalAccountTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .status(InternalAccount.Status.ACTIVE)
                 .type(InternalAccount.Type.INTERNAL_FIAT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .privateEnabled(true)
                 .build()
 
         assertThat(internalAccount.id())
@@ -77,12 +86,19 @@ internal class InternalAccountTest {
             .containsExactly(
                 PaymentInstructions.builder()
                     .accountOrWalletInfo(
-                        PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                            .accountNumber("x")
-                            .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                            .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                            .routingNumber("021000021")
+                        PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                            .addPaymentRail(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                    .BANK_TRANSFER
+                            )
                             .reference("UMA-Q12345-REF")
+                            .accountNumber("0123456789")
+                            .bankAccountType(
+                                PaymentInstructions.AccountOrWalletInfo.SlvAccount.BankAccountType
+                                    .CHECKING
+                            )
+                            .bankName("Banco Cuscatlan")
+                            .phoneNumber("+50312345678")
                             .build()
                     )
                     .instructionsNotes(
@@ -91,11 +107,13 @@ internal class InternalAccountTest {
                     .isPlatformAccount(true)
                     .build()
             )
+        assertThat(internalAccount.status()).isEqualTo(InternalAccount.Status.ACTIVE)
         assertThat(internalAccount.type()).isEqualTo(InternalAccount.Type.INTERNAL_FIAT)
         assertThat(internalAccount.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
         assertThat(internalAccount.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        assertThat(internalAccount.privateEnabled()).isEqualTo(true)
     }
 
     @Test
@@ -121,12 +139,20 @@ internal class InternalAccountTest {
                 .addFundingPaymentInstruction(
                     PaymentInstructions.builder()
                         .accountOrWalletInfo(
-                            PaymentInstructions.AccountOrWalletInfo.UsdAccount.builder()
-                                .accountNumber("x")
-                                .accountType(UsdAccountInfo.AccountType.USD_ACCOUNT)
-                                .addPaymentRail(UsdAccountInfo.PaymentRail.ACH)
-                                .routingNumber("021000021")
+                            PaymentInstructions.AccountOrWalletInfo.SlvAccount.builder()
+                                .addPaymentRail(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount.PaymentRail
+                                        .BANK_TRANSFER
+                                )
                                 .reference("UMA-Q12345-REF")
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    PaymentInstructions.AccountOrWalletInfo.SlvAccount
+                                        .BankAccountType
+                                        .CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
                                 .build()
                         )
                         .instructionsNotes(
@@ -135,9 +161,11 @@ internal class InternalAccountTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .status(InternalAccount.Status.ACTIVE)
                 .type(InternalAccount.Type.INTERNAL_FIAT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .privateEnabled(true)
                 .build()
 
         val roundtrippedInternalAccount =

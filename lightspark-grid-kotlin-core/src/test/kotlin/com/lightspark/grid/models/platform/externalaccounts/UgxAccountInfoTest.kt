@@ -16,14 +16,14 @@ internal class UgxAccountInfoTest {
                 .accountType(UgxAccountInfo.AccountType.UGX_ACCOUNT)
                 .addPaymentRail(UgxAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         assertThat(ugxAccountInfo.accountType()).isEqualTo(UgxAccountInfo.AccountType.UGX_ACCOUNT)
         assertThat(ugxAccountInfo.paymentRails())
             .containsExactly(UgxAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(ugxAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(ugxAccountInfo.provider()).isEqualTo("x")
+        assertThat(ugxAccountInfo.provider()).isEqualTo("Example Provider")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class UgxAccountInfoTest {
                 .accountType(UgxAccountInfo.AccountType.UGX_ACCOUNT)
                 .addPaymentRail(UgxAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         val roundtrippedUgxAccountInfo =

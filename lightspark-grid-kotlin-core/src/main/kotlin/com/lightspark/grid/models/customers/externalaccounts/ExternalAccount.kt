@@ -13,7 +13,6 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import java.util.Collections
 import java.util.Objects
 
@@ -26,7 +25,6 @@ private constructor(
     private val status: JsonField<Status>,
     private val beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus>,
     private val beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData>,
-    private val cryptoNetwork: JsonField<String>,
     private val customerId: JsonField<String>,
     private val defaultUmaDepositAccount: JsonField<Boolean>,
     private val platformAccountId: JsonField<String>,
@@ -47,9 +45,6 @@ private constructor(
         @JsonProperty("beneficiaryVerifiedData")
         @ExcludeMissing
         beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of(),
-        @JsonProperty("cryptoNetwork")
-        @ExcludeMissing
-        cryptoNetwork: JsonField<String> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -66,7 +61,6 @@ private constructor(
         status,
         beneficiaryVerificationStatus,
         beneficiaryVerifiedData,
-        cryptoNetwork,
         customerId,
         defaultUmaDepositAccount,
         platformAccountId,
@@ -82,8 +76,9 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
-     * be provided.
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: bankAccountType, accountNumber
+     * - MOBILE_MONEY: phoneNumber
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -123,17 +118,6 @@ private constructor(
      */
     fun beneficiaryVerifiedData(): BeneficiaryVerifiedData? =
         beneficiaryVerifiedData.getNullable("beneficiaryVerifiedData")
-
-    /**
-     * The blockchain network for this external account, if applicable. Present when the account is
-     * a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET, ETHEREUM_MAINNET,
-     * ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET, SPARK_TESTNET,
-     * LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun cryptoNetwork(): String? = cryptoNetwork.getNullable("cryptoNetwork")
 
     /**
      * The customer this account is tied to, or null if the account is on behalf of the platform.
@@ -217,15 +201,6 @@ private constructor(
     fun _beneficiaryVerifiedData(): JsonField<BeneficiaryVerifiedData> = beneficiaryVerifiedData
 
     /**
-     * Returns the raw JSON value of [cryptoNetwork].
-     *
-     * Unlike [cryptoNetwork], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cryptoNetwork")
-    @ExcludeMissing
-    fun _cryptoNetwork(): JsonField<String> = cryptoNetwork
-
-    /**
      * Returns the raw JSON value of [customerId].
      *
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -290,7 +265,6 @@ private constructor(
         private var beneficiaryVerificationStatus: JsonField<BeneficiaryVerificationStatus> =
             JsonMissing.of()
         private var beneficiaryVerifiedData: JsonField<BeneficiaryVerifiedData> = JsonMissing.of()
-        private var cryptoNetwork: JsonField<String> = JsonMissing.of()
         private var customerId: JsonField<String> = JsonMissing.of()
         private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
@@ -303,7 +277,6 @@ private constructor(
             status = externalAccount.status
             beneficiaryVerificationStatus = externalAccount.beneficiaryVerificationStatus
             beneficiaryVerifiedData = externalAccount.beneficiaryVerifiedData
-            cryptoNetwork = externalAccount.cryptoNetwork
             customerId = externalAccount.customerId
             defaultUmaDepositAccount = externalAccount.defaultUmaDepositAccount
             platformAccountId = externalAccount.platformAccountId
@@ -322,8 +295,9 @@ private constructor(
         fun id(id: JsonField<String>) = apply { this.id = id }
 
         /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
          */
         fun accountInfo(accountInfo: ExternalAccountInfoOneOf) =
             accountInfo(JsonField.of(accountInfo))
@@ -340,267 +314,17 @@ private constructor(
         }
 
         /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofBrlAccount(brlAccount)`.
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofSlvAccount(slvAccount)`.
          */
-        fun accountInfo(brlAccount: BrlExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofBrlAccount(brlAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofCadAccount(cadAccount)`.
-         */
-        fun accountInfo(cadAccount: CadExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofCadAccount(cadAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofDkkAccount(dkkAccount)`.
-         */
-        fun accountInfo(dkkAccount: DkkExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofDkkAccount(dkkAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofEurAccount(eurAccount)`.
-         */
-        fun accountInfo(eurAccount: EurExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofEurAccount(eurAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount)`.
-         */
-        fun accountInfo(gbpAccount: GbpExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofGbpAccount(gbpAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofHkdAccount(hkdAccount)`.
-         */
-        fun accountInfo(hkdAccount: HkdExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofHkdAccount(hkdAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofIdrAccount(idrAccount)`.
-         */
-        fun accountInfo(idrAccount: IdrExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofIdrAccount(idrAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofInrAccount(inrAccount)`.
-         */
-        fun accountInfo(inrAccount: InrExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofInrAccount(inrAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofKesAccount(kesAccount)`.
-         */
-        fun accountInfo(kesAccount: KesExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofKesAccount(kesAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount)`.
-         */
-        fun accountInfo(mwkAccount: MwkExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofMwkAccount(mwkAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount)`.
-         */
-        fun accountInfo(mxnAccount: MxnExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofMxnAccount(mxnAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofMyrAccount(myrAccount)`.
-         */
-        fun accountInfo(myrAccount: MyrExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofMyrAccount(myrAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount)`.
-         */
-        fun accountInfo(ngnAccount: NgnExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofNgnAccount(ngnAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofPhpAccount(phpAccount)`.
-         */
-        fun accountInfo(phpAccount: PhpExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofPhpAccount(phpAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofRwfAccount(rwfAccount)`.
-         */
-        fun accountInfo(rwfAccount: RwfExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofRwfAccount(rwfAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount)`.
-         */
-        fun accountInfo(sgdAccount: SgdExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofSgdAccount(sgdAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofThbAccount(thbAccount)`.
-         */
-        fun accountInfo(thbAccount: ThbExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofThbAccount(thbAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofTzsAccount(tzsAccount)`.
-         */
-        fun accountInfo(tzsAccount: TzsExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofTzsAccount(tzsAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount)`.
-         */
-        fun accountInfo(ugxAccount: UgxExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofUgxAccount(ugxAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofUsdAccount(usdAccount)`.
-         */
-        fun accountInfo(usdAccount: UsdExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofUsdAccount(usdAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofVndAccount(vndAccount)`.
-         */
-        fun accountInfo(vndAccount: VndExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofVndAccount(vndAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofXofAccount(xofAccount)`.
-         */
-        fun accountInfo(xofAccount: XofExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofXofAccount(xofAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofZarAccount(zarAccount)`.
-         */
-        fun accountInfo(zarAccount: ZarExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofZarAccount(zarAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofZmwAccount(zmwAccount)`.
-         */
-        fun accountInfo(zmwAccount: ZmwExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofZmwAccount(zmwAccount))
+        fun accountInfo(slvAccount: ExternalAccountInfoOneOf.SlvAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofSlvAccount(slvAccount))
 
         /**
          * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofSparkWalletInfo(sparkWalletInfo)`.
+         * `ExternalAccountInfoOneOf.ofSwiftAccount(swiftAccount)`.
          */
-        fun accountInfo(sparkWalletInfo: SparkWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofSparkWalletInfo(sparkWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofLightningWalletInfo(lightningWalletInfo)`.
-         */
-        fun accountInfo(lightningWalletInfo: LightningWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofLightningWalletInfo(lightningWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofSolanaWalletInfo(solanaWalletInfo)`.
-         */
-        fun accountInfo(solanaWalletInfo: SolanaWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofSolanaWalletInfo(solanaWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofTronWalletInfo(tronWalletInfo)`.
-         */
-        fun accountInfo(tronWalletInfo: TronWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofTronWalletInfo(tronWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofPolygonWalletInfo(polygonWalletInfo)`.
-         */
-        fun accountInfo(polygonWalletInfo: PolygonWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofPolygonWalletInfo(polygonWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofBaseWalletInfo(baseWalletInfo)`.
-         */
-        fun accountInfo(baseWalletInfo: BaseWalletInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofBaseWalletInfo(baseWalletInfo))
-
-        /**
-         * Alias for calling [accountInfo] with
-         * `ExternalAccountInfoOneOf.ofEthereumWalletExternalAccountInfo(ethereumWalletExternalAccountInfo)`.
-         */
-        fun accountInfo(ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo) =
-            accountInfo(
-                ExternalAccountInfoOneOf.ofEthereumWalletExternalAccountInfo(
-                    ethereumWalletExternalAccountInfo
-                )
-            )
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofAedAccount(aedAccount)`.
-         */
-        fun accountInfo(aedAccount: AedExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofAedAccount(aedAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofBwpAccount(bwpAccount)`.
-         */
-        fun accountInfo(bwpAccount: BwpExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofBwpAccount(bwpAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofXafAccount(xafAccount)`.
-         */
-        fun accountInfo(xafAccount: XafExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofXafAccount(xafAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofBdtAccount(bdtAccount)`.
-         */
-        fun accountInfo(bdtAccount: BdtExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofBdtAccount(bdtAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofCopAccount(copAccount)`.
-         */
-        fun accountInfo(copAccount: CopExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofCopAccount(copAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofEgpAccount(egpAccount)`.
-         */
-        fun accountInfo(egpAccount: EgpExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofEgpAccount(egpAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGhsAccount(ghsAccount)`.
-         */
-        fun accountInfo(ghsAccount: GhsExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofGhsAccount(ghsAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofGtqAccount(gtqAccount)`.
-         */
-        fun accountInfo(gtqAccount: GtqExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofGtqAccount(gtqAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofHtgAccount(htgAccount)`.
-         */
-        fun accountInfo(htgAccount: HtgExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofHtgAccount(htgAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofJmdAccount(jmdAccount)`.
-         */
-        fun accountInfo(jmdAccount: JmdExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofJmdAccount(jmdAccount))
-
-        /**
-         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount)`.
-         */
-        fun accountInfo(pkrAccount: PkrExternalAccountInfo) =
-            accountInfo(ExternalAccountInfoOneOf.ofPkrAccount(pkrAccount))
+        fun accountInfo(swiftAccount: ExternalAccountInfoOneOf.SwiftAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofSwiftAccount(swiftAccount))
 
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
@@ -655,25 +379,6 @@ private constructor(
             apply {
                 this.beneficiaryVerifiedData = beneficiaryVerifiedData
             }
-
-        /**
-         * The blockchain network for this external account, if applicable. Present when the account
-         * is a cryptocurrency wallet. Example values: SOLANA_MAINNET, SOLANA_DEVNET,
-         * ETHEREUM_MAINNET, ETHEREUM_TESTNET, BASE_MAINNET, BASE_TESTNET, SPARK_MAINNET,
-         * SPARK_TESTNET, LIGHTNING_MAINNET, LIGHTNING_REGTEST.
-         */
-        fun cryptoNetwork(cryptoNetwork: String) = cryptoNetwork(JsonField.of(cryptoNetwork))
-
-        /**
-         * Sets [Builder.cryptoNetwork] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cryptoNetwork] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun cryptoNetwork(cryptoNetwork: JsonField<String>) = apply {
-            this.cryptoNetwork = cryptoNetwork
-        }
 
         /**
          * The customer this account is tied to, or null if the account is on behalf of the
@@ -769,7 +474,6 @@ private constructor(
                 checkRequired("status", status),
                 beneficiaryVerificationStatus,
                 beneficiaryVerifiedData,
-                cryptoNetwork,
                 customerId,
                 defaultUmaDepositAccount,
                 platformAccountId,
@@ -779,6 +483,14 @@ private constructor(
 
     private var validated: Boolean = false
 
+    /**
+     * Validates that the types of all values in this object match their expected types recursively.
+     *
+     * This method is _not_ forwards compatible with new types from the API for existing fields.
+     *
+     * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
+     *   expected type.
+     */
     fun validate(): ExternalAccount = apply {
         if (validated) {
             return@apply
@@ -790,7 +502,6 @@ private constructor(
         status().validate()
         beneficiaryVerificationStatus()?.validate()
         beneficiaryVerifiedData()?.validate()
-        cryptoNetwork()
         customerId()
         defaultUmaDepositAccount()
         platformAccountId()
@@ -817,7 +528,6 @@ private constructor(
             (status.asKnown()?.validity() ?: 0) +
             (beneficiaryVerificationStatus.asKnown()?.validity() ?: 0) +
             (beneficiaryVerifiedData.asKnown()?.validity() ?: 0) +
-            (if (cryptoNetwork.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
@@ -922,6 +632,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): Status = apply {
             if (validated) {
                 return@apply
@@ -1082,6 +801,15 @@ private constructor(
 
         private var validated: Boolean = false
 
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
         fun validate(): BeneficiaryVerificationStatus = apply {
             if (validated) {
                 return@apply
@@ -1132,7 +860,6 @@ private constructor(
             status == other.status &&
             beneficiaryVerificationStatus == other.beneficiaryVerificationStatus &&
             beneficiaryVerifiedData == other.beneficiaryVerifiedData &&
-            cryptoNetwork == other.cryptoNetwork &&
             customerId == other.customerId &&
             defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
             platformAccountId == other.platformAccountId &&
@@ -1147,7 +874,6 @@ private constructor(
             status,
             beneficiaryVerificationStatus,
             beneficiaryVerifiedData,
-            cryptoNetwork,
             customerId,
             defaultUmaDepositAccount,
             platformAccountId,
@@ -1158,5 +884,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, beneficiaryVerificationStatus=$beneficiaryVerificationStatus, beneficiaryVerifiedData=$beneficiaryVerifiedData, cryptoNetwork=$cryptoNetwork, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "ExternalAccount{id=$id, accountInfo=$accountInfo, currency=$currency, status=$status, beneficiaryVerificationStatus=$beneficiaryVerificationStatus, beneficiaryVerifiedData=$beneficiaryVerifiedData, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }
