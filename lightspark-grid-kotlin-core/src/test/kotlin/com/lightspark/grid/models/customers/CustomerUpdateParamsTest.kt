@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.customers
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -19,11 +20,11 @@ internal class CustomerUpdateParamsTest {
             )
             .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
             .updateCustomerRequest(
-                CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest.builder()
+                    .customerType(JsonValue.from("INDIVIDUAL"))
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -49,8 +50,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
                 .build()
@@ -70,11 +72,12 @@ internal class CustomerUpdateParamsTest {
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -113,8 +116,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
                 .build()
@@ -134,11 +138,12 @@ internal class CustomerUpdateParamsTest {
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -161,12 +166,13 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                CustomerUpdateParams.UpdateCustomerRequest.ofIndividualCustomerUpdate(
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
                         .umaAddress("\$john.doe@uma.domain.com")
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -192,8 +198,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
                 .build()
@@ -202,9 +209,10 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
+                CustomerUpdateParams.UpdateCustomerRequest.ofIndividualCustomerUpdate(
+                    CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                        .builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .build()
                 )
             )

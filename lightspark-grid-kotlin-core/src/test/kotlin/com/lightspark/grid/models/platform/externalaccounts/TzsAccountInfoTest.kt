@@ -16,14 +16,14 @@ internal class TzsAccountInfoTest {
                 .accountType(TzsAccountInfo.AccountType.TZS_ACCOUNT)
                 .addPaymentRail(TzsAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+255712345678")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         assertThat(tzsAccountInfo.accountType()).isEqualTo(TzsAccountInfo.AccountType.TZS_ACCOUNT)
         assertThat(tzsAccountInfo.paymentRails())
             .containsExactly(TzsAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(tzsAccountInfo.phoneNumber()).isEqualTo("+255712345678")
-        assertThat(tzsAccountInfo.provider()).isEqualTo("x")
+        assertThat(tzsAccountInfo.provider()).isEqualTo("Example Provider")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class TzsAccountInfoTest {
                 .accountType(TzsAccountInfo.AccountType.TZS_ACCOUNT)
                 .addPaymentRail(TzsAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+255712345678")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         val roundtrippedTzsAccountInfo =

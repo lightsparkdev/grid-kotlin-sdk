@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.IndividualCustomerFields
@@ -20,7 +21,8 @@ internal class CustomerUpdateWebhookEventTest {
             CustomerUpdateWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    CustomerOneOf.Individual.builder()
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -31,7 +33,6 @@ internal class CustomerUpdateWebhookEventTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -56,8 +57,9 @@ internal class CustomerUpdateWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(customerUpdateWebhookEvent.data())
             .isEqualTo(
-                CustomerOneOf.ofIndividual(
-                    CustomerOneOf.Individual.builder()
+                CustomerOneOf.ofIndividualCustomer(
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -68,7 +70,6 @@ internal class CustomerUpdateWebhookEventTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -99,7 +100,8 @@ internal class CustomerUpdateWebhookEventTest {
             CustomerUpdateWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    CustomerOneOf.Individual.builder()
+                    CustomerOneOf.IndividualCustomer.builder()
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -110,7 +112,6 @@ internal class CustomerUpdateWebhookEventTest {
                         .isDeleted(false)
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")

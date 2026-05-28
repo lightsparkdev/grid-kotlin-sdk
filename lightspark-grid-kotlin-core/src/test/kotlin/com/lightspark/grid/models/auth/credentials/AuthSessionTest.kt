@@ -14,7 +14,7 @@ internal class AuthSessionTest {
     fun create() {
         val authSession =
             AuthSession.builder()
-                .id("Session:019542f5-b3e7-1d02-0000-000000000003")
+                .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")
@@ -29,7 +29,7 @@ internal class AuthSessionTest {
                 )
                 .build()
 
-        assertThat(authSession.id()).isEqualTo("Session:019542f5-b3e7-1d02-0000-000000000003")
+        assertThat(authSession.id()).isEqualTo("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(authSession.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(authSession.createdAt()).isEqualTo(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
@@ -52,7 +52,7 @@ internal class AuthSessionTest {
         val jsonMapper = jsonMapper()
         val authSession =
             AuthSession.builder()
-                .id("Session:019542f5-b3e7-1d02-0000-000000000003")
+                .id("AuthMethod:019542f5-b3e7-1d02-0000-000000000001")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .createdAt(OffsetDateTime.parse("2026-04-08T15:30:01Z"))
                 .nickname("example@lightspark.com")

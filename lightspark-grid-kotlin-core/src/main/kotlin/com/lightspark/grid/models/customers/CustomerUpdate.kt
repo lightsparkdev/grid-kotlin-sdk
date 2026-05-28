@@ -11,6 +11,7 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkKnown
+import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
@@ -24,6 +25,7 @@ import java.util.Objects
 class CustomerUpdate
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val customerType: JsonValue,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
     private val umaAddress: JsonField<String>,
@@ -32,12 +34,21 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("customerType") @ExcludeMissing customerType: JsonValue = JsonMissing.of(),
         @JsonProperty("currencies")
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
-    ) : this(currencies, email, umaAddress, mutableMapOf())
+    ) : this(customerType, currencies, email, umaAddress, mutableMapOf())
+
+    /**
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = customerUpdate.customerType().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("customerType") @ExcludeMissing fun _customerType(): JsonValue = customerType
 
     /**
      * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
@@ -106,24 +117,35 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [CustomerUpdate]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [CustomerUpdate].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerType()
+         * ```
+         */
         fun builder() = Builder()
     }
 
     /** A builder for [CustomerUpdate]. */
     class Builder internal constructor() {
 
+        private var customerType: JsonValue? = null
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
         private var umaAddress: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(customerUpdate: CustomerUpdate) = apply {
+            customerType = customerUpdate.customerType
             currencies = customerUpdate.currencies.map { it.toMutableList() }
             email = customerUpdate.email
             umaAddress = customerUpdate.umaAddress
             additionalProperties = customerUpdate.additionalProperties.toMutableMap()
         }
+
+        fun customerType(customerType: JsonValue) = apply { this.customerType = customerType }
 
         /**
          * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
@@ -209,9 +231,17 @@ private constructor(
          * Returns an immutable instance of [CustomerUpdate].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .customerType()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): CustomerUpdate =
             CustomerUpdate(
+                checkRequired("customerType", customerType),
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
                 umaAddress,
@@ -264,6 +294,7 @@ private constructor(
         }
 
         return other is CustomerUpdate &&
+            customerType == other.customerType &&
             currencies == other.currencies &&
             email == other.email &&
             umaAddress == other.umaAddress &&
@@ -271,11 +302,11 @@ private constructor(
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(currencies, email, umaAddress, additionalProperties)
+        Objects.hash(customerType, currencies, email, umaAddress, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CustomerUpdate{currencies=$currencies, email=$email, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "CustomerUpdate{customerType=$customerType, currencies=$currencies, email=$email, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }

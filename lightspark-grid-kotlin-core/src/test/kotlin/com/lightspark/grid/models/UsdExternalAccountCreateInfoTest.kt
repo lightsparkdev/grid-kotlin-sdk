@@ -15,7 +15,7 @@ internal class UsdExternalAccountCreateInfoTest {
     fun create() {
         val usdExternalAccountCreateInfo =
             UsdExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                 .beneficiary(
                     UsdBeneficiary.builder()
@@ -41,7 +41,7 @@ internal class UsdExternalAccountCreateInfoTest {
                 .routingNumber("021000021")
                 .build()
 
-        assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
+        assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(usdExternalAccountCreateInfo.accountType())
             .isEqualTo(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
         assertThat(usdExternalAccountCreateInfo.beneficiary())
@@ -76,7 +76,7 @@ internal class UsdExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val usdExternalAccountCreateInfo =
             UsdExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
                 .beneficiary(
                     UsdBeneficiary.builder()

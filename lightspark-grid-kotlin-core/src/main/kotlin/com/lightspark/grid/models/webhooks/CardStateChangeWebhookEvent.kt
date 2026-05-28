@@ -273,18 +273,13 @@ private constructor(
     class Data
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val id: JsonField<String>,
         private val cardholderId: JsonField<String>,
-        private val createdAt: JsonField<OffsetDateTime>,
         private val form: JsonField<Form>,
         private val fundingSources: JsonField<List<String>>,
         private val state: JsonField<State>,
-        private val updatedAt: JsonField<OffsetDateTime>,
         private val brand: JsonField<Brand>,
-        private val currency: JsonField<String>,
         private val expMonth: JsonField<Long>,
         private val expYear: JsonField<Long>,
-        private val issuerRef: JsonField<String>,
         private val last4: JsonField<String>,
         private val panEmbedUrl: JsonField<String>,
         private val platformCardId: JsonField<String>,
@@ -294,30 +289,17 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
             @JsonProperty("cardholderId")
             @ExcludeMissing
             cardholderId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("createdAt")
-            @ExcludeMissing
-            createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
             @JsonProperty("fundingSources")
             @ExcludeMissing
             fundingSources: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
-            @JsonProperty("updatedAt")
-            @ExcludeMissing
-            updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
             @JsonProperty("brand") @ExcludeMissing brand: JsonField<Brand> = JsonMissing.of(),
-            @JsonProperty("currency")
-            @ExcludeMissing
-            currency: JsonField<String> = JsonMissing.of(),
             @JsonProperty("expMonth") @ExcludeMissing expMonth: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("expYear") @ExcludeMissing expYear: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("issuerRef")
-            @ExcludeMissing
-            issuerRef: JsonField<String> = JsonMissing.of(),
             @JsonProperty("last4") @ExcludeMissing last4: JsonField<String> = JsonMissing.of(),
             @JsonProperty("panEmbedUrl")
             @ExcludeMissing
@@ -329,18 +311,13 @@ private constructor(
             @ExcludeMissing
             stateReason: JsonField<StateReason> = JsonMissing.of(),
         ) : this(
-            id,
             cardholderId,
-            createdAt,
             form,
             fundingSources,
             state,
-            updatedAt,
             brand,
-            currency,
             expMonth,
             expYear,
-            issuerRef,
             last4,
             panEmbedUrl,
             platformCardId,
@@ -349,28 +326,12 @@ private constructor(
         )
 
         /**
-         * System-generated unique card identifier
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun id(): String = id.getRequired("id")
-
-        /**
          * The id of the `Customer` who holds this card.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun cardholderId(): String = cardholderId.getRequired("cardholderId")
-
-        /**
-         * Creation timestamp
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
         /**
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
@@ -408,14 +369,6 @@ private constructor(
         fun state(): State = state.getRequired("state")
 
         /**
-         * Last update timestamp
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
-
-        /**
          * Card network brand. Read-only — determined by Grid when the card is provisioned with the
          * issuer.
          *
@@ -423,16 +376,6 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun brand(): Brand? = brand.getNullable("brand")
-
-        /**
-         * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
-         * funding sources at issue time — all funding sources bound to a card must be denominated
-         * in the same card-eligible currency.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun currency(): String? = currency.getNullable("currency")
 
         /**
          * Card expiration month (1–12).
@@ -449,15 +392,6 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun expYear(): Long? = expYear.getNullable("expYear")
-
-        /**
-         * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-         * issuer dashboards; not used for any Grid request routing.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun issuerRef(): String? = issuerRef.getNullable("issuerRef")
 
         /**
          * Last four digits of the card PAN.
@@ -487,26 +421,13 @@ private constructor(
         fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
         /**
-         * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and on
-         * cards that fail provisioning before reaching `ACTIVE`.
-         *
-         * |Reason              |Description                                                                   |
-         * |--------------------|------------------------------------------------------------------------------|
-         * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-         * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-         * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+         * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+         * provisioning was rejected; otherwise null.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
         fun stateReason(): StateReason? = stateReason.getNullable("stateReason")
-
-        /**
-         * Returns the raw JSON value of [id].
-         *
-         * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
         /**
          * Returns the raw JSON value of [cardholderId].
@@ -517,15 +438,6 @@ private constructor(
         @JsonProperty("cardholderId")
         @ExcludeMissing
         fun _cardholderId(): JsonField<String> = cardholderId
-
-        /**
-         * Returns the raw JSON value of [createdAt].
-         *
-         * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("createdAt")
-        @ExcludeMissing
-        fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
         /**
          * Returns the raw JSON value of [form].
@@ -552,27 +464,11 @@ private constructor(
         @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<State> = state
 
         /**
-         * Returns the raw JSON value of [updatedAt].
-         *
-         * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("updatedAt")
-        @ExcludeMissing
-        fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
-
-        /**
          * Returns the raw JSON value of [brand].
          *
          * Unlike [brand], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("brand") @ExcludeMissing fun _brand(): JsonField<Brand> = brand
-
-        /**
-         * Returns the raw JSON value of [currency].
-         *
-         * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
 
         /**
          * Returns the raw JSON value of [expMonth].
@@ -587,13 +483,6 @@ private constructor(
          * Unlike [expYear], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("expYear") @ExcludeMissing fun _expYear(): JsonField<Long> = expYear
-
-        /**
-         * Returns the raw JSON value of [issuerRef].
-         *
-         * Unlike [issuerRef], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("issuerRef") @ExcludeMissing fun _issuerRef(): JsonField<String> = issuerRef
 
         /**
          * Returns the raw JSON value of [last4].
@@ -649,13 +538,10 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .id()
              * .cardholderId()
-             * .createdAt()
              * .form()
              * .fundingSources()
              * .state()
-             * .updatedAt()
              * ```
              */
             fun builder() = Builder()
@@ -664,18 +550,13 @@ private constructor(
         /** A builder for [Data]. */
         class Builder internal constructor() {
 
-            private var id: JsonField<String>? = null
             private var cardholderId: JsonField<String>? = null
-            private var createdAt: JsonField<OffsetDateTime>? = null
             private var form: JsonField<Form>? = null
             private var fundingSources: JsonField<MutableList<String>>? = null
             private var state: JsonField<State>? = null
-            private var updatedAt: JsonField<OffsetDateTime>? = null
             private var brand: JsonField<Brand> = JsonMissing.of()
-            private var currency: JsonField<String> = JsonMissing.of()
             private var expMonth: JsonField<Long> = JsonMissing.of()
             private var expYear: JsonField<Long> = JsonMissing.of()
-            private var issuerRef: JsonField<String> = JsonMissing.of()
             private var last4: JsonField<String> = JsonMissing.of()
             private var panEmbedUrl: JsonField<String> = JsonMissing.of()
             private var platformCardId: JsonField<String> = JsonMissing.of()
@@ -683,36 +564,19 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(data: Data) = apply {
-                id = data.id
                 cardholderId = data.cardholderId
-                createdAt = data.createdAt
                 form = data.form
                 fundingSources = data.fundingSources.map { it.toMutableList() }
                 state = data.state
-                updatedAt = data.updatedAt
                 brand = data.brand
-                currency = data.currency
                 expMonth = data.expMonth
                 expYear = data.expYear
-                issuerRef = data.issuerRef
                 last4 = data.last4
                 panEmbedUrl = data.panEmbedUrl
                 platformCardId = data.platformCardId
                 stateReason = data.stateReason
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
-
-            /** System-generated unique card identifier */
-            fun id(id: String) = id(JsonField.of(id))
-
-            /**
-             * Sets [Builder.id] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.id] with a well-typed [String] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun id(id: JsonField<String>) = apply { this.id = id }
 
             /** The id of the `Customer` who holds this card. */
             fun cardholderId(cardholderId: String) = cardholderId(JsonField.of(cardholderId))
@@ -726,20 +590,6 @@ private constructor(
              */
             fun cardholderId(cardholderId: JsonField<String>) = apply {
                 this.cardholderId = cardholderId
-            }
-
-            /** Creation timestamp */
-            fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
-
-            /**
-             * Sets [Builder.createdAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply {
-                this.createdAt = createdAt
             }
 
             /**
@@ -810,20 +660,6 @@ private constructor(
              */
             fun state(state: JsonField<State>) = apply { this.state = state }
 
-            /** Last update timestamp */
-            fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
-
-            /**
-             * Sets [Builder.updatedAt] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply {
-                this.updatedAt = updatedAt
-            }
-
             /**
              * Card network brand. Read-only — determined by Grid when the card is provisioned with
              * the issuer.
@@ -838,22 +674,6 @@ private constructor(
              * value.
              */
             fun brand(brand: JsonField<Brand>) = apply { this.brand = brand }
-
-            /**
-             * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from
-             * the funding sources at issue time — all funding sources bound to a card must be
-             * denominated in the same card-eligible currency.
-             */
-            fun currency(currency: String) = currency(JsonField.of(currency))
-
-            /**
-             * Sets [Builder.currency] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.currency] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
             /** Card expiration month (1–12). */
             fun expMonth(expMonth: Long) = expMonth(JsonField.of(expMonth))
@@ -878,21 +698,6 @@ private constructor(
              * supported value.
              */
             fun expYear(expYear: JsonField<Long>) = apply { this.expYear = expYear }
-
-            /**
-             * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing
-             * in issuer dashboards; not used for any Grid request routing.
-             */
-            fun issuerRef(issuerRef: String) = issuerRef(JsonField.of(issuerRef))
-
-            /**
-             * Sets [Builder.issuerRef] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.issuerRef] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun issuerRef(issuerRef: JsonField<String>) = apply { this.issuerRef = issuerRef }
 
             /** Last four digits of the card PAN. */
             fun last4(last4: String) = last4(JsonField.of(last4))
@@ -943,14 +748,8 @@ private constructor(
             }
 
             /**
-             * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and
-             * on cards that fail provisioning before reaching `ACTIVE`.
-             *
-             * |Reason              |Description                                                                   |
-             * |--------------------|------------------------------------------------------------------------------|
-             * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-             * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-             * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+             * Reason associated with the current `state`. Populated when the card is `CLOSED` or
+             * when provisioning was rejected; otherwise null.
              */
             fun stateReason(stateReason: StateReason?) =
                 stateReason(JsonField.ofNullable(stateReason))
@@ -992,31 +791,23 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
-             * .id()
              * .cardholderId()
-             * .createdAt()
              * .form()
              * .fundingSources()
              * .state()
-             * .updatedAt()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Data =
                 Data(
-                    checkRequired("id", id),
                     checkRequired("cardholderId", cardholderId),
-                    checkRequired("createdAt", createdAt),
                     checkRequired("form", form),
                     checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
                     checkRequired("state", state),
-                    checkRequired("updatedAt", updatedAt),
                     brand,
-                    currency,
                     expMonth,
                     expYear,
-                    issuerRef,
                     last4,
                     panEmbedUrl,
                     platformCardId,
@@ -1041,18 +832,13 @@ private constructor(
                 return@apply
             }
 
-            id()
             cardholderId()
-            createdAt()
             form().validate()
             fundingSources()
             state().validate()
-            updatedAt()
             brand()?.validate()
-            currency()
             expMonth()
             expYear()
-            issuerRef()
             last4()
             panEmbedUrl()
             platformCardId()
@@ -1075,18 +861,13 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (id.asKnown() == null) 0 else 1) +
-                (if (cardholderId.asKnown() == null) 0 else 1) +
-                (if (createdAt.asKnown() == null) 0 else 1) +
+            (if (cardholderId.asKnown() == null) 0 else 1) +
                 (form.asKnown()?.validity() ?: 0) +
                 (fundingSources.asKnown()?.size ?: 0) +
                 (state.asKnown()?.validity() ?: 0) +
-                (if (updatedAt.asKnown() == null) 0 else 1) +
                 (brand.asKnown()?.validity() ?: 0) +
-                (if (currency.asKnown() == null) 0 else 1) +
                 (if (expMonth.asKnown() == null) 0 else 1) +
                 (if (expYear.asKnown() == null) 0 else 1) +
-                (if (issuerRef.asKnown() == null) 0 else 1) +
                 (if (last4.asKnown() == null) 0 else 1) +
                 (if (panEmbedUrl.asKnown() == null) 0 else 1) +
                 (if (platformCardId.asKnown() == null) 0 else 1) +
@@ -1536,14 +1317,8 @@ private constructor(
         }
 
         /**
-         * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and on
-         * cards that fail provisioning before reaching `ACTIVE`.
-         *
-         * |Reason              |Description                                                                   |
-         * |--------------------|------------------------------------------------------------------------------|
-         * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-         * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-         * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+         * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+         * provisioning was rejected; otherwise null.
          */
         class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
             Enum {
@@ -1697,18 +1472,13 @@ private constructor(
             }
 
             return other is Data &&
-                id == other.id &&
                 cardholderId == other.cardholderId &&
-                createdAt == other.createdAt &&
                 form == other.form &&
                 fundingSources == other.fundingSources &&
                 state == other.state &&
-                updatedAt == other.updatedAt &&
                 brand == other.brand &&
-                currency == other.currency &&
                 expMonth == other.expMonth &&
                 expYear == other.expYear &&
-                issuerRef == other.issuerRef &&
                 last4 == other.last4 &&
                 panEmbedUrl == other.panEmbedUrl &&
                 platformCardId == other.platformCardId &&
@@ -1718,18 +1488,13 @@ private constructor(
 
         private val hashCode: Int by lazy {
             Objects.hash(
-                id,
                 cardholderId,
-                createdAt,
                 form,
                 fundingSources,
                 state,
-                updatedAt,
                 brand,
-                currency,
                 expMonth,
                 expYear,
-                issuerRef,
                 last4,
                 panEmbedUrl,
                 platformCardId,
@@ -1741,7 +1506,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+            "Data{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, state=$state, brand=$brand, expMonth=$expMonth, expYear=$expYear, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, stateReason=$stateReason, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

@@ -2,10 +2,10 @@
 
 package com.lightspark.grid.models.agents.me.externalaccounts
 
-import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
-import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -17,13 +17,10 @@ internal class ExternalAccountAddParamsTest {
             .externalAccountCreate(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountCreateInfo.builder()
-                            .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                             .beneficiary(
-                                UsdBeneficiary.builder()
-                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("John Doe")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -34,14 +31,17 @@ internal class ExternalAccountAddParamsTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("US")
+                                    .nationality("nationality")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .routingNumber("123456789")
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
                             .build()
                     )
                     .currency("USD")
@@ -60,13 +60,10 @@ internal class ExternalAccountAddParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            UsdExternalAccountCreateInfo.builder()
-                                .accountNumber("12345678901")
-                                .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                            AedExternalAccountCreateInfo.builder()
+                                .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                                 .beneficiary(
-                                    UsdBeneficiary.builder()
-                                        .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                        .fullName("John Doe")
+                                    AedBeneficiary.builder()
                                         .address(
                                             Address.builder()
                                                 .country("US")
@@ -77,14 +74,17 @@ internal class ExternalAccountAddParamsTest {
                                                 .state("CA")
                                                 .build()
                                         )
-                                        .birthDate("1990-01-15")
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .birthDate("birthDate")
                                         .countryOfResidence("countryOfResidence")
                                         .email("email")
-                                        .nationality("US")
+                                        .nationality("nationality")
                                         .phoneNumber("phoneNumber")
                                         .build()
                                 )
-                                .routingNumber("123456789")
+                                .iban("AE070331234567890123456")
+                                .swiftCode("EBILAEAD")
                                 .build()
                         )
                         .currency("USD")
@@ -101,13 +101,10 @@ internal class ExternalAccountAddParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountCreateInfo.builder()
-                            .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                             .beneficiary(
-                                UsdBeneficiary.builder()
-                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("John Doe")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -118,14 +115,17 @@ internal class ExternalAccountAddParamsTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("US")
+                                    .nationality("nationality")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .routingNumber("123456789")
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
                             .build()
                     )
                     .currency("USD")
@@ -143,11 +143,22 @@ internal class ExternalAccountAddParamsTest {
                 .externalAccountCreate(
                     ExternalAccountCreate.builder()
                         .accountInfo(
-                            UsdExternalAccountCreateInfo.builder()
-                                .accountNumber("12345678901")
-                                .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                                .individualBeneficiary("John Doe")
-                                .routingNumber("123456789")
+                            AedExternalAccountCreateInfo.builder()
+                                .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                                .beneficiary(
+                                    AedBeneficiary.builder()
+                                        .address(
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .build()
+                                        )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .build()
+                                )
+                                .iban("AE070331234567890123456")
                                 .build()
                         )
                         .currency("USD")
@@ -161,11 +172,22 @@ internal class ExternalAccountAddParamsTest {
             .isEqualTo(
                 ExternalAccountCreate.builder()
                     .accountInfo(
-                        UsdExternalAccountCreateInfo.builder()
-                            .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                            .individualBeneficiary("John Doe")
-                            .routingNumber("123456789")
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                            .beneficiary(
+                                AedBeneficiary.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .build()
+                                    )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .build()
+                            )
+                            .iban("AE070331234567890123456")
                             .build()
                     )
                     .currency("USD")

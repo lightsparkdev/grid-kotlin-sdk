@@ -20,346 +20,50 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.EthereumWalletExternalAccountInfo
 import com.lightspark.grid.models.SlvBeneficiary
 import java.util.Collections
 import java.util.Objects
 
 /**
- * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must be
- * provided.
+ * Required fields depend on the selected paymentRails:
+ * - BANK_TRANSFER: bankAccountType, accountNumber
+ * - MOBILE_MONEY: phoneNumber
  */
 @JsonDeserialize(using = ExternalAccountInfoOneOf.Deserializer::class)
 @JsonSerialize(using = ExternalAccountInfoOneOf.Serializer::class)
 class ExternalAccountInfoOneOf
 private constructor(
-    private val aedAccount: AedExternalAccountInfo? = null,
-    private val bdtAccount: BdtExternalAccountInfo? = null,
-    private val brlAccount: BrlExternalAccountInfo? = null,
-    private val bwpAccount: BwpExternalAccountInfo? = null,
-    private val cadAccount: CadExternalAccountInfo? = null,
-    private val copAccount: CopExternalAccountInfo? = null,
-    private val dkkAccount: DkkExternalAccountInfo? = null,
-    private val egpAccount: EgpExternalAccountInfo? = null,
-    private val eurAccount: EurExternalAccountInfo? = null,
-    private val gbpAccount: GbpExternalAccountInfo? = null,
-    private val ghsAccount: GhsExternalAccountInfo? = null,
-    private val gtqAccount: GtqExternalAccountInfo? = null,
-    private val hkdAccount: HkdExternalAccountInfo? = null,
-    private val htgAccount: HtgExternalAccountInfo? = null,
-    private val idrAccount: IdrExternalAccountInfo? = null,
-    private val inrAccount: InrExternalAccountInfo? = null,
-    private val jmdAccount: JmdExternalAccountInfo? = null,
-    private val kesAccount: KesExternalAccountInfo? = null,
-    private val mwkAccount: MwkExternalAccountInfo? = null,
-    private val mxnAccount: MxnExternalAccountInfo? = null,
-    private val myrAccount: MyrExternalAccountInfo? = null,
-    private val ngnAccount: NgnExternalAccountInfo? = null,
-    private val phpAccount: PhpExternalAccountInfo? = null,
-    private val pkrAccount: PkrExternalAccountInfo? = null,
-    private val rwfAccount: RwfExternalAccountInfo? = null,
-    private val sgdAccount: SgdExternalAccountInfo? = null,
     private val slvAccount: SlvAccount? = null,
-    private val thbAccount: ThbExternalAccountInfo? = null,
-    private val tzsAccount: TzsExternalAccountInfo? = null,
-    private val ugxAccount: UgxExternalAccountInfo? = null,
-    private val usdAccount: UsdExternalAccountInfo? = null,
-    private val vndAccount: VndExternalAccountInfo? = null,
-    private val xafAccount: XafExternalAccountInfo? = null,
-    private val xofAccount: XofExternalAccountInfo? = null,
-    private val zarAccount: ZarExternalAccountInfo? = null,
-    private val zmwAccount: ZmwExternalAccountInfo? = null,
     private val swiftAccount: SwiftAccount? = null,
-    private val baseWalletInfo: BaseWalletInfo? = null,
-    private val ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo? = null,
-    private val lightningWalletInfo: LightningWalletInfo? = null,
-    private val polygonWalletInfo: PolygonWalletInfo? = null,
-    private val solanaWalletInfo: SolanaWalletInfo? = null,
-    private val sparkWalletInfo: SparkWalletInfo? = null,
-    private val tronWalletInfo: TronWalletInfo? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    fun aedAccount(): AedExternalAccountInfo? = aedAccount
-
-    fun bdtAccount(): BdtExternalAccountInfo? = bdtAccount
-
-    fun brlAccount(): BrlExternalAccountInfo? = brlAccount
-
-    fun bwpAccount(): BwpExternalAccountInfo? = bwpAccount
-
-    fun cadAccount(): CadExternalAccountInfo? = cadAccount
-
-    fun copAccount(): CopExternalAccountInfo? = copAccount
-
-    fun dkkAccount(): DkkExternalAccountInfo? = dkkAccount
-
-    fun egpAccount(): EgpExternalAccountInfo? = egpAccount
-
-    fun eurAccount(): EurExternalAccountInfo? = eurAccount
-
-    fun gbpAccount(): GbpExternalAccountInfo? = gbpAccount
-
-    fun ghsAccount(): GhsExternalAccountInfo? = ghsAccount
-
-    fun gtqAccount(): GtqExternalAccountInfo? = gtqAccount
-
-    fun hkdAccount(): HkdExternalAccountInfo? = hkdAccount
-
-    fun htgAccount(): HtgExternalAccountInfo? = htgAccount
-
-    fun idrAccount(): IdrExternalAccountInfo? = idrAccount
-
-    fun inrAccount(): InrExternalAccountInfo? = inrAccount
-
-    fun jmdAccount(): JmdExternalAccountInfo? = jmdAccount
-
-    fun kesAccount(): KesExternalAccountInfo? = kesAccount
-
-    fun mwkAccount(): MwkExternalAccountInfo? = mwkAccount
-
-    fun mxnAccount(): MxnExternalAccountInfo? = mxnAccount
-
-    fun myrAccount(): MyrExternalAccountInfo? = myrAccount
-
-    fun ngnAccount(): NgnExternalAccountInfo? = ngnAccount
-
-    fun phpAccount(): PhpExternalAccountInfo? = phpAccount
-
-    fun pkrAccount(): PkrExternalAccountInfo? = pkrAccount
-
-    fun rwfAccount(): RwfExternalAccountInfo? = rwfAccount
-
-    fun sgdAccount(): SgdExternalAccountInfo? = sgdAccount
-
+    /**
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: bankAccountType, accountNumber
+     * - MOBILE_MONEY: phoneNumber
+     */
     fun slvAccount(): SlvAccount? = slvAccount
-
-    fun thbAccount(): ThbExternalAccountInfo? = thbAccount
-
-    fun tzsAccount(): TzsExternalAccountInfo? = tzsAccount
-
-    fun ugxAccount(): UgxExternalAccountInfo? = ugxAccount
-
-    fun usdAccount(): UsdExternalAccountInfo? = usdAccount
-
-    fun vndAccount(): VndExternalAccountInfo? = vndAccount
-
-    fun xafAccount(): XafExternalAccountInfo? = xafAccount
-
-    fun xofAccount(): XofExternalAccountInfo? = xofAccount
-
-    fun zarAccount(): ZarExternalAccountInfo? = zarAccount
-
-    fun zmwAccount(): ZmwExternalAccountInfo? = zmwAccount
 
     fun swiftAccount(): SwiftAccount? = swiftAccount
 
-    fun baseWalletInfo(): BaseWalletInfo? = baseWalletInfo
-
-    fun ethereumWalletExternalAccountInfo(): EthereumWalletExternalAccountInfo? =
-        ethereumWalletExternalAccountInfo
-
-    /**
-     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
-     * be provided.
-     */
-    fun lightningWalletInfo(): LightningWalletInfo? = lightningWalletInfo
-
-    fun polygonWalletInfo(): PolygonWalletInfo? = polygonWalletInfo
-
-    fun solanaWalletInfo(): SolanaWalletInfo? = solanaWalletInfo
-
-    fun sparkWalletInfo(): SparkWalletInfo? = sparkWalletInfo
-
-    fun tronWalletInfo(): TronWalletInfo? = tronWalletInfo
-
-    fun isAedAccount(): Boolean = aedAccount != null
-
-    fun isBdtAccount(): Boolean = bdtAccount != null
-
-    fun isBrlAccount(): Boolean = brlAccount != null
-
-    fun isBwpAccount(): Boolean = bwpAccount != null
-
-    fun isCadAccount(): Boolean = cadAccount != null
-
-    fun isCopAccount(): Boolean = copAccount != null
-
-    fun isDkkAccount(): Boolean = dkkAccount != null
-
-    fun isEgpAccount(): Boolean = egpAccount != null
-
-    fun isEurAccount(): Boolean = eurAccount != null
-
-    fun isGbpAccount(): Boolean = gbpAccount != null
-
-    fun isGhsAccount(): Boolean = ghsAccount != null
-
-    fun isGtqAccount(): Boolean = gtqAccount != null
-
-    fun isHkdAccount(): Boolean = hkdAccount != null
-
-    fun isHtgAccount(): Boolean = htgAccount != null
-
-    fun isIdrAccount(): Boolean = idrAccount != null
-
-    fun isInrAccount(): Boolean = inrAccount != null
-
-    fun isJmdAccount(): Boolean = jmdAccount != null
-
-    fun isKesAccount(): Boolean = kesAccount != null
-
-    fun isMwkAccount(): Boolean = mwkAccount != null
-
-    fun isMxnAccount(): Boolean = mxnAccount != null
-
-    fun isMyrAccount(): Boolean = myrAccount != null
-
-    fun isNgnAccount(): Boolean = ngnAccount != null
-
-    fun isPhpAccount(): Boolean = phpAccount != null
-
-    fun isPkrAccount(): Boolean = pkrAccount != null
-
-    fun isRwfAccount(): Boolean = rwfAccount != null
-
-    fun isSgdAccount(): Boolean = sgdAccount != null
-
     fun isSlvAccount(): Boolean = slvAccount != null
-
-    fun isThbAccount(): Boolean = thbAccount != null
-
-    fun isTzsAccount(): Boolean = tzsAccount != null
-
-    fun isUgxAccount(): Boolean = ugxAccount != null
-
-    fun isUsdAccount(): Boolean = usdAccount != null
-
-    fun isVndAccount(): Boolean = vndAccount != null
-
-    fun isXafAccount(): Boolean = xafAccount != null
-
-    fun isXofAccount(): Boolean = xofAccount != null
-
-    fun isZarAccount(): Boolean = zarAccount != null
-
-    fun isZmwAccount(): Boolean = zmwAccount != null
 
     fun isSwiftAccount(): Boolean = swiftAccount != null
 
-    fun isBaseWalletInfo(): Boolean = baseWalletInfo != null
-
-    fun isEthereumWalletExternalAccountInfo(): Boolean = ethereumWalletExternalAccountInfo != null
-
-    fun isLightningWalletInfo(): Boolean = lightningWalletInfo != null
-
-    fun isPolygonWalletInfo(): Boolean = polygonWalletInfo != null
-
-    fun isSolanaWalletInfo(): Boolean = solanaWalletInfo != null
-
-    fun isSparkWalletInfo(): Boolean = sparkWalletInfo != null
-
-    fun isTronWalletInfo(): Boolean = tronWalletInfo != null
-
-    fun asAedAccount(): AedExternalAccountInfo = aedAccount.getOrThrow("aedAccount")
-
-    fun asBdtAccount(): BdtExternalAccountInfo = bdtAccount.getOrThrow("bdtAccount")
-
-    fun asBrlAccount(): BrlExternalAccountInfo = brlAccount.getOrThrow("brlAccount")
-
-    fun asBwpAccount(): BwpExternalAccountInfo = bwpAccount.getOrThrow("bwpAccount")
-
-    fun asCadAccount(): CadExternalAccountInfo = cadAccount.getOrThrow("cadAccount")
-
-    fun asCopAccount(): CopExternalAccountInfo = copAccount.getOrThrow("copAccount")
-
-    fun asDkkAccount(): DkkExternalAccountInfo = dkkAccount.getOrThrow("dkkAccount")
-
-    fun asEgpAccount(): EgpExternalAccountInfo = egpAccount.getOrThrow("egpAccount")
-
-    fun asEurAccount(): EurExternalAccountInfo = eurAccount.getOrThrow("eurAccount")
-
-    fun asGbpAccount(): GbpExternalAccountInfo = gbpAccount.getOrThrow("gbpAccount")
-
-    fun asGhsAccount(): GhsExternalAccountInfo = ghsAccount.getOrThrow("ghsAccount")
-
-    fun asGtqAccount(): GtqExternalAccountInfo = gtqAccount.getOrThrow("gtqAccount")
-
-    fun asHkdAccount(): HkdExternalAccountInfo = hkdAccount.getOrThrow("hkdAccount")
-
-    fun asHtgAccount(): HtgExternalAccountInfo = htgAccount.getOrThrow("htgAccount")
-
-    fun asIdrAccount(): IdrExternalAccountInfo = idrAccount.getOrThrow("idrAccount")
-
-    fun asInrAccount(): InrExternalAccountInfo = inrAccount.getOrThrow("inrAccount")
-
-    fun asJmdAccount(): JmdExternalAccountInfo = jmdAccount.getOrThrow("jmdAccount")
-
-    fun asKesAccount(): KesExternalAccountInfo = kesAccount.getOrThrow("kesAccount")
-
-    fun asMwkAccount(): MwkExternalAccountInfo = mwkAccount.getOrThrow("mwkAccount")
-
-    fun asMxnAccount(): MxnExternalAccountInfo = mxnAccount.getOrThrow("mxnAccount")
-
-    fun asMyrAccount(): MyrExternalAccountInfo = myrAccount.getOrThrow("myrAccount")
-
-    fun asNgnAccount(): NgnExternalAccountInfo = ngnAccount.getOrThrow("ngnAccount")
-
-    fun asPhpAccount(): PhpExternalAccountInfo = phpAccount.getOrThrow("phpAccount")
-
-    fun asPkrAccount(): PkrExternalAccountInfo = pkrAccount.getOrThrow("pkrAccount")
-
-    fun asRwfAccount(): RwfExternalAccountInfo = rwfAccount.getOrThrow("rwfAccount")
-
-    fun asSgdAccount(): SgdExternalAccountInfo = sgdAccount.getOrThrow("sgdAccount")
-
+    /**
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: bankAccountType, accountNumber
+     * - MOBILE_MONEY: phoneNumber
+     */
     fun asSlvAccount(): SlvAccount = slvAccount.getOrThrow("slvAccount")
 
-    fun asThbAccount(): ThbExternalAccountInfo = thbAccount.getOrThrow("thbAccount")
-
-    fun asTzsAccount(): TzsExternalAccountInfo = tzsAccount.getOrThrow("tzsAccount")
-
-    fun asUgxAccount(): UgxExternalAccountInfo = ugxAccount.getOrThrow("ugxAccount")
-
-    fun asUsdAccount(): UsdExternalAccountInfo = usdAccount.getOrThrow("usdAccount")
-
-    fun asVndAccount(): VndExternalAccountInfo = vndAccount.getOrThrow("vndAccount")
-
-    fun asXafAccount(): XafExternalAccountInfo = xafAccount.getOrThrow("xafAccount")
-
-    fun asXofAccount(): XofExternalAccountInfo = xofAccount.getOrThrow("xofAccount")
-
-    fun asZarAccount(): ZarExternalAccountInfo = zarAccount.getOrThrow("zarAccount")
-
-    fun asZmwAccount(): ZmwExternalAccountInfo = zmwAccount.getOrThrow("zmwAccount")
-
     fun asSwiftAccount(): SwiftAccount = swiftAccount.getOrThrow("swiftAccount")
-
-    fun asBaseWalletInfo(): BaseWalletInfo = baseWalletInfo.getOrThrow("baseWalletInfo")
-
-    fun asEthereumWalletExternalAccountInfo(): EthereumWalletExternalAccountInfo =
-        ethereumWalletExternalAccountInfo.getOrThrow("ethereumWalletExternalAccountInfo")
-
-    /**
-     * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress` must
-     * be provided.
-     */
-    fun asLightningWalletInfo(): LightningWalletInfo =
-        lightningWalletInfo.getOrThrow("lightningWalletInfo")
-
-    fun asPolygonWalletInfo(): PolygonWalletInfo = polygonWalletInfo.getOrThrow("polygonWalletInfo")
-
-    fun asSolanaWalletInfo(): SolanaWalletInfo = solanaWalletInfo.getOrThrow("solanaWalletInfo")
-
-    fun asSparkWalletInfo(): SparkWalletInfo = sparkWalletInfo.getOrThrow("sparkWalletInfo")
-
-    fun asTronWalletInfo(): TronWalletInfo = tronWalletInfo.getOrThrow("tronWalletInfo")
 
     fun _json(): JsonValue? = _json
 
@@ -373,7 +77,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = externalAccountInfoOneOf.accept(object : ExternalAccountInfoOneOf.Visitor<String?> {
-     *     override fun visitAedAccount(aedAccount: AedExternalAccountInfo): String? = aedAccount.toString()
+     *     override fun visitSlvAccount(slvAccount: SlvAccount): String? = slvAccount.toString()
      *
      *     // ...
      *
@@ -389,51 +93,8 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            aedAccount != null -> visitor.visitAedAccount(aedAccount)
-            bdtAccount != null -> visitor.visitBdtAccount(bdtAccount)
-            brlAccount != null -> visitor.visitBrlAccount(brlAccount)
-            bwpAccount != null -> visitor.visitBwpAccount(bwpAccount)
-            cadAccount != null -> visitor.visitCadAccount(cadAccount)
-            copAccount != null -> visitor.visitCopAccount(copAccount)
-            dkkAccount != null -> visitor.visitDkkAccount(dkkAccount)
-            egpAccount != null -> visitor.visitEgpAccount(egpAccount)
-            eurAccount != null -> visitor.visitEurAccount(eurAccount)
-            gbpAccount != null -> visitor.visitGbpAccount(gbpAccount)
-            ghsAccount != null -> visitor.visitGhsAccount(ghsAccount)
-            gtqAccount != null -> visitor.visitGtqAccount(gtqAccount)
-            hkdAccount != null -> visitor.visitHkdAccount(hkdAccount)
-            htgAccount != null -> visitor.visitHtgAccount(htgAccount)
-            idrAccount != null -> visitor.visitIdrAccount(idrAccount)
-            inrAccount != null -> visitor.visitInrAccount(inrAccount)
-            jmdAccount != null -> visitor.visitJmdAccount(jmdAccount)
-            kesAccount != null -> visitor.visitKesAccount(kesAccount)
-            mwkAccount != null -> visitor.visitMwkAccount(mwkAccount)
-            mxnAccount != null -> visitor.visitMxnAccount(mxnAccount)
-            myrAccount != null -> visitor.visitMyrAccount(myrAccount)
-            ngnAccount != null -> visitor.visitNgnAccount(ngnAccount)
-            phpAccount != null -> visitor.visitPhpAccount(phpAccount)
-            pkrAccount != null -> visitor.visitPkrAccount(pkrAccount)
-            rwfAccount != null -> visitor.visitRwfAccount(rwfAccount)
-            sgdAccount != null -> visitor.visitSgdAccount(sgdAccount)
             slvAccount != null -> visitor.visitSlvAccount(slvAccount)
-            thbAccount != null -> visitor.visitThbAccount(thbAccount)
-            tzsAccount != null -> visitor.visitTzsAccount(tzsAccount)
-            ugxAccount != null -> visitor.visitUgxAccount(ugxAccount)
-            usdAccount != null -> visitor.visitUsdAccount(usdAccount)
-            vndAccount != null -> visitor.visitVndAccount(vndAccount)
-            xafAccount != null -> visitor.visitXafAccount(xafAccount)
-            xofAccount != null -> visitor.visitXofAccount(xofAccount)
-            zarAccount != null -> visitor.visitZarAccount(zarAccount)
-            zmwAccount != null -> visitor.visitZmwAccount(zmwAccount)
             swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
-            baseWalletInfo != null -> visitor.visitBaseWalletInfo(baseWalletInfo)
-            ethereumWalletExternalAccountInfo != null ->
-                visitor.visitEthereumWalletExternalAccountInfo(ethereumWalletExternalAccountInfo)
-            lightningWalletInfo != null -> visitor.visitLightningWalletInfo(lightningWalletInfo)
-            polygonWalletInfo != null -> visitor.visitPolygonWalletInfo(polygonWalletInfo)
-            solanaWalletInfo != null -> visitor.visitSolanaWalletInfo(solanaWalletInfo)
-            sparkWalletInfo != null -> visitor.visitSparkWalletInfo(sparkWalletInfo)
-            tronWalletInfo != null -> visitor.visitTronWalletInfo(tronWalletInfo)
             else -> visitor.unknown(_json)
         }
 
@@ -454,182 +115,12 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitAedAccount(aedAccount: AedExternalAccountInfo) {
-                    aedAccount.validate()
-                }
-
-                override fun visitBdtAccount(bdtAccount: BdtExternalAccountInfo) {
-                    bdtAccount.validate()
-                }
-
-                override fun visitBrlAccount(brlAccount: BrlExternalAccountInfo) {
-                    brlAccount.validate()
-                }
-
-                override fun visitBwpAccount(bwpAccount: BwpExternalAccountInfo) {
-                    bwpAccount.validate()
-                }
-
-                override fun visitCadAccount(cadAccount: CadExternalAccountInfo) {
-                    cadAccount.validate()
-                }
-
-                override fun visitCopAccount(copAccount: CopExternalAccountInfo) {
-                    copAccount.validate()
-                }
-
-                override fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo) {
-                    dkkAccount.validate()
-                }
-
-                override fun visitEgpAccount(egpAccount: EgpExternalAccountInfo) {
-                    egpAccount.validate()
-                }
-
-                override fun visitEurAccount(eurAccount: EurExternalAccountInfo) {
-                    eurAccount.validate()
-                }
-
-                override fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo) {
-                    gbpAccount.validate()
-                }
-
-                override fun visitGhsAccount(ghsAccount: GhsExternalAccountInfo) {
-                    ghsAccount.validate()
-                }
-
-                override fun visitGtqAccount(gtqAccount: GtqExternalAccountInfo) {
-                    gtqAccount.validate()
-                }
-
-                override fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo) {
-                    hkdAccount.validate()
-                }
-
-                override fun visitHtgAccount(htgAccount: HtgExternalAccountInfo) {
-                    htgAccount.validate()
-                }
-
-                override fun visitIdrAccount(idrAccount: IdrExternalAccountInfo) {
-                    idrAccount.validate()
-                }
-
-                override fun visitInrAccount(inrAccount: InrExternalAccountInfo) {
-                    inrAccount.validate()
-                }
-
-                override fun visitJmdAccount(jmdAccount: JmdExternalAccountInfo) {
-                    jmdAccount.validate()
-                }
-
-                override fun visitKesAccount(kesAccount: KesExternalAccountInfo) {
-                    kesAccount.validate()
-                }
-
-                override fun visitMwkAccount(mwkAccount: MwkExternalAccountInfo) {
-                    mwkAccount.validate()
-                }
-
-                override fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo) {
-                    mxnAccount.validate()
-                }
-
-                override fun visitMyrAccount(myrAccount: MyrExternalAccountInfo) {
-                    myrAccount.validate()
-                }
-
-                override fun visitNgnAccount(ngnAccount: NgnExternalAccountInfo) {
-                    ngnAccount.validate()
-                }
-
-                override fun visitPhpAccount(phpAccount: PhpExternalAccountInfo) {
-                    phpAccount.validate()
-                }
-
-                override fun visitPkrAccount(pkrAccount: PkrExternalAccountInfo) {
-                    pkrAccount.validate()
-                }
-
-                override fun visitRwfAccount(rwfAccount: RwfExternalAccountInfo) {
-                    rwfAccount.validate()
-                }
-
-                override fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo) {
-                    sgdAccount.validate()
-                }
-
                 override fun visitSlvAccount(slvAccount: SlvAccount) {
                     slvAccount.validate()
                 }
 
-                override fun visitThbAccount(thbAccount: ThbExternalAccountInfo) {
-                    thbAccount.validate()
-                }
-
-                override fun visitTzsAccount(tzsAccount: TzsExternalAccountInfo) {
-                    tzsAccount.validate()
-                }
-
-                override fun visitUgxAccount(ugxAccount: UgxExternalAccountInfo) {
-                    ugxAccount.validate()
-                }
-
-                override fun visitUsdAccount(usdAccount: UsdExternalAccountInfo) {
-                    usdAccount.validate()
-                }
-
-                override fun visitVndAccount(vndAccount: VndExternalAccountInfo) {
-                    vndAccount.validate()
-                }
-
-                override fun visitXafAccount(xafAccount: XafExternalAccountInfo) {
-                    xafAccount.validate()
-                }
-
-                override fun visitXofAccount(xofAccount: XofExternalAccountInfo) {
-                    xofAccount.validate()
-                }
-
-                override fun visitZarAccount(zarAccount: ZarExternalAccountInfo) {
-                    zarAccount.validate()
-                }
-
-                override fun visitZmwAccount(zmwAccount: ZmwExternalAccountInfo) {
-                    zmwAccount.validate()
-                }
-
                 override fun visitSwiftAccount(swiftAccount: SwiftAccount) {
                     swiftAccount.validate()
-                }
-
-                override fun visitBaseWalletInfo(baseWalletInfo: BaseWalletInfo) {
-                    baseWalletInfo.validate()
-                }
-
-                override fun visitEthereumWalletExternalAccountInfo(
-                    ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo
-                ) {
-                    ethereumWalletExternalAccountInfo.validate()
-                }
-
-                override fun visitLightningWalletInfo(lightningWalletInfo: LightningWalletInfo) {
-                    lightningWalletInfo.validate()
-                }
-
-                override fun visitPolygonWalletInfo(polygonWalletInfo: PolygonWalletInfo) {
-                    polygonWalletInfo.validate()
-                }
-
-                override fun visitSolanaWalletInfo(solanaWalletInfo: SolanaWalletInfo) {
-                    solanaWalletInfo.validate()
-                }
-
-                override fun visitSparkWalletInfo(sparkWalletInfo: SparkWalletInfo) {
-                    sparkWalletInfo.validate()
-                }
-
-                override fun visitTronWalletInfo(tronWalletInfo: TronWalletInfo) {
-                    tronWalletInfo.validate()
                 }
             }
         )
@@ -652,136 +143,9 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitAedAccount(aedAccount: AedExternalAccountInfo) =
-                    aedAccount.validity()
-
-                override fun visitBdtAccount(bdtAccount: BdtExternalAccountInfo) =
-                    bdtAccount.validity()
-
-                override fun visitBrlAccount(brlAccount: BrlExternalAccountInfo) =
-                    brlAccount.validity()
-
-                override fun visitBwpAccount(bwpAccount: BwpExternalAccountInfo) =
-                    bwpAccount.validity()
-
-                override fun visitCadAccount(cadAccount: CadExternalAccountInfo) =
-                    cadAccount.validity()
-
-                override fun visitCopAccount(copAccount: CopExternalAccountInfo) =
-                    copAccount.validity()
-
-                override fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo) =
-                    dkkAccount.validity()
-
-                override fun visitEgpAccount(egpAccount: EgpExternalAccountInfo) =
-                    egpAccount.validity()
-
-                override fun visitEurAccount(eurAccount: EurExternalAccountInfo) =
-                    eurAccount.validity()
-
-                override fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo) =
-                    gbpAccount.validity()
-
-                override fun visitGhsAccount(ghsAccount: GhsExternalAccountInfo) =
-                    ghsAccount.validity()
-
-                override fun visitGtqAccount(gtqAccount: GtqExternalAccountInfo) =
-                    gtqAccount.validity()
-
-                override fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo) =
-                    hkdAccount.validity()
-
-                override fun visitHtgAccount(htgAccount: HtgExternalAccountInfo) =
-                    htgAccount.validity()
-
-                override fun visitIdrAccount(idrAccount: IdrExternalAccountInfo) =
-                    idrAccount.validity()
-
-                override fun visitInrAccount(inrAccount: InrExternalAccountInfo) =
-                    inrAccount.validity()
-
-                override fun visitJmdAccount(jmdAccount: JmdExternalAccountInfo) =
-                    jmdAccount.validity()
-
-                override fun visitKesAccount(kesAccount: KesExternalAccountInfo) =
-                    kesAccount.validity()
-
-                override fun visitMwkAccount(mwkAccount: MwkExternalAccountInfo) =
-                    mwkAccount.validity()
-
-                override fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo) =
-                    mxnAccount.validity()
-
-                override fun visitMyrAccount(myrAccount: MyrExternalAccountInfo) =
-                    myrAccount.validity()
-
-                override fun visitNgnAccount(ngnAccount: NgnExternalAccountInfo) =
-                    ngnAccount.validity()
-
-                override fun visitPhpAccount(phpAccount: PhpExternalAccountInfo) =
-                    phpAccount.validity()
-
-                override fun visitPkrAccount(pkrAccount: PkrExternalAccountInfo) =
-                    pkrAccount.validity()
-
-                override fun visitRwfAccount(rwfAccount: RwfExternalAccountInfo) =
-                    rwfAccount.validity()
-
-                override fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo) =
-                    sgdAccount.validity()
-
                 override fun visitSlvAccount(slvAccount: SlvAccount) = slvAccount.validity()
 
-                override fun visitThbAccount(thbAccount: ThbExternalAccountInfo) =
-                    thbAccount.validity()
-
-                override fun visitTzsAccount(tzsAccount: TzsExternalAccountInfo) =
-                    tzsAccount.validity()
-
-                override fun visitUgxAccount(ugxAccount: UgxExternalAccountInfo) =
-                    ugxAccount.validity()
-
-                override fun visitUsdAccount(usdAccount: UsdExternalAccountInfo) =
-                    usdAccount.validity()
-
-                override fun visitVndAccount(vndAccount: VndExternalAccountInfo) =
-                    vndAccount.validity()
-
-                override fun visitXafAccount(xafAccount: XafExternalAccountInfo) =
-                    xafAccount.validity()
-
-                override fun visitXofAccount(xofAccount: XofExternalAccountInfo) =
-                    xofAccount.validity()
-
-                override fun visitZarAccount(zarAccount: ZarExternalAccountInfo) =
-                    zarAccount.validity()
-
-                override fun visitZmwAccount(zmwAccount: ZmwExternalAccountInfo) =
-                    zmwAccount.validity()
-
                 override fun visitSwiftAccount(swiftAccount: SwiftAccount) = swiftAccount.validity()
-
-                override fun visitBaseWalletInfo(baseWalletInfo: BaseWalletInfo) =
-                    baseWalletInfo.validity()
-
-                override fun visitEthereumWalletExternalAccountInfo(
-                    ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo
-                ) = ethereumWalletExternalAccountInfo.validity()
-
-                override fun visitLightningWalletInfo(lightningWalletInfo: LightningWalletInfo) =
-                    lightningWalletInfo.validity()
-
-                override fun visitPolygonWalletInfo(polygonWalletInfo: PolygonWalletInfo) =
-                    polygonWalletInfo.validity()
-
-                override fun visitSolanaWalletInfo(solanaWalletInfo: SolanaWalletInfo) =
-                    solanaWalletInfo.validity()
-
-                override fun visitSparkWalletInfo(sparkWalletInfo: SparkWalletInfo) =
-                    sparkWalletInfo.validity()
-
-                override fun visitTronWalletInfo(tronWalletInfo: TronWalletInfo) =
-                    tronWalletInfo.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -793,294 +157,31 @@ private constructor(
         }
 
         return other is ExternalAccountInfoOneOf &&
-            aedAccount == other.aedAccount &&
-            bdtAccount == other.bdtAccount &&
-            brlAccount == other.brlAccount &&
-            bwpAccount == other.bwpAccount &&
-            cadAccount == other.cadAccount &&
-            copAccount == other.copAccount &&
-            dkkAccount == other.dkkAccount &&
-            egpAccount == other.egpAccount &&
-            eurAccount == other.eurAccount &&
-            gbpAccount == other.gbpAccount &&
-            ghsAccount == other.ghsAccount &&
-            gtqAccount == other.gtqAccount &&
-            hkdAccount == other.hkdAccount &&
-            htgAccount == other.htgAccount &&
-            idrAccount == other.idrAccount &&
-            inrAccount == other.inrAccount &&
-            jmdAccount == other.jmdAccount &&
-            kesAccount == other.kesAccount &&
-            mwkAccount == other.mwkAccount &&
-            mxnAccount == other.mxnAccount &&
-            myrAccount == other.myrAccount &&
-            ngnAccount == other.ngnAccount &&
-            phpAccount == other.phpAccount &&
-            pkrAccount == other.pkrAccount &&
-            rwfAccount == other.rwfAccount &&
-            sgdAccount == other.sgdAccount &&
             slvAccount == other.slvAccount &&
-            thbAccount == other.thbAccount &&
-            tzsAccount == other.tzsAccount &&
-            ugxAccount == other.ugxAccount &&
-            usdAccount == other.usdAccount &&
-            vndAccount == other.vndAccount &&
-            xafAccount == other.xafAccount &&
-            xofAccount == other.xofAccount &&
-            zarAccount == other.zarAccount &&
-            zmwAccount == other.zmwAccount &&
-            swiftAccount == other.swiftAccount &&
-            baseWalletInfo == other.baseWalletInfo &&
-            ethereumWalletExternalAccountInfo == other.ethereumWalletExternalAccountInfo &&
-            lightningWalletInfo == other.lightningWalletInfo &&
-            polygonWalletInfo == other.polygonWalletInfo &&
-            solanaWalletInfo == other.solanaWalletInfo &&
-            sparkWalletInfo == other.sparkWalletInfo &&
-            tronWalletInfo == other.tronWalletInfo
+            swiftAccount == other.swiftAccount
     }
 
-    override fun hashCode(): Int =
-        Objects.hash(
-            aedAccount,
-            bdtAccount,
-            brlAccount,
-            bwpAccount,
-            cadAccount,
-            copAccount,
-            dkkAccount,
-            egpAccount,
-            eurAccount,
-            gbpAccount,
-            ghsAccount,
-            gtqAccount,
-            hkdAccount,
-            htgAccount,
-            idrAccount,
-            inrAccount,
-            jmdAccount,
-            kesAccount,
-            mwkAccount,
-            mxnAccount,
-            myrAccount,
-            ngnAccount,
-            phpAccount,
-            pkrAccount,
-            rwfAccount,
-            sgdAccount,
-            slvAccount,
-            thbAccount,
-            tzsAccount,
-            ugxAccount,
-            usdAccount,
-            vndAccount,
-            xafAccount,
-            xofAccount,
-            zarAccount,
-            zmwAccount,
-            swiftAccount,
-            baseWalletInfo,
-            ethereumWalletExternalAccountInfo,
-            lightningWalletInfo,
-            polygonWalletInfo,
-            solanaWalletInfo,
-            sparkWalletInfo,
-            tronWalletInfo,
-        )
+    override fun hashCode(): Int = Objects.hash(slvAccount, swiftAccount)
 
     override fun toString(): String =
         when {
-            aedAccount != null -> "ExternalAccountInfoOneOf{aedAccount=$aedAccount}"
-            bdtAccount != null -> "ExternalAccountInfoOneOf{bdtAccount=$bdtAccount}"
-            brlAccount != null -> "ExternalAccountInfoOneOf{brlAccount=$brlAccount}"
-            bwpAccount != null -> "ExternalAccountInfoOneOf{bwpAccount=$bwpAccount}"
-            cadAccount != null -> "ExternalAccountInfoOneOf{cadAccount=$cadAccount}"
-            copAccount != null -> "ExternalAccountInfoOneOf{copAccount=$copAccount}"
-            dkkAccount != null -> "ExternalAccountInfoOneOf{dkkAccount=$dkkAccount}"
-            egpAccount != null -> "ExternalAccountInfoOneOf{egpAccount=$egpAccount}"
-            eurAccount != null -> "ExternalAccountInfoOneOf{eurAccount=$eurAccount}"
-            gbpAccount != null -> "ExternalAccountInfoOneOf{gbpAccount=$gbpAccount}"
-            ghsAccount != null -> "ExternalAccountInfoOneOf{ghsAccount=$ghsAccount}"
-            gtqAccount != null -> "ExternalAccountInfoOneOf{gtqAccount=$gtqAccount}"
-            hkdAccount != null -> "ExternalAccountInfoOneOf{hkdAccount=$hkdAccount}"
-            htgAccount != null -> "ExternalAccountInfoOneOf{htgAccount=$htgAccount}"
-            idrAccount != null -> "ExternalAccountInfoOneOf{idrAccount=$idrAccount}"
-            inrAccount != null -> "ExternalAccountInfoOneOf{inrAccount=$inrAccount}"
-            jmdAccount != null -> "ExternalAccountInfoOneOf{jmdAccount=$jmdAccount}"
-            kesAccount != null -> "ExternalAccountInfoOneOf{kesAccount=$kesAccount}"
-            mwkAccount != null -> "ExternalAccountInfoOneOf{mwkAccount=$mwkAccount}"
-            mxnAccount != null -> "ExternalAccountInfoOneOf{mxnAccount=$mxnAccount}"
-            myrAccount != null -> "ExternalAccountInfoOneOf{myrAccount=$myrAccount}"
-            ngnAccount != null -> "ExternalAccountInfoOneOf{ngnAccount=$ngnAccount}"
-            phpAccount != null -> "ExternalAccountInfoOneOf{phpAccount=$phpAccount}"
-            pkrAccount != null -> "ExternalAccountInfoOneOf{pkrAccount=$pkrAccount}"
-            rwfAccount != null -> "ExternalAccountInfoOneOf{rwfAccount=$rwfAccount}"
-            sgdAccount != null -> "ExternalAccountInfoOneOf{sgdAccount=$sgdAccount}"
             slvAccount != null -> "ExternalAccountInfoOneOf{slvAccount=$slvAccount}"
-            thbAccount != null -> "ExternalAccountInfoOneOf{thbAccount=$thbAccount}"
-            tzsAccount != null -> "ExternalAccountInfoOneOf{tzsAccount=$tzsAccount}"
-            ugxAccount != null -> "ExternalAccountInfoOneOf{ugxAccount=$ugxAccount}"
-            usdAccount != null -> "ExternalAccountInfoOneOf{usdAccount=$usdAccount}"
-            vndAccount != null -> "ExternalAccountInfoOneOf{vndAccount=$vndAccount}"
-            xafAccount != null -> "ExternalAccountInfoOneOf{xafAccount=$xafAccount}"
-            xofAccount != null -> "ExternalAccountInfoOneOf{xofAccount=$xofAccount}"
-            zarAccount != null -> "ExternalAccountInfoOneOf{zarAccount=$zarAccount}"
-            zmwAccount != null -> "ExternalAccountInfoOneOf{zmwAccount=$zmwAccount}"
             swiftAccount != null -> "ExternalAccountInfoOneOf{swiftAccount=$swiftAccount}"
-            baseWalletInfo != null -> "ExternalAccountInfoOneOf{baseWalletInfo=$baseWalletInfo}"
-            ethereumWalletExternalAccountInfo != null ->
-                "ExternalAccountInfoOneOf{ethereumWalletExternalAccountInfo=$ethereumWalletExternalAccountInfo}"
-            lightningWalletInfo != null ->
-                "ExternalAccountInfoOneOf{lightningWalletInfo=$lightningWalletInfo}"
-            polygonWalletInfo != null ->
-                "ExternalAccountInfoOneOf{polygonWalletInfo=$polygonWalletInfo}"
-            solanaWalletInfo != null ->
-                "ExternalAccountInfoOneOf{solanaWalletInfo=$solanaWalletInfo}"
-            sparkWalletInfo != null -> "ExternalAccountInfoOneOf{sparkWalletInfo=$sparkWalletInfo}"
-            tronWalletInfo != null -> "ExternalAccountInfoOneOf{tronWalletInfo=$tronWalletInfo}"
             _json != null -> "ExternalAccountInfoOneOf{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid ExternalAccountInfoOneOf")
         }
 
     companion object {
 
-        fun ofAedAccount(aedAccount: AedExternalAccountInfo) =
-            ExternalAccountInfoOneOf(aedAccount = aedAccount)
-
-        fun ofBdtAccount(bdtAccount: BdtExternalAccountInfo) =
-            ExternalAccountInfoOneOf(bdtAccount = bdtAccount)
-
-        fun ofBrlAccount(brlAccount: BrlExternalAccountInfo) =
-            ExternalAccountInfoOneOf(brlAccount = brlAccount)
-
-        fun ofBwpAccount(bwpAccount: BwpExternalAccountInfo) =
-            ExternalAccountInfoOneOf(bwpAccount = bwpAccount)
-
-        fun ofCadAccount(cadAccount: CadExternalAccountInfo) =
-            ExternalAccountInfoOneOf(cadAccount = cadAccount)
-
-        fun ofCopAccount(copAccount: CopExternalAccountInfo) =
-            ExternalAccountInfoOneOf(copAccount = copAccount)
-
-        fun ofDkkAccount(dkkAccount: DkkExternalAccountInfo) =
-            ExternalAccountInfoOneOf(dkkAccount = dkkAccount)
-
-        fun ofEgpAccount(egpAccount: EgpExternalAccountInfo) =
-            ExternalAccountInfoOneOf(egpAccount = egpAccount)
-
-        fun ofEurAccount(eurAccount: EurExternalAccountInfo) =
-            ExternalAccountInfoOneOf(eurAccount = eurAccount)
-
-        fun ofGbpAccount(gbpAccount: GbpExternalAccountInfo) =
-            ExternalAccountInfoOneOf(gbpAccount = gbpAccount)
-
-        fun ofGhsAccount(ghsAccount: GhsExternalAccountInfo) =
-            ExternalAccountInfoOneOf(ghsAccount = ghsAccount)
-
-        fun ofGtqAccount(gtqAccount: GtqExternalAccountInfo) =
-            ExternalAccountInfoOneOf(gtqAccount = gtqAccount)
-
-        fun ofHkdAccount(hkdAccount: HkdExternalAccountInfo) =
-            ExternalAccountInfoOneOf(hkdAccount = hkdAccount)
-
-        fun ofHtgAccount(htgAccount: HtgExternalAccountInfo) =
-            ExternalAccountInfoOneOf(htgAccount = htgAccount)
-
-        fun ofIdrAccount(idrAccount: IdrExternalAccountInfo) =
-            ExternalAccountInfoOneOf(idrAccount = idrAccount)
-
-        fun ofInrAccount(inrAccount: InrExternalAccountInfo) =
-            ExternalAccountInfoOneOf(inrAccount = inrAccount)
-
-        fun ofJmdAccount(jmdAccount: JmdExternalAccountInfo) =
-            ExternalAccountInfoOneOf(jmdAccount = jmdAccount)
-
-        fun ofKesAccount(kesAccount: KesExternalAccountInfo) =
-            ExternalAccountInfoOneOf(kesAccount = kesAccount)
-
-        fun ofMwkAccount(mwkAccount: MwkExternalAccountInfo) =
-            ExternalAccountInfoOneOf(mwkAccount = mwkAccount)
-
-        fun ofMxnAccount(mxnAccount: MxnExternalAccountInfo) =
-            ExternalAccountInfoOneOf(mxnAccount = mxnAccount)
-
-        fun ofMyrAccount(myrAccount: MyrExternalAccountInfo) =
-            ExternalAccountInfoOneOf(myrAccount = myrAccount)
-
-        fun ofNgnAccount(ngnAccount: NgnExternalAccountInfo) =
-            ExternalAccountInfoOneOf(ngnAccount = ngnAccount)
-
-        fun ofPhpAccount(phpAccount: PhpExternalAccountInfo) =
-            ExternalAccountInfoOneOf(phpAccount = phpAccount)
-
-        fun ofPkrAccount(pkrAccount: PkrExternalAccountInfo) =
-            ExternalAccountInfoOneOf(pkrAccount = pkrAccount)
-
-        fun ofRwfAccount(rwfAccount: RwfExternalAccountInfo) =
-            ExternalAccountInfoOneOf(rwfAccount = rwfAccount)
-
-        fun ofSgdAccount(sgdAccount: SgdExternalAccountInfo) =
-            ExternalAccountInfoOneOf(sgdAccount = sgdAccount)
-
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
         fun ofSlvAccount(slvAccount: SlvAccount) = ExternalAccountInfoOneOf(slvAccount = slvAccount)
-
-        fun ofThbAccount(thbAccount: ThbExternalAccountInfo) =
-            ExternalAccountInfoOneOf(thbAccount = thbAccount)
-
-        fun ofTzsAccount(tzsAccount: TzsExternalAccountInfo) =
-            ExternalAccountInfoOneOf(tzsAccount = tzsAccount)
-
-        fun ofUgxAccount(ugxAccount: UgxExternalAccountInfo) =
-            ExternalAccountInfoOneOf(ugxAccount = ugxAccount)
-
-        fun ofUsdAccount(usdAccount: UsdExternalAccountInfo) =
-            ExternalAccountInfoOneOf(usdAccount = usdAccount)
-
-        fun ofVndAccount(vndAccount: VndExternalAccountInfo) =
-            ExternalAccountInfoOneOf(vndAccount = vndAccount)
-
-        fun ofXafAccount(xafAccount: XafExternalAccountInfo) =
-            ExternalAccountInfoOneOf(xafAccount = xafAccount)
-
-        fun ofXofAccount(xofAccount: XofExternalAccountInfo) =
-            ExternalAccountInfoOneOf(xofAccount = xofAccount)
-
-        fun ofZarAccount(zarAccount: ZarExternalAccountInfo) =
-            ExternalAccountInfoOneOf(zarAccount = zarAccount)
-
-        fun ofZmwAccount(zmwAccount: ZmwExternalAccountInfo) =
-            ExternalAccountInfoOneOf(zmwAccount = zmwAccount)
 
         fun ofSwiftAccount(swiftAccount: SwiftAccount) =
             ExternalAccountInfoOneOf(swiftAccount = swiftAccount)
-
-        fun ofBaseWalletInfo(baseWalletInfo: BaseWalletInfo) =
-            ExternalAccountInfoOneOf(baseWalletInfo = baseWalletInfo)
-
-        fun ofEthereumWalletExternalAccountInfo(
-            ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo
-        ) =
-            ExternalAccountInfoOneOf(
-                ethereumWalletExternalAccountInfo = ethereumWalletExternalAccountInfo
-            )
-
-        /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
-         */
-        fun ofLightningWalletInfo(lightningWalletInfo: LightningWalletInfo) =
-            ExternalAccountInfoOneOf(lightningWalletInfo = lightningWalletInfo)
-
-        fun ofPolygonWalletInfo(polygonWalletInfo: PolygonWalletInfo) =
-            ExternalAccountInfoOneOf(polygonWalletInfo = polygonWalletInfo)
-
-        fun ofSolanaWalletInfo(solanaWalletInfo: SolanaWalletInfo) =
-            ExternalAccountInfoOneOf(solanaWalletInfo = solanaWalletInfo)
-
-        fun ofSparkWalletInfo(sparkWalletInfo: SparkWalletInfo) =
-            ExternalAccountInfoOneOf(sparkWalletInfo = sparkWalletInfo)
-
-        fun ofTronWalletInfo(tronWalletInfo: TronWalletInfo) =
-            ExternalAccountInfoOneOf(tronWalletInfo = tronWalletInfo)
     }
 
     /**
@@ -1089,99 +190,14 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitAedAccount(aedAccount: AedExternalAccountInfo): T
-
-        fun visitBdtAccount(bdtAccount: BdtExternalAccountInfo): T
-
-        fun visitBrlAccount(brlAccount: BrlExternalAccountInfo): T
-
-        fun visitBwpAccount(bwpAccount: BwpExternalAccountInfo): T
-
-        fun visitCadAccount(cadAccount: CadExternalAccountInfo): T
-
-        fun visitCopAccount(copAccount: CopExternalAccountInfo): T
-
-        fun visitDkkAccount(dkkAccount: DkkExternalAccountInfo): T
-
-        fun visitEgpAccount(egpAccount: EgpExternalAccountInfo): T
-
-        fun visitEurAccount(eurAccount: EurExternalAccountInfo): T
-
-        fun visitGbpAccount(gbpAccount: GbpExternalAccountInfo): T
-
-        fun visitGhsAccount(ghsAccount: GhsExternalAccountInfo): T
-
-        fun visitGtqAccount(gtqAccount: GtqExternalAccountInfo): T
-
-        fun visitHkdAccount(hkdAccount: HkdExternalAccountInfo): T
-
-        fun visitHtgAccount(htgAccount: HtgExternalAccountInfo): T
-
-        fun visitIdrAccount(idrAccount: IdrExternalAccountInfo): T
-
-        fun visitInrAccount(inrAccount: InrExternalAccountInfo): T
-
-        fun visitJmdAccount(jmdAccount: JmdExternalAccountInfo): T
-
-        fun visitKesAccount(kesAccount: KesExternalAccountInfo): T
-
-        fun visitMwkAccount(mwkAccount: MwkExternalAccountInfo): T
-
-        fun visitMxnAccount(mxnAccount: MxnExternalAccountInfo): T
-
-        fun visitMyrAccount(myrAccount: MyrExternalAccountInfo): T
-
-        fun visitNgnAccount(ngnAccount: NgnExternalAccountInfo): T
-
-        fun visitPhpAccount(phpAccount: PhpExternalAccountInfo): T
-
-        fun visitPkrAccount(pkrAccount: PkrExternalAccountInfo): T
-
-        fun visitRwfAccount(rwfAccount: RwfExternalAccountInfo): T
-
-        fun visitSgdAccount(sgdAccount: SgdExternalAccountInfo): T
-
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: bankAccountType, accountNumber
+         * - MOBILE_MONEY: phoneNumber
+         */
         fun visitSlvAccount(slvAccount: SlvAccount): T
 
-        fun visitThbAccount(thbAccount: ThbExternalAccountInfo): T
-
-        fun visitTzsAccount(tzsAccount: TzsExternalAccountInfo): T
-
-        fun visitUgxAccount(ugxAccount: UgxExternalAccountInfo): T
-
-        fun visitUsdAccount(usdAccount: UsdExternalAccountInfo): T
-
-        fun visitVndAccount(vndAccount: VndExternalAccountInfo): T
-
-        fun visitXafAccount(xafAccount: XafExternalAccountInfo): T
-
-        fun visitXofAccount(xofAccount: XofExternalAccountInfo): T
-
-        fun visitZarAccount(zarAccount: ZarExternalAccountInfo): T
-
-        fun visitZmwAccount(zmwAccount: ZmwExternalAccountInfo): T
-
         fun visitSwiftAccount(swiftAccount: SwiftAccount): T
-
-        fun visitBaseWalletInfo(baseWalletInfo: BaseWalletInfo): T
-
-        fun visitEthereumWalletExternalAccountInfo(
-            ethereumWalletExternalAccountInfo: EthereumWalletExternalAccountInfo
-        ): T
-
-        /**
-         * Lightning payment destination. Exactly one of `invoice`, `bolt12`, or `lightningAddress`
-         * must be provided.
-         */
-        fun visitLightningWalletInfo(lightningWalletInfo: LightningWalletInfo): T
-
-        fun visitPolygonWalletInfo(polygonWalletInfo: PolygonWalletInfo): T
-
-        fun visitSolanaWalletInfo(solanaWalletInfo: SolanaWalletInfo): T
-
-        fun visitSparkWalletInfo(sparkWalletInfo: SparkWalletInfo): T
-
-        fun visitTronWalletInfo(tronWalletInfo: TronWalletInfo): T
 
         /**
          * Maps an unknown variant of [ExternalAccountInfoOneOf] to a value of type [T].
@@ -1206,184 +222,9 @@ private constructor(
             val accountType = json.asObject()?.get("accountType")?.asString()
 
             when (accountType) {
-                "AED_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<AedExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(aedAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "BDT_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BdtExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(bdtAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "BRL_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BrlExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(brlAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "BWP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BwpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(bwpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "CAD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<CadExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(cadAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "COP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<CopExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(copAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "DKK_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<DkkExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(dkkAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "EGP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<EgpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(egpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "EUR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<EurExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(eurAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "GBP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<GbpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(gbpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "GHS_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<GhsExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(ghsAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "GTQ_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<GtqExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(gtqAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "HKD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<HkdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(hkdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "HTG_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<HtgExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(htgAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "IDR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<IdrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(idrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "INR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<InrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(inrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "JMD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<JmdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(jmdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "KES_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<KesExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(kesAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MWK_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MwkExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(mwkAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MXN_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MxnExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(mxnAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "MYR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<MyrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(myrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "NGN_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<NgnExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(ngnAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "PHP_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PhpExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(phpAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "PKR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<PkrExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(pkrAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "RWF_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<RwfExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(rwfAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "SGD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<SgdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(sgdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
                 "SLV_ACCOUNT" -> {
                     return tryDeserialize(node, jacksonTypeRef<SlvAccount>())?.let {
                         ExternalAccountInfoOneOf(slvAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "THB_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ThbExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(thbAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "TZS_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<TzsExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(tzsAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "UGX_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UgxExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(ugxAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "USD_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<UsdExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(usdAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "VND_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<VndExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(vndAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "XAF_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<XafExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(xafAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "XOF_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<XofExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(xofAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "ZAR_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ZarExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(zarAccount = it, _json = json)
-                    } ?: ExternalAccountInfoOneOf(_json = json)
-                }
-                "ZMW_ACCOUNT" -> {
-                    return tryDeserialize(node, jacksonTypeRef<ZmwExternalAccountInfo>())?.let {
-                        ExternalAccountInfoOneOf(zmwAccount = it, _json = json)
                     } ?: ExternalAccountInfoOneOf(_json = json)
                 }
                 "SWIFT_ACCOUNT" -> {
@@ -1393,46 +234,7 @@ private constructor(
                 }
             }
 
-            val bestMatches =
-                sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<BaseWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(baseWalletInfo = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<EthereumWalletExternalAccountInfo>())
-                            ?.let {
-                                ExternalAccountInfoOneOf(
-                                    ethereumWalletExternalAccountInfo = it,
-                                    _json = json,
-                                )
-                            },
-                        tryDeserialize(node, jacksonTypeRef<LightningWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(lightningWalletInfo = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<PolygonWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(polygonWalletInfo = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<SolanaWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(solanaWalletInfo = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<SparkWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(sparkWalletInfo = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<TronWalletInfo>())?.let {
-                            ExternalAccountInfoOneOf(tronWalletInfo = it, _json = json)
-                        },
-                    )
-                    .filterNotNull()
-                    .allMaxBy { it.validity() }
-                    .toList()
-            return when (bestMatches.size) {
-                // This can happen if what we're deserializing is completely incompatible with all
-                // the possible variants (e.g. deserializing from boolean).
-                0 -> ExternalAccountInfoOneOf(_json = json)
-                1 -> bestMatches.single()
-                // If there's more than one match with the highest validity, then use the first
-                // completely valid match, or simply the first match if none are completely valid.
-                else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
-            }
+            return ExternalAccountInfoOneOf(_json = json)
         }
     }
 
@@ -1445,58 +247,19 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.aedAccount != null -> generator.writeObject(value.aedAccount)
-                value.bdtAccount != null -> generator.writeObject(value.bdtAccount)
-                value.brlAccount != null -> generator.writeObject(value.brlAccount)
-                value.bwpAccount != null -> generator.writeObject(value.bwpAccount)
-                value.cadAccount != null -> generator.writeObject(value.cadAccount)
-                value.copAccount != null -> generator.writeObject(value.copAccount)
-                value.dkkAccount != null -> generator.writeObject(value.dkkAccount)
-                value.egpAccount != null -> generator.writeObject(value.egpAccount)
-                value.eurAccount != null -> generator.writeObject(value.eurAccount)
-                value.gbpAccount != null -> generator.writeObject(value.gbpAccount)
-                value.ghsAccount != null -> generator.writeObject(value.ghsAccount)
-                value.gtqAccount != null -> generator.writeObject(value.gtqAccount)
-                value.hkdAccount != null -> generator.writeObject(value.hkdAccount)
-                value.htgAccount != null -> generator.writeObject(value.htgAccount)
-                value.idrAccount != null -> generator.writeObject(value.idrAccount)
-                value.inrAccount != null -> generator.writeObject(value.inrAccount)
-                value.jmdAccount != null -> generator.writeObject(value.jmdAccount)
-                value.kesAccount != null -> generator.writeObject(value.kesAccount)
-                value.mwkAccount != null -> generator.writeObject(value.mwkAccount)
-                value.mxnAccount != null -> generator.writeObject(value.mxnAccount)
-                value.myrAccount != null -> generator.writeObject(value.myrAccount)
-                value.ngnAccount != null -> generator.writeObject(value.ngnAccount)
-                value.phpAccount != null -> generator.writeObject(value.phpAccount)
-                value.pkrAccount != null -> generator.writeObject(value.pkrAccount)
-                value.rwfAccount != null -> generator.writeObject(value.rwfAccount)
-                value.sgdAccount != null -> generator.writeObject(value.sgdAccount)
                 value.slvAccount != null -> generator.writeObject(value.slvAccount)
-                value.thbAccount != null -> generator.writeObject(value.thbAccount)
-                value.tzsAccount != null -> generator.writeObject(value.tzsAccount)
-                value.ugxAccount != null -> generator.writeObject(value.ugxAccount)
-                value.usdAccount != null -> generator.writeObject(value.usdAccount)
-                value.vndAccount != null -> generator.writeObject(value.vndAccount)
-                value.xafAccount != null -> generator.writeObject(value.xafAccount)
-                value.xofAccount != null -> generator.writeObject(value.xofAccount)
-                value.zarAccount != null -> generator.writeObject(value.zarAccount)
-                value.zmwAccount != null -> generator.writeObject(value.zmwAccount)
                 value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
-                value.baseWalletInfo != null -> generator.writeObject(value.baseWalletInfo)
-                value.ethereumWalletExternalAccountInfo != null ->
-                    generator.writeObject(value.ethereumWalletExternalAccountInfo)
-                value.lightningWalletInfo != null ->
-                    generator.writeObject(value.lightningWalletInfo)
-                value.polygonWalletInfo != null -> generator.writeObject(value.polygonWalletInfo)
-                value.solanaWalletInfo != null -> generator.writeObject(value.solanaWalletInfo)
-                value.sparkWalletInfo != null -> generator.writeObject(value.sparkWalletInfo)
-                value.tronWalletInfo != null -> generator.writeObject(value.tronWalletInfo)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid ExternalAccountInfoOneOf")
             }
         }
     }
 
+    /**
+     * Required fields depend on the selected paymentRails:
+     * - BANK_TRANSFER: bankAccountType, accountNumber
+     * - MOBILE_MONEY: phoneNumber
+     */
     class SlvAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(

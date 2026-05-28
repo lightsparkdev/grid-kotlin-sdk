@@ -20,6 +20,7 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
+import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
@@ -138,17 +139,25 @@ private constructor(
 
         /**
          * Alias for calling [updateCustomerRequest] with
-         * `UpdateCustomerRequest.ofIndividual(individual)`.
+         * `UpdateCustomerRequest.ofIndividualCustomerUpdate(individualCustomerUpdate)`.
          */
-        fun updateCustomerRequest(individual: UpdateCustomerRequest.Individual) =
-            updateCustomerRequest(UpdateCustomerRequest.ofIndividual(individual))
+        fun updateCustomerRequest(
+            individualCustomerUpdate: UpdateCustomerRequest.IndividualCustomerUpdateRequest
+        ) =
+            updateCustomerRequest(
+                UpdateCustomerRequest.ofIndividualCustomerUpdate(individualCustomerUpdate)
+            )
 
         /**
          * Alias for calling [updateCustomerRequest] with
-         * `UpdateCustomerRequest.ofBusiness(business)`.
+         * `UpdateCustomerRequest.ofBusinessCustomerUpdate(businessCustomerUpdate)`.
          */
-        fun updateCustomerRequest(business: UpdateCustomerRequest.Business) =
-            updateCustomerRequest(UpdateCustomerRequest.ofBusiness(business))
+        fun updateCustomerRequest(
+            businessCustomerUpdate: UpdateCustomerRequest.BusinessCustomerUpdateRequest
+        ) =
+            updateCustomerRequest(
+                UpdateCustomerRequest.ofBusinessCustomerUpdate(businessCustomerUpdate)
+            )
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -300,8 +309,8 @@ private constructor(
     @JsonSerialize(using = UpdateCustomerRequest.Serializer::class)
     class UpdateCustomerRequest
     private constructor(
-        private val individual: Individual? = null,
-        private val business: Business? = null,
+        private val individualCustomerUpdate: IndividualCustomerUpdateRequest? = null,
+        private val businessCustomerUpdate: BusinessCustomerUpdateRequest? = null,
         private val _json: JsonValue? = null,
     ) {
 
@@ -311,7 +320,7 @@ private constructor(
          * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
          * signed-retry flow.
          */
-        fun individual(): Individual? = individual
+        fun individualCustomerUpdate(): IndividualCustomerUpdateRequest? = individualCustomerUpdate
 
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
@@ -319,19 +328,11 @@ private constructor(
          * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
          * signed-retry flow.
          */
-        fun business(): Business? = business
+        fun businessCustomerUpdate(): BusinessCustomerUpdateRequest? = businessCustomerUpdate
 
-        fun isIndividual(): Boolean = individual != null
+        fun isIndividualCustomerUpdate(): Boolean = individualCustomerUpdate != null
 
-        fun isBusiness(): Boolean = business != null
-
-        /**
-         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
-         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
-         */
-        fun asIndividual(): Individual = individual.getOrThrow("individual")
+        fun isBusinessCustomerUpdate(): Boolean = businessCustomerUpdate != null
 
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
@@ -339,7 +340,17 @@ private constructor(
          * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
          * signed-retry flow.
          */
-        fun asBusiness(): Business = business.getOrThrow("business")
+        fun asIndividualCustomerUpdate(): IndividualCustomerUpdateRequest =
+            individualCustomerUpdate.getOrThrow("individualCustomerUpdate")
+
+        /**
+         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
+         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
+         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
+         * signed-retry flow.
+         */
+        fun asBusinessCustomerUpdate(): BusinessCustomerUpdateRequest =
+            businessCustomerUpdate.getOrThrow("businessCustomerUpdate")
 
         fun _json(): JsonValue? = _json
 
@@ -353,7 +364,7 @@ private constructor(
          * import com.lightspark.grid.core.JsonValue
          *
          * val result: String? = updateCustomerRequest.accept(object : UpdateCustomerRequest.Visitor<String?> {
-         *     override fun visitIndividual(individual: Individual): String? = individual.toString()
+         *     override fun visitIndividualCustomerUpdate(individualCustomerUpdate: IndividualCustomerUpdateRequest): String? = individualCustomerUpdate.toString()
          *
          *     // ...
          *
@@ -369,8 +380,10 @@ private constructor(
          */
         fun <T> accept(visitor: Visitor<T>): T =
             when {
-                individual != null -> visitor.visitIndividual(individual)
-                business != null -> visitor.visitBusiness(business)
+                individualCustomerUpdate != null ->
+                    visitor.visitIndividualCustomerUpdate(individualCustomerUpdate)
+                businessCustomerUpdate != null ->
+                    visitor.visitBusinessCustomerUpdate(businessCustomerUpdate)
                 else -> visitor.unknown(_json)
             }
 
@@ -392,12 +405,16 @@ private constructor(
 
             accept(
                 object : Visitor<Unit> {
-                    override fun visitIndividual(individual: Individual) {
-                        individual.validate()
+                    override fun visitIndividualCustomerUpdate(
+                        individualCustomerUpdate: IndividualCustomerUpdateRequest
+                    ) {
+                        individualCustomerUpdate.validate()
                     }
 
-                    override fun visitBusiness(business: Business) {
-                        business.validate()
+                    override fun visitBusinessCustomerUpdate(
+                        businessCustomerUpdate: BusinessCustomerUpdateRequest
+                    ) {
+                        businessCustomerUpdate.validate()
                     }
                 }
             )
@@ -421,9 +438,13 @@ private constructor(
         internal fun validity(): Int =
             accept(
                 object : Visitor<Int> {
-                    override fun visitIndividual(individual: Individual) = individual.validity()
+                    override fun visitIndividualCustomerUpdate(
+                        individualCustomerUpdate: IndividualCustomerUpdateRequest
+                    ) = individualCustomerUpdate.validity()
 
-                    override fun visitBusiness(business: Business) = business.validity()
+                    override fun visitBusinessCustomerUpdate(
+                        businessCustomerUpdate: BusinessCustomerUpdateRequest
+                    ) = businessCustomerUpdate.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -435,16 +456,19 @@ private constructor(
             }
 
             return other is UpdateCustomerRequest &&
-                individual == other.individual &&
-                business == other.business
+                individualCustomerUpdate == other.individualCustomerUpdate &&
+                businessCustomerUpdate == other.businessCustomerUpdate
         }
 
-        override fun hashCode(): Int = Objects.hash(individual, business)
+        override fun hashCode(): Int =
+            Objects.hash(individualCustomerUpdate, businessCustomerUpdate)
 
         override fun toString(): String =
             when {
-                individual != null -> "UpdateCustomerRequest{individual=$individual}"
-                business != null -> "UpdateCustomerRequest{business=$business}"
+                individualCustomerUpdate != null ->
+                    "UpdateCustomerRequest{individualCustomerUpdate=$individualCustomerUpdate}"
+                businessCustomerUpdate != null ->
+                    "UpdateCustomerRequest{businessCustomerUpdate=$businessCustomerUpdate}"
                 _json != null -> "UpdateCustomerRequest{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid UpdateCustomerRequest")
             }
@@ -457,8 +481,9 @@ private constructor(
              * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
              * endpoint's signed-retry flow.
              */
-            fun ofIndividual(individual: Individual) =
-                UpdateCustomerRequest(individual = individual)
+            fun ofIndividualCustomerUpdate(
+                individualCustomerUpdate: IndividualCustomerUpdateRequest
+            ) = UpdateCustomerRequest(individualCustomerUpdate = individualCustomerUpdate)
 
             /**
              * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
@@ -466,7 +491,8 @@ private constructor(
              * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
              * endpoint's signed-retry flow.
              */
-            fun ofBusiness(business: Business) = UpdateCustomerRequest(business = business)
+            fun ofBusinessCustomerUpdate(businessCustomerUpdate: BusinessCustomerUpdateRequest) =
+                UpdateCustomerRequest(businessCustomerUpdate = businessCustomerUpdate)
         }
 
         /**
@@ -481,7 +507,9 @@ private constructor(
              * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
              * endpoint's signed-retry flow.
              */
-            fun visitIndividual(individual: Individual): T
+            fun visitIndividualCustomerUpdate(
+                individualCustomerUpdate: IndividualCustomerUpdateRequest
+            ): T
 
             /**
              * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
@@ -489,7 +517,9 @@ private constructor(
              * every tied `EMAIL_OTP` credential across all tied Embedded Wallets through the
              * endpoint's signed-retry flow.
              */
-            fun visitBusiness(business: Business): T
+            fun visitBusinessCustomerUpdate(
+                businessCustomerUpdate: BusinessCustomerUpdateRequest
+            ): T
 
             /**
              * Maps an unknown variant of [UpdateCustomerRequest] to a value of type [T].
@@ -513,20 +543,35 @@ private constructor(
                 val json = JsonValue.fromJsonNode(node)
                 val customerType = json.asObject()?.get("customerType")?.asString()
 
-                when (customerType) {
-                    "INDIVIDUAL" -> {
-                        return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
-                            UpdateCustomerRequest(individual = it, _json = json)
-                        } ?: UpdateCustomerRequest(_json = json)
-                    }
-                    "BUSINESS" -> {
-                        return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
-                            UpdateCustomerRequest(business = it, _json = json)
-                        } ?: UpdateCustomerRequest(_json = json)
-                    }
-                }
+                when (customerType) {}
 
-                return UpdateCustomerRequest(_json = json)
+                val bestMatches =
+                    sequenceOf(
+                            tryDeserialize(node, jacksonTypeRef<IndividualCustomerUpdateRequest>())
+                                ?.let {
+                                    UpdateCustomerRequest(
+                                        individualCustomerUpdate = it,
+                                        _json = json,
+                                    )
+                                },
+                            tryDeserialize(node, jacksonTypeRef<BusinessCustomerUpdateRequest>())
+                                ?.let {
+                                    UpdateCustomerRequest(businessCustomerUpdate = it, _json = json)
+                                },
+                        )
+                        .filterNotNull()
+                        .allMaxBy { it.validity() }
+                        .toList()
+                return when (bestMatches.size) {
+                    // This can happen if what we're deserializing is completely incompatible with
+                    // all the possible variants (e.g. deserializing from boolean).
+                    0 -> UpdateCustomerRequest(_json = json)
+                    1 -> bestMatches.single()
+                    // If there's more than one match with the highest validity, then use the first
+                    // completely valid match, or simply the first match if none are completely
+                    // valid.
+                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                }
             }
         }
 
@@ -539,8 +584,10 @@ private constructor(
                 provider: SerializerProvider,
             ) {
                 when {
-                    value.individual != null -> generator.writeObject(value.individual)
-                    value.business != null -> generator.writeObject(value.business)
+                    value.individualCustomerUpdate != null ->
+                        generator.writeObject(value.individualCustomerUpdate)
+                    value.businessCustomerUpdate != null ->
+                        generator.writeObject(value.businessCustomerUpdate)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid UpdateCustomerRequest")
                 }
@@ -553,13 +600,13 @@ private constructor(
          * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
          * signed-retry flow.
          */
-        class Individual
+        class IndividualCustomerUpdateRequest
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val customerType: JsonValue,
             private val currencies: JsonField<List<String>>,
             private val email: JsonField<String>,
             private val umaAddress: JsonField<String>,
-            private val customerType: JsonField<IndividualCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
             private val birthDate: JsonField<LocalDate>,
             private val fullName: JsonField<String>,
@@ -570,6 +617,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("customerType")
+                @ExcludeMissing
+                customerType: JsonValue = JsonMissing.of(),
                 @JsonProperty("currencies")
                 @ExcludeMissing
                 currencies: JsonField<List<String>> = JsonMissing.of(),
@@ -577,9 +627,6 @@ private constructor(
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("customerType")
-                @ExcludeMissing
-                customerType: JsonField<IndividualCustomerFields.CustomerType> = JsonMissing.of(),
                 @JsonProperty("address")
                 @ExcludeMissing
                 address: JsonField<Address> = JsonMissing.of(),
@@ -596,10 +643,10 @@ private constructor(
                 @ExcludeMissing
                 nationality: JsonField<String> = JsonMissing.of(),
             ) : this(
+                customerType,
                 currencies,
                 email,
                 umaAddress,
-                customerType,
                 address,
                 birthDate,
                 fullName,
@@ -610,6 +657,7 @@ private constructor(
 
             fun toCustomerUpdate(): CustomerUpdate =
                 CustomerUpdate.builder()
+                    .customerType(customerType)
                     .currencies(currencies)
                     .email(email)
                     .umaAddress(umaAddress)
@@ -624,6 +672,17 @@ private constructor(
                     .kycStatus(kycStatus)
                     .nationality(nationality)
                     .build()
+
+            /**
+             * This arbitrary value can be deserialized into a custom type using the `convert`
+             * method:
+             * ```kotlin
+             * val myObject: MyClass = individualCustomerUpdateRequest.customerType().convert(MyClass::class.java)
+             * ```
+             */
+            @JsonProperty("customerType")
+            @ExcludeMissing
+            fun _customerType(): JsonValue = customerType
 
             /**
              * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
@@ -654,14 +713,6 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun customerType(): IndividualCustomerFields.CustomerType =
-                customerType.getRequired("customerType")
 
             /**
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
@@ -730,16 +781,6 @@ private constructor(
             fun _umaAddress(): JsonField<String> = umaAddress
 
             /**
-             * Returns the raw JSON value of [customerType].
-             *
-             * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("customerType")
-            @ExcludeMissing
-            fun _customerType(): JsonField<IndividualCustomerFields.CustomerType> = customerType
-
-            /**
              * Returns the raw JSON value of [address].
              *
              * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
@@ -799,7 +840,8 @@ private constructor(
             companion object {
 
                 /**
-                 * Returns a mutable builder for constructing an instance of [Individual].
+                 * Returns a mutable builder for constructing an instance of
+                 * [IndividualCustomerUpdateRequest].
                  *
                  * The following fields are required:
                  * ```kotlin
@@ -809,13 +851,13 @@ private constructor(
                 fun builder() = Builder()
             }
 
-            /** A builder for [Individual]. */
+            /** A builder for [IndividualCustomerUpdateRequest]. */
             class Builder internal constructor() {
 
+                private var customerType: JsonValue? = null
                 private var currencies: JsonField<MutableList<String>>? = null
                 private var email: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
-                private var customerType: JsonField<IndividualCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
                 private var birthDate: JsonField<LocalDate> = JsonMissing.of()
                 private var fullName: JsonField<String> = JsonMissing.of()
@@ -824,17 +866,25 @@ private constructor(
                 private var nationality: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-                internal fun from(individual: Individual) = apply {
-                    currencies = individual.currencies.map { it.toMutableList() }
-                    email = individual.email
-                    umaAddress = individual.umaAddress
-                    customerType = individual.customerType
-                    address = individual.address
-                    birthDate = individual.birthDate
-                    fullName = individual.fullName
-                    kycStatus = individual.kycStatus
-                    nationality = individual.nationality
-                    additionalProperties = individual.additionalProperties.toMutableMap()
+                internal fun from(
+                    individualCustomerUpdateRequest: IndividualCustomerUpdateRequest
+                ) = apply {
+                    customerType = individualCustomerUpdateRequest.customerType
+                    currencies =
+                        individualCustomerUpdateRequest.currencies.map { it.toMutableList() }
+                    email = individualCustomerUpdateRequest.email
+                    umaAddress = individualCustomerUpdateRequest.umaAddress
+                    address = individualCustomerUpdateRequest.address
+                    birthDate = individualCustomerUpdateRequest.birthDate
+                    fullName = individualCustomerUpdateRequest.fullName
+                    kycStatus = individualCustomerUpdateRequest.kycStatus
+                    nationality = individualCustomerUpdateRequest.nationality
+                    additionalProperties =
+                        individualCustomerUpdateRequest.additionalProperties.toMutableMap()
+                }
+
+                fun customerType(customerType: JsonValue) = apply {
+                    this.customerType = customerType
                 }
 
                 /**
@@ -900,21 +950,6 @@ private constructor(
                 fun umaAddress(umaAddress: JsonField<String>) = apply {
                     this.umaAddress = umaAddress
                 }
-
-                fun customerType(customerType: IndividualCustomerFields.CustomerType) =
-                    customerType(JsonField.of(customerType))
-
-                /**
-                 * Sets [Builder.customerType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.customerType] with a well-typed
-                 * [IndividualCustomerFields.CustomerType] value instead. This method is primarily
-                 * for setting the field to an undocumented or not yet supported value.
-                 */
-                fun customerType(customerType: JsonField<IndividualCustomerFields.CustomerType>) =
-                    apply {
-                        this.customerType = customerType
-                    }
 
                 fun address(address: Address) = address(JsonField.of(address))
 
@@ -1005,7 +1040,7 @@ private constructor(
                 }
 
                 /**
-                 * Returns an immutable instance of [Individual].
+                 * Returns an immutable instance of [IndividualCustomerUpdateRequest].
                  *
                  * Further updates to this [Builder] will not mutate the returned instance.
                  *
@@ -1016,12 +1051,12 @@ private constructor(
                  *
                  * @throws IllegalStateException if any required field is unset.
                  */
-                fun build(): Individual =
-                    Individual(
+                fun build(): IndividualCustomerUpdateRequest =
+                    IndividualCustomerUpdateRequest(
+                        checkRequired("customerType", customerType),
                         (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                         email,
                         umaAddress,
-                        checkRequired("customerType", customerType),
                         address,
                         birthDate,
                         fullName,
@@ -1043,7 +1078,7 @@ private constructor(
              * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
              *   match its expected type.
              */
-            fun validate(): Individual = apply {
+            fun validate(): IndividualCustomerUpdateRequest = apply {
                 if (validated) {
                     return@apply
                 }
@@ -1051,7 +1086,6 @@ private constructor(
                 currencies()
                 email()
                 umaAddress()
-                customerType().validate()
                 address()?.validate()
                 birthDate()
                 fullName()
@@ -1078,7 +1112,6 @@ private constructor(
                 (currencies.asKnown()?.size ?: 0) +
                     (if (email.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
-                    (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
                     (if (birthDate.asKnown() == null) 0 else 1) +
                     (if (fullName.asKnown() == null) 0 else 1) +
@@ -1090,11 +1123,11 @@ private constructor(
                     return true
                 }
 
-                return other is Individual &&
+                return other is IndividualCustomerUpdateRequest &&
+                    customerType == other.customerType &&
                     currencies == other.currencies &&
                     email == other.email &&
                     umaAddress == other.umaAddress &&
-                    customerType == other.customerType &&
                     address == other.address &&
                     birthDate == other.birthDate &&
                     fullName == other.fullName &&
@@ -1105,10 +1138,10 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    customerType,
                     currencies,
                     email,
                     umaAddress,
-                    customerType,
                     address,
                     birthDate,
                     fullName,
@@ -1121,7 +1154,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Individual{currencies=$currencies, email=$email, umaAddress=$umaAddress, customerType=$customerType, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+                "IndividualCustomerUpdateRequest{customerType=$customerType, currencies=$currencies, email=$email, umaAddress=$umaAddress, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
         }
 
         /**
@@ -1130,13 +1163,13 @@ private constructor(
          * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
          * signed-retry flow.
          */
-        class Business
+        class BusinessCustomerUpdateRequest
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
+            private val customerType: JsonValue,
             private val currencies: JsonField<List<String>>,
             private val email: JsonField<String>,
             private val umaAddress: JsonField<String>,
-            private val customerType: JsonField<BusinessCustomerFields.CustomerType>,
             private val address: JsonField<Address>,
             private val businessInfo: JsonField<BusinessCustomerFields.BusinessInfo>,
             private val kybStatus: JsonField<BusinessCustomerFields.KybStatus>,
@@ -1145,6 +1178,9 @@ private constructor(
 
             @JsonCreator
             private constructor(
+                @JsonProperty("customerType")
+                @ExcludeMissing
+                customerType: JsonValue = JsonMissing.of(),
                 @JsonProperty("currencies")
                 @ExcludeMissing
                 currencies: JsonField<List<String>> = JsonMissing.of(),
@@ -1152,9 +1188,6 @@ private constructor(
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("customerType")
-                @ExcludeMissing
-                customerType: JsonField<BusinessCustomerFields.CustomerType> = JsonMissing.of(),
                 @JsonProperty("address")
                 @ExcludeMissing
                 address: JsonField<Address> = JsonMissing.of(),
@@ -1165,10 +1198,10 @@ private constructor(
                 @ExcludeMissing
                 kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
             ) : this(
+                customerType,
                 currencies,
                 email,
                 umaAddress,
-                customerType,
                 address,
                 businessInfo,
                 kybStatus,
@@ -1177,6 +1210,7 @@ private constructor(
 
             fun toCustomerUpdate(): CustomerUpdate =
                 CustomerUpdate.builder()
+                    .customerType(customerType)
                     .currencies(currencies)
                     .email(email)
                     .umaAddress(umaAddress)
@@ -1189,6 +1223,17 @@ private constructor(
                     .businessInfo(businessInfo)
                     .kybStatus(kybStatus)
                     .build()
+
+            /**
+             * This arbitrary value can be deserialized into a custom type using the `convert`
+             * method:
+             * ```kotlin
+             * val myObject: MyClass = businessCustomerUpdateRequest.customerType().convert(MyClass::class.java)
+             * ```
+             */
+            @JsonProperty("customerType")
+            @ExcludeMissing
+            fun _customerType(): JsonValue = customerType
 
             /**
              * Updated list of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
@@ -1219,14 +1264,6 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun customerType(): BusinessCustomerFields.CustomerType =
-                customerType.getRequired("customerType")
 
             /**
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
@@ -1279,16 +1316,6 @@ private constructor(
             fun _umaAddress(): JsonField<String> = umaAddress
 
             /**
-             * Returns the raw JSON value of [customerType].
-             *
-             * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("customerType")
-            @ExcludeMissing
-            fun _customerType(): JsonField<BusinessCustomerFields.CustomerType> = customerType
-
-            /**
              * Returns the raw JSON value of [address].
              *
              * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
@@ -1330,7 +1357,8 @@ private constructor(
             companion object {
 
                 /**
-                 * Returns a mutable builder for constructing an instance of [Business].
+                 * Returns a mutable builder for constructing an instance of
+                 * [BusinessCustomerUpdateRequest].
                  *
                  * The following fields are required:
                  * ```kotlin
@@ -1340,13 +1368,13 @@ private constructor(
                 fun builder() = Builder()
             }
 
-            /** A builder for [Business]. */
+            /** A builder for [BusinessCustomerUpdateRequest]. */
             class Builder internal constructor() {
 
+                private var customerType: JsonValue? = null
                 private var currencies: JsonField<MutableList<String>>? = null
                 private var email: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
-                private var customerType: JsonField<BusinessCustomerFields.CustomerType>? = null
                 private var address: JsonField<Address> = JsonMissing.of()
                 private var businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> =
                     JsonMissing.of()
@@ -1354,15 +1382,22 @@ private constructor(
                     JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-                internal fun from(business: Business) = apply {
-                    currencies = business.currencies.map { it.toMutableList() }
-                    email = business.email
-                    umaAddress = business.umaAddress
-                    customerType = business.customerType
-                    address = business.address
-                    businessInfo = business.businessInfo
-                    kybStatus = business.kybStatus
-                    additionalProperties = business.additionalProperties.toMutableMap()
+                internal fun from(businessCustomerUpdateRequest: BusinessCustomerUpdateRequest) =
+                    apply {
+                        customerType = businessCustomerUpdateRequest.customerType
+                        currencies =
+                            businessCustomerUpdateRequest.currencies.map { it.toMutableList() }
+                        email = businessCustomerUpdateRequest.email
+                        umaAddress = businessCustomerUpdateRequest.umaAddress
+                        address = businessCustomerUpdateRequest.address
+                        businessInfo = businessCustomerUpdateRequest.businessInfo
+                        kybStatus = businessCustomerUpdateRequest.kybStatus
+                        additionalProperties =
+                            businessCustomerUpdateRequest.additionalProperties.toMutableMap()
+                    }
+
+                fun customerType(customerType: JsonValue) = apply {
+                    this.customerType = customerType
                 }
 
                 /**
@@ -1429,21 +1464,6 @@ private constructor(
                     this.umaAddress = umaAddress
                 }
 
-                fun customerType(customerType: BusinessCustomerFields.CustomerType) =
-                    customerType(JsonField.of(customerType))
-
-                /**
-                 * Sets [Builder.customerType] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.customerType] with a well-typed
-                 * [BusinessCustomerFields.CustomerType] value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun customerType(customerType: JsonField<BusinessCustomerFields.CustomerType>) =
-                    apply {
-                        this.customerType = customerType
-                    }
-
                 fun address(address: Address) = address(JsonField.of(address))
 
                 /**
@@ -1509,7 +1529,7 @@ private constructor(
                 }
 
                 /**
-                 * Returns an immutable instance of [Business].
+                 * Returns an immutable instance of [BusinessCustomerUpdateRequest].
                  *
                  * Further updates to this [Builder] will not mutate the returned instance.
                  *
@@ -1520,12 +1540,12 @@ private constructor(
                  *
                  * @throws IllegalStateException if any required field is unset.
                  */
-                fun build(): Business =
-                    Business(
+                fun build(): BusinessCustomerUpdateRequest =
+                    BusinessCustomerUpdateRequest(
+                        checkRequired("customerType", customerType),
                         (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                         email,
                         umaAddress,
-                        checkRequired("customerType", customerType),
                         address,
                         businessInfo,
                         kybStatus,
@@ -1545,7 +1565,7 @@ private constructor(
              * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
              *   match its expected type.
              */
-            fun validate(): Business = apply {
+            fun validate(): BusinessCustomerUpdateRequest = apply {
                 if (validated) {
                     return@apply
                 }
@@ -1553,7 +1573,6 @@ private constructor(
                 currencies()
                 email()
                 umaAddress()
-                customerType().validate()
                 address()?.validate()
                 businessInfo()?.validate()
                 kybStatus()?.validate()
@@ -1578,7 +1597,6 @@ private constructor(
                 (currencies.asKnown()?.size ?: 0) +
                     (if (email.asKnown() == null) 0 else 1) +
                     (if (umaAddress.asKnown() == null) 0 else 1) +
-                    (customerType.asKnown()?.validity() ?: 0) +
                     (address.asKnown()?.validity() ?: 0) +
                     (businessInfo.asKnown()?.validity() ?: 0) +
                     (kybStatus.asKnown()?.validity() ?: 0)
@@ -1588,11 +1606,11 @@ private constructor(
                     return true
                 }
 
-                return other is Business &&
+                return other is BusinessCustomerUpdateRequest &&
+                    customerType == other.customerType &&
                     currencies == other.currencies &&
                     email == other.email &&
                     umaAddress == other.umaAddress &&
-                    customerType == other.customerType &&
                     address == other.address &&
                     businessInfo == other.businessInfo &&
                     kybStatus == other.kybStatus &&
@@ -1601,10 +1619,10 @@ private constructor(
 
             private val hashCode: Int by lazy {
                 Objects.hash(
+                    customerType,
                     currencies,
                     email,
                     umaAddress,
-                    customerType,
                     address,
                     businessInfo,
                     kybStatus,
@@ -1615,7 +1633,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "Business{currencies=$currencies, email=$email, umaAddress=$umaAddress, customerType=$customerType, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "BusinessCustomerUpdateRequest{customerType=$customerType, currencies=$currencies, email=$email, umaAddress=$umaAddress, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
         }
     }
 

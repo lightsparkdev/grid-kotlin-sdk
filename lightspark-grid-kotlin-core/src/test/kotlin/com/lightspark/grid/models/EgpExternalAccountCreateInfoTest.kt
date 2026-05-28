@@ -14,9 +14,9 @@ internal class EgpExternalAccountCreateInfoTest {
     fun create() {
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(
@@ -42,10 +42,10 @@ internal class EgpExternalAccountCreateInfoTest {
                 .swiftCode("NBEGEGCX")
                 .build()
 
-        assertThat(egpExternalAccountCreateInfo.accountNumber()).isEqualTo("x")
+        assertThat(egpExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(egpExternalAccountCreateInfo.accountType())
             .isEqualTo(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("x")
+        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(egpExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -79,9 +79,9 @@ internal class EgpExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .address(

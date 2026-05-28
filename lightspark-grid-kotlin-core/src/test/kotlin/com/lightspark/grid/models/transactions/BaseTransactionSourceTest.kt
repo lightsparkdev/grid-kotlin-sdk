@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.transactions
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -11,15 +12,25 @@ internal class BaseTransactionSourceTest {
 
     @Test
     fun create() {
-        val baseTransactionSource = BaseTransactionSource.builder().currency("USD").build()
+        val baseTransactionSource =
+            BaseTransactionSource.builder()
+                .sourceType(JsonValue.from(mapOf<String, Any>()))
+                .currency("USD")
+                .build()
 
+        assertThat(baseTransactionSource._sourceType())
+            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(baseTransactionSource.currency()).isEqualTo("USD")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val baseTransactionSource = BaseTransactionSource.builder().currency("USD").build()
+        val baseTransactionSource =
+            BaseTransactionSource.builder()
+                .sourceType(JsonValue.from(mapOf<String, Any>()))
+                .currency("USD")
+                .build()
 
         val roundtrippedBaseTransactionSource =
             jsonMapper.readValue(

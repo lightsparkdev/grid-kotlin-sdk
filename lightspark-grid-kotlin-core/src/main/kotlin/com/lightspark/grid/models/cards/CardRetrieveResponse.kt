@@ -232,14 +232,8 @@ private constructor(
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
     /**
-     * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and on cards
-     * that fail provisioning before reaching `ACTIVE`.
-     *
-     * |Reason              |Description                                                                   |
-     * |--------------------|------------------------------------------------------------------------------|
-     * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-     * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-     * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+     * provisioning was rejected; otherwise null.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -668,14 +662,8 @@ private constructor(
         }
 
         /**
-         * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and on
-         * cards that fail provisioning before reaching `ACTIVE`.
-         *
-         * |Reason              |Description                                                                   |
-         * |--------------------|------------------------------------------------------------------------------|
-         * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-         * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-         * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+         * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+         * provisioning was rejected; otherwise null.
          */
         fun stateReason(stateReason: StateReason?) = stateReason(JsonField.ofNullable(stateReason))
 
@@ -1248,14 +1236,8 @@ private constructor(
     }
 
     /**
-     * Reason a card reached a terminal or non-active state. Present on `CLOSED` cards, and on cards
-     * that fail provisioning before reaching `ACTIVE`.
-     *
-     * |Reason              |Description                                                                   |
-     * |--------------------|------------------------------------------------------------------------------|
-     * |`ISSUER_REJECTED`   |The card issuer rejected provisioning during `PENDING_ISSUE`.                 |
-     * |`CLOSED_BY_PLATFORM`|The card was closed via `PATCH /cards/{id}` (`state: CLOSED`) by the platform.|
-     * |`CLOSED_BY_GRID`    |The card was closed by Grid (e.g. compliance or risk action).                 |
+     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+     * provisioning was rejected; otherwise null.
      */
     class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {

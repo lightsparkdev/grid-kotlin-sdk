@@ -13,17 +13,17 @@ internal class EgpAccountInfoTest {
     fun create() {
         val egpAccountInfo =
             EgpAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("EG380019000500000000263180002")
                 .swiftCode("NBEGEGCX")
                 .build()
 
-        assertThat(egpAccountInfo.accountNumber()).isEqualTo("x")
+        assertThat(egpAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(egpAccountInfo.accountType()).isEqualTo(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpAccountInfo.bankName()).isEqualTo("x")
+        assertThat(egpAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(egpAccountInfo.paymentRails())
             .containsExactly(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(egpAccountInfo.iban()).isEqualTo("EG380019000500000000263180002")
@@ -35,9 +35,9 @@ internal class EgpAccountInfoTest {
         val jsonMapper = jsonMapper()
         val egpAccountInfo =
             EgpAccountInfo.builder()
-                .accountNumber("x")
+                .accountNumber("1234567890")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("x")
+                .bankName("Example Bank")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("EG380019000500000000263180002")
                 .swiftCode("NBEGEGCX")

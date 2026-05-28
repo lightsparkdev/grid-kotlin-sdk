@@ -5,121 +5,17 @@ package com.lightspark.grid.models.customers.externalaccounts
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.ObjectCodec
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializerProvider
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.BaseDeserializer
-import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonField
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
-import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.getOrThrow
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.platform.externalaccounts.MxnAccountInfo
 import java.util.Collections
 import java.util.Objects
 
 class MxnExternalAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-private constructor(
-    private val accountType: JsonField<MxnAccountInfo.AccountType>,
-    private val clabeNumber: JsonField<String>,
-    private val paymentRails: JsonField<List<MxnAccountInfo.PaymentRail>>,
-    private val beneficiary: JsonField<Beneficiary>,
-    private val additionalProperties: MutableMap<String, JsonValue>,
-) {
+private constructor(private val additionalProperties: MutableMap<String, JsonValue>) {
 
-    @JsonCreator
-    private constructor(
-        @JsonProperty("accountType")
-        @ExcludeMissing
-        accountType: JsonField<MxnAccountInfo.AccountType> = JsonMissing.of(),
-        @JsonProperty("clabeNumber")
-        @ExcludeMissing
-        clabeNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("paymentRails")
-        @ExcludeMissing
-        paymentRails: JsonField<List<MxnAccountInfo.PaymentRail>> = JsonMissing.of(),
-        @JsonProperty("beneficiary")
-        @ExcludeMissing
-        beneficiary: JsonField<Beneficiary> = JsonMissing.of(),
-    ) : this(accountType, clabeNumber, paymentRails, beneficiary, mutableMapOf())
-
-    fun toMxnAccountInfo(): MxnAccountInfo =
-        MxnAccountInfo.builder()
-            .accountType(accountType)
-            .clabeNumber(clabeNumber)
-            .paymentRails(paymentRails)
-            .build()
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun accountType(): MxnAccountInfo.AccountType = accountType.getRequired("accountType")
-
-    /**
-     * The CLABE number of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun clabeNumber(): String = clabeNumber.getRequired("clabeNumber")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun paymentRails(): List<MxnAccountInfo.PaymentRail> = paymentRails.getRequired("paymentRails")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
-
-    /**
-     * Returns the raw JSON value of [accountType].
-     *
-     * Unlike [accountType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("accountType")
-    @ExcludeMissing
-    fun _accountType(): JsonField<MxnAccountInfo.AccountType> = accountType
-
-    /**
-     * Returns the raw JSON value of [clabeNumber].
-     *
-     * Unlike [clabeNumber], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("clabeNumber") @ExcludeMissing fun _clabeNumber(): JsonField<String> = clabeNumber
-
-    /**
-     * Returns the raw JSON value of [paymentRails].
-     *
-     * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("paymentRails")
-    @ExcludeMissing
-    fun _paymentRails(): JsonField<List<MxnAccountInfo.PaymentRail>> = paymentRails
-
-    /**
-     * Returns the raw JSON value of [beneficiary].
-     *
-     * Unlike [beneficiary], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("beneficiary")
-    @ExcludeMissing
-    fun _beneficiary(): JsonField<Beneficiary> = beneficiary
+    @JsonCreator private constructor() : this(mutableMapOf())
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -135,143 +31,18 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [MxnExternalAccountInfo].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .accountType()
-         * .clabeNumber()
-         * .paymentRails()
-         * .beneficiary()
-         * ```
-         */
+        /** Returns a mutable builder for constructing an instance of [MxnExternalAccountInfo]. */
         fun builder() = Builder()
     }
 
     /** A builder for [MxnExternalAccountInfo]. */
     class Builder internal constructor() {
 
-        private var accountType: JsonField<MxnAccountInfo.AccountType>? = null
-        private var clabeNumber: JsonField<String>? = null
-        private var paymentRails: JsonField<MutableList<MxnAccountInfo.PaymentRail>>? = null
-        private var beneficiary: JsonField<Beneficiary>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(mxnExternalAccountInfo: MxnExternalAccountInfo) = apply {
-            accountType = mxnExternalAccountInfo.accountType
-            clabeNumber = mxnExternalAccountInfo.clabeNumber
-            paymentRails = mxnExternalAccountInfo.paymentRails.map { it.toMutableList() }
-            beneficiary = mxnExternalAccountInfo.beneficiary
             additionalProperties = mxnExternalAccountInfo.additionalProperties.toMutableMap()
         }
-
-        fun accountType(accountType: MxnAccountInfo.AccountType) =
-            accountType(JsonField.of(accountType))
-
-        /**
-         * Sets [Builder.accountType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.accountType] with a well-typed
-         * [MxnAccountInfo.AccountType] value instead. This method is primarily for setting the
-         * field to an undocumented or not yet supported value.
-         */
-        fun accountType(accountType: JsonField<MxnAccountInfo.AccountType>) = apply {
-            this.accountType = accountType
-        }
-
-        /** The CLABE number of the bank */
-        fun clabeNumber(clabeNumber: String) = clabeNumber(JsonField.of(clabeNumber))
-
-        /**
-         * Sets [Builder.clabeNumber] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.clabeNumber] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun clabeNumber(clabeNumber: JsonField<String>) = apply { this.clabeNumber = clabeNumber }
-
-        fun paymentRails(paymentRails: List<MxnAccountInfo.PaymentRail>) =
-            paymentRails(JsonField.of(paymentRails))
-
-        /**
-         * Sets [Builder.paymentRails] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.paymentRails] with a well-typed
-         * `List<MxnAccountInfo.PaymentRail>` value instead. This method is primarily for setting
-         * the field to an undocumented or not yet supported value.
-         */
-        fun paymentRails(paymentRails: JsonField<List<MxnAccountInfo.PaymentRail>>) = apply {
-            this.paymentRails = paymentRails.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [MxnAccountInfo.PaymentRail] to [paymentRails].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addPaymentRail(paymentRail: MxnAccountInfo.PaymentRail) = apply {
-            paymentRails =
-                (paymentRails ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("paymentRails", it).add(paymentRail)
-                }
-        }
-
-        fun beneficiary(beneficiary: Beneficiary) = beneficiary(JsonField.of(beneficiary))
-
-        /**
-         * Sets [Builder.beneficiary] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.beneficiary] with a well-typed [Beneficiary] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun beneficiary(beneficiary: JsonField<Beneficiary>) = apply {
-            this.beneficiary = beneficiary
-        }
-
-        /** Alias for calling [beneficiary] with `Beneficiary.ofIndividual(individual)`. */
-        fun beneficiary(individual: MxnBeneficiary) =
-            beneficiary(Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [beneficiary] with the following:
-         * ```kotlin
-         * MxnBeneficiary.builder()
-         *     .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualBeneficiary(fullName: String) =
-            beneficiary(
-                MxnBeneficiary.builder()
-                    .beneficiaryType(MxnBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /** Alias for calling [beneficiary] with `Beneficiary.ofBusiness(business)`. */
-        fun beneficiary(business: BusinessBeneficiary) =
-            beneficiary(Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [beneficiary] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessBeneficiary(legalName: String) =
-            beneficiary(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -296,25 +67,9 @@ private constructor(
          * Returns an immutable instance of [MxnExternalAccountInfo].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .accountType()
-         * .clabeNumber()
-         * .paymentRails()
-         * .beneficiary()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): MxnExternalAccountInfo =
-            MxnExternalAccountInfo(
-                checkRequired("accountType", accountType),
-                checkRequired("clabeNumber", clabeNumber),
-                checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                checkRequired("beneficiary", beneficiary),
-                additionalProperties.toMutableMap(),
-            )
+            MxnExternalAccountInfo(additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -332,10 +87,6 @@ private constructor(
             return@apply
         }
 
-        accountType().validate()
-        clabeNumber()
-        paymentRails().forEach { it.validate() }
-        beneficiary().validate()
         validated = true
     }
 
@@ -352,232 +103,19 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int =
-        (accountType.asKnown()?.validity() ?: 0) +
-            (if (clabeNumber.asKnown() == null) 0 else 1) +
-            (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (beneficiary.asKnown()?.validity() ?: 0)
-
-    @JsonDeserialize(using = Beneficiary.Deserializer::class)
-    @JsonSerialize(using = Beneficiary.Serializer::class)
-    class Beneficiary
-    private constructor(
-        private val individual: MxnBeneficiary? = null,
-        private val business: BusinessBeneficiary? = null,
-        private val _json: JsonValue? = null,
-    ) {
-
-        fun individual(): MxnBeneficiary? = individual
-
-        fun business(): BusinessBeneficiary? = business
-
-        fun isIndividual(): Boolean = individual != null
-
-        fun isBusiness(): Boolean = business != null
-
-        fun asIndividual(): MxnBeneficiary = individual.getOrThrow("individual")
-
-        fun asBusiness(): BusinessBeneficiary = business.getOrThrow("business")
-
-        fun _json(): JsonValue? = _json
-
-        /**
-         * Maps this instance's current variant to a value of type [T] using the given [visitor].
-         *
-         * Note that this method is _not_ forwards compatible with new variants from the API, unless
-         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
-         * the SDK gracefully, consider overriding [Visitor.unknown]:
-         * ```kotlin
-         * import com.lightspark.grid.core.JsonValue
-         *
-         * val result: String? = beneficiary.accept(object : Beneficiary.Visitor<String?> {
-         *     override fun visitIndividual(individual: MxnBeneficiary): String? = individual.toString()
-         *
-         *     // ...
-         *
-         *     override fun unknown(json: JsonValue?): String? {
-         *         // Or inspect the `json`.
-         *         return null
-         *     }
-         * })
-         * ```
-         *
-         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
-         *   [visitor] and the current variant is unknown.
-         */
-        fun <T> accept(visitor: Visitor<T>): T =
-            when {
-                individual != null -> visitor.visitIndividual(individual)
-                business != null -> visitor.visitBusiness(business)
-                else -> visitor.unknown(_json)
-            }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Beneficiary = apply {
-            if (validated) {
-                return@apply
-            }
-
-            accept(
-                object : Visitor<Unit> {
-                    override fun visitIndividual(individual: MxnBeneficiary) {
-                        individual.validate()
-                    }
-
-                    override fun visitBusiness(business: BusinessBeneficiary) {
-                        business.validate()
-                    }
-                }
-            )
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int =
-            accept(
-                object : Visitor<Int> {
-                    override fun visitIndividual(individual: MxnBeneficiary) = individual.validity()
-
-                    override fun visitBusiness(business: BusinessBeneficiary) = business.validity()
-
-                    override fun unknown(json: JsonValue?) = 0
-                }
-            )
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Beneficiary &&
-                individual == other.individual &&
-                business == other.business
-        }
-
-        override fun hashCode(): Int = Objects.hash(individual, business)
-
-        override fun toString(): String =
-            when {
-                individual != null -> "Beneficiary{individual=$individual}"
-                business != null -> "Beneficiary{business=$business}"
-                _json != null -> "Beneficiary{_unknown=$_json}"
-                else -> throw IllegalStateException("Invalid Beneficiary")
-            }
-
-        companion object {
-
-            fun ofIndividual(individual: MxnBeneficiary) = Beneficiary(individual = individual)
-
-            fun ofBusiness(business: BusinessBeneficiary) = Beneficiary(business = business)
-        }
-
-        /**
-         * An interface that defines how to map each variant of [Beneficiary] to a value of type
-         * [T].
-         */
-        interface Visitor<out T> {
-
-            fun visitIndividual(individual: MxnBeneficiary): T
-
-            fun visitBusiness(business: BusinessBeneficiary): T
-
-            /**
-             * Maps an unknown variant of [Beneficiary] to a value of type [T].
-             *
-             * An instance of [Beneficiary] can contain an unknown variant if it was deserialized
-             * from data that doesn't match any known variant. For example, if the SDK is on an
-             * older version than the API, then the API may respond with new variants that the SDK
-             * is unaware of.
-             *
-             * @throws LightsparkGridInvalidDataException in the default implementation.
-             */
-            fun unknown(json: JsonValue?): T {
-                throw LightsparkGridInvalidDataException("Unknown Beneficiary: $json")
-            }
-        }
-
-        internal class Deserializer : BaseDeserializer<Beneficiary>(Beneficiary::class) {
-
-            override fun ObjectCodec.deserialize(node: JsonNode): Beneficiary {
-                val json = JsonValue.fromJsonNode(node)
-                val beneficiaryType = json.asObject()?.get("beneficiaryType")?.asString()
-
-                when (beneficiaryType) {
-                    "INDIVIDUAL" -> {
-                        return tryDeserialize(node, jacksonTypeRef<MxnBeneficiary>())?.let {
-                            Beneficiary(individual = it, _json = json)
-                        } ?: Beneficiary(_json = json)
-                    }
-                    "BUSINESS" -> {
-                        return tryDeserialize(node, jacksonTypeRef<BusinessBeneficiary>())?.let {
-                            Beneficiary(business = it, _json = json)
-                        } ?: Beneficiary(_json = json)
-                    }
-                }
-
-                return Beneficiary(_json = json)
-            }
-        }
-
-        internal class Serializer : BaseSerializer<Beneficiary>(Beneficiary::class) {
-
-            override fun serialize(
-                value: Beneficiary,
-                generator: JsonGenerator,
-                provider: SerializerProvider,
-            ) {
-                when {
-                    value.individual != null -> generator.writeObject(value.individual)
-                    value.business != null -> generator.writeObject(value.business)
-                    value._json != null -> generator.writeObject(value._json)
-                    else -> throw IllegalStateException("Invalid Beneficiary")
-                }
-            }
-        }
-    }
+    internal fun validity(): Int = 0
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is MxnExternalAccountInfo &&
-            accountType == other.accountType &&
-            clabeNumber == other.clabeNumber &&
-            paymentRails == other.paymentRails &&
-            beneficiary == other.beneficiary &&
-            additionalProperties == other.additionalProperties
+        return other is MxnExternalAccountInfo && additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy {
-        Objects.hash(accountType, clabeNumber, paymentRails, beneficiary, additionalProperties)
-    }
+    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
-    override fun toString() =
-        "MxnExternalAccountInfo{accountType=$accountType, clabeNumber=$clabeNumber, paymentRails=$paymentRails, beneficiary=$beneficiary, additionalProperties=$additionalProperties}"
+    override fun toString() = "MxnExternalAccountInfo{additionalProperties=$additionalProperties}"
 }
