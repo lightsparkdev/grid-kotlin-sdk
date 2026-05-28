@@ -55,6 +55,7 @@ private constructor(
     private val quoteId: JsonField<String>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
     private val receivedAmount: JsonField<CurrencyAmount>,
+    private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
     private val refund: JsonField<Refund>,
     private val settledAt: JsonField<OffsetDateTime>,
     private val updatedAt: JsonField<OffsetDateTime>,
@@ -110,6 +111,9 @@ private constructor(
         @JsonProperty("receivedAmount")
         @ExcludeMissing
         receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        @JsonProperty("reconciliationInstructions")
+        @ExcludeMissing
+        reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
         @JsonProperty("refund") @ExcludeMissing refund: JsonField<Refund> = JsonMissing.of(),
         @JsonProperty("settledAt")
         @ExcludeMissing
@@ -137,6 +141,7 @@ private constructor(
         quoteId,
         rateDetails,
         receivedAmount,
+        reconciliationInstructions,
         refund,
         settledAt,
         updatedAt,
@@ -304,6 +309,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun receivedAmount(): CurrencyAmount? = receivedAmount.getNullable("receivedAmount")
+
+    /**
+     * Reconciliation details for this transaction, including crypto transaction hash when
+     * available.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun reconciliationInstructions(): ReconciliationInstructions? =
+        reconciliationInstructions.getNullable("reconciliationInstructions")
 
     /**
      * The refund if transaction was refunded.
@@ -490,6 +505,17 @@ private constructor(
     fun _receivedAmount(): JsonField<CurrencyAmount> = receivedAmount
 
     /**
+     * Returns the raw JSON value of [reconciliationInstructions].
+     *
+     * Unlike [reconciliationInstructions], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("reconciliationInstructions")
+    @ExcludeMissing
+    fun _reconciliationInstructions(): JsonField<ReconciliationInstructions> =
+        reconciliationInstructions
+
+    /**
      * Returns the raw JSON value of [refund].
      *
      * Unlike [refund], this method doesn't throw if the JSON field has an unexpected type.
@@ -568,6 +594,8 @@ private constructor(
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
         private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
+        private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
+            JsonMissing.of()
         private var refund: JsonField<Refund> = JsonMissing.of()
         private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -593,6 +621,7 @@ private constructor(
             quoteId = outgoingTransaction.quoteId
             rateDetails = outgoingTransaction.rateDetails
             receivedAmount = outgoingTransaction.receivedAmount
+            reconciliationInstructions = outgoingTransaction.reconciliationInstructions
             refund = outgoingTransaction.refund
             settledAt = outgoingTransaction.settledAt
             updatedAt = outgoingTransaction.updatedAt
@@ -921,6 +950,24 @@ private constructor(
             this.receivedAmount = receivedAmount
         }
 
+        /**
+         * Reconciliation details for this transaction, including crypto transaction hash when
+         * available.
+         */
+        fun reconciliationInstructions(reconciliationInstructions: ReconciliationInstructions) =
+            reconciliationInstructions(JsonField.of(reconciliationInstructions))
+
+        /**
+         * Sets [Builder.reconciliationInstructions] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reconciliationInstructions] with a well-typed
+         * [ReconciliationInstructions] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun reconciliationInstructions(
+            reconciliationInstructions: JsonField<ReconciliationInstructions>
+        ) = apply { this.reconciliationInstructions = reconciliationInstructions }
+
         /** The refund if transaction was refunded. */
         fun refund(refund: Refund) = refund(JsonField.of(refund))
 
@@ -1015,6 +1062,7 @@ private constructor(
                 quoteId,
                 rateDetails,
                 receivedAmount,
+                reconciliationInstructions,
                 refund,
                 settledAt,
                 updatedAt,
@@ -1056,6 +1104,7 @@ private constructor(
         quoteId()
         rateDetails()?.validate()
         receivedAmount()?.validate()
+        reconciliationInstructions()?.validate()
         refund()?.validate()
         settledAt()
         updatedAt()
@@ -1095,6 +1144,7 @@ private constructor(
             (if (quoteId.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
             (receivedAmount.asKnown()?.validity() ?: 0) +
+            (reconciliationInstructions.asKnown()?.validity() ?: 0) +
             (refund.asKnown()?.validity() ?: 0) +
             (if (settledAt.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1)
@@ -2846,6 +2896,7 @@ private constructor(
             quoteId == other.quoteId &&
             rateDetails == other.rateDetails &&
             receivedAmount == other.receivedAmount &&
+            reconciliationInstructions == other.reconciliationInstructions &&
             refund == other.refund &&
             settledAt == other.settledAt &&
             updatedAt == other.updatedAt &&
@@ -2873,6 +2924,7 @@ private constructor(
             quoteId,
             rateDetails,
             receivedAmount,
+            reconciliationInstructions,
             refund,
             settledAt,
             updatedAt,
@@ -2883,5 +2935,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, refund=$refund, settledAt=$settledAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

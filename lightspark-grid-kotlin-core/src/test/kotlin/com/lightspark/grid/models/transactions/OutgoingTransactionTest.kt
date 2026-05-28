@@ -124,6 +124,14 @@ internal class OutgoingTransactionTest {
                         )
                         .build()
                 )
+                .reconciliationInstructions(
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
+                )
                 .refund(
                     OutgoingTransaction.Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
@@ -256,6 +264,15 @@ internal class OutgoingTransactionTest {
                     )
                     .build()
             )
+        assertThat(outgoingTransaction.reconciliationInstructions())
+            .isEqualTo(
+                ReconciliationInstructions.builder()
+                    .reference("UMA-Q12345-REF")
+                    .transactionHash(
+                        "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                    )
+                    .build()
+            )
         assertThat(outgoingTransaction.refund())
             .isEqualTo(
                 OutgoingTransaction.Refund.builder()
@@ -378,6 +395,14 @@ internal class OutgoingTransactionTest {
                                 .name("United States Dollar")
                                 .symbol("\$")
                                 .build()
+                        )
+                        .build()
+                )
+                .reconciliationInstructions(
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
                         )
                         .build()
                 )
