@@ -14,7 +14,6 @@ import com.lightspark.grid.models.documents.DocumentListParams
 import com.lightspark.grid.models.documents.DocumentReplaceParams
 import com.lightspark.grid.models.documents.DocumentRetrieveParams
 import com.lightspark.grid.models.documents.DocumentUploadParams
-import com.lightspark.grid.models.documents.DocumentUploadRequest
 
 /**
  * Endpoints for uploading and managing verification documents for customers and beneficial owners.
@@ -104,16 +103,6 @@ interface DocumentService {
         params: DocumentUploadParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Document
-
-    /** @see upload */
-    fun upload(
-        documentUploadRequest: DocumentUploadRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Document =
-        upload(
-            DocumentUploadParams.builder().documentUploadRequest(documentUploadRequest).build(),
-            requestOptions,
-        )
 
     /** A view of [DocumentService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -218,16 +207,5 @@ interface DocumentService {
             params: DocumentUploadParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Document>
-
-        /** @see upload */
-        @MustBeClosed
-        fun upload(
-            documentUploadRequest: DocumentUploadRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Document> =
-            upload(
-                DocumentUploadParams.builder().documentUploadRequest(documentUploadRequest).build(),
-                requestOptions,
-            )
     }
 }
