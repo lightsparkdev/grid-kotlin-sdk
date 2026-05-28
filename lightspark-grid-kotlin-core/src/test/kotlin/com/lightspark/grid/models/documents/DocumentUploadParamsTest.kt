@@ -13,14 +13,14 @@ internal class DocumentUploadParamsTest {
     fun create() {
         DocumentUploadParams.builder()
             .documentUploadRequest(
-                IdentityDocumentUploadRequest.builder()
+                DocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentNumber("A12345678")
-                    .documentType(IdentityDocumentType.PASSPORT)
+                    .documentType(DocumentType.PASSPORT)
                     .file("Example data")
+                    .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
-                    .side(IdentityDocumentUploadRequest.Side.FRONT)
+                    .side(DocumentUploadRequest.Side.FRONT)
                     .build()
             )
             .build()
@@ -31,14 +31,14 @@ internal class DocumentUploadParamsTest {
         val params =
             DocumentUploadParams.builder()
                 .documentUploadRequest(
-                    IdentityDocumentUploadRequest.builder()
+                    DocumentUploadRequest.builder()
                         .country("US")
                         .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                        .documentNumber("A12345678")
-                        .documentType(IdentityDocumentType.PASSPORT)
+                        .documentType(DocumentType.PASSPORT)
                         .file("Example data")
+                        .documentNumber("A12345678")
                         .issuingAuthority("U.S. Department of State")
-                        .side(IdentityDocumentUploadRequest.Side.FRONT)
+                        .side(DocumentUploadRequest.Side.FRONT)
                         .build()
                 )
                 .build()
@@ -56,21 +56,22 @@ internal class DocumentUploadParamsTest {
             .isEqualTo(
                 mapOf(
                         "DocumentUploadRequest" to
-                            MultipartField.of(
-                                DocumentUploadRequest.ofIdentity(
-                                    IdentityDocumentUploadRequest.builder()
+                            MultipartField.builder<DocumentUploadRequest>()
+                                .value(
+                                    DocumentUploadRequest.builder()
                                         .country("US")
                                         .documentHolder(
                                             "BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001"
                                         )
-                                        .documentNumber("A12345678")
-                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .documentType(DocumentType.PASSPORT)
                                         .file("Example data")
+                                        .documentNumber("A12345678")
                                         .issuingAuthority("U.S. Department of State")
-                                        .side(IdentityDocumentUploadRequest.Side.FRONT)
+                                        .side(DocumentUploadRequest.Side.FRONT)
                                         .build()
                                 )
-                            )
+                                .contentType("application/octet-stream")
+                                .build()
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }
@@ -83,13 +84,11 @@ internal class DocumentUploadParamsTest {
         val params =
             DocumentUploadParams.builder()
                 .documentUploadRequest(
-                    IdentityDocumentUploadRequest.builder()
+                    DocumentUploadRequest.builder()
                         .country("US")
                         .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                        .documentNumber("A12345678")
-                        .documentType(IdentityDocumentType.PASSPORT)
+                        .documentType(DocumentType.PASSPORT)
                         .file("Example data")
-                        .issuingAuthority("U.S. Department of State")
                         .build()
                 )
                 .build()
@@ -107,20 +106,19 @@ internal class DocumentUploadParamsTest {
             .isEqualTo(
                 mapOf(
                         "DocumentUploadRequest" to
-                            MultipartField.of(
-                                DocumentUploadRequest.ofIdentity(
-                                    IdentityDocumentUploadRequest.builder()
+                            MultipartField.builder<DocumentUploadRequest>()
+                                .value(
+                                    DocumentUploadRequest.builder()
                                         .country("US")
                                         .documentHolder(
                                             "BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001"
                                         )
-                                        .documentNumber("A12345678")
-                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .documentType(DocumentType.PASSPORT)
                                         .file("Example data")
-                                        .issuingAuthority("U.S. Department of State")
                                         .build()
                                 )
-                            )
+                                .contentType("application/octet-stream")
+                                .build()
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }

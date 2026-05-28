@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.documents
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.MultipartField
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
@@ -24,8 +25,10 @@ private constructor(
 
     fun documentId(): String? = documentId
 
-    /** Replace an existing document. */
     fun documentReplaceRequest(): DocumentReplaceRequest = documentReplaceRequest
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        documentReplaceRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -65,24 +68,9 @@ private constructor(
 
         fun documentId(documentId: String?) = apply { this.documentId = documentId }
 
-        /** Replace an existing document. */
         fun documentReplaceRequest(documentReplaceRequest: DocumentReplaceRequest) = apply {
             this.documentReplaceRequest = documentReplaceRequest
         }
-
-        /**
-         * Alias for calling [documentReplaceRequest] with
-         * `DocumentReplaceRequest.ofIdentity(identity)`.
-         */
-        fun documentReplaceRequest(identity: IdentityDocumentReplaceRequest) =
-            documentReplaceRequest(DocumentReplaceRequest.ofIdentity(identity))
-
-        /**
-         * Alias for calling [documentReplaceRequest] with
-         * `DocumentReplaceRequest.ofNonIdentity(nonIdentity)`.
-         */
-        fun documentReplaceRequest(nonIdentity: NonIdentityDocumentReplaceRequest) =
-            documentReplaceRequest(DocumentReplaceRequest.ofNonIdentity(nonIdentity))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
