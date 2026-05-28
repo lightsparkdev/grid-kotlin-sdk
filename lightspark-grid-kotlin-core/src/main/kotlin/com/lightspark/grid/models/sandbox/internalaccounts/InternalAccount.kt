@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -14,8 +15,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.InternalAccountStatus
-import com.lightspark.grid.models.customers.InternalAccountType
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import java.time.OffsetDateTime
@@ -29,8 +28,8 @@ private constructor(
     private val balance: JsonField<CurrencyAmount>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val fundingPaymentInstructions: JsonField<List<PaymentInstructions>>,
-    private val status: JsonField<InternalAccountStatus>,
-    private val type: JsonField<InternalAccountType>,
+    private val status: JsonField<Status>,
+    private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val customerId: JsonField<String>,
     private val privateEnabled: JsonField<Boolean>,
@@ -49,12 +48,8 @@ private constructor(
         @JsonProperty("fundingPaymentInstructions")
         @ExcludeMissing
         fundingPaymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
-        @JsonProperty("status")
-        @ExcludeMissing
-        status: JsonField<InternalAccountStatus> = JsonMissing.of(),
-        @JsonProperty("type")
-        @ExcludeMissing
-        type: JsonField<InternalAccountType> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -123,7 +118,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun status(): InternalAccountStatus = status.getRequired("status")
+    fun status(): Status = status.getRequired("status")
 
     /**
      * Classification of an internal account.
@@ -138,7 +133,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun type(): InternalAccountType = type.getRequired("type")
+    fun type(): Type = type.getRequired("type")
 
     /**
      * Timestamp when the internal account was last updated
@@ -205,14 +200,14 @@ private constructor(
      *
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<InternalAccountStatus> = status
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
      * Returns the raw JSON value of [type].
      *
      * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<InternalAccountType> = type
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -277,8 +272,8 @@ private constructor(
         private var balance: JsonField<CurrencyAmount>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var fundingPaymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
-        private var status: JsonField<InternalAccountStatus>? = null
-        private var type: JsonField<InternalAccountType>? = null
+        private var status: JsonField<Status>? = null
+        private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
         private var privateEnabled: JsonField<Boolean> = JsonMissing.of()
@@ -373,16 +368,15 @@ private constructor(
          *   response to compliance or fraud signals; payments are blocked while the account remains
          *   frozen.
          */
-        fun status(status: InternalAccountStatus) = status(JsonField.of(status))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
          * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.status] with a well-typed [InternalAccountStatus] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun status(status: JsonField<InternalAccountStatus>) = apply { this.status = status }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /**
          * Classification of an internal account.
@@ -394,16 +388,15 @@ private constructor(
          *   Outbound transfers require a session signature produced by the customer's device — see
          *   the Embedded Wallets guide.
          */
-        fun type(type: InternalAccountType) = type(JsonField.of(type))
+        fun type(type: Type) = type(JsonField.of(type))
 
         /**
          * Sets [Builder.type] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.type] with a well-typed [InternalAccountType] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun type(type: JsonField<InternalAccountType>) = apply { this.type = type }
+        fun type(type: JsonField<Type>) = apply { this.type = type }
 
         /** Timestamp when the internal account was last updated */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -553,6 +546,314 @@ private constructor(
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (privateEnabled.asKnown() == null) 0 else 1)
+
+    /**
+     * Status of a Grid internal account. The status determines whether the account can send or
+     * receive payments.
+     * - `PENDING`: The account is under review and is being provisioned. The account cannot send or
+     *   receive payments until provisioning completes.
+     * - `ACTIVE`: The account is ready to send and receive payments.
+     * - `CLOSED`: The account cannot send or receive payments. A customer can initiate the closing
+     *   of an internal account, after which the account transitions to this status.
+     * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
+     *   response to compliance or fraud signals; payments are blocked while the account remains
+     *   frozen.
+     */
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val PENDING = of("PENDING")
+
+            val ACTIVE = of("ACTIVE")
+
+            val CLOSED = of("CLOSED")
+
+            val FROZEN = of("FROZEN")
+
+            fun of(value: String) = Status(JsonField.of(value))
+        }
+
+        /** An enum containing [Status]'s known values. */
+        enum class Known {
+            PENDING,
+            ACTIVE,
+            CLOSED,
+            FROZEN,
+        }
+
+        /**
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Status] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            PENDING,
+            ACTIVE,
+            CLOSED,
+            FROZEN,
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                PENDING -> Value.PENDING
+                ACTIVE -> Value.ACTIVE
+                CLOSED -> Value.CLOSED
+                FROZEN -> Value.FROZEN
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                PENDING -> Known.PENDING
+                ACTIVE -> Known.ACTIVE
+                CLOSED -> Known.CLOSED
+                FROZEN -> Known.FROZEN
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Status = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Status && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Classification of an internal account.
+     * - `INTERNAL_FIAT`: A Grid-managed fiat holding account (for example, the USD holding account
+     *   used as the source for Payouts flows).
+     * - `INTERNAL_CRYPTO`: A Grid-managed crypto holding account denominated in a stablecoin such
+     *   as USDC.
+     * - `EMBEDDED_WALLET`: A self-custodial Embedded Wallet provisioned for the customer. Outbound
+     *   transfers require a session signature produced by the customer's device — see the Embedded
+     *   Wallets guide.
+     */
+    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val INTERNAL_FIAT = of("INTERNAL_FIAT")
+
+            val INTERNAL_CRYPTO = of("INTERNAL_CRYPTO")
+
+            val EMBEDDED_WALLET = of("EMBEDDED_WALLET")
+
+            fun of(value: String) = Type(JsonField.of(value))
+        }
+
+        /** An enum containing [Type]'s known values. */
+        enum class Known {
+            INTERNAL_FIAT,
+            INTERNAL_CRYPTO,
+            EMBEDDED_WALLET,
+        }
+
+        /**
+         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Type] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            INTERNAL_FIAT,
+            INTERNAL_CRYPTO,
+            EMBEDDED_WALLET,
+            /** An enum member indicating that [Type] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                INTERNAL_FIAT -> Value.INTERNAL_FIAT
+                INTERNAL_CRYPTO -> Value.INTERNAL_CRYPTO
+                EMBEDDED_WALLET -> Value.EMBEDDED_WALLET
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                INTERNAL_FIAT -> Known.INTERNAL_FIAT
+                INTERNAL_CRYPTO -> Known.INTERNAL_CRYPTO
+                EMBEDDED_WALLET -> Known.EMBEDDED_WALLET
+                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Type = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

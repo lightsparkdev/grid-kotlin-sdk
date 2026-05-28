@@ -18,7 +18,7 @@ internal class AgentPolicyUpdateRequestTest {
                         .addAccountRule(
                             AgentAccountRule.builder()
                                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                .executionMode(AgentExecutionMode.AUTO)
+                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                 .perTransactionLimit(10000L)
                                 .build()
                         )
@@ -28,10 +28,10 @@ internal class AgentPolicyUpdateRequestTest {
                 .approvalThresholds(
                     AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                 )
-                .defaultExecutionMode(AgentExecutionMode.AUTO)
-                .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                .defaultExecutionMode(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
+                .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
                 .spendingLimits(
-                    AgentSpendingLimitsUpdate.builder()
+                    AgentPolicyUpdateRequest.SpendingLimits.builder()
                         .currency("USD")
                         .dailyLimit(500000L)
                         .dailyTransactionLimit(10L)
@@ -47,7 +47,7 @@ internal class AgentPolicyUpdateRequestTest {
                     .addAccountRule(
                         AgentAccountRule.builder()
                             .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(AgentExecutionMode.AUTO)
+                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                             .perTransactionLimit(10000L)
                             .build()
                     )
@@ -57,12 +57,12 @@ internal class AgentPolicyUpdateRequestTest {
         assertThat(agentPolicyUpdateRequest.approvalThresholds())
             .isEqualTo(AgentApprovalThresholds.builder().amount(100000L).currency("USD").build())
         assertThat(agentPolicyUpdateRequest.defaultExecutionMode())
-            .isEqualTo(AgentExecutionMode.AUTO)
+            .isEqualTo(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
         assertThat(agentPolicyUpdateRequest.permissions())
-            .containsExactly(AgentPermission.VIEW_TRANSACTIONS)
+            .containsExactly(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
         assertThat(agentPolicyUpdateRequest.spendingLimits())
             .isEqualTo(
-                AgentSpendingLimitsUpdate.builder()
+                AgentPolicyUpdateRequest.SpendingLimits.builder()
                     .currency("USD")
                     .dailyLimit(500000L)
                     .dailyTransactionLimit(10L)
@@ -82,7 +82,7 @@ internal class AgentPolicyUpdateRequestTest {
                         .addAccountRule(
                             AgentAccountRule.builder()
                                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                .executionMode(AgentExecutionMode.AUTO)
+                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                 .perTransactionLimit(10000L)
                                 .build()
                         )
@@ -92,10 +92,10 @@ internal class AgentPolicyUpdateRequestTest {
                 .approvalThresholds(
                     AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                 )
-                .defaultExecutionMode(AgentExecutionMode.AUTO)
-                .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                .defaultExecutionMode(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
+                .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
                 .spendingLimits(
-                    AgentSpendingLimitsUpdate.builder()
+                    AgentPolicyUpdateRequest.SpendingLimits.builder()
                         .currency("USD")
                         .dailyLimit(500000L)
                         .dailyTransactionLimit(10L)

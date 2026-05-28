@@ -5,7 +5,6 @@ package com.lightspark.grid.models.quotes
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -44,7 +43,7 @@ internal class QuoteTest {
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Quote.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -146,7 +145,7 @@ internal class QuoteTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000005")
         assertThat(quote.counterpartyInformation())
             .isEqualTo(
-                CounterpartyInformation.builder()
+                Quote.CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -247,7 +246,7 @@ internal class QuoteTest {
                 .totalSendingAmount(123010L)
                 .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    Quote.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))

@@ -17,7 +17,7 @@ internal class BeneficialOwnerUpdateRequestTest {
             BeneficialOwnerUpdateRequest.builder()
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerPersonalInfoUpdate.builder()
+                    BeneficialOwnerUpdateRequest.PersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -33,21 +33,21 @@ internal class BeneficialOwnerUpdateRequestTest {
                         .email("jane.smith@acmecorp.com")
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerPersonalInfoUpdate.IdType.SSN)
+                        .idType(BeneficialOwnerUpdateRequest.PersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .middleName("Marie")
                         .nationality("US")
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRole.UBO)
-                .addRole(BeneficialOwnerRole.DIRECTOR)
+                .addRole(BeneficialOwnerUpdateRequest.Role.UBO)
+                .addRole(BeneficialOwnerUpdateRequest.Role.DIRECTOR)
                 .build()
 
         assertThat(beneficialOwnerUpdateRequest.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwnerUpdateRequest.personalInfo())
             .isEqualTo(
-                BeneficialOwnerPersonalInfoUpdate.builder()
+                BeneficialOwnerUpdateRequest.PersonalInfo.builder()
                     .address(
                         Address.builder()
                             .country("US")
@@ -63,7 +63,7 @@ internal class BeneficialOwnerUpdateRequestTest {
                     .email("jane.smith@acmecorp.com")
                     .firstName("Jane")
                     .identifier("123-45-6789")
-                    .idType(BeneficialOwnerPersonalInfoUpdate.IdType.SSN)
+                    .idType(BeneficialOwnerUpdateRequest.PersonalInfo.IdType.SSN)
                     .lastName("Smith")
                     .middleName("Marie")
                     .nationality("US")
@@ -71,7 +71,10 @@ internal class BeneficialOwnerUpdateRequestTest {
                     .build()
             )
         assertThat(beneficialOwnerUpdateRequest.roles())
-            .containsExactly(BeneficialOwnerRole.UBO, BeneficialOwnerRole.DIRECTOR)
+            .containsExactly(
+                BeneficialOwnerUpdateRequest.Role.UBO,
+                BeneficialOwnerUpdateRequest.Role.DIRECTOR,
+            )
     }
 
     @Test
@@ -81,7 +84,7 @@ internal class BeneficialOwnerUpdateRequestTest {
             BeneficialOwnerUpdateRequest.builder()
                 .ownershipPercentage(51L)
                 .personalInfo(
-                    BeneficialOwnerPersonalInfoUpdate.builder()
+                    BeneficialOwnerUpdateRequest.PersonalInfo.builder()
                         .address(
                             Address.builder()
                                 .country("US")
@@ -97,15 +100,15 @@ internal class BeneficialOwnerUpdateRequestTest {
                         .email("jane.smith@acmecorp.com")
                         .firstName("Jane")
                         .identifier("123-45-6789")
-                        .idType(BeneficialOwnerPersonalInfoUpdate.IdType.SSN)
+                        .idType(BeneficialOwnerUpdateRequest.PersonalInfo.IdType.SSN)
                         .lastName("Smith")
                         .middleName("Marie")
                         .nationality("US")
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRole.UBO)
-                .addRole(BeneficialOwnerRole.DIRECTOR)
+                .addRole(BeneficialOwnerUpdateRequest.Role.UBO)
+                .addRole(BeneficialOwnerUpdateRequest.Role.DIRECTOR)
                 .build()
 
         val roundtrippedBeneficialOwnerUpdateRequest =

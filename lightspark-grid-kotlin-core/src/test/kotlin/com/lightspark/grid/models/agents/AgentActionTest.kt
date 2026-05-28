@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.AgentTransferDetails
-import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
@@ -16,9 +15,7 @@ import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
-import com.lightspark.grid.models.transactions.IncomingTransactionFailureReason
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
-import com.lightspark.grid.models.transactions.TransactionDestinationOneOf
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import com.lightspark.grid.models.transactions.TransactionStatus
 import com.lightspark.grid.models.transferin.Transaction
@@ -37,8 +34,8 @@ internal class AgentActionTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                 .platformCustomerId("user-a1b2c3")
-                .status(AgentActionStatus.PENDING_APPROVAL)
-                .type(AgentActionType.EXECUTE_QUOTE)
+                .status(AgentAction.Status.PENDING_APPROVAL)
+                .type(AgentAction.Type.EXECUTE_QUOTE)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                 .quote(
                     Quote.builder()
@@ -70,7 +67,7 @@ internal class AgentActionTest {
                         .totalSendingAmount(123010L)
                         .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                         .counterpartyInformation(
-                            CounterpartyInformation.builder()
+                            Quote.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -148,7 +145,7 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(TransactionDestinationOneOf.builder().build())
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -167,7 +164,7 @@ internal class AgentActionTest {
                         .type(IncomingTransaction.Type.INCOMING)
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
-                            CounterpartyInformation.builder()
+                            IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -175,7 +172,7 @@ internal class AgentActionTest {
                         )
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
-                        .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
+                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
@@ -216,8 +213,8 @@ internal class AgentActionTest {
         assertThat(agentAction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000010")
         assertThat(agentAction.platformCustomerId()).isEqualTo("user-a1b2c3")
-        assertThat(agentAction.status()).isEqualTo(AgentActionStatus.PENDING_APPROVAL)
-        assertThat(agentAction.type()).isEqualTo(AgentActionType.EXECUTE_QUOTE)
+        assertThat(agentAction.status()).isEqualTo(AgentAction.Status.PENDING_APPROVAL)
+        assertThat(agentAction.type()).isEqualTo(AgentAction.Type.EXECUTE_QUOTE)
         assertThat(agentAction.updatedAt()).isEqualTo(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
         assertThat(agentAction.quote())
             .isEqualTo(
@@ -250,7 +247,7 @@ internal class AgentActionTest {
                     .totalSendingAmount(123010L)
                     .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                     .counterpartyInformation(
-                        CounterpartyInformation.builder()
+                        Quote.CounterpartyInformation.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                             .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                             .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -331,7 +328,7 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(TransactionDestinationOneOf.builder().build())
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -350,7 +347,7 @@ internal class AgentActionTest {
                         .type(IncomingTransaction.Type.INCOMING)
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
-                            CounterpartyInformation.builder()
+                            IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -358,7 +355,7 @@ internal class AgentActionTest {
                         )
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
-                        .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
+                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()
@@ -403,8 +400,8 @@ internal class AgentActionTest {
                 .createdAt(OffsetDateTime.parse("2025-10-03T15:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000010")
                 .platformCustomerId("user-a1b2c3")
-                .status(AgentActionStatus.PENDING_APPROVAL)
-                .type(AgentActionType.EXECUTE_QUOTE)
+                .status(AgentAction.Status.PENDING_APPROVAL)
+                .type(AgentAction.Type.EXECUTE_QUOTE)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T15:02:00Z"))
                 .quote(
                     Quote.builder()
@@ -436,7 +433,7 @@ internal class AgentActionTest {
                         .totalSendingAmount(123010L)
                         .transactionId("Transaction:019542f5-b3e7-1d02-0000-000000000005")
                         .counterpartyInformation(
-                            CounterpartyInformation.builder()
+                            Quote.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -514,7 +511,7 @@ internal class AgentActionTest {
                     IncomingTransaction.builder()
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .destination(TransactionDestinationOneOf.builder().build())
+                        .destination(JsonValue.from(mapOf<String, Any>()))
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -533,7 +530,7 @@ internal class AgentActionTest {
                         .type(IncomingTransaction.Type.INCOMING)
                         .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                         .counterpartyInformation(
-                            CounterpartyInformation.builder()
+                            IncomingTransaction.CounterpartyInformation.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                                 .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                                 .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -541,7 +538,7 @@ internal class AgentActionTest {
                         )
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
-                        .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
+                        .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .fees(10L)
                         .rateDetails(
                             IncomingRateDetails.builder()

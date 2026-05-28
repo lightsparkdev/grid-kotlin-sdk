@@ -15,7 +15,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.BusinessInfoUpdate
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.util.Collections
@@ -83,7 +82,7 @@ private constructor(
     fun address(): Address? = address.getNullable("address")
 
     /**
-     * Additional information for business entities
+     * Additional information required for business entities
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -297,7 +296,7 @@ private constructor(
          */
         fun address(address: JsonField<Address>) = apply { this.address = address }
 
-        /** Additional information for business entities */
+        /** Additional information required for business entities */
         fun businessInfo(businessInfo: BusinessInfo) = businessInfo(JsonField.of(businessInfo))
 
         /**
@@ -647,31 +646,36 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /** Additional information for business entities */
+    /** Additional information required for business entities */
     class BusinessInfo
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val incorporatedOn: JsonField<LocalDate>,
+        private val legalName: JsonField<String>,
+        private val taxId: JsonField<String>,
         private val businessType: JsonField<BusinessType>,
         private val countriesOfOperation: JsonField<List<String>>,
         private val country: JsonField<String>,
         private val doingBusinessAs: JsonField<String>,
         private val entityType: JsonField<EntityType>,
-        private val expectedMonthlyTransactionCount:
-            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount>,
-        private val expectedMonthlyTransactionVolume:
-            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume>,
+        private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
+        private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
         private val expectedRecipientJurisdictions: JsonField<List<String>>,
-        private val incorporatedOn: JsonField<LocalDate>,
-        private val legalName: JsonField<String>,
-        private val purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount>,
+        private val purposeOfAccount: JsonField<PurposeOfAccount>,
         private val registrationNumber: JsonField<String>,
         private val sourceOfFunds: JsonField<String>,
-        private val taxId: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("incorporatedOn")
+            @ExcludeMissing
+            incorporatedOn: JsonField<LocalDate> = JsonMissing.of(),
+            @JsonProperty("legalName")
+            @ExcludeMissing
+            legalName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("taxId") @ExcludeMissing taxId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("businessType")
             @ExcludeMissing
             businessType: JsonField<BusinessType> = JsonMissing.of(),
@@ -687,34 +691,28 @@ private constructor(
             entityType: JsonField<EntityType> = JsonMissing.of(),
             @JsonProperty("expectedMonthlyTransactionCount")
             @ExcludeMissing
-            expectedMonthlyTransactionCount:
-                JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
+            expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
                 JsonMissing.of(),
             @JsonProperty("expectedMonthlyTransactionVolume")
             @ExcludeMissing
-            expectedMonthlyTransactionVolume:
-                JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
+            expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
                 JsonMissing.of(),
             @JsonProperty("expectedRecipientJurisdictions")
             @ExcludeMissing
             expectedRecipientJurisdictions: JsonField<List<String>> = JsonMissing.of(),
-            @JsonProperty("incorporatedOn")
-            @ExcludeMissing
-            incorporatedOn: JsonField<LocalDate> = JsonMissing.of(),
-            @JsonProperty("legalName")
-            @ExcludeMissing
-            legalName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("purposeOfAccount")
             @ExcludeMissing
-            purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount> = JsonMissing.of(),
+            purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of(),
             @JsonProperty("registrationNumber")
             @ExcludeMissing
             registrationNumber: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sourceOfFunds")
             @ExcludeMissing
             sourceOfFunds: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("taxId") @ExcludeMissing taxId: JsonField<String> = JsonMissing.of(),
         ) : this(
+            incorporatedOn,
+            legalName,
+            taxId,
             businessType,
             countriesOfOperation,
             country,
@@ -723,50 +721,35 @@ private constructor(
             expectedMonthlyTransactionCount,
             expectedMonthlyTransactionVolume,
             expectedRecipientJurisdictions,
-            incorporatedOn,
-            legalName,
             purposeOfAccount,
             registrationNumber,
             sourceOfFunds,
-            taxId,
             mutableMapOf(),
         )
 
-        fun toBusinessInfoUpdate(): BusinessInfoUpdate =
-            BusinessInfoUpdate.builder()
-                .businessType(businessType)
-                .countriesOfOperation(countriesOfOperation)
-                .country(country)
-                .doingBusinessAs(doingBusinessAs)
-                .entityType(entityType)
-                .expectedMonthlyTransactionCount(expectedMonthlyTransactionCount)
-                .expectedMonthlyTransactionVolume(expectedMonthlyTransactionVolume)
-                .expectedRecipientJurisdictions(expectedRecipientJurisdictions)
-                .incorporatedOn(incorporatedOn)
-                .legalName(legalName)
-                .purposeOfAccount(purposeOfAccount)
-                .registrationNumber(registrationNumber)
-                .sourceOfFunds(sourceOfFunds)
-                .taxId(taxId)
-                .build()
+        /**
+         * Date of incorporation in ISO 8601 format (YYYY-MM-DD)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun incorporatedOn(): LocalDate = incorporatedOn.getRequired("incorporatedOn")
 
-        fun toBusinessInfo(): BusinessInfo =
-            BusinessInfo.builder()
-                .incorporatedOn(incorporatedOn)
-                .legalName(legalName)
-                .taxId(taxId)
-                .businessType(businessType)
-                .countriesOfOperation(countriesOfOperation)
-                .country(country)
-                .doingBusinessAs(doingBusinessAs)
-                .entityType(entityType)
-                .expectedMonthlyTransactionCount(expectedMonthlyTransactionCount)
-                .expectedMonthlyTransactionVolume(expectedMonthlyTransactionVolume)
-                .expectedRecipientJurisdictions(expectedRecipientJurisdictions)
-                .purposeOfAccount(purposeOfAccount)
-                .registrationNumber(registrationNumber)
-                .sourceOfFunds(sourceOfFunds)
-                .build()
+        /**
+         * Legal name of the business
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun legalName(): String = legalName.getRequired("legalName")
+
+        /**
+         * Tax identification number
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun taxId(): String = taxId.getRequired("taxId")
 
         /**
          * The high-level industry category of the business
@@ -815,7 +798,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun expectedMonthlyTransactionCount(): BusinessInfoUpdate.ExpectedMonthlyTransactionCount? =
+        fun expectedMonthlyTransactionCount(): ExpectedMonthlyTransactionCount? =
             expectedMonthlyTransactionCount.getNullable("expectedMonthlyTransactionCount")
 
         /**
@@ -824,8 +807,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun expectedMonthlyTransactionVolume():
-            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume? =
+        fun expectedMonthlyTransactionVolume(): ExpectedMonthlyTransactionVolume? =
             expectedMonthlyTransactionVolume.getNullable("expectedMonthlyTransactionVolume")
 
         /**
@@ -838,29 +820,12 @@ private constructor(
             expectedRecipientJurisdictions.getNullable("expectedRecipientJurisdictions")
 
         /**
-         * Date of incorporation in ISO 8601 format (YYYY-MM-DD)
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun incorporatedOn(): LocalDate? = incorporatedOn.getNullable("incorporatedOn")
-
-        /**
-         * Legal name of the business
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun legalName(): String? = legalName.getNullable("legalName")
-
-        /**
          * The intended purpose for using the Grid account
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
-        fun purposeOfAccount(): BusinessInfoUpdate.PurposeOfAccount? =
-            purposeOfAccount.getNullable("purposeOfAccount")
+        fun purposeOfAccount(): PurposeOfAccount? = purposeOfAccount.getNullable("purposeOfAccount")
 
         /**
          * Business registration number
@@ -879,12 +844,28 @@ private constructor(
         fun sourceOfFunds(): String? = sourceOfFunds.getNullable("sourceOfFunds")
 
         /**
-         * Tax identification number
+         * Returns the raw JSON value of [incorporatedOn].
          *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
+         * Unlike [incorporatedOn], this method doesn't throw if the JSON field has an unexpected
+         * type.
          */
-        fun taxId(): String? = taxId.getNullable("taxId")
+        @JsonProperty("incorporatedOn")
+        @ExcludeMissing
+        fun _incorporatedOn(): JsonField<LocalDate> = incorporatedOn
+
+        /**
+         * Returns the raw JSON value of [legalName].
+         *
+         * Unlike [legalName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("legalName") @ExcludeMissing fun _legalName(): JsonField<String> = legalName
+
+        /**
+         * Returns the raw JSON value of [taxId].
+         *
+         * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
 
         /**
          * Returns the raw JSON value of [businessType].
@@ -940,8 +921,7 @@ private constructor(
          */
         @JsonProperty("expectedMonthlyTransactionCount")
         @ExcludeMissing
-        fun _expectedMonthlyTransactionCount():
-            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
+        fun _expectedMonthlyTransactionCount(): JsonField<ExpectedMonthlyTransactionCount> =
             expectedMonthlyTransactionCount
 
         /**
@@ -952,8 +932,7 @@ private constructor(
          */
         @JsonProperty("expectedMonthlyTransactionVolume")
         @ExcludeMissing
-        fun _expectedMonthlyTransactionVolume():
-            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
+        fun _expectedMonthlyTransactionVolume(): JsonField<ExpectedMonthlyTransactionVolume> =
             expectedMonthlyTransactionVolume
 
         /**
@@ -968,23 +947,6 @@ private constructor(
             expectedRecipientJurisdictions
 
         /**
-         * Returns the raw JSON value of [incorporatedOn].
-         *
-         * Unlike [incorporatedOn], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("incorporatedOn")
-        @ExcludeMissing
-        fun _incorporatedOn(): JsonField<LocalDate> = incorporatedOn
-
-        /**
-         * Returns the raw JSON value of [legalName].
-         *
-         * Unlike [legalName], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("legalName") @ExcludeMissing fun _legalName(): JsonField<String> = legalName
-
-        /**
          * Returns the raw JSON value of [purposeOfAccount].
          *
          * Unlike [purposeOfAccount], this method doesn't throw if the JSON field has an unexpected
@@ -992,7 +954,7 @@ private constructor(
          */
         @JsonProperty("purposeOfAccount")
         @ExcludeMissing
-        fun _purposeOfAccount(): JsonField<BusinessInfoUpdate.PurposeOfAccount> = purposeOfAccount
+        fun _purposeOfAccount(): JsonField<PurposeOfAccount> = purposeOfAccount
 
         /**
          * Returns the raw JSON value of [registrationNumber].
@@ -1014,13 +976,6 @@ private constructor(
         @ExcludeMissing
         fun _sourceOfFunds(): JsonField<String> = sourceOfFunds
 
-        /**
-         * Returns the raw JSON value of [taxId].
-         *
-         * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
-
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
             additionalProperties.put(key, value)
@@ -1035,35 +990,46 @@ private constructor(
 
         companion object {
 
-            /** Returns a mutable builder for constructing an instance of [BusinessInfo]. */
+            /**
+             * Returns a mutable builder for constructing an instance of [BusinessInfo].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .incorporatedOn()
+             * .legalName()
+             * .taxId()
+             * ```
+             */
             fun builder() = Builder()
         }
 
         /** A builder for [BusinessInfo]. */
         class Builder internal constructor() {
 
+            private var incorporatedOn: JsonField<LocalDate>? = null
+            private var legalName: JsonField<String>? = null
+            private var taxId: JsonField<String>? = null
             private var businessType: JsonField<BusinessType> = JsonMissing.of()
             private var countriesOfOperation: JsonField<MutableList<String>>? = null
             private var country: JsonField<String> = JsonMissing.of()
             private var doingBusinessAs: JsonField<String> = JsonMissing.of()
             private var entityType: JsonField<EntityType> = JsonMissing.of()
             private var expectedMonthlyTransactionCount:
-                JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
+                JsonField<ExpectedMonthlyTransactionCount> =
                 JsonMissing.of()
             private var expectedMonthlyTransactionVolume:
-                JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
+                JsonField<ExpectedMonthlyTransactionVolume> =
                 JsonMissing.of()
             private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? = null
-            private var incorporatedOn: JsonField<LocalDate> = JsonMissing.of()
-            private var legalName: JsonField<String> = JsonMissing.of()
-            private var purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount> =
-                JsonMissing.of()
+            private var purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of()
             private var registrationNumber: JsonField<String> = JsonMissing.of()
             private var sourceOfFunds: JsonField<String> = JsonMissing.of()
-            private var taxId: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(businessInfo: BusinessInfo) = apply {
+                incorporatedOn = businessInfo.incorporatedOn
+                legalName = businessInfo.legalName
+                taxId = businessInfo.taxId
                 businessType = businessInfo.businessType
                 countriesOfOperation = businessInfo.countriesOfOperation.map { it.toMutableList() }
                 country = businessInfo.country
@@ -1073,14 +1039,50 @@ private constructor(
                 expectedMonthlyTransactionVolume = businessInfo.expectedMonthlyTransactionVolume
                 expectedRecipientJurisdictions =
                     businessInfo.expectedRecipientJurisdictions.map { it.toMutableList() }
-                incorporatedOn = businessInfo.incorporatedOn
-                legalName = businessInfo.legalName
                 purposeOfAccount = businessInfo.purposeOfAccount
                 registrationNumber = businessInfo.registrationNumber
                 sourceOfFunds = businessInfo.sourceOfFunds
-                taxId = businessInfo.taxId
                 additionalProperties = businessInfo.additionalProperties.toMutableMap()
             }
+
+            /** Date of incorporation in ISO 8601 format (YYYY-MM-DD) */
+            fun incorporatedOn(incorporatedOn: LocalDate) =
+                incorporatedOn(JsonField.of(incorporatedOn))
+
+            /**
+             * Sets [Builder.incorporatedOn] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.incorporatedOn] with a well-typed [LocalDate] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun incorporatedOn(incorporatedOn: JsonField<LocalDate>) = apply {
+                this.incorporatedOn = incorporatedOn
+            }
+
+            /** Legal name of the business */
+            fun legalName(legalName: String) = legalName(JsonField.of(legalName))
+
+            /**
+             * Sets [Builder.legalName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.legalName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun legalName(legalName: JsonField<String>) = apply { this.legalName = legalName }
+
+            /** Tax identification number */
+            fun taxId(taxId: String) = taxId(JsonField.of(taxId))
+
+            /**
+             * Sets [Builder.taxId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.taxId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
 
             /** The high-level industry category of the business */
             fun businessType(businessType: BusinessType) = businessType(JsonField.of(businessType))
@@ -1166,37 +1168,34 @@ private constructor(
 
             /** Expected number of transactions per month */
             fun expectedMonthlyTransactionCount(
-                expectedMonthlyTransactionCount: BusinessInfoUpdate.ExpectedMonthlyTransactionCount
+                expectedMonthlyTransactionCount: ExpectedMonthlyTransactionCount
             ) = expectedMonthlyTransactionCount(JsonField.of(expectedMonthlyTransactionCount))
 
             /**
              * Sets [Builder.expectedMonthlyTransactionCount] to an arbitrary JSON value.
              *
              * You should usually call [Builder.expectedMonthlyTransactionCount] with a well-typed
-             * [BusinessInfoUpdate.ExpectedMonthlyTransactionCount] value instead. This method is
-             * primarily for setting the field to an undocumented or not yet supported value.
+             * [ExpectedMonthlyTransactionCount] value instead. This method is primarily for setting
+             * the field to an undocumented or not yet supported value.
              */
             fun expectedMonthlyTransactionCount(
-                expectedMonthlyTransactionCount:
-                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount>
+                expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>
             ) = apply { this.expectedMonthlyTransactionCount = expectedMonthlyTransactionCount }
 
             /** Expected total transaction volume per month in USD equivalent */
             fun expectedMonthlyTransactionVolume(
-                expectedMonthlyTransactionVolume:
-                    BusinessInfoUpdate.ExpectedMonthlyTransactionVolume
+                expectedMonthlyTransactionVolume: ExpectedMonthlyTransactionVolume
             ) = expectedMonthlyTransactionVolume(JsonField.of(expectedMonthlyTransactionVolume))
 
             /**
              * Sets [Builder.expectedMonthlyTransactionVolume] to an arbitrary JSON value.
              *
              * You should usually call [Builder.expectedMonthlyTransactionVolume] with a well-typed
-             * [BusinessInfoUpdate.ExpectedMonthlyTransactionVolume] value instead. This method is
-             * primarily for setting the field to an undocumented or not yet supported value.
+             * [ExpectedMonthlyTransactionVolume] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
              */
             fun expectedMonthlyTransactionVolume(
-                expectedMonthlyTransactionVolume:
-                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume>
+                expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>
             ) = apply { this.expectedMonthlyTransactionVolume = expectedMonthlyTransactionVolume }
 
             /**
@@ -1232,48 +1231,20 @@ private constructor(
                     }
             }
 
-            /** Date of incorporation in ISO 8601 format (YYYY-MM-DD) */
-            fun incorporatedOn(incorporatedOn: LocalDate) =
-                incorporatedOn(JsonField.of(incorporatedOn))
-
-            /**
-             * Sets [Builder.incorporatedOn] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.incorporatedOn] with a well-typed [LocalDate] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun incorporatedOn(incorporatedOn: JsonField<LocalDate>) = apply {
-                this.incorporatedOn = incorporatedOn
-            }
-
-            /** Legal name of the business */
-            fun legalName(legalName: String) = legalName(JsonField.of(legalName))
-
-            /**
-             * Sets [Builder.legalName] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.legalName] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun legalName(legalName: JsonField<String>) = apply { this.legalName = legalName }
-
             /** The intended purpose for using the Grid account */
-            fun purposeOfAccount(purposeOfAccount: BusinessInfoUpdate.PurposeOfAccount) =
+            fun purposeOfAccount(purposeOfAccount: PurposeOfAccount) =
                 purposeOfAccount(JsonField.of(purposeOfAccount))
 
             /**
              * Sets [Builder.purposeOfAccount] to an arbitrary JSON value.
              *
              * You should usually call [Builder.purposeOfAccount] with a well-typed
-             * [BusinessInfoUpdate.PurposeOfAccount] value instead. This method is primarily for
-             * setting the field to an undocumented or not yet supported value.
+             * [PurposeOfAccount] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
              */
-            fun purposeOfAccount(purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount>) =
-                apply {
-                    this.purposeOfAccount = purposeOfAccount
-                }
+            fun purposeOfAccount(purposeOfAccount: JsonField<PurposeOfAccount>) = apply {
+                this.purposeOfAccount = purposeOfAccount
+            }
 
             /** Business registration number */
             fun registrationNumber(registrationNumber: String) =
@@ -1304,18 +1275,6 @@ private constructor(
                 this.sourceOfFunds = sourceOfFunds
             }
 
-            /** Tax identification number */
-            fun taxId(taxId: String) = taxId(JsonField.of(taxId))
-
-            /**
-             * Sets [Builder.taxId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.taxId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
-
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -1339,9 +1298,21 @@ private constructor(
              * Returns an immutable instance of [BusinessInfo].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .incorporatedOn()
+             * .legalName()
+             * .taxId()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
              */
             fun build(): BusinessInfo =
                 BusinessInfo(
+                    checkRequired("incorporatedOn", incorporatedOn),
+                    checkRequired("legalName", legalName),
+                    checkRequired("taxId", taxId),
                     businessType,
                     (countriesOfOperation ?: JsonMissing.of()).map { it.toImmutable() },
                     country,
@@ -1350,12 +1321,9 @@ private constructor(
                     expectedMonthlyTransactionCount,
                     expectedMonthlyTransactionVolume,
                     (expectedRecipientJurisdictions ?: JsonMissing.of()).map { it.toImmutable() },
-                    incorporatedOn,
-                    legalName,
                     purposeOfAccount,
                     registrationNumber,
                     sourceOfFunds,
-                    taxId,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1376,6 +1344,9 @@ private constructor(
                 return@apply
             }
 
+            incorporatedOn()
+            legalName()
+            taxId()
             businessType()?.validate()
             countriesOfOperation()
             country()
@@ -1384,12 +1355,9 @@ private constructor(
             expectedMonthlyTransactionCount()?.validate()
             expectedMonthlyTransactionVolume()?.validate()
             expectedRecipientJurisdictions()
-            incorporatedOn()
-            legalName()
             purposeOfAccount()?.validate()
             registrationNumber()
             sourceOfFunds()
-            taxId()
             validated = true
         }
 
@@ -1408,7 +1376,10 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (businessType.asKnown()?.validity() ?: 0) +
+            (if (incorporatedOn.asKnown() == null) 0 else 1) +
+                (if (legalName.asKnown() == null) 0 else 1) +
+                (if (taxId.asKnown() == null) 0 else 1) +
+                (businessType.asKnown()?.validity() ?: 0) +
                 (countriesOfOperation.asKnown()?.size ?: 0) +
                 (if (country.asKnown() == null) 0 else 1) +
                 (if (doingBusinessAs.asKnown() == null) 0 else 1) +
@@ -1416,12 +1387,986 @@ private constructor(
                 (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
                 (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
                 (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
-                (if (incorporatedOn.asKnown() == null) 0 else 1) +
-                (if (legalName.asKnown() == null) 0 else 1) +
                 (purposeOfAccount.asKnown()?.validity() ?: 0) +
                 (if (registrationNumber.asKnown() == null) 0 else 1) +
-                (if (sourceOfFunds.asKnown() == null) 0 else 1) +
-                (if (taxId.asKnown() == null) 0 else 1)
+                (if (sourceOfFunds.asKnown() == null) 0 else 1)
+
+        /** The high-level industry category of the business */
+        class BusinessType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val AGRICULTURE_FORESTRY_FISHING_AND_HUNTING =
+                    of("AGRICULTURE_FORESTRY_FISHING_AND_HUNTING")
+
+                val MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION =
+                    of("MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION")
+
+                val UTILITIES = of("UTILITIES")
+
+                val CONSTRUCTION = of("CONSTRUCTION")
+
+                val MANUFACTURING = of("MANUFACTURING")
+
+                val WHOLESALE_TRADE = of("WHOLESALE_TRADE")
+
+                val RETAIL_TRADE = of("RETAIL_TRADE")
+
+                val TRANSPORTATION_AND_WAREHOUSING = of("TRANSPORTATION_AND_WAREHOUSING")
+
+                val INFORMATION = of("INFORMATION")
+
+                val FINANCE_AND_INSURANCE = of("FINANCE_AND_INSURANCE")
+
+                val REAL_ESTATE_AND_RENTAL_AND_LEASING = of("REAL_ESTATE_AND_RENTAL_AND_LEASING")
+
+                val PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES =
+                    of("PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES")
+
+                val MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES =
+                    of("MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES")
+
+                val ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES =
+                    of("ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES")
+
+                val EDUCATIONAL_SERVICES = of("EDUCATIONAL_SERVICES")
+
+                val HEALTH_CARE_AND_SOCIAL_ASSISTANCE = of("HEALTH_CARE_AND_SOCIAL_ASSISTANCE")
+
+                val ARTS_ENTERTAINMENT_AND_RECREATION = of("ARTS_ENTERTAINMENT_AND_RECREATION")
+
+                val ACCOMMODATION_AND_FOOD_SERVICES = of("ACCOMMODATION_AND_FOOD_SERVICES")
+
+                val OTHER_SERVICES = of("OTHER_SERVICES")
+
+                val PUBLIC_ADMINISTRATION = of("PUBLIC_ADMINISTRATION")
+
+                fun of(value: String) = BusinessType(JsonField.of(value))
+            }
+
+            /** An enum containing [BusinessType]'s known values. */
+            enum class Known {
+                AGRICULTURE_FORESTRY_FISHING_AND_HUNTING,
+                MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION,
+                UTILITIES,
+                CONSTRUCTION,
+                MANUFACTURING,
+                WHOLESALE_TRADE,
+                RETAIL_TRADE,
+                TRANSPORTATION_AND_WAREHOUSING,
+                INFORMATION,
+                FINANCE_AND_INSURANCE,
+                REAL_ESTATE_AND_RENTAL_AND_LEASING,
+                PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES,
+                MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES,
+                ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES,
+                EDUCATIONAL_SERVICES,
+                HEALTH_CARE_AND_SOCIAL_ASSISTANCE,
+                ARTS_ENTERTAINMENT_AND_RECREATION,
+                ACCOMMODATION_AND_FOOD_SERVICES,
+                OTHER_SERVICES,
+                PUBLIC_ADMINISTRATION,
+            }
+
+            /**
+             * An enum containing [BusinessType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [BusinessType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                AGRICULTURE_FORESTRY_FISHING_AND_HUNTING,
+                MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION,
+                UTILITIES,
+                CONSTRUCTION,
+                MANUFACTURING,
+                WHOLESALE_TRADE,
+                RETAIL_TRADE,
+                TRANSPORTATION_AND_WAREHOUSING,
+                INFORMATION,
+                FINANCE_AND_INSURANCE,
+                REAL_ESTATE_AND_RENTAL_AND_LEASING,
+                PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES,
+                MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES,
+                ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES,
+                EDUCATIONAL_SERVICES,
+                HEALTH_CARE_AND_SOCIAL_ASSISTANCE,
+                ARTS_ENTERTAINMENT_AND_RECREATION,
+                ACCOMMODATION_AND_FOOD_SERVICES,
+                OTHER_SERVICES,
+                PUBLIC_ADMINISTRATION,
+                /**
+                 * An enum member indicating that [BusinessType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    AGRICULTURE_FORESTRY_FISHING_AND_HUNTING ->
+                        Value.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                    MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION ->
+                        Value.MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION
+                    UTILITIES -> Value.UTILITIES
+                    CONSTRUCTION -> Value.CONSTRUCTION
+                    MANUFACTURING -> Value.MANUFACTURING
+                    WHOLESALE_TRADE -> Value.WHOLESALE_TRADE
+                    RETAIL_TRADE -> Value.RETAIL_TRADE
+                    TRANSPORTATION_AND_WAREHOUSING -> Value.TRANSPORTATION_AND_WAREHOUSING
+                    INFORMATION -> Value.INFORMATION
+                    FINANCE_AND_INSURANCE -> Value.FINANCE_AND_INSURANCE
+                    REAL_ESTATE_AND_RENTAL_AND_LEASING -> Value.REAL_ESTATE_AND_RENTAL_AND_LEASING
+                    PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES ->
+                        Value.PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES
+                    MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES ->
+                        Value.MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES
+                    ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES ->
+                        Value
+                            .ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES
+                    EDUCATIONAL_SERVICES -> Value.EDUCATIONAL_SERVICES
+                    HEALTH_CARE_AND_SOCIAL_ASSISTANCE -> Value.HEALTH_CARE_AND_SOCIAL_ASSISTANCE
+                    ARTS_ENTERTAINMENT_AND_RECREATION -> Value.ARTS_ENTERTAINMENT_AND_RECREATION
+                    ACCOMMODATION_AND_FOOD_SERVICES -> Value.ACCOMMODATION_AND_FOOD_SERVICES
+                    OTHER_SERVICES -> Value.OTHER_SERVICES
+                    PUBLIC_ADMINISTRATION -> Value.PUBLIC_ADMINISTRATION
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    AGRICULTURE_FORESTRY_FISHING_AND_HUNTING ->
+                        Known.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                    MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION ->
+                        Known.MINING_QUARRYING_AND_OIL_AND_GAS_EXTRACTION
+                    UTILITIES -> Known.UTILITIES
+                    CONSTRUCTION -> Known.CONSTRUCTION
+                    MANUFACTURING -> Known.MANUFACTURING
+                    WHOLESALE_TRADE -> Known.WHOLESALE_TRADE
+                    RETAIL_TRADE -> Known.RETAIL_TRADE
+                    TRANSPORTATION_AND_WAREHOUSING -> Known.TRANSPORTATION_AND_WAREHOUSING
+                    INFORMATION -> Known.INFORMATION
+                    FINANCE_AND_INSURANCE -> Known.FINANCE_AND_INSURANCE
+                    REAL_ESTATE_AND_RENTAL_AND_LEASING -> Known.REAL_ESTATE_AND_RENTAL_AND_LEASING
+                    PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES ->
+                        Known.PROFESSIONAL_SCIENTIFIC_AND_TECHNICAL_SERVICES
+                    MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES ->
+                        Known.MANAGEMENT_OF_COMPANIES_AND_ENTERPRISES
+                    ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES ->
+                        Known
+                            .ADMINISTRATIVE_AND_SUPPORT_AND_WASTE_MANAGEMENT_AND_REMEDIATION_SERVICES
+                    EDUCATIONAL_SERVICES -> Known.EDUCATIONAL_SERVICES
+                    HEALTH_CARE_AND_SOCIAL_ASSISTANCE -> Known.HEALTH_CARE_AND_SOCIAL_ASSISTANCE
+                    ARTS_ENTERTAINMENT_AND_RECREATION -> Known.ARTS_ENTERTAINMENT_AND_RECREATION
+                    ACCOMMODATION_AND_FOOD_SERVICES -> Known.ACCOMMODATION_AND_FOOD_SERVICES
+                    OTHER_SERVICES -> Known.OTHER_SERVICES
+                    PUBLIC_ADMINISTRATION -> Known.PUBLIC_ADMINISTRATION
+                    else -> throw LightsparkGridInvalidDataException("Unknown BusinessType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): BusinessType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is BusinessType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Legal entity type of the business */
+        class EntityType @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val SOLE_PROPRIETORSHIP = of("SOLE_PROPRIETORSHIP")
+
+                val PARTNERSHIP = of("PARTNERSHIP")
+
+                val LLC = of("LLC")
+
+                val CORPORATION = of("CORPORATION")
+
+                val S_CORPORATION = of("S_CORPORATION")
+
+                val NON_PROFIT = of("NON_PROFIT")
+
+                val OTHER = of("OTHER")
+
+                fun of(value: String) = EntityType(JsonField.of(value))
+            }
+
+            /** An enum containing [EntityType]'s known values. */
+            enum class Known {
+                SOLE_PROPRIETORSHIP,
+                PARTNERSHIP,
+                LLC,
+                CORPORATION,
+                S_CORPORATION,
+                NON_PROFIT,
+                OTHER,
+            }
+
+            /**
+             * An enum containing [EntityType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [EntityType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                SOLE_PROPRIETORSHIP,
+                PARTNERSHIP,
+                LLC,
+                CORPORATION,
+                S_CORPORATION,
+                NON_PROFIT,
+                OTHER,
+                /**
+                 * An enum member indicating that [EntityType] was instantiated with an unknown
+                 * value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    SOLE_PROPRIETORSHIP -> Value.SOLE_PROPRIETORSHIP
+                    PARTNERSHIP -> Value.PARTNERSHIP
+                    LLC -> Value.LLC
+                    CORPORATION -> Value.CORPORATION
+                    S_CORPORATION -> Value.S_CORPORATION
+                    NON_PROFIT -> Value.NON_PROFIT
+                    OTHER -> Value.OTHER
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    SOLE_PROPRIETORSHIP -> Known.SOLE_PROPRIETORSHIP
+                    PARTNERSHIP -> Known.PARTNERSHIP
+                    LLC -> Known.LLC
+                    CORPORATION -> Known.CORPORATION
+                    S_CORPORATION -> Known.S_CORPORATION
+                    NON_PROFIT -> Known.NON_PROFIT
+                    OTHER -> Known.OTHER
+                    else -> throw LightsparkGridInvalidDataException("Unknown EntityType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): EntityType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is EntityType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Expected number of transactions per month */
+        class ExpectedMonthlyTransactionCount
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val COUNT_UNDER_10 = of("COUNT_UNDER_10")
+
+                val COUNT_10_TO_100 = of("COUNT_10_TO_100")
+
+                val COUNT_100_TO_500 = of("COUNT_100_TO_500")
+
+                val COUNT_500_TO_1000 = of("COUNT_500_TO_1000")
+
+                val COUNT_OVER_1000 = of("COUNT_OVER_1000")
+
+                fun of(value: String) = ExpectedMonthlyTransactionCount(JsonField.of(value))
+            }
+
+            /** An enum containing [ExpectedMonthlyTransactionCount]'s known values. */
+            enum class Known {
+                COUNT_UNDER_10,
+                COUNT_10_TO_100,
+                COUNT_100_TO_500,
+                COUNT_500_TO_1000,
+                COUNT_OVER_1000,
+            }
+
+            /**
+             * An enum containing [ExpectedMonthlyTransactionCount]'s known values, as well as an
+             * [_UNKNOWN] member.
+             *
+             * An instance of [ExpectedMonthlyTransactionCount] can contain an unknown value in a
+             * couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                COUNT_UNDER_10,
+                COUNT_10_TO_100,
+                COUNT_100_TO_500,
+                COUNT_500_TO_1000,
+                COUNT_OVER_1000,
+                /**
+                 * An enum member indicating that [ExpectedMonthlyTransactionCount] was instantiated
+                 * with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    COUNT_UNDER_10 -> Value.COUNT_UNDER_10
+                    COUNT_10_TO_100 -> Value.COUNT_10_TO_100
+                    COUNT_100_TO_500 -> Value.COUNT_100_TO_500
+                    COUNT_500_TO_1000 -> Value.COUNT_500_TO_1000
+                    COUNT_OVER_1000 -> Value.COUNT_OVER_1000
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    COUNT_UNDER_10 -> Known.COUNT_UNDER_10
+                    COUNT_10_TO_100 -> Known.COUNT_10_TO_100
+                    COUNT_100_TO_500 -> Known.COUNT_100_TO_500
+                    COUNT_500_TO_1000 -> Known.COUNT_500_TO_1000
+                    COUNT_OVER_1000 -> Known.COUNT_OVER_1000
+                    else ->
+                        throw LightsparkGridInvalidDataException(
+                            "Unknown ExpectedMonthlyTransactionCount: $value"
+                        )
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): ExpectedMonthlyTransactionCount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ExpectedMonthlyTransactionCount && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Expected total transaction volume per month in USD equivalent */
+        class ExpectedMonthlyTransactionVolume
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val VOLUME_UNDER_10_K = of("VOLUME_UNDER_10K")
+
+                val VOLUME_10_K_TO_100_K = of("VOLUME_10K_TO_100K")
+
+                val VOLUME_100_K_TO_1_M = of("VOLUME_100K_TO_1M")
+
+                val VOLUME_1_M_TO_10_M = of("VOLUME_1M_TO_10M")
+
+                val VOLUME_OVER_10_M = of("VOLUME_OVER_10M")
+
+                fun of(value: String) = ExpectedMonthlyTransactionVolume(JsonField.of(value))
+            }
+
+            /** An enum containing [ExpectedMonthlyTransactionVolume]'s known values. */
+            enum class Known {
+                VOLUME_UNDER_10_K,
+                VOLUME_10_K_TO_100_K,
+                VOLUME_100_K_TO_1_M,
+                VOLUME_1_M_TO_10_M,
+                VOLUME_OVER_10_M,
+            }
+
+            /**
+             * An enum containing [ExpectedMonthlyTransactionVolume]'s known values, as well as an
+             * [_UNKNOWN] member.
+             *
+             * An instance of [ExpectedMonthlyTransactionVolume] can contain an unknown value in a
+             * couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                VOLUME_UNDER_10_K,
+                VOLUME_10_K_TO_100_K,
+                VOLUME_100_K_TO_1_M,
+                VOLUME_1_M_TO_10_M,
+                VOLUME_OVER_10_M,
+                /**
+                 * An enum member indicating that [ExpectedMonthlyTransactionVolume] was
+                 * instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    VOLUME_UNDER_10_K -> Value.VOLUME_UNDER_10_K
+                    VOLUME_10_K_TO_100_K -> Value.VOLUME_10_K_TO_100_K
+                    VOLUME_100_K_TO_1_M -> Value.VOLUME_100_K_TO_1_M
+                    VOLUME_1_M_TO_10_M -> Value.VOLUME_1_M_TO_10_M
+                    VOLUME_OVER_10_M -> Value.VOLUME_OVER_10_M
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    VOLUME_UNDER_10_K -> Known.VOLUME_UNDER_10_K
+                    VOLUME_10_K_TO_100_K -> Known.VOLUME_10_K_TO_100_K
+                    VOLUME_100_K_TO_1_M -> Known.VOLUME_100_K_TO_1_M
+                    VOLUME_1_M_TO_10_M -> Known.VOLUME_1_M_TO_10_M
+                    VOLUME_OVER_10_M -> Known.VOLUME_OVER_10_M
+                    else ->
+                        throw LightsparkGridInvalidDataException(
+                            "Unknown ExpectedMonthlyTransactionVolume: $value"
+                        )
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): ExpectedMonthlyTransactionVolume = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ExpectedMonthlyTransactionVolume && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** The intended purpose for using the Grid account */
+        class PurposeOfAccount
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val CONTRACTOR_PAYOUTS = of("CONTRACTOR_PAYOUTS")
+
+                val CREATOR_PAYOUTS = of("CREATOR_PAYOUTS")
+
+                val EMPLOYEE_PAYOUTS = of("EMPLOYEE_PAYOUTS")
+
+                val MARKETPLACE_SELLER_PAYOUTS = of("MARKETPLACE_SELLER_PAYOUTS")
+
+                val SUPPLIER_PAYMENTS = of("SUPPLIER_PAYMENTS")
+
+                val CROSS_BORDER_B2_B = of("CROSS_BORDER_B2B")
+
+                val AR_AUTOMATION = of("AR_AUTOMATION")
+
+                val AP_AUTOMATION = of("AP_AUTOMATION")
+
+                val EMBEDDED_PAYMENTS = of("EMBEDDED_PAYMENTS")
+
+                val PLATFORM_FEE_COLLECTION = of("PLATFORM_FEE_COLLECTION")
+
+                val P2_P_TRANSFERS = of("P2P_TRANSFERS")
+
+                val CHARITABLE_DONATIONS = of("CHARITABLE_DONATIONS")
+
+                val OTHER = of("OTHER")
+
+                fun of(value: String) = PurposeOfAccount(JsonField.of(value))
+            }
+
+            /** An enum containing [PurposeOfAccount]'s known values. */
+            enum class Known {
+                CONTRACTOR_PAYOUTS,
+                CREATOR_PAYOUTS,
+                EMPLOYEE_PAYOUTS,
+                MARKETPLACE_SELLER_PAYOUTS,
+                SUPPLIER_PAYMENTS,
+                CROSS_BORDER_B2_B,
+                AR_AUTOMATION,
+                AP_AUTOMATION,
+                EMBEDDED_PAYMENTS,
+                PLATFORM_FEE_COLLECTION,
+                P2_P_TRANSFERS,
+                CHARITABLE_DONATIONS,
+                OTHER,
+            }
+
+            /**
+             * An enum containing [PurposeOfAccount]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [PurposeOfAccount] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                CONTRACTOR_PAYOUTS,
+                CREATOR_PAYOUTS,
+                EMPLOYEE_PAYOUTS,
+                MARKETPLACE_SELLER_PAYOUTS,
+                SUPPLIER_PAYMENTS,
+                CROSS_BORDER_B2_B,
+                AR_AUTOMATION,
+                AP_AUTOMATION,
+                EMBEDDED_PAYMENTS,
+                PLATFORM_FEE_COLLECTION,
+                P2_P_TRANSFERS,
+                CHARITABLE_DONATIONS,
+                OTHER,
+                /**
+                 * An enum member indicating that [PurposeOfAccount] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    CONTRACTOR_PAYOUTS -> Value.CONTRACTOR_PAYOUTS
+                    CREATOR_PAYOUTS -> Value.CREATOR_PAYOUTS
+                    EMPLOYEE_PAYOUTS -> Value.EMPLOYEE_PAYOUTS
+                    MARKETPLACE_SELLER_PAYOUTS -> Value.MARKETPLACE_SELLER_PAYOUTS
+                    SUPPLIER_PAYMENTS -> Value.SUPPLIER_PAYMENTS
+                    CROSS_BORDER_B2_B -> Value.CROSS_BORDER_B2_B
+                    AR_AUTOMATION -> Value.AR_AUTOMATION
+                    AP_AUTOMATION -> Value.AP_AUTOMATION
+                    EMBEDDED_PAYMENTS -> Value.EMBEDDED_PAYMENTS
+                    PLATFORM_FEE_COLLECTION -> Value.PLATFORM_FEE_COLLECTION
+                    P2_P_TRANSFERS -> Value.P2_P_TRANSFERS
+                    CHARITABLE_DONATIONS -> Value.CHARITABLE_DONATIONS
+                    OTHER -> Value.OTHER
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    CONTRACTOR_PAYOUTS -> Known.CONTRACTOR_PAYOUTS
+                    CREATOR_PAYOUTS -> Known.CREATOR_PAYOUTS
+                    EMPLOYEE_PAYOUTS -> Known.EMPLOYEE_PAYOUTS
+                    MARKETPLACE_SELLER_PAYOUTS -> Known.MARKETPLACE_SELLER_PAYOUTS
+                    SUPPLIER_PAYMENTS -> Known.SUPPLIER_PAYMENTS
+                    CROSS_BORDER_B2_B -> Known.CROSS_BORDER_B2_B
+                    AR_AUTOMATION -> Known.AR_AUTOMATION
+                    AP_AUTOMATION -> Known.AP_AUTOMATION
+                    EMBEDDED_PAYMENTS -> Known.EMBEDDED_PAYMENTS
+                    PLATFORM_FEE_COLLECTION -> Known.PLATFORM_FEE_COLLECTION
+                    P2_P_TRANSFERS -> Known.P2_P_TRANSFERS
+                    CHARITABLE_DONATIONS -> Known.CHARITABLE_DONATIONS
+                    OTHER -> Known.OTHER
+                    else ->
+                        throw LightsparkGridInvalidDataException("Unknown PurposeOfAccount: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): PurposeOfAccount = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PurposeOfAccount && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -1429,6 +2374,9 @@ private constructor(
             }
 
             return other is BusinessInfo &&
+                incorporatedOn == other.incorporatedOn &&
+                legalName == other.legalName &&
+                taxId == other.taxId &&
                 businessType == other.businessType &&
                 countriesOfOperation == other.countriesOfOperation &&
                 country == other.country &&
@@ -1437,17 +2385,17 @@ private constructor(
                 expectedMonthlyTransactionCount == other.expectedMonthlyTransactionCount &&
                 expectedMonthlyTransactionVolume == other.expectedMonthlyTransactionVolume &&
                 expectedRecipientJurisdictions == other.expectedRecipientJurisdictions &&
-                incorporatedOn == other.incorporatedOn &&
-                legalName == other.legalName &&
                 purposeOfAccount == other.purposeOfAccount &&
                 registrationNumber == other.registrationNumber &&
                 sourceOfFunds == other.sourceOfFunds &&
-                taxId == other.taxId &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
             Objects.hash(
+                incorporatedOn,
+                legalName,
+                taxId,
                 businessType,
                 countriesOfOperation,
                 country,
@@ -1456,12 +2404,9 @@ private constructor(
                 expectedMonthlyTransactionCount,
                 expectedMonthlyTransactionVolume,
                 expectedRecipientJurisdictions,
-                incorporatedOn,
-                legalName,
                 purposeOfAccount,
                 registrationNumber,
                 sourceOfFunds,
-                taxId,
                 additionalProperties,
             )
         }
@@ -1469,7 +2414,156 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "BusinessInfo{businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, incorporatedOn=$incorporatedOn, legalName=$legalName, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, taxId=$taxId, additionalProperties=$additionalProperties}"
+            "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, additionalProperties=$additionalProperties}"
+    }
+
+    /** The current KYB status of a business customer */
+    class KybStatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val UNVERIFIED = of("UNVERIFIED")
+
+            val PENDING = of("PENDING")
+
+            val APPROVED = of("APPROVED")
+
+            val REJECTED = of("REJECTED")
+
+            fun of(value: String) = KybStatus(JsonField.of(value))
+        }
+
+        /** An enum containing [KybStatus]'s known values. */
+        enum class Known {
+            UNVERIFIED,
+            PENDING,
+            APPROVED,
+            REJECTED,
+        }
+
+        /**
+         * An enum containing [KybStatus]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [KybStatus] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            UNVERIFIED,
+            PENDING,
+            APPROVED,
+            REJECTED,
+            /**
+             * An enum member indicating that [KybStatus] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                UNVERIFIED -> Value.UNVERIFIED
+                PENDING -> Value.PENDING
+                APPROVED -> Value.APPROVED
+                REJECTED -> Value.REJECTED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                UNVERIFIED -> Known.UNVERIFIED
+                PENDING -> Known.PENDING
+                APPROVED -> Known.APPROVED
+                REJECTED -> Known.REJECTED
+                else -> throw LightsparkGridInvalidDataException("Unknown KybStatus: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): KybStatus = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is KybStatus && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     override fun equals(other: Any?): Boolean {

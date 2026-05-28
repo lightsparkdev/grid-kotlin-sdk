@@ -16,7 +16,7 @@ internal class DocumentReplaceParamsTest {
             .documentReplaceRequest(
                 DocumentReplaceRequest.builder()
                     .country("US")
-                    .documentType(DocumentType.PASSPORT)
+                    .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                     .file("Example data")
                     .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
@@ -34,7 +34,7 @@ internal class DocumentReplaceParamsTest {
                 .documentReplaceRequest(
                     DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentType(DocumentType.PASSPORT)
+                        .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                         .file("Example data")
                         .build()
                 )
@@ -53,7 +53,7 @@ internal class DocumentReplaceParamsTest {
                 .documentReplaceRequest(
                     DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentType(DocumentType.PASSPORT)
+                        .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                         .file("Example data")
                         .documentNumber("A12345678")
                         .issuingAuthority("U.S. Department of State")
@@ -79,7 +79,7 @@ internal class DocumentReplaceParamsTest {
                                 .value(
                                     DocumentReplaceRequest.builder()
                                         .country("US")
-                                        .documentType(DocumentType.PASSPORT)
+                                        .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                                         .file("Example data")
                                         .documentNumber("A12345678")
                                         .issuingAuthority("U.S. Department of State")
@@ -103,7 +103,7 @@ internal class DocumentReplaceParamsTest {
                 .documentReplaceRequest(
                     DocumentReplaceRequest.builder()
                         .country("US")
-                        .documentType(DocumentType.PASSPORT)
+                        .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                         .file("Example data")
                         .build()
                 )
@@ -126,7 +126,7 @@ internal class DocumentReplaceParamsTest {
                                 .value(
                                     DocumentReplaceRequest.builder()
                                         .country("US")
-                                        .documentType(DocumentType.PASSPORT)
+                                        .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                                         .file("Example data")
                                         .build()
                                 )

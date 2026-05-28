@@ -22,95 +22,93 @@ import java.util.Objects
 @JsonSerialize(using = UnwrapWebhookEvent.Serializer::class)
 class UnwrapWebhookEvent
 private constructor(
-    private val agentActionWebhook: AgentActionWebhook? = null,
-    private val incomingPaymentWebhook: IncomingPaymentWebhook? = null,
-    private val outgoingPaymentWebhook: OutgoingPaymentWebhook? = null,
-    private val testWebhookRequest: TestWebhookRequest? = null,
-    private val bulkUploadWebhook: BulkUploadWebhook? = null,
-    private val invitationClaimedWebhook: InvitationClaimedWebhook? = null,
-    private val customerWebhook: CustomerWebhook? = null,
-    private val internalAccountStatusWebhook: InternalAccountStatusWebhook? = null,
-    private val verificationWebhook: VerificationWebhook? = null,
-    private val cardStateChangeWebhook: CardStateChangeWebhook? = null,
-    private val cardFundingSourceChangeWebhook: CardFundingSourceChangeWebhook? = null,
+    private val agentActionPendingApproval: AgentActionWebhookEvent? = null,
+    private val incomingPayment: IncomingPaymentWebhookEvent? = null,
+    private val outgoingPayment: OutgoingPaymentWebhookEvent? = null,
+    private val test: TestWebhookRequest? = null,
+    private val bulkUpload: BulkUploadWebhookEvent? = null,
+    private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
+    private val customerUpdate: CustomerUpdateWebhookEvent? = null,
+    private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
+    private val verificationUpdate: VerificationUpdateWebhookEvent? = null,
+    private val cardStateChange: CardStateChangeWebhookEvent? = null,
+    private val cardFundingSourceChange: CardFundingSourceChangeWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    fun agentActionWebhook(): AgentActionWebhook? = agentActionWebhook
+    fun agentActionPendingApproval(): AgentActionWebhookEvent? = agentActionPendingApproval
 
-    fun incomingPaymentWebhook(): IncomingPaymentWebhook? = incomingPaymentWebhook
+    fun incomingPayment(): IncomingPaymentWebhookEvent? = incomingPayment
 
-    fun outgoingPaymentWebhook(): OutgoingPaymentWebhook? = outgoingPaymentWebhook
+    fun outgoingPayment(): OutgoingPaymentWebhookEvent? = outgoingPayment
 
-    fun testWebhookRequest(): TestWebhookRequest? = testWebhookRequest
+    fun test(): TestWebhookRequest? = test
 
-    fun bulkUploadWebhook(): BulkUploadWebhook? = bulkUploadWebhook
+    fun bulkUpload(): BulkUploadWebhookEvent? = bulkUpload
 
-    fun invitationClaimedWebhook(): InvitationClaimedWebhook? = invitationClaimedWebhook
+    fun invitationClaimed(): InvitationClaimedWebhookEvent? = invitationClaimed
 
-    fun customerWebhook(): CustomerWebhook? = customerWebhook
+    fun customerUpdate(): CustomerUpdateWebhookEvent? = customerUpdate
 
-    fun internalAccountStatusWebhook(): InternalAccountStatusWebhook? = internalAccountStatusWebhook
+    fun internalAccountStatus(): InternalAccountStatusWebhookEvent? = internalAccountStatus
 
-    fun verificationWebhook(): VerificationWebhook? = verificationWebhook
+    fun verificationUpdate(): VerificationUpdateWebhookEvent? = verificationUpdate
 
-    fun cardStateChangeWebhook(): CardStateChangeWebhook? = cardStateChangeWebhook
+    fun cardStateChange(): CardStateChangeWebhookEvent? = cardStateChange
 
-    fun cardFundingSourceChangeWebhook(): CardFundingSourceChangeWebhook? =
-        cardFundingSourceChangeWebhook
+    fun cardFundingSourceChange(): CardFundingSourceChangeWebhookEvent? = cardFundingSourceChange
 
-    fun isAgentActionWebhook(): Boolean = agentActionWebhook != null
+    fun isAgentActionPendingApproval(): Boolean = agentActionPendingApproval != null
 
-    fun isIncomingPaymentWebhook(): Boolean = incomingPaymentWebhook != null
+    fun isIncomingPayment(): Boolean = incomingPayment != null
 
-    fun isOutgoingPaymentWebhook(): Boolean = outgoingPaymentWebhook != null
+    fun isOutgoingPayment(): Boolean = outgoingPayment != null
 
-    fun isTestWebhookRequest(): Boolean = testWebhookRequest != null
+    fun isTest(): Boolean = test != null
 
-    fun isBulkUploadWebhook(): Boolean = bulkUploadWebhook != null
+    fun isBulkUpload(): Boolean = bulkUpload != null
 
-    fun isInvitationClaimedWebhook(): Boolean = invitationClaimedWebhook != null
+    fun isInvitationClaimed(): Boolean = invitationClaimed != null
 
-    fun isCustomerWebhook(): Boolean = customerWebhook != null
+    fun isCustomerUpdate(): Boolean = customerUpdate != null
 
-    fun isInternalAccountStatusWebhook(): Boolean = internalAccountStatusWebhook != null
+    fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
 
-    fun isVerificationWebhook(): Boolean = verificationWebhook != null
+    fun isVerificationUpdate(): Boolean = verificationUpdate != null
 
-    fun isCardStateChangeWebhook(): Boolean = cardStateChangeWebhook != null
+    fun isCardStateChange(): Boolean = cardStateChange != null
 
-    fun isCardFundingSourceChangeWebhook(): Boolean = cardFundingSourceChangeWebhook != null
+    fun isCardFundingSourceChange(): Boolean = cardFundingSourceChange != null
 
-    fun asAgentActionWebhook(): AgentActionWebhook =
-        agentActionWebhook.getOrThrow("agentActionWebhook")
+    fun asAgentActionPendingApproval(): AgentActionWebhookEvent =
+        agentActionPendingApproval.getOrThrow("agentActionPendingApproval")
 
-    fun asIncomingPaymentWebhook(): IncomingPaymentWebhook =
-        incomingPaymentWebhook.getOrThrow("incomingPaymentWebhook")
+    fun asIncomingPayment(): IncomingPaymentWebhookEvent =
+        incomingPayment.getOrThrow("incomingPayment")
 
-    fun asOutgoingPaymentWebhook(): OutgoingPaymentWebhook =
-        outgoingPaymentWebhook.getOrThrow("outgoingPaymentWebhook")
+    fun asOutgoingPayment(): OutgoingPaymentWebhookEvent =
+        outgoingPayment.getOrThrow("outgoingPayment")
 
-    fun asTestWebhookRequest(): TestWebhookRequest =
-        testWebhookRequest.getOrThrow("testWebhookRequest")
+    fun asTest(): TestWebhookRequest = test.getOrThrow("test")
 
-    fun asBulkUploadWebhook(): BulkUploadWebhook = bulkUploadWebhook.getOrThrow("bulkUploadWebhook")
+    fun asBulkUpload(): BulkUploadWebhookEvent = bulkUpload.getOrThrow("bulkUpload")
 
-    fun asInvitationClaimedWebhook(): InvitationClaimedWebhook =
-        invitationClaimedWebhook.getOrThrow("invitationClaimedWebhook")
+    fun asInvitationClaimed(): InvitationClaimedWebhookEvent =
+        invitationClaimed.getOrThrow("invitationClaimed")
 
-    fun asCustomerWebhook(): CustomerWebhook = customerWebhook.getOrThrow("customerWebhook")
+    fun asCustomerUpdate(): CustomerUpdateWebhookEvent = customerUpdate.getOrThrow("customerUpdate")
 
-    fun asInternalAccountStatusWebhook(): InternalAccountStatusWebhook =
-        internalAccountStatusWebhook.getOrThrow("internalAccountStatusWebhook")
+    fun asInternalAccountStatus(): InternalAccountStatusWebhookEvent =
+        internalAccountStatus.getOrThrow("internalAccountStatus")
 
-    fun asVerificationWebhook(): VerificationWebhook =
-        verificationWebhook.getOrThrow("verificationWebhook")
+    fun asVerificationUpdate(): VerificationUpdateWebhookEvent =
+        verificationUpdate.getOrThrow("verificationUpdate")
 
-    fun asCardStateChangeWebhook(): CardStateChangeWebhook =
-        cardStateChangeWebhook.getOrThrow("cardStateChangeWebhook")
+    fun asCardStateChange(): CardStateChangeWebhookEvent =
+        cardStateChange.getOrThrow("cardStateChange")
 
-    fun asCardFundingSourceChangeWebhook(): CardFundingSourceChangeWebhook =
-        cardFundingSourceChangeWebhook.getOrThrow("cardFundingSourceChangeWebhook")
+    fun asCardFundingSourceChange(): CardFundingSourceChangeWebhookEvent =
+        cardFundingSourceChange.getOrThrow("cardFundingSourceChange")
 
     fun _json(): JsonValue? = _json
 
@@ -124,7 +122,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = unwrapWebhookEvent.accept(object : UnwrapWebhookEvent.Visitor<String?> {
-     *     override fun visitAgentActionWebhook(agentActionWebhook: AgentActionWebhook): String? = agentActionWebhook.toString()
+     *     override fun visitAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent): String? = agentActionPendingApproval.toString()
      *
      *     // ...
      *
@@ -140,23 +138,20 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            agentActionWebhook != null -> visitor.visitAgentActionWebhook(agentActionWebhook)
-            incomingPaymentWebhook != null ->
-                visitor.visitIncomingPaymentWebhook(incomingPaymentWebhook)
-            outgoingPaymentWebhook != null ->
-                visitor.visitOutgoingPaymentWebhook(outgoingPaymentWebhook)
-            testWebhookRequest != null -> visitor.visitTestWebhookRequest(testWebhookRequest)
-            bulkUploadWebhook != null -> visitor.visitBulkUploadWebhook(bulkUploadWebhook)
-            invitationClaimedWebhook != null ->
-                visitor.visitInvitationClaimedWebhook(invitationClaimedWebhook)
-            customerWebhook != null -> visitor.visitCustomerWebhook(customerWebhook)
-            internalAccountStatusWebhook != null ->
-                visitor.visitInternalAccountStatusWebhook(internalAccountStatusWebhook)
-            verificationWebhook != null -> visitor.visitVerificationWebhook(verificationWebhook)
-            cardStateChangeWebhook != null ->
-                visitor.visitCardStateChangeWebhook(cardStateChangeWebhook)
-            cardFundingSourceChangeWebhook != null ->
-                visitor.visitCardFundingSourceChangeWebhook(cardFundingSourceChangeWebhook)
+            agentActionPendingApproval != null ->
+                visitor.visitAgentActionPendingApproval(agentActionPendingApproval)
+            incomingPayment != null -> visitor.visitIncomingPayment(incomingPayment)
+            outgoingPayment != null -> visitor.visitOutgoingPayment(outgoingPayment)
+            test != null -> visitor.visitTest(test)
+            bulkUpload != null -> visitor.visitBulkUpload(bulkUpload)
+            invitationClaimed != null -> visitor.visitInvitationClaimed(invitationClaimed)
+            customerUpdate != null -> visitor.visitCustomerUpdate(customerUpdate)
+            internalAccountStatus != null ->
+                visitor.visitInternalAccountStatus(internalAccountStatus)
+            verificationUpdate != null -> visitor.visitVerificationUpdate(verificationUpdate)
+            cardStateChange != null -> visitor.visitCardStateChange(cardStateChange)
+            cardFundingSourceChange != null ->
+                visitor.visitCardFundingSourceChange(cardFundingSourceChange)
             else -> visitor.unknown(_json)
         }
 
@@ -177,60 +172,58 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitAgentActionWebhook(agentActionWebhook: AgentActionWebhook) {
-                    agentActionWebhook.validate()
-                }
-
-                override fun visitIncomingPaymentWebhook(
-                    incomingPaymentWebhook: IncomingPaymentWebhook
+                override fun visitAgentActionPendingApproval(
+                    agentActionPendingApproval: AgentActionWebhookEvent
                 ) {
-                    incomingPaymentWebhook.validate()
+                    agentActionPendingApproval.validate()
                 }
 
-                override fun visitOutgoingPaymentWebhook(
-                    outgoingPaymentWebhook: OutgoingPaymentWebhook
+                override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) {
+                    incomingPayment.validate()
+                }
+
+                override fun visitOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent) {
+                    outgoingPayment.validate()
+                }
+
+                override fun visitTest(test: TestWebhookRequest) {
+                    test.validate()
+                }
+
+                override fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent) {
+                    bulkUpload.validate()
+                }
+
+                override fun visitInvitationClaimed(
+                    invitationClaimed: InvitationClaimedWebhookEvent
                 ) {
-                    outgoingPaymentWebhook.validate()
+                    invitationClaimed.validate()
                 }
 
-                override fun visitTestWebhookRequest(testWebhookRequest: TestWebhookRequest) {
-                    testWebhookRequest.validate()
+                override fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) {
+                    customerUpdate.validate()
                 }
 
-                override fun visitBulkUploadWebhook(bulkUploadWebhook: BulkUploadWebhook) {
-                    bulkUploadWebhook.validate()
-                }
-
-                override fun visitInvitationClaimedWebhook(
-                    invitationClaimedWebhook: InvitationClaimedWebhook
+                override fun visitInternalAccountStatus(
+                    internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) {
-                    invitationClaimedWebhook.validate()
+                    internalAccountStatus.validate()
                 }
 
-                override fun visitCustomerWebhook(customerWebhook: CustomerWebhook) {
-                    customerWebhook.validate()
-                }
-
-                override fun visitInternalAccountStatusWebhook(
-                    internalAccountStatusWebhook: InternalAccountStatusWebhook
+                override fun visitVerificationUpdate(
+                    verificationUpdate: VerificationUpdateWebhookEvent
                 ) {
-                    internalAccountStatusWebhook.validate()
+                    verificationUpdate.validate()
                 }
 
-                override fun visitVerificationWebhook(verificationWebhook: VerificationWebhook) {
-                    verificationWebhook.validate()
+                override fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent) {
+                    cardStateChange.validate()
                 }
 
-                override fun visitCardStateChangeWebhook(
-                    cardStateChangeWebhook: CardStateChangeWebhook
+                override fun visitCardFundingSourceChange(
+                    cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
                 ) {
-                    cardStateChangeWebhook.validate()
-                }
-
-                override fun visitCardFundingSourceChangeWebhook(
-                    cardFundingSourceChangeWebhook: CardFundingSourceChangeWebhook
-                ) {
-                    cardFundingSourceChangeWebhook.validate()
+                    cardFundingSourceChange.validate()
                 }
             }
         )
@@ -253,44 +246,42 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitAgentActionWebhook(agentActionWebhook: AgentActionWebhook) =
-                    agentActionWebhook.validity()
+                override fun visitAgentActionPendingApproval(
+                    agentActionPendingApproval: AgentActionWebhookEvent
+                ) = agentActionPendingApproval.validity()
 
-                override fun visitIncomingPaymentWebhook(
-                    incomingPaymentWebhook: IncomingPaymentWebhook
-                ) = incomingPaymentWebhook.validity()
+                override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
+                    incomingPayment.validity()
 
-                override fun visitOutgoingPaymentWebhook(
-                    outgoingPaymentWebhook: OutgoingPaymentWebhook
-                ) = outgoingPaymentWebhook.validity()
+                override fun visitOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent) =
+                    outgoingPayment.validity()
 
-                override fun visitTestWebhookRequest(testWebhookRequest: TestWebhookRequest) =
-                    testWebhookRequest.validity()
+                override fun visitTest(test: TestWebhookRequest) = test.validity()
 
-                override fun visitBulkUploadWebhook(bulkUploadWebhook: BulkUploadWebhook) =
-                    bulkUploadWebhook.validity()
+                override fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent) =
+                    bulkUpload.validity()
 
-                override fun visitInvitationClaimedWebhook(
-                    invitationClaimedWebhook: InvitationClaimedWebhook
-                ) = invitationClaimedWebhook.validity()
+                override fun visitInvitationClaimed(
+                    invitationClaimed: InvitationClaimedWebhookEvent
+                ) = invitationClaimed.validity()
 
-                override fun visitCustomerWebhook(customerWebhook: CustomerWebhook) =
-                    customerWebhook.validity()
+                override fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) =
+                    customerUpdate.validity()
 
-                override fun visitInternalAccountStatusWebhook(
-                    internalAccountStatusWebhook: InternalAccountStatusWebhook
-                ) = internalAccountStatusWebhook.validity()
+                override fun visitInternalAccountStatus(
+                    internalAccountStatus: InternalAccountStatusWebhookEvent
+                ) = internalAccountStatus.validity()
 
-                override fun visitVerificationWebhook(verificationWebhook: VerificationWebhook) =
-                    verificationWebhook.validity()
+                override fun visitVerificationUpdate(
+                    verificationUpdate: VerificationUpdateWebhookEvent
+                ) = verificationUpdate.validity()
 
-                override fun visitCardStateChangeWebhook(
-                    cardStateChangeWebhook: CardStateChangeWebhook
-                ) = cardStateChangeWebhook.validity()
+                override fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent) =
+                    cardStateChange.validity()
 
-                override fun visitCardFundingSourceChangeWebhook(
-                    cardFundingSourceChangeWebhook: CardFundingSourceChangeWebhook
-                ) = cardFundingSourceChangeWebhook.validity()
+                override fun visitCardFundingSourceChange(
+                    cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+                ) = cardFundingSourceChange.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -302,96 +293,89 @@ private constructor(
         }
 
         return other is UnwrapWebhookEvent &&
-            agentActionWebhook == other.agentActionWebhook &&
-            incomingPaymentWebhook == other.incomingPaymentWebhook &&
-            outgoingPaymentWebhook == other.outgoingPaymentWebhook &&
-            testWebhookRequest == other.testWebhookRequest &&
-            bulkUploadWebhook == other.bulkUploadWebhook &&
-            invitationClaimedWebhook == other.invitationClaimedWebhook &&
-            customerWebhook == other.customerWebhook &&
-            internalAccountStatusWebhook == other.internalAccountStatusWebhook &&
-            verificationWebhook == other.verificationWebhook &&
-            cardStateChangeWebhook == other.cardStateChangeWebhook &&
-            cardFundingSourceChangeWebhook == other.cardFundingSourceChangeWebhook
+            agentActionPendingApproval == other.agentActionPendingApproval &&
+            incomingPayment == other.incomingPayment &&
+            outgoingPayment == other.outgoingPayment &&
+            test == other.test &&
+            bulkUpload == other.bulkUpload &&
+            invitationClaimed == other.invitationClaimed &&
+            customerUpdate == other.customerUpdate &&
+            internalAccountStatus == other.internalAccountStatus &&
+            verificationUpdate == other.verificationUpdate &&
+            cardStateChange == other.cardStateChange &&
+            cardFundingSourceChange == other.cardFundingSourceChange
     }
 
     override fun hashCode(): Int =
         Objects.hash(
-            agentActionWebhook,
-            incomingPaymentWebhook,
-            outgoingPaymentWebhook,
-            testWebhookRequest,
-            bulkUploadWebhook,
-            invitationClaimedWebhook,
-            customerWebhook,
-            internalAccountStatusWebhook,
-            verificationWebhook,
-            cardStateChangeWebhook,
-            cardFundingSourceChangeWebhook,
+            agentActionPendingApproval,
+            incomingPayment,
+            outgoingPayment,
+            test,
+            bulkUpload,
+            invitationClaimed,
+            customerUpdate,
+            internalAccountStatus,
+            verificationUpdate,
+            cardStateChange,
+            cardFundingSourceChange,
         )
 
     override fun toString(): String =
         when {
-            agentActionWebhook != null ->
-                "UnwrapWebhookEvent{agentActionWebhook=$agentActionWebhook}"
-            incomingPaymentWebhook != null ->
-                "UnwrapWebhookEvent{incomingPaymentWebhook=$incomingPaymentWebhook}"
-            outgoingPaymentWebhook != null ->
-                "UnwrapWebhookEvent{outgoingPaymentWebhook=$outgoingPaymentWebhook}"
-            testWebhookRequest != null ->
-                "UnwrapWebhookEvent{testWebhookRequest=$testWebhookRequest}"
-            bulkUploadWebhook != null -> "UnwrapWebhookEvent{bulkUploadWebhook=$bulkUploadWebhook}"
-            invitationClaimedWebhook != null ->
-                "UnwrapWebhookEvent{invitationClaimedWebhook=$invitationClaimedWebhook}"
-            customerWebhook != null -> "UnwrapWebhookEvent{customerWebhook=$customerWebhook}"
-            internalAccountStatusWebhook != null ->
-                "UnwrapWebhookEvent{internalAccountStatusWebhook=$internalAccountStatusWebhook}"
-            verificationWebhook != null ->
-                "UnwrapWebhookEvent{verificationWebhook=$verificationWebhook}"
-            cardStateChangeWebhook != null ->
-                "UnwrapWebhookEvent{cardStateChangeWebhook=$cardStateChangeWebhook}"
-            cardFundingSourceChangeWebhook != null ->
-                "UnwrapWebhookEvent{cardFundingSourceChangeWebhook=$cardFundingSourceChangeWebhook}"
+            agentActionPendingApproval != null ->
+                "UnwrapWebhookEvent{agentActionPendingApproval=$agentActionPendingApproval}"
+            incomingPayment != null -> "UnwrapWebhookEvent{incomingPayment=$incomingPayment}"
+            outgoingPayment != null -> "UnwrapWebhookEvent{outgoingPayment=$outgoingPayment}"
+            test != null -> "UnwrapWebhookEvent{test=$test}"
+            bulkUpload != null -> "UnwrapWebhookEvent{bulkUpload=$bulkUpload}"
+            invitationClaimed != null -> "UnwrapWebhookEvent{invitationClaimed=$invitationClaimed}"
+            customerUpdate != null -> "UnwrapWebhookEvent{customerUpdate=$customerUpdate}"
+            internalAccountStatus != null ->
+                "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
+            verificationUpdate != null ->
+                "UnwrapWebhookEvent{verificationUpdate=$verificationUpdate}"
+            cardStateChange != null -> "UnwrapWebhookEvent{cardStateChange=$cardStateChange}"
+            cardFundingSourceChange != null ->
+                "UnwrapWebhookEvent{cardFundingSourceChange=$cardFundingSourceChange}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
         }
 
     companion object {
 
-        fun ofAgentActionWebhook(agentActionWebhook: AgentActionWebhook) =
-            UnwrapWebhookEvent(agentActionWebhook = agentActionWebhook)
+        fun ofAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent) =
+            UnwrapWebhookEvent(agentActionPendingApproval = agentActionPendingApproval)
 
-        fun ofIncomingPaymentWebhook(incomingPaymentWebhook: IncomingPaymentWebhook) =
-            UnwrapWebhookEvent(incomingPaymentWebhook = incomingPaymentWebhook)
+        fun ofIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
+            UnwrapWebhookEvent(incomingPayment = incomingPayment)
 
-        fun ofOutgoingPaymentWebhook(outgoingPaymentWebhook: OutgoingPaymentWebhook) =
-            UnwrapWebhookEvent(outgoingPaymentWebhook = outgoingPaymentWebhook)
+        fun ofOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent) =
+            UnwrapWebhookEvent(outgoingPayment = outgoingPayment)
 
-        fun ofTestWebhookRequest(testWebhookRequest: TestWebhookRequest) =
-            UnwrapWebhookEvent(testWebhookRequest = testWebhookRequest)
+        fun ofTest(test: TestWebhookRequest) = UnwrapWebhookEvent(test = test)
 
-        fun ofBulkUploadWebhook(bulkUploadWebhook: BulkUploadWebhook) =
-            UnwrapWebhookEvent(bulkUploadWebhook = bulkUploadWebhook)
+        fun ofBulkUpload(bulkUpload: BulkUploadWebhookEvent) =
+            UnwrapWebhookEvent(bulkUpload = bulkUpload)
 
-        fun ofInvitationClaimedWebhook(invitationClaimedWebhook: InvitationClaimedWebhook) =
-            UnwrapWebhookEvent(invitationClaimedWebhook = invitationClaimedWebhook)
+        fun ofInvitationClaimed(invitationClaimed: InvitationClaimedWebhookEvent) =
+            UnwrapWebhookEvent(invitationClaimed = invitationClaimed)
 
-        fun ofCustomerWebhook(customerWebhook: CustomerWebhook) =
-            UnwrapWebhookEvent(customerWebhook = customerWebhook)
+        fun ofCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent) =
+            UnwrapWebhookEvent(customerUpdate = customerUpdate)
 
-        fun ofInternalAccountStatusWebhook(
-            internalAccountStatusWebhook: InternalAccountStatusWebhook
-        ) = UnwrapWebhookEvent(internalAccountStatusWebhook = internalAccountStatusWebhook)
+        fun ofInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent) =
+            UnwrapWebhookEvent(internalAccountStatus = internalAccountStatus)
 
-        fun ofVerificationWebhook(verificationWebhook: VerificationWebhook) =
-            UnwrapWebhookEvent(verificationWebhook = verificationWebhook)
+        fun ofVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent) =
+            UnwrapWebhookEvent(verificationUpdate = verificationUpdate)
 
-        fun ofCardStateChangeWebhook(cardStateChangeWebhook: CardStateChangeWebhook) =
-            UnwrapWebhookEvent(cardStateChangeWebhook = cardStateChangeWebhook)
+        fun ofCardStateChange(cardStateChange: CardStateChangeWebhookEvent) =
+            UnwrapWebhookEvent(cardStateChange = cardStateChange)
 
-        fun ofCardFundingSourceChangeWebhook(
-            cardFundingSourceChangeWebhook: CardFundingSourceChangeWebhook
-        ) = UnwrapWebhookEvent(cardFundingSourceChangeWebhook = cardFundingSourceChangeWebhook)
+        fun ofCardFundingSourceChange(
+            cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
+        ) = UnwrapWebhookEvent(cardFundingSourceChange = cardFundingSourceChange)
     }
 
     /**
@@ -400,30 +384,28 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitAgentActionWebhook(agentActionWebhook: AgentActionWebhook): T
+        fun visitAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent): T
 
-        fun visitIncomingPaymentWebhook(incomingPaymentWebhook: IncomingPaymentWebhook): T
+        fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent): T
 
-        fun visitOutgoingPaymentWebhook(outgoingPaymentWebhook: OutgoingPaymentWebhook): T
+        fun visitOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent): T
 
-        fun visitTestWebhookRequest(testWebhookRequest: TestWebhookRequest): T
+        fun visitTest(test: TestWebhookRequest): T
 
-        fun visitBulkUploadWebhook(bulkUploadWebhook: BulkUploadWebhook): T
+        fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent): T
 
-        fun visitInvitationClaimedWebhook(invitationClaimedWebhook: InvitationClaimedWebhook): T
+        fun visitInvitationClaimed(invitationClaimed: InvitationClaimedWebhookEvent): T
 
-        fun visitCustomerWebhook(customerWebhook: CustomerWebhook): T
+        fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent): T
 
-        fun visitInternalAccountStatusWebhook(
-            internalAccountStatusWebhook: InternalAccountStatusWebhook
-        ): T
+        fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
 
-        fun visitVerificationWebhook(verificationWebhook: VerificationWebhook): T
+        fun visitVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent): T
 
-        fun visitCardStateChangeWebhook(cardStateChangeWebhook: CardStateChangeWebhook): T
+        fun visitCardStateChange(cardStateChange: CardStateChangeWebhookEvent): T
 
-        fun visitCardFundingSourceChangeWebhook(
-            cardFundingSourceChangeWebhook: CardFundingSourceChangeWebhook
+        fun visitCardFundingSourceChange(
+            cardFundingSourceChange: CardFundingSourceChangeWebhookEvent
         ): T
 
         /**
@@ -447,47 +429,55 @@ private constructor(
             val json = JsonValue.fromJsonNode(node)
             val type = json.asObject()?.get("type")?.asString()
 
-            when (type) {}
+            when (type) {
+                "AGENT_ACTION.PENDING_APPROVAL" -> {
+                    return tryDeserialize(node, jacksonTypeRef<AgentActionWebhookEvent>())?.let {
+                        UnwrapWebhookEvent(agentActionPendingApproval = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
+                "TEST" -> {
+                    return tryDeserialize(node, jacksonTypeRef<TestWebhookRequest>())?.let {
+                        UnwrapWebhookEvent(test = it, _json = json)
+                    } ?: UnwrapWebhookEvent(_json = json)
+                }
+                "INVITATION.CLAIMED" -> {
+                    return tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhookEvent>())
+                        ?.let { UnwrapWebhookEvent(invitationClaimed = it, _json = json) }
+                        ?: UnwrapWebhookEvent(_json = json)
+                }
+                "CARD.STATE_CHANGE" -> {
+                    return tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhookEvent>())
+                        ?.let { UnwrapWebhookEvent(cardStateChange = it, _json = json) }
+                        ?: UnwrapWebhookEvent(_json = json)
+                }
+                "CARD.FUNDING_SOURCE_CHANGE" -> {
+                    return tryDeserialize(
+                            node,
+                            jacksonTypeRef<CardFundingSourceChangeWebhookEvent>(),
+                        )
+                        ?.let { UnwrapWebhookEvent(cardFundingSourceChange = it, _json = json) }
+                        ?: UnwrapWebhookEvent(_json = json)
+                }
+            }
 
             val bestMatches =
                 sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<AgentActionWebhook>())?.let {
-                            UnwrapWebhookEvent(agentActionWebhook = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<IncomingPaymentWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(incomingPayment = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<IncomingPaymentWebhook>())?.let {
-                            UnwrapWebhookEvent(incomingPaymentWebhook = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<OutgoingPaymentWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(outgoingPayment = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<OutgoingPaymentWebhook>())?.let {
-                            UnwrapWebhookEvent(outgoingPaymentWebhook = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<BulkUploadWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(bulkUpload = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<TestWebhookRequest>())?.let {
-                            UnwrapWebhookEvent(testWebhookRequest = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<CustomerUpdateWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(customerUpdate = it, _json = json)
                         },
-                        tryDeserialize(node, jacksonTypeRef<BulkUploadWebhook>())?.let {
-                            UnwrapWebhookEvent(bulkUploadWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhook>())?.let {
-                            UnwrapWebhookEvent(invitationClaimedWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<CustomerWebhook>())?.let {
-                            UnwrapWebhookEvent(customerWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<InternalAccountStatusWebhook>())?.let {
-                            UnwrapWebhookEvent(internalAccountStatusWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<VerificationWebhook>())?.let {
-                            UnwrapWebhookEvent(verificationWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhook>())?.let {
-                            UnwrapWebhookEvent(cardStateChangeWebhook = it, _json = json)
-                        },
-                        tryDeserialize(node, jacksonTypeRef<CardFundingSourceChangeWebhook>())
-                            ?.let {
-                                UnwrapWebhookEvent(
-                                    cardFundingSourceChangeWebhook = it,
-                                    _json = json,
-                                )
-                            },
+                        tryDeserialize(node, jacksonTypeRef<InternalAccountStatusWebhookEvent>())
+                            ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
+                        tryDeserialize(node, jacksonTypeRef<VerificationUpdateWebhookEvent>())
+                            ?.let { UnwrapWebhookEvent(verificationUpdate = it, _json = json) },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -512,24 +502,20 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.agentActionWebhook != null -> generator.writeObject(value.agentActionWebhook)
-                value.incomingPaymentWebhook != null ->
-                    generator.writeObject(value.incomingPaymentWebhook)
-                value.outgoingPaymentWebhook != null ->
-                    generator.writeObject(value.outgoingPaymentWebhook)
-                value.testWebhookRequest != null -> generator.writeObject(value.testWebhookRequest)
-                value.bulkUploadWebhook != null -> generator.writeObject(value.bulkUploadWebhook)
-                value.invitationClaimedWebhook != null ->
-                    generator.writeObject(value.invitationClaimedWebhook)
-                value.customerWebhook != null -> generator.writeObject(value.customerWebhook)
-                value.internalAccountStatusWebhook != null ->
-                    generator.writeObject(value.internalAccountStatusWebhook)
-                value.verificationWebhook != null ->
-                    generator.writeObject(value.verificationWebhook)
-                value.cardStateChangeWebhook != null ->
-                    generator.writeObject(value.cardStateChangeWebhook)
-                value.cardFundingSourceChangeWebhook != null ->
-                    generator.writeObject(value.cardFundingSourceChangeWebhook)
+                value.agentActionPendingApproval != null ->
+                    generator.writeObject(value.agentActionPendingApproval)
+                value.incomingPayment != null -> generator.writeObject(value.incomingPayment)
+                value.outgoingPayment != null -> generator.writeObject(value.outgoingPayment)
+                value.test != null -> generator.writeObject(value.test)
+                value.bulkUpload != null -> generator.writeObject(value.bulkUpload)
+                value.invitationClaimed != null -> generator.writeObject(value.invitationClaimed)
+                value.customerUpdate != null -> generator.writeObject(value.customerUpdate)
+                value.internalAccountStatus != null ->
+                    generator.writeObject(value.internalAccountStatus)
+                value.verificationUpdate != null -> generator.writeObject(value.verificationUpdate)
+                value.cardStateChange != null -> generator.writeObject(value.cardStateChange)
+                value.cardFundingSourceChange != null ->
+                    generator.writeObject(value.cardFundingSourceChange)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
             }

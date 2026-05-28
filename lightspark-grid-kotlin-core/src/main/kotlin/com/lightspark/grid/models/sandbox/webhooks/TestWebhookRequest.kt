@@ -13,7 +13,6 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.webhooks.BaseWebhook
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
@@ -23,7 +22,7 @@ class TestWebhookRequest
 private constructor(
     private val id: JsonField<String>,
     private val timestamp: JsonField<OffsetDateTime>,
-    private val type: JsonValue,
+    private val type: JsonField<Type>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -33,11 +32,8 @@ private constructor(
         @JsonProperty("timestamp")
         @ExcludeMissing
         timestamp: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
     ) : this(id, timestamp, type, mutableMapOf())
-
-    fun toBaseWebhook(): BaseWebhook =
-        BaseWebhook.builder().id(id).timestamp(timestamp).type(type).build()
 
     /**
      * Unique identifier for this webhook delivery (can be used for idempotency)
@@ -56,12 +52,10 @@ private constructor(
     fun timestamp(): OffsetDateTime = timestamp.getRequired("timestamp")
 
     /**
-     * This arbitrary value can be deserialized into a custom type using the `convert` method:
-     * ```kotlin
-     * val myObject: MyClass = testWebhookRequest.type().convert(MyClass::class.java)
-     * ```
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
+    fun type(): Type = type.getRequired("type")
 
     /**
      * Returns the raw JSON value of [id].
@@ -78,6 +72,13 @@ private constructor(
     @JsonProperty("timestamp")
     @ExcludeMissing
     fun _timestamp(): JsonField<OffsetDateTime> = timestamp
+
+    /**
+     * Returns the raw JSON value of [type].
+     *
+     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -111,7 +112,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var timestamp: JsonField<OffsetDateTime>? = null
-        private var type: JsonValue? = null
+        private var type: JsonField<Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(testWebhookRequest: TestWebhookRequest) = apply {
@@ -144,7 +145,15 @@ private constructor(
          */
         fun timestamp(timestamp: JsonField<OffsetDateTime>) = apply { this.timestamp = timestamp }
 
-        fun type(type: JsonValue) = apply { this.type = type }
+        fun type(type: Type) = type(JsonField.of(type))
+
+        /**
+         * Sets [Builder.type] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun type(type: JsonField<Type>) = apply { this.type = type }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -205,6 +214,7 @@ private constructor(
 
         id()
         timestamp()
+        type().validate()
         validated = true
     }
 
@@ -222,7 +232,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (id.asKnown() == null) 0 else 1) + (if (timestamp.asKnown() == null) 0 else 1)
+        (if (id.asKnown() == null) 0 else 1) +
+            (if (timestamp.asKnown() == null) 0 else 1) +
+            (type.asKnown()?.validity() ?: 0)
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 

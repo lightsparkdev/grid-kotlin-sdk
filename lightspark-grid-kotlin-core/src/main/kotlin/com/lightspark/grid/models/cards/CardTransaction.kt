@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -40,7 +41,7 @@ private constructor(
     private val pullSummary: JsonField<CardPullSummary>,
     private val refundSummary: JsonField<CardRefundSummary>,
     private val settlementSummary: JsonField<CardSettlementSummary>,
-    private val status: JsonField<CardTransactionStatus>,
+    private val status: JsonField<Status>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val issuerTransactionToken: JsonField<String>,
     private val lastEventAt: JsonField<OffsetDateTime>,
@@ -75,9 +76,7 @@ private constructor(
         @JsonProperty("settlementSummary")
         @ExcludeMissing
         settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of(),
-        @JsonProperty("status")
-        @ExcludeMissing
-        status: JsonField<CardTransactionStatus> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -199,7 +198,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun status(): CardTransactionStatus = status.getRequired("status")
+    fun status(): Status = status.getRequired("status")
 
     /**
      * Last update timestamp.
@@ -329,7 +328,7 @@ private constructor(
      *
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<CardTransactionStatus> = status
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -426,7 +425,7 @@ private constructor(
         private var pullSummary: JsonField<CardPullSummary>? = null
         private var refundSummary: JsonField<CardRefundSummary>? = null
         private var settlementSummary: JsonField<CardSettlementSummary>? = null
-        private var status: JsonField<CardTransactionStatus>? = null
+        private var status: JsonField<Status>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
         private var lastEventAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -594,16 +593,15 @@ private constructor(
          * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
          * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
          */
-        fun status(status: CardTransactionStatus) = status(JsonField.of(status))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
          * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.status] with a well-typed [CardTransactionStatus] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun status(status: JsonField<CardTransactionStatus>) = apply { this.status = status }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /** Last update timestamp. */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -808,6 +806,169 @@ private constructor(
             (if (lastEventAt.asKnown() == null) 0 else 1) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
             (settledAmount.asKnown()?.validity() ?: 0)
+
+    /**
+     * Lifecycle status of a card transaction.
+     *
+     * |Status             |Description                                                                                                                                                                                                                                    |
+     * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
+     * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
+     * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+     * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
+     */
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val AUTHORIZED = of("AUTHORIZED")
+
+            val PARTIALLY_SETTLED = of("PARTIALLY_SETTLED")
+
+            val SETTLED = of("SETTLED")
+
+            val REFUNDED = of("REFUNDED")
+
+            val EXCEPTION = of("EXCEPTION")
+
+            fun of(value: String) = Status(JsonField.of(value))
+        }
+
+        /** An enum containing [Status]'s known values. */
+        enum class Known {
+            AUTHORIZED,
+            PARTIALLY_SETTLED,
+            SETTLED,
+            REFUNDED,
+            EXCEPTION,
+        }
+
+        /**
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Status] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            AUTHORIZED,
+            PARTIALLY_SETTLED,
+            SETTLED,
+            REFUNDED,
+            EXCEPTION,
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                AUTHORIZED -> Value.AUTHORIZED
+                PARTIALLY_SETTLED -> Value.PARTIALLY_SETTLED
+                SETTLED -> Value.SETTLED
+                REFUNDED -> Value.REFUNDED
+                EXCEPTION -> Value.EXCEPTION
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                AUTHORIZED -> Known.AUTHORIZED
+                PARTIALLY_SETTLED -> Known.PARTIALLY_SETTLED
+                SETTLED -> Known.SETTLED
+                REFUNDED -> Known.REFUNDED
+                EXCEPTION -> Known.EXCEPTION
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Status = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Status && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

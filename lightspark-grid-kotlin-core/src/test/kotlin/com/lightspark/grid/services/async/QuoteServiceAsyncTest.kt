@@ -7,7 +7,6 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.junit.jupiter.api.Disabled
@@ -35,7 +34,7 @@ internal class QuoteServiceAsyncTest {
                         QuoteRequest.builder()
                             .destination(QuoteDestinationOneOf.builder().build())
                             .lockedCurrencyAmount(1000L)
-                            .lockedCurrencySide(QuoteLockSide.SENDING)
+                            .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
                             .source(QuoteSourceOneOf.builder().build())
                             .description("Invoice #1234 payment")
                             .immediatelyExecute(false)

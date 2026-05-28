@@ -7,7 +7,6 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.AedBeneficiary
 import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreateInfoOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -51,7 +50,7 @@ internal class PlatformExternalAccountCreateRequestTest {
 
         assertThat(platformExternalAccountCreateRequest.accountInfo())
             .isEqualTo(
-                ExternalAccountCreateInfoOneOf.ofAedAccount(
+                PlatformExternalAccountCreateRequest.AccountInfo.ofAedAccount(
                     AedExternalAccountCreateInfo.builder()
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(

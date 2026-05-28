@@ -14,7 +14,7 @@ internal class VerificationListParamsTest {
             .cursor("cursor")
             .customerId("customerId")
             .limit(1L)
-            .verificationStatus(VerificationStatus.RESOLVE_ERRORS)
+            .verificationStatus(VerificationListParams.VerificationStatus.RESOLVE_ERRORS)
             .build()
     }
 
@@ -25,7 +25,7 @@ internal class VerificationListParamsTest {
                 .cursor("cursor")
                 .customerId("customerId")
                 .limit(1L)
-                .verificationStatus(VerificationStatus.RESOLVE_ERRORS)
+                .verificationStatus(VerificationListParams.VerificationStatus.RESOLVE_ERRORS)
                 .build()
 
         val queryParams = params._queryParams()

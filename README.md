@@ -59,7 +59,6 @@ import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
@@ -70,7 +69,7 @@ val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 val params: QuoteRequest = QuoteRequest.builder()
     .destination(QuoteDestinationOneOf.builder().build())
     .lockedCurrencyAmount(1000L)
-    .lockedCurrencySide(QuoteLockSide.SENDING)
+    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
     .source(QuoteSourceOneOf.builder().build())
     .build()
 val quote: Quote = client.quotes().create(params)
@@ -171,7 +170,6 @@ import com.lightspark.grid.client.LightsparkGridClient
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
@@ -182,7 +180,7 @@ val client: LightsparkGridClient = LightsparkGridOkHttpClient.fromEnv()
 val params: QuoteRequest = QuoteRequest.builder()
     .destination(QuoteDestinationOneOf.builder().build())
     .lockedCurrencyAmount(1000L)
-    .lockedCurrencySide(QuoteLockSide.SENDING)
+    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
     .source(QuoteSourceOneOf.builder().build())
     .build()
 val quote: Quote = client.async().quotes().create(params)
@@ -195,7 +193,6 @@ import com.lightspark.grid.client.LightsparkGridClientAsync
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
@@ -206,7 +203,7 @@ val client: LightsparkGridClientAsync = LightsparkGridOkHttpClientAsync.fromEnv(
 val params: QuoteRequest = QuoteRequest.builder()
     .destination(QuoteDestinationOneOf.builder().build())
     .lockedCurrencyAmount(1000L)
-    .lockedCurrencySide(QuoteLockSide.SENDING)
+    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
     .source(QuoteSourceOneOf.builder().build())
     .build()
 val quote: Quote = client.quotes().create(params)
@@ -285,14 +282,13 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
 val params: QuoteRequest = QuoteRequest.builder()
     .destination(QuoteDestinationOneOf.builder().build())
     .lockedCurrencyAmount(1000L)
-    .lockedCurrencySide(QuoteLockSide.SENDING)
+    .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
     .source(QuoteSourceOneOf.builder().build())
     .build()
 val quote: HttpResponseFor<Quote> = client.quotes().withRawResponse().create(params)
@@ -625,7 +621,6 @@ To set a documented parameter or property to an undocumented or not yet supporte
 ```kotlin
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
@@ -633,7 +628,7 @@ val params: QuoteCreateParams = QuoteCreateParams.builder()
     .quoteRequest(QuoteRequest.builder()
         .destination(QuoteDestinationOneOf.builder().build())
         .lockedCurrencyAmount(1000L)
-        .lockedCurrencySide(QuoteLockSide.SENDING)
+        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
         .source(QuoteSourceOneOf.builder().build())
         .build())
     .build()
@@ -682,7 +677,6 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](lightspa
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 
@@ -690,7 +684,7 @@ val params: QuoteCreateParams = QuoteCreateParams.builder()
     .quoteRequest(QuoteRequest.builder()
         .destination(QuoteDestinationOneOf.builder().build())
         .lockedCurrencyAmount(1000L)
-        .lockedCurrencySide(QuoteLockSide.SENDING)
+        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
         .source(QuoteSourceOneOf.builder().build())
         .build())
     .destination(JsonMissing.of())

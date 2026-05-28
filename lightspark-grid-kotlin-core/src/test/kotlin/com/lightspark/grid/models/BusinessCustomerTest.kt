@@ -6,11 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRole
-import com.lightspark.grid.models.customers.BusinessType
-import com.lightspark.grid.models.customers.EntityType
-import com.lightspark.grid.models.customers.KybStatus
-import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -49,7 +44,7 @@ internal class BusinessCustomerTest {
                         .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .kycStatus(KycStatus.APPROVED)
+                        .kycStatus(BeneficialOwner.KycStatus.APPROVED)
                         .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerPersonalInfo.builder()
@@ -75,34 +70,41 @@ internal class BusinessCustomerTest {
                                 .phoneNumber("+14155550192")
                                 .build()
                         )
-                        .addRole(BeneficialOwnerRole.UBO)
-                        .addRole(BeneficialOwnerRole.DIRECTOR)
+                        .addRole(BeneficialOwner.Role.UBO)
+                        .addRole(BeneficialOwner.Role.DIRECTOR)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
                 .businessInfo(
                     BusinessCustomer.BusinessInfo.builder()
-                        .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                        .legalName("Acme Corporation, Inc.")
+                        .businessType(
+                            BusinessCustomer.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(EntityType.LLC)
+                        .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
-                .kybStatus(KybStatus.APPROVED)
+                .kybStatus(BusinessCustomer.KybStatus.APPROVED)
                 .build()
 
         assertThat(businessCustomer._customerType()).isEqualTo(JsonValue.from("BUSINESS"))
@@ -134,7 +136,7 @@ internal class BusinessCustomerTest {
                     .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .kycStatus(KycStatus.APPROVED)
+                    .kycStatus(BeneficialOwner.KycStatus.APPROVED)
                     .ownershipPercentage(51L)
                     .personalInfo(
                         BeneficialOwnerPersonalInfo.builder()
@@ -160,35 +162,42 @@ internal class BusinessCustomerTest {
                             .phoneNumber("+14155550192")
                             .build()
                     )
-                    .addRole(BeneficialOwnerRole.UBO)
-                    .addRole(BeneficialOwnerRole.DIRECTOR)
+                    .addRole(BeneficialOwner.Role.UBO)
+                    .addRole(BeneficialOwner.Role.DIRECTOR)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .build()
             )
         assertThat(businessCustomer.businessInfo())
             .isEqualTo(
                 BusinessCustomer.BusinessInfo.builder()
-                    .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                    .legalName("Acme Corporation, Inc.")
+                    .businessType(
+                        BusinessCustomer.BusinessInfo.BusinessType
+                            .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                    )
                     .addCountriesOfOperation("US")
                     .country("US")
                     .doingBusinessAs("Acme")
-                    .entityType(EntityType.LLC)
+                    .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                     .expectedMonthlyTransactionCount(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
                     )
                     .expectedMonthlyTransactionVolume(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
                     )
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
-                    .legalName("Acme Corporation, Inc.")
-                    .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                    .purposeOfAccount(
+                        BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
                     .taxId("47-1234567")
                     .build()
             )
-        assertThat(businessCustomer.kybStatus()).isEqualTo(KybStatus.APPROVED)
+        assertThat(businessCustomer.kybStatus()).isEqualTo(BusinessCustomer.KybStatus.APPROVED)
     }
 
     @Test
@@ -222,7 +231,7 @@ internal class BusinessCustomerTest {
                         .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .kycStatus(KycStatus.APPROVED)
+                        .kycStatus(BeneficialOwner.KycStatus.APPROVED)
                         .ownershipPercentage(51L)
                         .personalInfo(
                             BeneficialOwnerPersonalInfo.builder()
@@ -248,34 +257,41 @@ internal class BusinessCustomerTest {
                                 .phoneNumber("+14155550192")
                                 .build()
                         )
-                        .addRole(BeneficialOwnerRole.UBO)
-                        .addRole(BeneficialOwnerRole.DIRECTOR)
+                        .addRole(BeneficialOwner.Role.UBO)
+                        .addRole(BeneficialOwner.Role.DIRECTOR)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
                 .businessInfo(
                     BusinessCustomer.BusinessInfo.builder()
-                        .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                        .legalName("Acme Corporation, Inc.")
+                        .businessType(
+                            BusinessCustomer.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(EntityType.LLC)
+                        .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
-                .kybStatus(KybStatus.APPROVED)
+                .kybStatus(BusinessCustomer.KybStatus.APPROVED)
                 .build()
 
         val roundtrippedBusinessCustomer =

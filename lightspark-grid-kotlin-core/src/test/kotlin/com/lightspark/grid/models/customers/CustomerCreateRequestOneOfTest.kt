@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.BusinessInfoUpdate
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
@@ -37,7 +36,7 @@ internal class CustomerCreateRequestOneOfTest {
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
                 .fullName("John Michael Doe")
-                .kycStatus(KycStatus.APPROVED)
+                .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                 .nationality("US")
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .region("US")
@@ -72,7 +71,7 @@ internal class CustomerCreateRequestOneOfTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .fullName("John Michael Doe")
-                    .kycStatus(KycStatus.APPROVED)
+                    .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
@@ -106,30 +105,40 @@ internal class CustomerCreateRequestOneOfTest {
                 )
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
-                        .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                        .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .legalName("Acme Corporation, Inc.")
+                        .taxId("47-1234567")
+                        .businessType(
+                            BusinessCustomerCreateRequest.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(EntityType.LLC)
+                        .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomerCreateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomerCreateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
-                        .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
+                                .CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
-                        .taxId("47-1234567")
                         .build()
                 )
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
-                .kybStatus(KybStatus.APPROVED)
+                .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
@@ -160,35 +169,42 @@ internal class CustomerCreateRequestOneOfTest {
                     )
                     .businessInfo(
                         BusinessCustomerCreateRequest.BusinessInfo.builder()
-                            .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                            .incorporatedOn(LocalDate.parse("2018-03-14"))
+                            .legalName("Acme Corporation, Inc.")
+                            .taxId("47-1234567")
+                            .businessType(
+                                BusinessCustomerCreateRequest.BusinessInfo.BusinessType
+                                    .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            )
                             .addCountriesOfOperation("US")
                             .country("US")
                             .doingBusinessAs("Acme")
-                            .entityType(EntityType.LLC)
+                            .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
                             .expectedMonthlyTransactionCount(
-                                BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                                BusinessCustomerCreateRequest.BusinessInfo
+                                    .ExpectedMonthlyTransactionCount
+                                    .COUNT_100_TO_500
                             )
                             .expectedMonthlyTransactionVolume(
-                                BusinessInfoUpdate.ExpectedMonthlyTransactionVolume
+                                BusinessCustomerCreateRequest.BusinessInfo
+                                    .ExpectedMonthlyTransactionVolume
                                     .VOLUME_100_K_TO_1_M
                             )
                             .addExpectedRecipientJurisdiction("US")
-                            .incorporatedOn(LocalDate.parse("2018-03-14"))
-                            .legalName("Acme Corporation, Inc.")
                             .purposeOfAccount(
-                                BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                                BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
+                                    .CONTRACTOR_PAYOUTS
                             )
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
-                            .taxId("47-1234567")
                             .build()
                     )
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
-                    .kybStatus(KybStatus.APPROVED)
+                    .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")

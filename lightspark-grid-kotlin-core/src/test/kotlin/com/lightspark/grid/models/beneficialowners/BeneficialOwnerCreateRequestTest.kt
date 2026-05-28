@@ -41,8 +41,8 @@ internal class BeneficialOwnerCreateRequestTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRole.UBO)
-                .addRole(BeneficialOwnerRole.DIRECTOR)
+                .addRole(BeneficialOwnerCreateRequest.Role.UBO)
+                .addRole(BeneficialOwnerCreateRequest.Role.DIRECTOR)
                 .build()
 
         assertThat(beneficialOwnerCreateRequest.customerId())
@@ -74,7 +74,10 @@ internal class BeneficialOwnerCreateRequestTest {
                     .build()
             )
         assertThat(beneficialOwnerCreateRequest.roles())
-            .containsExactly(BeneficialOwnerRole.UBO, BeneficialOwnerRole.DIRECTOR)
+            .containsExactly(
+                BeneficialOwnerCreateRequest.Role.UBO,
+                BeneficialOwnerCreateRequest.Role.DIRECTOR,
+            )
     }
 
     @Test
@@ -108,8 +111,8 @@ internal class BeneficialOwnerCreateRequestTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRole.UBO)
-                .addRole(BeneficialOwnerRole.DIRECTOR)
+                .addRole(BeneficialOwnerCreateRequest.Role.UBO)
+                .addRole(BeneficialOwnerCreateRequest.Role.DIRECTOR)
                 .build()
 
         val roundtrippedBeneficialOwnerCreateRequest =

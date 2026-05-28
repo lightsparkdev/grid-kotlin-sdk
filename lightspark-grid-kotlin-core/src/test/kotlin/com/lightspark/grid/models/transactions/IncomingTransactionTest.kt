@@ -5,7 +5,6 @@ package com.lightspark.grid.models.transactions
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import java.time.OffsetDateTime
@@ -20,7 +19,7 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(TransactionDestinationOneOf.builder().build())
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -39,7 +38,7 @@ internal class IncomingTransactionTest {
                 .type(IncomingTransaction.Type.INCOMING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    IncomingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -47,7 +46,7 @@ internal class IncomingTransactionTest {
                 )
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
-                .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
+                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()
@@ -74,8 +73,8 @@ internal class IncomingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(incomingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(incomingTransaction.destination())
-            .isEqualTo(TransactionDestinationOneOf.builder().build())
+        assertThat(incomingTransaction._destination())
+            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(incomingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(incomingTransaction.receivedAmount())
             .isEqualTo(
@@ -97,7 +96,7 @@ internal class IncomingTransactionTest {
             .isEqualTo("Agent:019542f5-b3e7-1d02-0000-000000000042")
         assertThat(incomingTransaction.counterpartyInformation())
             .isEqualTo(
-                CounterpartyInformation.builder()
+                IncomingTransaction.CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -107,7 +106,7 @@ internal class IncomingTransactionTest {
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
         assertThat(incomingTransaction.description()).isEqualTo("Payment for invoice #1234")
         assertThat(incomingTransaction.failureReason())
-            .isEqualTo(IncomingTransactionFailureReason.LNURLP_FAILED)
+            .isEqualTo(IncomingTransaction.FailureReason.LNURLP_FAILED)
         assertThat(incomingTransaction.fees()).isEqualTo(10L)
         assertThat(incomingTransaction.rateDetails())
             .isEqualTo(
@@ -141,7 +140,7 @@ internal class IncomingTransactionTest {
             IncomingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(TransactionDestinationOneOf.builder().build())
+                .destination(JsonValue.from(mapOf<String, Any>()))
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .receivedAmount(
                     CurrencyAmount.builder()
@@ -160,7 +159,7 @@ internal class IncomingTransactionTest {
                 .type(IncomingTransaction.Type.INCOMING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
-                    CounterpartyInformation.builder()
+                    IncomingTransaction.CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -168,7 +167,7 @@ internal class IncomingTransactionTest {
                 )
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
-                .failureReason(IncomingTransactionFailureReason.LNURLP_FAILED)
+                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()

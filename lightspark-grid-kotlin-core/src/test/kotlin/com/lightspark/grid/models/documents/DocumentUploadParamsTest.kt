@@ -16,7 +16,7 @@ internal class DocumentUploadParamsTest {
                 DocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentType(DocumentType.PASSPORT)
+                    .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                     .file("Example data")
                     .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")
@@ -34,7 +34,7 @@ internal class DocumentUploadParamsTest {
                     DocumentUploadRequest.builder()
                         .country("US")
                         .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                        .documentType(DocumentType.PASSPORT)
+                        .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                         .file("Example data")
                         .documentNumber("A12345678")
                         .issuingAuthority("U.S. Department of State")
@@ -63,7 +63,7 @@ internal class DocumentUploadParamsTest {
                                         .documentHolder(
                                             "BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001"
                                         )
-                                        .documentType(DocumentType.PASSPORT)
+                                        .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                                         .file("Example data")
                                         .documentNumber("A12345678")
                                         .issuingAuthority("U.S. Department of State")
@@ -87,7 +87,7 @@ internal class DocumentUploadParamsTest {
                     DocumentUploadRequest.builder()
                         .country("US")
                         .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                        .documentType(DocumentType.PASSPORT)
+                        .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                         .file("Example data")
                         .build()
                 )
@@ -113,7 +113,7 @@ internal class DocumentUploadParamsTest {
                                         .documentHolder(
                                             "BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001"
                                         )
-                                        .documentType(DocumentType.PASSPORT)
+                                        .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                                         .file("Example data")
                                         .build()
                                 )

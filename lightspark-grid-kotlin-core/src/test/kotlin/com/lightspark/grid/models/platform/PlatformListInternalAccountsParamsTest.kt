@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.platform
 
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.models.customers.InternalAccountType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +12,7 @@ internal class PlatformListInternalAccountsParamsTest {
     fun create() {
         PlatformListInternalAccountsParams.builder()
             .currency("currency")
-            .type(InternalAccountType.INTERNAL_FIAT)
+            .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
             .build()
     }
 
@@ -22,7 +21,7 @@ internal class PlatformListInternalAccountsParamsTest {
         val params =
             PlatformListInternalAccountsParams.builder()
                 .currency("currency")
-                .type(InternalAccountType.INTERNAL_FIAT)
+                .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
                 .build()
 
         val queryParams = params._queryParams()

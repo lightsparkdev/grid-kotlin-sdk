@@ -14,7 +14,7 @@ internal class DocumentReplaceRequestTest {
         val documentReplaceRequest =
             DocumentReplaceRequest.builder()
                 .country("US")
-                .documentType(DocumentType.PASSPORT)
+                .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                 .file("Example data")
                 .documentNumber("A12345678")
                 .issuingAuthority("U.S. Department of State")
@@ -22,7 +22,8 @@ internal class DocumentReplaceRequestTest {
                 .build()
 
         assertThat(documentReplaceRequest.country()).isEqualTo("US")
-        assertThat(documentReplaceRequest.documentType()).isEqualTo(DocumentType.PASSPORT)
+        assertThat(documentReplaceRequest.documentType())
+            .isEqualTo(DocumentReplaceRequest.DocumentType.PASSPORT)
         assertThat(documentReplaceRequest.file()).isEqualTo("Example data")
         assertThat(documentReplaceRequest.documentNumber()).isEqualTo("A12345678")
         assertThat(documentReplaceRequest.issuingAuthority()).isEqualTo("U.S. Department of State")
@@ -35,7 +36,7 @@ internal class DocumentReplaceRequestTest {
         val documentReplaceRequest =
             DocumentReplaceRequest.builder()
                 .country("US")
-                .documentType(DocumentType.PASSPORT)
+                .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                 .file("Example data")
                 .documentNumber("A12345678")
                 .issuingAuthority("U.S. Department of State")

@@ -25,10 +25,10 @@ internal class AgentListResponseTest {
                         .name("Payroll Automation Agent")
                         .policy(
                             AgentPolicy.builder()
-                                .defaultExecutionMode(AgentExecutionMode.AUTO)
-                                .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                                .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                                .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                                 .spendingLimits(
-                                    AgentSpendingLimits.builder()
+                                    AgentPolicy.SpendingLimits.builder()
                                         .currency("USD")
                                         .perTransactionLimit(50000L)
                                         .dailyLimit(500000L)
@@ -43,7 +43,7 @@ internal class AgentListResponseTest {
                                                 .accountId(
                                                     "Account:019542f5-b3e7-1d02-0000-000000000001"
                                                 )
-                                                .executionMode(AgentExecutionMode.AUTO)
+                                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                                 .perTransactionLimit(10000L)
                                                 .build()
                                         )
@@ -88,10 +88,10 @@ internal class AgentListResponseTest {
                     .name("Payroll Automation Agent")
                     .policy(
                         AgentPolicy.builder()
-                            .defaultExecutionMode(AgentExecutionMode.AUTO)
-                            .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                            .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                            .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                             .spendingLimits(
-                                AgentSpendingLimits.builder()
+                                AgentPolicy.SpendingLimits.builder()
                                     .currency("USD")
                                     .perTransactionLimit(50000L)
                                     .dailyLimit(500000L)
@@ -106,7 +106,7 @@ internal class AgentListResponseTest {
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
-                                            .executionMode(AgentExecutionMode.AUTO)
+                                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                             .perTransactionLimit(10000L)
                                             .build()
                                     )
@@ -155,10 +155,10 @@ internal class AgentListResponseTest {
                         .name("Payroll Automation Agent")
                         .policy(
                             AgentPolicy.builder()
-                                .defaultExecutionMode(AgentExecutionMode.AUTO)
-                                .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                                .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                                .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                                 .spendingLimits(
-                                    AgentSpendingLimits.builder()
+                                    AgentPolicy.SpendingLimits.builder()
                                         .currency("USD")
                                         .perTransactionLimit(50000L)
                                         .dailyLimit(500000L)
@@ -173,7 +173,7 @@ internal class AgentListResponseTest {
                                                 .accountId(
                                                     "Account:019542f5-b3e7-1d02-0000-000000000001"
                                                 )
-                                                .executionMode(AgentExecutionMode.AUTO)
+                                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                                 .perTransactionLimit(10000L)
                                                 .build()
                                         )

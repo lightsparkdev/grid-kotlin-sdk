@@ -4,7 +4,6 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.cards.CardCreateRequest
-import com.lightspark.grid.models.cards.CardForm
 import com.lightspark.grid.models.cards.CardUpdateParams
 import com.lightspark.grid.models.cards.CardUpdateRequest
 import org.junit.jupiter.api.Disabled
@@ -99,7 +98,7 @@ internal class CardServiceTest {
             cardService.issue(
                 CardCreateRequest.builder()
                     .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .form(CardForm.VIRTUAL)
+                    .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .platformCardId("card-emp-aary-001")
                     .build()

@@ -12,7 +12,6 @@ import com.lightspark.grid.models.customers.IndividualCustomerUpdateRequest
 import com.lightspark.grid.models.customers.InternalAccountExportRequest
 import com.lightspark.grid.models.customers.InternalAccountUpdateRequest
 import com.lightspark.grid.models.customers.KycLinkCreateRequest
-import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -51,7 +50,7 @@ internal class CustomerServiceTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .fullName("John Michael Doe")
-                    .kycStatus(KycStatus.APPROVED)
+                    .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
@@ -116,7 +115,7 @@ internal class CustomerServiceTest {
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
                             .fullName("John Michael Doe")
-                            .kycStatus(KycStatus.APPROVED)
+                            .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                             .nationality("US")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .build()
