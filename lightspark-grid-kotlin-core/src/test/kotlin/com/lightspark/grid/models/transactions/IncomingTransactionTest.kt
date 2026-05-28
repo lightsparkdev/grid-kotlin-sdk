@@ -51,6 +51,7 @@ internal class IncomingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
@@ -60,7 +61,12 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .reconciliationInstructions(
-                    ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(
@@ -115,6 +121,7 @@ internal class IncomingTransactionTest {
         assertThat(incomingTransaction.description()).isEqualTo("Payment for invoice #1234")
         assertThat(incomingTransaction.failureReason())
             .isEqualTo(IncomingTransaction.FailureReason.LNURLP_FAILED)
+        assertThat(incomingTransaction.fees()).isEqualTo(10L)
         assertThat(incomingTransaction.rateDetails())
             .isEqualTo(
                 IncomingRateDetails.builder()
@@ -125,7 +132,14 @@ internal class IncomingTransactionTest {
                     .build()
             )
         assertThat(incomingTransaction.reconciliationInstructions())
-            .isEqualTo(ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build())
+            .isEqualTo(
+                ReconciliationInstructions.builder()
+                    .reference("UMA-Q12345-REF")
+                    .transactionHash(
+                        "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                    )
+                    .build()
+            )
         assertThat(incomingTransaction.settledAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
         assertThat(incomingTransaction.source())
@@ -179,6 +193,7 @@ internal class IncomingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                .fees(10L)
                 .rateDetails(
                     IncomingRateDetails.builder()
                         .gridApiFixedFee(10L)
@@ -188,7 +203,12 @@ internal class IncomingTransactionTest {
                         .build()
                 )
                 .reconciliationInstructions(
-                    ReconciliationInstructions.builder().reference("UMA-Q12345-REF").build()
+                    ReconciliationInstructions.builder()
+                        .reference("UMA-Q12345-REF")
+                        .transactionHash(
+                            "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .source(

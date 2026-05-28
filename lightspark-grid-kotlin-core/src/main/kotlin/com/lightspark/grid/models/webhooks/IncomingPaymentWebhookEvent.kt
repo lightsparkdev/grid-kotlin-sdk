@@ -292,6 +292,7 @@ private constructor(
         private val createdAt: JsonField<OffsetDateTime>,
         private val description: JsonField<String>,
         private val failureReason: JsonField<IncomingTransaction.FailureReason>,
+        private val fees: JsonField<Long>,
         private val rateDetails: JsonField<IncomingRateDetails>,
         private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
         private val settledAt: JsonField<OffsetDateTime>,
@@ -337,6 +338,7 @@ private constructor(
             @JsonProperty("failureReason")
             @ExcludeMissing
             failureReason: JsonField<IncomingTransaction.FailureReason> = JsonMissing.of(),
+            @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("rateDetails")
             @ExcludeMissing
             rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of(),
@@ -369,6 +371,7 @@ private constructor(
             createdAt,
             description,
             failureReason,
+            fees,
             rateDetails,
             reconciliationInstructions,
             settledAt,
@@ -392,6 +395,7 @@ private constructor(
                 .createdAt(createdAt)
                 .description(description)
                 .failureReason(failureReason)
+                .fees(fees)
                 .rateDetails(rateDetails)
                 .reconciliationInstructions(reconciliationInstructions)
                 .settledAt(settledAt)
@@ -507,6 +511,15 @@ private constructor(
          */
         fun failureReason(): IncomingTransaction.FailureReason? =
             failureReason.getNullable("failureReason")
+
+        /**
+         * The total fees available from the receive quote in the smallest unit of the receiving
+         * currency (eg. cents).
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun fees(): Long? = fees.getNullable("fees")
 
         /**
          * Details about the rate and fees for the transaction.
@@ -668,6 +681,13 @@ private constructor(
         fun _failureReason(): JsonField<IncomingTransaction.FailureReason> = failureReason
 
         /**
+         * Returns the raw JSON value of [fees].
+         *
+         * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
+
+        /**
          * Returns the raw JSON value of [rateDetails].
          *
          * Unlike [rateDetails], this method doesn't throw if the JSON field has an unexpected type.
@@ -774,6 +794,7 @@ private constructor(
             private var description: JsonField<String> = JsonMissing.of()
             private var failureReason: JsonField<IncomingTransaction.FailureReason> =
                 JsonMissing.of()
+            private var fees: JsonField<Long> = JsonMissing.of()
             private var rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of()
             private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
                 JsonMissing.of()
@@ -798,6 +819,7 @@ private constructor(
                 createdAt = data.createdAt
                 description = data.description
                 failureReason = data.failureReason
+                fees = data.fees
                 rateDetails = data.rateDetails
                 reconciliationInstructions = data.reconciliationInstructions
                 settledAt = data.settledAt
@@ -1015,6 +1037,21 @@ private constructor(
                 this.failureReason = failureReason
             }
 
+            /**
+             * The total fees available from the receive quote in the smallest unit of the receiving
+             * currency (eg. cents).
+             */
+            fun fees(fees: Long) = fees(JsonField.of(fees))
+
+            /**
+             * Sets [Builder.fees] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.fees] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
+
             /** Details about the rate and fees for the transaction. */
             fun rateDetails(rateDetails: IncomingRateDetails) =
                 rateDetails(JsonField.of(rateDetails))
@@ -1211,6 +1248,7 @@ private constructor(
                     createdAt,
                     description,
                     failureReason,
+                    fees,
                     rateDetails,
                     reconciliationInstructions,
                     settledAt,
@@ -1251,6 +1289,7 @@ private constructor(
             createdAt()
             description()
             failureReason()?.validate()
+            fees()
             rateDetails()?.validate()
             reconciliationInstructions()?.validate()
             settledAt()
@@ -1287,6 +1326,7 @@ private constructor(
                 (if (createdAt.asKnown() == null) 0 else 1) +
                 (if (description.asKnown() == null) 0 else 1) +
                 (failureReason.asKnown()?.validity() ?: 0) +
+                (if (fees.asKnown() == null) 0 else 1) +
                 (rateDetails.asKnown()?.validity() ?: 0) +
                 (reconciliationInstructions.asKnown()?.validity() ?: 0) +
                 (if (settledAt.asKnown() == null) 0 else 1) +
@@ -1313,6 +1353,7 @@ private constructor(
                 createdAt == other.createdAt &&
                 description == other.description &&
                 failureReason == other.failureReason &&
+                fees == other.fees &&
                 rateDetails == other.rateDetails &&
                 reconciliationInstructions == other.reconciliationInstructions &&
                 settledAt == other.settledAt &&
@@ -1336,6 +1377,7 @@ private constructor(
                 createdAt,
                 description,
                 failureReason,
+                fees,
                 rateDetails,
                 reconciliationInstructions,
                 settledAt,
@@ -1349,7 +1391,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

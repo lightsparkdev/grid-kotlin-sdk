@@ -12,6 +12,7 @@ import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransactionStatus
+import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -129,6 +130,14 @@ internal class OutgoingPaymentWebhookEventTest {
                                         .name("United States Dollar")
                                         .symbol("\$")
                                         .build()
+                                )
+                                .build()
+                        )
+                        .reconciliationInstructions(
+                            ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .transactionHash(
+                                    "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
                                 )
                                 .build()
                         )
@@ -257,6 +266,14 @@ internal class OutgoingPaymentWebhookEventTest {
                                     .name("United States Dollar")
                                     .symbol("\$")
                                     .build()
+                            )
+                            .build()
+                    )
+                    .reconciliationInstructions(
+                        ReconciliationInstructions.builder()
+                            .reference("UMA-Q12345-REF")
+                            .transactionHash(
+                                "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
                             )
                             .build()
                     )
@@ -390,6 +407,14 @@ internal class OutgoingPaymentWebhookEventTest {
                                         .name("United States Dollar")
                                         .symbol("\$")
                                         .build()
+                                )
+                                .build()
+                        )
+                        .reconciliationInstructions(
+                            ReconciliationInstructions.builder()
+                                .reference("UMA-Q12345-REF")
+                                .transactionHash(
+                                    "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
                                 )
                                 .build()
                         )
