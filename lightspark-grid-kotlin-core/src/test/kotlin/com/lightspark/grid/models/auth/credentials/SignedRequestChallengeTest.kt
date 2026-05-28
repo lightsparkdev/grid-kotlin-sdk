@@ -15,14 +15,18 @@ internal class SignedRequestChallengeTest {
         val signedRequestChallenge =
             SignedRequestChallenge.builder()
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
-                .payloadToSign("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
+                .payloadToSign(
+                    "{\"organizationId\":\"org_2m9F...\",\"parameters\":{\"userId\":\"user_2m9F...\"},\"timestampMs\":\"1775681700000\",\"type\":\"ACTIVITY_TYPE_EXAMPLE\"}"
+                )
                 .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 
         assertThat(signedRequestChallenge.expiresAt())
             .isEqualTo(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
         assertThat(signedRequestChallenge.payloadToSign())
-            .isEqualTo("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
+            .isEqualTo(
+                "{\"organizationId\":\"org_2m9F...\",\"parameters\":{\"userId\":\"user_2m9F...\"},\"timestampMs\":\"1775681700000\",\"type\":\"ACTIVITY_TYPE_EXAMPLE\"}"
+            )
         assertThat(signedRequestChallenge.requestId())
             .isEqualTo("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
     }
@@ -33,7 +37,9 @@ internal class SignedRequestChallengeTest {
         val signedRequestChallenge =
             SignedRequestChallenge.builder()
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
-                .payloadToSign("Y2hhbGxlbmdlLXBheWxvYWQtdG8tc2lnbg==")
+                .payloadToSign(
+                    "{\"organizationId\":\"org_2m9F...\",\"parameters\":{\"userId\":\"user_2m9F...\"},\"timestampMs\":\"1775681700000\",\"type\":\"ACTIVITY_TYPE_EXAMPLE\"}"
+                )
                 .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
 

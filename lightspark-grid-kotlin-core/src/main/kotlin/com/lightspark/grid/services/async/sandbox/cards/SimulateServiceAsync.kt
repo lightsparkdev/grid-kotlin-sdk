@@ -10,8 +10,8 @@ import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationPa
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundResponse
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
 
 /** Endpoints to trigger test cases in sandbox */
 interface SimulateServiceAsync {
@@ -90,17 +90,17 @@ interface SimulateServiceAsync {
      *
      * Production returns `404` on this path.
      */
-    suspend fun refund(
+    suspend fun return_(
         id: String,
-        params: SimulateRefundParams,
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateRefundResponse = refund(params.toBuilder().id(id).build(), requestOptions)
+    ): SimulateReturnResponse = return_(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see refund */
-    suspend fun refund(
-        params: SimulateRefundParams,
+    /** @see return_ */
+    suspend fun return_(
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateRefundResponse
+    ): SimulateReturnResponse
 
     /**
      * A view of [SimulateServiceAsync] that provides access to raw HTTP responses for each method.
@@ -156,21 +156,21 @@ interface SimulateServiceAsync {
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/return`, but is
-         * otherwise the same as [SimulateServiceAsync.refund].
+         * otherwise the same as [SimulateServiceAsync.return_].
          */
         @MustBeClosed
-        suspend fun refund(
+        suspend fun return_(
             id: String,
-            params: SimulateRefundParams,
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateRefundResponse> =
-            refund(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SimulateReturnResponse> =
+            return_(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see refund */
+        /** @see return_ */
         @MustBeClosed
-        suspend fun refund(
-            params: SimulateRefundParams,
+        suspend fun return_(
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateRefundResponse>
+        ): HttpResponseFor<SimulateReturnResponse>
     }
 }

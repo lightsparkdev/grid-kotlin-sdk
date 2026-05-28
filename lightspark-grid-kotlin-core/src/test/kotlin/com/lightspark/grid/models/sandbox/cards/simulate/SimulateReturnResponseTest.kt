@@ -10,12 +10,12 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SimulateRefundResponseTest {
+internal class SimulateReturnResponseTest {
 
     @Test
     fun create() {
-        val simulateRefundResponse =
-            SimulateRefundResponse.builder()
+        val simulateReturnResponse =
+            SimulateReturnResponse.builder()
                 .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
@@ -35,20 +35,29 @@ internal class SimulateRefundResponseTest {
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
                 .merchant(
-                    CardMerchant.builder()
+                    SimulateReturnResponse.Merchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
                         .country("US")
                         .mcc("5814")
                         .build()
                 )
                 .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
+                    SimulateReturnResponse.PullSummary.builder()
+                        .count(2L)
+                        .totalAmount(1500L)
+                        .pendingCount(0L)
+                        .build()
                 )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                .refundSummary(
+                    SimulateReturnResponse.RefundSummary.builder().count(0L).totalAmount(0L).build()
+                )
                 .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                    SimulateReturnResponse.SettlementSummary.builder()
+                        .count(1L)
+                        .totalAmount(1500L)
+                        .build()
                 )
-                .status(SimulateRefundResponse.Status.AUTHORIZED)
+                .status(SimulateReturnResponse.Status.AUTHORIZED)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
@@ -80,11 +89,11 @@ internal class SimulateRefundResponseTest {
                 )
                 .build()
 
-        assertThat(simulateRefundResponse.id())
+        assertThat(simulateReturnResponse.id())
             .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
-        assertThat(simulateRefundResponse.accountId())
+        assertThat(simulateReturnResponse.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-        assertThat(simulateRefundResponse.authorizedAmount())
+        assertThat(simulateReturnResponse.authorizedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -98,36 +107,47 @@ internal class SimulateRefundResponseTest {
                     )
                     .build()
             )
-        assertThat(simulateRefundResponse.authorizedAt())
+        assertThat(simulateReturnResponse.authorizedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
-        assertThat(simulateRefundResponse.cardId())
+        assertThat(simulateReturnResponse.cardId())
             .isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
-        assertThat(simulateRefundResponse.createdAt())
+        assertThat(simulateReturnResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
-        assertThat(simulateRefundResponse.merchant())
+        assertThat(simulateReturnResponse.merchant())
             .isEqualTo(
-                CardMerchant.builder()
+                SimulateReturnResponse.Merchant.builder()
                     .descriptor("BLUE BOTTLE COFFEE SF")
                     .country("US")
                     .mcc("5814")
                     .build()
             )
-        assertThat(simulateRefundResponse.pullSummary())
+        assertThat(simulateReturnResponse.pullSummary())
             .isEqualTo(
-                CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
+                SimulateReturnResponse.PullSummary.builder()
+                    .count(2L)
+                    .totalAmount(1500L)
+                    .pendingCount(0L)
+                    .build()
             )
-        assertThat(simulateRefundResponse.refundSummary())
-            .isEqualTo(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
-        assertThat(simulateRefundResponse.settlementSummary())
-            .isEqualTo(CardSettlementSummary.builder().count(1L).totalAmount(1500L).build())
-        assertThat(simulateRefundResponse.status())
-            .isEqualTo(SimulateRefundResponse.Status.AUTHORIZED)
-        assertThat(simulateRefundResponse.updatedAt())
+        assertThat(simulateReturnResponse.refundSummary())
+            .isEqualTo(
+                SimulateReturnResponse.RefundSummary.builder().count(0L).totalAmount(0L).build()
+            )
+        assertThat(simulateReturnResponse.settlementSummary())
+            .isEqualTo(
+                SimulateReturnResponse.SettlementSummary.builder()
+                    .count(1L)
+                    .totalAmount(1500L)
+                    .build()
+            )
+        assertThat(simulateReturnResponse.status())
+            .isEqualTo(SimulateReturnResponse.Status.AUTHORIZED)
+        assertThat(simulateReturnResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-        assertThat(simulateRefundResponse.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
-        assertThat(simulateRefundResponse.lastEventAt())
+        assertThat(simulateReturnResponse.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
+        assertThat(simulateReturnResponse.lastEventAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-        assertThat(simulateRefundResponse.refundedAmount())
+        assertThat(simulateReturnResponse.refundedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -141,7 +161,7 @@ internal class SimulateRefundResponseTest {
                     )
                     .build()
             )
-        assertThat(simulateRefundResponse.settledAmount())
+        assertThat(simulateReturnResponse.settledAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
                     .amount(12550L)
@@ -160,8 +180,8 @@ internal class SimulateRefundResponseTest {
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val simulateRefundResponse =
-            SimulateRefundResponse.builder()
+        val simulateReturnResponse =
+            SimulateReturnResponse.builder()
                 .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
@@ -181,20 +201,29 @@ internal class SimulateRefundResponseTest {
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
                 .merchant(
-                    CardMerchant.builder()
+                    SimulateReturnResponse.Merchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
                         .country("US")
                         .mcc("5814")
                         .build()
                 )
                 .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
+                    SimulateReturnResponse.PullSummary.builder()
+                        .count(2L)
+                        .totalAmount(1500L)
+                        .pendingCount(0L)
+                        .build()
                 )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                .refundSummary(
+                    SimulateReturnResponse.RefundSummary.builder().count(0L).totalAmount(0L).build()
+                )
                 .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                    SimulateReturnResponse.SettlementSummary.builder()
+                        .count(1L)
+                        .totalAmount(1500L)
+                        .build()
                 )
-                .status(SimulateRefundResponse.Status.AUTHORIZED)
+                .status(SimulateReturnResponse.Status.AUTHORIZED)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
@@ -226,12 +255,12 @@ internal class SimulateRefundResponseTest {
                 )
                 .build()
 
-        val roundtrippedSimulateRefundResponse =
+        val roundtrippedSimulateReturnResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(simulateRefundResponse),
-                jacksonTypeRef<SimulateRefundResponse>(),
+                jsonMapper.writeValueAsString(simulateReturnResponse),
+                jacksonTypeRef<SimulateReturnResponse>(),
             )
 
-        assertThat(roundtrippedSimulateRefundResponse).isEqualTo(simulateRefundResponse)
+        assertThat(roundtrippedSimulateReturnResponse).isEqualTo(simulateReturnResponse)
     }
 }

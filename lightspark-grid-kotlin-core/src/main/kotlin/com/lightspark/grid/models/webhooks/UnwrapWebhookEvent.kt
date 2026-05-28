@@ -21,10 +21,10 @@ import java.util.Objects
 @JsonSerialize(using = UnwrapWebhookEvent.Serializer::class)
 class UnwrapWebhookEvent
 private constructor(
-    private val agentActionPendingApproval: AgentActionWebhookEvent? = null,
+    private val agentAction: AgentActionWebhookEvent? = null,
     private val incomingPayment: IncomingPaymentWebhookEvent? = null,
     private val outgoingPayment: OutgoingPaymentWebhookEvent? = null,
-    private val test: TestWebhookWebhookEvent? = null,
+    private val testWebhook: TestWebhookWebhookEvent? = null,
     private val bulkUpload: BulkUploadWebhookEvent? = null,
     private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
     private val customerUpdate: CustomerUpdateWebhookEvent? = null,
@@ -35,13 +35,13 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
-    fun agentActionPendingApproval(): AgentActionWebhookEvent? = agentActionPendingApproval
+    fun agentAction(): AgentActionWebhookEvent? = agentAction
 
     fun incomingPayment(): IncomingPaymentWebhookEvent? = incomingPayment
 
     fun outgoingPayment(): OutgoingPaymentWebhookEvent? = outgoingPayment
 
-    fun test(): TestWebhookWebhookEvent? = test
+    fun testWebhook(): TestWebhookWebhookEvent? = testWebhook
 
     fun bulkUpload(): BulkUploadWebhookEvent? = bulkUpload
 
@@ -57,13 +57,13 @@ private constructor(
 
     fun cardFundingSourceChange(): CardFundingSourceChangeWebhookEvent? = cardFundingSourceChange
 
-    fun isAgentActionPendingApproval(): Boolean = agentActionPendingApproval != null
+    fun isAgentAction(): Boolean = agentAction != null
 
     fun isIncomingPayment(): Boolean = incomingPayment != null
 
     fun isOutgoingPayment(): Boolean = outgoingPayment != null
 
-    fun isTest(): Boolean = test != null
+    fun isTestWebhook(): Boolean = testWebhook != null
 
     fun isBulkUpload(): Boolean = bulkUpload != null
 
@@ -79,8 +79,7 @@ private constructor(
 
     fun isCardFundingSourceChange(): Boolean = cardFundingSourceChange != null
 
-    fun asAgentActionPendingApproval(): AgentActionWebhookEvent =
-        agentActionPendingApproval.getOrThrow("agentActionPendingApproval")
+    fun asAgentAction(): AgentActionWebhookEvent = agentAction.getOrThrow("agentAction")
 
     fun asIncomingPayment(): IncomingPaymentWebhookEvent =
         incomingPayment.getOrThrow("incomingPayment")
@@ -88,7 +87,7 @@ private constructor(
     fun asOutgoingPayment(): OutgoingPaymentWebhookEvent =
         outgoingPayment.getOrThrow("outgoingPayment")
 
-    fun asTest(): TestWebhookWebhookEvent = test.getOrThrow("test")
+    fun asTestWebhook(): TestWebhookWebhookEvent = testWebhook.getOrThrow("testWebhook")
 
     fun asBulkUpload(): BulkUploadWebhookEvent = bulkUpload.getOrThrow("bulkUpload")
 
@@ -121,7 +120,7 @@ private constructor(
      * import com.lightspark.grid.core.JsonValue
      *
      * val result: String? = unwrapWebhookEvent.accept(object : UnwrapWebhookEvent.Visitor<String?> {
-     *     override fun visitAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent): String? = agentActionPendingApproval.toString()
+     *     override fun visitAgentAction(agentAction: AgentActionWebhookEvent): String? = agentAction.toString()
      *
      *     // ...
      *
@@ -137,11 +136,10 @@ private constructor(
      */
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            agentActionPendingApproval != null ->
-                visitor.visitAgentActionPendingApproval(agentActionPendingApproval)
+            agentAction != null -> visitor.visitAgentAction(agentAction)
             incomingPayment != null -> visitor.visitIncomingPayment(incomingPayment)
             outgoingPayment != null -> visitor.visitOutgoingPayment(outgoingPayment)
-            test != null -> visitor.visitTest(test)
+            testWebhook != null -> visitor.visitTestWebhook(testWebhook)
             bulkUpload != null -> visitor.visitBulkUpload(bulkUpload)
             invitationClaimed != null -> visitor.visitInvitationClaimed(invitationClaimed)
             customerUpdate != null -> visitor.visitCustomerUpdate(customerUpdate)
@@ -171,10 +169,8 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitAgentActionPendingApproval(
-                    agentActionPendingApproval: AgentActionWebhookEvent
-                ) {
-                    agentActionPendingApproval.validate()
+                override fun visitAgentAction(agentAction: AgentActionWebhookEvent) {
+                    agentAction.validate()
                 }
 
                 override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) {
@@ -185,8 +181,8 @@ private constructor(
                     outgoingPayment.validate()
                 }
 
-                override fun visitTest(test: TestWebhookWebhookEvent) {
-                    test.validate()
+                override fun visitTestWebhook(testWebhook: TestWebhookWebhookEvent) {
+                    testWebhook.validate()
                 }
 
                 override fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent) {
@@ -245,9 +241,8 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitAgentActionPendingApproval(
-                    agentActionPendingApproval: AgentActionWebhookEvent
-                ) = agentActionPendingApproval.validity()
+                override fun visitAgentAction(agentAction: AgentActionWebhookEvent) =
+                    agentAction.validity()
 
                 override fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
                     incomingPayment.validity()
@@ -255,7 +250,8 @@ private constructor(
                 override fun visitOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent) =
                     outgoingPayment.validity()
 
-                override fun visitTest(test: TestWebhookWebhookEvent) = test.validity()
+                override fun visitTestWebhook(testWebhook: TestWebhookWebhookEvent) =
+                    testWebhook.validity()
 
                 override fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent) =
                     bulkUpload.validity()
@@ -292,10 +288,10 @@ private constructor(
         }
 
         return other is UnwrapWebhookEvent &&
-            agentActionPendingApproval == other.agentActionPendingApproval &&
+            agentAction == other.agentAction &&
             incomingPayment == other.incomingPayment &&
             outgoingPayment == other.outgoingPayment &&
-            test == other.test &&
+            testWebhook == other.testWebhook &&
             bulkUpload == other.bulkUpload &&
             invitationClaimed == other.invitationClaimed &&
             customerUpdate == other.customerUpdate &&
@@ -307,10 +303,10 @@ private constructor(
 
     override fun hashCode(): Int =
         Objects.hash(
-            agentActionPendingApproval,
+            agentAction,
             incomingPayment,
             outgoingPayment,
-            test,
+            testWebhook,
             bulkUpload,
             invitationClaimed,
             customerUpdate,
@@ -322,11 +318,10 @@ private constructor(
 
     override fun toString(): String =
         when {
-            agentActionPendingApproval != null ->
-                "UnwrapWebhookEvent{agentActionPendingApproval=$agentActionPendingApproval}"
+            agentAction != null -> "UnwrapWebhookEvent{agentAction=$agentAction}"
             incomingPayment != null -> "UnwrapWebhookEvent{incomingPayment=$incomingPayment}"
             outgoingPayment != null -> "UnwrapWebhookEvent{outgoingPayment=$outgoingPayment}"
-            test != null -> "UnwrapWebhookEvent{test=$test}"
+            testWebhook != null -> "UnwrapWebhookEvent{testWebhook=$testWebhook}"
             bulkUpload != null -> "UnwrapWebhookEvent{bulkUpload=$bulkUpload}"
             invitationClaimed != null -> "UnwrapWebhookEvent{invitationClaimed=$invitationClaimed}"
             customerUpdate != null -> "UnwrapWebhookEvent{customerUpdate=$customerUpdate}"
@@ -343,8 +338,8 @@ private constructor(
 
     companion object {
 
-        fun ofAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent) =
-            UnwrapWebhookEvent(agentActionPendingApproval = agentActionPendingApproval)
+        fun ofAgentAction(agentAction: AgentActionWebhookEvent) =
+            UnwrapWebhookEvent(agentAction = agentAction)
 
         fun ofIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent) =
             UnwrapWebhookEvent(incomingPayment = incomingPayment)
@@ -352,7 +347,8 @@ private constructor(
         fun ofOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent) =
             UnwrapWebhookEvent(outgoingPayment = outgoingPayment)
 
-        fun ofTest(test: TestWebhookWebhookEvent) = UnwrapWebhookEvent(test = test)
+        fun ofTestWebhook(testWebhook: TestWebhookWebhookEvent) =
+            UnwrapWebhookEvent(testWebhook = testWebhook)
 
         fun ofBulkUpload(bulkUpload: BulkUploadWebhookEvent) =
             UnwrapWebhookEvent(bulkUpload = bulkUpload)
@@ -383,13 +379,13 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitAgentActionPendingApproval(agentActionPendingApproval: AgentActionWebhookEvent): T
+        fun visitAgentAction(agentAction: AgentActionWebhookEvent): T
 
         fun visitIncomingPayment(incomingPayment: IncomingPaymentWebhookEvent): T
 
         fun visitOutgoingPayment(outgoingPayment: OutgoingPaymentWebhookEvent): T
 
-        fun visitTest(test: TestWebhookWebhookEvent): T
+        fun visitTestWebhook(testWebhook: TestWebhookWebhookEvent): T
 
         fun visitBulkUpload(bulkUpload: BulkUploadWebhookEvent): T
 
@@ -426,49 +422,26 @@ private constructor(
 
         override fun ObjectCodec.deserialize(node: JsonNode): UnwrapWebhookEvent {
             val json = JsonValue.fromJsonNode(node)
-            val type = json.asObject()?.get("type")?.asString()
-
-            when (type) {
-                "AGENT_ACTION.PENDING_APPROVAL" -> {
-                    return tryDeserialize(node, jacksonTypeRef<AgentActionWebhookEvent>())?.let {
-                        UnwrapWebhookEvent(agentActionPendingApproval = it, _json = json)
-                    } ?: UnwrapWebhookEvent(_json = json)
-                }
-                "TEST" -> {
-                    return tryDeserialize(node, jacksonTypeRef<TestWebhookWebhookEvent>())?.let {
-                        UnwrapWebhookEvent(test = it, _json = json)
-                    } ?: UnwrapWebhookEvent(_json = json)
-                }
-                "INVITATION.CLAIMED" -> {
-                    return tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhookEvent>())
-                        ?.let { UnwrapWebhookEvent(invitationClaimed = it, _json = json) }
-                        ?: UnwrapWebhookEvent(_json = json)
-                }
-                "CARD.STATE_CHANGE" -> {
-                    return tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhookEvent>())
-                        ?.let { UnwrapWebhookEvent(cardStateChange = it, _json = json) }
-                        ?: UnwrapWebhookEvent(_json = json)
-                }
-                "CARD.FUNDING_SOURCE_CHANGE" -> {
-                    return tryDeserialize(
-                            node,
-                            jacksonTypeRef<CardFundingSourceChangeWebhookEvent>(),
-                        )
-                        ?.let { UnwrapWebhookEvent(cardFundingSourceChange = it, _json = json) }
-                        ?: UnwrapWebhookEvent(_json = json)
-                }
-            }
 
             val bestMatches =
                 sequenceOf(
+                        tryDeserialize(node, jacksonTypeRef<AgentActionWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(agentAction = it, _json = json)
+                        },
                         tryDeserialize(node, jacksonTypeRef<IncomingPaymentWebhookEvent>())?.let {
                             UnwrapWebhookEvent(incomingPayment = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<OutgoingPaymentWebhookEvent>())?.let {
                             UnwrapWebhookEvent(outgoingPayment = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<TestWebhookWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(testWebhook = it, _json = json)
+                        },
                         tryDeserialize(node, jacksonTypeRef<BulkUploadWebhookEvent>())?.let {
                             UnwrapWebhookEvent(bulkUpload = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(invitationClaimed = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<CustomerUpdateWebhookEvent>())?.let {
                             UnwrapWebhookEvent(customerUpdate = it, _json = json)
@@ -477,6 +450,11 @@ private constructor(
                             ?.let { UnwrapWebhookEvent(internalAccountStatus = it, _json = json) },
                         tryDeserialize(node, jacksonTypeRef<VerificationUpdateWebhookEvent>())
                             ?.let { UnwrapWebhookEvent(verificationUpdate = it, _json = json) },
+                        tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(cardStateChange = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<CardFundingSourceChangeWebhookEvent>())
+                            ?.let { UnwrapWebhookEvent(cardFundingSourceChange = it, _json = json) },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -501,11 +479,10 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.agentActionPendingApproval != null ->
-                    generator.writeObject(value.agentActionPendingApproval)
+                value.agentAction != null -> generator.writeObject(value.agentAction)
                 value.incomingPayment != null -> generator.writeObject(value.incomingPayment)
                 value.outgoingPayment != null -> generator.writeObject(value.outgoingPayment)
-                value.test != null -> generator.writeObject(value.test)
+                value.testWebhook != null -> generator.writeObject(value.testWebhook)
                 value.bulkUpload != null -> generator.writeObject(value.bulkUpload)
                 value.invitationClaimed != null -> generator.writeObject(value.invitationClaimed)
                 value.customerUpdate != null -> generator.writeObject(value.customerUpdate)

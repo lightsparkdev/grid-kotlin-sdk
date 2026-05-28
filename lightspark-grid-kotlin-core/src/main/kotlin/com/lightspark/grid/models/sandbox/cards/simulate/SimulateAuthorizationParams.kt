@@ -63,7 +63,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun merchant(): CardMerchant = body.merchant()
+    fun merchant(): Merchant = body.merchant()
 
     /**
      * Returns the raw JSON value of [amount].
@@ -84,7 +84,7 @@ private constructor(
      *
      * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _merchant(): JsonField<CardMerchant> = body._merchant()
+    fun _merchant(): JsonField<Merchant> = body._merchant()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -161,16 +161,16 @@ private constructor(
          */
         fun currency(currency: JsonField<Currency>) = apply { body.currency(currency) }
 
-        fun merchant(merchant: CardMerchant) = apply { body.merchant(merchant) }
+        fun merchant(merchant: Merchant) = apply { body.merchant(merchant) }
 
         /**
          * Sets [Builder.merchant] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.merchant] with a well-typed [CardMerchant] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.merchant] with a well-typed [Merchant] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun merchant(merchant: JsonField<CardMerchant>) = apply { body.merchant(merchant) }
+        fun merchant(merchant: JsonField<Merchant>) = apply { body.merchant(merchant) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -335,7 +335,7 @@ private constructor(
     private constructor(
         private val amount: JsonField<Long>,
         private val currency: JsonField<Currency>,
-        private val merchant: JsonField<CardMerchant>,
+        private val merchant: JsonField<Merchant>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -347,7 +347,7 @@ private constructor(
             currency: JsonField<Currency> = JsonMissing.of(),
             @JsonProperty("merchant")
             @ExcludeMissing
-            merchant: JsonField<CardMerchant> = JsonMissing.of(),
+            merchant: JsonField<Merchant> = JsonMissing.of(),
         ) : this(amount, currency, merchant, mutableMapOf())
 
         /**
@@ -368,7 +368,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun merchant(): CardMerchant = merchant.getRequired("merchant")
+        fun merchant(): Merchant = merchant.getRequired("merchant")
 
         /**
          * Returns the raw JSON value of [amount].
@@ -389,9 +389,7 @@ private constructor(
          *
          * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("merchant")
-        @ExcludeMissing
-        fun _merchant(): JsonField<CardMerchant> = merchant
+        @JsonProperty("merchant") @ExcludeMissing fun _merchant(): JsonField<Merchant> = merchant
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -425,7 +423,7 @@ private constructor(
 
             private var amount: JsonField<Long>? = null
             private var currency: JsonField<Currency>? = null
-            private var merchant: JsonField<CardMerchant>? = null
+            private var merchant: JsonField<Merchant>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(body: Body) = apply {
@@ -458,16 +456,16 @@ private constructor(
              */
             fun currency(currency: JsonField<Currency>) = apply { this.currency = currency }
 
-            fun merchant(merchant: CardMerchant) = merchant(JsonField.of(merchant))
+            fun merchant(merchant: Merchant) = merchant(JsonField.of(merchant))
 
             /**
              * Sets [Builder.merchant] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.merchant] with a well-typed [CardMerchant] value
+             * You should usually call [Builder.merchant] with a well-typed [Merchant] value
              * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun merchant(merchant: JsonField<CardMerchant>) = apply { this.merchant = merchant }
+            fun merchant(merchant: JsonField<Merchant>) = apply { this.merchant = merchant }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -572,6 +570,250 @@ private constructor(
 
         override fun toString() =
             "Body{amount=$amount, currency=$currency, merchant=$merchant, additionalProperties=$additionalProperties}"
+    }
+
+    class Merchant
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val descriptor: JsonField<String>,
+        private val country: JsonField<String>,
+        private val mcc: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("descriptor")
+            @ExcludeMissing
+            descriptor: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("country") @ExcludeMissing country: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("mcc") @ExcludeMissing mcc: JsonField<String> = JsonMissing.of(),
+        ) : this(descriptor, country, mcc, mutableMapOf())
+
+        /**
+         * Merchant descriptor string captured from the card network at authorization time.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun descriptor(): String = descriptor.getRequired("descriptor")
+
+        /**
+         * Two-letter ISO 3166-1 alpha-2 country code of the merchant.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun country(): String? = country.getNullable("country")
+
+        /**
+         * Merchant Category Code (ISO 18245) — four-digit numeric string.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun mcc(): String? = mcc.getNullable("mcc")
+
+        /**
+         * Returns the raw JSON value of [descriptor].
+         *
+         * Unlike [descriptor], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("descriptor")
+        @ExcludeMissing
+        fun _descriptor(): JsonField<String> = descriptor
+
+        /**
+         * Returns the raw JSON value of [country].
+         *
+         * Unlike [country], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+        /**
+         * Returns the raw JSON value of [mcc].
+         *
+         * Unlike [mcc], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("mcc") @ExcludeMissing fun _mcc(): JsonField<String> = mcc
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Merchant].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .descriptor()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Merchant]. */
+        class Builder internal constructor() {
+
+            private var descriptor: JsonField<String>? = null
+            private var country: JsonField<String> = JsonMissing.of()
+            private var mcc: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(merchant: Merchant) = apply {
+                descriptor = merchant.descriptor
+                country = merchant.country
+                mcc = merchant.mcc
+                additionalProperties = merchant.additionalProperties.toMutableMap()
+            }
+
+            /** Merchant descriptor string captured from the card network at authorization time. */
+            fun descriptor(descriptor: String) = descriptor(JsonField.of(descriptor))
+
+            /**
+             * Sets [Builder.descriptor] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.descriptor] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun descriptor(descriptor: JsonField<String>) = apply { this.descriptor = descriptor }
+
+            /** Two-letter ISO 3166-1 alpha-2 country code of the merchant. */
+            fun country(country: String) = country(JsonField.of(country))
+
+            /**
+             * Sets [Builder.country] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.country] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun country(country: JsonField<String>) = apply { this.country = country }
+
+            /** Merchant Category Code (ISO 18245) — four-digit numeric string. */
+            fun mcc(mcc: String) = mcc(JsonField.of(mcc))
+
+            /**
+             * Sets [Builder.mcc] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.mcc] with a well-typed [String] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun mcc(mcc: JsonField<String>) = apply { this.mcc = mcc }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Merchant].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .descriptor()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Merchant =
+                Merchant(
+                    checkRequired("descriptor", descriptor),
+                    country,
+                    mcc,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Merchant = apply {
+            if (validated) {
+                return@apply
+            }
+
+            descriptor()
+            country()
+            mcc()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (descriptor.asKnown() == null) 0 else 1) +
+                (if (country.asKnown() == null) 0 else 1) +
+                (if (mcc.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Merchant &&
+                descriptor == other.descriptor &&
+                country == other.country &&
+                mcc == other.mcc &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(descriptor, country, mcc, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Merchant{descriptor=$descriptor, country=$country, mcc=$mcc, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

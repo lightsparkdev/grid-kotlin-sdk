@@ -19,13 +19,13 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
 import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
 import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
-import com.lightspark.grid.models.auth.sessions.AuthSession
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,

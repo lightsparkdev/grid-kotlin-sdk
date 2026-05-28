@@ -10,6 +10,7 @@ import com.lightspark.grid.models.auth.credentials.AuthCredentialCreateRequestOn
 import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
 import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
 import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
+import com.lightspark.grid.models.auth.credentials.AuthSession
 import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
@@ -19,7 +20,6 @@ import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
 import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.OAuthCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.PasskeyCredentialCreateRequest
-import com.lightspark.grid.models.auth.sessions.AuthSession
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,

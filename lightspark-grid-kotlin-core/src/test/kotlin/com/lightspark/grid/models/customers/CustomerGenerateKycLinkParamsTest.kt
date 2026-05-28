@@ -13,11 +13,7 @@ internal class CustomerGenerateKycLinkParamsTest {
         CustomerGenerateKycLinkParams.builder()
             .customerId("customerId")
             .idempotencyKey("<uuid>")
-            .kycLinkCreate(
-                KycLinkCreate.builder()
-                    .redirectUri("https://app.example.com/onboarding/completed")
-                    .build()
-            )
+            .redirectUri("https://app.example.com/onboarding/completed")
             .build()
     }
 
@@ -36,11 +32,7 @@ internal class CustomerGenerateKycLinkParamsTest {
             CustomerGenerateKycLinkParams.builder()
                 .customerId("customerId")
                 .idempotencyKey("<uuid>")
-                .kycLinkCreate(
-                    KycLinkCreate.builder()
-                        .redirectUri("https://app.example.com/onboarding/completed")
-                        .build()
-                )
+                .redirectUri("https://app.example.com/onboarding/completed")
                 .build()
 
         val headers = params._headers()
@@ -63,21 +55,12 @@ internal class CustomerGenerateKycLinkParamsTest {
             CustomerGenerateKycLinkParams.builder()
                 .customerId("customerId")
                 .idempotencyKey("<uuid>")
-                .kycLinkCreate(
-                    KycLinkCreate.builder()
-                        .redirectUri("https://app.example.com/onboarding/completed")
-                        .build()
-                )
+                .redirectUri("https://app.example.com/onboarding/completed")
                 .build()
 
         val body = params._body()
 
-        assertThat(body)
-            .isEqualTo(
-                KycLinkCreate.builder()
-                    .redirectUri("https://app.example.com/onboarding/completed")
-                    .build()
-            )
+        assertThat(body.redirectUri()).isEqualTo("https://app.example.com/onboarding/completed")
     }
 
     @Test
