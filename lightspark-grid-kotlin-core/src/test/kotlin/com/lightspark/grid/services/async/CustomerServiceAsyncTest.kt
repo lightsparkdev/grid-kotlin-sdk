@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
@@ -24,19 +25,21 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
         val customerOneOf =
             customerServiceAsync.create(
-                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateParams.CreateCustomerRequest.IndividualCustomerCreateRequest.builder()
+                    .customerType(JsonValue.from("INDIVIDUAL"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .platformCustomerId("ind-9f84e0c2")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
-                    .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -64,6 +67,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -79,6 +84,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -91,11 +98,12 @@ internal class CustomerServiceAsyncTest {
                     )
                     .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                     .updateCustomerRequest(
-                        CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                        CustomerUpdateParams.UpdateCustomerRequest.IndividualCustomerUpdateRequest
+                            .builder()
+                            .customerType(JsonValue.from("INDIVIDUAL"))
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
                             .umaAddress("\$john.doe@uma.domain.com")
-                            .customerType(IndividualCustomerFields.CustomerType.INDIVIDUAL)
                             .address(
                                 Address.builder()
                                     .country("US")
@@ -125,6 +133,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -140,6 +150,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -155,6 +167,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -186,6 +200,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -208,6 +224,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 
@@ -223,6 +241,8 @@ internal class CustomerServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val customerServiceAsync = client.customers()
 

@@ -18,6 +18,8 @@ internal class InvitationServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val invitationServiceAsync = client.invitations()
 
@@ -41,6 +43,8 @@ internal class InvitationServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val invitationServiceAsync = client.invitations()
 
@@ -56,6 +60,8 @@ internal class InvitationServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val invitationServiceAsync = client.invitations()
 
@@ -71,6 +77,8 @@ internal class InvitationServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val invitationServiceAsync = client.invitations()
 

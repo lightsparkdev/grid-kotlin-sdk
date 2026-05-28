@@ -46,7 +46,7 @@ private constructor(
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
 
-    /** Filter by customer type */
+    /** Whether the customer is an individual or a business entity */
     fun customerType(): CustomerType? = customerType
 
     /** Whether to include deleted customers in the results. Default is false. */
@@ -138,7 +138,7 @@ private constructor(
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
 
-        /** Filter by customer type */
+        /** Whether the customer is an individual or a business entity */
         fun customerType(customerType: CustomerType?) = apply { this.customerType = customerType }
 
         /** Whether to include deleted customers in the results. Default is false. */

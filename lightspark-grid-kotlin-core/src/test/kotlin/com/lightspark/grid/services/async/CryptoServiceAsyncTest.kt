@@ -16,6 +16,8 @@ internal class CryptoServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val cryptoServiceAsync = client.crypto()
 

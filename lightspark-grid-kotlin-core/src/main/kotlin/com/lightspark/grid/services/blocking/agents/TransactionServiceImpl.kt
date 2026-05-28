@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.agents
 
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
+import com.lightspark.grid.core.SecurityOptions
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.handlers.errorBodyHandler
 import com.lightspark.grid.core.handlers.errorHandler
@@ -88,7 +89,11 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
                     )
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
@@ -125,7 +130,11 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
                     )
                     .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
-                    .prepare(clientOptions, params)
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {

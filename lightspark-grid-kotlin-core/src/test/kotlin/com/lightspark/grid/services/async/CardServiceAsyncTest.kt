@@ -17,6 +17,8 @@ internal class CardServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val cardServiceAsync = client.cards()
 
@@ -32,6 +34,8 @@ internal class CardServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val cardServiceAsync = client.cards()
 
@@ -59,6 +63,8 @@ internal class CardServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val cardServiceAsync = client.cards()
 
@@ -74,6 +80,8 @@ internal class CardServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val cardServiceAsync = client.cards()
 

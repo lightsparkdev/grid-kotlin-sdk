@@ -16,14 +16,14 @@ internal class BwpAccountInfoTest {
                 .accountType(BwpAccountInfo.AccountType.BWP_ACCOUNT)
                 .addPaymentRail(BwpAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         assertThat(bwpAccountInfo.accountType()).isEqualTo(BwpAccountInfo.AccountType.BWP_ACCOUNT)
         assertThat(bwpAccountInfo.paymentRails())
             .containsExactly(BwpAccountInfo.PaymentRail.MOBILE_MONEY)
         assertThat(bwpAccountInfo.phoneNumber()).isEqualTo("+1234567890")
-        assertThat(bwpAccountInfo.provider()).isEqualTo("x")
+        assertThat(bwpAccountInfo.provider()).isEqualTo("Example Provider")
     }
 
     @Test
@@ -34,7 +34,7 @@ internal class BwpAccountInfoTest {
                 .accountType(BwpAccountInfo.AccountType.BWP_ACCOUNT)
                 .addPaymentRail(BwpAccountInfo.PaymentRail.MOBILE_MONEY)
                 .phoneNumber("+1234567890")
-                .provider("x")
+                .provider("Example Provider")
                 .build()
 
         val roundtrippedBwpAccountInfo =

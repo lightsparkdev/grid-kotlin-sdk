@@ -19,6 +19,8 @@ internal class ExternalAccountServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountServiceAsync = client.platform().externalAccounts()
 
@@ -68,6 +70,8 @@ internal class ExternalAccountServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountServiceAsync = client.platform().externalAccounts()
 
@@ -83,6 +87,8 @@ internal class ExternalAccountServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountServiceAsync = client.platform().externalAccounts()
 
@@ -98,6 +104,8 @@ internal class ExternalAccountServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val externalAccountServiceAsync = client.platform().externalAccounts()
 

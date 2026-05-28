@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.customers.externalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.platform.externalaccounts.InrAccountInfo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,61 +14,9 @@ internal class InrExternalAccountInfoTest {
     fun create() {
         val inrExternalAccountInfo =
             InrExternalAccountInfo.builder()
-                .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
-                .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("user@upi")
-                .beneficiary(
-                    InrBeneficiary.builder()
-                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("INR_ACCOUNT"))
+                .putAdditionalProperty("vpa", JsonValue.from("user@upi"))
                 .build()
-
-        assertThat(inrExternalAccountInfo.accountType())
-            .isEqualTo(InrAccountInfo.AccountType.INR_ACCOUNT)
-        assertThat(inrExternalAccountInfo.paymentRails())
-            .containsExactly(InrAccountInfo.PaymentRail.UPI)
-        assertThat(inrExternalAccountInfo.vpa()).isEqualTo("user@upi")
-        assertThat(inrExternalAccountInfo.beneficiary())
-            .isEqualTo(
-                InrExternalAccountInfo.Beneficiary.ofIndividual(
-                    InrBeneficiary.builder()
-                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
-            )
     }
 
     @Test
@@ -76,30 +24,8 @@ internal class InrExternalAccountInfoTest {
         val jsonMapper = jsonMapper()
         val inrExternalAccountInfo =
             InrExternalAccountInfo.builder()
-                .accountType(InrAccountInfo.AccountType.INR_ACCOUNT)
-                .addPaymentRail(InrAccountInfo.PaymentRail.UPI)
-                .vpa("user@upi")
-                .beneficiary(
-                    InrBeneficiary.builder()
-                        .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
-                        .address(
-                            Address.builder()
-                                .country("US")
-                                .line1("123 Main Street")
-                                .postalCode("94105")
-                                .city("San Francisco")
-                                .line2("Apt 4B")
-                                .state("CA")
-                                .build()
-                        )
-                        .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
-                        .email("email")
-                        .nationality("nationality")
-                        .phoneNumber("phoneNumber")
-                        .build()
-                )
+                .putAdditionalProperty("accountType", JsonValue.from("INR_ACCOUNT"))
+                .putAdditionalProperty("vpa", JsonValue.from("user@upi"))
                 .build()
 
         val roundtrippedInrExternalAccountInfo =

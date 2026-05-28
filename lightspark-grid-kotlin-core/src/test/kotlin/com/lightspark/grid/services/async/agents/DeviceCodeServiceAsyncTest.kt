@@ -15,6 +15,8 @@ internal class DeviceCodeServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
@@ -30,6 +32,8 @@ internal class DeviceCodeServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 
@@ -45,6 +49,8 @@ internal class DeviceCodeServiceAsyncTest {
             LightsparkGridOkHttpClientAsync.builder()
                 .username("My Username")
                 .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
                 .build()
         val deviceCodeServiceAsync = client.agents().deviceCodes()
 

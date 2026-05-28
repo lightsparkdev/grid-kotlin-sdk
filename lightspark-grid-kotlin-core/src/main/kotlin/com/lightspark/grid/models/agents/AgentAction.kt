@@ -196,7 +196,8 @@ private constructor(
     fun transaction(): Transaction? = transaction.getNullable("transaction")
 
     /**
-     * Details of a transfer-type agent action (TRANSFER_OUT or TRANSFER_IN).
+     * Details of the transfer being requested. Populated for `TRANSFER_OUT` and `TRANSFER_IN`
+     * actions; absent for `EXECUTE_QUOTE` actions.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -535,7 +536,10 @@ private constructor(
         fun transaction(outgoing: OutgoingTransaction) =
             transaction(Transaction.ofOutgoing(outgoing))
 
-        /** Details of a transfer-type agent action (TRANSFER_OUT or TRANSFER_IN). */
+        /**
+         * Details of the transfer being requested. Populated for `TRANSFER_OUT` and `TRANSFER_IN`
+         * actions; absent for `EXECUTE_QUOTE` actions.
+         */
         fun transferDetails(transferDetails: AgentTransferDetails) =
             transferDetails(JsonField.of(transferDetails))
 
