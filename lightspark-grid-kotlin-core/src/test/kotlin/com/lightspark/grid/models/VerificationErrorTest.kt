@@ -4,6 +4,8 @@ package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.documents.DocumentType
+import com.lightspark.grid.models.verifications.VerificationErrorType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -15,17 +17,16 @@ internal class VerificationErrorTest {
             VerificationError.builder()
                 .reason("Business address line 1 is required")
                 .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .type(VerificationError.Type.MISSING_FIELD)
-                .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
+                .type(VerificationErrorType.MISSING_FIELD)
+                .addAcceptedDocumentType(DocumentType.PASSPORT)
                 .field("customer.address.line1")
                 .build()
 
         assertThat(verificationError.reason()).isEqualTo("Business address line 1 is required")
         assertThat(verificationError.resourceId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(verificationError.type()).isEqualTo(VerificationError.Type.MISSING_FIELD)
-        assertThat(verificationError.acceptedDocumentTypes())
-            .containsExactly(VerificationError.AcceptedDocumentType.PASSPORT)
+        assertThat(verificationError.type()).isEqualTo(VerificationErrorType.MISSING_FIELD)
+        assertThat(verificationError.acceptedDocumentTypes()).containsExactly(DocumentType.PASSPORT)
         assertThat(verificationError.field()).isEqualTo("customer.address.line1")
     }
 
@@ -36,8 +37,8 @@ internal class VerificationErrorTest {
             VerificationError.builder()
                 .reason("Business address line 1 is required")
                 .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .type(VerificationError.Type.MISSING_FIELD)
-                .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
+                .type(VerificationErrorType.MISSING_FIELD)
+                .addAcceptedDocumentType(DocumentType.PASSPORT)
                 .field("customer.address.line1")
                 .build()
 

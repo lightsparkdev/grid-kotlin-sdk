@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -15,143 +14,90 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.VerificationError
-import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
 class VerificationListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val id: JsonField<String>,
-    private val createdAt: JsonField<OffsetDateTime>,
-    private val customerId: JsonField<String>,
-    private val errors: JsonField<List<VerificationError>>,
-    private val verificationStatus: JsonField<VerificationStatus>,
-    private val updatedAt: JsonField<OffsetDateTime>,
+    private val data: JsonField<List<Verification>>,
+    private val hasMore: JsonField<Boolean>,
+    private val nextCursor: JsonField<String>,
+    private val totalCount: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("createdAt")
+        @JsonProperty("data")
         @ExcludeMissing
-        createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("customerId")
+        data: JsonField<List<Verification>> = JsonMissing.of(),
+        @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("nextCursor")
         @ExcludeMissing
-        customerId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("errors")
-        @ExcludeMissing
-        errors: JsonField<List<VerificationError>> = JsonMissing.of(),
-        @JsonProperty("verificationStatus")
-        @ExcludeMissing
-        verificationStatus: JsonField<VerificationStatus> = JsonMissing.of(),
-        @JsonProperty("updatedAt")
-        @ExcludeMissing
-        updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-    ) : this(id, createdAt, customerId, errors, verificationStatus, updatedAt, mutableMapOf())
+        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("totalCount") @ExcludeMissing totalCount: JsonField<Long> = JsonMissing.of(),
+    ) : this(data, hasMore, nextCursor, totalCount, mutableMapOf())
 
     /**
-     * Unique identifier for this verification
+     * List of verifications matching the filter criteria
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun id(): String = id.getRequired("id")
+    fun data(): List<Verification> = data.getRequired("data")
 
     /**
-     * When this verification was created
+     * Indicates if more results are available beyond this page
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+    fun hasMore(): Boolean = hasMore.getRequired("hasMore")
 
     /**
-     * The ID of the customer being verified
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun customerId(): String = customerId.getRequired("customerId")
-
-    /**
-     * List of issues preventing verification from proceeding. Empty when verificationStatus is
-     * APPROVED or IN_PROGRESS.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun errors(): List<VerificationError> = errors.getRequired("errors")
-
-    /**
-     * Current status of the KYC/KYB verification
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun verificationStatus(): VerificationStatus =
-        verificationStatus.getRequired("verificationStatus")
-
-    /**
-     * When this verification was last updated
+     * Cursor to retrieve the next page of results (only present if hasMore is true)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun updatedAt(): OffsetDateTime? = updatedAt.getNullable("updatedAt")
+    fun nextCursor(): String? = nextCursor.getNullable("nextCursor")
 
     /**
-     * Returns the raw JSON value of [id].
+     * Total number of results matching the criteria
      *
-     * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+    fun totalCount(): Long? = totalCount.getNullable("totalCount")
 
     /**
-     * Returns the raw JSON value of [createdAt].
+     * Returns the raw JSON value of [data].
      *
-     * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("createdAt")
-    @ExcludeMissing
-    fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<Verification>> = data
 
     /**
-     * Returns the raw JSON value of [customerId].
+     * Returns the raw JSON value of [hasMore].
      *
-     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [hasMore], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
+    @JsonProperty("hasMore") @ExcludeMissing fun _hasMore(): JsonField<Boolean> = hasMore
 
     /**
-     * Returns the raw JSON value of [errors].
+     * Returns the raw JSON value of [nextCursor].
      *
-     * Unlike [errors], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("errors")
-    @ExcludeMissing
-    fun _errors(): JsonField<List<VerificationError>> = errors
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
 
     /**
-     * Returns the raw JSON value of [verificationStatus].
+     * Returns the raw JSON value of [totalCount].
      *
-     * Unlike [verificationStatus], this method doesn't throw if the JSON field has an unexpected
-     * type.
+     * Unlike [totalCount], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("verificationStatus")
-    @ExcludeMissing
-    fun _verificationStatus(): JsonField<VerificationStatus> = verificationStatus
-
-    /**
-     * Returns the raw JSON value of [updatedAt].
-     *
-     * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("updatedAt")
-    @ExcludeMissing
-    fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
+    @JsonProperty("totalCount") @ExcludeMissing fun _totalCount(): JsonField<Long> = totalCount
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -172,11 +118,8 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .id()
-         * .createdAt()
-         * .customerId()
-         * .errors()
-         * .verificationStatus()
+         * .data()
+         * .hasMore()
          * ```
          */
         fun builder() = Builder()
@@ -185,114 +128,79 @@ private constructor(
     /** A builder for [VerificationListResponse]. */
     class Builder internal constructor() {
 
-        private var id: JsonField<String>? = null
-        private var createdAt: JsonField<OffsetDateTime>? = null
-        private var customerId: JsonField<String>? = null
-        private var errors: JsonField<MutableList<VerificationError>>? = null
-        private var verificationStatus: JsonField<VerificationStatus>? = null
-        private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var data: JsonField<MutableList<Verification>>? = null
+        private var hasMore: JsonField<Boolean>? = null
+        private var nextCursor: JsonField<String> = JsonMissing.of()
+        private var totalCount: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(verificationListResponse: VerificationListResponse) = apply {
-            id = verificationListResponse.id
-            createdAt = verificationListResponse.createdAt
-            customerId = verificationListResponse.customerId
-            errors = verificationListResponse.errors.map { it.toMutableList() }
-            verificationStatus = verificationListResponse.verificationStatus
-            updatedAt = verificationListResponse.updatedAt
+            data = verificationListResponse.data.map { it.toMutableList() }
+            hasMore = verificationListResponse.hasMore
+            nextCursor = verificationListResponse.nextCursor
+            totalCount = verificationListResponse.totalCount
             additionalProperties = verificationListResponse.additionalProperties.toMutableMap()
         }
 
-        /** Unique identifier for this verification */
-        fun id(id: String) = id(JsonField.of(id))
+        /** List of verifications matching the filter criteria */
+        fun data(data: List<Verification>) = data(JsonField.of(data))
 
         /**
-         * Sets [Builder.id] to an arbitrary JSON value.
+         * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.id] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun id(id: JsonField<String>) = apply { this.id = id }
-
-        /** When this verification was created */
-        fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
-
-        /**
-         * Sets [Builder.createdAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.createdAt] with a well-typed [OffsetDateTime] value
+         * You should usually call [Builder.data] with a well-typed `List<Verification>` value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
-
-        /** The ID of the customer being verified */
-        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
-
-        /**
-         * Sets [Builder.customerId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
-
-        /**
-         * List of issues preventing verification from proceeding. Empty when verificationStatus is
-         * APPROVED or IN_PROGRESS.
-         */
-        fun errors(errors: List<VerificationError>) = errors(JsonField.of(errors))
-
-        /**
-         * Sets [Builder.errors] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.errors] with a well-typed `List<VerificationError>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun errors(errors: JsonField<List<VerificationError>>) = apply {
-            this.errors = errors.map { it.toMutableList() }
+        fun data(data: JsonField<List<Verification>>) = apply {
+            this.data = data.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [VerificationError] to [errors].
+         * Adds a single [Verification] to [Builder.data].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addError(error: VerificationError) = apply {
-            errors =
-                (errors ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("errors", it).add(error)
+        fun addData(data: Verification) = apply {
+            this.data =
+                (this.data ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("data", it).add(data)
                 }
         }
 
-        /** Current status of the KYC/KYB verification */
-        fun verificationStatus(verificationStatus: VerificationStatus) =
-            verificationStatus(JsonField.of(verificationStatus))
+        /** Indicates if more results are available beyond this page */
+        fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))
 
         /**
-         * Sets [Builder.verificationStatus] to an arbitrary JSON value.
+         * Sets [Builder.hasMore] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.verificationStatus] with a well-typed
-         * [VerificationStatus] value instead. This method is primarily for setting the field to an
-         * undocumented or not yet supported value.
+         * You should usually call [Builder.hasMore] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun verificationStatus(verificationStatus: JsonField<VerificationStatus>) = apply {
-            this.verificationStatus = verificationStatus
-        }
+        fun hasMore(hasMore: JsonField<Boolean>) = apply { this.hasMore = hasMore }
 
-        /** When this verification was last updated */
-        fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
+        /** Cursor to retrieve the next page of results (only present if hasMore is true) */
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
 
         /**
-         * Sets [Builder.updatedAt] to an arbitrary JSON value.
+         * Sets [Builder.nextCursor] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.updatedAt] with a well-typed [OffsetDateTime] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.nextCursor] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+        fun nextCursor(nextCursor: JsonField<String>) = apply { this.nextCursor = nextCursor }
+
+        /** Total number of results matching the criteria */
+        fun totalCount(totalCount: Long) = totalCount(JsonField.of(totalCount))
+
+        /**
+         * Sets [Builder.totalCount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.totalCount] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun totalCount(totalCount: JsonField<Long>) = apply { this.totalCount = totalCount }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -320,23 +228,18 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .id()
-         * .createdAt()
-         * .customerId()
-         * .errors()
-         * .verificationStatus()
+         * .data()
+         * .hasMore()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): VerificationListResponse =
             VerificationListResponse(
-                checkRequired("id", id),
-                checkRequired("createdAt", createdAt),
-                checkRequired("customerId", customerId),
-                checkRequired("errors", errors).map { it.toImmutable() },
-                checkRequired("verificationStatus", verificationStatus),
-                updatedAt,
+                checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("hasMore", hasMore),
+                nextCursor,
+                totalCount,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -356,12 +259,10 @@ private constructor(
             return@apply
         }
 
-        id()
-        createdAt()
-        customerId()
-        errors().forEach { it.validate() }
-        verificationStatus().validate()
-        updatedAt()
+        data().forEach { it.validate() }
+        hasMore()
+        nextCursor()
+        totalCount()
         validated = true
     }
 
@@ -379,177 +280,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (id.asKnown() == null) 0 else 1) +
-            (if (createdAt.asKnown() == null) 0 else 1) +
-            (if (customerId.asKnown() == null) 0 else 1) +
-            (errors.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (verificationStatus.asKnown()?.validity() ?: 0) +
-            (if (updatedAt.asKnown() == null) 0 else 1)
-
-    /** Current status of the KYC/KYB verification */
-    class VerificationStatus
-    @JsonCreator
-    private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val RESOLVE_ERRORS = of("RESOLVE_ERRORS")
-
-            val PENDING_MANUAL_REVIEW = of("PENDING_MANUAL_REVIEW")
-
-            val IN_PROGRESS = of("IN_PROGRESS")
-
-            val APPROVED = of("APPROVED")
-
-            val REJECTED = of("REJECTED")
-
-            val READY_FOR_VERIFICATION = of("READY_FOR_VERIFICATION")
-
-            fun of(value: String) = VerificationStatus(JsonField.of(value))
-        }
-
-        /** An enum containing [VerificationStatus]'s known values. */
-        enum class Known {
-            RESOLVE_ERRORS,
-            PENDING_MANUAL_REVIEW,
-            IN_PROGRESS,
-            APPROVED,
-            REJECTED,
-            READY_FOR_VERIFICATION,
-        }
-
-        /**
-         * An enum containing [VerificationStatus]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [VerificationStatus] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            RESOLVE_ERRORS,
-            PENDING_MANUAL_REVIEW,
-            IN_PROGRESS,
-            APPROVED,
-            REJECTED,
-            READY_FOR_VERIFICATION,
-            /**
-             * An enum member indicating that [VerificationStatus] was instantiated with an unknown
-             * value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                RESOLVE_ERRORS -> Value.RESOLVE_ERRORS
-                PENDING_MANUAL_REVIEW -> Value.PENDING_MANUAL_REVIEW
-                IN_PROGRESS -> Value.IN_PROGRESS
-                APPROVED -> Value.APPROVED
-                REJECTED -> Value.REJECTED
-                READY_FOR_VERIFICATION -> Value.READY_FOR_VERIFICATION
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                RESOLVE_ERRORS -> Known.RESOLVE_ERRORS
-                PENDING_MANUAL_REVIEW -> Known.PENDING_MANUAL_REVIEW
-                IN_PROGRESS -> Known.IN_PROGRESS
-                APPROVED -> Known.APPROVED
-                REJECTED -> Known.REJECTED
-                READY_FOR_VERIFICATION -> Known.READY_FOR_VERIFICATION
-                else ->
-                    throw LightsparkGridInvalidDataException("Unknown VerificationStatus: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): VerificationStatus = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is VerificationStatus && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
+        (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (hasMore.asKnown() == null) 0 else 1) +
+            (if (nextCursor.asKnown() == null) 0 else 1) +
+            (if (totalCount.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -557,29 +291,19 @@ private constructor(
         }
 
         return other is VerificationListResponse &&
-            id == other.id &&
-            createdAt == other.createdAt &&
-            customerId == other.customerId &&
-            errors == other.errors &&
-            verificationStatus == other.verificationStatus &&
-            updatedAt == other.updatedAt &&
+            data == other.data &&
+            hasMore == other.hasMore &&
+            nextCursor == other.nextCursor &&
+            totalCount == other.totalCount &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            id,
-            createdAt,
-            customerId,
-            errors,
-            verificationStatus,
-            updatedAt,
-            additionalProperties,
-        )
+        Objects.hash(data, hasMore, nextCursor, totalCount, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "VerificationListResponse{id=$id, createdAt=$createdAt, customerId=$customerId, errors=$errors, verificationStatus=$verificationStatus, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "VerificationListResponse{data=$data, hasMore=$hasMore, nextCursor=$nextCursor, totalCount=$totalCount, additionalProperties=$additionalProperties}"
 }

@@ -174,7 +174,7 @@ interface AgentServiceAsync {
      */
     suspend fun updatePolicy(
         agentId: String,
-        params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
+        params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Agent = updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
 
@@ -183,10 +183,6 @@ interface AgentServiceAsync {
         params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Agent
-
-    /** @see updatePolicy */
-    suspend fun updatePolicy(agentId: String, requestOptions: RequestOptions): Agent =
-        updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
 
     /** A view of [AgentServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -361,7 +357,7 @@ interface AgentServiceAsync {
         @MustBeClosed
         suspend fun updatePolicy(
             agentId: String,
-            params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
+            params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Agent> =
             updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
@@ -372,13 +368,5 @@ interface AgentServiceAsync {
             params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Agent>
-
-        /** @see updatePolicy */
-        @MustBeClosed
-        suspend fun updatePolicy(
-            agentId: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<Agent> =
-            updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
     }
 }

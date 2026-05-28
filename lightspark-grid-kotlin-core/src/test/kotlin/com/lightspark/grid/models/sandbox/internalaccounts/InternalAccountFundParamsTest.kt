@@ -11,7 +11,7 @@ internal class InternalAccountFundParamsTest {
     fun create() {
         InternalAccountFundParams.builder()
             .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-            .amount(100000L)
+            .fundRequest(FundRequest.builder().amount(100000L).build())
             .build()
     }
 
@@ -20,7 +20,7 @@ internal class InternalAccountFundParamsTest {
         val params =
             InternalAccountFundParams.builder()
                 .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                .amount(100000L)
+                .fundRequest(FundRequest.builder().amount(100000L).build())
                 .build()
 
         assertThat(params._pathParam(0))
@@ -34,11 +34,11 @@ internal class InternalAccountFundParamsTest {
         val params =
             InternalAccountFundParams.builder()
                 .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                .amount(100000L)
+                .fundRequest(FundRequest.builder().amount(100000L).build())
                 .build()
 
         val body = params._body()
 
-        assertThat(body.amount()).isEqualTo(100000L)
+        assertThat(body).isEqualTo(FundRequest.builder().amount(100000L).build())
     }
 }

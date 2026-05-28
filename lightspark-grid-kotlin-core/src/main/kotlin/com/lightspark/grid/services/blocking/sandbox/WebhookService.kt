@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.sandbox.webhooks.TestWebhookResponse
 import com.lightspark.grid.models.sandbox.webhooks.WebhookSendTestParams
-import com.lightspark.grid.models.sandbox.webhooks.WebhookSendTestResponse
 
 /** Endpoints to trigger test cases in sandbox */
 interface WebhookService {
@@ -28,10 +28,10 @@ interface WebhookService {
     fun sendTest(
         params: WebhookSendTestParams = WebhookSendTestParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): WebhookSendTestResponse
+    ): TestWebhookResponse
 
     /** @see sendTest */
-    fun sendTest(requestOptions: RequestOptions): WebhookSendTestResponse =
+    fun sendTest(requestOptions: RequestOptions): TestWebhookResponse =
         sendTest(WebhookSendTestParams.none(), requestOptions)
 
     /** A view of [WebhookService] that provides access to raw HTTP responses for each method. */
@@ -52,11 +52,11 @@ interface WebhookService {
         fun sendTest(
             params: WebhookSendTestParams = WebhookSendTestParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<WebhookSendTestResponse>
+        ): HttpResponseFor<TestWebhookResponse>
 
         /** @see sendTest */
         @MustBeClosed
-        fun sendTest(requestOptions: RequestOptions): HttpResponseFor<WebhookSendTestResponse> =
+        fun sendTest(requestOptions: RequestOptions): HttpResponseFor<TestWebhookResponse> =
             sendTest(WebhookSendTestParams.none(), requestOptions)
     }
 }

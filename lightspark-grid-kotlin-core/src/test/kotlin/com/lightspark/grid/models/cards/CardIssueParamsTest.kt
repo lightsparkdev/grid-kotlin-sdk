@@ -10,10 +10,14 @@ internal class CardIssueParamsTest {
     @Test
     fun create() {
         CardIssueParams.builder()
-            .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-            .form(CardIssueParams.Form.VIRTUAL)
-            .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-            .platformCardId("card-emp-aary-001")
+            .cardCreateRequest(
+                CardCreateRequest.builder()
+                    .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .form(CardForm.VIRTUAL)
+                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .platformCardId("card-emp-aary-001")
+                    .build()
+            )
             .build()
     }
 
@@ -21,35 +25,51 @@ internal class CardIssueParamsTest {
     fun body() {
         val params =
             CardIssueParams.builder()
-                .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .form(CardIssueParams.Form.VIRTUAL)
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .platformCardId("card-emp-aary-001")
+                .cardCreateRequest(
+                    CardCreateRequest.builder()
+                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .form(CardForm.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .platformCardId("card-emp-aary-001")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.cardholderId()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(body.form()).isEqualTo(CardIssueParams.Form.VIRTUAL)
-        assertThat(body.fundingSources())
-            .containsExactly("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-        assertThat(body.platformCardId()).isEqualTo("card-emp-aary-001")
+        assertThat(body)
+            .isEqualTo(
+                CardCreateRequest.builder()
+                    .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .form(CardForm.VIRTUAL)
+                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .platformCardId("card-emp-aary-001")
+                    .build()
+            )
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             CardIssueParams.builder()
-                .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .form(CardIssueParams.Form.VIRTUAL)
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .cardCreateRequest(
+                    CardCreateRequest.builder()
+                        .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .form(CardForm.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.cardholderId()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(body.form()).isEqualTo(CardIssueParams.Form.VIRTUAL)
-        assertThat(body.fundingSources())
-            .containsExactly("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+        assertThat(body)
+            .isEqualTo(
+                CardCreateRequest.builder()
+                    .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .form(CardForm.VIRTUAL)
+                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .build()
+            )
     }
 }

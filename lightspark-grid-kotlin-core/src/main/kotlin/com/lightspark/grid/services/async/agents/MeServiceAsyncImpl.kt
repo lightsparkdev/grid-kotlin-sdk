@@ -21,9 +21,9 @@ import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
 import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageAsync
-import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsyncImpl
 import com.lightspark.grid.services.async.agents.me.ExternalAccountServiceAsync
@@ -285,8 +285,8 @@ class MeServiceAsyncImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val listInternalAccountsHandler: Handler<MeListInternalAccountsPageResponse> =
-            jsonHandler<MeListInternalAccountsPageResponse>(clientOptions.jsonMapper)
+        private val listInternalAccountsHandler: Handler<InternalAccountListResponse> =
+            jsonHandler<InternalAccountListResponse>(clientOptions.jsonMapper)
 
         override suspend fun listInternalAccounts(
             params: MeListInternalAccountsParams,

@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.agents.me.actions
 
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.models.agents.AgentActionStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +14,7 @@ internal class ActionListParamsTest {
         ActionListParams.builder()
             .cursor("cursor")
             .limit(1L)
-            .status(ActionListParams.Status.PENDING_APPROVAL)
+            .status(AgentActionStatus.PENDING_APPROVAL)
             .build()
     }
 
@@ -23,7 +24,7 @@ internal class ActionListParamsTest {
             ActionListParams.builder()
                 .cursor("cursor")
                 .limit(1L)
-                .status(ActionListParams.Status.PENDING_APPROVAL)
+                .status(AgentActionStatus.PENDING_APPROVAL)
                 .build()
 
         val queryParams = params._queryParams()

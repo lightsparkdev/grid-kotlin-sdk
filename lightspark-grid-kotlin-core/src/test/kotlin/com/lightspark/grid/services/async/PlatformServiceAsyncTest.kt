@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.customers.InternalAccountType
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,14 +22,14 @@ internal class PlatformServiceAsyncTest {
                 .build()
         val platformServiceAsync = client.platform()
 
-        val response =
+        val platformInternalAccountListResponse =
             platformServiceAsync.listInternalAccounts(
                 PlatformListInternalAccountsParams.builder()
                     .currency("currency")
-                    .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
+                    .type(InternalAccountType.INTERNAL_FIAT)
                     .build()
             )
 
-        response.validate()
+        platformInternalAccountListResponse.validate()
     }
 }

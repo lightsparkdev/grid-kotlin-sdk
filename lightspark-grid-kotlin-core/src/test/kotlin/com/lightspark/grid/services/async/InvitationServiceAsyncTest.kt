@@ -4,7 +4,8 @@ package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.invitations.InvitationClaimParams
-import com.lightspark.grid.models.invitations.InvitationCreateParams
+import com.lightspark.grid.models.invitations.UmaInvitationClaimRequest
+import com.lightspark.grid.models.invitations.UmaInvitationCreateRequest
 import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -25,7 +26,7 @@ internal class InvitationServiceAsyncTest {
 
         val umaInvitation =
             invitationServiceAsync.create(
-                InvitationCreateParams.builder()
+                UmaInvitationCreateRequest.builder()
                     .inviterUma("\$inviter@uma.domain")
                     .amountToSend(12550L)
                     .expiresAt(OffsetDateTime.parse("2025-09-01T14:30:00Z"))
@@ -86,7 +87,11 @@ internal class InvitationServiceAsyncTest {
             invitationServiceAsync.claim(
                 InvitationClaimParams.builder()
                     .invitationCode("invitationCode")
-                    .inviteeUma("\$invitee@uma.domain")
+                    .umaInvitationClaimRequest(
+                        UmaInvitationClaimRequest.builder()
+                            .inviteeUma("\$invitee@uma.domain")
+                            .build()
+                    )
                     .build()
             )
 

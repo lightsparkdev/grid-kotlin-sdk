@@ -16,8 +16,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.umaproviders.UmaProviderListPageAsync
-import com.lightspark.grid.models.umaproviders.UmaProviderListPageResponse
 import com.lightspark.grid.models.umaproviders.UmaProviderListParams
+import com.lightspark.grid.models.umaproviders.UmaProviderListResponse
 
 class UmaProviderServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     UmaProviderServiceAsync {
@@ -51,8 +51,8 @@ class UmaProviderServiceAsyncImpl internal constructor(private val clientOptions
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val listHandler: Handler<UmaProviderListPageResponse> =
-            jsonHandler<UmaProviderListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<UmaProviderListResponse> =
+            jsonHandler<UmaProviderListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: UmaProviderListParams,

@@ -10,11 +10,15 @@ internal class CryptoEstimateWithdrawalFeeParamsTest {
     @Test
     fun create() {
         CryptoEstimateWithdrawalFeeParams.builder()
-            .amount(1000000L)
-            .cryptoNetwork("SOLANA")
-            .currency("USDC")
-            .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
-            .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+            .estimateCryptoWithdrawalFeeRequest(
+                EstimateCryptoWithdrawalFeeRequest.builder()
+                    .amount(1000000L)
+                    .cryptoNetwork("SOLANA")
+                    .currency("USDC")
+                    .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
+                    .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .build()
+            )
             .build()
     }
 
@@ -22,21 +26,28 @@ internal class CryptoEstimateWithdrawalFeeParamsTest {
     fun body() {
         val params =
             CryptoEstimateWithdrawalFeeParams.builder()
-                .amount(1000000L)
-                .cryptoNetwork("SOLANA")
-                .currency("USDC")
-                .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
-                .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .estimateCryptoWithdrawalFeeRequest(
+                    EstimateCryptoWithdrawalFeeRequest.builder()
+                        .amount(1000000L)
+                        .cryptoNetwork("SOLANA")
+                        .currency("USDC")
+                        .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
+                        .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.amount()).isEqualTo(1000000L)
-        assertThat(body.cryptoNetwork()).isEqualTo("SOLANA")
-        assertThat(body.currency()).isEqualTo("USDC")
-        assertThat(body.destinationAddress())
-            .isEqualTo("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
-        assertThat(body.internalAccountId())
-            .isEqualTo("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+        assertThat(body)
+            .isEqualTo(
+                EstimateCryptoWithdrawalFeeRequest.builder()
+                    .amount(1000000L)
+                    .cryptoNetwork("SOLANA")
+                    .currency("USDC")
+                    .destinationAddress("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")
+                    .internalAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .build()
+            )
     }
 }

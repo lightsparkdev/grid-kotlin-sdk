@@ -50,7 +50,7 @@ internal class ExternalAccountTest {
                         .build()
                 )
                 .currency("USD")
-                .status(ExternalAccount.Status.ACTIVE)
+                .status(ExternalAccountStatus.PENDING)
                 .beneficiaryVerificationStatus(
                     ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                 )
@@ -102,7 +102,7 @@ internal class ExternalAccountTest {
                 )
             )
         assertThat(externalAccount.currency()).isEqualTo("USD")
-        assertThat(externalAccount.status()).isEqualTo(ExternalAccount.Status.ACTIVE)
+        assertThat(externalAccount.status()).isEqualTo(ExternalAccountStatus.PENDING)
         assertThat(externalAccount.beneficiaryVerificationStatus())
             .isEqualTo(ExternalAccount.BeneficiaryVerificationStatus.MATCHED)
         assertThat(externalAccount.beneficiaryVerifiedData())
@@ -154,7 +154,7 @@ internal class ExternalAccountTest {
                         .build()
                 )
                 .currency("USD")
-                .status(ExternalAccount.Status.ACTIVE)
+                .status(ExternalAccountStatus.PENDING)
                 .beneficiaryVerificationStatus(
                     ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                 )

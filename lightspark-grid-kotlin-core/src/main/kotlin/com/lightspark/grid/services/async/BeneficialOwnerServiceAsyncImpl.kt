@@ -20,8 +20,8 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageAsync
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
 
@@ -185,8 +185,8 @@ internal constructor(private val clientOptions: ClientOptions) : BeneficialOwner
             }
         }
 
-        private val listHandler: Handler<BeneficialOwnerListPageResponse> =
-            jsonHandler<BeneficialOwnerListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<BeneficialOwnerListResponse> =
+            jsonHandler<BeneficialOwnerListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: BeneficialOwnerListParams,

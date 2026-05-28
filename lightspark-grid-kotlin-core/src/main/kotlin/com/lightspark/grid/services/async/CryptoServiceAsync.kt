@@ -7,7 +7,8 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeParams
-import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeResponse
+import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeRequest
+import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeResponse
 
 /** Endpoints for creating and confirming quotes for cross-currency transfers */
 interface CryptoServiceAsync {
@@ -32,7 +33,19 @@ interface CryptoServiceAsync {
     suspend fun estimateWithdrawalFee(
         params: CryptoEstimateWithdrawalFeeParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CryptoEstimateWithdrawalFeeResponse
+    ): EstimateCryptoWithdrawalFeeResponse
+
+    /** @see estimateWithdrawalFee */
+    suspend fun estimateWithdrawalFee(
+        estimateCryptoWithdrawalFeeRequest: EstimateCryptoWithdrawalFeeRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EstimateCryptoWithdrawalFeeResponse =
+        estimateWithdrawalFee(
+            CryptoEstimateWithdrawalFeeParams.builder()
+                .estimateCryptoWithdrawalFeeRequest(estimateCryptoWithdrawalFeeRequest)
+                .build(),
+            requestOptions,
+        )
 
     /**
      * A view of [CryptoServiceAsync] that provides access to raw HTTP responses for each method.
@@ -56,6 +69,19 @@ interface CryptoServiceAsync {
         suspend fun estimateWithdrawalFee(
             params: CryptoEstimateWithdrawalFeeParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<CryptoEstimateWithdrawalFeeResponse>
+        ): HttpResponseFor<EstimateCryptoWithdrawalFeeResponse>
+
+        /** @see estimateWithdrawalFee */
+        @MustBeClosed
+        suspend fun estimateWithdrawalFee(
+            estimateCryptoWithdrawalFeeRequest: EstimateCryptoWithdrawalFeeRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EstimateCryptoWithdrawalFeeResponse> =
+            estimateWithdrawalFee(
+                CryptoEstimateWithdrawalFeeParams.builder()
+                    .estimateCryptoWithdrawalFeeRequest(estimateCryptoWithdrawalFeeRequest)
+                    .build(),
+                requestOptions,
+            )
     }
 }

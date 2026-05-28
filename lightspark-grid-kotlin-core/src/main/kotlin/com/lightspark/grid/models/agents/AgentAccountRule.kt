@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -24,7 +23,7 @@ class AgentAccountRule
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val accountId: JsonField<String>,
-    private val executionMode: JsonField<ExecutionMode>,
+    private val executionMode: JsonField<AgentExecutionMode>,
     private val perTransactionLimit: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -34,7 +33,7 @@ private constructor(
         @JsonProperty("accountId") @ExcludeMissing accountId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("executionMode")
         @ExcludeMissing
-        executionMode: JsonField<ExecutionMode> = JsonMissing.of(),
+        executionMode: JsonField<AgentExecutionMode> = JsonMissing.of(),
         @JsonProperty("perTransactionLimit")
         @ExcludeMissing
         perTransactionLimit: JsonField<Long> = JsonMissing.of(),
@@ -56,7 +55,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun executionMode(): ExecutionMode? = executionMode.getNullable("executionMode")
+    fun executionMode(): AgentExecutionMode? = executionMode.getNullable("executionMode")
 
     /**
      * Per-transaction limit override, in the smallest unit of the relevant currency. Null inherits
@@ -81,7 +80,7 @@ private constructor(
      */
     @JsonProperty("executionMode")
     @ExcludeMissing
-    fun _executionMode(): JsonField<ExecutionMode> = executionMode
+    fun _executionMode(): JsonField<AgentExecutionMode> = executionMode
 
     /**
      * Returns the raw JSON value of [perTransactionLimit].
@@ -122,7 +121,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: JsonField<String>? = null
-        private var executionMode: JsonField<ExecutionMode> = JsonMissing.of()
+        private var executionMode: JsonField<AgentExecutionMode> = JsonMissing.of()
         private var perTransactionLimit: JsonField<Long> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -150,16 +149,17 @@ private constructor(
          * can execute actions autonomously without explicit approval. APPROVAL_REQUIRED: All agent
          * actions require explicit human approval before execution.
          */
-        fun executionMode(executionMode: ExecutionMode) = executionMode(JsonField.of(executionMode))
+        fun executionMode(executionMode: AgentExecutionMode) =
+            executionMode(JsonField.of(executionMode))
 
         /**
          * Sets [Builder.executionMode] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.executionMode] with a well-typed [ExecutionMode] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.executionMode] with a well-typed [AgentExecutionMode]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
          */
-        fun executionMode(executionMode: JsonField<ExecutionMode>) = apply {
+        fun executionMode(executionMode: JsonField<AgentExecutionMode>) = apply {
             this.executionMode = executionMode
         }
 
@@ -267,149 +267,6 @@ private constructor(
         (if (accountId.asKnown() == null) 0 else 1) +
             (executionMode.asKnown()?.validity() ?: 0) +
             (if (perTransactionLimit.asKnown() == null) 0 else 1)
-
-    /**
-     * Execution mode controlling whether agent actions require human approval. AUTO: The agent can
-     * execute actions autonomously without explicit approval. APPROVAL_REQUIRED: All agent actions
-     * require explicit human approval before execution.
-     */
-    class ExecutionMode @JsonCreator private constructor(private val value: JsonField<String>) :
-        Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val AUTO = of("AUTO")
-
-            val APPROVAL_REQUIRED = of("APPROVAL_REQUIRED")
-
-            fun of(value: String) = ExecutionMode(JsonField.of(value))
-        }
-
-        /** An enum containing [ExecutionMode]'s known values. */
-        enum class Known {
-            AUTO,
-            APPROVAL_REQUIRED,
-        }
-
-        /**
-         * An enum containing [ExecutionMode]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [ExecutionMode] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            AUTO,
-            APPROVAL_REQUIRED,
-            /**
-             * An enum member indicating that [ExecutionMode] was instantiated with an unknown
-             * value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                AUTO -> Value.AUTO
-                APPROVAL_REQUIRED -> Value.APPROVAL_REQUIRED
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                AUTO -> Known.AUTO
-                APPROVAL_REQUIRED -> Known.APPROVAL_REQUIRED
-                else -> throw LightsparkGridInvalidDataException("Unknown ExecutionMode: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): ExecutionMode = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is ExecutionMode && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

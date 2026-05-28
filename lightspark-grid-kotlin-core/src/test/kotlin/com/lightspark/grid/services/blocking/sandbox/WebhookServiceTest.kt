@@ -20,8 +20,8 @@ internal class WebhookServiceTest {
                 .build()
         val webhookService = client.sandbox().webhooks()
 
-        val response = webhookService.sendTest()
+        val testWebhookResponse = webhookService.sendTest()
 
-        response.validate()
+        testWebhookResponse.validate()
     }
 }

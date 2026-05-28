@@ -5,6 +5,8 @@ package com.lightspark.grid.models
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRole
+import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -20,7 +22,7 @@ internal class BeneficialOwnerTest {
                 .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                .kycStatus(KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerPersonalInfo.builder()
@@ -46,8 +48,8 @@ internal class BeneficialOwnerTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwner.Role.UBO)
-                .addRole(BeneficialOwner.Role.DIRECTOR)
+                .addRole(BeneficialOwnerRole.UBO)
+                .addRole(BeneficialOwnerRole.DIRECTOR)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
@@ -57,7 +59,7 @@ internal class BeneficialOwnerTest {
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
         assertThat(beneficialOwner.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(beneficialOwner.kycStatus()).isEqualTo(BeneficialOwner.KycStatus.APPROVED)
+        assertThat(beneficialOwner.kycStatus()).isEqualTo(KycStatus.APPROVED)
         assertThat(beneficialOwner.ownershipPercentage()).isEqualTo(51L)
         assertThat(beneficialOwner.personalInfo())
             .isEqualTo(
@@ -85,7 +87,7 @@ internal class BeneficialOwnerTest {
                     .build()
             )
         assertThat(beneficialOwner.roles())
-            .containsExactly(BeneficialOwner.Role.UBO, BeneficialOwner.Role.DIRECTOR)
+            .containsExactly(BeneficialOwnerRole.UBO, BeneficialOwnerRole.DIRECTOR)
         assertThat(beneficialOwner.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
     }
@@ -98,7 +100,7 @@ internal class BeneficialOwnerTest {
                 .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .kycStatus(BeneficialOwner.KycStatus.APPROVED)
+                .kycStatus(KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerPersonalInfo.builder()
@@ -124,8 +126,8 @@ internal class BeneficialOwnerTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwner.Role.UBO)
-                .addRole(BeneficialOwner.Role.DIRECTOR)
+                .addRole(BeneficialOwnerRole.UBO)
+                .addRole(BeneficialOwnerRole.DIRECTOR)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 

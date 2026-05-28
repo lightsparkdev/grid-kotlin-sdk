@@ -21,11 +21,11 @@ internal class DiscoveryServiceAsyncTest {
                 .build()
         val discoveryServiceAsync = client.discoveries()
 
-        val discoveries =
+        val discoveryListResponse =
             discoveryServiceAsync.list(
                 DiscoveryListParams.builder().country("country").currency("currency").build()
             )
 
-        discoveries.validate()
+        discoveryListResponse.validate()
     }
 }

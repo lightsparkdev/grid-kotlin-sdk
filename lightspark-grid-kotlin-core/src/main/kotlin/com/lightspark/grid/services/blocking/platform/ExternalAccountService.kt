@@ -13,6 +13,7 @@ import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDelet
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPage
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
+import com.lightspark.grid.models.platform.externalaccounts.PlatformExternalAccountCreateRequest
 
 /** External account management endpoints for creating and managing external bank accounts */
 interface ExternalAccountService {
@@ -34,6 +35,18 @@ interface ExternalAccountService {
         params: ExternalAccountCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ExternalAccount
+
+    /** @see create */
+    fun create(
+        platformExternalAccountCreateRequest: PlatformExternalAccountCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ExternalAccount =
+        create(
+            ExternalAccountCreateParams.builder()
+                .platformExternalAccountCreateRequest(platformExternalAccountCreateRequest)
+                .build(),
+            requestOptions,
+        )
 
     /** Retrieve a platform external account by its system-generated ID */
     fun retrieve(
@@ -110,6 +123,19 @@ interface ExternalAccountService {
             params: ExternalAccountCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ExternalAccount>
+
+        /** @see create */
+        @MustBeClosed
+        fun create(
+            platformExternalAccountCreateRequest: PlatformExternalAccountCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ExternalAccount> =
+            create(
+                ExternalAccountCreateParams.builder()
+                    .platformExternalAccountCreateRequest(platformExternalAccountCreateRequest)
+                    .build(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /platform/external-accounts/{externalAccountId}`,

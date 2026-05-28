@@ -171,7 +171,7 @@ interface AgentService {
      */
     fun updatePolicy(
         agentId: String,
-        params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
+        params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Agent = updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
 
@@ -180,10 +180,6 @@ interface AgentService {
         params: AgentUpdatePolicyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Agent
-
-    /** @see updatePolicy */
-    fun updatePolicy(agentId: String, requestOptions: RequestOptions): Agent =
-        updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
 
     /** A view of [AgentService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -352,7 +348,7 @@ interface AgentService {
         @MustBeClosed
         fun updatePolicy(
             agentId: String,
-            params: AgentUpdatePolicyParams = AgentUpdatePolicyParams.none(),
+            params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Agent> =
             updatePolicy(params.toBuilder().agentId(agentId).build(), requestOptions)
@@ -363,10 +359,5 @@ interface AgentService {
             params: AgentUpdatePolicyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Agent>
-
-        /** @see updatePolicy */
-        @MustBeClosed
-        fun updatePolicy(agentId: String, requestOptions: RequestOptions): HttpResponseFor<Agent> =
-            updatePolicy(agentId, AgentUpdatePolicyParams.none(), requestOptions)
     }
 }

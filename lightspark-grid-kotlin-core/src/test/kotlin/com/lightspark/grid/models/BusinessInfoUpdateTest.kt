@@ -4,6 +4,8 @@ package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.BusinessType
+import com.lightspark.grid.models.customers.EntityType
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -14,13 +16,11 @@ internal class BusinessInfoUpdateTest {
     fun create() {
         val businessInfoUpdate =
             BusinessInfoUpdate.builder()
-                .businessType(
-                    BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
-                )
+                .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .addCountriesOfOperation("US")
                 .country("US")
                 .doingBusinessAs("Acme")
-                .entityType(BusinessInfoUpdate.EntityType.LLC)
+                .entityType(EntityType.LLC)
                 .expectedMonthlyTransactionCount(
                     BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )
@@ -37,11 +37,11 @@ internal class BusinessInfoUpdateTest {
                 .build()
 
         assertThat(businessInfoUpdate.businessType())
-            .isEqualTo(BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+            .isEqualTo(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
         assertThat(businessInfoUpdate.countriesOfOperation()).containsExactly("US")
         assertThat(businessInfoUpdate.country()).isEqualTo("US")
         assertThat(businessInfoUpdate.doingBusinessAs()).isEqualTo("Acme")
-        assertThat(businessInfoUpdate.entityType()).isEqualTo(BusinessInfoUpdate.EntityType.LLC)
+        assertThat(businessInfoUpdate.entityType()).isEqualTo(EntityType.LLC)
         assertThat(businessInfoUpdate.expectedMonthlyTransactionCount())
             .isEqualTo(BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500)
         assertThat(businessInfoUpdate.expectedMonthlyTransactionVolume())
@@ -62,13 +62,11 @@ internal class BusinessInfoUpdateTest {
         val jsonMapper = jsonMapper()
         val businessInfoUpdate =
             BusinessInfoUpdate.builder()
-                .businessType(
-                    BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
-                )
+                .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
                 .addCountriesOfOperation("US")
                 .country("US")
                 .doingBusinessAs("Acme")
-                .entityType(BusinessInfoUpdate.EntityType.LLC)
+                .entityType(EntityType.LLC)
                 .expectedMonthlyTransactionCount(
                     BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )

@@ -13,38 +13,38 @@ class CustomerListPage
 private constructor(
     private val service: CustomerService,
     private val params: CustomerListParams,
-    private val response: CustomerListPageResponse,
-) : Page<CustomerListResponse> {
+    private val response: CustomerListResponse,
+) : Page<CustomerOneOf> {
 
     /**
-     * Delegates to [CustomerListPageResponse], but gracefully handles missing data.
+     * Delegates to [CustomerListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListPageResponse.data
+     * @see CustomerListResponse.data
      */
-    fun data(): List<CustomerListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<CustomerOneOf> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [CustomerListPageResponse], but gracefully handles missing data.
+     * Delegates to [CustomerListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListPageResponse.nextCursor
+     * @see CustomerListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [CustomerListPageResponse], but gracefully handles missing data.
+     * Delegates to [CustomerListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListPageResponse.hasMore
+     * @see CustomerListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [CustomerListPageResponse], but gracefully handles missing data.
+     * Delegates to [CustomerListResponse], but gracefully handles missing data.
      *
-     * @see CustomerListPageResponse.totalCount
+     * @see CustomerListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<CustomerListResponse> = data()
+    override fun items(): List<CustomerOneOf> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override fun nextPage(): CustomerListPage = service.list(nextPageParams())
 
-    fun autoPager(): AutoPager<CustomerListResponse> = AutoPager.from(this)
+    fun autoPager(): AutoPager<CustomerOneOf> = AutoPager.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): CustomerListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): CustomerListPageResponse = response
+    fun response(): CustomerListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: CustomerService? = null
         private var params: CustomerListParams? = null
-        private var response: CustomerListPageResponse? = null
+        private var response: CustomerListResponse? = null
 
         internal fun from(customerListPage: CustomerListPage) = apply {
             service = customerListPage.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: CustomerListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: CustomerListPageResponse) = apply { this.response = response }
+        fun response(response: CustomerListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [CustomerListPage].

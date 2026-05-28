@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponse
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.tokens.ApiToken
+import com.lightspark.grid.models.tokens.ApiTokenCreateRequest
 import com.lightspark.grid.models.tokens.TokenCreateParams
 import com.lightspark.grid.models.tokens.TokenDeleteParams
 import com.lightspark.grid.models.tokens.TokenListPageAsync
@@ -34,6 +35,16 @@ interface TokenServiceAsync {
         params: TokenCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): ApiToken
+
+    /** @see create */
+    suspend fun create(
+        apiTokenCreateRequest: ApiTokenCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): ApiToken =
+        create(
+            TokenCreateParams.builder().apiTokenCreateRequest(apiTokenCreateRequest).build(),
+            requestOptions,
+        )
 
     /** Retrieve an API token by their system-generated ID */
     suspend fun retrieve(
@@ -103,6 +114,17 @@ interface TokenServiceAsync {
             params: TokenCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<ApiToken>
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            apiTokenCreateRequest: ApiTokenCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<ApiToken> =
+            create(
+                TokenCreateParams.builder().apiTokenCreateRequest(apiTokenCreateRequest).build(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /tokens/{tokenId}`, but is otherwise the same as

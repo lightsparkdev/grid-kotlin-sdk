@@ -3,7 +3,7 @@
 package com.lightspark.grid.services.async.sandbox
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.sandbox.uma.UmaReceivePaymentParams
+import com.lightspark.grid.models.sandbox.uma.ReceiveRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -23,7 +23,7 @@ internal class UmaServiceAsyncTest {
 
         val incomingTransaction =
             umaServiceAsync.receivePayment(
-                UmaReceivePaymentParams.builder()
+                ReceiveRequest.builder()
                     .receivingCurrencyAmount(1000L)
                     .receivingCurrencyCode("USD")
                     .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")

@@ -21,10 +21,10 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountAddParams
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountDeleteParams
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListPageAsync
-import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.agents.me.externalaccounts.ExternalAccountRetrieveParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListResponse
 
 /**
  * Endpoints called by the agent itself using its own credentials (obtained via device code
@@ -123,8 +123,8 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListPageResponse> =
-            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListResponse> =
+            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: ExternalAccountListParams,

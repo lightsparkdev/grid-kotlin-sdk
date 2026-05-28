@@ -13,38 +13,38 @@ class UmaProviderListPage
 private constructor(
     private val service: UmaProviderService,
     private val params: UmaProviderListParams,
-    private val response: UmaProviderListPageResponse,
-) : Page<UmaProviderListResponse> {
+    private val response: UmaProviderListResponse,
+) : Page<UmaProvider> {
 
     /**
-     * Delegates to [UmaProviderListPageResponse], but gracefully handles missing data.
+     * Delegates to [UmaProviderListResponse], but gracefully handles missing data.
      *
-     * @see UmaProviderListPageResponse.data
+     * @see UmaProviderListResponse.data
      */
-    fun data(): List<UmaProviderListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<UmaProvider> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [UmaProviderListPageResponse], but gracefully handles missing data.
+     * Delegates to [UmaProviderListResponse], but gracefully handles missing data.
      *
-     * @see UmaProviderListPageResponse.nextCursor
+     * @see UmaProviderListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [UmaProviderListPageResponse], but gracefully handles missing data.
+     * Delegates to [UmaProviderListResponse], but gracefully handles missing data.
      *
-     * @see UmaProviderListPageResponse.hasMore
+     * @see UmaProviderListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [UmaProviderListPageResponse], but gracefully handles missing data.
+     * Delegates to [UmaProviderListResponse], but gracefully handles missing data.
      *
-     * @see UmaProviderListPageResponse.totalCount
+     * @see UmaProviderListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<UmaProviderListResponse> = data()
+    override fun items(): List<UmaProvider> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override fun nextPage(): UmaProviderListPage = service.list(nextPageParams())
 
-    fun autoPager(): AutoPager<UmaProviderListResponse> = AutoPager.from(this)
+    fun autoPager(): AutoPager<UmaProvider> = AutoPager.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): UmaProviderListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): UmaProviderListPageResponse = response
+    fun response(): UmaProviderListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: UmaProviderService? = null
         private var params: UmaProviderListParams? = null
-        private var response: UmaProviderListPageResponse? = null
+        private var response: UmaProviderListResponse? = null
 
         internal fun from(umaProviderListPage: UmaProviderListPage) = apply {
             service = umaProviderListPage.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: UmaProviderListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: UmaProviderListPageResponse) = apply { this.response = response }
+        fun response(response: UmaProviderListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [UmaProviderListPage].

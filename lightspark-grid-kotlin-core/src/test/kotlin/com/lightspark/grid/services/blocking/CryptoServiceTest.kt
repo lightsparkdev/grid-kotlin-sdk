@@ -3,7 +3,7 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeParams
+import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -21,9 +21,9 @@ internal class CryptoServiceTest {
                 .build()
         val cryptoService = client.crypto()
 
-        val response =
+        val estimateCryptoWithdrawalFeeResponse =
             cryptoService.estimateWithdrawalFee(
-                CryptoEstimateWithdrawalFeeParams.builder()
+                EstimateCryptoWithdrawalFeeRequest.builder()
                     .amount(1000000L)
                     .cryptoNetwork("SOLANA")
                     .currency("USDC")
@@ -32,6 +32,6 @@ internal class CryptoServiceTest {
                     .build()
             )
 
-        response.validate()
+        estimateCryptoWithdrawalFeeResponse.validate()
     }
 }

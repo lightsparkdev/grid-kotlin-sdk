@@ -17,9 +17,9 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.agents.me.transactions.TransactionListPage
-import com.lightspark.grid.models.agents.me.transactions.TransactionListPageResponse
 import com.lightspark.grid.models.agents.me.transactions.TransactionListParams
 import com.lightspark.grid.models.agents.me.transactions.TransactionRetrieveParams
+import com.lightspark.grid.models.transactions.TransactionListResponse
 import com.lightspark.grid.models.transferin.Transaction
 
 /**
@@ -102,8 +102,8 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
             }
         }
 
-        private val listHandler: Handler<TransactionListPageResponse> =
-            jsonHandler<TransactionListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<TransactionListResponse> =
+            jsonHandler<TransactionListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: TransactionListParams,

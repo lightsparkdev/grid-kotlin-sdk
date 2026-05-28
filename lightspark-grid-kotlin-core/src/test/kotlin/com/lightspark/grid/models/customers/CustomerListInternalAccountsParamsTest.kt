@@ -15,7 +15,7 @@ internal class CustomerListInternalAccountsParamsTest {
             .cursor("cursor")
             .customerId("customerId")
             .limit(1L)
-            .type(CustomerListInternalAccountsParams.Type.INTERNAL_FIAT)
+            .type(InternalAccountType.INTERNAL_FIAT)
             .build()
     }
 
@@ -27,7 +27,7 @@ internal class CustomerListInternalAccountsParamsTest {
                 .cursor("cursor")
                 .customerId("customerId")
                 .limit(1L)
-                .type(CustomerListInternalAccountsParams.Type.INTERNAL_FIAT)
+                .type(InternalAccountType.INTERNAL_FIAT)
                 .build()
 
         val queryParams = params._queryParams()

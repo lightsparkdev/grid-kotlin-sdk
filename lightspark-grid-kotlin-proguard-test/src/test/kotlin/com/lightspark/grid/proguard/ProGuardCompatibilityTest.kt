@@ -6,13 +6,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.IndividualCustomer
-import com.lightspark.grid.models.config.CustomerInfoFieldName
-import com.lightspark.grid.models.customers.CustomerCreateResponse
+import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
+import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
+import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
+import com.lightspark.grid.models.quotes.QuoteLockSide
 import java.time.LocalDate
-import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -102,15 +102,12 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun customerCreateResponseRoundtrip() {
+    fun customerCreateRequestOneOfRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerCreateResponse =
-            CustomerCreateResponse.ofIndividual(
-                IndividualCustomer.builder()
-                    .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
-                    .platformCustomerId("9f84e0c2a72c4fa")
-                    .umaAddress("\$john.doe@uma.domain.com")
-                    .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        val customerCreateRequestOneOf =
+            CustomerCreateRequestOneOf.ofIndividual(
+                IndividualCustomerCreateRequest.builder()
+                    .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -122,39 +119,38 @@ internal class ProGuardCompatibilityTest {
                             .build()
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
-                    .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .fullName("John Michael Doe")
-                    .isDeleted(false)
-                    .kycStatus(IndividualCustomer.KycStatus.APPROVED)
+                    .kycStatus(KycStatus.APPROVED)
                     .nationality("US")
+                    .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
-                    .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                    .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
 
-        val roundtrippedCustomerCreateResponse =
+        val roundtrippedCustomerCreateRequestOneOf =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerCreateResponse),
-                jacksonTypeRef<CustomerCreateResponse>(),
+                jsonMapper.writeValueAsString(customerCreateRequestOneOf),
+                jacksonTypeRef<CustomerCreateRequestOneOf>(),
             )
 
-        assertThat(roundtrippedCustomerCreateResponse).isEqualTo(customerCreateResponse)
+        assertThat(roundtrippedCustomerCreateRequestOneOf).isEqualTo(customerCreateRequestOneOf)
     }
 
     @Test
-    fun customerInfoFieldNameRoundtrip() {
+    fun quoteLockSideRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
+        val quoteLockSide = QuoteLockSide.SENDING
 
-        val roundtrippedCustomerInfoFieldName =
+        val roundtrippedQuoteLockSide =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerInfoFieldName),
-                jacksonTypeRef<CustomerInfoFieldName>(),
+                jsonMapper.writeValueAsString(quoteLockSide),
+                jacksonTypeRef<QuoteLockSide>(),
             )
 
-        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
+        assertThat(roundtrippedQuoteLockSide).isEqualTo(quoteLockSide)
     }
 }

@@ -16,8 +16,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.sandbox.webhooks.TestWebhookResponse
 import com.lightspark.grid.models.sandbox.webhooks.WebhookSendTestParams
-import com.lightspark.grid.models.sandbox.webhooks.WebhookSendTestResponse
 
 /** Endpoints to trigger test cases in sandbox */
 class WebhookServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -35,7 +35,7 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
     override suspend fun sendTest(
         params: WebhookSendTestParams,
         requestOptions: RequestOptions,
-    ): WebhookSendTestResponse =
+    ): TestWebhookResponse =
         // post /sandbox/webhooks/test
         withRawResponse().sendTest(params, requestOptions).parse()
 
@@ -52,13 +52,13 @@ class WebhookServiceAsyncImpl internal constructor(private val clientOptions: Cl
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val sendTestHandler: Handler<WebhookSendTestResponse> =
-            jsonHandler<WebhookSendTestResponse>(clientOptions.jsonMapper)
+        private val sendTestHandler: Handler<TestWebhookResponse> =
+            jsonHandler<TestWebhookResponse>(clientOptions.jsonMapper)
 
         override suspend fun sendTest(
             params: WebhookSendTestParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<WebhookSendTestResponse> {
+        ): HttpResponseFor<TestWebhookResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

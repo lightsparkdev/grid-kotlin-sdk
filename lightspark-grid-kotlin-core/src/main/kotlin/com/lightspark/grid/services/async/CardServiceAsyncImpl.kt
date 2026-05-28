@@ -17,15 +17,13 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.cards.Card
 import com.lightspark.grid.models.cards.CardIssueParams
-import com.lightspark.grid.models.cards.CardIssueResponse
 import com.lightspark.grid.models.cards.CardListPageAsync
-import com.lightspark.grid.models.cards.CardListPageResponse
 import com.lightspark.grid.models.cards.CardListParams
+import com.lightspark.grid.models.cards.CardListResponse
 import com.lightspark.grid.models.cards.CardRetrieveParams
-import com.lightspark.grid.models.cards.CardRetrieveResponse
 import com.lightspark.grid.models.cards.CardUpdateParams
-import com.lightspark.grid.models.cards.CardUpdateResponse
 
 /**
  * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
@@ -46,14 +44,11 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
     override suspend fun retrieve(
         params: CardRetrieveParams,
         requestOptions: RequestOptions,
-    ): CardRetrieveResponse =
+    ): Card =
         // get /cards/{id}
         withRawResponse().retrieve(params, requestOptions).parse()
 
-    override suspend fun update(
-        params: CardUpdateParams,
-        requestOptions: RequestOptions,
-    ): CardUpdateResponse =
+    override suspend fun update(params: CardUpdateParams, requestOptions: RequestOptions): Card =
         // patch /cards/{id}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -64,10 +59,7 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
         // get /cards
         withRawResponse().list(params, requestOptions).parse()
 
-    override suspend fun issue(
-        params: CardIssueParams,
-        requestOptions: RequestOptions,
-    ): CardIssueResponse =
+    override suspend fun issue(params: CardIssueParams, requestOptions: RequestOptions): Card =
         // post /cards
         withRawResponse().issue(params, requestOptions).parse()
 
@@ -84,13 +76,12 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<CardRetrieveResponse> =
-            jsonHandler<CardRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Card> = jsonHandler<Card>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: CardRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardRetrieveResponse> {
+        ): HttpResponseFor<Card> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -118,13 +109,12 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
             }
         }
 
-        private val updateHandler: Handler<CardUpdateResponse> =
-            jsonHandler<CardUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<Card> = jsonHandler<Card>(clientOptions.jsonMapper)
 
         override suspend fun update(
             params: CardUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardUpdateResponse> {
+        ): HttpResponseFor<Card> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -153,8 +143,8 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
             }
         }
 
-        private val listHandler: Handler<CardListPageResponse> =
-            jsonHandler<CardListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CardListResponse> =
+            jsonHandler<CardListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: CardListParams,
@@ -191,13 +181,12 @@ class CardServiceAsyncImpl internal constructor(private val clientOptions: Clien
             }
         }
 
-        private val issueHandler: Handler<CardIssueResponse> =
-            jsonHandler<CardIssueResponse>(clientOptions.jsonMapper)
+        private val issueHandler: Handler<Card> = jsonHandler<Card>(clientOptions.jsonMapper)
 
         override suspend fun issue(
             params: CardIssueParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CardIssueResponse> {
+        ): HttpResponseFor<Card> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

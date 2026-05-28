@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.customers.InternalAccountType
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,14 +22,14 @@ internal class PlatformServiceTest {
                 .build()
         val platformService = client.platform()
 
-        val response =
+        val platformInternalAccountListResponse =
             platformService.listInternalAccounts(
                 PlatformListInternalAccountsParams.builder()
                     .currency("currency")
-                    .type(PlatformListInternalAccountsParams.Type.INTERNAL_FIAT)
+                    .type(InternalAccountType.INTERNAL_FIAT)
                     .build()
             )
 
-        response.validate()
+        platformInternalAccountListResponse.validate()
     }
 }

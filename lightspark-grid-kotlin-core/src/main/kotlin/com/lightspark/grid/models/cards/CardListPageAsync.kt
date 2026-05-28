@@ -13,38 +13,38 @@ class CardListPageAsync
 private constructor(
     private val service: CardServiceAsync,
     private val params: CardListParams,
-    private val response: CardListPageResponse,
-) : PageAsync<CardListResponse> {
+    private val response: CardListResponse,
+) : PageAsync<Card> {
 
     /**
-     * Delegates to [CardListPageResponse], but gracefully handles missing data.
+     * Delegates to [CardListResponse], but gracefully handles missing data.
      *
-     * @see CardListPageResponse.data
+     * @see CardListResponse.data
      */
-    fun data(): List<CardListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<Card> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [CardListPageResponse], but gracefully handles missing data.
+     * Delegates to [CardListResponse], but gracefully handles missing data.
      *
-     * @see CardListPageResponse.nextCursor
+     * @see CardListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [CardListPageResponse], but gracefully handles missing data.
+     * Delegates to [CardListResponse], but gracefully handles missing data.
      *
-     * @see CardListPageResponse.hasMore
+     * @see CardListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [CardListPageResponse], but gracefully handles missing data.
+     * Delegates to [CardListResponse], but gracefully handles missing data.
      *
-     * @see CardListPageResponse.totalCount
+     * @see CardListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<CardListResponse> = data()
+    override fun items(): List<Card> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override suspend fun nextPage(): CardListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<CardListResponse> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<Card> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): CardListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): CardListPageResponse = response
+    fun response(): CardListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: CardServiceAsync? = null
         private var params: CardListParams? = null
-        private var response: CardListPageResponse? = null
+        private var response: CardListResponse? = null
 
         internal fun from(cardListPageAsync: CardListPageAsync) = apply {
             service = cardListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: CardListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: CardListPageResponse) = apply { this.response = response }
+        fun response(response: CardListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [CardListPageAsync].

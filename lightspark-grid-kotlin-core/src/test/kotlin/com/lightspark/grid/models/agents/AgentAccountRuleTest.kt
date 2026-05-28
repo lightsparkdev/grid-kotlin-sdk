@@ -14,13 +14,13 @@ internal class AgentAccountRuleTest {
         val agentAccountRule =
             AgentAccountRule.builder()
                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                .executionMode(AgentExecutionMode.AUTO)
                 .perTransactionLimit(10000L)
                 .build()
 
         assertThat(agentAccountRule.accountId())
             .isEqualTo("Account:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(agentAccountRule.executionMode()).isEqualTo(AgentAccountRule.ExecutionMode.AUTO)
+        assertThat(agentAccountRule.executionMode()).isEqualTo(AgentExecutionMode.AUTO)
         assertThat(agentAccountRule.perTransactionLimit()).isEqualTo(10000L)
     }
 
@@ -30,7 +30,7 @@ internal class AgentAccountRuleTest {
         val agentAccountRule =
             AgentAccountRule.builder()
                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                .executionMode(AgentExecutionMode.AUTO)
                 .perTransactionLimit(10000L)
                 .build()
 

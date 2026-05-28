@@ -12,51 +12,57 @@ internal class ConfigUpdateParamsTest {
     @Test
     fun create() {
         ConfigUpdateParams.builder()
-            .embeddedWalletConfig(
-                EmbeddedWalletConfig.builder()
-                    .alphanumeric(false)
-                    .appName("Acme Wallet")
-                    .expirationSeconds(300L)
-                    .logoUrl("https://acme.com/logo.png")
-                    .otpLength(6L)
-                    .replyToEmailAddress("support@acme.com")
-                    .sendFromEmailAddress("noreply@acme.com")
-                    .sendFromEmailSenderName("Acme Notifications")
+            .platformConfigUpdateRequest(
+                PlatformConfigUpdateRequest.builder()
+                    .embeddedWalletConfig(
+                        EmbeddedWalletConfig.builder()
+                            .alphanumeric(false)
+                            .appName("Acme Wallet")
+                            .expirationSeconds(300L)
+                            .logoUrl("https://acme.com/logo.png")
+                            .otpLength(6L)
+                            .replyToEmailAddress("support@acme.com")
+                            .sendFromEmailAddress("noreply@acme.com")
+                            .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addSupportedCurrency(
+                        PlatformCurrencyConfig.builder()
+                            .currencyCode("USD")
+                            .addEnabledTransactionType(TransactionType.OUTGOING)
+                            .addEnabledTransactionType(TransactionType.INCOMING)
+                            .maxAmount(1000000L)
+                            .minAmount(100L)
+                            .requiredCounterpartyFields(
+                                listOf(
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.FULL_NAME)
+                                        .build(),
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.BIRTH_DATE)
+                                        .build(),
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.NATIONALITY)
+                                        .build(),
+                                )
+                            )
+                            .addProviderRequiredCounterpartyCustomerField(
+                                CustomerInfoFieldName.FULL_NAME
+                            )
+                            .addProviderRequiredCounterpartyCustomerField(
+                                CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
+                            )
+                            .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
+                            .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
+                            .build()
+                    )
+                    .umaDomain("mycompany.com")
+                    .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                     .build()
             )
-            .addSupportedCurrency(
-                PlatformCurrencyConfig.builder()
-                    .currencyCode("USD")
-                    .addEnabledTransactionType(TransactionType.OUTGOING)
-                    .addEnabledTransactionType(TransactionType.INCOMING)
-                    .maxAmount(1000000L)
-                    .minAmount(100L)
-                    .requiredCounterpartyFields(
-                        listOf(
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.FULL_NAME)
-                                .build(),
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.NATIONALITY)
-                                .build(),
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.BIRTH_DATE)
-                                .build(),
-                        )
-                    )
-                    .addProviderRequiredCounterpartyCustomerField(CustomerInfoFieldName.FULL_NAME)
-                    .addProviderRequiredCounterpartyCustomerField(
-                        CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
-                    )
-                    .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
-                    .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
-                    .build()
-            )
-            .umaDomain("mycompany.com")
-            .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
             .build()
     }
 
@@ -64,110 +70,124 @@ internal class ConfigUpdateParamsTest {
     fun body() {
         val params =
             ConfigUpdateParams.builder()
-                .embeddedWalletConfig(
-                    EmbeddedWalletConfig.builder()
-                        .alphanumeric(false)
-                        .appName("Acme Wallet")
-                        .expirationSeconds(300L)
-                        .logoUrl("https://acme.com/logo.png")
-                        .otpLength(6L)
-                        .replyToEmailAddress("support@acme.com")
-                        .sendFromEmailAddress("noreply@acme.com")
-                        .sendFromEmailSenderName("Acme Notifications")
+                .platformConfigUpdateRequest(
+                    PlatformConfigUpdateRequest.builder()
+                        .embeddedWalletConfig(
+                            EmbeddedWalletConfig.builder()
+                                .alphanumeric(false)
+                                .appName("Acme Wallet")
+                                .expirationSeconds(300L)
+                                .logoUrl("https://acme.com/logo.png")
+                                .otpLength(6L)
+                                .replyToEmailAddress("support@acme.com")
+                                .sendFromEmailAddress("noreply@acme.com")
+                                .sendFromEmailSenderName("Acme Notifications")
+                                .build()
+                        )
+                        .addSupportedCurrency(
+                            PlatformCurrencyConfig.builder()
+                                .currencyCode("USD")
+                                .addEnabledTransactionType(TransactionType.OUTGOING)
+                                .addEnabledTransactionType(TransactionType.INCOMING)
+                                .maxAmount(1000000L)
+                                .minAmount(100L)
+                                .requiredCounterpartyFields(
+                                    listOf(
+                                        CounterpartyFieldDefinition.builder()
+                                            .mandatory(true)
+                                            .name(CustomerInfoFieldName.FULL_NAME)
+                                            .build(),
+                                        CounterpartyFieldDefinition.builder()
+                                            .mandatory(true)
+                                            .name(CustomerInfoFieldName.BIRTH_DATE)
+                                            .build(),
+                                        CounterpartyFieldDefinition.builder()
+                                            .mandatory(true)
+                                            .name(CustomerInfoFieldName.NATIONALITY)
+                                            .build(),
+                                    )
+                                )
+                                .addProviderRequiredCounterpartyCustomerField(
+                                    CustomerInfoFieldName.FULL_NAME
+                                )
+                                .addProviderRequiredCounterpartyCustomerField(
+                                    CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
+                                )
+                                .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
+                                .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
+                                .build()
+                        )
+                        .umaDomain("mycompany.com")
+                        .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                         .build()
                 )
-                .addSupportedCurrency(
-                    PlatformCurrencyConfig.builder()
-                        .currencyCode("USD")
-                        .addEnabledTransactionType(TransactionType.OUTGOING)
-                        .addEnabledTransactionType(TransactionType.INCOMING)
-                        .maxAmount(1000000L)
-                        .minAmount(100L)
-                        .requiredCounterpartyFields(
-                            listOf(
-                                CounterpartyFieldDefinition.builder()
-                                    .mandatory(true)
-                                    .name(CustomerInfoFieldName.FULL_NAME)
-                                    .build(),
-                                CounterpartyFieldDefinition.builder()
-                                    .mandatory(true)
-                                    .name(CustomerInfoFieldName.NATIONALITY)
-                                    .build(),
-                                CounterpartyFieldDefinition.builder()
-                                    .mandatory(true)
-                                    .name(CustomerInfoFieldName.BIRTH_DATE)
-                                    .build(),
-                            )
-                        )
-                        .addProviderRequiredCounterpartyCustomerField(
-                            CustomerInfoFieldName.FULL_NAME
-                        )
-                        .addProviderRequiredCounterpartyCustomerField(
-                            CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
-                        )
-                        .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
-                        .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
-                        .build()
-                )
-                .umaDomain("mycompany.com")
-                .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.embeddedWalletConfig())
+        assertThat(body)
             .isEqualTo(
-                EmbeddedWalletConfig.builder()
-                    .alphanumeric(false)
-                    .appName("Acme Wallet")
-                    .expirationSeconds(300L)
-                    .logoUrl("https://acme.com/logo.png")
-                    .otpLength(6L)
-                    .replyToEmailAddress("support@acme.com")
-                    .sendFromEmailAddress("noreply@acme.com")
-                    .sendFromEmailSenderName("Acme Notifications")
+                PlatformConfigUpdateRequest.builder()
+                    .embeddedWalletConfig(
+                        EmbeddedWalletConfig.builder()
+                            .alphanumeric(false)
+                            .appName("Acme Wallet")
+                            .expirationSeconds(300L)
+                            .logoUrl("https://acme.com/logo.png")
+                            .otpLength(6L)
+                            .replyToEmailAddress("support@acme.com")
+                            .sendFromEmailAddress("noreply@acme.com")
+                            .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addSupportedCurrency(
+                        PlatformCurrencyConfig.builder()
+                            .currencyCode("USD")
+                            .addEnabledTransactionType(TransactionType.OUTGOING)
+                            .addEnabledTransactionType(TransactionType.INCOMING)
+                            .maxAmount(1000000L)
+                            .minAmount(100L)
+                            .requiredCounterpartyFields(
+                                listOf(
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.FULL_NAME)
+                                        .build(),
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.BIRTH_DATE)
+                                        .build(),
+                                    CounterpartyFieldDefinition.builder()
+                                        .mandatory(true)
+                                        .name(CustomerInfoFieldName.NATIONALITY)
+                                        .build(),
+                                )
+                            )
+                            .addProviderRequiredCounterpartyCustomerField(
+                                CustomerInfoFieldName.FULL_NAME
+                            )
+                            .addProviderRequiredCounterpartyCustomerField(
+                                CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
+                            )
+                            .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
+                            .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
+                            .build()
+                    )
+                    .umaDomain("mycompany.com")
+                    .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                     .build()
             )
-        assertThat(body.supportedCurrencies())
-            .containsExactly(
-                PlatformCurrencyConfig.builder()
-                    .currencyCode("USD")
-                    .addEnabledTransactionType(TransactionType.OUTGOING)
-                    .addEnabledTransactionType(TransactionType.INCOMING)
-                    .maxAmount(1000000L)
-                    .minAmount(100L)
-                    .requiredCounterpartyFields(
-                        listOf(
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.FULL_NAME)
-                                .build(),
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.NATIONALITY)
-                                .build(),
-                            CounterpartyFieldDefinition.builder()
-                                .mandatory(true)
-                                .name(CustomerInfoFieldName.BIRTH_DATE)
-                                .build(),
-                        )
-                    )
-                    .addProviderRequiredCounterpartyCustomerField(CustomerInfoFieldName.FULL_NAME)
-                    .addProviderRequiredCounterpartyCustomerField(
-                        CustomerInfoFieldName.COUNTRY_OF_RESIDENCE
-                    )
-                    .addProviderRequiredCustomerField(CustomerInfoFieldName.NATIONALITY)
-                    .addProviderRequiredCustomerField(CustomerInfoFieldName.BIRTH_DATE)
-                    .build()
-            )
-        assertThat(body.umaDomain()).isEqualTo("mycompany.com")
-        assertThat(body.webhookEndpoint()).isEqualTo("https://api.mycompany.com/webhooks/uma")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = ConfigUpdateParams.builder().build()
+        val params =
+            ConfigUpdateParams.builder()
+                .platformConfigUpdateRequest(PlatformConfigUpdateRequest.builder().build())
+                .build()
 
         val body = params._body()
+
+        assertThat(body).isEqualTo(PlatformConfigUpdateRequest.builder().build())
     }
 }

@@ -16,10 +16,10 @@ import com.lightspark.grid.core.http.HttpResponse.Handler
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.receiver.ExternalAccountLookupResponse
 import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountParams
-import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountResponse
 import com.lightspark.grid.models.receiver.ReceiverLookupUmaParams
-import com.lightspark.grid.models.receiver.ReceiverLookupUmaResponse
+import com.lightspark.grid.models.receiver.UmaLookupResponse
 
 /** Endpoints for creating and confirming quotes for cross-currency transfers */
 class ReceiverServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -37,14 +37,14 @@ class ReceiverServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun lookupExternalAccount(
         params: ReceiverLookupExternalAccountParams,
         requestOptions: RequestOptions,
-    ): ReceiverLookupExternalAccountResponse =
+    ): ExternalAccountLookupResponse =
         // get /receiver/external-account/{accountId}
         withRawResponse().lookupExternalAccount(params, requestOptions).parse()
 
     override suspend fun lookupUma(
         params: ReceiverLookupUmaParams,
         requestOptions: RequestOptions,
-    ): ReceiverLookupUmaResponse =
+    ): UmaLookupResponse =
         // get /receiver/uma/{receiverUmaAddress}
         withRawResponse().lookupUma(params, requestOptions).parse()
 
@@ -61,13 +61,13 @@ class ReceiverServiceAsyncImpl internal constructor(private val clientOptions: C
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val lookupExternalAccountHandler: Handler<ReceiverLookupExternalAccountResponse> =
-            jsonHandler<ReceiverLookupExternalAccountResponse>(clientOptions.jsonMapper)
+        private val lookupExternalAccountHandler: Handler<ExternalAccountLookupResponse> =
+            jsonHandler<ExternalAccountLookupResponse>(clientOptions.jsonMapper)
 
         override suspend fun lookupExternalAccount(
             params: ReceiverLookupExternalAccountParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ReceiverLookupExternalAccountResponse> {
+        ): HttpResponseFor<ExternalAccountLookupResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("accountId", params.accountId())
@@ -95,13 +95,13 @@ class ReceiverServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val lookupUmaHandler: Handler<ReceiverLookupUmaResponse> =
-            jsonHandler<ReceiverLookupUmaResponse>(clientOptions.jsonMapper)
+        private val lookupUmaHandler: Handler<UmaLookupResponse> =
+            jsonHandler<UmaLookupResponse>(clientOptions.jsonMapper)
 
         override suspend fun lookupUma(
             params: ReceiverLookupUmaParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<ReceiverLookupUmaResponse> {
+        ): HttpResponseFor<UmaLookupResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("receiverUmaAddress", params.receiverUmaAddress())

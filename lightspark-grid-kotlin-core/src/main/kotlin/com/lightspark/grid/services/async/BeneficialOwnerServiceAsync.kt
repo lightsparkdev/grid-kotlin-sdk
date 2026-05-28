@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateRequest
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveParams
@@ -40,6 +41,18 @@ interface BeneficialOwnerServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): BeneficialOwner
 
+    /** @see create */
+    suspend fun create(
+        beneficialOwnerCreateRequest: BeneficialOwnerCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): BeneficialOwner =
+        create(
+            BeneficialOwnerCreateParams.builder()
+                .beneficialOwnerCreateRequest(beneficialOwnerCreateRequest)
+                .build(),
+            requestOptions,
+        )
+
     /** Retrieve details of a specific beneficial owner by ID. */
     suspend fun retrieve(
         beneficialOwnerId: String,
@@ -64,7 +77,7 @@ interface BeneficialOwnerServiceAsync {
     /** Update details of a specific beneficial owner. Only provided fields are updated. */
     suspend fun update(
         beneficialOwnerId: String,
-        params: BeneficialOwnerUpdateParams = BeneficialOwnerUpdateParams.none(),
+        params: BeneficialOwnerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): BeneficialOwner =
         update(params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(), requestOptions)
@@ -74,10 +87,6 @@ interface BeneficialOwnerServiceAsync {
         params: BeneficialOwnerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): BeneficialOwner
-
-    /** @see update */
-    suspend fun update(beneficialOwnerId: String, requestOptions: RequestOptions): BeneficialOwner =
-        update(beneficialOwnerId, BeneficialOwnerUpdateParams.none(), requestOptions)
 
     /** Retrieve a list of beneficial owners for a business customer. */
     suspend fun list(
@@ -109,6 +118,19 @@ interface BeneficialOwnerServiceAsync {
             params: BeneficialOwnerCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<BeneficialOwner>
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            beneficialOwnerCreateRequest: BeneficialOwnerCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<BeneficialOwner> =
+            create(
+                BeneficialOwnerCreateParams.builder()
+                    .beneficialOwnerCreateRequest(beneficialOwnerCreateRequest)
+                    .build(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /beneficial-owners/{beneficialOwnerId}`, but is
@@ -147,7 +169,7 @@ interface BeneficialOwnerServiceAsync {
         @MustBeClosed
         suspend fun update(
             beneficialOwnerId: String,
-            params: BeneficialOwnerUpdateParams = BeneficialOwnerUpdateParams.none(),
+            params: BeneficialOwnerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<BeneficialOwner> =
             update(params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(), requestOptions)
@@ -158,14 +180,6 @@ interface BeneficialOwnerServiceAsync {
             params: BeneficialOwnerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<BeneficialOwner>
-
-        /** @see update */
-        @MustBeClosed
-        suspend fun update(
-            beneficialOwnerId: String,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwner> =
-            update(beneficialOwnerId, BeneficialOwnerUpdateParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `get /beneficial-owners`, but is otherwise the same as

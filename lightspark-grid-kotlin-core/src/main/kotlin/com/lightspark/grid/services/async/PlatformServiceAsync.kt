@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.platform.PlatformInternalAccountListResponse
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
-import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.async.platform.ExternalAccountServiceAsync
 
 /** Internal account management endpoints for creating and managing internal accounts */
@@ -39,12 +39,12 @@ interface PlatformServiceAsync {
     suspend fun listInternalAccounts(
         params: PlatformListInternalAccountsParams = PlatformListInternalAccountsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): PlatformListInternalAccountsResponse
+    ): PlatformInternalAccountListResponse
 
     /** @see listInternalAccounts */
     suspend fun listInternalAccounts(
         requestOptions: RequestOptions
-    ): PlatformListInternalAccountsResponse =
+    ): PlatformInternalAccountListResponse =
         listInternalAccounts(PlatformListInternalAccountsParams.none(), requestOptions)
 
     /**
@@ -74,13 +74,13 @@ interface PlatformServiceAsync {
         suspend fun listInternalAccounts(
             params: PlatformListInternalAccountsParams = PlatformListInternalAccountsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<PlatformListInternalAccountsResponse>
+        ): HttpResponseFor<PlatformInternalAccountListResponse>
 
         /** @see listInternalAccounts */
         @MustBeClosed
         suspend fun listInternalAccounts(
             requestOptions: RequestOptions
-        ): HttpResponseFor<PlatformListInternalAccountsResponse> =
+        ): HttpResponseFor<PlatformInternalAccountListResponse> =
             listInternalAccounts(PlatformListInternalAccountsParams.none(), requestOptions)
     }
 }
