@@ -20,8 +20,8 @@ import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationPa
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundResponse
 
 /** Endpoints to trigger test cases in sandbox */
 class SimulateServiceImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -50,12 +50,12 @@ class SimulateServiceImpl internal constructor(private val clientOptions: Client
         // post /sandbox/cards/{id}/simulate/clearing
         withRawResponse().clearing(params, requestOptions).parse()
 
-    override fun return_(
-        params: SimulateReturnParams,
+    override fun refund(
+        params: SimulateRefundParams,
         requestOptions: RequestOptions,
-    ): SimulateReturnResponse =
+    ): SimulateRefundResponse =
         // post /sandbox/cards/{id}/simulate/return
-        withRawResponse().return_(params, requestOptions).parse()
+        withRawResponse().refund(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SimulateService.WithRawResponse {
@@ -144,13 +144,13 @@ class SimulateServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val returnHandler: Handler<SimulateReturnResponse> =
-            jsonHandler<SimulateReturnResponse>(clientOptions.jsonMapper)
+        private val refundHandler: Handler<SimulateRefundResponse> =
+            jsonHandler<SimulateRefundResponse>(clientOptions.jsonMapper)
 
-        override fun return_(
-            params: SimulateReturnParams,
+        override fun refund(
+            params: SimulateRefundParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SimulateReturnResponse> {
+        ): HttpResponseFor<SimulateRefundResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -166,7 +166,7 @@ class SimulateServiceImpl internal constructor(private val clientOptions: Client
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { returnHandler.handle(it) }
+                    .use { refundHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

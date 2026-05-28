@@ -13,17 +13,14 @@ internal class DocumentReplaceParamsTest {
     fun create() {
         DocumentReplaceParams.builder()
             .documentId("documentId")
-            .body(
-                DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+            .documentReplaceRequest(
+                IdentityDocumentReplaceRequest.builder()
                     .country("US")
                     .documentNumber("A12345678")
-                    .documentType(
-                        DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.DocumentType
-                            .PASSPORT
-                    )
-                    .file("Example data".byteInputStream())
+                    .documentType(IdentityDocumentType.PASSPORT)
+                    .file("Example data")
                     .issuingAuthority("U.S. Department of State")
-                    .side(DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.Side.FRONT)
+                    .side(IdentityDocumentReplaceRequest.Side.FRONT)
                     .build()
             )
             .build()
@@ -34,15 +31,12 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .body(
-                    DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+                .documentReplaceRequest(
+                    IdentityDocumentReplaceRequest.builder()
                         .country("US")
                         .documentNumber("A12345678")
-                        .documentType(
-                            DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.DocumentType
-                                .PASSPORT
-                        )
-                        .file("Example data".byteInputStream())
+                        .documentType(IdentityDocumentType.PASSPORT)
+                        .file("Example data")
                         .issuingAuthority("U.S. Department of State")
                         .build()
                 )
@@ -58,17 +52,14 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .body(
-                    DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+                .documentReplaceRequest(
+                    IdentityDocumentReplaceRequest.builder()
                         .country("US")
                         .documentNumber("A12345678")
-                        .documentType(
-                            DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.DocumentType
-                                .PASSPORT
-                        )
-                        .file("Example data".byteInputStream())
+                        .documentType(IdentityDocumentType.PASSPORT)
+                        .file("Example data")
                         .issuingAuthority("U.S. Department of State")
-                        .side(DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.Side.FRONT)
+                        .side(IdentityDocumentReplaceRequest.Side.FRONT)
                         .build()
                 )
                 .build()
@@ -85,33 +76,19 @@ internal class DocumentReplaceParamsTest {
             )
             .isEqualTo(
                 mapOf(
-                        "body" to
-                            MultipartField.builder<DocumentReplaceParams.Body>()
-                                .value(
-                                    DocumentReplaceParams.Body.ofIdentityDocumentReplaceRequest(
-                                        DocumentReplaceParams.Body.IdentityDocumentReplaceRequest
-                                            .builder()
-                                            .country("US")
-                                            .documentNumber("A12345678")
-                                            .documentType(
-                                                DocumentReplaceParams.Body
-                                                    .IdentityDocumentReplaceRequest
-                                                    .DocumentType
-                                                    .PASSPORT
-                                            )
-                                            .file("Example data".byteInputStream())
-                                            .issuingAuthority("U.S. Department of State")
-                                            .side(
-                                                DocumentReplaceParams.Body
-                                                    .IdentityDocumentReplaceRequest
-                                                    .Side
-                                                    .FRONT
-                                            )
-                                            .build()
-                                    )
+                        "DocumentReplaceRequest" to
+                            MultipartField.of(
+                                DocumentReplaceRequest.ofIdentity(
+                                    IdentityDocumentReplaceRequest.builder()
+                                        .country("US")
+                                        .documentNumber("A12345678")
+                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .file("Example data")
+                                        .issuingAuthority("U.S. Department of State")
+                                        .side(IdentityDocumentReplaceRequest.Side.FRONT)
+                                        .build()
                                 )
-                                .contentType("application/octet-stream")
-                                .build()
+                            )
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }
@@ -124,15 +101,12 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .body(
-                    DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.builder()
+                .documentReplaceRequest(
+                    IdentityDocumentReplaceRequest.builder()
                         .country("US")
                         .documentNumber("A12345678")
-                        .documentType(
-                            DocumentReplaceParams.Body.IdentityDocumentReplaceRequest.DocumentType
-                                .PASSPORT
-                        )
-                        .file("Example data".byteInputStream())
+                        .documentType(IdentityDocumentType.PASSPORT)
+                        .file("Example data")
                         .issuingAuthority("U.S. Department of State")
                         .build()
                 )
@@ -150,27 +124,18 @@ internal class DocumentReplaceParamsTest {
             )
             .isEqualTo(
                 mapOf(
-                        "body" to
-                            MultipartField.builder<DocumentReplaceParams.Body>()
-                                .value(
-                                    DocumentReplaceParams.Body.ofIdentityDocumentReplaceRequest(
-                                        DocumentReplaceParams.Body.IdentityDocumentReplaceRequest
-                                            .builder()
-                                            .country("US")
-                                            .documentNumber("A12345678")
-                                            .documentType(
-                                                DocumentReplaceParams.Body
-                                                    .IdentityDocumentReplaceRequest
-                                                    .DocumentType
-                                                    .PASSPORT
-                                            )
-                                            .file("Example data".byteInputStream())
-                                            .issuingAuthority("U.S. Department of State")
-                                            .build()
-                                    )
+                        "DocumentReplaceRequest" to
+                            MultipartField.of(
+                                DocumentReplaceRequest.ofIdentity(
+                                    IdentityDocumentReplaceRequest.builder()
+                                        .country("US")
+                                        .documentNumber("A12345678")
+                                        .documentType(IdentityDocumentType.PASSPORT)
+                                        .file("Example data")
+                                        .issuingAuthority("U.S. Department of State")
+                                        .build()
                                 )
-                                .contentType("application/octet-stream")
-                                .build()
+                            )
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }

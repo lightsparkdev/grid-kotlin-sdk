@@ -5,11 +5,11 @@ package com.lightspark.grid.models.sandbox.cards.simulate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SimulateReturnParamsTest {
+internal class SimulateRefundParamsTest {
 
     @Test
     fun create() {
-        SimulateReturnParams.builder()
+        SimulateRefundParams.builder()
             .id("Card:019542f5-b3e7-1d02-0000-000000000010")
             .amount(1500L)
             .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
@@ -19,7 +19,7 @@ internal class SimulateReturnParamsTest {
     @Test
     fun pathParams() {
         val params =
-            SimulateReturnParams.builder()
+            SimulateRefundParams.builder()
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .amount(1500L)
                 .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
@@ -33,7 +33,7 @@ internal class SimulateReturnParamsTest {
     @Test
     fun body() {
         val params =
-            SimulateReturnParams.builder()
+            SimulateRefundParams.builder()
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .amount(1500L)
                 .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
