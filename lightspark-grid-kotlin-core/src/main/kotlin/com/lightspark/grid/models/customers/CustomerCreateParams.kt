@@ -21,7 +21,6 @@ import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
-import com.lightspark.grid.core.allMaxBy
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
@@ -29,6 +28,7 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.BusinessInfoUpdate
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.util.Collections
@@ -84,25 +84,17 @@ private constructor(
 
         /**
          * Alias for calling [createCustomerRequest] with
-         * `CreateCustomerRequest.ofIndividualCustomerCreate(individualCustomerCreate)`.
+         * `CreateCustomerRequest.ofIndividual(individual)`.
          */
-        fun createCustomerRequest(
-            individualCustomerCreate: CreateCustomerRequest.IndividualCustomerCreateRequest
-        ) =
-            createCustomerRequest(
-                CreateCustomerRequest.ofIndividualCustomerCreate(individualCustomerCreate)
-            )
+        fun createCustomerRequest(individual: CreateCustomerRequest.Individual) =
+            createCustomerRequest(CreateCustomerRequest.ofIndividual(individual))
 
         /**
          * Alias for calling [createCustomerRequest] with
-         * `CreateCustomerRequest.ofBusinessCustomerCreate(businessCustomerCreate)`.
+         * `CreateCustomerRequest.ofBusiness(business)`.
          */
-        fun createCustomerRequest(
-            businessCustomerCreate: CreateCustomerRequest.BusinessCustomerCreateRequest
-        ) =
-            createCustomerRequest(
-                CreateCustomerRequest.ofBusinessCustomerCreate(businessCustomerCreate)
-            )
+        fun createCustomerRequest(business: CreateCustomerRequest.Business) =
+            createCustomerRequest(CreateCustomerRequest.ofBusiness(business))
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -232,24 +224,22 @@ private constructor(
     @JsonSerialize(using = CreateCustomerRequest.Serializer::class)
     class CreateCustomerRequest
     private constructor(
-        private val individualCustomerCreate: IndividualCustomerCreateRequest? = null,
-        private val businessCustomerCreate: BusinessCustomerCreateRequest? = null,
+        private val individual: Individual? = null,
+        private val business: Business? = null,
         private val _json: JsonValue? = null,
     ) {
 
-        fun individualCustomerCreate(): IndividualCustomerCreateRequest? = individualCustomerCreate
+        fun individual(): Individual? = individual
 
-        fun businessCustomerCreate(): BusinessCustomerCreateRequest? = businessCustomerCreate
+        fun business(): Business? = business
 
-        fun isIndividualCustomerCreate(): Boolean = individualCustomerCreate != null
+        fun isIndividual(): Boolean = individual != null
 
-        fun isBusinessCustomerCreate(): Boolean = businessCustomerCreate != null
+        fun isBusiness(): Boolean = business != null
 
-        fun asIndividualCustomerCreate(): IndividualCustomerCreateRequest =
-            individualCustomerCreate.getOrThrow("individualCustomerCreate")
+        fun asIndividual(): Individual = individual.getOrThrow("individual")
 
-        fun asBusinessCustomerCreate(): BusinessCustomerCreateRequest =
-            businessCustomerCreate.getOrThrow("businessCustomerCreate")
+        fun asBusiness(): Business = business.getOrThrow("business")
 
         fun _json(): JsonValue? = _json
 
@@ -263,7 +253,7 @@ private constructor(
          * import com.lightspark.grid.core.JsonValue
          *
          * val result: String? = createCustomerRequest.accept(object : CreateCustomerRequest.Visitor<String?> {
-         *     override fun visitIndividualCustomerCreate(individualCustomerCreate: IndividualCustomerCreateRequest): String? = individualCustomerCreate.toString()
+         *     override fun visitIndividual(individual: Individual): String? = individual.toString()
          *
          *     // ...
          *
@@ -279,10 +269,8 @@ private constructor(
          */
         fun <T> accept(visitor: Visitor<T>): T =
             when {
-                individualCustomerCreate != null ->
-                    visitor.visitIndividualCustomerCreate(individualCustomerCreate)
-                businessCustomerCreate != null ->
-                    visitor.visitBusinessCustomerCreate(businessCustomerCreate)
+                individual != null -> visitor.visitIndividual(individual)
+                business != null -> visitor.visitBusiness(business)
                 else -> visitor.unknown(_json)
             }
 
@@ -304,16 +292,12 @@ private constructor(
 
             accept(
                 object : Visitor<Unit> {
-                    override fun visitIndividualCustomerCreate(
-                        individualCustomerCreate: IndividualCustomerCreateRequest
-                    ) {
-                        individualCustomerCreate.validate()
+                    override fun visitIndividual(individual: Individual) {
+                        individual.validate()
                     }
 
-                    override fun visitBusinessCustomerCreate(
-                        businessCustomerCreate: BusinessCustomerCreateRequest
-                    ) {
-                        businessCustomerCreate.validate()
+                    override fun visitBusiness(business: Business) {
+                        business.validate()
                     }
                 }
             )
@@ -337,13 +321,9 @@ private constructor(
         internal fun validity(): Int =
             accept(
                 object : Visitor<Int> {
-                    override fun visitIndividualCustomerCreate(
-                        individualCustomerCreate: IndividualCustomerCreateRequest
-                    ) = individualCustomerCreate.validity()
+                    override fun visitIndividual(individual: Individual) = individual.validity()
 
-                    override fun visitBusinessCustomerCreate(
-                        businessCustomerCreate: BusinessCustomerCreateRequest
-                    ) = businessCustomerCreate.validity()
+                    override fun visitBusiness(business: Business) = business.validity()
 
                     override fun unknown(json: JsonValue?) = 0
                 }
@@ -355,31 +335,26 @@ private constructor(
             }
 
             return other is CreateCustomerRequest &&
-                individualCustomerCreate == other.individualCustomerCreate &&
-                businessCustomerCreate == other.businessCustomerCreate
+                individual == other.individual &&
+                business == other.business
         }
 
-        override fun hashCode(): Int =
-            Objects.hash(individualCustomerCreate, businessCustomerCreate)
+        override fun hashCode(): Int = Objects.hash(individual, business)
 
         override fun toString(): String =
             when {
-                individualCustomerCreate != null ->
-                    "CreateCustomerRequest{individualCustomerCreate=$individualCustomerCreate}"
-                businessCustomerCreate != null ->
-                    "CreateCustomerRequest{businessCustomerCreate=$businessCustomerCreate}"
+                individual != null -> "CreateCustomerRequest{individual=$individual}"
+                business != null -> "CreateCustomerRequest{business=$business}"
                 _json != null -> "CreateCustomerRequest{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid CreateCustomerRequest")
             }
 
         companion object {
 
-            fun ofIndividualCustomerCreate(
-                individualCustomerCreate: IndividualCustomerCreateRequest
-            ) = CreateCustomerRequest(individualCustomerCreate = individualCustomerCreate)
+            fun ofIndividual(individual: Individual) =
+                CreateCustomerRequest(individual = individual)
 
-            fun ofBusinessCustomerCreate(businessCustomerCreate: BusinessCustomerCreateRequest) =
-                CreateCustomerRequest(businessCustomerCreate = businessCustomerCreate)
+            fun ofBusiness(business: Business) = CreateCustomerRequest(business = business)
         }
 
         /**
@@ -388,13 +363,9 @@ private constructor(
          */
         interface Visitor<out T> {
 
-            fun visitIndividualCustomerCreate(
-                individualCustomerCreate: IndividualCustomerCreateRequest
-            ): T
+            fun visitIndividual(individual: Individual): T
 
-            fun visitBusinessCustomerCreate(
-                businessCustomerCreate: BusinessCustomerCreateRequest
-            ): T
+            fun visitBusiness(business: Business): T
 
             /**
              * Maps an unknown variant of [CreateCustomerRequest] to a value of type [T].
@@ -418,35 +389,20 @@ private constructor(
                 val json = JsonValue.fromJsonNode(node)
                 val customerType = json.asObject()?.get("customerType")?.asString()
 
-                when (customerType) {}
-
-                val bestMatches =
-                    sequenceOf(
-                            tryDeserialize(node, jacksonTypeRef<IndividualCustomerCreateRequest>())
-                                ?.let {
-                                    CreateCustomerRequest(
-                                        individualCustomerCreate = it,
-                                        _json = json,
-                                    )
-                                },
-                            tryDeserialize(node, jacksonTypeRef<BusinessCustomerCreateRequest>())
-                                ?.let {
-                                    CreateCustomerRequest(businessCustomerCreate = it, _json = json)
-                                },
-                        )
-                        .filterNotNull()
-                        .allMaxBy { it.validity() }
-                        .toList()
-                return when (bestMatches.size) {
-                    // This can happen if what we're deserializing is completely incompatible with
-                    // all the possible variants (e.g. deserializing from boolean).
-                    0 -> CreateCustomerRequest(_json = json)
-                    1 -> bestMatches.single()
-                    // If there's more than one match with the highest validity, then use the first
-                    // completely valid match, or simply the first match if none are completely
-                    // valid.
-                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                when (customerType) {
+                    "INDIVIDUAL" -> {
+                        return tryDeserialize(node, jacksonTypeRef<Individual>())?.let {
+                            CreateCustomerRequest(individual = it, _json = json)
+                        } ?: CreateCustomerRequest(_json = json)
+                    }
+                    "BUSINESS" -> {
+                        return tryDeserialize(node, jacksonTypeRef<Business>())?.let {
+                            CreateCustomerRequest(business = it, _json = json)
+                        } ?: CreateCustomerRequest(_json = json)
+                    }
                 }
+
+                return CreateCustomerRequest(_json = json)
             }
         }
 
@@ -459,30 +415,28 @@ private constructor(
                 provider: SerializerProvider,
             ) {
                 when {
-                    value.individualCustomerCreate != null ->
-                        generator.writeObject(value.individualCustomerCreate)
-                    value.businessCustomerCreate != null ->
-                        generator.writeObject(value.businessCustomerCreate)
+                    value.individual != null -> generator.writeObject(value.individual)
+                    value.business != null -> generator.writeObject(value.business)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid CreateCustomerRequest")
                 }
             }
         }
 
-        class IndividualCustomerCreateRequest
+        class Individual
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val customerType: JsonValue,
+            private val address: JsonField<Address>,
+            private val birthDate: JsonField<LocalDate>,
             private val currencies: JsonField<List<String>>,
             private val email: JsonField<String>,
+            private val fullName: JsonField<String>,
+            private val kycStatus: JsonField<KycStatus>,
+            private val nationality: JsonField<String>,
             private val platformCustomerId: JsonField<String>,
             private val region: JsonField<String>,
             private val umaAddress: JsonField<String>,
-            private val address: JsonField<Address>,
-            private val birthDate: JsonField<LocalDate>,
-            private val fullName: JsonField<String>,
-            private val kycStatus: JsonField<IndividualCustomerFields.KycStatus>,
-            private val nationality: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -491,10 +445,25 @@ private constructor(
                 @JsonProperty("customerType")
                 @ExcludeMissing
                 customerType: JsonValue = JsonMissing.of(),
+                @JsonProperty("address")
+                @ExcludeMissing
+                address: JsonField<Address> = JsonMissing.of(),
+                @JsonProperty("birthDate")
+                @ExcludeMissing
+                birthDate: JsonField<LocalDate> = JsonMissing.of(),
                 @JsonProperty("currencies")
                 @ExcludeMissing
                 currencies: JsonField<List<String>> = JsonMissing.of(),
                 @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("fullName")
+                @ExcludeMissing
+                fullName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("kycStatus")
+                @ExcludeMissing
+                kycStatus: JsonField<KycStatus> = JsonMissing.of(),
+                @JsonProperty("nationality")
+                @ExcludeMissing
+                nationality: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("platformCustomerId")
                 @ExcludeMissing
                 platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -504,66 +473,47 @@ private constructor(
                 @JsonProperty("umaAddress")
                 @ExcludeMissing
                 umaAddress: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("address")
-                @ExcludeMissing
-                address: JsonField<Address> = JsonMissing.of(),
-                @JsonProperty("birthDate")
-                @ExcludeMissing
-                birthDate: JsonField<LocalDate> = JsonMissing.of(),
-                @JsonProperty("fullName")
-                @ExcludeMissing
-                fullName: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("kycStatus")
-                @ExcludeMissing
-                kycStatus: JsonField<IndividualCustomerFields.KycStatus> = JsonMissing.of(),
-                @JsonProperty("nationality")
-                @ExcludeMissing
-                nationality: JsonField<String> = JsonMissing.of(),
             ) : this(
                 customerType,
-                currencies,
-                email,
-                platformCustomerId,
-                region,
-                umaAddress,
                 address,
                 birthDate,
+                currencies,
+                email,
                 fullName,
                 kycStatus,
                 nationality,
+                platformCustomerId,
+                region,
+                umaAddress,
                 mutableMapOf(),
             )
 
-            fun toCustomerCreate(): CustomerCreate =
-                CustomerCreate.builder()
-                    .customerType(customerType)
-                    .currencies(currencies)
-                    .email(email)
-                    .platformCustomerId(platformCustomerId)
-                    .region(region)
-                    .umaAddress(umaAddress)
-                    .build()
-
-            fun toIndividualCustomerFields(): IndividualCustomerFields =
-                IndividualCustomerFields.builder()
-                    .customerType(customerType)
-                    .address(address)
-                    .birthDate(birthDate)
-                    .fullName(fullName)
-                    .kycStatus(kycStatus)
-                    .nationality(nationality)
-                    .build()
-
             /**
-             * This arbitrary value can be deserialized into a custom type using the `convert`
-             * method:
+             * Expected to always return the following:
              * ```kotlin
-             * val myObject: MyClass = individualCustomerCreateRequest.customerType().convert(MyClass::class.java)
+             * JsonValue.from("INDIVIDUAL")
              * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
              */
             @JsonProperty("customerType")
             @ExcludeMissing
             fun _customerType(): JsonValue = customerType
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun address(): Address? = address.getNullable("address")
+
+            /**
+             * Date of birth in ISO 8601 format (YYYY-MM-DD)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun birthDate(): LocalDate? = birthDate.getNullable("birthDate")
 
             /**
              * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
@@ -585,6 +535,30 @@ private constructor(
              *   (e.g. if the server responded with an unexpected value).
              */
             fun email(): String? = email.getNullable("email")
+
+            /**
+             * Individual's full name
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun fullName(): String? = fullName.getNullable("fullName")
+
+            /**
+             * The current KYC status of a customer
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun kycStatus(): KycStatus? = kycStatus.getNullable("kycStatus")
+
+            /**
+             * Country code (ISO 3166-1 alpha-2)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun nationality(): String? = nationality.getNullable("nationality")
 
             /**
              * Platform-specific customer identifier. If not provided, one will be generated by the
@@ -619,43 +593,21 @@ private constructor(
             fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
 
             /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
+             * Returns the raw JSON value of [address].
+             *
+             * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
              */
-            fun address(): Address? = address.getNullable("address")
+            @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
 
             /**
-             * Date of birth in ISO 8601 format (YYYY-MM-DD)
+             * Returns the raw JSON value of [birthDate].
              *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
+             * Unlike [birthDate], this method doesn't throw if the JSON field has an unexpected
+             * type.
              */
-            fun birthDate(): LocalDate? = birthDate.getNullable("birthDate")
-
-            /**
-             * Individual's full name
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun fullName(): String? = fullName.getNullable("fullName")
-
-            /**
-             * The current KYC status of a customer
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun kycStatus(): IndividualCustomerFields.KycStatus? =
-                kycStatus.getNullable("kycStatus")
-
-            /**
-             * Country code (ISO 3166-1 alpha-2)
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun nationality(): String? = nationality.getNullable("nationality")
+            @JsonProperty("birthDate")
+            @ExcludeMissing
+            fun _birthDate(): JsonField<LocalDate> = birthDate
 
             /**
              * Returns the raw JSON value of [currencies].
@@ -673,6 +625,34 @@ private constructor(
              * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+            /**
+             * Returns the raw JSON value of [fullName].
+             *
+             * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
+
+            /**
+             * Returns the raw JSON value of [kycStatus].
+             *
+             * Unlike [kycStatus], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("kycStatus")
+            @ExcludeMissing
+            fun _kycStatus(): JsonField<KycStatus> = kycStatus
+
+            /**
+             * Returns the raw JSON value of [nationality].
+             *
+             * Unlike [nationality], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("nationality")
+            @ExcludeMissing
+            fun _nationality(): JsonField<String> = nationality
 
             /**
              * Returns the raw JSON value of [platformCustomerId].
@@ -701,51 +681,6 @@ private constructor(
             @ExcludeMissing
             fun _umaAddress(): JsonField<String> = umaAddress
 
-            /**
-             * Returns the raw JSON value of [address].
-             *
-             * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
-
-            /**
-             * Returns the raw JSON value of [birthDate].
-             *
-             * Unlike [birthDate], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("birthDate")
-            @ExcludeMissing
-            fun _birthDate(): JsonField<LocalDate> = birthDate
-
-            /**
-             * Returns the raw JSON value of [fullName].
-             *
-             * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
-
-            /**
-             * Returns the raw JSON value of [kycStatus].
-             *
-             * Unlike [kycStatus], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("kycStatus")
-            @ExcludeMissing
-            fun _kycStatus(): JsonField<IndividualCustomerFields.KycStatus> = kycStatus
-
-            /**
-             * Returns the raw JSON value of [nationality].
-             *
-             * Unlike [nationality], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("nationality")
-            @ExcludeMissing
-            fun _nationality(): JsonField<String> = nationality
-
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
                 additionalProperties.put(key, value)
@@ -760,157 +695,55 @@ private constructor(
 
             companion object {
 
-                /**
-                 * Returns a mutable builder for constructing an instance of
-                 * [IndividualCustomerCreateRequest].
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .customerType()
-                 * ```
-                 */
+                /** Returns a mutable builder for constructing an instance of [Individual]. */
                 fun builder() = Builder()
             }
 
-            /** A builder for [IndividualCustomerCreateRequest]. */
+            /** A builder for [Individual]. */
             class Builder internal constructor() {
 
-                private var customerType: JsonValue? = null
+                private var customerType: JsonValue = JsonValue.from("INDIVIDUAL")
+                private var address: JsonField<Address> = JsonMissing.of()
+                private var birthDate: JsonField<LocalDate> = JsonMissing.of()
                 private var currencies: JsonField<MutableList<String>>? = null
                 private var email: JsonField<String> = JsonMissing.of()
+                private var fullName: JsonField<String> = JsonMissing.of()
+                private var kycStatus: JsonField<KycStatus> = JsonMissing.of()
+                private var nationality: JsonField<String> = JsonMissing.of()
                 private var platformCustomerId: JsonField<String> = JsonMissing.of()
                 private var region: JsonField<String> = JsonMissing.of()
                 private var umaAddress: JsonField<String> = JsonMissing.of()
-                private var address: JsonField<Address> = JsonMissing.of()
-                private var birthDate: JsonField<LocalDate> = JsonMissing.of()
-                private var fullName: JsonField<String> = JsonMissing.of()
-                private var kycStatus: JsonField<IndividualCustomerFields.KycStatus> =
-                    JsonMissing.of()
-                private var nationality: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-                internal fun from(
-                    individualCustomerCreateRequest: IndividualCustomerCreateRequest
-                ) = apply {
-                    customerType = individualCustomerCreateRequest.customerType
-                    currencies =
-                        individualCustomerCreateRequest.currencies.map { it.toMutableList() }
-                    email = individualCustomerCreateRequest.email
-                    platformCustomerId = individualCustomerCreateRequest.platformCustomerId
-                    region = individualCustomerCreateRequest.region
-                    umaAddress = individualCustomerCreateRequest.umaAddress
-                    address = individualCustomerCreateRequest.address
-                    birthDate = individualCustomerCreateRequest.birthDate
-                    fullName = individualCustomerCreateRequest.fullName
-                    kycStatus = individualCustomerCreateRequest.kycStatus
-                    nationality = individualCustomerCreateRequest.nationality
-                    additionalProperties =
-                        individualCustomerCreateRequest.additionalProperties.toMutableMap()
-                }
-
-                fun customerType(customerType: JsonValue) = apply {
-                    this.customerType = customerType
+                internal fun from(individual: Individual) = apply {
+                    customerType = individual.customerType
+                    address = individual.address
+                    birthDate = individual.birthDate
+                    currencies = individual.currencies.map { it.toMutableList() }
+                    email = individual.email
+                    fullName = individual.fullName
+                    kycStatus = individual.kycStatus
+                    nationality = individual.nationality
+                    platformCustomerId = individual.platformCustomerId
+                    region = individual.region
+                    umaAddress = individual.umaAddress
+                    additionalProperties = individual.additionalProperties.toMutableMap()
                 }
 
                 /**
-                 * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
-                 * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use
-                 * more than one sending currency, since the correct currencies cannot always be
-                 * inferred. If not provided, currencies will be inferred from the customer's
-                 * region. Some currency combinations may require separate customers — if so, the
-                 * request will be rejected with details.
-                 */
-                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
-
-                /**
-                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 * Sets the field to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun currencies(currencies: JsonField<List<String>>) = apply {
-                    this.currencies = currencies.map { it.toMutableList() }
-                }
-
-                /**
-                 * Adds a single [String] to [currencies].
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("INDIVIDUAL")
+                 * ```
                  *
-                 * @throws IllegalStateException if the field was previously set to a non-list.
-                 */
-                fun addCurrency(currency: String) = apply {
-                    currencies =
-                        (currencies ?: JsonField.of(mutableListOf())).also {
-                            checkKnown("currencies", it).add(currency)
-                        }
-                }
-
-                /** Email address for the customer. */
-                fun email(email: String) = email(JsonField.of(email))
-
-                /**
-                 * Sets [Builder.email] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.email] with a well-typed [String] value instead.
                  * This method is primarily for setting the field to an undocumented or not yet
                  * supported value.
                  */
-                fun email(email: JsonField<String>) = apply { this.email = email }
-
-                /**
-                 * Platform-specific customer identifier. If not provided, one will be generated by
-                 * the system.
-                 */
-                fun platformCustomerId(platformCustomerId: String) =
-                    platformCustomerId(JsonField.of(platformCustomerId))
-
-                /**
-                 * Sets [Builder.platformCustomerId] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.platformCustomerId] with a well-typed [String]
-                 * value instead. This method is primarily for setting the field to an undocumented
-                 * or not yet supported value.
-                 */
-                fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
-                    this.platformCustomerId = platformCustomerId
-                }
-
-                /**
-                 * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity.
-                 * This determines the regulatory jurisdiction and KYC requirements for the
-                 * customer. Required if the customer will use currencies with different KYC
-                 * requirements across regions. A customer with accounts in multiple regions should
-                 * be registered as separate customers. This field is immutable after creation.
-                 */
-                fun region(region: String) = region(JsonField.of(region))
-
-                /**
-                 * Sets [Builder.region] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.region] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun region(region: JsonField<String>) = apply { this.region = region }
-
-                /**
-                 * Optional UMA address identifier. If not provided during customer creation, one
-                 * will be generated by the system. If provided during customer update, the UMA
-                 * address will be updated to the provided value. This is an optional identifier to
-                 * route payments to the customer. This is an optional identifier to route payments
-                 * to the customer.
-                 */
-                fun umaAddress(umaAddress: String) = umaAddress(JsonField.of(umaAddress))
-
-                /**
-                 * Sets [Builder.umaAddress] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.umaAddress] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun umaAddress(umaAddress: JsonField<String>) = apply {
-                    this.umaAddress = umaAddress
+                fun customerType(customerType: JsonValue) = apply {
+                    this.customerType = customerType
                 }
 
                 fun address(address: Address) = address(JsonField.of(address))
@@ -938,490 +771,6 @@ private constructor(
                     this.birthDate = birthDate
                 }
 
-                /** Individual's full name */
-                fun fullName(fullName: String) = fullName(JsonField.of(fullName))
-
-                /**
-                 * Sets [Builder.fullName] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.fullName] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
-
-                /** The current KYC status of a customer */
-                fun kycStatus(kycStatus: IndividualCustomerFields.KycStatus) =
-                    kycStatus(JsonField.of(kycStatus))
-
-                /**
-                 * Sets [Builder.kycStatus] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.kycStatus] with a well-typed
-                 * [IndividualCustomerFields.KycStatus] value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
-                 */
-                fun kycStatus(kycStatus: JsonField<IndividualCustomerFields.KycStatus>) = apply {
-                    this.kycStatus = kycStatus
-                }
-
-                /** Country code (ISO 3166-1 alpha-2) */
-                fun nationality(nationality: String) = nationality(JsonField.of(nationality))
-
-                /**
-                 * Sets [Builder.nationality] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.nationality] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun nationality(nationality: JsonField<String>) = apply {
-                    this.nationality = nationality
-                }
-
-                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                    this.additionalProperties.clear()
-                    putAllAdditionalProperties(additionalProperties)
-                }
-
-                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                    additionalProperties.put(key, value)
-                }
-
-                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
-                    apply {
-                        this.additionalProperties.putAll(additionalProperties)
-                    }
-
-                fun removeAdditionalProperty(key: String) = apply {
-                    additionalProperties.remove(key)
-                }
-
-                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                    keys.forEach(::removeAdditionalProperty)
-                }
-
-                /**
-                 * Returns an immutable instance of [IndividualCustomerCreateRequest].
-                 *
-                 * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .customerType()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
-                 */
-                fun build(): IndividualCustomerCreateRequest =
-                    IndividualCustomerCreateRequest(
-                        checkRequired("customerType", customerType),
-                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
-                        email,
-                        platformCustomerId,
-                        region,
-                        umaAddress,
-                        address,
-                        birthDate,
-                        fullName,
-                        kycStatus,
-                        nationality,
-                        additionalProperties.toMutableMap(),
-                    )
-            }
-
-            private var validated: Boolean = false
-
-            /**
-             * Validates that the types of all values in this object match their expected types
-             * recursively.
-             *
-             * This method is _not_ forwards compatible with new types from the API for existing
-             * fields.
-             *
-             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
-             *   match its expected type.
-             */
-            fun validate(): IndividualCustomerCreateRequest = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                currencies()
-                email()
-                platformCustomerId()
-                region()
-                umaAddress()
-                address()?.validate()
-                birthDate()
-                fullName()
-                kycStatus()?.validate()
-                nationality()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int =
-                (currencies.asKnown()?.size ?: 0) +
-                    (if (email.asKnown() == null) 0 else 1) +
-                    (if (platformCustomerId.asKnown() == null) 0 else 1) +
-                    (if (region.asKnown() == null) 0 else 1) +
-                    (if (umaAddress.asKnown() == null) 0 else 1) +
-                    (address.asKnown()?.validity() ?: 0) +
-                    (if (birthDate.asKnown() == null) 0 else 1) +
-                    (if (fullName.asKnown() == null) 0 else 1) +
-                    (kycStatus.asKnown()?.validity() ?: 0) +
-                    (if (nationality.asKnown() == null) 0 else 1)
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is IndividualCustomerCreateRequest &&
-                    customerType == other.customerType &&
-                    currencies == other.currencies &&
-                    email == other.email &&
-                    platformCustomerId == other.platformCustomerId &&
-                    region == other.region &&
-                    umaAddress == other.umaAddress &&
-                    address == other.address &&
-                    birthDate == other.birthDate &&
-                    fullName == other.fullName &&
-                    kycStatus == other.kycStatus &&
-                    nationality == other.nationality &&
-                    additionalProperties == other.additionalProperties
-            }
-
-            private val hashCode: Int by lazy {
-                Objects.hash(
-                    customerType,
-                    currencies,
-                    email,
-                    platformCustomerId,
-                    region,
-                    umaAddress,
-                    address,
-                    birthDate,
-                    fullName,
-                    kycStatus,
-                    nationality,
-                    additionalProperties,
-                )
-            }
-
-            override fun hashCode(): Int = hashCode
-
-            override fun toString() =
-                "IndividualCustomerCreateRequest{customerType=$customerType, currencies=$currencies, email=$email, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
-        }
-
-        class BusinessCustomerCreateRequest
-        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-        private constructor(
-            private val customerType: JsonValue,
-            private val currencies: JsonField<List<String>>,
-            private val email: JsonField<String>,
-            private val platformCustomerId: JsonField<String>,
-            private val region: JsonField<String>,
-            private val umaAddress: JsonField<String>,
-            private val address: JsonField<Address>,
-            private val businessInfo: JsonField<BusinessCustomerFields.BusinessInfo>,
-            private val kybStatus: JsonField<BusinessCustomerFields.KybStatus>,
-            private val additionalProperties: MutableMap<String, JsonValue>,
-        ) {
-
-            @JsonCreator
-            private constructor(
-                @JsonProperty("customerType")
-                @ExcludeMissing
-                customerType: JsonValue = JsonMissing.of(),
-                @JsonProperty("currencies")
-                @ExcludeMissing
-                currencies: JsonField<List<String>> = JsonMissing.of(),
-                @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("platformCustomerId")
-                @ExcludeMissing
-                platformCustomerId: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("region")
-                @ExcludeMissing
-                region: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("umaAddress")
-                @ExcludeMissing
-                umaAddress: JsonField<String> = JsonMissing.of(),
-                @JsonProperty("address")
-                @ExcludeMissing
-                address: JsonField<Address> = JsonMissing.of(),
-                @JsonProperty("businessInfo")
-                @ExcludeMissing
-                businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> = JsonMissing.of(),
-                @JsonProperty("kybStatus")
-                @ExcludeMissing
-                kybStatus: JsonField<BusinessCustomerFields.KybStatus> = JsonMissing.of(),
-            ) : this(
-                customerType,
-                currencies,
-                email,
-                platformCustomerId,
-                region,
-                umaAddress,
-                address,
-                businessInfo,
-                kybStatus,
-                mutableMapOf(),
-            )
-
-            fun toCustomerCreate(): CustomerCreate =
-                CustomerCreate.builder()
-                    .customerType(customerType)
-                    .currencies(currencies)
-                    .email(email)
-                    .platformCustomerId(platformCustomerId)
-                    .region(region)
-                    .umaAddress(umaAddress)
-                    .build()
-
-            fun toBusinessCustomerFields(): BusinessCustomerFields =
-                BusinessCustomerFields.builder()
-                    .customerType(customerType)
-                    .address(address)
-                    .businessInfo(businessInfo)
-                    .kybStatus(kybStatus)
-                    .build()
-
-            /**
-             * This arbitrary value can be deserialized into a custom type using the `convert`
-             * method:
-             * ```kotlin
-             * val myObject: MyClass = businessCustomerCreateRequest.customerType().convert(MyClass::class.java)
-             * ```
-             */
-            @JsonProperty("customerType")
-            @ExcludeMissing
-            fun _customerType(): JsonValue = customerType
-
-            /**
-             * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
-             * tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than
-             * one sending currency, since the correct currencies cannot always be inferred. If not
-             * provided, currencies will be inferred from the customer's region. Some currency
-             * combinations may require separate customers — if so, the request will be rejected
-             * with details.
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun currencies(): List<String>? = currencies.getNullable("currencies")
-
-            /**
-             * Email address for the customer.
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun email(): String? = email.getNullable("email")
-
-            /**
-             * Platform-specific customer identifier. If not provided, one will be generated by the
-             * system.
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun platformCustomerId(): String? = platformCustomerId.getNullable("platformCustomerId")
-
-            /**
-             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
-             * determines the regulatory jurisdiction and KYC requirements for the customer.
-             * Required if the customer will use currencies with different KYC requirements across
-             * regions. A customer with accounts in multiple regions should be registered as
-             * separate customers. This field is immutable after creation.
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun region(): String? = region.getNullable("region")
-
-            /**
-             * Optional UMA address identifier. If not provided during customer creation, one will
-             * be generated by the system. If provided during customer update, the UMA address will
-             * be updated to the provided value. This is an optional identifier to route payments to
-             * the customer. This is an optional identifier to route payments to the customer.
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
-
-            /**
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun address(): Address? = address.getNullable("address")
-
-            /**
-             * Additional information for business entities
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun businessInfo(): BusinessCustomerFields.BusinessInfo? =
-                businessInfo.getNullable("businessInfo")
-
-            /**
-             * The current KYB status of a business customer
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   (e.g. if the server responded with an unexpected value).
-             */
-            fun kybStatus(): BusinessCustomerFields.KybStatus? = kybStatus.getNullable("kybStatus")
-
-            /**
-             * Returns the raw JSON value of [currencies].
-             *
-             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("currencies")
-            @ExcludeMissing
-            fun _currencies(): JsonField<List<String>> = currencies
-
-            /**
-             * Returns the raw JSON value of [email].
-             *
-             * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
-
-            /**
-             * Returns the raw JSON value of [platformCustomerId].
-             *
-             * Unlike [platformCustomerId], this method doesn't throw if the JSON field has an
-             * unexpected type.
-             */
-            @JsonProperty("platformCustomerId")
-            @ExcludeMissing
-            fun _platformCustomerId(): JsonField<String> = platformCustomerId
-
-            /**
-             * Returns the raw JSON value of [region].
-             *
-             * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
-
-            /**
-             * Returns the raw JSON value of [umaAddress].
-             *
-             * Unlike [umaAddress], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("umaAddress")
-            @ExcludeMissing
-            fun _umaAddress(): JsonField<String> = umaAddress
-
-            /**
-             * Returns the raw JSON value of [address].
-             *
-             * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
-             */
-            @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
-
-            /**
-             * Returns the raw JSON value of [businessInfo].
-             *
-             * Unlike [businessInfo], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("businessInfo")
-            @ExcludeMissing
-            fun _businessInfo(): JsonField<BusinessCustomerFields.BusinessInfo> = businessInfo
-
-            /**
-             * Returns the raw JSON value of [kybStatus].
-             *
-             * Unlike [kybStatus], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("kybStatus")
-            @ExcludeMissing
-            fun _kybStatus(): JsonField<BusinessCustomerFields.KybStatus> = kybStatus
-
-            @JsonAnySetter
-            private fun putAdditionalProperty(key: String, value: JsonValue) {
-                additionalProperties.put(key, value)
-            }
-
-            @JsonAnyGetter
-            @ExcludeMissing
-            fun _additionalProperties(): Map<String, JsonValue> =
-                Collections.unmodifiableMap(additionalProperties)
-
-            fun toBuilder() = Builder().from(this)
-
-            companion object {
-
-                /**
-                 * Returns a mutable builder for constructing an instance of
-                 * [BusinessCustomerCreateRequest].
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .customerType()
-                 * ```
-                 */
-                fun builder() = Builder()
-            }
-
-            /** A builder for [BusinessCustomerCreateRequest]. */
-            class Builder internal constructor() {
-
-                private var customerType: JsonValue? = null
-                private var currencies: JsonField<MutableList<String>>? = null
-                private var email: JsonField<String> = JsonMissing.of()
-                private var platformCustomerId: JsonField<String> = JsonMissing.of()
-                private var region: JsonField<String> = JsonMissing.of()
-                private var umaAddress: JsonField<String> = JsonMissing.of()
-                private var address: JsonField<Address> = JsonMissing.of()
-                private var businessInfo: JsonField<BusinessCustomerFields.BusinessInfo> =
-                    JsonMissing.of()
-                private var kybStatus: JsonField<BusinessCustomerFields.KybStatus> =
-                    JsonMissing.of()
-                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-                internal fun from(businessCustomerCreateRequest: BusinessCustomerCreateRequest) =
-                    apply {
-                        customerType = businessCustomerCreateRequest.customerType
-                        currencies =
-                            businessCustomerCreateRequest.currencies.map { it.toMutableList() }
-                        email = businessCustomerCreateRequest.email
-                        platformCustomerId = businessCustomerCreateRequest.platformCustomerId
-                        region = businessCustomerCreateRequest.region
-                        umaAddress = businessCustomerCreateRequest.umaAddress
-                        address = businessCustomerCreateRequest.address
-                        businessInfo = businessCustomerCreateRequest.businessInfo
-                        kybStatus = businessCustomerCreateRequest.kybStatus
-                        additionalProperties =
-                            businessCustomerCreateRequest.additionalProperties.toMutableMap()
-                    }
-
-                fun customerType(customerType: JsonValue) = apply {
-                    this.customerType = customerType
-                }
-
                 /**
                  * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
                  * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use
@@ -1466,6 +815,46 @@ private constructor(
                  * supported value.
                  */
                 fun email(email: JsonField<String>) = apply { this.email = email }
+
+                /** Individual's full name */
+                fun fullName(fullName: String) = fullName(JsonField.of(fullName))
+
+                /**
+                 * Sets [Builder.fullName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.fullName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
+
+                /** The current KYC status of a customer */
+                fun kycStatus(kycStatus: KycStatus) = kycStatus(JsonField.of(kycStatus))
+
+                /**
+                 * Sets [Builder.kycStatus] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.kycStatus] with a well-typed [KycStatus] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun kycStatus(kycStatus: JsonField<KycStatus>) = apply {
+                    this.kycStatus = kycStatus
+                }
+
+                /** Country code (ISO 3166-1 alpha-2) */
+                fun nationality(nationality: String) = nationality(JsonField.of(nationality))
+
+                /**
+                 * Sets [Builder.nationality] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.nationality] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun nationality(nationality: JsonField<String>) = apply {
+                    this.nationality = nationality
+                }
 
                 /**
                  * Platform-specific customer identifier. If not provided, one will be generated by
@@ -1523,6 +912,586 @@ private constructor(
                     this.umaAddress = umaAddress
                 }
 
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Individual].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Individual =
+                    Individual(
+                        customerType,
+                        address,
+                        birthDate,
+                        (currencies ?: JsonMissing.of()).map { it.toImmutable() },
+                        email,
+                        fullName,
+                        kycStatus,
+                        nationality,
+                        platformCustomerId,
+                        region,
+                        umaAddress,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Individual = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _customerType().let {
+                    if (it != JsonValue.from("INDIVIDUAL")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'customerType' is invalid, received $it"
+                        )
+                    }
+                }
+                address()?.validate()
+                birthDate()
+                currencies()
+                email()
+                fullName()
+                kycStatus()?.validate()
+                nationality()
+                platformCustomerId()
+                region()
+                umaAddress()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                customerType.let { if (it == JsonValue.from("INDIVIDUAL")) 1 else 0 } +
+                    (address.asKnown()?.validity() ?: 0) +
+                    (if (birthDate.asKnown() == null) 0 else 1) +
+                    (currencies.asKnown()?.size ?: 0) +
+                    (if (email.asKnown() == null) 0 else 1) +
+                    (if (fullName.asKnown() == null) 0 else 1) +
+                    (kycStatus.asKnown()?.validity() ?: 0) +
+                    (if (nationality.asKnown() == null) 0 else 1) +
+                    (if (platformCustomerId.asKnown() == null) 0 else 1) +
+                    (if (region.asKnown() == null) 0 else 1) +
+                    (if (umaAddress.asKnown() == null) 0 else 1)
+
+            /** The current KYC status of a customer */
+            class KycStatus @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val UNVERIFIED = of("UNVERIFIED")
+
+                    val PENDING = of("PENDING")
+
+                    val APPROVED = of("APPROVED")
+
+                    val REJECTED = of("REJECTED")
+
+                    fun of(value: String) = KycStatus(JsonField.of(value))
+                }
+
+                /** An enum containing [KycStatus]'s known values. */
+                enum class Known {
+                    UNVERIFIED,
+                    PENDING,
+                    APPROVED,
+                    REJECTED,
+                }
+
+                /**
+                 * An enum containing [KycStatus]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [KycStatus] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    UNVERIFIED,
+                    PENDING,
+                    APPROVED,
+                    REJECTED,
+                    /**
+                     * An enum member indicating that [KycStatus] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        UNVERIFIED -> Value.UNVERIFIED
+                        PENDING -> Value.PENDING
+                        APPROVED -> Value.APPROVED
+                        REJECTED -> Value.REJECTED
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        UNVERIFIED -> Known.UNVERIFIED
+                        PENDING -> Known.PENDING
+                        APPROVED -> Known.APPROVED
+                        REJECTED -> Known.REJECTED
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown KycStatus: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): KycStatus = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is KycStatus && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Individual &&
+                    customerType == other.customerType &&
+                    address == other.address &&
+                    birthDate == other.birthDate &&
+                    currencies == other.currencies &&
+                    email == other.email &&
+                    fullName == other.fullName &&
+                    kycStatus == other.kycStatus &&
+                    nationality == other.nationality &&
+                    platformCustomerId == other.platformCustomerId &&
+                    region == other.region &&
+                    umaAddress == other.umaAddress &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    customerType,
+                    address,
+                    birthDate,
+                    currencies,
+                    email,
+                    fullName,
+                    kycStatus,
+                    nationality,
+                    platformCustomerId,
+                    region,
+                    umaAddress,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Individual{customerType=$customerType, address=$address, birthDate=$birthDate, currencies=$currencies, email=$email, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        }
+
+        class Business
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val customerType: JsonValue,
+            private val address: JsonField<Address>,
+            private val businessInfo: JsonField<BusinessInfo>,
+            private val currencies: JsonField<List<String>>,
+            private val email: JsonField<String>,
+            private val kybStatus: JsonField<KybStatus>,
+            private val platformCustomerId: JsonField<String>,
+            private val region: JsonField<String>,
+            private val umaAddress: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("customerType")
+                @ExcludeMissing
+                customerType: JsonValue = JsonMissing.of(),
+                @JsonProperty("address")
+                @ExcludeMissing
+                address: JsonField<Address> = JsonMissing.of(),
+                @JsonProperty("businessInfo")
+                @ExcludeMissing
+                businessInfo: JsonField<BusinessInfo> = JsonMissing.of(),
+                @JsonProperty("currencies")
+                @ExcludeMissing
+                currencies: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("kybStatus")
+                @ExcludeMissing
+                kybStatus: JsonField<KybStatus> = JsonMissing.of(),
+                @JsonProperty("platformCustomerId")
+                @ExcludeMissing
+                platformCustomerId: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("region")
+                @ExcludeMissing
+                region: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("umaAddress")
+                @ExcludeMissing
+                umaAddress: JsonField<String> = JsonMissing.of(),
+            ) : this(
+                customerType,
+                address,
+                businessInfo,
+                currencies,
+                email,
+                kybStatus,
+                platformCustomerId,
+                region,
+                umaAddress,
+                mutableMapOf(),
+            )
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("BUSINESS")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("customerType")
+            @ExcludeMissing
+            fun _customerType(): JsonValue = customerType
+
+            /**
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun address(): Address? = address.getNullable("address")
+
+            /**
+             * Additional information for business entities
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun businessInfo(): BusinessInfo? = businessInfo.getNullable("businessInfo")
+
+            /**
+             * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
+             * tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than
+             * one sending currency, since the correct currencies cannot always be inferred. If not
+             * provided, currencies will be inferred from the customer's region. Some currency
+             * combinations may require separate customers — if so, the request will be rejected
+             * with details.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun currencies(): List<String>? = currencies.getNullable("currencies")
+
+            /**
+             * Email address for the customer.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun email(): String? = email.getNullable("email")
+
+            /**
+             * The current KYB status of a business customer
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun kybStatus(): KybStatus? = kybStatus.getNullable("kybStatus")
+
+            /**
+             * Platform-specific customer identifier. If not provided, one will be generated by the
+             * system.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun platformCustomerId(): String? = platformCustomerId.getNullable("platformCustomerId")
+
+            /**
+             * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
+             * determines the regulatory jurisdiction and KYC requirements for the customer.
+             * Required if the customer will use currencies with different KYC requirements across
+             * regions. A customer with accounts in multiple regions should be registered as
+             * separate customers. This field is immutable after creation.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun region(): String? = region.getNullable("region")
+
+            /**
+             * Optional UMA address identifier. If not provided during customer creation, one will
+             * be generated by the system. If provided during customer update, the UMA address will
+             * be updated to the provided value. This is an optional identifier to route payments to
+             * the customer. This is an optional identifier to route payments to the customer.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
+
+            /**
+             * Returns the raw JSON value of [address].
+             *
+             * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
+
+            /**
+             * Returns the raw JSON value of [businessInfo].
+             *
+             * Unlike [businessInfo], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("businessInfo")
+            @ExcludeMissing
+            fun _businessInfo(): JsonField<BusinessInfo> = businessInfo
+
+            /**
+             * Returns the raw JSON value of [currencies].
+             *
+             * Unlike [currencies], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currencies")
+            @ExcludeMissing
+            fun _currencies(): JsonField<List<String>> = currencies
+
+            /**
+             * Returns the raw JSON value of [email].
+             *
+             * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+            /**
+             * Returns the raw JSON value of [kybStatus].
+             *
+             * Unlike [kybStatus], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("kybStatus")
+            @ExcludeMissing
+            fun _kybStatus(): JsonField<KybStatus> = kybStatus
+
+            /**
+             * Returns the raw JSON value of [platformCustomerId].
+             *
+             * Unlike [platformCustomerId], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("platformCustomerId")
+            @ExcludeMissing
+            fun _platformCustomerId(): JsonField<String> = platformCustomerId
+
+            /**
+             * Returns the raw JSON value of [region].
+             *
+             * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("region") @ExcludeMissing fun _region(): JsonField<String> = region
+
+            /**
+             * Returns the raw JSON value of [umaAddress].
+             *
+             * Unlike [umaAddress], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("umaAddress")
+            @ExcludeMissing
+            fun _umaAddress(): JsonField<String> = umaAddress
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Business]. */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [Business]. */
+            class Builder internal constructor() {
+
+                private var customerType: JsonValue = JsonValue.from("BUSINESS")
+                private var address: JsonField<Address> = JsonMissing.of()
+                private var businessInfo: JsonField<BusinessInfo> = JsonMissing.of()
+                private var currencies: JsonField<MutableList<String>>? = null
+                private var email: JsonField<String> = JsonMissing.of()
+                private var kybStatus: JsonField<KybStatus> = JsonMissing.of()
+                private var platformCustomerId: JsonField<String> = JsonMissing.of()
+                private var region: JsonField<String> = JsonMissing.of()
+                private var umaAddress: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(business: Business) = apply {
+                    customerType = business.customerType
+                    address = business.address
+                    businessInfo = business.businessInfo
+                    currencies = business.currencies.map { it.toMutableList() }
+                    email = business.email
+                    kybStatus = business.kybStatus
+                    platformCustomerId = business.platformCustomerId
+                    region = business.region
+                    umaAddress = business.umaAddress
+                    additionalProperties = business.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("BUSINESS")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun customerType(customerType: JsonValue) = apply {
+                    this.customerType = customerType
+                }
+
                 fun address(address: Address) = address(JsonField.of(address))
 
                 /**
@@ -1535,34 +1504,133 @@ private constructor(
                 fun address(address: JsonField<Address>) = apply { this.address = address }
 
                 /** Additional information for business entities */
-                fun businessInfo(businessInfo: BusinessCustomerFields.BusinessInfo) =
+                fun businessInfo(businessInfo: BusinessInfo) =
                     businessInfo(JsonField.of(businessInfo))
 
                 /**
                  * Sets [Builder.businessInfo] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.businessInfo] with a well-typed
-                 * [BusinessCustomerFields.BusinessInfo] value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
+                 * You should usually call [Builder.businessInfo] with a well-typed [BusinessInfo]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
                  */
-                fun businessInfo(businessInfo: JsonField<BusinessCustomerFields.BusinessInfo>) =
-                    apply {
-                        this.businessInfo = businessInfo
-                    }
+                fun businessInfo(businessInfo: JsonField<BusinessInfo>) = apply {
+                    this.businessInfo = businessInfo
+                }
+
+                /**
+                 * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD",
+                 * "EUR"; tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use
+                 * more than one sending currency, since the correct currencies cannot always be
+                 * inferred. If not provided, currencies will be inferred from the customer's
+                 * region. Some currency combinations may require separate customers — if so, the
+                 * request will be rejected with details.
+                 */
+                fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
+
+                /**
+                 * Sets [Builder.currencies] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currencies] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun currencies(currencies: JsonField<List<String>>) = apply {
+                    this.currencies = currencies.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [currencies].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addCurrency(currency: String) = apply {
+                    currencies =
+                        (currencies ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("currencies", it).add(currency)
+                        }
+                }
+
+                /** Email address for the customer. */
+                fun email(email: String) = email(JsonField.of(email))
+
+                /**
+                 * Sets [Builder.email] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.email] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun email(email: JsonField<String>) = apply { this.email = email }
 
                 /** The current KYB status of a business customer */
-                fun kybStatus(kybStatus: BusinessCustomerFields.KybStatus) =
-                    kybStatus(JsonField.of(kybStatus))
+                fun kybStatus(kybStatus: KybStatus) = kybStatus(JsonField.of(kybStatus))
 
                 /**
                  * Sets [Builder.kybStatus] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.kybStatus] with a well-typed
-                 * [BusinessCustomerFields.KybStatus] value instead. This method is primarily for
-                 * setting the field to an undocumented or not yet supported value.
+                 * You should usually call [Builder.kybStatus] with a well-typed [KybStatus] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
                  */
-                fun kybStatus(kybStatus: JsonField<BusinessCustomerFields.KybStatus>) = apply {
+                fun kybStatus(kybStatus: JsonField<KybStatus>) = apply {
                     this.kybStatus = kybStatus
+                }
+
+                /**
+                 * Platform-specific customer identifier. If not provided, one will be generated by
+                 * the system.
+                 */
+                fun platformCustomerId(platformCustomerId: String) =
+                    platformCustomerId(JsonField.of(platformCustomerId))
+
+                /**
+                 * Sets [Builder.platformCustomerId] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.platformCustomerId] with a well-typed [String]
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
+                    this.platformCustomerId = platformCustomerId
+                }
+
+                /**
+                 * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity.
+                 * This determines the regulatory jurisdiction and KYC requirements for the
+                 * customer. Required if the customer will use currencies with different KYC
+                 * requirements across regions. A customer with accounts in multiple regions should
+                 * be registered as separate customers. This field is immutable after creation.
+                 */
+                fun region(region: String) = region(JsonField.of(region))
+
+                /**
+                 * Sets [Builder.region] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.region] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun region(region: JsonField<String>) = apply { this.region = region }
+
+                /**
+                 * Optional UMA address identifier. If not provided during customer creation, one
+                 * will be generated by the system. If provided during customer update, the UMA
+                 * address will be updated to the provided value. This is an optional identifier to
+                 * route payments to the customer. This is an optional identifier to route payments
+                 * to the customer.
+                 */
+                fun umaAddress(umaAddress: String) = umaAddress(JsonField.of(umaAddress))
+
+                /**
+                 * Sets [Builder.umaAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.umaAddress] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun umaAddress(umaAddress: JsonField<String>) = apply {
+                    this.umaAddress = umaAddress
                 }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -1588,28 +1656,21 @@ private constructor(
                 }
 
                 /**
-                 * Returns an immutable instance of [BusinessCustomerCreateRequest].
+                 * Returns an immutable instance of [Business].
                  *
                  * Further updates to this [Builder] will not mutate the returned instance.
-                 *
-                 * The following fields are required:
-                 * ```kotlin
-                 * .customerType()
-                 * ```
-                 *
-                 * @throws IllegalStateException if any required field is unset.
                  */
-                fun build(): BusinessCustomerCreateRequest =
-                    BusinessCustomerCreateRequest(
-                        checkRequired("customerType", customerType),
+                fun build(): Business =
+                    Business(
+                        customerType,
+                        address,
+                        businessInfo,
                         (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                         email,
+                        kybStatus,
                         platformCustomerId,
                         region,
                         umaAddress,
-                        address,
-                        businessInfo,
-                        kybStatus,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -1626,19 +1687,26 @@ private constructor(
              * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
              *   match its expected type.
              */
-            fun validate(): BusinessCustomerCreateRequest = apply {
+            fun validate(): Business = apply {
                 if (validated) {
                     return@apply
                 }
 
+                _customerType().let {
+                    if (it != JsonValue.from("BUSINESS")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'customerType' is invalid, received $it"
+                        )
+                    }
+                }
+                address()?.validate()
+                businessInfo()?.validate()
                 currencies()
                 email()
+                kybStatus()?.validate()
                 platformCustomerId()
                 region()
                 umaAddress()
-                address()?.validate()
-                businessInfo()?.validate()
-                kybStatus()?.validate()
                 validated = true
             }
 
@@ -1657,52 +1725,44 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (currencies.asKnown()?.size ?: 0) +
-                    (if (email.asKnown() == null) 0 else 1) +
-                    (if (platformCustomerId.asKnown() == null) 0 else 1) +
-                    (if (region.asKnown() == null) 0 else 1) +
-                    (if (umaAddress.asKnown() == null) 0 else 1) +
+                customerType.let { if (it == JsonValue.from("BUSINESS")) 1 else 0 } +
                     (address.asKnown()?.validity() ?: 0) +
                     (businessInfo.asKnown()?.validity() ?: 0) +
-                    (kybStatus.asKnown()?.validity() ?: 0)
+                    (currencies.asKnown()?.size ?: 0) +
+                    (if (email.asKnown() == null) 0 else 1) +
+                    (kybStatus.asKnown()?.validity() ?: 0) +
+                    (if (platformCustomerId.asKnown() == null) 0 else 1) +
+                    (if (region.asKnown() == null) 0 else 1) +
+                    (if (umaAddress.asKnown() == null) 0 else 1)
 
-            /** Additional information required for business entities */
+            /** Additional information for business entities */
             class BusinessInfo
             @JsonCreator(mode = JsonCreator.Mode.DISABLED)
             private constructor(
-                private val incorporatedOn: JsonField<LocalDate>,
-                private val legalName: JsonField<String>,
-                private val taxId: JsonField<String>,
-                private val businessType: JsonField<BusinessType>,
+                private val businessType: JsonField<BusinessInfoUpdate.BusinessType>,
                 private val countriesOfOperation: JsonField<List<String>>,
                 private val country: JsonField<String>,
                 private val doingBusinessAs: JsonField<String>,
-                private val entityType: JsonField<EntityType>,
+                private val entityType: JsonField<BusinessInfoUpdate.EntityType>,
                 private val expectedMonthlyTransactionCount:
-                    JsonField<ExpectedMonthlyTransactionCount>,
+                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount>,
                 private val expectedMonthlyTransactionVolume:
-                    JsonField<ExpectedMonthlyTransactionVolume>,
+                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume>,
                 private val expectedRecipientJurisdictions: JsonField<List<String>>,
-                private val purposeOfAccount: JsonField<PurposeOfAccount>,
+                private val incorporatedOn: JsonField<LocalDate>,
+                private val legalName: JsonField<String>,
+                private val purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount>,
                 private val registrationNumber: JsonField<String>,
                 private val sourceOfFunds: JsonField<String>,
+                private val taxId: JsonField<String>,
                 private val additionalProperties: MutableMap<String, JsonValue>,
             ) {
 
                 @JsonCreator
                 private constructor(
-                    @JsonProperty("incorporatedOn")
-                    @ExcludeMissing
-                    incorporatedOn: JsonField<LocalDate> = JsonMissing.of(),
-                    @JsonProperty("legalName")
-                    @ExcludeMissing
-                    legalName: JsonField<String> = JsonMissing.of(),
-                    @JsonProperty("taxId")
-                    @ExcludeMissing
-                    taxId: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("businessType")
                     @ExcludeMissing
-                    businessType: JsonField<BusinessType> = JsonMissing.of(),
+                    businessType: JsonField<BusinessInfoUpdate.BusinessType> = JsonMissing.of(),
                     @JsonProperty("countriesOfOperation")
                     @ExcludeMissing
                     countriesOfOperation: JsonField<List<String>> = JsonMissing.of(),
@@ -1714,31 +1774,40 @@ private constructor(
                     doingBusinessAs: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("entityType")
                     @ExcludeMissing
-                    entityType: JsonField<EntityType> = JsonMissing.of(),
+                    entityType: JsonField<BusinessInfoUpdate.EntityType> = JsonMissing.of(),
                     @JsonProperty("expectedMonthlyTransactionCount")
                     @ExcludeMissing
-                    expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
+                    expectedMonthlyTransactionCount:
+                        JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
                         JsonMissing.of(),
                     @JsonProperty("expectedMonthlyTransactionVolume")
                     @ExcludeMissing
-                    expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
+                    expectedMonthlyTransactionVolume:
+                        JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
                         JsonMissing.of(),
                     @JsonProperty("expectedRecipientJurisdictions")
                     @ExcludeMissing
                     expectedRecipientJurisdictions: JsonField<List<String>> = JsonMissing.of(),
+                    @JsonProperty("incorporatedOn")
+                    @ExcludeMissing
+                    incorporatedOn: JsonField<LocalDate> = JsonMissing.of(),
+                    @JsonProperty("legalName")
+                    @ExcludeMissing
+                    legalName: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("purposeOfAccount")
                     @ExcludeMissing
-                    purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of(),
+                    purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount> =
+                        JsonMissing.of(),
                     @JsonProperty("registrationNumber")
                     @ExcludeMissing
                     registrationNumber: JsonField<String> = JsonMissing.of(),
                     @JsonProperty("sourceOfFunds")
                     @ExcludeMissing
                     sourceOfFunds: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("taxId")
+                    @ExcludeMissing
+                    taxId: JsonField<String> = JsonMissing.of(),
                 ) : this(
-                    incorporatedOn,
-                    legalName,
-                    taxId,
                     businessType,
                     countriesOfOperation,
                     country,
@@ -1747,17 +1816,17 @@ private constructor(
                     expectedMonthlyTransactionCount,
                     expectedMonthlyTransactionVolume,
                     expectedRecipientJurisdictions,
+                    incorporatedOn,
+                    legalName,
                     purposeOfAccount,
                     registrationNumber,
                     sourceOfFunds,
+                    taxId,
                     mutableMapOf(),
                 )
 
-                fun toBusinessInfo(): BusinessInfo =
-                    BusinessInfo.builder()
-                        .incorporatedOn(incorporatedOn)
-                        .legalName(legalName)
-                        .taxId(taxId)
+                fun toBusinessInfoUpdate(): BusinessInfoUpdate =
+                    BusinessInfoUpdate.builder()
                         .businessType(businessType)
                         .countriesOfOperation(countriesOfOperation)
                         .country(country)
@@ -1766,37 +1835,13 @@ private constructor(
                         .expectedMonthlyTransactionCount(expectedMonthlyTransactionCount)
                         .expectedMonthlyTransactionVolume(expectedMonthlyTransactionVolume)
                         .expectedRecipientJurisdictions(expectedRecipientJurisdictions)
+                        .incorporatedOn(incorporatedOn)
+                        .legalName(legalName)
                         .purposeOfAccount(purposeOfAccount)
                         .registrationNumber(registrationNumber)
                         .sourceOfFunds(sourceOfFunds)
+                        .taxId(taxId)
                         .build()
-
-                /**
-                 * Date of incorporation in ISO 8601 format (YYYY-MM-DD)
-                 *
-                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
-                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
-                 *   unexpected value).
-                 */
-                fun incorporatedOn(): LocalDate = incorporatedOn.getRequired("incorporatedOn")
-
-                /**
-                 * Legal name of the business
-                 *
-                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
-                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
-                 *   unexpected value).
-                 */
-                fun legalName(): String = legalName.getRequired("legalName")
-
-                /**
-                 * Tax identification number
-                 *
-                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
-                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
-                 *   unexpected value).
-                 */
-                fun taxId(): String = taxId.getRequired("taxId")
 
                 /**
                  * The high-level industry category of the business
@@ -1804,7 +1849,8 @@ private constructor(
                  * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
                  *   type (e.g. if the server responded with an unexpected value).
                  */
-                fun businessType(): BusinessType? = businessType.getNullable("businessType")
+                fun businessType(): BusinessInfoUpdate.BusinessType? =
+                    businessType.getNullable("businessType")
 
                 /**
                  * List of countries where the business operates (ISO 3166-1 alpha-2)
@@ -1837,7 +1883,8 @@ private constructor(
                  * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
                  *   type (e.g. if the server responded with an unexpected value).
                  */
-                fun entityType(): EntityType? = entityType.getNullable("entityType")
+                fun entityType(): BusinessInfoUpdate.EntityType? =
+                    entityType.getNullable("entityType")
 
                 /**
                  * Expected number of transactions per month
@@ -1845,7 +1892,8 @@ private constructor(
                  * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
                  *   type (e.g. if the server responded with an unexpected value).
                  */
-                fun expectedMonthlyTransactionCount(): ExpectedMonthlyTransactionCount? =
+                fun expectedMonthlyTransactionCount():
+                    BusinessInfoUpdate.ExpectedMonthlyTransactionCount? =
                     expectedMonthlyTransactionCount.getNullable("expectedMonthlyTransactionCount")
 
                 /**
@@ -1854,7 +1902,8 @@ private constructor(
                  * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
                  *   type (e.g. if the server responded with an unexpected value).
                  */
-                fun expectedMonthlyTransactionVolume(): ExpectedMonthlyTransactionVolume? =
+                fun expectedMonthlyTransactionVolume():
+                    BusinessInfoUpdate.ExpectedMonthlyTransactionVolume? =
                     expectedMonthlyTransactionVolume.getNullable("expectedMonthlyTransactionVolume")
 
                 /**
@@ -1868,12 +1917,28 @@ private constructor(
                     expectedRecipientJurisdictions.getNullable("expectedRecipientJurisdictions")
 
                 /**
+                 * Date of incorporation in ISO 8601 format (YYYY-MM-DD)
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type (e.g. if the server responded with an unexpected value).
+                 */
+                fun incorporatedOn(): LocalDate? = incorporatedOn.getNullable("incorporatedOn")
+
+                /**
+                 * Legal name of the business
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type (e.g. if the server responded with an unexpected value).
+                 */
+                fun legalName(): String? = legalName.getNullable("legalName")
+
+                /**
                  * The intended purpose for using the Grid account
                  *
                  * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
                  *   type (e.g. if the server responded with an unexpected value).
                  */
-                fun purposeOfAccount(): PurposeOfAccount? =
+                fun purposeOfAccount(): BusinessInfoUpdate.PurposeOfAccount? =
                     purposeOfAccount.getNullable("purposeOfAccount")
 
                 /**
@@ -1894,32 +1959,12 @@ private constructor(
                 fun sourceOfFunds(): String? = sourceOfFunds.getNullable("sourceOfFunds")
 
                 /**
-                 * Returns the raw JSON value of [incorporatedOn].
+                 * Tax identification number
                  *
-                 * Unlike [incorporatedOn], this method doesn't throw if the JSON field has an
-                 * unexpected type.
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type (e.g. if the server responded with an unexpected value).
                  */
-                @JsonProperty("incorporatedOn")
-                @ExcludeMissing
-                fun _incorporatedOn(): JsonField<LocalDate> = incorporatedOn
-
-                /**
-                 * Returns the raw JSON value of [legalName].
-                 *
-                 * Unlike [legalName], this method doesn't throw if the JSON field has an unexpected
-                 * type.
-                 */
-                @JsonProperty("legalName")
-                @ExcludeMissing
-                fun _legalName(): JsonField<String> = legalName
-
-                /**
-                 * Returns the raw JSON value of [taxId].
-                 *
-                 * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected
-                 * type.
-                 */
-                @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
+                fun taxId(): String? = taxId.getNullable("taxId")
 
                 /**
                  * Returns the raw JSON value of [businessType].
@@ -1929,7 +1974,7 @@ private constructor(
                  */
                 @JsonProperty("businessType")
                 @ExcludeMissing
-                fun _businessType(): JsonField<BusinessType> = businessType
+                fun _businessType(): JsonField<BusinessInfoUpdate.BusinessType> = businessType
 
                 /**
                  * Returns the raw JSON value of [countriesOfOperation].
@@ -1967,7 +2012,7 @@ private constructor(
                  */
                 @JsonProperty("entityType")
                 @ExcludeMissing
-                fun _entityType(): JsonField<EntityType> = entityType
+                fun _entityType(): JsonField<BusinessInfoUpdate.EntityType> = entityType
 
                 /**
                  * Returns the raw JSON value of [expectedMonthlyTransactionCount].
@@ -1977,7 +2022,8 @@ private constructor(
                  */
                 @JsonProperty("expectedMonthlyTransactionCount")
                 @ExcludeMissing
-                fun _expectedMonthlyTransactionCount(): JsonField<ExpectedMonthlyTransactionCount> =
+                fun _expectedMonthlyTransactionCount():
+                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
                     expectedMonthlyTransactionCount
 
                 /**
@@ -1989,7 +2035,8 @@ private constructor(
                 @JsonProperty("expectedMonthlyTransactionVolume")
                 @ExcludeMissing
                 fun _expectedMonthlyTransactionVolume():
-                    JsonField<ExpectedMonthlyTransactionVolume> = expectedMonthlyTransactionVolume
+                    JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
+                    expectedMonthlyTransactionVolume
 
                 /**
                  * Returns the raw JSON value of [expectedRecipientJurisdictions].
@@ -2003,6 +2050,26 @@ private constructor(
                     expectedRecipientJurisdictions
 
                 /**
+                 * Returns the raw JSON value of [incorporatedOn].
+                 *
+                 * Unlike [incorporatedOn], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("incorporatedOn")
+                @ExcludeMissing
+                fun _incorporatedOn(): JsonField<LocalDate> = incorporatedOn
+
+                /**
+                 * Returns the raw JSON value of [legalName].
+                 *
+                 * Unlike [legalName], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("legalName")
+                @ExcludeMissing
+                fun _legalName(): JsonField<String> = legalName
+
+                /**
                  * Returns the raw JSON value of [purposeOfAccount].
                  *
                  * Unlike [purposeOfAccount], this method doesn't throw if the JSON field has an
@@ -2010,7 +2077,8 @@ private constructor(
                  */
                 @JsonProperty("purposeOfAccount")
                 @ExcludeMissing
-                fun _purposeOfAccount(): JsonField<PurposeOfAccount> = purposeOfAccount
+                fun _purposeOfAccount(): JsonField<BusinessInfoUpdate.PurposeOfAccount> =
+                    purposeOfAccount
 
                 /**
                  * Returns the raw JSON value of [registrationNumber].
@@ -2032,6 +2100,14 @@ private constructor(
                 @ExcludeMissing
                 fun _sourceOfFunds(): JsonField<String> = sourceOfFunds
 
+                /**
+                 * Returns the raw JSON value of [taxId].
+                 *
+                 * Unlike [taxId], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("taxId") @ExcludeMissing fun _taxId(): JsonField<String> = taxId
+
                 @JsonAnySetter
                 private fun putAdditionalProperty(key: String, value: JsonValue) {
                     additionalProperties.put(key, value)
@@ -2046,47 +2122,38 @@ private constructor(
 
                 companion object {
 
-                    /**
-                     * Returns a mutable builder for constructing an instance of [BusinessInfo].
-                     *
-                     * The following fields are required:
-                     * ```kotlin
-                     * .incorporatedOn()
-                     * .legalName()
-                     * .taxId()
-                     * ```
-                     */
+                    /** Returns a mutable builder for constructing an instance of [BusinessInfo]. */
                     fun builder() = Builder()
                 }
 
                 /** A builder for [BusinessInfo]. */
                 class Builder internal constructor() {
 
-                    private var incorporatedOn: JsonField<LocalDate>? = null
-                    private var legalName: JsonField<String>? = null
-                    private var taxId: JsonField<String>? = null
-                    private var businessType: JsonField<BusinessType> = JsonMissing.of()
+                    private var businessType: JsonField<BusinessInfoUpdate.BusinessType> =
+                        JsonMissing.of()
                     private var countriesOfOperation: JsonField<MutableList<String>>? = null
                     private var country: JsonField<String> = JsonMissing.of()
                     private var doingBusinessAs: JsonField<String> = JsonMissing.of()
-                    private var entityType: JsonField<EntityType> = JsonMissing.of()
+                    private var entityType: JsonField<BusinessInfoUpdate.EntityType> =
+                        JsonMissing.of()
                     private var expectedMonthlyTransactionCount:
-                        JsonField<ExpectedMonthlyTransactionCount> =
+                        JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount> =
                         JsonMissing.of()
                     private var expectedMonthlyTransactionVolume:
-                        JsonField<ExpectedMonthlyTransactionVolume> =
+                        JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume> =
                         JsonMissing.of()
                     private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? =
                         null
-                    private var purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of()
+                    private var incorporatedOn: JsonField<LocalDate> = JsonMissing.of()
+                    private var legalName: JsonField<String> = JsonMissing.of()
+                    private var purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount> =
+                        JsonMissing.of()
                     private var registrationNumber: JsonField<String> = JsonMissing.of()
                     private var sourceOfFunds: JsonField<String> = JsonMissing.of()
+                    private var taxId: JsonField<String> = JsonMissing.of()
                     private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                     internal fun from(businessInfo: BusinessInfo) = apply {
-                        incorporatedOn = businessInfo.incorporatedOn
-                        legalName = businessInfo.legalName
-                        taxId = businessInfo.taxId
                         businessType = businessInfo.businessType
                         countriesOfOperation =
                             businessInfo.countriesOfOperation.map { it.toMutableList() }
@@ -2099,67 +2166,30 @@ private constructor(
                             businessInfo.expectedMonthlyTransactionVolume
                         expectedRecipientJurisdictions =
                             businessInfo.expectedRecipientJurisdictions.map { it.toMutableList() }
+                        incorporatedOn = businessInfo.incorporatedOn
+                        legalName = businessInfo.legalName
                         purposeOfAccount = businessInfo.purposeOfAccount
                         registrationNumber = businessInfo.registrationNumber
                         sourceOfFunds = businessInfo.sourceOfFunds
+                        taxId = businessInfo.taxId
                         additionalProperties = businessInfo.additionalProperties.toMutableMap()
                     }
 
-                    /** Date of incorporation in ISO 8601 format (YYYY-MM-DD) */
-                    fun incorporatedOn(incorporatedOn: LocalDate) =
-                        incorporatedOn(JsonField.of(incorporatedOn))
-
-                    /**
-                     * Sets [Builder.incorporatedOn] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.incorporatedOn] with a well-typed
-                     * [LocalDate] value instead. This method is primarily for setting the field to
-                     * an undocumented or not yet supported value.
-                     */
-                    fun incorporatedOn(incorporatedOn: JsonField<LocalDate>) = apply {
-                        this.incorporatedOn = incorporatedOn
-                    }
-
-                    /** Legal name of the business */
-                    fun legalName(legalName: String) = legalName(JsonField.of(legalName))
-
-                    /**
-                     * Sets [Builder.legalName] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.legalName] with a well-typed [String] value
-                     * instead. This method is primarily for setting the field to an undocumented or
-                     * not yet supported value.
-                     */
-                    fun legalName(legalName: JsonField<String>) = apply {
-                        this.legalName = legalName
-                    }
-
-                    /** Tax identification number */
-                    fun taxId(taxId: String) = taxId(JsonField.of(taxId))
-
-                    /**
-                     * Sets [Builder.taxId] to an arbitrary JSON value.
-                     *
-                     * You should usually call [Builder.taxId] with a well-typed [String] value
-                     * instead. This method is primarily for setting the field to an undocumented or
-                     * not yet supported value.
-                     */
-                    fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
-
                     /** The high-level industry category of the business */
-                    fun businessType(businessType: BusinessType) =
+                    fun businessType(businessType: BusinessInfoUpdate.BusinessType) =
                         businessType(JsonField.of(businessType))
 
                     /**
                      * Sets [Builder.businessType] to an arbitrary JSON value.
                      *
                      * You should usually call [Builder.businessType] with a well-typed
-                     * [BusinessType] value instead. This method is primarily for setting the field
-                     * to an undocumented or not yet supported value.
+                     * [BusinessInfoUpdate.BusinessType] value instead. This method is primarily for
+                     * setting the field to an undocumented or not yet supported value.
                      */
-                    fun businessType(businessType: JsonField<BusinessType>) = apply {
-                        this.businessType = businessType
-                    }
+                    fun businessType(businessType: JsonField<BusinessInfoUpdate.BusinessType>) =
+                        apply {
+                            this.businessType = businessType
+                        }
 
                     /** List of countries where the business operates (ISO 3166-1 alpha-2) */
                     fun countriesOfOperation(countriesOfOperation: List<String>) =
@@ -2218,22 +2248,24 @@ private constructor(
                     }
 
                     /** Legal entity type of the business */
-                    fun entityType(entityType: EntityType) = entityType(JsonField.of(entityType))
+                    fun entityType(entityType: BusinessInfoUpdate.EntityType) =
+                        entityType(JsonField.of(entityType))
 
                     /**
                      * Sets [Builder.entityType] to an arbitrary JSON value.
                      *
-                     * You should usually call [Builder.entityType] with a well-typed [EntityType]
-                     * value instead. This method is primarily for setting the field to an
-                     * undocumented or not yet supported value.
+                     * You should usually call [Builder.entityType] with a well-typed
+                     * [BusinessInfoUpdate.EntityType] value instead. This method is primarily for
+                     * setting the field to an undocumented or not yet supported value.
                      */
-                    fun entityType(entityType: JsonField<EntityType>) = apply {
+                    fun entityType(entityType: JsonField<BusinessInfoUpdate.EntityType>) = apply {
                         this.entityType = entityType
                     }
 
                     /** Expected number of transactions per month */
                     fun expectedMonthlyTransactionCount(
-                        expectedMonthlyTransactionCount: ExpectedMonthlyTransactionCount
+                        expectedMonthlyTransactionCount:
+                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount
                     ) =
                         expectedMonthlyTransactionCount(
                             JsonField.of(expectedMonthlyTransactionCount)
@@ -2243,19 +2275,21 @@ private constructor(
                      * Sets [Builder.expectedMonthlyTransactionCount] to an arbitrary JSON value.
                      *
                      * You should usually call [Builder.expectedMonthlyTransactionCount] with a
-                     * well-typed [ExpectedMonthlyTransactionCount] value instead. This method is
-                     * primarily for setting the field to an undocumented or not yet supported
-                     * value.
+                     * well-typed [BusinessInfoUpdate.ExpectedMonthlyTransactionCount] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
                      */
                     fun expectedMonthlyTransactionCount(
-                        expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>
+                        expectedMonthlyTransactionCount:
+                            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionCount>
                     ) = apply {
                         this.expectedMonthlyTransactionCount = expectedMonthlyTransactionCount
                     }
 
                     /** Expected total transaction volume per month in USD equivalent */
                     fun expectedMonthlyTransactionVolume(
-                        expectedMonthlyTransactionVolume: ExpectedMonthlyTransactionVolume
+                        expectedMonthlyTransactionVolume:
+                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume
                     ) =
                         expectedMonthlyTransactionVolume(
                             JsonField.of(expectedMonthlyTransactionVolume)
@@ -2265,13 +2299,13 @@ private constructor(
                      * Sets [Builder.expectedMonthlyTransactionVolume] to an arbitrary JSON value.
                      *
                      * You should usually call [Builder.expectedMonthlyTransactionVolume] with a
-                     * well-typed [ExpectedMonthlyTransactionVolume] value instead. This method is
-                     * primarily for setting the field to an undocumented or not yet supported
-                     * value.
+                     * well-typed [BusinessInfoUpdate.ExpectedMonthlyTransactionVolume] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
                      */
                     fun expectedMonthlyTransactionVolume(
                         expectedMonthlyTransactionVolume:
-                            JsonField<ExpectedMonthlyTransactionVolume>
+                            JsonField<BusinessInfoUpdate.ExpectedMonthlyTransactionVolume>
                     ) = apply {
                         this.expectedMonthlyTransactionVolume = expectedMonthlyTransactionVolume
                     }
@@ -2313,20 +2347,49 @@ private constructor(
                                     }
                         }
 
+                    /** Date of incorporation in ISO 8601 format (YYYY-MM-DD) */
+                    fun incorporatedOn(incorporatedOn: LocalDate) =
+                        incorporatedOn(JsonField.of(incorporatedOn))
+
+                    /**
+                     * Sets [Builder.incorporatedOn] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.incorporatedOn] with a well-typed
+                     * [LocalDate] value instead. This method is primarily for setting the field to
+                     * an undocumented or not yet supported value.
+                     */
+                    fun incorporatedOn(incorporatedOn: JsonField<LocalDate>) = apply {
+                        this.incorporatedOn = incorporatedOn
+                    }
+
+                    /** Legal name of the business */
+                    fun legalName(legalName: String) = legalName(JsonField.of(legalName))
+
+                    /**
+                     * Sets [Builder.legalName] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.legalName] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun legalName(legalName: JsonField<String>) = apply {
+                        this.legalName = legalName
+                    }
+
                     /** The intended purpose for using the Grid account */
-                    fun purposeOfAccount(purposeOfAccount: PurposeOfAccount) =
+                    fun purposeOfAccount(purposeOfAccount: BusinessInfoUpdate.PurposeOfAccount) =
                         purposeOfAccount(JsonField.of(purposeOfAccount))
 
                     /**
                      * Sets [Builder.purposeOfAccount] to an arbitrary JSON value.
                      *
                      * You should usually call [Builder.purposeOfAccount] with a well-typed
-                     * [PurposeOfAccount] value instead. This method is primarily for setting the
-                     * field to an undocumented or not yet supported value.
+                     * [BusinessInfoUpdate.PurposeOfAccount] value instead. This method is primarily
+                     * for setting the field to an undocumented or not yet supported value.
                      */
-                    fun purposeOfAccount(purposeOfAccount: JsonField<PurposeOfAccount>) = apply {
-                        this.purposeOfAccount = purposeOfAccount
-                    }
+                    fun purposeOfAccount(
+                        purposeOfAccount: JsonField<BusinessInfoUpdate.PurposeOfAccount>
+                    ) = apply { this.purposeOfAccount = purposeOfAccount }
 
                     /** Business registration number */
                     fun registrationNumber(registrationNumber: String) =
@@ -2358,6 +2421,18 @@ private constructor(
                         this.sourceOfFunds = sourceOfFunds
                     }
 
+                    /** Tax identification number */
+                    fun taxId(taxId: String) = taxId(JsonField.of(taxId))
+
+                    /**
+                     * Sets [Builder.taxId] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.taxId] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun taxId(taxId: JsonField<String>) = apply { this.taxId = taxId }
+
                     fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                         this.additionalProperties.clear()
                         putAllAdditionalProperties(additionalProperties)
@@ -2384,21 +2459,9 @@ private constructor(
                      * Returns an immutable instance of [BusinessInfo].
                      *
                      * Further updates to this [Builder] will not mutate the returned instance.
-                     *
-                     * The following fields are required:
-                     * ```kotlin
-                     * .incorporatedOn()
-                     * .legalName()
-                     * .taxId()
-                     * ```
-                     *
-                     * @throws IllegalStateException if any required field is unset.
                      */
                     fun build(): BusinessInfo =
                         BusinessInfo(
-                            checkRequired("incorporatedOn", incorporatedOn),
-                            checkRequired("legalName", legalName),
-                            checkRequired("taxId", taxId),
                             businessType,
                             (countriesOfOperation ?: JsonMissing.of()).map { it.toImmutable() },
                             country,
@@ -2409,9 +2472,12 @@ private constructor(
                             (expectedRecipientJurisdictions ?: JsonMissing.of()).map {
                                 it.toImmutable()
                             },
+                            incorporatedOn,
+                            legalName,
                             purposeOfAccount,
                             registrationNumber,
                             sourceOfFunds,
+                            taxId,
                             additionalProperties.toMutableMap(),
                         )
                 }
@@ -2433,9 +2499,6 @@ private constructor(
                         return@apply
                     }
 
-                    incorporatedOn()
-                    legalName()
-                    taxId()
                     businessType()?.validate()
                     countriesOfOperation()
                     country()
@@ -2444,9 +2507,12 @@ private constructor(
                     expectedMonthlyTransactionCount()?.validate()
                     expectedMonthlyTransactionVolume()?.validate()
                     expectedRecipientJurisdictions()
+                    incorporatedOn()
+                    legalName()
                     purposeOfAccount()?.validate()
                     registrationNumber()
                     sourceOfFunds()
+                    taxId()
                     validated = true
                 }
 
@@ -2465,10 +2531,7 @@ private constructor(
                  * Used for best match union deserialization.
                  */
                 internal fun validity(): Int =
-                    (if (incorporatedOn.asKnown() == null) 0 else 1) +
-                        (if (legalName.asKnown() == null) 0 else 1) +
-                        (if (taxId.asKnown() == null) 0 else 1) +
-                        (businessType.asKnown()?.validity() ?: 0) +
+                    (businessType.asKnown()?.validity() ?: 0) +
                         (countriesOfOperation.asKnown()?.size ?: 0) +
                         (if (country.asKnown() == null) 0 else 1) +
                         (if (doingBusinessAs.asKnown() == null) 0 else 1) +
@@ -2476,9 +2539,12 @@ private constructor(
                         (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
                         (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
                         (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
+                        (if (incorporatedOn.asKnown() == null) 0 else 1) +
+                        (if (legalName.asKnown() == null) 0 else 1) +
                         (purposeOfAccount.asKnown()?.validity() ?: 0) +
                         (if (registrationNumber.asKnown() == null) 0 else 1) +
-                        (if (sourceOfFunds.asKnown() == null) 0 else 1)
+                        (if (sourceOfFunds.asKnown() == null) 0 else 1) +
+                        (if (taxId.asKnown() == null) 0 else 1)
 
                 /** The high-level industry category of the business */
                 class BusinessType
@@ -3495,9 +3561,6 @@ private constructor(
                     }
 
                     return other is BusinessInfo &&
-                        incorporatedOn == other.incorporatedOn &&
-                        legalName == other.legalName &&
-                        taxId == other.taxId &&
                         businessType == other.businessType &&
                         countriesOfOperation == other.countriesOfOperation &&
                         country == other.country &&
@@ -3507,17 +3570,17 @@ private constructor(
                         expectedMonthlyTransactionVolume ==
                             other.expectedMonthlyTransactionVolume &&
                         expectedRecipientJurisdictions == other.expectedRecipientJurisdictions &&
+                        incorporatedOn == other.incorporatedOn &&
+                        legalName == other.legalName &&
                         purposeOfAccount == other.purposeOfAccount &&
                         registrationNumber == other.registrationNumber &&
                         sourceOfFunds == other.sourceOfFunds &&
+                        taxId == other.taxId &&
                         additionalProperties == other.additionalProperties
                 }
 
                 private val hashCode: Int by lazy {
                     Objects.hash(
-                        incorporatedOn,
-                        legalName,
-                        taxId,
                         businessType,
                         countriesOfOperation,
                         country,
@@ -3526,9 +3589,12 @@ private constructor(
                         expectedMonthlyTransactionCount,
                         expectedMonthlyTransactionVolume,
                         expectedRecipientJurisdictions,
+                        incorporatedOn,
+                        legalName,
                         purposeOfAccount,
                         registrationNumber,
                         sourceOfFunds,
+                        taxId,
                         additionalProperties,
                     )
                 }
@@ -3536,7 +3602,161 @@ private constructor(
                 override fun hashCode(): Int = hashCode
 
                 override fun toString() =
-                    "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, additionalProperties=$additionalProperties}"
+                    "BusinessInfo{businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, incorporatedOn=$incorporatedOn, legalName=$legalName, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, taxId=$taxId, additionalProperties=$additionalProperties}"
+            }
+
+            /** The current KYB status of a business customer */
+            class KybStatus @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val UNVERIFIED = of("UNVERIFIED")
+
+                    val PENDING = of("PENDING")
+
+                    val APPROVED = of("APPROVED")
+
+                    val REJECTED = of("REJECTED")
+
+                    fun of(value: String) = KybStatus(JsonField.of(value))
+                }
+
+                /** An enum containing [KybStatus]'s known values. */
+                enum class Known {
+                    UNVERIFIED,
+                    PENDING,
+                    APPROVED,
+                    REJECTED,
+                }
+
+                /**
+                 * An enum containing [KybStatus]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [KybStatus] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    UNVERIFIED,
+                    PENDING,
+                    APPROVED,
+                    REJECTED,
+                    /**
+                     * An enum member indicating that [KybStatus] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        UNVERIFIED -> Value.UNVERIFIED
+                        PENDING -> Value.PENDING
+                        APPROVED -> Value.APPROVED
+                        REJECTED -> Value.REJECTED
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        UNVERIFIED -> Known.UNVERIFIED
+                        PENDING -> Known.PENDING
+                        APPROVED -> Known.APPROVED
+                        REJECTED -> Known.REJECTED
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown KybStatus: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): KybStatus = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is KybStatus && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
             }
 
             override fun equals(other: Any?): Boolean {
@@ -3544,30 +3764,30 @@ private constructor(
                     return true
                 }
 
-                return other is BusinessCustomerCreateRequest &&
+                return other is Business &&
                     customerType == other.customerType &&
+                    address == other.address &&
+                    businessInfo == other.businessInfo &&
                     currencies == other.currencies &&
                     email == other.email &&
+                    kybStatus == other.kybStatus &&
                     platformCustomerId == other.platformCustomerId &&
                     region == other.region &&
                     umaAddress == other.umaAddress &&
-                    address == other.address &&
-                    businessInfo == other.businessInfo &&
-                    kybStatus == other.kybStatus &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
                 Objects.hash(
                     customerType,
+                    address,
+                    businessInfo,
                     currencies,
                     email,
+                    kybStatus,
                     platformCustomerId,
                     region,
                     umaAddress,
-                    address,
-                    businessInfo,
-                    kybStatus,
                     additionalProperties,
                 )
             }
@@ -3575,7 +3795,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "BusinessCustomerCreateRequest{customerType=$customerType, currencies=$currencies, email=$email, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, address=$address, businessInfo=$businessInfo, kybStatus=$kybStatus, additionalProperties=$additionalProperties}"
+                "Business{customerType=$customerType, address=$address, businessInfo=$businessInfo, currencies=$currencies, email=$email, kybStatus=$kybStatus, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
         }
     }
 

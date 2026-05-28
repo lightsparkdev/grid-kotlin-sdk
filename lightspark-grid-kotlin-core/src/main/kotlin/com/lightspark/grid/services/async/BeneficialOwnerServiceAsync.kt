@@ -6,14 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.BeneficialOwner
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListPageAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRetrieveResponse
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateResponse
 
 /**
  * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
@@ -40,27 +38,27 @@ interface BeneficialOwnerServiceAsync {
     suspend fun create(
         params: BeneficialOwnerCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BeneficialOwnerCreateResponse
+    ): BeneficialOwner
 
     /** Retrieve details of a specific beneficial owner by ID. */
     suspend fun retrieve(
         beneficialOwnerId: String,
         params: BeneficialOwnerRetrieveParams = BeneficialOwnerRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BeneficialOwnerRetrieveResponse =
+    ): BeneficialOwner =
         retrieve(params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: BeneficialOwnerRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BeneficialOwnerRetrieveResponse
+    ): BeneficialOwner
 
     /** @see retrieve */
     suspend fun retrieve(
         beneficialOwnerId: String,
         requestOptions: RequestOptions,
-    ): BeneficialOwnerRetrieveResponse =
+    ): BeneficialOwner =
         retrieve(beneficialOwnerId, BeneficialOwnerRetrieveParams.none(), requestOptions)
 
     /** Update details of a specific beneficial owner. Only provided fields are updated. */
@@ -68,20 +66,17 @@ interface BeneficialOwnerServiceAsync {
         beneficialOwnerId: String,
         params: BeneficialOwnerUpdateParams = BeneficialOwnerUpdateParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BeneficialOwnerUpdateResponse =
+    ): BeneficialOwner =
         update(params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(), requestOptions)
 
     /** @see update */
     suspend fun update(
         params: BeneficialOwnerUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): BeneficialOwnerUpdateResponse
+    ): BeneficialOwner
 
     /** @see update */
-    suspend fun update(
-        beneficialOwnerId: String,
-        requestOptions: RequestOptions,
-    ): BeneficialOwnerUpdateResponse =
+    suspend fun update(beneficialOwnerId: String, requestOptions: RequestOptions): BeneficialOwner =
         update(beneficialOwnerId, BeneficialOwnerUpdateParams.none(), requestOptions)
 
     /** Retrieve a list of beneficial owners for a business customer. */
@@ -113,7 +108,7 @@ interface BeneficialOwnerServiceAsync {
         suspend fun create(
             params: BeneficialOwnerCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<BeneficialOwnerCreateResponse>
+        ): HttpResponseFor<BeneficialOwner>
 
         /**
          * Returns a raw HTTP response for `get /beneficial-owners/{beneficialOwnerId}`, but is
@@ -124,7 +119,7 @@ interface BeneficialOwnerServiceAsync {
             beneficialOwnerId: String,
             params: BeneficialOwnerRetrieveParams = BeneficialOwnerRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<BeneficialOwnerRetrieveResponse> =
+        ): HttpResponseFor<BeneficialOwner> =
             retrieve(
                 params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(),
                 requestOptions,
@@ -135,14 +130,14 @@ interface BeneficialOwnerServiceAsync {
         suspend fun retrieve(
             params: BeneficialOwnerRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<BeneficialOwnerRetrieveResponse>
+        ): HttpResponseFor<BeneficialOwner>
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             beneficialOwnerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwnerRetrieveResponse> =
+        ): HttpResponseFor<BeneficialOwner> =
             retrieve(beneficialOwnerId, BeneficialOwnerRetrieveParams.none(), requestOptions)
 
         /**
@@ -154,7 +149,7 @@ interface BeneficialOwnerServiceAsync {
             beneficialOwnerId: String,
             params: BeneficialOwnerUpdateParams = BeneficialOwnerUpdateParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<BeneficialOwnerUpdateResponse> =
+        ): HttpResponseFor<BeneficialOwner> =
             update(params.toBuilder().beneficialOwnerId(beneficialOwnerId).build(), requestOptions)
 
         /** @see update */
@@ -162,14 +157,14 @@ interface BeneficialOwnerServiceAsync {
         suspend fun update(
             params: BeneficialOwnerUpdateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<BeneficialOwnerUpdateResponse>
+        ): HttpResponseFor<BeneficialOwner>
 
         /** @see update */
         @MustBeClosed
         suspend fun update(
             beneficialOwnerId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<BeneficialOwnerUpdateResponse> =
+        ): HttpResponseFor<BeneficialOwner> =
             update(beneficialOwnerId, BeneficialOwnerUpdateParams.none(), requestOptions)
 
         /**

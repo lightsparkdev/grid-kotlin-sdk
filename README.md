@@ -395,7 +395,7 @@ To access individual page items and manually request the next page, use the `ite
 
 ```kotlin
 import com.lightspark.grid.models.customers.CustomerListPage
-import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerListResponse
 
 val page: CustomerListPage = client.customers().list()
 while (true) {

@@ -18,8 +18,11 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.customers.CustomerCreateParams
+import com.lightspark.grid.models.customers.CustomerCreateResponse
 import com.lightspark.grid.models.customers.CustomerDeleteParams
+import com.lightspark.grid.models.customers.CustomerDeleteResponse
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
@@ -28,11 +31,11 @@ import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
 import com.lightspark.grid.models.customers.CustomerListPageResponse
 import com.lightspark.grid.models.customers.CustomerListParams
-import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
+import com.lightspark.grid.models.customers.CustomerRetrieveResponse
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.customers.CustomerUpdateResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.blocking.customers.BulkService
 import com.lightspark.grid.services.blocking.customers.BulkServiceImpl
@@ -66,21 +69,21 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun create(
         params: CustomerCreateParams,
         requestOptions: RequestOptions,
-    ): CustomerOneOf =
+    ): CustomerCreateResponse =
         // post /customers
         withRawResponse().create(params, requestOptions).parse()
 
     override fun retrieve(
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): CustomerOneOf =
+    ): CustomerRetrieveResponse =
         // get /customers/{customerId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun update(
         params: CustomerUpdateParams,
         requestOptions: RequestOptions,
-    ): CustomerOneOf =
+    ): CustomerUpdateResponse =
         // patch /customers/{customerId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -94,14 +97,14 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun delete(
         params: CustomerDeleteParams,
         requestOptions: RequestOptions,
-    ): CustomerOneOf =
+    ): CustomerDeleteResponse =
         // delete /customers/{customerId}
         withRawResponse().delete(params, requestOptions).parse()
 
     override fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions,
-    ): InternalAccountExportResponse =
+    ): CustomerExportResponse =
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
 
@@ -155,13 +158,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         /** Customer management endpoints for creating and updating customer information */
         override fun bulk(): BulkService.WithRawResponse = bulk
 
-        private val createHandler: Handler<CustomerOneOf> =
-            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
+        private val createHandler: Handler<CustomerCreateResponse> =
+            jsonHandler<CustomerCreateResponse>(clientOptions.jsonMapper)
 
         override fun create(
             params: CustomerCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> {
+        ): HttpResponseFor<CustomerCreateResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -187,13 +190,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val retrieveHandler: Handler<CustomerOneOf> =
-            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerRetrieveResponse> =
+            jsonHandler<CustomerRetrieveResponse>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: CustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> {
+        ): HttpResponseFor<CustomerRetrieveResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -221,13 +224,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val updateHandler: Handler<CustomerOneOf> =
-            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<CustomerUpdateResponse> =
+            jsonHandler<CustomerUpdateResponse>(clientOptions.jsonMapper)
 
         override fun update(
             params: CustomerUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> {
+        ): HttpResponseFor<CustomerUpdateResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -294,13 +297,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val deleteHandler: Handler<CustomerOneOf> =
-            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<CustomerDeleteResponse> =
+            jsonHandler<CustomerDeleteResponse>(clientOptions.jsonMapper)
 
         override fun delete(
             params: CustomerDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerOneOf> {
+        ): HttpResponseFor<CustomerDeleteResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -329,13 +332,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val exportHandler: Handler<InternalAccountExportResponse> =
-            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
+        private val exportHandler: Handler<CustomerExportResponse> =
+            jsonHandler<CustomerExportResponse>(clientOptions.jsonMapper)
 
         override fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<InternalAccountExportResponse> {
+        ): HttpResponseFor<CustomerExportResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
