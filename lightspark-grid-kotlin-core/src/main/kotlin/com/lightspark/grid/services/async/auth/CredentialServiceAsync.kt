@@ -184,12 +184,13 @@ interface CredentialServiceAsync {
      * For `EMAIL_OTP` credentials, supply the one-time password that was emailed to the user along
      * with a client-generated public key. For `OAUTH` credentials, supply a fresh OIDC token (`iat`
      * must be less than 60 seconds before the request) along with the client-generated public key;
-     * this is also the reauthentication path after a prior session expired. For `PASSKEY`
-     * credentials, the client completes a WebAuthn assertion (`navigator.credentials.get()`)
-     * against the Grid-issued `challenge` returned from `POST /auth/credentials/{id}/challenge`,
-     * and submits the resulting `assertion` with the `Request-Id` header. The `clientPublicKey` for
-     * `PASSKEY` credentials is supplied on the challenge call, where it is bound into the pending
-     * session-creation request.
+     * this is also the reauthentication path after a prior session expired. The token identity
+     * (`iss`, `aud`, and `sub`) must match the OAuth credential being verified. In sandbox, the
+     * token's `nonce` must equal `sha256(clientPublicKey)`. For `PASSKEY` credentials, the client
+     * completes a WebAuthn assertion (`navigator.credentials.get()`) against the Grid-issued
+     * `challenge` returned from `POST /auth/credentials/{id}/challenge`, and submits the resulting
+     * `assertion` with the `Request-Id` header. The `clientPublicKey` for `PASSKEY` credentials is
+     * supplied on the challenge call, where it is bound into the pending session-creation request.
      *
      * On success, the response contains an `encryptedSessionSigningKey` that is encrypted to the
      * supplied `clientPublicKey`, along with an `expiresAt` timestamp marking when the session

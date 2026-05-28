@@ -48,8 +48,11 @@ private constructor(
     /**
      * OIDC ID token issued by the identity provider. For reauthentication after a prior session
      * expired, supply a fresh token — the token's `iat` claim must be less than 60 seconds before
-     * the request timestamp. Grid fetches the issuer's signing key from the `iss` claim's
-     * `.well-known` OpenID configuration and verifies the token signature.
+     * the request timestamp. The token identity (`iss`, `aud`, and `sub`) must match the registered
+     * OAuth credential. In production, the provider signature is verified against the issuer's
+     * JWKS. In sandbox, the token must still be JWT-shaped with supported `iss`, non-empty `aud`
+     * and `sub`, numeric `iat` and `exp`, and a `nonce` equal to `sha256(clientPublicKey)`, but the
+     * signature segment may be a dummy value.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -156,8 +159,11 @@ private constructor(
         /**
          * OIDC ID token issued by the identity provider. For reauthentication after a prior session
          * expired, supply a fresh token — the token's `iat` claim must be less than 60 seconds
-         * before the request timestamp. Grid fetches the issuer's signing key from the `iss`
-         * claim's `.well-known` OpenID configuration and verifies the token signature.
+         * before the request timestamp. The token identity (`iss`, `aud`, and `sub`) must match the
+         * registered OAuth credential. In production, the provider signature is verified against
+         * the issuer's JWKS. In sandbox, the token must still be JWT-shaped with supported `iss`,
+         * non-empty `aud` and `sub`, numeric `iat` and `exp`, and a `nonce` equal to
+         * `sha256(clientPublicKey)`, but the signature segment may be a dummy value.
          */
         fun oidcToken(oidcToken: String) = oidcToken(JsonField.of(oidcToken))
 
