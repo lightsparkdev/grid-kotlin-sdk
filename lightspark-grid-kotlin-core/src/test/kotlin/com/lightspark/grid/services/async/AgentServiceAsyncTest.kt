@@ -7,12 +7,8 @@ import com.lightspark.grid.models.agents.AgentAccountRestrictions
 import com.lightspark.grid.models.agents.AgentAccountRule
 import com.lightspark.grid.models.agents.AgentApprovalThresholds
 import com.lightspark.grid.models.agents.AgentCreateRequest
-import com.lightspark.grid.models.agents.AgentExecutionMode
-import com.lightspark.grid.models.agents.AgentPermission
 import com.lightspark.grid.models.agents.AgentPolicy
 import com.lightspark.grid.models.agents.AgentPolicyUpdateRequest
-import com.lightspark.grid.models.agents.AgentSpendingLimits
-import com.lightspark.grid.models.agents.AgentSpendingLimitsUpdate
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
 import com.lightspark.grid.models.agents.AgentUpdateRequest
@@ -40,10 +36,10 @@ internal class AgentServiceAsyncTest {
                     .name("Payroll Automation Agent")
                     .policy(
                         AgentPolicy.builder()
-                            .defaultExecutionMode(AgentExecutionMode.AUTO)
-                            .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                            .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
+                            .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
                             .spendingLimits(
-                                AgentSpendingLimits.builder()
+                                AgentPolicy.SpendingLimits.builder()
                                     .currency("USD")
                                     .perTransactionLimit(50000L)
                                     .dailyLimit(500000L)
@@ -58,7 +54,7 @@ internal class AgentServiceAsyncTest {
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
-                                            .executionMode(AgentExecutionMode.AUTO)
+                                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                             .perTransactionLimit(10000L)
                                             .build()
                                     )
@@ -200,7 +196,7 @@ internal class AgentServiceAsyncTest {
                                             .accountId(
                                                 "Account:019542f5-b3e7-1d02-0000-000000000001"
                                             )
-                                            .executionMode(AgentExecutionMode.AUTO)
+                                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                                             .perTransactionLimit(10000L)
                                             .build()
                                     )
@@ -215,10 +211,12 @@ internal class AgentServiceAsyncTest {
                                     .currency("USD")
                                     .build()
                             )
-                            .defaultExecutionMode(AgentExecutionMode.AUTO)
-                            .addPermission(AgentPermission.VIEW_TRANSACTIONS)
+                            .defaultExecutionMode(
+                                AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO
+                            )
+                            .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
                             .spendingLimits(
-                                AgentSpendingLimitsUpdate.builder()
+                                AgentPolicyUpdateRequest.SpendingLimits.builder()
                                     .currency("USD")
                                     .dailyLimit(500000L)
                                     .dailyTransactionLimit(10L)

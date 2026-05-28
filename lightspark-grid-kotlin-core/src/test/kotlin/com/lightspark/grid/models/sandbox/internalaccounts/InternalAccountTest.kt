@@ -4,8 +4,6 @@ package com.lightspark.grid.models.sandbox.internalaccounts
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.InternalAccountStatus
-import com.lightspark.grid.models.customers.InternalAccountType
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.PaymentInstructions
@@ -59,8 +57,8 @@ internal class InternalAccountTest {
                         .isPlatformAccount(true)
                         .build()
                 )
-                .status(InternalAccountStatus.ACTIVE)
-                .type(InternalAccountType.INTERNAL_FIAT)
+                .status(InternalAccount.Status.ACTIVE)
+                .type(InternalAccount.Type.INTERNAL_FIAT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .privateEnabled(true)
@@ -109,8 +107,8 @@ internal class InternalAccountTest {
                     .isPlatformAccount(true)
                     .build()
             )
-        assertThat(internalAccount.status()).isEqualTo(InternalAccountStatus.ACTIVE)
-        assertThat(internalAccount.type()).isEqualTo(InternalAccountType.INTERNAL_FIAT)
+        assertThat(internalAccount.status()).isEqualTo(InternalAccount.Status.ACTIVE)
+        assertThat(internalAccount.type()).isEqualTo(InternalAccount.Type.INTERNAL_FIAT)
         assertThat(internalAccount.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
         assertThat(internalAccount.customerId())
@@ -163,8 +161,8 @@ internal class InternalAccountTest {
                         .isPlatformAccount(true)
                         .build()
                 )
-                .status(InternalAccountStatus.ACTIVE)
-                .type(InternalAccountType.INTERNAL_FIAT)
+                .status(InternalAccount.Status.ACTIVE)
+                .type(InternalAccount.Type.INTERNAL_FIAT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .privateEnabled(true)

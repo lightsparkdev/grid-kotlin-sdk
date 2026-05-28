@@ -24,7 +24,7 @@ private constructor(
     private val destinationCurrency: JsonField<Currency>,
     private val destinationPaymentRail: JsonValue,
     private val exchangeRate: JsonField<Double>,
-    private val fees: JsonField<ExchangeRateFees>,
+    private val fees: JsonField<Fees>,
     private val maxSendingAmount: JsonField<Long>,
     private val minSendingAmount: JsonField<Long>,
     private val receivingAmount: JsonField<Long>,
@@ -45,7 +45,7 @@ private constructor(
         @JsonProperty("exchangeRate")
         @ExcludeMissing
         exchangeRate: JsonField<Double> = JsonMissing.of(),
-        @JsonProperty("fees") @ExcludeMissing fees: JsonField<ExchangeRateFees> = JsonMissing.of(),
+        @JsonProperty("fees") @ExcludeMissing fees: JsonField<Fees> = JsonMissing.of(),
         @JsonProperty("maxSendingAmount")
         @ExcludeMissing
         maxSendingAmount: JsonField<Long> = JsonMissing.of(),
@@ -111,7 +111,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun fees(): ExchangeRateFees = fees.getRequired("fees")
+    fun fees(): Fees = fees.getRequired("fees")
 
     /**
      * The maximum supported sending amount in the smallest unit of the source currency.
@@ -184,7 +184,7 @@ private constructor(
      *
      * Unlike [fees], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<ExchangeRateFees> = fees
+    @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Fees> = fees
 
     /**
      * Returns the raw JSON value of [maxSendingAmount].
@@ -282,7 +282,7 @@ private constructor(
         private var destinationCurrency: JsonField<Currency>? = null
         private var destinationPaymentRail: JsonValue? = null
         private var exchangeRate: JsonField<Double>? = null
-        private var fees: JsonField<ExchangeRateFees>? = null
+        private var fees: JsonField<Fees>? = null
         private var maxSendingAmount: JsonField<Long>? = null
         private var minSendingAmount: JsonField<Long>? = null
         private var receivingAmount: JsonField<Long>? = null
@@ -342,16 +342,15 @@ private constructor(
         }
 
         /** Fees associated with an exchange rate */
-        fun fees(fees: ExchangeRateFees) = fees(JsonField.of(fees))
+        fun fees(fees: Fees) = fees(JsonField.of(fees))
 
         /**
          * Sets [Builder.fees] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fees] with a well-typed [ExchangeRateFees] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.fees] with a well-typed [Fees] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun fees(fees: JsonField<ExchangeRateFees>) = apply { this.fees = fees }
+        fun fees(fees: JsonField<Fees>) = apply { this.fees = fees }
 
         /** The maximum supported sending amount in the smallest unit of the source currency. */
         fun maxSendingAmount(maxSendingAmount: Long) =
@@ -545,6 +544,155 @@ private constructor(
             (if (sendingAmount.asKnown() == null) 0 else 1) +
             (sourceCurrency.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1)
+
+    /** Fees associated with an exchange rate */
+    class Fees
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val fixed: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("fixed") @ExcludeMissing fixed: JsonField<Long> = JsonMissing.of()
+        ) : this(fixed, mutableMapOf())
+
+        /**
+         * Fixed fee in the smallest unit of the sending currency (e.g., cents for USD)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun fixed(): Long? = fixed.getNullable("fixed")
+
+        /**
+         * Returns the raw JSON value of [fixed].
+         *
+         * Unlike [fixed], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("fixed") @ExcludeMissing fun _fixed(): JsonField<Long> = fixed
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Fees]. */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [Fees]. */
+        class Builder internal constructor() {
+
+            private var fixed: JsonField<Long> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(fees: Fees) = apply {
+                fixed = fees.fixed
+                additionalProperties = fees.additionalProperties.toMutableMap()
+            }
+
+            /** Fixed fee in the smallest unit of the sending currency (e.g., cents for USD) */
+            fun fixed(fixed: Long) = fixed(JsonField.of(fixed))
+
+            /**
+             * Sets [Builder.fixed] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.fixed] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun fixed(fixed: JsonField<Long>) = apply { this.fixed = fixed }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Fees].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Fees = Fees(fixed, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Fees = apply {
+            if (validated) {
+                return@apply
+            }
+
+            fixed()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = (if (fixed.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Fees &&
+                fixed == other.fixed &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(fixed, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Fees{fixed=$fixed, additionalProperties=$additionalProperties}"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

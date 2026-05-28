@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -13,6 +14,8 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.customers.externalaccounts.Address
+import java.time.LocalDate
 import java.util.Collections
 import java.util.Objects
 
@@ -20,8 +23,8 @@ class BeneficialOwnerUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val ownershipPercentage: JsonField<Long>,
-    private val personalInfo: JsonField<BeneficialOwnerPersonalInfoUpdate>,
-    private val roles: JsonField<List<BeneficialOwnerRole>>,
+    private val personalInfo: JsonField<PersonalInfo>,
+    private val roles: JsonField<List<Role>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -32,10 +35,8 @@ private constructor(
         ownershipPercentage: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("personalInfo")
         @ExcludeMissing
-        personalInfo: JsonField<BeneficialOwnerPersonalInfoUpdate> = JsonMissing.of(),
-        @JsonProperty("roles")
-        @ExcludeMissing
-        roles: JsonField<List<BeneficialOwnerRole>> = JsonMissing.of(),
+        personalInfo: JsonField<PersonalInfo> = JsonMissing.of(),
+        @JsonProperty("roles") @ExcludeMissing roles: JsonField<List<Role>> = JsonMissing.of(),
     ) : this(ownershipPercentage, personalInfo, roles, mutableMapOf())
 
     /**
@@ -52,8 +53,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun personalInfo(): BeneficialOwnerPersonalInfoUpdate? =
-        personalInfo.getNullable("personalInfo")
+    fun personalInfo(): PersonalInfo? = personalInfo.getNullable("personalInfo")
 
     /**
      * Roles of this person within the business
@@ -61,7 +61,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun roles(): List<BeneficialOwnerRole>? = roles.getNullable("roles")
+    fun roles(): List<Role>? = roles.getNullable("roles")
 
     /**
      * Returns the raw JSON value of [ownershipPercentage].
@@ -80,16 +80,14 @@ private constructor(
      */
     @JsonProperty("personalInfo")
     @ExcludeMissing
-    fun _personalInfo(): JsonField<BeneficialOwnerPersonalInfoUpdate> = personalInfo
+    fun _personalInfo(): JsonField<PersonalInfo> = personalInfo
 
     /**
      * Returns the raw JSON value of [roles].
      *
      * Unlike [roles], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("roles")
-    @ExcludeMissing
-    fun _roles(): JsonField<List<BeneficialOwnerRole>> = roles
+    @JsonProperty("roles") @ExcludeMissing fun _roles(): JsonField<List<Role>> = roles
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -115,8 +113,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var ownershipPercentage: JsonField<Long> = JsonMissing.of()
-        private var personalInfo: JsonField<BeneficialOwnerPersonalInfoUpdate> = JsonMissing.of()
-        private var roles: JsonField<MutableList<BeneficialOwnerRole>>? = null
+        private var personalInfo: JsonField<PersonalInfo> = JsonMissing.of()
+        private var roles: JsonField<MutableList<Role>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(beneficialOwnerUpdateRequest: BeneficialOwnerUpdateRequest) = apply {
@@ -145,40 +143,39 @@ private constructor(
          * Partial update for beneficial owner personal information. Only provided fields are
          * updated.
          */
-        fun personalInfo(personalInfo: BeneficialOwnerPersonalInfoUpdate) =
-            personalInfo(JsonField.of(personalInfo))
+        fun personalInfo(personalInfo: PersonalInfo) = personalInfo(JsonField.of(personalInfo))
 
         /**
          * Sets [Builder.personalInfo] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.personalInfo] with a well-typed
-         * [BeneficialOwnerPersonalInfoUpdate] value instead. This method is primarily for setting
-         * the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.personalInfo] with a well-typed [PersonalInfo] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun personalInfo(personalInfo: JsonField<BeneficialOwnerPersonalInfoUpdate>) = apply {
+        fun personalInfo(personalInfo: JsonField<PersonalInfo>) = apply {
             this.personalInfo = personalInfo
         }
 
         /** Roles of this person within the business */
-        fun roles(roles: List<BeneficialOwnerRole>) = roles(JsonField.of(roles))
+        fun roles(roles: List<Role>) = roles(JsonField.of(roles))
 
         /**
          * Sets [Builder.roles] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.roles] with a well-typed `List<BeneficialOwnerRole>`
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.roles] with a well-typed `List<Role>` value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun roles(roles: JsonField<List<BeneficialOwnerRole>>) = apply {
+        fun roles(roles: JsonField<List<Role>>) = apply {
             this.roles = roles.map { it.toMutableList() }
         }
 
         /**
-         * Adds a single [BeneficialOwnerRole] to [roles].
+         * Adds a single [Role] to [roles].
          *
          * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun addRole(role: BeneficialOwnerRole) = apply {
+        fun addRole(role: Role) = apply {
             roles =
                 (roles ?: JsonField.of(mutableListOf())).also { checkKnown("roles", it).add(role) }
         }
@@ -254,6 +251,884 @@ private constructor(
         (if (ownershipPercentage.asKnown() == null) 0 else 1) +
             (personalInfo.asKnown()?.validity() ?: 0) +
             (roles.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+
+    /**
+     * Partial update for beneficial owner personal information. Only provided fields are updated.
+     */
+    class PersonalInfo
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val address: JsonField<Address>,
+        private val birthDate: JsonField<LocalDate>,
+        private val countryOfIssuance: JsonField<String>,
+        private val email: JsonField<String>,
+        private val firstName: JsonField<String>,
+        private val identifier: JsonField<String>,
+        private val idType: JsonField<IdType>,
+        private val lastName: JsonField<String>,
+        private val middleName: JsonField<String>,
+        private val nationality: JsonField<String>,
+        private val phoneNumber: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
+            @JsonProperty("birthDate")
+            @ExcludeMissing
+            birthDate: JsonField<LocalDate> = JsonMissing.of(),
+            @JsonProperty("countryOfIssuance")
+            @ExcludeMissing
+            countryOfIssuance: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("firstName")
+            @ExcludeMissing
+            firstName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("identifier")
+            @ExcludeMissing
+            identifier: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("idType") @ExcludeMissing idType: JsonField<IdType> = JsonMissing.of(),
+            @JsonProperty("lastName")
+            @ExcludeMissing
+            lastName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("middleName")
+            @ExcludeMissing
+            middleName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("nationality")
+            @ExcludeMissing
+            nationality: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("phoneNumber")
+            @ExcludeMissing
+            phoneNumber: JsonField<String> = JsonMissing.of(),
+        ) : this(
+            address,
+            birthDate,
+            countryOfIssuance,
+            email,
+            firstName,
+            identifier,
+            idType,
+            lastName,
+            middleName,
+            nationality,
+            phoneNumber,
+            mutableMapOf(),
+        )
+
+        /**
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun address(): Address? = address.getNullable("address")
+
+        /**
+         * Date of birth in ISO 8601 format (YYYY-MM-DD)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun birthDate(): LocalDate? = birthDate.getNullable("birthDate")
+
+        /**
+         * Country that issued the identification (ISO 3166-1 alpha-2)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun countryOfIssuance(): String? = countryOfIssuance.getNullable("countryOfIssuance")
+
+        /**
+         * Email address of the individual
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun email(): String? = email.getNullable("email")
+
+        /**
+         * First name of the individual
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun firstName(): String? = firstName.getNullable("firstName")
+
+        /**
+         * The identification number or value
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun identifier(): String? = identifier.getNullable("identifier")
+
+        /**
+         * Type of tax identification
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun idType(): IdType? = idType.getNullable("idType")
+
+        /**
+         * Last name of the individual
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun lastName(): String? = lastName.getNullable("lastName")
+
+        /**
+         * Middle name of the individual
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun middleName(): String? = middleName.getNullable("middleName")
+
+        /**
+         * Country of nationality (ISO 3166-1 alpha-2)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun nationality(): String? = nationality.getNullable("nationality")
+
+        /**
+         * Phone number in E.164 format
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
+
+        /**
+         * Returns the raw JSON value of [address].
+         *
+         * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
+
+        /**
+         * Returns the raw JSON value of [birthDate].
+         *
+         * Unlike [birthDate], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("birthDate")
+        @ExcludeMissing
+        fun _birthDate(): JsonField<LocalDate> = birthDate
+
+        /**
+         * Returns the raw JSON value of [countryOfIssuance].
+         *
+         * Unlike [countryOfIssuance], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("countryOfIssuance")
+        @ExcludeMissing
+        fun _countryOfIssuance(): JsonField<String> = countryOfIssuance
+
+        /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
+
+        /**
+         * Returns the raw JSON value of [firstName].
+         *
+         * Unlike [firstName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("firstName") @ExcludeMissing fun _firstName(): JsonField<String> = firstName
+
+        /**
+         * Returns the raw JSON value of [identifier].
+         *
+         * Unlike [identifier], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("identifier")
+        @ExcludeMissing
+        fun _identifier(): JsonField<String> = identifier
+
+        /**
+         * Returns the raw JSON value of [idType].
+         *
+         * Unlike [idType], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("idType") @ExcludeMissing fun _idType(): JsonField<IdType> = idType
+
+        /**
+         * Returns the raw JSON value of [lastName].
+         *
+         * Unlike [lastName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("lastName") @ExcludeMissing fun _lastName(): JsonField<String> = lastName
+
+        /**
+         * Returns the raw JSON value of [middleName].
+         *
+         * Unlike [middleName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("middleName")
+        @ExcludeMissing
+        fun _middleName(): JsonField<String> = middleName
+
+        /**
+         * Returns the raw JSON value of [nationality].
+         *
+         * Unlike [nationality], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("nationality")
+        @ExcludeMissing
+        fun _nationality(): JsonField<String> = nationality
+
+        /**
+         * Returns the raw JSON value of [phoneNumber].
+         *
+         * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        fun _phoneNumber(): JsonField<String> = phoneNumber
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [PersonalInfo]. */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [PersonalInfo]. */
+        class Builder internal constructor() {
+
+            private var address: JsonField<Address> = JsonMissing.of()
+            private var birthDate: JsonField<LocalDate> = JsonMissing.of()
+            private var countryOfIssuance: JsonField<String> = JsonMissing.of()
+            private var email: JsonField<String> = JsonMissing.of()
+            private var firstName: JsonField<String> = JsonMissing.of()
+            private var identifier: JsonField<String> = JsonMissing.of()
+            private var idType: JsonField<IdType> = JsonMissing.of()
+            private var lastName: JsonField<String> = JsonMissing.of()
+            private var middleName: JsonField<String> = JsonMissing.of()
+            private var nationality: JsonField<String> = JsonMissing.of()
+            private var phoneNumber: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(personalInfo: PersonalInfo) = apply {
+                address = personalInfo.address
+                birthDate = personalInfo.birthDate
+                countryOfIssuance = personalInfo.countryOfIssuance
+                email = personalInfo.email
+                firstName = personalInfo.firstName
+                identifier = personalInfo.identifier
+                idType = personalInfo.idType
+                lastName = personalInfo.lastName
+                middleName = personalInfo.middleName
+                nationality = personalInfo.nationality
+                phoneNumber = personalInfo.phoneNumber
+                additionalProperties = personalInfo.additionalProperties.toMutableMap()
+            }
+
+            fun address(address: Address) = address(JsonField.of(address))
+
+            /**
+             * Sets [Builder.address] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.address] with a well-typed [Address] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun address(address: JsonField<Address>) = apply { this.address = address }
+
+            /** Date of birth in ISO 8601 format (YYYY-MM-DD) */
+            fun birthDate(birthDate: LocalDate) = birthDate(JsonField.of(birthDate))
+
+            /**
+             * Sets [Builder.birthDate] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.birthDate] with a well-typed [LocalDate] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun birthDate(birthDate: JsonField<LocalDate>) = apply { this.birthDate = birthDate }
+
+            /** Country that issued the identification (ISO 3166-1 alpha-2) */
+            fun countryOfIssuance(countryOfIssuance: String) =
+                countryOfIssuance(JsonField.of(countryOfIssuance))
+
+            /**
+             * Sets [Builder.countryOfIssuance] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.countryOfIssuance] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun countryOfIssuance(countryOfIssuance: JsonField<String>) = apply {
+                this.countryOfIssuance = countryOfIssuance
+            }
+
+            /** Email address of the individual */
+            fun email(email: String) = email(JsonField.of(email))
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun email(email: JsonField<String>) = apply { this.email = email }
+
+            /** First name of the individual */
+            fun firstName(firstName: String) = firstName(JsonField.of(firstName))
+
+            /**
+             * Sets [Builder.firstName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.firstName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun firstName(firstName: JsonField<String>) = apply { this.firstName = firstName }
+
+            /** The identification number or value */
+            fun identifier(identifier: String) = identifier(JsonField.of(identifier))
+
+            /**
+             * Sets [Builder.identifier] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.identifier] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun identifier(identifier: JsonField<String>) = apply { this.identifier = identifier }
+
+            /** Type of tax identification */
+            fun idType(idType: IdType) = idType(JsonField.of(idType))
+
+            /**
+             * Sets [Builder.idType] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.idType] with a well-typed [IdType] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun idType(idType: JsonField<IdType>) = apply { this.idType = idType }
+
+            /** Last name of the individual */
+            fun lastName(lastName: String) = lastName(JsonField.of(lastName))
+
+            /**
+             * Sets [Builder.lastName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.lastName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun lastName(lastName: JsonField<String>) = apply { this.lastName = lastName }
+
+            /** Middle name of the individual */
+            fun middleName(middleName: String) = middleName(JsonField.of(middleName))
+
+            /**
+             * Sets [Builder.middleName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.middleName] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun middleName(middleName: JsonField<String>) = apply { this.middleName = middleName }
+
+            /** Country of nationality (ISO 3166-1 alpha-2) */
+            fun nationality(nationality: String) = nationality(JsonField.of(nationality))
+
+            /**
+             * Sets [Builder.nationality] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.nationality] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun nationality(nationality: JsonField<String>) = apply {
+                this.nationality = nationality
+            }
+
+            /** Phone number in E.164 format */
+            fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+            /**
+             * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.phoneNumber] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                this.phoneNumber = phoneNumber
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [PersonalInfo].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): PersonalInfo =
+                PersonalInfo(
+                    address,
+                    birthDate,
+                    countryOfIssuance,
+                    email,
+                    firstName,
+                    identifier,
+                    idType,
+                    lastName,
+                    middleName,
+                    nationality,
+                    phoneNumber,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PersonalInfo = apply {
+            if (validated) {
+                return@apply
+            }
+
+            address()?.validate()
+            birthDate()
+            countryOfIssuance()
+            email()
+            firstName()
+            identifier()
+            idType()?.validate()
+            lastName()
+            middleName()
+            nationality()
+            phoneNumber()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (address.asKnown()?.validity() ?: 0) +
+                (if (birthDate.asKnown() == null) 0 else 1) +
+                (if (countryOfIssuance.asKnown() == null) 0 else 1) +
+                (if (email.asKnown() == null) 0 else 1) +
+                (if (firstName.asKnown() == null) 0 else 1) +
+                (if (identifier.asKnown() == null) 0 else 1) +
+                (idType.asKnown()?.validity() ?: 0) +
+                (if (lastName.asKnown() == null) 0 else 1) +
+                (if (middleName.asKnown() == null) 0 else 1) +
+                (if (nationality.asKnown() == null) 0 else 1) +
+                (if (phoneNumber.asKnown() == null) 0 else 1)
+
+        /** Type of tax identification */
+        class IdType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val SSN = of("SSN")
+
+                val ITIN = of("ITIN")
+
+                val EIN = of("EIN")
+
+                val NON_US_TAX_ID = of("NON_US_TAX_ID")
+
+                fun of(value: String) = IdType(JsonField.of(value))
+            }
+
+            /** An enum containing [IdType]'s known values. */
+            enum class Known {
+                SSN,
+                ITIN,
+                EIN,
+                NON_US_TAX_ID,
+            }
+
+            /**
+             * An enum containing [IdType]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [IdType] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                SSN,
+                ITIN,
+                EIN,
+                NON_US_TAX_ID,
+                /**
+                 * An enum member indicating that [IdType] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    SSN -> Value.SSN
+                    ITIN -> Value.ITIN
+                    EIN -> Value.EIN
+                    NON_US_TAX_ID -> Value.NON_US_TAX_ID
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    SSN -> Known.SSN
+                    ITIN -> Known.ITIN
+                    EIN -> Known.EIN
+                    NON_US_TAX_ID -> Known.NON_US_TAX_ID
+                    else -> throw LightsparkGridInvalidDataException("Unknown IdType: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): IdType = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is IdType && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PersonalInfo &&
+                address == other.address &&
+                birthDate == other.birthDate &&
+                countryOfIssuance == other.countryOfIssuance &&
+                email == other.email &&
+                firstName == other.firstName &&
+                identifier == other.identifier &&
+                idType == other.idType &&
+                lastName == other.lastName &&
+                middleName == other.middleName &&
+                nationality == other.nationality &&
+                phoneNumber == other.phoneNumber &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                address,
+                birthDate,
+                countryOfIssuance,
+                email,
+                firstName,
+                identifier,
+                idType,
+                lastName,
+                middleName,
+                nationality,
+                phoneNumber,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "PersonalInfo{address=$address, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, email=$email, firstName=$firstName, identifier=$identifier, idType=$idType, lastName=$lastName, middleName=$middleName, nationality=$nationality, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+    }
+
+    /** Role of the beneficial owner within the business */
+    class Role @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val UBO = of("UBO")
+
+            val DIRECTOR = of("DIRECTOR")
+
+            val COMPANY_OFFICER = of("COMPANY_OFFICER")
+
+            val CONTROL_PERSON = of("CONTROL_PERSON")
+
+            val TRUSTEE = of("TRUSTEE")
+
+            val GENERAL_PARTNER = of("GENERAL_PARTNER")
+
+            fun of(value: String) = Role(JsonField.of(value))
+        }
+
+        /** An enum containing [Role]'s known values. */
+        enum class Known {
+            UBO,
+            DIRECTOR,
+            COMPANY_OFFICER,
+            CONTROL_PERSON,
+            TRUSTEE,
+            GENERAL_PARTNER,
+        }
+
+        /**
+         * An enum containing [Role]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Role] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            UBO,
+            DIRECTOR,
+            COMPANY_OFFICER,
+            CONTROL_PERSON,
+            TRUSTEE,
+            GENERAL_PARTNER,
+            /** An enum member indicating that [Role] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                UBO -> Value.UBO
+                DIRECTOR -> Value.DIRECTOR
+                COMPANY_OFFICER -> Value.COMPANY_OFFICER
+                CONTROL_PERSON -> Value.CONTROL_PERSON
+                TRUSTEE -> Value.TRUSTEE
+                GENERAL_PARTNER -> Value.GENERAL_PARTNER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                UBO -> Known.UBO
+                DIRECTOR -> Known.DIRECTOR
+                COMPANY_OFFICER -> Known.COMPANY_OFFICER
+                CONTROL_PERSON -> Known.CONTROL_PERSON
+                TRUSTEE -> Known.TRUSTEE
+                GENERAL_PARTNER -> Known.GENERAL_PARTNER
+                else -> throw LightsparkGridInvalidDataException("Unknown Role: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Role = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Role && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

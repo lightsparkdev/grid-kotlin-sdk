@@ -6,12 +6,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
-import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
-import com.lightspark.grid.models.quotes.QuoteLockSide
 import java.time.LocalDate
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -123,7 +122,7 @@ internal class ProGuardCompatibilityTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .fullName("John Michael Doe")
-                    .kycStatus(KycStatus.APPROVED)
+                    .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
@@ -141,16 +140,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun quoteLockSideRoundtrip() {
+    fun customerInfoFieldNameRoundtrip() {
         val jsonMapper = jsonMapper()
-        val quoteLockSide = QuoteLockSide.SENDING
+        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
 
-        val roundtrippedQuoteLockSide =
+        val roundtrippedCustomerInfoFieldName =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(quoteLockSide),
-                jacksonTypeRef<QuoteLockSide>(),
+                jsonMapper.writeValueAsString(customerInfoFieldName),
+                jacksonTypeRef<CustomerInfoFieldName>(),
             )
 
-        assertThat(roundtrippedQuoteLockSide).isEqualTo(quoteLockSide)
+        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
     }
 }

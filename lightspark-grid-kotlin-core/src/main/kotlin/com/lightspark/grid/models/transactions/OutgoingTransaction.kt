@@ -15,7 +15,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
@@ -29,7 +28,7 @@ class OutgoingTransaction
 private constructor(
     private val id: JsonField<String>,
     private val customerId: JsonField<String>,
-    private val destination: JsonField<TransactionDestinationOneOf>,
+    private val destination: JsonValue,
     private val platformCustomerId: JsonField<String>,
     private val sentAmount: JsonField<CurrencyAmount>,
     private val source: JsonField<TransactionSourceOneOf>,
@@ -40,7 +39,7 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val description: JsonField<String>,
     private val exchangeRate: JsonField<Double>,
-    private val failureReason: JsonField<OutgoingTransactionFailureReason>,
+    private val failureReason: JsonField<FailureReason>,
     private val fees: JsonField<Long>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val quoteId: JsonField<String>,
@@ -59,9 +58,7 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("destination")
-        @ExcludeMissing
-        destination: JsonField<TransactionDestinationOneOf> = JsonMissing.of(),
+        @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -88,7 +85,7 @@ private constructor(
         exchangeRate: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("failureReason")
         @ExcludeMissing
-        failureReason: JsonField<OutgoingTransactionFailureReason> = JsonMissing.of(),
+        failureReason: JsonField<FailureReason> = JsonMissing.of(),
         @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("paymentInstructions")
         @ExcludeMissing
@@ -154,10 +151,12 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = outgoingTransaction.destination().convert(MyClass::class.java)
+     * ```
      */
-    fun destination(): TransactionDestinationOneOf = destination.getRequired("destination")
+    @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
 
     /**
      * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -254,8 +253,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun failureReason(): OutgoingTransactionFailureReason? =
-        failureReason.getNullable("failureReason")
+    fun failureReason(): FailureReason? = failureReason.getNullable("failureReason")
 
     /**
      * The fees associated with the quote in the smallest unit of the sending currency (eg. cents).
@@ -345,15 +343,6 @@ private constructor(
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
-
-    /**
-     * Returns the raw JSON value of [destination].
-     *
-     * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("destination")
-    @ExcludeMissing
-    fun _destination(): JsonField<TransactionDestinationOneOf> = destination
 
     /**
      * Returns the raw JSON value of [platformCustomerId].
@@ -446,7 +435,7 @@ private constructor(
      */
     @JsonProperty("failureReason")
     @ExcludeMissing
-    fun _failureReason(): JsonField<OutgoingTransactionFailureReason> = failureReason
+    fun _failureReason(): JsonField<FailureReason> = failureReason
 
     /**
      * Returns the raw JSON value of [fees].
@@ -563,7 +552,7 @@ private constructor(
 
         private var id: JsonField<String>? = null
         private var customerId: JsonField<String>? = null
-        private var destination: JsonField<TransactionDestinationOneOf>? = null
+        private var destination: JsonValue? = null
         private var platformCustomerId: JsonField<String>? = null
         private var sentAmount: JsonField<CurrencyAmount>? = null
         private var source: JsonField<TransactionSourceOneOf>? = null
@@ -574,7 +563,7 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
         private var exchangeRate: JsonField<Double> = JsonMissing.of()
-        private var failureReason: JsonField<OutgoingTransactionFailureReason> = JsonMissing.of()
+        private var failureReason: JsonField<FailureReason> = JsonMissing.of()
         private var fees: JsonField<Long> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var quoteId: JsonField<String> = JsonMissing.of()
@@ -637,19 +626,7 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-        fun destination(destination: TransactionDestinationOneOf) =
-            destination(JsonField.of(destination))
-
-        /**
-         * Sets [Builder.destination] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.destination] with a well-typed
-         * [TransactionDestinationOneOf] value instead. This method is primarily for setting the
-         * field to an undocumented or not yet supported value.
-         */
-        fun destination(destination: JsonField<TransactionDestinationOneOf>) = apply {
-            this.destination = destination
-        }
+        fun destination(destination: JsonValue) = apply { this.destination = destination }
 
         /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
         fun platformCustomerId(platformCustomerId: String) =
@@ -795,17 +772,16 @@ private constructor(
         }
 
         /** If the transaction failed, this field provides the reason for failure. */
-        fun failureReason(failureReason: OutgoingTransactionFailureReason) =
-            failureReason(JsonField.of(failureReason))
+        fun failureReason(failureReason: FailureReason) = failureReason(JsonField.of(failureReason))
 
         /**
          * Sets [Builder.failureReason] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.failureReason] with a well-typed
-         * [OutgoingTransactionFailureReason] value instead. This method is primarily for setting
-         * the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.failureReason] with a well-typed [FailureReason] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun failureReason(failureReason: JsonField<OutgoingTransactionFailureReason>) = apply {
+        fun failureReason(failureReason: JsonField<FailureReason>) = apply {
             this.failureReason = failureReason
         }
 
@@ -1370,6 +1346,278 @@ private constructor(
             }
 
             return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Additional information about the counterparty, if available and relevant to the transaction
+     * and platform.
+     */
+    class CounterpartyInformation
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [CounterpartyInformation].
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CounterpartyInformation]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(counterpartyInformation: CounterpartyInformation) = apply {
+                additionalProperties = counterpartyInformation.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CounterpartyInformation].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): CounterpartyInformation =
+                CounterpartyInformation(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CounterpartyInformation = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CounterpartyInformation &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CounterpartyInformation{additionalProperties=$additionalProperties}"
+    }
+
+    /** If the transaction failed, this field provides the reason for failure. */
+    class FailureReason @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val QUOTE_EXPIRED = of("QUOTE_EXPIRED")
+
+            val QUOTE_EXECUTION_FAILED = of("QUOTE_EXECUTION_FAILED")
+
+            val LIGHTNING_PAYMENT_FAILED = of("LIGHTNING_PAYMENT_FAILED")
+
+            val FUNDING_AMOUNT_MISMATCH = of("FUNDING_AMOUNT_MISMATCH")
+
+            val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
+
+            fun of(value: String) = FailureReason(JsonField.of(value))
+        }
+
+        /** An enum containing [FailureReason]'s known values. */
+        enum class Known {
+            QUOTE_EXPIRED,
+            QUOTE_EXECUTION_FAILED,
+            LIGHTNING_PAYMENT_FAILED,
+            FUNDING_AMOUNT_MISMATCH,
+            COUNTERPARTY_POST_TX_FAILED,
+        }
+
+        /**
+         * An enum containing [FailureReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [FailureReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            QUOTE_EXPIRED,
+            QUOTE_EXECUTION_FAILED,
+            LIGHTNING_PAYMENT_FAILED,
+            FUNDING_AMOUNT_MISMATCH,
+            COUNTERPARTY_POST_TX_FAILED,
+            /**
+             * An enum member indicating that [FailureReason] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
+                QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
+                LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
+                FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
+                COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
+                QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
+                LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
+                FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
+                COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
+                else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): FailureReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is FailureReason && value == other.value
         }
 
         override fun hashCode() = value.hashCode()

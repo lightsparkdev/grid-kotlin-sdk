@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -24,11 +25,11 @@ private constructor(
     private val id: JsonField<String>,
     private val cardholderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
-    private val form: JsonField<CardForm>,
+    private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
-    private val state: JsonField<CardState>,
+    private val state: JsonField<State>,
     private val updatedAt: JsonField<OffsetDateTime>,
-    private val brand: JsonField<CardBrand>,
+    private val brand: JsonField<Brand>,
     private val currency: JsonField<String>,
     private val expMonth: JsonField<Long>,
     private val expYear: JsonField<Long>,
@@ -36,7 +37,7 @@ private constructor(
     private val last4: JsonField<String>,
     private val panEmbedUrl: JsonField<String>,
     private val platformCardId: JsonField<String>,
-    private val stateReason: JsonField<CardStateReason>,
+    private val stateReason: JsonField<StateReason>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -49,15 +50,15 @@ private constructor(
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("form") @ExcludeMissing form: JsonField<CardForm> = JsonMissing.of(),
+        @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
         @JsonProperty("fundingSources")
         @ExcludeMissing
         fundingSources: JsonField<List<String>> = JsonMissing.of(),
-        @JsonProperty("state") @ExcludeMissing state: JsonField<CardState> = JsonMissing.of(),
+        @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("brand") @ExcludeMissing brand: JsonField<CardBrand> = JsonMissing.of(),
+        @JsonProperty("brand") @ExcludeMissing brand: JsonField<Brand> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expMonth") @ExcludeMissing expMonth: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("expYear") @ExcludeMissing expYear: JsonField<Long> = JsonMissing.of(),
@@ -71,7 +72,7 @@ private constructor(
         platformCardId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stateReason")
         @ExcludeMissing
-        stateReason: JsonField<CardStateReason> = JsonMissing.of(),
+        stateReason: JsonField<StateReason> = JsonMissing.of(),
     ) : this(
         id,
         cardholderId,
@@ -123,7 +124,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun form(): CardForm = form.getRequired("form")
+    fun form(): Form = form.getRequired("form")
 
     /**
      * Internal account ids bound to this card as funding sources, in priority order — the first
@@ -149,7 +150,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun state(): CardState = state.getRequired("state")
+    fun state(): State = state.getRequired("state")
 
     /**
      * Last update timestamp
@@ -166,7 +167,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun brand(): CardBrand? = brand.getNullable("brand")
+    fun brand(): Brand? = brand.getNullable("brand")
 
     /**
      * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
@@ -237,7 +238,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun stateReason(): CardStateReason? = stateReason.getNullable("stateReason")
+    fun stateReason(): StateReason? = stateReason.getNullable("stateReason")
 
     /**
      * Returns the raw JSON value of [id].
@@ -269,7 +270,7 @@ private constructor(
      *
      * Unlike [form], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("form") @ExcludeMissing fun _form(): JsonField<CardForm> = form
+    @JsonProperty("form") @ExcludeMissing fun _form(): JsonField<Form> = form
 
     /**
      * Returns the raw JSON value of [fundingSources].
@@ -285,7 +286,7 @@ private constructor(
      *
      * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<CardState> = state
+    @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<State> = state
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -301,7 +302,7 @@ private constructor(
      *
      * Unlike [brand], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("brand") @ExcludeMissing fun _brand(): JsonField<CardBrand> = brand
+    @JsonProperty("brand") @ExcludeMissing fun _brand(): JsonField<Brand> = brand
 
     /**
      * Returns the raw JSON value of [currency].
@@ -361,7 +362,7 @@ private constructor(
      */
     @JsonProperty("stateReason")
     @ExcludeMissing
-    fun _stateReason(): JsonField<CardStateReason> = stateReason
+    fun _stateReason(): JsonField<StateReason> = stateReason
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -400,11 +401,11 @@ private constructor(
         private var id: JsonField<String>? = null
         private var cardholderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
-        private var form: JsonField<CardForm>? = null
+        private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
-        private var state: JsonField<CardState>? = null
+        private var state: JsonField<State>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
-        private var brand: JsonField<CardBrand> = JsonMissing.of()
+        private var brand: JsonField<Brand> = JsonMissing.of()
         private var currency: JsonField<String> = JsonMissing.of()
         private var expMonth: JsonField<Long> = JsonMissing.of()
         private var expYear: JsonField<Long> = JsonMissing.of()
@@ -412,7 +413,7 @@ private constructor(
         private var last4: JsonField<String> = JsonMissing.of()
         private var panEmbedUrl: JsonField<String> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
-        private var stateReason: JsonField<CardStateReason> = JsonMissing.of()
+        private var stateReason: JsonField<StateReason> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(card: Card) = apply {
@@ -476,15 +477,15 @@ private constructor(
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
          * added in a later release.
          */
-        fun form(form: CardForm) = form(JsonField.of(form))
+        fun form(form: Form) = form(JsonField.of(form))
 
         /**
          * Sets [Builder.form] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.form] with a well-typed [CardForm] value instead. This
+         * You should usually call [Builder.form] with a well-typed [Form] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun form(form: JsonField<CardForm>) = apply { this.form = form }
+        fun form(form: JsonField<Form>) = apply { this.form = form }
 
         /**
          * Internal account ids bound to this card as funding sources, in priority order — the first
@@ -528,15 +529,15 @@ private constructor(
          * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
          * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
          */
-        fun state(state: CardState) = state(JsonField.of(state))
+        fun state(state: State) = state(JsonField.of(state))
 
         /**
          * Sets [Builder.state] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.state] with a well-typed [CardState] value instead. This
+         * You should usually call [Builder.state] with a well-typed [State] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun state(state: JsonField<CardState>) = apply { this.state = state }
+        fun state(state: JsonField<State>) = apply { this.state = state }
 
         /** Last update timestamp */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -554,15 +555,15 @@ private constructor(
          * Card network brand. Read-only — determined by Grid when the card is provisioned with the
          * issuer.
          */
-        fun brand(brand: CardBrand) = brand(JsonField.of(brand))
+        fun brand(brand: Brand) = brand(JsonField.of(brand))
 
         /**
          * Sets [Builder.brand] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.brand] with a well-typed [CardBrand] value instead. This
+         * You should usually call [Builder.brand] with a well-typed [Brand] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun brand(brand: JsonField<CardBrand>) = apply { this.brand = brand }
+        fun brand(brand: JsonField<Brand>) = apply { this.brand = brand }
 
         /**
          * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
@@ -664,17 +665,16 @@ private constructor(
          * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
          * provisioning was rejected; otherwise null.
          */
-        fun stateReason(stateReason: CardStateReason?) =
-            stateReason(JsonField.ofNullable(stateReason))
+        fun stateReason(stateReason: StateReason?) = stateReason(JsonField.ofNullable(stateReason))
 
         /**
          * Sets [Builder.stateReason] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.stateReason] with a well-typed [CardStateReason] value
+         * You should usually call [Builder.stateReason] with a well-typed [StateReason] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun stateReason(stateReason: JsonField<CardStateReason>) = apply {
+        fun stateReason(stateReason: JsonField<StateReason>) = apply {
             this.stateReason = stateReason
         }
 
@@ -801,6 +801,586 @@ private constructor(
             (if (panEmbedUrl.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
             (stateReason.asKnown()?.validity() ?: 0)
+
+    /**
+     * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
+     * in a later release.
+     */
+    class Form @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val VIRTUAL = of("VIRTUAL")
+
+            fun of(value: String) = Form(JsonField.of(value))
+        }
+
+        /** An enum containing [Form]'s known values. */
+        enum class Known {
+            VIRTUAL
+        }
+
+        /**
+         * An enum containing [Form]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Form] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            VIRTUAL,
+            /** An enum member indicating that [Form] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                VIRTUAL -> Value.VIRTUAL
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                VIRTUAL -> Known.VIRTUAL
+                else -> throw LightsparkGridInvalidDataException("Unknown Form: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Form = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Form && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Lifecycle state of a card.
+     *
+     * |State          |Description                                                                                                                                                  |
+     * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
+     * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
+     * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     */
+    class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val PENDING_KYC = of("PENDING_KYC")
+
+            val PENDING_ISSUE = of("PENDING_ISSUE")
+
+            val ACTIVE = of("ACTIVE")
+
+            val FROZEN = of("FROZEN")
+
+            val CLOSED = of("CLOSED")
+
+            fun of(value: String) = State(JsonField.of(value))
+        }
+
+        /** An enum containing [State]'s known values. */
+        enum class Known {
+            PENDING_KYC,
+            PENDING_ISSUE,
+            ACTIVE,
+            FROZEN,
+            CLOSED,
+        }
+
+        /**
+         * An enum containing [State]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [State] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            PENDING_KYC,
+            PENDING_ISSUE,
+            ACTIVE,
+            FROZEN,
+            CLOSED,
+            /** An enum member indicating that [State] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                PENDING_KYC -> Value.PENDING_KYC
+                PENDING_ISSUE -> Value.PENDING_ISSUE
+                ACTIVE -> Value.ACTIVE
+                FROZEN -> Value.FROZEN
+                CLOSED -> Value.CLOSED
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                PENDING_KYC -> Known.PENDING_KYC
+                PENDING_ISSUE -> Known.PENDING_ISSUE
+                ACTIVE -> Known.ACTIVE
+                FROZEN -> Known.FROZEN
+                CLOSED -> Known.CLOSED
+                else -> throw LightsparkGridInvalidDataException("Unknown State: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): State = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is State && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Card network brand. Read-only — determined by Grid when the card is provisioned with the
+     * issuer.
+     */
+    class Brand @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val VISA = of("VISA")
+
+            val MASTERCARD = of("MASTERCARD")
+
+            fun of(value: String) = Brand(JsonField.of(value))
+        }
+
+        /** An enum containing [Brand]'s known values. */
+        enum class Known {
+            VISA,
+            MASTERCARD,
+        }
+
+        /**
+         * An enum containing [Brand]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Brand] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            VISA,
+            MASTERCARD,
+            /** An enum member indicating that [Brand] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                VISA -> Value.VISA
+                MASTERCARD -> Value.MASTERCARD
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                VISA -> Known.VISA
+                MASTERCARD -> Known.MASTERCARD
+                else -> throw LightsparkGridInvalidDataException("Unknown Brand: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Brand = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Brand && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
+     * provisioning was rejected; otherwise null.
+     */
+    class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val ISSUER_REJECTED = of("ISSUER_REJECTED")
+
+            val CLOSED_BY_PLATFORM = of("CLOSED_BY_PLATFORM")
+
+            val CLOSED_BY_GRID = of("CLOSED_BY_GRID")
+
+            fun of(value: String) = StateReason(JsonField.of(value))
+        }
+
+        /** An enum containing [StateReason]'s known values. */
+        enum class Known {
+            ISSUER_REJECTED,
+            CLOSED_BY_PLATFORM,
+            CLOSED_BY_GRID,
+        }
+
+        /**
+         * An enum containing [StateReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [StateReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            ISSUER_REJECTED,
+            CLOSED_BY_PLATFORM,
+            CLOSED_BY_GRID,
+            /**
+             * An enum member indicating that [StateReason] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                ISSUER_REJECTED -> Value.ISSUER_REJECTED
+                CLOSED_BY_PLATFORM -> Value.CLOSED_BY_PLATFORM
+                CLOSED_BY_GRID -> Value.CLOSED_BY_GRID
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                ISSUER_REJECTED -> Known.ISSUER_REJECTED
+                CLOSED_BY_PLATFORM -> Known.CLOSED_BY_PLATFORM
+                CLOSED_BY_GRID -> Known.CLOSED_BY_GRID
+                else -> throw LightsparkGridInvalidDataException("Unknown StateReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): StateReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is StateReason && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

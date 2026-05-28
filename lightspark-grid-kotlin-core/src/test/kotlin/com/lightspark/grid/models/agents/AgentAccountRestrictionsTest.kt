@@ -16,7 +16,7 @@ internal class AgentAccountRestrictionsTest {
                 .addAccountRule(
                     AgentAccountRule.builder()
                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                        .executionMode(AgentExecutionMode.AUTO)
+                        .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                         .perTransactionLimit(10000L)
                         .build()
                 )
@@ -27,7 +27,7 @@ internal class AgentAccountRestrictionsTest {
             .containsExactly(
                 AgentAccountRule.builder()
                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                    .executionMode(AgentExecutionMode.AUTO)
+                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                     .perTransactionLimit(10000L)
                     .build()
             )
@@ -43,7 +43,7 @@ internal class AgentAccountRestrictionsTest {
                 .addAccountRule(
                     AgentAccountRule.builder()
                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                        .executionMode(AgentExecutionMode.AUTO)
+                        .executionMode(AgentAccountRule.ExecutionMode.AUTO)
                         .perTransactionLimit(10000L)
                         .build()
                 )

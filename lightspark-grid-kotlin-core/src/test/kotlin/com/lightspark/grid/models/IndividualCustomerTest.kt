@@ -5,7 +5,6 @@ package com.lightspark.grid.models
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.customers.KycStatus
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -41,7 +40,7 @@ internal class IndividualCustomerTest {
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .fullName("John Michael Doe")
-                .kycStatus(KycStatus.APPROVED)
+                .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                 .nationality("US")
                 .build()
 
@@ -71,7 +70,7 @@ internal class IndividualCustomerTest {
             )
         assertThat(individualCustomer.birthDate()).isEqualTo(LocalDate.parse("1990-01-15"))
         assertThat(individualCustomer.fullName()).isEqualTo("John Michael Doe")
-        assertThat(individualCustomer.kycStatus()).isEqualTo(KycStatus.APPROVED)
+        assertThat(individualCustomer.kycStatus()).isEqualTo(IndividualCustomer.KycStatus.APPROVED)
         assertThat(individualCustomer.nationality()).isEqualTo("US")
     }
 
@@ -103,7 +102,7 @@ internal class IndividualCustomerTest {
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .fullName("John Michael Doe")
-                .kycStatus(KycStatus.APPROVED)
+                .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                 .nationality("US")
                 .build()
 

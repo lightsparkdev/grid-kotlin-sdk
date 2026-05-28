@@ -52,7 +52,7 @@ internal class CardTransactionTest {
                 .settlementSummary(
                     CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                 )
-                .status(CardTransactionStatus.AUTHORIZED)
+                .status(CardTransaction.Status.AUTHORIZED)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
@@ -123,7 +123,7 @@ internal class CardTransactionTest {
             .isEqualTo(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
         assertThat(cardTransaction.settlementSummary())
             .isEqualTo(CardSettlementSummary.builder().count(1L).totalAmount(1500L).build())
-        assertThat(cardTransaction.status()).isEqualTo(CardTransactionStatus.AUTHORIZED)
+        assertThat(cardTransaction.status()).isEqualTo(CardTransaction.Status.AUTHORIZED)
         assertThat(cardTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
         assertThat(cardTransaction.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
@@ -196,7 +196,7 @@ internal class CardTransactionTest {
                 .settlementSummary(
                     CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                 )
-                .status(CardTransactionStatus.AUTHORIZED)
+                .status(CardTransaction.Status.AUTHORIZED)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
