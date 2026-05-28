@@ -48,9 +48,12 @@ private constructor(
     fun accountId(): String = accountId.getRequired("accountId")
 
     /**
-     * OIDC ID token issued by the identity provider (e.g. Google, Apple). Grid fetches the issuer's
-     * signing key from the `iss` claim's `.well-known` OpenID configuration and verifies the token
-     * signature. The token's `iat` claim must be less than 60 seconds before the request timestamp.
+     * OIDC ID token issued by the identity provider (e.g. Google, Apple). The token's `iss`, `aud`,
+     * and `sub` claims define the OAuth identity registered to this credential. In production, the
+     * provider signature is verified against the issuer's JWKS. In sandbox, the token must still be
+     * JWT-shaped with supported `iss`, non-empty `aud` and `sub`, numeric `iat` and `exp`, and
+     * `iat` less than 60 seconds before the request timestamp, but the signature segment may be a
+     * dummy value.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -143,10 +146,12 @@ private constructor(
         fun accountId(accountId: JsonField<String>) = apply { this.accountId = accountId }
 
         /**
-         * OIDC ID token issued by the identity provider (e.g. Google, Apple). Grid fetches the
-         * issuer's signing key from the `iss` claim's `.well-known` OpenID configuration and
-         * verifies the token signature. The token's `iat` claim must be less than 60 seconds before
-         * the request timestamp.
+         * OIDC ID token issued by the identity provider (e.g. Google, Apple). The token's `iss`,
+         * `aud`, and `sub` claims define the OAuth identity registered to this credential. In
+         * production, the provider signature is verified against the issuer's JWKS. In sandbox, the
+         * token must still be JWT-shaped with supported `iss`, non-empty `aud` and `sub`, numeric
+         * `iat` and `exp`, and `iat` less than 60 seconds before the request timestamp, but the
+         * signature segment may be a dummy value.
          */
         fun oidcToken(oidcToken: String) = oidcToken(JsonField.of(oidcToken))
 
