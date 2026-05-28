@@ -3,8 +3,10 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.cards.CardIssueParams
+import com.lightspark.grid.models.cards.CardCreateRequest
+import com.lightspark.grid.models.cards.CardForm
 import com.lightspark.grid.models.cards.CardUpdateParams
+import com.lightspark.grid.models.cards.CardUpdateRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -47,9 +49,17 @@ internal class CardServiceAsyncTest {
                         "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
                     )
                     .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
-                    .state(CardUpdateParams.State.FROZEN)
+                    .cardUpdateRequest(
+                        CardUpdateRequest.builder()
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                            )
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
+                            )
+                            .state(CardUpdateRequest.State.FROZEN)
+                            .build()
+                    )
                     .build()
             )
 
@@ -85,16 +95,16 @@ internal class CardServiceAsyncTest {
                 .build()
         val cardServiceAsync = client.cards()
 
-        val response =
+        val card =
             cardServiceAsync.issue(
-                CardIssueParams.builder()
+                CardCreateRequest.builder()
                     .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .form(CardIssueParams.Form.VIRTUAL)
+                    .form(CardForm.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .platformCardId("card-emp-aary-001")
                     .build()
             )
 
-        response.validate()
+        card.validate()
     }
 }

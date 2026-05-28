@@ -14,34 +14,34 @@ class TransactionListPageAsync
 private constructor(
     private val service: TransactionServiceAsync,
     private val params: TransactionListParams,
-    private val response: TransactionListPageResponse,
+    private val response: TransactionListResponse,
 ) : PageAsync<Transaction> {
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.data
+     * @see TransactionListResponse.data
      */
     fun data(): List<Transaction> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.nextCursor
+     * @see TransactionListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.hasMore
+     * @see TransactionListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.totalCount
+     * @see TransactionListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -63,7 +63,7 @@ private constructor(
     fun params(): TransactionListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): TransactionListPageResponse = response
+    fun response(): TransactionListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -87,7 +87,7 @@ private constructor(
 
         private var service: TransactionServiceAsync? = null
         private var params: TransactionListParams? = null
-        private var response: TransactionListPageResponse? = null
+        private var response: TransactionListResponse? = null
 
         internal fun from(transactionListPageAsync: TransactionListPageAsync) = apply {
             service = transactionListPageAsync.service
@@ -101,7 +101,7 @@ private constructor(
         fun params(params: TransactionListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: TransactionListPageResponse) = apply { this.response = response }
+        fun response(response: TransactionListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [TransactionListPageAsync].

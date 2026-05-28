@@ -6,12 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.verifications.Verification
 import com.lightspark.grid.models.verifications.VerificationListPage
 import com.lightspark.grid.models.verifications.VerificationListParams
+import com.lightspark.grid.models.verifications.VerificationRequest
 import com.lightspark.grid.models.verifications.VerificationRetrieveParams
-import com.lightspark.grid.models.verifications.VerificationRetrieveResponse
 import com.lightspark.grid.models.verifications.VerificationSubmitParams
-import com.lightspark.grid.models.verifications.VerificationSubmitResponse
 
 /**
  * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
@@ -36,20 +36,17 @@ interface VerificationService {
         verificationId: String,
         params: VerificationRetrieveParams = VerificationRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationRetrieveResponse =
+    ): Verification =
         retrieve(params.toBuilder().verificationId(verificationId).build(), requestOptions)
 
     /** @see retrieve */
     fun retrieve(
         params: VerificationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationRetrieveResponse
+    ): Verification
 
     /** @see retrieve */
-    fun retrieve(
-        verificationId: String,
-        requestOptions: RequestOptions,
-    ): VerificationRetrieveResponse =
+    fun retrieve(verificationId: String, requestOptions: RequestOptions): Verification =
         retrieve(verificationId, VerificationRetrieveParams.none(), requestOptions)
 
     /** Retrieve a list of verifications with optional filtering by customer ID and status. */
@@ -72,7 +69,17 @@ interface VerificationService {
     fun submit(
         params: VerificationSubmitParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationSubmitResponse
+    ): Verification
+
+    /** @see submit */
+    fun submit(
+        verificationRequest: VerificationRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Verification =
+        submit(
+            VerificationSubmitParams.builder().verificationRequest(verificationRequest).build(),
+            requestOptions,
+        )
 
     /**
      * A view of [VerificationService] that provides access to raw HTTP responses for each method.
@@ -97,7 +104,7 @@ interface VerificationService {
             verificationId: String,
             params: VerificationRetrieveParams = VerificationRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationRetrieveResponse> =
+        ): HttpResponseFor<Verification> =
             retrieve(params.toBuilder().verificationId(verificationId).build(), requestOptions)
 
         /** @see retrieve */
@@ -105,14 +112,14 @@ interface VerificationService {
         fun retrieve(
             params: VerificationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationRetrieveResponse>
+        ): HttpResponseFor<Verification>
 
         /** @see retrieve */
         @MustBeClosed
         fun retrieve(
             verificationId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<VerificationRetrieveResponse> =
+        ): HttpResponseFor<Verification> =
             retrieve(verificationId, VerificationRetrieveParams.none(), requestOptions)
 
         /**
@@ -138,6 +145,17 @@ interface VerificationService {
         fun submit(
             params: VerificationSubmitParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationSubmitResponse>
+        ): HttpResponseFor<Verification>
+
+        /** @see submit */
+        @MustBeClosed
+        fun submit(
+            verificationRequest: VerificationRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Verification> =
+            submit(
+                VerificationSubmitParams.builder().verificationRequest(verificationRequest).build(),
+                requestOptions,
+            )
     }
 }

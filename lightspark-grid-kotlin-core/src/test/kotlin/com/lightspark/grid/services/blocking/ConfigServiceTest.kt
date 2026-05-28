@@ -3,9 +3,9 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.config.ConfigUpdateParams
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.config.EmbeddedWalletConfig
+import com.lightspark.grid.models.config.PlatformConfigUpdateRequest
 import com.lightspark.grid.models.config.PlatformCurrencyConfig
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
@@ -45,7 +45,7 @@ internal class ConfigServiceTest {
 
         val platformConfig =
             configService.update(
-                ConfigUpdateParams.builder()
+                PlatformConfigUpdateRequest.builder()
                     .embeddedWalletConfig(
                         EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
@@ -73,11 +73,11 @@ internal class ConfigServiceTest {
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.NATIONALITY)
+                                        .name(CustomerInfoFieldName.BIRTH_DATE)
                                         .build(),
                                     CounterpartyFieldDefinition.builder()
                                         .mandatory(true)
-                                        .name(CustomerInfoFieldName.BIRTH_DATE)
+                                        .name(CustomerInfoFieldName.NATIONALITY)
                                         .build(),
                                 )
                             )

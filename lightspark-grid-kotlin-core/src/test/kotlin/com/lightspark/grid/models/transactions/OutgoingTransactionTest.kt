@@ -5,10 +5,12 @@ package com.lightspark.grid.models.transactions
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.customers.externalaccounts.CounterpartyInformation
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,7 +23,7 @@ internal class OutgoingTransactionTest {
             OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(TransactionDestinationOneOf.builder().build())
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
                     CurrencyAmount.builder()
@@ -41,7 +43,7 @@ internal class OutgoingTransactionTest {
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
-                    OutgoingTransaction.CounterpartyInformation.builder()
+                    CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -50,7 +52,7 @@ internal class OutgoingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(OutgoingTransactionFailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -137,11 +139,11 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
-                        .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                        .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                        .status(Refund.Status.COMPLETED)
+                        .reason(Refund.Reason.TRANSACTION_FAILED)
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                         .build()
                 )
@@ -153,8 +155,8 @@ internal class OutgoingTransactionTest {
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000004")
         assertThat(outgoingTransaction.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(outgoingTransaction._destination())
-            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(outgoingTransaction.destination())
+            .isEqualTo(TransactionDestinationOneOf.builder().build())
         assertThat(outgoingTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(outgoingTransaction.sentAmount())
             .isEqualTo(
@@ -177,7 +179,7 @@ internal class OutgoingTransactionTest {
             .isEqualTo("Agent:019542f5-b3e7-1d02-0000-000000000042")
         assertThat(outgoingTransaction.counterpartyInformation())
             .isEqualTo(
-                OutgoingTransaction.CounterpartyInformation.builder()
+                CounterpartyInformation.builder()
                     .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                     .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                     .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -188,7 +190,7 @@ internal class OutgoingTransactionTest {
         assertThat(outgoingTransaction.description()).isEqualTo("Payment for invoice #1234")
         assertThat(outgoingTransaction.exchangeRate()).isEqualTo(1.08)
         assertThat(outgoingTransaction.failureReason())
-            .isEqualTo(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+            .isEqualTo(OutgoingTransactionFailureReason.QUOTE_EXPIRED)
         assertThat(outgoingTransaction.fees()).isEqualTo(10L)
         assertThat(outgoingTransaction.paymentInstructions())
             .containsExactly(
@@ -277,11 +279,11 @@ internal class OutgoingTransactionTest {
             )
         assertThat(outgoingTransaction.refund())
             .isEqualTo(
-                OutgoingTransaction.Refund.builder()
+                Refund.builder()
                     .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .reference("UMA-Q12345-REFUND")
-                    .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                    .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                    .status(Refund.Status.COMPLETED)
+                    .reason(Refund.Reason.TRANSACTION_FAILED)
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                     .build()
             )
@@ -298,7 +300,7 @@ internal class OutgoingTransactionTest {
             OutgoingTransaction.builder()
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .destination(JsonValue.from(mapOf<String, Any>()))
+                .destination(TransactionDestinationOneOf.builder().build())
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
                     CurrencyAmount.builder()
@@ -318,7 +320,7 @@ internal class OutgoingTransactionTest {
                 .type(OutgoingTransaction.Type.OUTGOING)
                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
                 .counterpartyInformation(
-                    OutgoingTransaction.CounterpartyInformation.builder()
+                    CounterpartyInformation.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
                         .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
                         .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
@@ -327,7 +329,7 @@ internal class OutgoingTransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .exchangeRate(1.08)
-                .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
+                .failureReason(OutgoingTransactionFailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
                     PaymentInstructions.builder()
@@ -414,11 +416,11 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .refund(
-                    OutgoingTransaction.Refund.builder()
+                    Refund.builder()
                         .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .reference("UMA-Q12345-REFUND")
-                        .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                        .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                        .status(Refund.Status.COMPLETED)
+                        .reason(Refund.Reason.TRANSACTION_FAILED)
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                         .build()
                 )

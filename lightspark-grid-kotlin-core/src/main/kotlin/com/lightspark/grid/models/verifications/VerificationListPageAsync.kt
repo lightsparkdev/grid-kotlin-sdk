@@ -13,38 +13,38 @@ class VerificationListPageAsync
 private constructor(
     private val service: VerificationServiceAsync,
     private val params: VerificationListParams,
-    private val response: VerificationListPageResponse,
-) : PageAsync<VerificationListResponse> {
+    private val response: VerificationListResponse,
+) : PageAsync<Verification> {
 
     /**
-     * Delegates to [VerificationListPageResponse], but gracefully handles missing data.
+     * Delegates to [VerificationListResponse], but gracefully handles missing data.
      *
-     * @see VerificationListPageResponse.data
+     * @see VerificationListResponse.data
      */
-    fun data(): List<VerificationListResponse> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<Verification> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [VerificationListPageResponse], but gracefully handles missing data.
+     * Delegates to [VerificationListResponse], but gracefully handles missing data.
      *
-     * @see VerificationListPageResponse.nextCursor
+     * @see VerificationListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [VerificationListPageResponse], but gracefully handles missing data.
+     * Delegates to [VerificationListResponse], but gracefully handles missing data.
      *
-     * @see VerificationListPageResponse.hasMore
+     * @see VerificationListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [VerificationListPageResponse], but gracefully handles missing data.
+     * Delegates to [VerificationListResponse], but gracefully handles missing data.
      *
-     * @see VerificationListPageResponse.totalCount
+     * @see VerificationListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<VerificationListResponse> = data()
+    override fun items(): List<Verification> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override suspend fun nextPage(): VerificationListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<VerificationListResponse> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<Verification> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): VerificationListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): VerificationListPageResponse = response
+    fun response(): VerificationListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: VerificationServiceAsync? = null
         private var params: VerificationListParams? = null
-        private var response: VerificationListPageResponse? = null
+        private var response: VerificationListResponse? = null
 
         internal fun from(verificationListPageAsync: VerificationListPageAsync) = apply {
             service = verificationListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: VerificationListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: VerificationListPageResponse) = apply { this.response = response }
+        fun response(response: VerificationListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [VerificationListPageAsync].

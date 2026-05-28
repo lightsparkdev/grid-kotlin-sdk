@@ -23,10 +23,10 @@ internal class AgentTest {
                 .name("Payroll Automation Agent")
                 .policy(
                     AgentPolicy.builder()
-                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
+                        .defaultExecutionMode(AgentExecutionMode.AUTO)
+                        .addPermission(AgentPermission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentPolicy.SpendingLimits.builder()
+                            AgentSpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -39,7 +39,7 @@ internal class AgentTest {
                                 .addAccountRule(
                                     AgentAccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                        .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                        .executionMode(AgentExecutionMode.AUTO)
                                         .perTransactionLimit(10000L)
                                         .build()
                                 )
@@ -75,10 +75,10 @@ internal class AgentTest {
         assertThat(agent.policy())
             .isEqualTo(
                 AgentPolicy.builder()
-                    .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
+                    .defaultExecutionMode(AgentExecutionMode.AUTO)
+                    .addPermission(AgentPermission.VIEW_TRANSACTIONS)
                     .spendingLimits(
-                        AgentPolicy.SpendingLimits.builder()
+                        AgentSpendingLimits.builder()
                             .currency("USD")
                             .perTransactionLimit(50000L)
                             .dailyLimit(500000L)
@@ -91,7 +91,7 @@ internal class AgentTest {
                             .addAccountRule(
                                 AgentAccountRule.builder()
                                     .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                    .executionMode(AgentExecutionMode.AUTO)
                                     .perTransactionLimit(10000L)
                                     .build()
                             )
@@ -129,10 +129,10 @@ internal class AgentTest {
                 .name("Payroll Automation Agent")
                 .policy(
                     AgentPolicy.builder()
-                        .defaultExecutionMode(AgentPolicy.DefaultExecutionMode.AUTO)
-                        .addPermission(AgentPolicy.Permission.VIEW_TRANSACTIONS)
+                        .defaultExecutionMode(AgentExecutionMode.AUTO)
+                        .addPermission(AgentPermission.VIEW_TRANSACTIONS)
                         .spendingLimits(
-                            AgentPolicy.SpendingLimits.builder()
+                            AgentSpendingLimits.builder()
                                 .currency("USD")
                                 .perTransactionLimit(50000L)
                                 .dailyLimit(500000L)
@@ -145,7 +145,7 @@ internal class AgentTest {
                                 .addAccountRule(
                                     AgentAccountRule.builder()
                                         .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                        .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                        .executionMode(AgentExecutionMode.AUTO)
                                         .perTransactionLimit(10000L)
                                         .build()
                                 )

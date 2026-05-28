@@ -10,11 +10,15 @@ internal class UmaReceivePaymentParamsTest {
     @Test
     fun create() {
         UmaReceivePaymentParams.builder()
-            .receivingCurrencyAmount(1000L)
-            .receivingCurrencyCode("USD")
-            .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
-            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-            .receiverUmaAddress("\$receiver@uma.domain")
+            .receiveRequest(
+                ReceiveRequest.builder()
+                    .receivingCurrencyAmount(1000L)
+                    .receivingCurrencyCode("USD")
+                    .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .receiverUmaAddress("\$receiver@uma.domain")
+                    .build()
+            )
             .build()
     }
 
@@ -22,35 +26,53 @@ internal class UmaReceivePaymentParamsTest {
     fun body() {
         val params =
             UmaReceivePaymentParams.builder()
-                .receivingCurrencyAmount(1000L)
-                .receivingCurrencyCode("USD")
-                .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
-                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .receiverUmaAddress("\$receiver@uma.domain")
+                .receiveRequest(
+                    ReceiveRequest.builder()
+                        .receivingCurrencyAmount(1000L)
+                        .receivingCurrencyCode("USD")
+                        .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .receiverUmaAddress("\$receiver@uma.domain")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.receivingCurrencyAmount()).isEqualTo(1000L)
-        assertThat(body.receivingCurrencyCode()).isEqualTo("USD")
-        assertThat(body.senderUmaAddress()).isEqualTo("\$success.usd@sandbox.grid.uma.money")
-        assertThat(body.customerId()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(body.receiverUmaAddress()).isEqualTo("\$receiver@uma.domain")
+        assertThat(body)
+            .isEqualTo(
+                ReceiveRequest.builder()
+                    .receivingCurrencyAmount(1000L)
+                    .receivingCurrencyCode("USD")
+                    .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .receiverUmaAddress("\$receiver@uma.domain")
+                    .build()
+            )
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             UmaReceivePaymentParams.builder()
-                .receivingCurrencyAmount(1000L)
-                .receivingCurrencyCode("USD")
-                .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                .receiveRequest(
+                    ReceiveRequest.builder()
+                        .receivingCurrencyAmount(1000L)
+                        .receivingCurrencyCode("USD")
+                        .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.receivingCurrencyAmount()).isEqualTo(1000L)
-        assertThat(body.receivingCurrencyCode()).isEqualTo("USD")
-        assertThat(body.senderUmaAddress()).isEqualTo("\$success.usd@sandbox.grid.uma.money")
+        assertThat(body)
+            .isEqualTo(
+                ReceiveRequest.builder()
+                    .receivingCurrencyAmount(1000L)
+                    .receivingCurrencyCode("USD")
+                    .senderUmaAddress("\$success.usd@sandbox.grid.uma.money")
+                    .build()
+            )
     }
 }

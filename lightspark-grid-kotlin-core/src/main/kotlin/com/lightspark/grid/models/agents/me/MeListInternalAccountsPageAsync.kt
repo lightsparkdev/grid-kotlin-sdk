@@ -5,6 +5,7 @@ package com.lightspark.grid.models.agents.me
 import com.lightspark.grid.core.AutoPagerAsync
 import com.lightspark.grid.core.PageAsync
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.async.agents.MeServiceAsync
 import java.util.Objects
@@ -14,34 +15,34 @@ class MeListInternalAccountsPageAsync
 private constructor(
     private val service: MeServiceAsync,
     private val params: MeListInternalAccountsParams,
-    private val response: MeListInternalAccountsPageResponse,
+    private val response: InternalAccountListResponse,
 ) : PageAsync<InternalAccount> {
 
     /**
-     * Delegates to [MeListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see MeListInternalAccountsPageResponse.data
+     * @see InternalAccountListResponse.data
      */
     fun data(): List<InternalAccount> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [MeListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see MeListInternalAccountsPageResponse.nextCursor
+     * @see InternalAccountListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [MeListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see MeListInternalAccountsPageResponse.hasMore
+     * @see InternalAccountListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [MeListInternalAccountsPageResponse], but gracefully handles missing data.
+     * Delegates to [InternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see MeListInternalAccountsPageResponse.totalCount
+     * @see InternalAccountListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -64,7 +65,7 @@ private constructor(
     fun params(): MeListInternalAccountsParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): MeListInternalAccountsPageResponse = response
+    fun response(): InternalAccountListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -89,7 +90,7 @@ private constructor(
 
         private var service: MeServiceAsync? = null
         private var params: MeListInternalAccountsParams? = null
-        private var response: MeListInternalAccountsPageResponse? = null
+        private var response: InternalAccountListResponse? = null
 
         internal fun from(meListInternalAccountsPageAsync: MeListInternalAccountsPageAsync) =
             apply {
@@ -104,9 +105,7 @@ private constructor(
         fun params(params: MeListInternalAccountsParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: MeListInternalAccountsPageResponse) = apply {
-            this.response = response
-        }
+        fun response(response: InternalAccountListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [MeListInternalAccountsPageAsync].

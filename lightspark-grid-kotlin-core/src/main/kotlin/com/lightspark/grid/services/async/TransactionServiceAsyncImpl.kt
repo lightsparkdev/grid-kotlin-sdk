@@ -20,8 +20,8 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.TransactionApproveParams
 import com.lightspark.grid.models.transactions.TransactionListPageAsync
-import com.lightspark.grid.models.transactions.TransactionListPageResponse
 import com.lightspark.grid.models.transactions.TransactionListParams
+import com.lightspark.grid.models.transactions.TransactionListResponse
 import com.lightspark.grid.models.transactions.TransactionRejectParams
 import com.lightspark.grid.models.transactions.TransactionRetrieveParams
 import com.lightspark.grid.models.transferin.Transaction
@@ -114,8 +114,8 @@ class TransactionServiceAsyncImpl internal constructor(private val clientOptions
             }
         }
 
-        private val listHandler: Handler<TransactionListPageResponse> =
-            jsonHandler<TransactionListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<TransactionListResponse> =
+            jsonHandler<TransactionListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: TransactionListParams,

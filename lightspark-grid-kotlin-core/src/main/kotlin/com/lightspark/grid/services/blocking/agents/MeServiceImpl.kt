@@ -21,9 +21,9 @@ import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
 import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPage
-import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageResponse
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
+import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.services.blocking.agents.me.ActionService
 import com.lightspark.grid.services.blocking.agents.me.ActionServiceImpl
 import com.lightspark.grid.services.blocking.agents.me.ExternalAccountService
@@ -279,8 +279,8 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
             }
         }
 
-        private val listInternalAccountsHandler: Handler<MeListInternalAccountsPageResponse> =
-            jsonHandler<MeListInternalAccountsPageResponse>(clientOptions.jsonMapper)
+        private val listInternalAccountsHandler: Handler<InternalAccountListResponse> =
+            jsonHandler<InternalAccountListResponse>(clientOptions.jsonMapper)
 
         override fun listInternalAccounts(
             params: MeListInternalAccountsParams,

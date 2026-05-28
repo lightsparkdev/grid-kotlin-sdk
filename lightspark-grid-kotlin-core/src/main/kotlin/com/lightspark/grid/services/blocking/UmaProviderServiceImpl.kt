@@ -16,8 +16,8 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.umaproviders.UmaProviderListPage
-import com.lightspark.grid.models.umaproviders.UmaProviderListPageResponse
 import com.lightspark.grid.models.umaproviders.UmaProviderListParams
+import com.lightspark.grid.models.umaproviders.UmaProviderListResponse
 
 class UmaProviderServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     UmaProviderService {
@@ -51,8 +51,8 @@ class UmaProviderServiceImpl internal constructor(private val clientOptions: Cli
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val listHandler: Handler<UmaProviderListPageResponse> =
-            jsonHandler<UmaProviderListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<UmaProviderListResponse> =
+            jsonHandler<UmaProviderListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: UmaProviderListParams,

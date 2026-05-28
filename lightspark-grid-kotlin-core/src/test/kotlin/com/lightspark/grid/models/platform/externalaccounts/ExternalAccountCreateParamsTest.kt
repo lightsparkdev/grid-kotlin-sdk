@@ -2,9 +2,9 @@
 
 package com.lightspark.grid.models.platform.externalaccounts
 
-import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,36 +13,40 @@ internal class ExternalAccountCreateParamsTest {
     @Test
     fun create() {
         ExternalAccountCreateParams.builder()
-            .accountInfo(
-                UsdExternalAccountCreateInfo.builder()
-                    .accountNumber("12345678901")
-                    .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                    .beneficiary(
-                        UsdBeneficiary.builder()
-                            .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                            .fullName("John Doe")
-                            .address(
-                                Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
+            .platformExternalAccountCreateRequest(
+                PlatformExternalAccountCreateRequest.builder()
+                    .accountInfo(
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                            .beneficiary(
+                                AedBeneficiary.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .city("San Francisco")
+                                            .line2("Apt 4B")
+                                            .state("CA")
+                                            .build()
+                                    )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
+                                    .countryOfResidence("countryOfResidence")
+                                    .email("email")
+                                    .nationality("nationality")
+                                    .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .birthDate("1990-01-15")
-                            .countryOfResidence("countryOfResidence")
-                            .email("email")
-                            .nationality("US")
-                            .phoneNumber("phoneNumber")
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
                             .build()
                     )
-                    .routingNumber("123456789")
+                    .currency("USD")
+                    .platformAccountId("ext_acc_123456")
                     .build()
             )
-            .currency("USD")
-            .platformAccountId("ext_acc_123456")
             .build()
     }
 
@@ -50,103 +54,137 @@ internal class ExternalAccountCreateParamsTest {
     fun body() {
         val params =
             ExternalAccountCreateParams.builder()
-                .accountInfo(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .beneficiary(
-                            UsdBeneficiary.builder()
-                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("John Doe")
-                                .address(
-                                    Address.builder()
-                                        .country("US")
-                                        .line1("123 Main Street")
-                                        .postalCode("94105")
-                                        .city("San Francisco")
-                                        .line2("Apt 4B")
-                                        .state("CA")
+                .platformExternalAccountCreateRequest(
+                    PlatformExternalAccountCreateRequest.builder()
+                        .accountInfo(
+                            AedExternalAccountCreateInfo.builder()
+                                .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                                .beneficiary(
+                                    AedBeneficiary.builder()
+                                        .address(
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .city("San Francisco")
+                                                .line2("Apt 4B")
+                                                .state("CA")
+                                                .build()
+                                        )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .birthDate("birthDate")
+                                        .countryOfResidence("countryOfResidence")
+                                        .email("email")
+                                        .nationality("nationality")
+                                        .phoneNumber("phoneNumber")
                                         .build()
                                 )
-                                .birthDate("1990-01-15")
-                                .countryOfResidence("countryOfResidence")
-                                .email("email")
-                                .nationality("US")
-                                .phoneNumber("phoneNumber")
+                                .iban("AE070331234567890123456")
+                                .swiftCode("EBILAEAD")
                                 .build()
                         )
-                        .routingNumber("123456789")
+                        .currency("USD")
+                        .platformAccountId("ext_acc_123456")
                         .build()
                 )
-                .currency("USD")
-                .platformAccountId("ext_acc_123456")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.accountInfo())
+        assertThat(body)
             .isEqualTo(
-                ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .beneficiary(
-                            UsdBeneficiary.builder()
-                                .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                .fullName("John Doe")
-                                .address(
-                                    Address.builder()
-                                        .country("US")
-                                        .line1("123 Main Street")
-                                        .postalCode("94105")
-                                        .city("San Francisco")
-                                        .line2("Apt 4B")
-                                        .state("CA")
-                                        .build()
-                                )
-                                .birthDate("1990-01-15")
-                                .countryOfResidence("countryOfResidence")
-                                .email("email")
-                                .nationality("US")
-                                .phoneNumber("phoneNumber")
-                                .build()
-                        )
-                        .routingNumber("123456789")
-                        .build()
-                )
+                PlatformExternalAccountCreateRequest.builder()
+                    .accountInfo(
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                            .beneficiary(
+                                AedBeneficiary.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .city("San Francisco")
+                                            .line2("Apt 4B")
+                                            .state("CA")
+                                            .build()
+                                    )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
+                                    .countryOfResidence("countryOfResidence")
+                                    .email("email")
+                                    .nationality("nationality")
+                                    .phoneNumber("phoneNumber")
+                                    .build()
+                            )
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
+                            .build()
+                    )
+                    .currency("USD")
+                    .platformAccountId("ext_acc_123456")
+                    .build()
             )
-        assertThat(body.currency()).isEqualTo("USD")
-        assertThat(body.platformAccountId()).isEqualTo("ext_acc_123456")
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             ExternalAccountCreateParams.builder()
-                .accountInfo(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .individualBeneficiary("John Doe")
-                        .routingNumber("123456789")
+                .platformExternalAccountCreateRequest(
+                    PlatformExternalAccountCreateRequest.builder()
+                        .accountInfo(
+                            AedExternalAccountCreateInfo.builder()
+                                .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                                .beneficiary(
+                                    AedBeneficiary.builder()
+                                        .address(
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .build()
+                                        )
+                                        .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .build()
+                                )
+                                .iban("AE070331234567890123456")
+                                .build()
+                        )
+                        .currency("USD")
                         .build()
                 )
-                .currency("USD")
                 .build()
 
         val body = params._body()
 
-        assertThat(body.accountInfo())
+        assertThat(body)
             .isEqualTo(
-                ExternalAccountCreateParams.AccountInfo.ofUsdAccount(
-                    UsdExternalAccountCreateInfo.builder()
-                        .accountNumber("12345678901")
-                        .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
-                        .individualBeneficiary("John Doe")
-                        .routingNumber("123456789")
-                        .build()
-                )
+                PlatformExternalAccountCreateRequest.builder()
+                    .accountInfo(
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
+                            .beneficiary(
+                                AedBeneficiary.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .build()
+                                    )
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .build()
+                            )
+                            .iban("AE070331234567890123456")
+                            .build()
+                    )
+                    .currency("USD")
+                    .build()
             )
-        assertThat(body.currency()).isEqualTo("USD")
     }
 }

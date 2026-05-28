@@ -15,8 +15,8 @@ import com.lightspark.grid.core.http.HttpResponse.Handler
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.platform.PlatformInternalAccountListResponse
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
-import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.async.platform.ExternalAccountServiceAsync
 import com.lightspark.grid.services.async.platform.ExternalAccountServiceAsyncImpl
 
@@ -43,7 +43,7 @@ class PlatformServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun listInternalAccounts(
         params: PlatformListInternalAccountsParams,
         requestOptions: RequestOptions,
-    ): PlatformListInternalAccountsResponse =
+    ): PlatformInternalAccountListResponse =
         // get /platform/internal-accounts
         withRawResponse().listInternalAccounts(params, requestOptions).parse()
 
@@ -70,13 +70,13 @@ class PlatformServiceAsyncImpl internal constructor(private val clientOptions: C
         override fun externalAccounts(): ExternalAccountServiceAsync.WithRawResponse =
             externalAccounts
 
-        private val listInternalAccountsHandler: Handler<PlatformListInternalAccountsResponse> =
-            jsonHandler<PlatformListInternalAccountsResponse>(clientOptions.jsonMapper)
+        private val listInternalAccountsHandler: Handler<PlatformInternalAccountListResponse> =
+            jsonHandler<PlatformInternalAccountListResponse>(clientOptions.jsonMapper)
 
         override suspend fun listInternalAccounts(
             params: PlatformListInternalAccountsParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<PlatformListInternalAccountsResponse> {
+        ): HttpResponseFor<PlatformInternalAccountListResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.GET)

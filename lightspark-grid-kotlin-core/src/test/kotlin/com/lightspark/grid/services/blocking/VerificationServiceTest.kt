@@ -3,7 +3,7 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.verifications.VerificationSubmitParams
+import com.lightspark.grid.models.verifications.VerificationRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -55,13 +55,13 @@ internal class VerificationServiceTest {
                 .build()
         val verificationService = client.verifications()
 
-        val response =
+        val verification =
             verificationService.submit(
-                VerificationSubmitParams.builder()
+                VerificationRequest.builder()
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .build()
             )
 
-        response.validate()
+        verification.validate()
     }
 }

@@ -10,7 +10,11 @@ internal class VerificationSubmitParamsTest {
     @Test
     fun create() {
         VerificationSubmitParams.builder()
-            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+            .verificationRequest(
+                VerificationRequest.builder()
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .build()
+            )
             .build()
     }
 
@@ -18,11 +22,20 @@ internal class VerificationSubmitParamsTest {
     fun body() {
         val params =
             VerificationSubmitParams.builder()
-                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .verificationRequest(
+                    VerificationRequest.builder()
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.customerId()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        assertThat(body)
+            .isEqualTo(
+                VerificationRequest.builder()
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .build()
+            )
     }
 }

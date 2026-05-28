@@ -11,6 +11,7 @@ import com.lightspark.grid.models.invitations.InvitationClaimParams
 import com.lightspark.grid.models.invitations.InvitationCreateParams
 import com.lightspark.grid.models.invitations.InvitationRetrieveParams
 import com.lightspark.grid.models.invitations.UmaInvitation
+import com.lightspark.grid.models.invitations.UmaInvitationCreateRequest
 
 /** Endpoints for creating, claiming and managing UMA invitations */
 interface InvitationService {
@@ -32,6 +33,18 @@ interface InvitationService {
         params: InvitationCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): UmaInvitation
+
+    /** @see create */
+    fun create(
+        umaInvitationCreateRequest: UmaInvitationCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): UmaInvitation =
+        create(
+            InvitationCreateParams.builder()
+                .umaInvitationCreateRequest(umaInvitationCreateRequest)
+                .build(),
+            requestOptions,
+        )
 
     /** Retrieve details about an UMA invitation by its invitation code. */
     fun retrieve(
@@ -124,6 +137,19 @@ interface InvitationService {
             params: InvitationCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<UmaInvitation>
+
+        /** @see create */
+        @MustBeClosed
+        fun create(
+            umaInvitationCreateRequest: UmaInvitationCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<UmaInvitation> =
+            create(
+                InvitationCreateParams.builder()
+                    .umaInvitationCreateRequest(umaInvitationCreateRequest)
+                    .build(),
+                requestOptions,
+            )
 
         /**
          * Returns a raw HTTP response for `get /invitations/{invitationCode}`, but is otherwise the

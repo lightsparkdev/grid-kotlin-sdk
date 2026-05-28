@@ -11,8 +11,12 @@ internal class SimulateClearingParamsTest {
     fun create() {
         SimulateClearingParams.builder()
             .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-            .amount(1500L)
-            .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+            .clearingRequest(
+                ClearingRequest.builder()
+                    .amount(1500L)
+                    .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                    .build()
+            )
             .build()
     }
 
@@ -21,8 +25,12 @@ internal class SimulateClearingParamsTest {
         val params =
             SimulateClearingParams.builder()
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .clearingRequest(
+                    ClearingRequest.builder()
+                        .amount(1500L)
+                        .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                        .build()
+                )
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -35,14 +43,22 @@ internal class SimulateClearingParamsTest {
         val params =
             SimulateClearingParams.builder()
                 .id("Card:019542f5-b3e7-1d02-0000-000000000010")
-                .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .clearingRequest(
+                    ClearingRequest.builder()
+                        .amount(1500L)
+                        .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.amount()).isEqualTo(1500L)
-        assertThat(body.cardTransactionId())
-            .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+        assertThat(body)
+            .isEqualTo(
+                ClearingRequest.builder()
+                    .amount(1500L)
+                    .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                    .build()
+            )
     }
 }

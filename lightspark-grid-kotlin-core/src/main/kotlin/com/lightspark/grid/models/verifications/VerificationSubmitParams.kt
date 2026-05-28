@@ -2,20 +2,11 @@
 
 package com.lightspark.grid.models.verifications
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonField
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.util.Collections
 import java.util.Objects
 
 /**
@@ -27,27 +18,15 @@ import java.util.Objects
  */
 class VerificationSubmitParams
 private constructor(
-    private val body: Body,
+    private val verificationRequest: VerificationRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /**
-     * The ID of the customer to verify
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun customerId(): String = body.customerId()
+    fun verificationRequest(): VerificationRequest = verificationRequest
 
-    /**
-     * Returns the raw JSON value of [customerId].
-     *
-     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _customerId(): JsonField<String> = body._customerId()
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        verificationRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -64,7 +43,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerId()
+         * .verificationRequest()
          * ```
          */
         fun builder() = Builder()
@@ -73,54 +52,18 @@ private constructor(
     /** A builder for [VerificationSubmitParams]. */
     class Builder internal constructor() {
 
-        private var body: Body.Builder = Body.builder()
+        private var verificationRequest: VerificationRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(verificationSubmitParams: VerificationSubmitParams) = apply {
-            body = verificationSubmitParams.body.toBuilder()
+            verificationRequest = verificationSubmitParams.verificationRequest
             additionalHeaders = verificationSubmitParams.additionalHeaders.toBuilder()
             additionalQueryParams = verificationSubmitParams.additionalQueryParams.toBuilder()
         }
 
-        /**
-         * Sets the entire request body.
-         *
-         * This is generally only useful if you are already constructing the body separately.
-         * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [customerId]
-         */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        /** The ID of the customer to verify */
-        fun customerId(customerId: String) = apply { body.customerId(customerId) }
-
-        /**
-         * Sets [Builder.customerId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun customerId(customerId: JsonField<String>) = apply { body.customerId(customerId) }
-
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
+        fun verificationRequest(verificationRequest: VerificationRequest) = apply {
+            this.verificationRequest = verificationRequest
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -228,192 +171,24 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .customerId()
+         * .verificationRequest()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): VerificationSubmitParams =
             VerificationSubmitParams(
-                body.build(),
+                checkRequired("verificationRequest", verificationRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): Body = body
+    fun _body(): VerificationRequest = verificationRequest
 
     override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
-
-    class Body
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val customerId: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("customerId")
-            @ExcludeMissing
-            customerId: JsonField<String> = JsonMissing.of()
-        ) : this(customerId, mutableMapOf())
-
-        /**
-         * The ID of the customer to verify
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun customerId(): String = customerId.getRequired("customerId")
-
-        /**
-         * Returns the raw JSON value of [customerId].
-         *
-         * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("customerId")
-        @ExcludeMissing
-        fun _customerId(): JsonField<String> = customerId
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [Body].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .customerId()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Body]. */
-        class Builder internal constructor() {
-
-            private var customerId: JsonField<String>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(body: Body) = apply {
-                customerId = body.customerId
-                additionalProperties = body.additionalProperties.toMutableMap()
-            }
-
-            /** The ID of the customer to verify */
-            fun customerId(customerId: String) = customerId(JsonField.of(customerId))
-
-            /**
-             * Sets [Builder.customerId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.customerId] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Body].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .customerId()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): Body =
-                Body(checkRequired("customerId", customerId), additionalProperties.toMutableMap())
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Body = apply {
-            if (validated) {
-                return@apply
-            }
-
-            customerId()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = (if (customerId.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Body &&
-                customerId == other.customerId &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(customerId, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Body{customerId=$customerId, additionalProperties=$additionalProperties}"
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -421,13 +196,14 @@ private constructor(
         }
 
         return other is VerificationSubmitParams &&
-            body == other.body &&
+            verificationRequest == other.verificationRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
-    override fun hashCode(): Int = Objects.hash(body, additionalHeaders, additionalQueryParams)
+    override fun hashCode(): Int =
+        Objects.hash(verificationRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "VerificationSubmitParams{body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "VerificationSubmitParams{verificationRequest=$verificationRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

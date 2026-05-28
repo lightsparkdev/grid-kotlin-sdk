@@ -6,6 +6,7 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.sandbox.uma.ReceiveRequest
 import com.lightspark.grid.models.sandbox.uma.UmaReceivePaymentParams
 import com.lightspark.grid.models.transactions.IncomingTransaction
 
@@ -34,6 +35,16 @@ interface UmaServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): IncomingTransaction
 
+    /** @see receivePayment */
+    suspend fun receivePayment(
+        receiveRequest: ReceiveRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): IncomingTransaction =
+        receivePayment(
+            UmaReceivePaymentParams.builder().receiveRequest(receiveRequest).build(),
+            requestOptions,
+        )
+
     /** A view of [UmaServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
 
@@ -53,5 +64,16 @@ interface UmaServiceAsync {
             params: UmaReceivePaymentParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<IncomingTransaction>
+
+        /** @see receivePayment */
+        @MustBeClosed
+        suspend fun receivePayment(
+            receiveRequest: ReceiveRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<IncomingTransaction> =
+            receivePayment(
+                UmaReceivePaymentParams.builder().receiveRequest(receiveRequest).build(),
+                requestOptions,
+            )
     }
 }

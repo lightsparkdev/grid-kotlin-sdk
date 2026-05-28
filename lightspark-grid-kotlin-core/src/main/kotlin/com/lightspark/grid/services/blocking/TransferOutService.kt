@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
+import com.lightspark.grid.models.transferout.TransferOutRequest
 
 /**
  * Endpoints for transferring funds between internal and external accounts with the same currency
@@ -32,6 +33,16 @@ interface TransferOutService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Transaction
 
+    /** @see create */
+    fun create(
+        transferOutRequest: TransferOutRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Transaction =
+        create(
+            TransferOutCreateParams.builder().transferOutRequest(transferOutRequest).build(),
+            requestOptions,
+        )
+
     /**
      * A view of [TransferOutService] that provides access to raw HTTP responses for each method.
      */
@@ -55,5 +66,16 @@ interface TransferOutService {
             params: TransferOutCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Transaction>
+
+        /** @see create */
+        @MustBeClosed
+        fun create(
+            transferOutRequest: TransferOutRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Transaction> =
+            create(
+                TransferOutCreateParams.builder().transferOutRequest(transferOutRequest).build(),
+                requestOptions,
+            )
     }
 }
