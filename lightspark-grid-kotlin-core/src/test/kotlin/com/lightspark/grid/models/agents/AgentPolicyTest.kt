@@ -25,12 +25,12 @@ internal class AgentPolicyTest {
                         .build()
                 )
                 .accountRestrictions(
-                    AgentPolicy.AccountRestrictions.builder()
+                    AgentAccountRestrictions.builder()
                         .addAccountRule(
-                            AgentPolicy.AccountRestrictions.AccountRule.builder()
+                            AgentAccountRestrictions.AccountRule.builder()
                                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                 .executionMode(
-                                    AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode.AUTO
+                                    AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
                                 )
                                 .perTransactionLimit(10000L)
                                 .build()
@@ -39,7 +39,7 @@ internal class AgentPolicyTest {
                         .build()
                 )
                 .approvalThresholds(
-                    AgentPolicy.ApprovalThresholds.builder().amount(100000L).currency("USD").build()
+                    AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                 )
                 .build()
 
@@ -59,13 +59,11 @@ internal class AgentPolicyTest {
             )
         assertThat(agentPolicy.accountRestrictions())
             .isEqualTo(
-                AgentPolicy.AccountRestrictions.builder()
+                AgentAccountRestrictions.builder()
                     .addAccountRule(
-                        AgentPolicy.AccountRestrictions.AccountRule.builder()
+                        AgentAccountRestrictions.AccountRule.builder()
                             .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(
-                                AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode.AUTO
-                            )
+                            .executionMode(AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO)
                             .perTransactionLimit(10000L)
                             .build()
                     )
@@ -73,9 +71,7 @@ internal class AgentPolicyTest {
                     .build()
             )
         assertThat(agentPolicy.approvalThresholds())
-            .isEqualTo(
-                AgentPolicy.ApprovalThresholds.builder().amount(100000L).currency("USD").build()
-            )
+            .isEqualTo(AgentApprovalThresholds.builder().amount(100000L).currency("USD").build())
     }
 
     @Test
@@ -95,12 +91,12 @@ internal class AgentPolicyTest {
                         .build()
                 )
                 .accountRestrictions(
-                    AgentPolicy.AccountRestrictions.builder()
+                    AgentAccountRestrictions.builder()
                         .addAccountRule(
-                            AgentPolicy.AccountRestrictions.AccountRule.builder()
+                            AgentAccountRestrictions.AccountRule.builder()
                                 .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                 .executionMode(
-                                    AgentPolicy.AccountRestrictions.AccountRule.ExecutionMode.AUTO
+                                    AgentAccountRestrictions.AccountRule.ExecutionMode.AUTO
                                 )
                                 .perTransactionLimit(10000L)
                                 .build()
@@ -109,7 +105,7 @@ internal class AgentPolicyTest {
                         .build()
                 )
                 .approvalThresholds(
-                    AgentPolicy.ApprovalThresholds.builder().amount(100000L).currency("USD").build()
+                    AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
                 )
                 .build()
 

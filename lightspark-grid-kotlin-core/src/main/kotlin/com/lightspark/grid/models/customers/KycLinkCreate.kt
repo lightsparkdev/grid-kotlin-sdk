@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.auth.sessions
+package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -10,39 +10,40 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
-import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class SessionListResponse
+/** Request body for generating a hosted KYC link for an existing customer. */
+class KycLinkCreate
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val data: JsonField<List<AuthSession>>,
+    private val redirectUri: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("data") @ExcludeMissing data: JsonField<List<AuthSession>> = JsonMissing.of()
-    ) : this(data, mutableMapOf())
+        @JsonProperty("redirectUri")
+        @ExcludeMissing
+        redirectUri: JsonField<String> = JsonMissing.of()
+    ) : this(redirectUri, mutableMapOf())
 
     /**
-     * List of active authentication sessions for the internal account.
+     * URI the customer is redirected to after completing the hosted KYC flow. Must start with
+     * `https://` (or `http://` for local development). Embedded in the returned `kycUrl`.
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    fun data(): List<AuthSession> = data.getRequired("data")
+    fun redirectUri(): String? = redirectUri.getNullable("redirectUri")
 
     /**
-     * Returns the raw JSON value of [data].
+     * Returns the raw JSON value of [redirectUri].
      *
-     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [redirectUri], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<AuthSession>> = data
+    @JsonProperty("redirectUri") @ExcludeMissing fun _redirectUri(): JsonField<String> = redirectUri
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -58,53 +59,35 @@ private constructor(
 
     companion object {
 
-        /**
-         * Returns a mutable builder for constructing an instance of [SessionListResponse].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .data()
-         * ```
-         */
+        /** Returns a mutable builder for constructing an instance of [KycLinkCreate]. */
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionListResponse]. */
+    /** A builder for [KycLinkCreate]. */
     class Builder internal constructor() {
 
-        private var data: JsonField<MutableList<AuthSession>>? = null
+        private var redirectUri: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sessionListResponse: SessionListResponse) = apply {
-            data = sessionListResponse.data.map { it.toMutableList() }
-            additionalProperties = sessionListResponse.additionalProperties.toMutableMap()
-        }
-
-        /** List of active authentication sessions for the internal account. */
-        fun data(data: List<AuthSession>) = data(JsonField.of(data))
-
-        /**
-         * Sets [Builder.data] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.data] with a well-typed `List<AuthSession>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun data(data: JsonField<List<AuthSession>>) = apply {
-            this.data = data.map { it.toMutableList() }
+        internal fun from(kycLinkCreate: KycLinkCreate) = apply {
+            redirectUri = kycLinkCreate.redirectUri
+            additionalProperties = kycLinkCreate.additionalProperties.toMutableMap()
         }
 
         /**
-         * Adds a single [AuthSession] to [Builder.data].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
+         * URI the customer is redirected to after completing the hosted KYC flow. Must start with
+         * `https://` (or `http://` for local development). Embedded in the returned `kycUrl`.
          */
-        fun addData(data: AuthSession) = apply {
-            this.data =
-                (this.data ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("data", it).add(data)
-                }
-        }
+        fun redirectUri(redirectUri: String) = redirectUri(JsonField.of(redirectUri))
+
+        /**
+         * Sets [Builder.redirectUri] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.redirectUri] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun redirectUri(redirectUri: JsonField<String>) = apply { this.redirectUri = redirectUri }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -126,22 +109,11 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionListResponse].
+         * Returns an immutable instance of [KycLinkCreate].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .data()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionListResponse =
-            SessionListResponse(
-                checkRequired("data", data).map { it.toImmutable() },
-                additionalProperties.toMutableMap(),
-            )
+        fun build(): KycLinkCreate = KycLinkCreate(redirectUri, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -154,12 +126,12 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): SessionListResponse = apply {
+    fun validate(): KycLinkCreate = apply {
         if (validated) {
             return@apply
         }
 
-        data().forEach { it.validate() }
+        redirectUri()
         validated = true
     }
 
@@ -176,22 +148,22 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+    internal fun validity(): Int = (if (redirectUri.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is SessionListResponse &&
-            data == other.data &&
+        return other is KycLinkCreate &&
+            redirectUri == other.redirectUri &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(data, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(redirectUri, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SessionListResponse{data=$data, additionalProperties=$additionalProperties}"
+        "KycLinkCreate{redirectUri=$redirectUri, additionalProperties=$additionalProperties}"
 }

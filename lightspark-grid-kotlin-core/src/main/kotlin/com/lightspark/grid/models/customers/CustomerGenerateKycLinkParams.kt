@@ -2,19 +2,11 @@
 
 package com.lightspark.grid.models.customers
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter
-import com.fasterxml.jackson.annotation.JsonAnySetter
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.lightspark.grid.core.ExcludeMissing
-import com.lightspark.grid.core.JsonField
-import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import java.util.Collections
+import com.lightspark.grid.core.immutableEmptyMap
 import java.util.Objects
 
 /**
@@ -34,7 +26,7 @@ class CustomerGenerateKycLinkParams
 private constructor(
     private val customerId: String?,
     private val idempotencyKey: String?,
-    private val body: Body,
+    private val kycLinkCreate: KycLinkCreate?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -43,23 +35,11 @@ private constructor(
 
     fun idempotencyKey(): String? = idempotencyKey
 
-    /**
-     * URI the customer is redirected to after completing the hosted KYC flow. Must start with
-     * `https://` (or `http://` for local development). Embedded in the returned `kycUrl`.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun redirectUri(): String? = body.redirectUri()
+    /** Request body for generating a hosted KYC link for an existing customer. */
+    fun kycLinkCreate(): KycLinkCreate? = kycLinkCreate
 
-    /**
-     * Returns the raw JSON value of [redirectUri].
-     *
-     * Unlike [redirectUri], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _redirectUri(): JsonField<String> = body._redirectUri()
-
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        kycLinkCreate?._additionalProperties() ?: immutableEmptyMap()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -85,14 +65,14 @@ private constructor(
 
         private var customerId: String? = null
         private var idempotencyKey: String? = null
-        private var body: Body.Builder = Body.builder()
+        private var kycLinkCreate: KycLinkCreate? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(customerGenerateKycLinkParams: CustomerGenerateKycLinkParams) = apply {
             customerId = customerGenerateKycLinkParams.customerId
             idempotencyKey = customerGenerateKycLinkParams.idempotencyKey
-            body = customerGenerateKycLinkParams.body.toBuilder()
+            kycLinkCreate = customerGenerateKycLinkParams.kycLinkCreate
             additionalHeaders = customerGenerateKycLinkParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerGenerateKycLinkParams.additionalQueryParams.toBuilder()
         }
@@ -101,47 +81,9 @@ private constructor(
 
         fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
 
-        /**
-         * Sets the entire request body.
-         *
-         * This is generally only useful if you are already constructing the body separately.
-         * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [redirectUri]
-         */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
-
-        /**
-         * URI the customer is redirected to after completing the hosted KYC flow. Must start with
-         * `https://` (or `http://` for local development). Embedded in the returned `kycUrl`.
-         */
-        fun redirectUri(redirectUri: String) = apply { body.redirectUri(redirectUri) }
-
-        /**
-         * Sets [Builder.redirectUri] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.redirectUri] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun redirectUri(redirectUri: JsonField<String>) = apply { body.redirectUri(redirectUri) }
-
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
+        /** Request body for generating a hosted KYC link for an existing customer. */
+        fun kycLinkCreate(kycLinkCreate: KycLinkCreate?) = apply {
+            this.kycLinkCreate = kycLinkCreate
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -251,13 +193,13 @@ private constructor(
             CustomerGenerateKycLinkParams(
                 customerId,
                 idempotencyKey,
-                body.build(),
+                kycLinkCreate,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): Body = body
+    fun _body(): KycLinkCreate? = kycLinkCreate
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -275,167 +217,6 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    /** Request body for generating a hosted KYC link for an existing customer. */
-    class Body
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val redirectUri: JsonField<String>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("redirectUri")
-            @ExcludeMissing
-            redirectUri: JsonField<String> = JsonMissing.of()
-        ) : this(redirectUri, mutableMapOf())
-
-        /**
-         * URI the customer is redirected to after completing the hosted KYC flow. Must start with
-         * `https://` (or `http://` for local development). Embedded in the returned `kycUrl`.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun redirectUri(): String? = redirectUri.getNullable("redirectUri")
-
-        /**
-         * Returns the raw JSON value of [redirectUri].
-         *
-         * Unlike [redirectUri], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("redirectUri")
-        @ExcludeMissing
-        fun _redirectUri(): JsonField<String> = redirectUri
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /** Returns a mutable builder for constructing an instance of [Body]. */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [Body]. */
-        class Builder internal constructor() {
-
-            private var redirectUri: JsonField<String> = JsonMissing.of()
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(body: Body) = apply {
-                redirectUri = body.redirectUri
-                additionalProperties = body.additionalProperties.toMutableMap()
-            }
-
-            /**
-             * URI the customer is redirected to after completing the hosted KYC flow. Must start
-             * with `https://` (or `http://` for local development). Embedded in the returned
-             * `kycUrl`.
-             */
-            fun redirectUri(redirectUri: String) = redirectUri(JsonField.of(redirectUri))
-
-            /**
-             * Sets [Builder.redirectUri] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.redirectUri] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun redirectUri(redirectUri: JsonField<String>) = apply {
-                this.redirectUri = redirectUri
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [Body].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): Body = Body(redirectUri, additionalProperties.toMutableMap())
-        }
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): Body = apply {
-            if (validated) {
-                return@apply
-            }
-
-            redirectUri()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = (if (redirectUri.asKnown() == null) 0 else 1)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Body &&
-                redirectUri == other.redirectUri &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(redirectUri, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "Body{redirectUri=$redirectUri, additionalProperties=$additionalProperties}"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -444,14 +225,20 @@ private constructor(
         return other is CustomerGenerateKycLinkParams &&
             customerId == other.customerId &&
             idempotencyKey == other.idempotencyKey &&
-            body == other.body &&
+            kycLinkCreate == other.kycLinkCreate &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(customerId, idempotencyKey, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            customerId,
+            idempotencyKey,
+            kycLinkCreate,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "CustomerGenerateKycLinkParams{customerId=$customerId, idempotencyKey=$idempotencyKey, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerGenerateKycLinkParams{customerId=$customerId, idempotencyKey=$idempotencyKey, kycLinkCreate=$kycLinkCreate, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

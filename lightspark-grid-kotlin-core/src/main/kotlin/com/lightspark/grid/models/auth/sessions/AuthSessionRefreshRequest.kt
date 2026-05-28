@@ -10,39 +10,51 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class SessionListResponse
+/**
+ * Request body for refreshing an active authentication session. The `clientPublicKey` is required
+ * on both steps of the signed-retry flow. On the initial call, Grid binds this key into the Turnkey
+ * session-creation payload returned as `payloadToSign`; on the signed retry, the client echoes the
+ * same key back and Grid uses it to encrypt the newly issued session signing key.
+ */
+class AuthSessionRefreshRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val data: JsonField<List<AuthSession>>,
+    private val clientPublicKey: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("data") @ExcludeMissing data: JsonField<List<AuthSession>> = JsonMissing.of()
-    ) : this(data, mutableMapOf())
+        @JsonProperty("clientPublicKey")
+        @ExcludeMissing
+        clientPublicKey: JsonField<String> = JsonMissing.of()
+    ) : this(clientPublicKey, mutableMapOf())
 
     /**
-     * List of active authentication sessions for the internal account.
+     * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (`04` prefix
+     * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The matching
+     * private key must remain on the client. Grid binds this key into the session-creation payload
+     * on the initial call and seals the returned `encryptedSessionSigningKey` to it on the signed
+     * retry.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun data(): List<AuthSession> = data.getRequired("data")
+    fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
 
     /**
-     * Returns the raw JSON value of [data].
+     * Returns the raw JSON value of [clientPublicKey].
      *
-     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<AuthSession>> = data
+    @JsonProperty("clientPublicKey")
+    @ExcludeMissing
+    fun _clientPublicKey(): JsonField<String> = clientPublicKey
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -59,51 +71,46 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [SessionListResponse].
+         * Returns a mutable builder for constructing an instance of [AuthSessionRefreshRequest].
          *
          * The following fields are required:
          * ```kotlin
-         * .data()
+         * .clientPublicKey()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [SessionListResponse]. */
+    /** A builder for [AuthSessionRefreshRequest]. */
     class Builder internal constructor() {
 
-        private var data: JsonField<MutableList<AuthSession>>? = null
+        private var clientPublicKey: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(sessionListResponse: SessionListResponse) = apply {
-            data = sessionListResponse.data.map { it.toMutableList() }
-            additionalProperties = sessionListResponse.additionalProperties.toMutableMap()
+        internal fun from(authSessionRefreshRequest: AuthSessionRefreshRequest) = apply {
+            clientPublicKey = authSessionRefreshRequest.clientPublicKey
+            additionalProperties = authSessionRefreshRequest.additionalProperties.toMutableMap()
         }
 
-        /** List of active authentication sessions for the internal account. */
-        fun data(data: List<AuthSession>) = data(JsonField.of(data))
+        /**
+         * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (`04` prefix
+         * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The
+         * matching private key must remain on the client. Grid binds this key into the
+         * session-creation payload on the initial call and seals the returned
+         * `encryptedSessionSigningKey` to it on the signed retry.
+         */
+        fun clientPublicKey(clientPublicKey: String) =
+            clientPublicKey(JsonField.of(clientPublicKey))
 
         /**
-         * Sets [Builder.data] to an arbitrary JSON value.
+         * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.data] with a well-typed `List<AuthSession>` value
+         * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun data(data: JsonField<List<AuthSession>>) = apply {
-            this.data = data.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [AuthSession] to [Builder.data].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addData(data: AuthSession) = apply {
-            this.data =
-                (this.data ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("data", it).add(data)
-                }
+        fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
+            this.clientPublicKey = clientPublicKey
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -126,20 +133,20 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [SessionListResponse].
+         * Returns an immutable instance of [AuthSessionRefreshRequest].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
-         * .data()
+         * .clientPublicKey()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): SessionListResponse =
-            SessionListResponse(
-                checkRequired("data", data).map { it.toImmutable() },
+        fun build(): AuthSessionRefreshRequest =
+            AuthSessionRefreshRequest(
+                checkRequired("clientPublicKey", clientPublicKey),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -154,12 +161,12 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): SessionListResponse = apply {
+    fun validate(): AuthSessionRefreshRequest = apply {
         if (validated) {
             return@apply
         }
 
-        data().forEach { it.validate() }
+        clientPublicKey()
         validated = true
     }
 
@@ -176,22 +183,22 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+    internal fun validity(): Int = (if (clientPublicKey.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is SessionListResponse &&
-            data == other.data &&
+        return other is AuthSessionRefreshRequest &&
+            clientPublicKey == other.clientPublicKey &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(data, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(clientPublicKey, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SessionListResponse{data=$data, additionalProperties=$additionalProperties}"
+        "AuthSessionRefreshRequest{clientPublicKey=$clientPublicKey, additionalProperties=$additionalProperties}"
 }

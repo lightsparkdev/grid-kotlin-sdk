@@ -6,14 +6,14 @@ import com.lightspark.grid.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class CustomerGenerateKycLinkParamsTest {
+internal class CustomerCreateKycLinkParamsTest {
 
     @Test
     fun create() {
-        CustomerGenerateKycLinkParams.builder()
+        CustomerCreateKycLinkParams.builder()
             .customerId("customerId")
             .idempotencyKey("<uuid>")
-            .kycLinkCreate(
+            .kycLinkCreateRequest(
                 KycLinkCreate.builder()
                     .redirectUri("https://app.example.com/onboarding/completed")
                     .build()
@@ -23,7 +23,7 @@ internal class CustomerGenerateKycLinkParamsTest {
 
     @Test
     fun pathParams() {
-        val params = CustomerGenerateKycLinkParams.builder().customerId("customerId").build()
+        val params = CustomerCreateKycLinkParams.builder().customerId("customerId").build()
 
         assertThat(params._pathParam(0)).isEqualTo("customerId")
         // out-of-bound path param
@@ -33,10 +33,10 @@ internal class CustomerGenerateKycLinkParamsTest {
     @Test
     fun headers() {
         val params =
-            CustomerGenerateKycLinkParams.builder()
+            CustomerCreateKycLinkParams.builder()
                 .customerId("customerId")
                 .idempotencyKey("<uuid>")
-                .kycLinkCreate(
+                .kycLinkCreateRequest(
                     KycLinkCreate.builder()
                         .redirectUri("https://app.example.com/onboarding/completed")
                         .build()
@@ -50,7 +50,7 @@ internal class CustomerGenerateKycLinkParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = CustomerGenerateKycLinkParams.builder().customerId("customerId").build()
+        val params = CustomerCreateKycLinkParams.builder().customerId("customerId").build()
 
         val headers = params._headers()
 
@@ -60,10 +60,10 @@ internal class CustomerGenerateKycLinkParamsTest {
     @Test
     fun body() {
         val params =
-            CustomerGenerateKycLinkParams.builder()
+            CustomerCreateKycLinkParams.builder()
                 .customerId("customerId")
                 .idempotencyKey("<uuid>")
-                .kycLinkCreate(
+                .kycLinkCreateRequest(
                     KycLinkCreate.builder()
                         .redirectUri("https://app.example.com/onboarding/completed")
                         .build()
@@ -82,7 +82,7 @@ internal class CustomerGenerateKycLinkParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = CustomerGenerateKycLinkParams.builder().customerId("customerId").build()
+        val params = CustomerCreateKycLinkParams.builder().customerId("customerId").build()
 
         val body = params._body()
     }

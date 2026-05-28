@@ -4,50 +4,42 @@ package com.lightspark.grid.models.customers
 
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
-import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
+import com.lightspark.grid.core.immutableEmptyMap
 import java.util.Objects
 
 /**
- * Update mutable fields on an internal account. Today this supports updating the wallet privacy
- * setting for an Embedded Wallet internal account.
+ * Generate a single-use hosted URL the customer can complete to verify their identity, and (where
+ * supported) a provider-specific `token` for embedding the verification flow directly via the
+ * provider's SDK.
  *
- * Updating wallet privacy is a two-step signed-retry flow:
- * 1. Call `PATCH /internal-accounts/{id}` with the request body `{ "privateEnabled": true }` and no
- *    signature headers. Grid returns `202` with `payloadToSign`, `requestId`, and `expiresAt`.
- * 2. Use the session API keypair of a verified authentication credential on the same internal
- *    account to build an API-key stamp over `payloadToSign`, then retry with that full stamp as the
- *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header. The
- *    retry body must carry the same update fields submitted in step 1. The signed retry returns
- *    `200` with the updated internal account.
+ * The customer must already exist — create them with `POST /customers` first. Calling this endpoint
+ * does not change the customer's `kycStatus`; the customer remains `PENDING` until they complete
+ * (or fail) the hosted flow.
+ *
+ * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
+ * single-use and will expire on their own. For request-level retry safety, include an
+ * `Idempotency-Key` header.
  */
-class CustomerUpdateInternalAccountParams
+class CustomerCreateKycLinkParams
 private constructor(
-    private val id: String?,
-    private val gridWalletSignature: String?,
-    private val requestId: String?,
-    private val internalAccountUpdateRequest: InternalAccountUpdateRequest,
+    private val customerId: String?,
+    private val idempotencyKey: String?,
+    private val kycLinkCreateRequest: KycLinkCreate?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun id(): String? = id
+    fun customerId(): String? = customerId
 
-    fun gridWalletSignature(): String? = gridWalletSignature
+    fun idempotencyKey(): String? = idempotencyKey
 
-    fun requestId(): String? = requestId
-
-    /**
-     * Partial request body for `PATCH /internal-accounts/{id}`. At least one update field must be
-     * provided. On step 1 of the signed-retry flow Grid binds the submitted update fields into
-     * `payloadToSign`; on step 2 the client echoes the same fields back and Grid applies the update
-     * to the internal account.
-     */
-    fun internalAccountUpdateRequest(): InternalAccountUpdateRequest = internalAccountUpdateRequest
+    /** Request body for generating a hosted KYC link for an existing customer. */
+    fun kycLinkCreateRequest(): KycLinkCreate? = kycLinkCreateRequest
 
     fun _additionalBodyProperties(): Map<String, JsonValue> =
-        internalAccountUpdateRequest._additionalProperties()
+        kycLinkCreateRequest?._additionalProperties() ?: immutableEmptyMap()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -59,58 +51,39 @@ private constructor(
 
     companion object {
 
+        fun none(): CustomerCreateKycLinkParams = builder().build()
+
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [CustomerUpdateInternalAccountParams].
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .internalAccountUpdateRequest()
-         * ```
+         * Returns a mutable builder for constructing an instance of [CustomerCreateKycLinkParams].
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [CustomerUpdateInternalAccountParams]. */
+    /** A builder for [CustomerCreateKycLinkParams]. */
     class Builder internal constructor() {
 
-        private var id: String? = null
-        private var gridWalletSignature: String? = null
-        private var requestId: String? = null
-        private var internalAccountUpdateRequest: InternalAccountUpdateRequest? = null
+        private var customerId: String? = null
+        private var idempotencyKey: String? = null
+        private var kycLinkCreateRequest: KycLinkCreate? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(
-            customerUpdateInternalAccountParams: CustomerUpdateInternalAccountParams
-        ) = apply {
-            id = customerUpdateInternalAccountParams.id
-            gridWalletSignature = customerUpdateInternalAccountParams.gridWalletSignature
-            requestId = customerUpdateInternalAccountParams.requestId
-            internalAccountUpdateRequest =
-                customerUpdateInternalAccountParams.internalAccountUpdateRequest
-            additionalHeaders = customerUpdateInternalAccountParams.additionalHeaders.toBuilder()
-            additionalQueryParams =
-                customerUpdateInternalAccountParams.additionalQueryParams.toBuilder()
+        internal fun from(customerCreateKycLinkParams: CustomerCreateKycLinkParams) = apply {
+            customerId = customerCreateKycLinkParams.customerId
+            idempotencyKey = customerCreateKycLinkParams.idempotencyKey
+            kycLinkCreateRequest = customerCreateKycLinkParams.kycLinkCreateRequest
+            additionalHeaders = customerCreateKycLinkParams.additionalHeaders.toBuilder()
+            additionalQueryParams = customerCreateKycLinkParams.additionalQueryParams.toBuilder()
         }
 
-        fun id(id: String?) = apply { this.id = id }
+        fun customerId(customerId: String?) = apply { this.customerId = customerId }
 
-        fun gridWalletSignature(gridWalletSignature: String?) = apply {
-            this.gridWalletSignature = gridWalletSignature
+        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
+
+        /** Request body for generating a hosted KYC link for an existing customer. */
+        fun kycLinkCreateRequest(kycLinkCreateRequest: KycLinkCreate?) = apply {
+            this.kycLinkCreateRequest = kycLinkCreateRequest
         }
-
-        fun requestId(requestId: String?) = apply { this.requestId = requestId }
-
-        /**
-         * Partial request body for `PATCH /internal-accounts/{id}`. At least one update field must
-         * be provided. On step 1 of the signed-retry flow Grid binds the submitted update fields
-         * into `payloadToSign`; on step 2 the client echoes the same fields back and Grid applies
-         * the update to the internal account.
-         */
-        fun internalAccountUpdateRequest(
-            internalAccountUpdateRequest: InternalAccountUpdateRequest
-        ) = apply { this.internalAccountUpdateRequest = internalAccountUpdateRequest }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -211,41 +184,32 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [CustomerUpdateInternalAccountParams].
+         * Returns an immutable instance of [CustomerCreateKycLinkParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
-         *
-         * The following fields are required:
-         * ```kotlin
-         * .internalAccountUpdateRequest()
-         * ```
-         *
-         * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): CustomerUpdateInternalAccountParams =
-            CustomerUpdateInternalAccountParams(
-                id,
-                gridWalletSignature,
-                requestId,
-                checkRequired("internalAccountUpdateRequest", internalAccountUpdateRequest),
+        fun build(): CustomerCreateKycLinkParams =
+            CustomerCreateKycLinkParams(
+                customerId,
+                idempotencyKey,
+                kycLinkCreateRequest,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): InternalAccountUpdateRequest = internalAccountUpdateRequest
+    fun _body(): KycLinkCreate? = kycLinkCreateRequest
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> id ?: ""
+            0 -> customerId ?: ""
             else -> ""
         }
 
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
-                requestId?.let { put("Request-Id", it) }
+                idempotencyKey?.let { put("Idempotency-Key", it) }
                 putAll(additionalHeaders)
             }
             .build()
@@ -257,25 +221,23 @@ private constructor(
             return true
         }
 
-        return other is CustomerUpdateInternalAccountParams &&
-            id == other.id &&
-            gridWalletSignature == other.gridWalletSignature &&
-            requestId == other.requestId &&
-            internalAccountUpdateRequest == other.internalAccountUpdateRequest &&
+        return other is CustomerCreateKycLinkParams &&
+            customerId == other.customerId &&
+            idempotencyKey == other.idempotencyKey &&
+            kycLinkCreateRequest == other.kycLinkCreateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
         Objects.hash(
-            id,
-            gridWalletSignature,
-            requestId,
-            internalAccountUpdateRequest,
+            customerId,
+            idempotencyKey,
+            kycLinkCreateRequest,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CustomerUpdateInternalAccountParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, internalAccountUpdateRequest=$internalAccountUpdateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerCreateKycLinkParams{customerId=$customerId, idempotencyKey=$idempotencyKey, kycLinkCreateRequest=$kycLinkCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
