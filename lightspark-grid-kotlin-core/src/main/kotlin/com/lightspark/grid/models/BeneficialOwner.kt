@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.beneficialowners
+package com.lightspark.grid.models
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -15,11 +15,12 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class BeneficialOwnerUpdateResponse
+class BeneficialOwner
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -209,8 +210,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [BeneficialOwnerUpdateResponse].
+         * Returns a mutable builder for constructing an instance of [BeneficialOwner].
          *
          * The following fields are required:
          * ```kotlin
@@ -226,7 +226,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [BeneficialOwnerUpdateResponse]. */
+    /** A builder for [BeneficialOwner]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -239,16 +239,16 @@ private constructor(
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(beneficialOwnerUpdateResponse: BeneficialOwnerUpdateResponse) = apply {
-            id = beneficialOwnerUpdateResponse.id
-            createdAt = beneficialOwnerUpdateResponse.createdAt
-            customerId = beneficialOwnerUpdateResponse.customerId
-            kycStatus = beneficialOwnerUpdateResponse.kycStatus
-            ownershipPercentage = beneficialOwnerUpdateResponse.ownershipPercentage
-            personalInfo = beneficialOwnerUpdateResponse.personalInfo
-            roles = beneficialOwnerUpdateResponse.roles.map { it.toMutableList() }
-            updatedAt = beneficialOwnerUpdateResponse.updatedAt
-            additionalProperties = beneficialOwnerUpdateResponse.additionalProperties.toMutableMap()
+        internal fun from(beneficialOwner: BeneficialOwner) = apply {
+            id = beneficialOwner.id
+            createdAt = beneficialOwner.createdAt
+            customerId = beneficialOwner.customerId
+            kycStatus = beneficialOwner.kycStatus
+            ownershipPercentage = beneficialOwner.ownershipPercentage
+            personalInfo = beneficialOwner.personalInfo
+            roles = beneficialOwner.roles.map { it.toMutableList() }
+            updatedAt = beneficialOwner.updatedAt
+            additionalProperties = beneficialOwner.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for this beneficial owner */
@@ -383,7 +383,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [BeneficialOwnerUpdateResponse].
+         * Returns an immutable instance of [BeneficialOwner].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -400,8 +400,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): BeneficialOwnerUpdateResponse =
-            BeneficialOwnerUpdateResponse(
+        fun build(): BeneficialOwner =
+            BeneficialOwner(
                 checkRequired("id", id),
                 checkRequired("createdAt", createdAt),
                 checkRequired("customerId", customerId),
@@ -424,7 +424,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): BeneficialOwnerUpdateResponse = apply {
+    fun validate(): BeneficialOwner = apply {
         if (validated) {
             return@apply
         }
@@ -776,7 +776,7 @@ private constructor(
             return true
         }
 
-        return other is BeneficialOwnerUpdateResponse &&
+        return other is BeneficialOwner &&
             id == other.id &&
             createdAt == other.createdAt &&
             customerId == other.customerId &&
@@ -805,5 +805,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BeneficialOwnerUpdateResponse{id=$id, createdAt=$createdAt, customerId=$customerId, kycStatus=$kycStatus, ownershipPercentage=$ownershipPercentage, personalInfo=$personalInfo, roles=$roles, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "BeneficialOwner{id=$id, createdAt=$createdAt, customerId=$customerId, kycStatus=$kycStatus, ownershipPercentage=$ownershipPercentage, personalInfo=$personalInfo, roles=$roles, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

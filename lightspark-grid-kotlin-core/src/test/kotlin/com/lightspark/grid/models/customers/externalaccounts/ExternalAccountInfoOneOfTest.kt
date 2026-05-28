@@ -7,6 +7,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.SlvBeneficiary
+import com.lightspark.grid.models.SwiftBeneficiary
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -103,7 +104,8 @@ internal class ExternalAccountInfoOneOfTest {
             ExternalAccountInfoOneOf.SwiftAccount.builder()
                 .bankName("Deutsche Bank")
                 .beneficiary(
-                    ExternalAccountInfoOneOf.SwiftAccount.Beneficiary.Individual.builder()
+                    SwiftBeneficiary.builder()
+                        .beneficiaryType(SwiftBeneficiary.BeneficiaryType.INDIVIDUAL)
                         .fullName("fullName")
                         .address(
                             Address.builder()
@@ -143,7 +145,8 @@ internal class ExternalAccountInfoOneOfTest {
                 ExternalAccountInfoOneOf.SwiftAccount.builder()
                     .bankName("Deutsche Bank")
                     .beneficiary(
-                        ExternalAccountInfoOneOf.SwiftAccount.Beneficiary.Individual.builder()
+                        SwiftBeneficiary.builder()
+                            .beneficiaryType(SwiftBeneficiary.BeneficiaryType.INDIVIDUAL)
                             .fullName("fullName")
                             .address(
                                 Address.builder()

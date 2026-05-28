@@ -1,25 +1,26 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.beneficialowners
+package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class BeneficialOwnerRetrieveResponseTest {
+internal class BeneficialOwnerTest {
 
     @Test
     fun create() {
-        val beneficialOwnerRetrieveResponse =
-            BeneficialOwnerRetrieveResponse.builder()
+        val beneficialOwner =
+            BeneficialOwner.builder()
                 .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .kycStatus(BeneficialOwnerRetrieveResponse.KycStatus.APPROVED)
+                .kycStatus(BeneficialOwner.KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerPersonalInfo.builder()
@@ -45,21 +46,20 @@ internal class BeneficialOwnerRetrieveResponseTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRetrieveResponse.Role.UBO)
-                .addRole(BeneficialOwnerRetrieveResponse.Role.DIRECTOR)
+                .addRole(BeneficialOwner.Role.UBO)
+                .addRole(BeneficialOwner.Role.DIRECTOR)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
-        assertThat(beneficialOwnerRetrieveResponse.id())
+        assertThat(beneficialOwner.id())
             .isEqualTo("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(beneficialOwnerRetrieveResponse.createdAt())
+        assertThat(beneficialOwner.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-        assertThat(beneficialOwnerRetrieveResponse.customerId())
+        assertThat(beneficialOwner.customerId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(beneficialOwnerRetrieveResponse.kycStatus())
-            .isEqualTo(BeneficialOwnerRetrieveResponse.KycStatus.APPROVED)
-        assertThat(beneficialOwnerRetrieveResponse.ownershipPercentage()).isEqualTo(51L)
-        assertThat(beneficialOwnerRetrieveResponse.personalInfo())
+        assertThat(beneficialOwner.kycStatus()).isEqualTo(BeneficialOwner.KycStatus.APPROVED)
+        assertThat(beneficialOwner.ownershipPercentage()).isEqualTo(51L)
+        assertThat(beneficialOwner.personalInfo())
             .isEqualTo(
                 BeneficialOwnerPersonalInfo.builder()
                     .address(
@@ -84,24 +84,21 @@ internal class BeneficialOwnerRetrieveResponseTest {
                     .phoneNumber("+14155550192")
                     .build()
             )
-        assertThat(beneficialOwnerRetrieveResponse.roles())
-            .containsExactly(
-                BeneficialOwnerRetrieveResponse.Role.UBO,
-                BeneficialOwnerRetrieveResponse.Role.DIRECTOR,
-            )
-        assertThat(beneficialOwnerRetrieveResponse.updatedAt())
+        assertThat(beneficialOwner.roles())
+            .containsExactly(BeneficialOwner.Role.UBO, BeneficialOwner.Role.DIRECTOR)
+        assertThat(beneficialOwner.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val beneficialOwnerRetrieveResponse =
-            BeneficialOwnerRetrieveResponse.builder()
+        val beneficialOwner =
+            BeneficialOwner.builder()
                 .id("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .kycStatus(BeneficialOwnerRetrieveResponse.KycStatus.APPROVED)
+                .kycStatus(BeneficialOwner.KycStatus.APPROVED)
                 .ownershipPercentage(51L)
                 .personalInfo(
                     BeneficialOwnerPersonalInfo.builder()
@@ -127,18 +124,17 @@ internal class BeneficialOwnerRetrieveResponseTest {
                         .phoneNumber("+14155550192")
                         .build()
                 )
-                .addRole(BeneficialOwnerRetrieveResponse.Role.UBO)
-                .addRole(BeneficialOwnerRetrieveResponse.Role.DIRECTOR)
+                .addRole(BeneficialOwner.Role.UBO)
+                .addRole(BeneficialOwner.Role.DIRECTOR)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
-        val roundtrippedBeneficialOwnerRetrieveResponse =
+        val roundtrippedBeneficialOwner =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(beneficialOwnerRetrieveResponse),
-                jacksonTypeRef<BeneficialOwnerRetrieveResponse>(),
+                jsonMapper.writeValueAsString(beneficialOwner),
+                jacksonTypeRef<BeneficialOwner>(),
             )
 
-        assertThat(roundtrippedBeneficialOwnerRetrieveResponse)
-            .isEqualTo(beneficialOwnerRetrieveResponse)
+        assertThat(roundtrippedBeneficialOwner).isEqualTo(beneficialOwner)
     }
 }

@@ -395,7 +395,7 @@ To access individual page items and manually request the next page, use the `ite
 
 ```kotlin
 import com.lightspark.grid.models.customers.CustomerListPage
-import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerListResponse
 
 val page: CustomerListPage = client.customers().list()
 while (true) {
@@ -649,9 +649,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 ```kotlin
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.config.ConfigUpdateParams
+import com.lightspark.grid.models.config.EmbeddedWalletConfig
 
 val params: ConfigUpdateParams = ConfigUpdateParams.builder()
-    .embeddedWalletConfig(ConfigUpdateParams.EmbeddedWalletConfig.builder()
+    .embeddedWalletConfig(EmbeddedWalletConfig.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build()

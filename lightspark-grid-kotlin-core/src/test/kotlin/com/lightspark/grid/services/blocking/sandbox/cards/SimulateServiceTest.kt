@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking.sandbox.cards
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.quotes.Currency
+import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
@@ -38,7 +39,7 @@ internal class SimulateServiceTest {
                             .build()
                     )
                     .merchant(
-                        SimulateAuthorizationParams.Merchant.builder()
+                        CardMerchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
                             .country("US")
                             .mcc("5814")

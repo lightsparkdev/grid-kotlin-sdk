@@ -15,7 +15,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-class InternalAccountExportResponse
+class CustomerExportResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -90,8 +90,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [InternalAccountExportResponse].
+         * Returns a mutable builder for constructing an instance of [CustomerExportResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -102,17 +101,17 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [InternalAccountExportResponse]. */
+    /** A builder for [CustomerExportResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
         private var encryptedWalletCredentials: JsonField<String>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(internalAccountExportResponse: InternalAccountExportResponse) = apply {
-            id = internalAccountExportResponse.id
-            encryptedWalletCredentials = internalAccountExportResponse.encryptedWalletCredentials
-            additionalProperties = internalAccountExportResponse.additionalProperties.toMutableMap()
+        internal fun from(customerExportResponse: CustomerExportResponse) = apply {
+            id = customerExportResponse.id
+            encryptedWalletCredentials = customerExportResponse.encryptedWalletCredentials
+            additionalProperties = customerExportResponse.additionalProperties.toMutableMap()
         }
 
         /** The id of the internal account that was exported. */
@@ -173,7 +172,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [InternalAccountExportResponse].
+         * Returns an immutable instance of [CustomerExportResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -185,8 +184,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): InternalAccountExportResponse =
-            InternalAccountExportResponse(
+        fun build(): CustomerExportResponse =
+            CustomerExportResponse(
                 checkRequired("id", id),
                 checkRequired("encryptedWalletCredentials", encryptedWalletCredentials),
                 additionalProperties.toMutableMap(),
@@ -203,7 +202,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): InternalAccountExportResponse = apply {
+    fun validate(): CustomerExportResponse = apply {
         if (validated) {
             return@apply
         }
@@ -235,7 +234,7 @@ private constructor(
             return true
         }
 
-        return other is InternalAccountExportResponse &&
+        return other is CustomerExportResponse &&
             id == other.id &&
             encryptedWalletCredentials == other.encryptedWalletCredentials &&
             additionalProperties == other.additionalProperties
@@ -248,5 +247,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccountExportResponse{id=$id, encryptedWalletCredentials=$encryptedWalletCredentials, additionalProperties=$additionalProperties}"
+        "CustomerExportResponse{id=$id, encryptedWalletCredentials=$encryptedWalletCredentials, additionalProperties=$additionalProperties}"
 }

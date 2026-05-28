@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.customers
+package com.lightspark.grid.models.sandbox.cards.simulate
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -15,45 +15,49 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Request body for `POST /internal-accounts/{id}/export`. The `clientPublicKey` is required on both
- * steps of the signed-retry flow. On step 1 Grid binds it into `payloadToSign` so the subsequent
- * stamp in `Grid-Wallet-Signature` commits to the target pubkey; on step 2 the client echoes the
- * same `clientPublicKey` back and Grid uses it to encrypt the wallet credentials returned in the
- * `200` response.
- */
-class InternalAccountExportRequest
+class CardRefundSummary
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val clientPublicKey: JsonField<String>,
+    private val count: JsonField<Long>,
+    private val totalAmount: JsonField<Long>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("clientPublicKey")
-        @ExcludeMissing
-        clientPublicKey: JsonField<String> = JsonMissing.of()
-    ) : this(clientPublicKey, mutableMapOf())
+        @JsonProperty("count") @ExcludeMissing count: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("totalAmount") @ExcludeMissing totalAmount: JsonField<Long> = JsonMissing.of(),
+    ) : this(count, totalAmount, mutableMapOf())
 
     /**
-     * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are `04`
-     * (the uncompressed-point indicator). Generate a new keypair for each export and discard the
-     * private key after decrypting the response.
+     * Number of refund (return) events received for this transaction.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun clientPublicKey(): String = clientPublicKey.getRequired("clientPublicKey")
+    fun count(): Long = count.getRequired("count")
 
     /**
-     * Returns the raw JSON value of [clientPublicKey].
+     * Sum of all refund amounts in the smallest unit of the funding source's currency.
      *
-     * Unlike [clientPublicKey], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("clientPublicKey")
-    @ExcludeMissing
-    fun _clientPublicKey(): JsonField<String> = clientPublicKey
+    fun totalAmount(): Long = totalAmount.getRequired("totalAmount")
+
+    /**
+     * Returns the raw JSON value of [count].
+     *
+     * Unlike [count], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("count") @ExcludeMissing fun _count(): JsonField<Long> = count
+
+    /**
+     * Returns the raw JSON value of [totalAmount].
+     *
+     * Unlike [totalAmount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("totalAmount") @ExcludeMissing fun _totalAmount(): JsonField<Long> = totalAmount
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -70,45 +74,52 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [InternalAccountExportRequest].
+         * Returns a mutable builder for constructing an instance of [CardRefundSummary].
          *
          * The following fields are required:
          * ```kotlin
-         * .clientPublicKey()
+         * .count()
+         * .totalAmount()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [InternalAccountExportRequest]. */
+    /** A builder for [CardRefundSummary]. */
     class Builder internal constructor() {
 
-        private var clientPublicKey: JsonField<String>? = null
+        private var count: JsonField<Long>? = null
+        private var totalAmount: JsonField<Long>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(internalAccountExportRequest: InternalAccountExportRequest) = apply {
-            clientPublicKey = internalAccountExportRequest.clientPublicKey
-            additionalProperties = internalAccountExportRequest.additionalProperties.toMutableMap()
+        internal fun from(cardRefundSummary: CardRefundSummary) = apply {
+            count = cardRefundSummary.count
+            totalAmount = cardRefundSummary.totalAmount
+            additionalProperties = cardRefundSummary.additionalProperties.toMutableMap()
         }
 
-        /**
-         * Fresh P-256 public key, uncompressed SEC1 hex — 130 hex chars where the first two are
-         * `04` (the uncompressed-point indicator). Generate a new keypair for each export and
-         * discard the private key after decrypting the response.
-         */
-        fun clientPublicKey(clientPublicKey: String) =
-            clientPublicKey(JsonField.of(clientPublicKey))
+        /** Number of refund (return) events received for this transaction. */
+        fun count(count: Long) = count(JsonField.of(count))
 
         /**
-         * Sets [Builder.clientPublicKey] to an arbitrary JSON value.
+         * Sets [Builder.count] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.clientPublicKey] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.count] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun clientPublicKey(clientPublicKey: JsonField<String>) = apply {
-            this.clientPublicKey = clientPublicKey
-        }
+        fun count(count: JsonField<Long>) = apply { this.count = count }
+
+        /** Sum of all refund amounts in the smallest unit of the funding source's currency. */
+        fun totalAmount(totalAmount: Long) = totalAmount(JsonField.of(totalAmount))
+
+        /**
+         * Sets [Builder.totalAmount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.totalAmount] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun totalAmount(totalAmount: JsonField<Long>) = apply { this.totalAmount = totalAmount }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -130,20 +141,22 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [InternalAccountExportRequest].
+         * Returns an immutable instance of [CardRefundSummary].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
-         * .clientPublicKey()
+         * .count()
+         * .totalAmount()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): InternalAccountExportRequest =
-            InternalAccountExportRequest(
-                checkRequired("clientPublicKey", clientPublicKey),
+        fun build(): CardRefundSummary =
+            CardRefundSummary(
+                checkRequired("count", count),
+                checkRequired("totalAmount", totalAmount),
                 additionalProperties.toMutableMap(),
             )
     }
@@ -158,12 +171,13 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): InternalAccountExportRequest = apply {
+    fun validate(): CardRefundSummary = apply {
         if (validated) {
             return@apply
         }
 
-        clientPublicKey()
+        count()
+        totalAmount()
         validated = true
     }
 
@@ -180,22 +194,24 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int = (if (clientPublicKey.asKnown() == null) 0 else 1)
+    internal fun validity(): Int =
+        (if (count.asKnown() == null) 0 else 1) + (if (totalAmount.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is InternalAccountExportRequest &&
-            clientPublicKey == other.clientPublicKey &&
+        return other is CardRefundSummary &&
+            count == other.count &&
+            totalAmount == other.totalAmount &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(clientPublicKey, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(count, totalAmount, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccountExportRequest{clientPublicKey=$clientPublicKey, additionalProperties=$additionalProperties}"
+        "CardRefundSummary{count=$count, totalAmount=$totalAmount, additionalProperties=$additionalProperties}"
 }
