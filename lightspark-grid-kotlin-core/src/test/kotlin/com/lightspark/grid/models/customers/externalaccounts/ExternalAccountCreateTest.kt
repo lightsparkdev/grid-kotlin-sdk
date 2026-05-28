@@ -51,7 +51,7 @@ internal class ExternalAccountCreateTest {
 
         assertThat(externalAccountCreate.accountInfo())
             .isEqualTo(
-                ExternalAccountCreateInfoOneOf.ofAedAccount(
+                ExternalAccountCreate.AccountInfo.ofAedAccount(
                     AedExternalAccountCreateInfo.builder()
                         .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                         .beneficiary(

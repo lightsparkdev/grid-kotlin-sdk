@@ -52,7 +52,7 @@ internal class ExternalAccountListResponseTest {
                                 .build()
                         )
                         .currency("USD")
-                        .status(ExternalAccountStatus.PENDING)
+                        .status(ExternalAccount.Status.ACTIVE)
                         .beneficiaryVerificationStatus(
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )
@@ -108,7 +108,7 @@ internal class ExternalAccountListResponseTest {
                             .build()
                     )
                     .currency("USD")
-                    .status(ExternalAccountStatus.PENDING)
+                    .status(ExternalAccount.Status.ACTIVE)
                     .beneficiaryVerificationStatus(
                         ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                     )
@@ -168,7 +168,7 @@ internal class ExternalAccountListResponseTest {
                                 .build()
                         )
                         .currency("USD")
-                        .status(ExternalAccountStatus.PENDING)
+                        .status(ExternalAccount.Status.ACTIVE)
                         .beneficiaryVerificationStatus(
                             ExternalAccount.BeneficiaryVerificationStatus.MATCHED
                         )

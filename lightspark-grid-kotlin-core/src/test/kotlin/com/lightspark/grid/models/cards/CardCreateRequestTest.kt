@@ -14,14 +14,14 @@ internal class CardCreateRequestTest {
         val cardCreateRequest =
             CardCreateRequest.builder()
                 .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .form(CardForm.VIRTUAL)
+                .form(CardCreateRequest.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .platformCardId("card-emp-aary-001")
                 .build()
 
         assertThat(cardCreateRequest.cardholderId())
             .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(cardCreateRequest.form()).isEqualTo(CardForm.VIRTUAL)
+        assertThat(cardCreateRequest.form()).isEqualTo(CardCreateRequest.Form.VIRTUAL)
         assertThat(cardCreateRequest.fundingSources())
             .containsExactly("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(cardCreateRequest.platformCardId()).isEqualTo("card-emp-aary-001")
@@ -33,7 +33,7 @@ internal class CardCreateRequestTest {
         val cardCreateRequest =
             CardCreateRequest.builder()
                 .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .form(CardForm.VIRTUAL)
+                .form(CardCreateRequest.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .platformCardId("card-emp-aary-001")
                 .build()

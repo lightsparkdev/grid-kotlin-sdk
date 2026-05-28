@@ -5,7 +5,6 @@ package com.lightspark.grid.services.blocking
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.documents.DocumentReplaceParams
 import com.lightspark.grid.models.documents.DocumentReplaceRequest
-import com.lightspark.grid.models.documents.DocumentType
 import com.lightspark.grid.models.documents.DocumentUploadRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -80,7 +79,7 @@ internal class DocumentServiceTest {
                     .documentReplaceRequest(
                         DocumentReplaceRequest.builder()
                             .country("US")
-                            .documentType(DocumentType.PASSPORT)
+                            .documentType(DocumentReplaceRequest.DocumentType.PASSPORT)
                             .file("Example data")
                             .documentNumber("A12345678")
                             .issuingAuthority("U.S. Department of State")
@@ -110,7 +109,7 @@ internal class DocumentServiceTest {
                 DocumentUploadRequest.builder()
                     .country("US")
                     .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                    .documentType(DocumentType.PASSPORT)
+                    .documentType(DocumentUploadRequest.DocumentType.PASSPORT)
                     .file("Example data")
                     .documentNumber("A12345678")
                     .issuingAuthority("U.S. Department of State")

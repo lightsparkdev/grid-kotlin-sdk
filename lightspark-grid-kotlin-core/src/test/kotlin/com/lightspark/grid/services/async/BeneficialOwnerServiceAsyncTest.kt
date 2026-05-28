@@ -6,8 +6,6 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateRequest
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfoUpdate
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerRole
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
@@ -58,8 +56,8 @@ internal class BeneficialOwnerServiceAsyncTest {
                             .phoneNumber("+14155550192")
                             .build()
                     )
-                    .addRole(BeneficialOwnerRole.UBO)
-                    .addRole(BeneficialOwnerRole.DIRECTOR)
+                    .addRole(BeneficialOwnerCreateRequest.Role.UBO)
+                    .addRole(BeneficialOwnerCreateRequest.Role.DIRECTOR)
                     .build()
             )
 
@@ -103,7 +101,7 @@ internal class BeneficialOwnerServiceAsyncTest {
                         BeneficialOwnerUpdateRequest.builder()
                             .ownershipPercentage(51L)
                             .personalInfo(
-                                BeneficialOwnerPersonalInfoUpdate.builder()
+                                BeneficialOwnerUpdateRequest.PersonalInfo.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -119,15 +117,15 @@ internal class BeneficialOwnerServiceAsyncTest {
                                     .email("jane.smith@acmecorp.com")
                                     .firstName("Jane")
                                     .identifier("123-45-6789")
-                                    .idType(BeneficialOwnerPersonalInfoUpdate.IdType.SSN)
+                                    .idType(BeneficialOwnerUpdateRequest.PersonalInfo.IdType.SSN)
                                     .lastName("Smith")
                                     .middleName("Marie")
                                     .nationality("US")
                                     .phoneNumber("+14155550192")
                                     .build()
                             )
-                            .addRole(BeneficialOwnerRole.UBO)
-                            .addRole(BeneficialOwnerRole.DIRECTOR)
+                            .addRole(BeneficialOwnerUpdateRequest.Role.UBO)
+                            .addRole(BeneficialOwnerUpdateRequest.Role.DIRECTOR)
                             .build()
                     )
                     .build()

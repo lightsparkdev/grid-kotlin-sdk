@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.sandbox.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -17,14 +16,14 @@ internal class TestWebhookRequestTest {
             TestWebhookRequest.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(JsonValue.from("TEST"))
+                .type(TestWebhookRequest.Type.TEST)
                 .build()
 
         assertThat(testWebhookRequest.id())
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(testWebhookRequest.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-        assertThat(testWebhookRequest._type()).isEqualTo(JsonValue.from("TEST"))
+        assertThat(testWebhookRequest.type()).isEqualTo(TestWebhookRequest.Type.TEST)
     }
 
     @Test
@@ -34,7 +33,7 @@ internal class TestWebhookRequestTest {
             TestWebhookRequest.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(JsonValue.from("TEST"))
+                .type(TestWebhookRequest.Type.TEST)
                 .build()
 
         val roundtrippedTestWebhookRequest =

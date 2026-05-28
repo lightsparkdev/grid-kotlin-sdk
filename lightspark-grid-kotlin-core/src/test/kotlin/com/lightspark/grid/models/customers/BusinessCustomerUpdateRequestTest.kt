@@ -4,7 +4,6 @@ package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.BusinessInfoUpdate
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
@@ -28,22 +27,32 @@ internal class BusinessCustomerUpdateRequestTest {
                         .build()
                 )
                 .businessInfo(
-                    BusinessInfoUpdate.builder()
-                        .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                    BusinessCustomerUpdateRequest.BusinessInfo.builder()
+                        .businessType(
+                            BusinessCustomerUpdateRequest.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(EntityType.LLC)
+                        .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomerUpdateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomerUpdateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
+                                .CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
@@ -51,7 +60,7 @@ internal class BusinessCustomerUpdateRequestTest {
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
-                .kybStatus(KybStatus.APPROVED)
+                .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -70,22 +79,30 @@ internal class BusinessCustomerUpdateRequestTest {
             )
         assertThat(businessCustomerUpdateRequest.businessInfo())
             .isEqualTo(
-                BusinessInfoUpdate.builder()
-                    .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                BusinessCustomerUpdateRequest.BusinessInfo.builder()
+                    .businessType(
+                        BusinessCustomerUpdateRequest.BusinessInfo.BusinessType
+                            .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                    )
                     .addCountriesOfOperation("US")
                     .country("US")
                     .doingBusinessAs("Acme")
-                    .entityType(EntityType.LLC)
+                    .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
                     .expectedMonthlyTransactionCount(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        BusinessCustomerUpdateRequest.BusinessInfo.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
                     )
                     .expectedMonthlyTransactionVolume(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        BusinessCustomerUpdateRequest.BusinessInfo.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
                     )
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
-                    .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                    .purposeOfAccount(
+                        BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
+                            .CONTRACTOR_PAYOUTS
+                    )
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
                     .taxId("47-1234567")
@@ -93,7 +110,8 @@ internal class BusinessCustomerUpdateRequestTest {
             )
         assertThat(businessCustomerUpdateRequest.currencies()).containsExactly("USD", "EUR", "USDC")
         assertThat(businessCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
-        assertThat(businessCustomerUpdateRequest.kybStatus()).isEqualTo(KybStatus.APPROVED)
+        assertThat(businessCustomerUpdateRequest.kybStatus())
+            .isEqualTo(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
         assertThat(businessCustomerUpdateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -115,22 +133,32 @@ internal class BusinessCustomerUpdateRequestTest {
                         .build()
                 )
                 .businessInfo(
-                    BusinessInfoUpdate.builder()
-                        .businessType(BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING)
+                    BusinessCustomerUpdateRequest.BusinessInfo.builder()
+                        .businessType(
+                            BusinessCustomerUpdateRequest.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(EntityType.LLC)
+                        .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomerUpdateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomerUpdateRequest.BusinessInfo
+                                .ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
+                                .CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
@@ -138,7 +166,7 @@ internal class BusinessCustomerUpdateRequestTest {
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
-                .kybStatus(KybStatus.APPROVED)
+                .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
