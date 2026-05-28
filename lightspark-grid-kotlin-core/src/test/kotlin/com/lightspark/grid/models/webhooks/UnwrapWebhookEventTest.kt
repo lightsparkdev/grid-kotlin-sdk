@@ -14,7 +14,6 @@ import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.IndividualCustomerFields
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.documents.DocumentType
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.platform.externalaccounts.UsdAccountInfo
@@ -1467,7 +1466,9 @@ internal class UnwrapWebhookEventTest {
                                 .reason("Business address line 1 is required")
                                 .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .type(VerificationError.Type.MISSING_FIELD)
-                                .addAcceptedDocumentType(DocumentType.PASSPORT)
+                                .addAcceptedDocumentType(
+                                    VerificationError.AcceptedDocumentType.PASSPORT
+                                )
                                 .field("customer.address.line1")
                                 .build()
                         )
@@ -1513,7 +1514,9 @@ internal class UnwrapWebhookEventTest {
                                     .reason("Business address line 1 is required")
                                     .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                     .type(VerificationError.Type.MISSING_FIELD)
-                                    .addAcceptedDocumentType(DocumentType.PASSPORT)
+                                    .addAcceptedDocumentType(
+                                        VerificationError.AcceptedDocumentType.PASSPORT
+                                    )
                                     .field("customer.address.line1")
                                     .build()
                             )

@@ -13,38 +13,38 @@ class DocumentListPageAsync
 private constructor(
     private val service: DocumentServiceAsync,
     private val params: DocumentListParams,
-    private val response: DocumentListResponse,
-) : PageAsync<Document> {
+    private val response: DocumentListPageResponse,
+) : PageAsync<DocumentListResponse> {
 
     /**
-     * Delegates to [DocumentListResponse], but gracefully handles missing data.
+     * Delegates to [DocumentListPageResponse], but gracefully handles missing data.
      *
-     * @see DocumentListResponse.data
+     * @see DocumentListPageResponse.data
      */
-    fun data(): List<Document> = response._data().getNullable("data") ?: emptyList()
+    fun data(): List<DocumentListResponse> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [DocumentListResponse], but gracefully handles missing data.
+     * Delegates to [DocumentListPageResponse], but gracefully handles missing data.
      *
-     * @see DocumentListResponse.nextCursor
+     * @see DocumentListPageResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [DocumentListResponse], but gracefully handles missing data.
+     * Delegates to [DocumentListPageResponse], but gracefully handles missing data.
      *
-     * @see DocumentListResponse.hasMore
+     * @see DocumentListPageResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [DocumentListResponse], but gracefully handles missing data.
+     * Delegates to [DocumentListPageResponse], but gracefully handles missing data.
      *
-     * @see DocumentListResponse.totalCount
+     * @see DocumentListPageResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
-    override fun items(): List<Document> = data()
+    override fun items(): List<DocumentListResponse> = data()
 
     override fun hasNextPage(): Boolean = items().isNotEmpty() && nextCursor() != null
 
@@ -56,13 +56,13 @@ private constructor(
 
     override suspend fun nextPage(): DocumentListPageAsync = service.list(nextPageParams())
 
-    fun autoPager(): AutoPagerAsync<Document> = AutoPagerAsync.from(this)
+    fun autoPager(): AutoPagerAsync<DocumentListResponse> = AutoPagerAsync.from(this)
 
     /** The parameters that were used to request this page. */
     fun params(): DocumentListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): DocumentListResponse = response
+    fun response(): DocumentListPageResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: DocumentServiceAsync? = null
         private var params: DocumentListParams? = null
-        private var response: DocumentListResponse? = null
+        private var response: DocumentListPageResponse? = null
 
         internal fun from(documentListPageAsync: DocumentListPageAsync) = apply {
             service = documentListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: DocumentListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: DocumentListResponse) = apply { this.response = response }
+        fun response(response: DocumentListPageResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [DocumentListPageAsync].

@@ -13,16 +13,12 @@ internal class DocumentReplaceParamsTest {
     fun create() {
         DocumentReplaceParams.builder()
             .documentId("documentId")
-            .documentReplaceRequest(
-                DocumentReplaceRequest.builder()
-                    .country("US")
-                    .documentType(DocumentType.PASSPORT)
-                    .file("Example data")
-                    .documentNumber("A12345678")
-                    .issuingAuthority("U.S. Department of State")
-                    .side(DocumentReplaceRequest.Side.FRONT)
-                    .build()
-            )
+            .country("US")
+            .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
+            .file("Example data".byteInputStream())
+            .documentNumber("A12345678")
+            .issuingAuthority("U.S. Department of State")
+            .side(DocumentReplaceParams.Side.FRONT)
             .build()
     }
 
@@ -31,13 +27,9 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .documentReplaceRequest(
-                    DocumentReplaceRequest.builder()
-                        .country("US")
-                        .documentType(DocumentType.PASSPORT)
-                        .file("Example data")
-                        .build()
-                )
+                .country("US")
+                .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
+                .file("Example data".byteInputStream())
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("documentId")
@@ -50,16 +42,12 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .documentReplaceRequest(
-                    DocumentReplaceRequest.builder()
-                        .country("US")
-                        .documentType(DocumentType.PASSPORT)
-                        .file("Example data")
-                        .documentNumber("A12345678")
-                        .issuingAuthority("U.S. Department of State")
-                        .side(DocumentReplaceRequest.Side.FRONT)
-                        .build()
-                )
+                .country("US")
+                .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
+                .file("Example data".byteInputStream())
+                .documentNumber("A12345678")
+                .issuingAuthority("U.S. Department of State")
+                .side(DocumentReplaceParams.Side.FRONT)
                 .build()
 
         val body = params._body()
@@ -74,20 +62,13 @@ internal class DocumentReplaceParamsTest {
             )
             .isEqualTo(
                 mapOf(
-                        "DocumentReplaceRequest" to
-                            MultipartField.builder<DocumentReplaceRequest>()
-                                .value(
-                                    DocumentReplaceRequest.builder()
-                                        .country("US")
-                                        .documentType(DocumentType.PASSPORT)
-                                        .file("Example data")
-                                        .documentNumber("A12345678")
-                                        .issuingAuthority("U.S. Department of State")
-                                        .side(DocumentReplaceRequest.Side.FRONT)
-                                        .build()
-                                )
-                                .contentType("application/octet-stream")
-                                .build()
+                        "country" to MultipartField.of("US"),
+                        "documentType" to
+                            MultipartField.of(DocumentReplaceParams.DocumentType.PASSPORT),
+                        "file" to MultipartField.of("Example data".byteInputStream()),
+                        "documentNumber" to MultipartField.of("A12345678"),
+                        "issuingAuthority" to MultipartField.of("U.S. Department of State"),
+                        "side" to MultipartField.of(DocumentReplaceParams.Side.FRONT),
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }
@@ -100,13 +81,9 @@ internal class DocumentReplaceParamsTest {
         val params =
             DocumentReplaceParams.builder()
                 .documentId("documentId")
-                .documentReplaceRequest(
-                    DocumentReplaceRequest.builder()
-                        .country("US")
-                        .documentType(DocumentType.PASSPORT)
-                        .file("Example data")
-                        .build()
-                )
+                .country("US")
+                .documentType(DocumentReplaceParams.DocumentType.PASSPORT)
+                .file("Example data".byteInputStream())
                 .build()
 
         val body = params._body()
@@ -121,17 +98,10 @@ internal class DocumentReplaceParamsTest {
             )
             .isEqualTo(
                 mapOf(
-                        "DocumentReplaceRequest" to
-                            MultipartField.builder<DocumentReplaceRequest>()
-                                .value(
-                                    DocumentReplaceRequest.builder()
-                                        .country("US")
-                                        .documentType(DocumentType.PASSPORT)
-                                        .file("Example data")
-                                        .build()
-                                )
-                                .contentType("application/octet-stream")
-                                .build()
+                        "country" to MultipartField.of("US"),
+                        "documentType" to
+                            MultipartField.of(DocumentReplaceParams.DocumentType.PASSPORT),
+                        "file" to MultipartField.of("Example data".byteInputStream()),
                     )
                     .mapValues { (_, field) ->
                         field.map { (it as? ByteArray)?.inputStream() ?: it }

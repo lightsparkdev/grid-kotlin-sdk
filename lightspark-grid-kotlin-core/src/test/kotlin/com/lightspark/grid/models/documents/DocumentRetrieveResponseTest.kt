@@ -8,64 +8,65 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class DocumentListResponseTest {
+internal class DocumentRetrieveResponseTest {
 
     @Test
     fun create() {
-        val documentListResponse =
-            DocumentListResponse.builder()
+        val documentRetrieveResponse =
+            DocumentRetrieveResponse.builder()
                 .id("Document:019542f5-b3e7-1d02-0000-000000000001")
                 .country("US")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                .documentType(DocumentListResponse.DocumentType.PASSPORT)
+                .documentType(DocumentRetrieveResponse.DocumentType.PASSPORT)
                 .fileName("passport_scan.pdf")
                 .documentNumber("A12345678")
                 .issuingAuthority("U.S. Department of State")
-                .side(DocumentListResponse.Side.FRONT)
+                .side(DocumentRetrieveResponse.Side.FRONT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
-        assertThat(documentListResponse.id())
+        assertThat(documentRetrieveResponse.id())
             .isEqualTo("Document:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(documentListResponse.country()).isEqualTo("US")
-        assertThat(documentListResponse.createdAt())
+        assertThat(documentRetrieveResponse.country()).isEqualTo("US")
+        assertThat(documentRetrieveResponse.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-        assertThat(documentListResponse.documentHolder())
+        assertThat(documentRetrieveResponse.documentHolder())
             .isEqualTo("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(documentListResponse.documentType())
-            .isEqualTo(DocumentListResponse.DocumentType.PASSPORT)
-        assertThat(documentListResponse.fileName()).isEqualTo("passport_scan.pdf")
-        assertThat(documentListResponse.documentNumber()).isEqualTo("A12345678")
-        assertThat(documentListResponse.issuingAuthority()).isEqualTo("U.S. Department of State")
-        assertThat(documentListResponse.side()).isEqualTo(DocumentListResponse.Side.FRONT)
-        assertThat(documentListResponse.updatedAt())
+        assertThat(documentRetrieveResponse.documentType())
+            .isEqualTo(DocumentRetrieveResponse.DocumentType.PASSPORT)
+        assertThat(documentRetrieveResponse.fileName()).isEqualTo("passport_scan.pdf")
+        assertThat(documentRetrieveResponse.documentNumber()).isEqualTo("A12345678")
+        assertThat(documentRetrieveResponse.issuingAuthority())
+            .isEqualTo("U.S. Department of State")
+        assertThat(documentRetrieveResponse.side()).isEqualTo(DocumentRetrieveResponse.Side.FRONT)
+        assertThat(documentRetrieveResponse.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val documentListResponse =
-            DocumentListResponse.builder()
+        val documentRetrieveResponse =
+            DocumentRetrieveResponse.builder()
                 .id("Document:019542f5-b3e7-1d02-0000-000000000001")
                 .country("US")
                 .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .documentHolder("BeneficialOwner:019542f5-b3e7-1d02-0000-000000000001")
-                .documentType(DocumentListResponse.DocumentType.PASSPORT)
+                .documentType(DocumentRetrieveResponse.DocumentType.PASSPORT)
                 .fileName("passport_scan.pdf")
                 .documentNumber("A12345678")
                 .issuingAuthority("U.S. Department of State")
-                .side(DocumentListResponse.Side.FRONT)
+                .side(DocumentRetrieveResponse.Side.FRONT)
                 .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                 .build()
 
-        val roundtrippedDocumentListResponse =
+        val roundtrippedDocumentRetrieveResponse =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(documentListResponse),
-                jacksonTypeRef<DocumentListResponse>(),
+                jsonMapper.writeValueAsString(documentRetrieveResponse),
+                jacksonTypeRef<DocumentRetrieveResponse>(),
             )
 
-        assertThat(roundtrippedDocumentListResponse).isEqualTo(documentListResponse)
+        assertThat(roundtrippedDocumentRetrieveResponse).isEqualTo(documentRetrieveResponse)
     }
 }

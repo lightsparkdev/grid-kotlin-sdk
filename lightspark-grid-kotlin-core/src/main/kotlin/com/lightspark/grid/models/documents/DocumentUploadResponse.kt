@@ -17,7 +17,7 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class DocumentListResponse
+class DocumentUploadResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -257,7 +257,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [DocumentListResponse].
+         * Returns a mutable builder for constructing an instance of [DocumentUploadResponse].
          *
          * The following fields are required:
          * ```kotlin
@@ -272,7 +272,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [DocumentListResponse]. */
+    /** A builder for [DocumentUploadResponse]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -287,18 +287,18 @@ private constructor(
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(documentListResponse: DocumentListResponse) = apply {
-            id = documentListResponse.id
-            country = documentListResponse.country
-            createdAt = documentListResponse.createdAt
-            documentHolder = documentListResponse.documentHolder
-            documentType = documentListResponse.documentType
-            fileName = documentListResponse.fileName
-            documentNumber = documentListResponse.documentNumber
-            issuingAuthority = documentListResponse.issuingAuthority
-            side = documentListResponse.side
-            updatedAt = documentListResponse.updatedAt
-            additionalProperties = documentListResponse.additionalProperties.toMutableMap()
+        internal fun from(documentUploadResponse: DocumentUploadResponse) = apply {
+            id = documentUploadResponse.id
+            country = documentUploadResponse.country
+            createdAt = documentUploadResponse.createdAt
+            documentHolder = documentUploadResponse.documentHolder
+            documentType = documentUploadResponse.documentType
+            fileName = documentUploadResponse.fileName
+            documentNumber = documentUploadResponse.documentNumber
+            issuingAuthority = documentUploadResponse.issuingAuthority
+            side = documentUploadResponse.side
+            updatedAt = documentUploadResponse.updatedAt
+            additionalProperties = documentUploadResponse.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for this document */
@@ -460,7 +460,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [DocumentListResponse].
+         * Returns an immutable instance of [DocumentUploadResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -476,8 +476,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): DocumentListResponse =
-            DocumentListResponse(
+        fun build(): DocumentUploadResponse =
+            DocumentUploadResponse(
                 checkRequired("id", id),
                 checkRequired("country", country),
                 checkRequired("createdAt", createdAt),
@@ -502,7 +502,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): DocumentListResponse = apply {
+    fun validate(): DocumentUploadResponse = apply {
         if (validated) {
             return@apply
         }
@@ -979,7 +979,7 @@ private constructor(
             return true
         }
 
-        return other is DocumentListResponse &&
+        return other is DocumentUploadResponse &&
             id == other.id &&
             country == other.country &&
             createdAt == other.createdAt &&
@@ -1012,5 +1012,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "DocumentListResponse{id=$id, country=$country, createdAt=$createdAt, documentHolder=$documentHolder, documentType=$documentType, fileName=$fileName, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "DocumentUploadResponse{id=$id, country=$country, createdAt=$createdAt, documentHolder=$documentHolder, documentType=$documentType, fileName=$fileName, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
