@@ -1,5 +1,96 @@
 # Changelog
 
+## 1.8.0 (2026-05-28)
+
+Full Changelog: [v1.7.1...v1.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.1...v1.8.0)
+
+### Features
+
+* [kyb] require tax_id and incorporated_on for business customers ([377f5d6](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/377f5d65222ca63acf8b5343ca56bdfda2d9c30e))
+* add /cards endpoints, sandbox simulators, and Cards docs tab ([a07a513](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a07a51381a333ad0cd9457d313cd727963f91ac7))
+* add a swift external account type ([0a1e80e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/0a1e80e913ba5eab6aa854a79dec50382b94bf23))
+* Add swift as new payment rail option ([3818376](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/38183769a14c6a1676cbd71168135d208581b402))
+* **agents:** add Agents (experimental) to Grid API spec ([ba999f4](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ba999f4fd36bcb0eab3c0e755d9b55603f3c3bc4))
+* **api:** add 7 new document type enum values to documents ([6e3db51](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6e3db515f8044f82d02621475ed287d39c286067))
+* **api:** add BusinessInfo model to customers ([dc849e1](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/dc849e1da0eb9db2e27803fe39a1952563414d31))
+* **api:** add credentialId field and Type enum to PasskeyAuthChallenge ([92b7576](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/92b7576c3597a4e5248e2abcf92f26b596dd84e3))
+* **api:** add document fields to CopBeneficiary, bank fields to Cop account types ([3226cf8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3226cf858af44e6829f511dd995563adc9b04924))
+* **api:** add embeddedWalletConfig parameter to config update ([086b983](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/086b983794a94e204399726df61e00476f30d41d))
+* **api:** add gridWalletSignature and requestId parameters to customer update ([dffdff4](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/dffdff4e1159300f285748823209eddfc694696c))
+* **api:** add issueChallenge and verifyChallenge methods to sessions ([d0ff43f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d0ff43fd380d61b144e1c070510727ae07ad701a))
+* **api:** add issuingAuthority field to beneficial owners ([ad855aa](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ad855aa8383ce0bba6f5ff654d0b87bac09b20fe))
+* **api:** add issuingAuthority field to documents resource ([8cd0a5f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8cd0a5f09c872091f7700d2328be8a1f79b8c40f))
+* **api:** add pagination to external accounts list method ([fe9a790](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/fe9a790d1c441a9b43d2fcb7f582f246c8289e84))
+* **api:** add PasskeyAuthMethod variant with credentialId to auth credentials response ([3d345f5](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3d345f5816a9e1b818a8ececce844820b6862135))
+* **api:** add SlvAccount type to external accounts ([5483c73](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5483c73d87c93e11844a01663c0e883b5abf1bbe))
+* **api:** add status field to InternalAccount model ([296a81a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/296a81acbd5d76b7564aa6435d6bba7fbd4eee88))
+* **api:** add updateEmail method to customers ([41bbc6d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/41bbc6dbc57ec0339390c74f3d7b64ea17520b16))
+* **api:** add updateWalletPrivacy method to customers ([efe0cef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/efe0cef290892fb375b68888aea7b29f4530edc8))
+* **api:** manual updates ([4a831a9](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4a831a9b541de2f3df38c06e6e6080d8243c16e7))
+* **api:** manual updates ([c31babd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c31babd1f877285ed2ea115b8d31c70e6fac4b9d))
+* **api:** manual updates ([14b26bc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/14b26bc35cb2c2ce0af8a2fec278f82207d2dcc6))
+* **api:** manual updates ([8ca751f](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8ca751f603fd906381f18b5f9e6e8112b2311363))
+* **api:** manual updates ([2024475](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/20244756977024244a5f71533309a6689efa6d87))
+* **api:** manual updates ([df0aca0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/df0aca07a62515a122ad8622475d69dcf13fdc46))
+* **api:** manual updates ([019e6ef](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/019e6ef7fd25b232662a28b5b5aa9de3a070d2c5))
+* **api:** manual updates ([8745d03](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8745d039dc744d6cdfc3626aa69eb717fcd61cec))
+* **api:** manual updates ([4bcbd65](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4bcbd65547beb73c2283b17659cf40faa8c8bd30))
+* **api:** manual updates ([4ccc68d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4ccc68db70a6db0a95719fd01c27f934031e2106))
+* **api:** manual updates ([9b1944a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/9b1944a71113381ea0b71d35ba5b2c6ce60cafdf))
+* **api:** manual updates ([0dcdacc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/0dcdacc40342afe0628ed7f4e99df7074de6974d))
+* **api:** manual updates ([915f349](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/915f349c07ce1a9f2fb89521a8b142197a59e3b8))
+* **api:** manual updates ([a68a2d1](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a68a2d1bf2bec2011a625fc5f47ef3b955f3411a))
+* **api:** manual updates ([cdc43e8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/cdc43e89fb308444d98e5e372a1d356e0f0341e5))
+* **api:** remove cryptoNetwork field from ExternalAccount ([e803d10](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e803d1032219cfd462bb4bcb431fbbe86806d810))
+* **api:** remove issuingAuthority field from beneficial owners personal info ([ba594dd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ba594dd2c8d1aa761c90df865d9cd1ee9a1d663e))
+* **api:** unify document upload/replace models, remove identity/non-identity variants ([de0b514](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/de0b51422201932e1d43b88f00c301b4d10b18fe))
+* **client:** improve logging ([796bd14](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/796bd140ecb6f27d90b72d2e35682b38f855170d))
+* **client:** more robust error parsing ([6da9de8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6da9de8ca5a130725554081872bff9b69a04c88f))
+* **client:** support proxy authentication ([289cfd8](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/289cfd86dbb23ba4f932ea0503174b73f6de9e07))
+* Replace grid.lightspark.com with docs.lightspark.com ([7c0d47c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7c0d47cb69ba03432f62b5acfd0f68b0bd712069))
+* Update cryptoNetwork values ([41afc6e](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/41afc6ef1a46d128660c8ca32e3b25e031735806))
+
+
+### Bug Fixes
+
+* **types:** make accountNumber/phoneNumber/bankName optional in BDT/GHS/PKR account models ([2430c1d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2430c1d98c1cef99f36a7fac4bf359ab670e8625))
+* **types:** make clientPublicKey required in EmailOtpCredentialVerifyRequest ([e54c23a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e54c23aa282085e4566549585c0d31e626179693))
+* **types:** make countryOfResidence optional across beneficiary models, phoneNumber required in Gtq ([23fcffc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/23fcffcb1109ca1d2778ff381f13d09c3940ac0d))
+* **types:** remove bankName, require countryOfResidence, update BDT/GTQ field optionality ([8528425](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8528425a1497e59d7d77338163ae2bd38befd221))
+* **types:** remove documentNumber/documentType/bankName from COP, add phoneNumber, update AED ([4f07653](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/4f07653799a5bdacb29e8febab455a7fc6855964))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([3f85e08](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3f85e0801621de491568cfd52f396163f8c48121))
+
+
+### Chores
+
+* **api:** remove update method from credentials ([d3a9a81](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d3a9a816494e0a0f958535367db1771045ad108f))
+* **internal:** regenerate SDK with no functional changes ([2d349fd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/2d349fd0bcda7cd0bf22600dcbfc0c6f26d9b564))
+* redact api-key headers in debug logs ([118f388](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/118f388f86e169abfc50ac9fc23084c845d51808))
+* remove duplicated dokka setup ([6ab6afc](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/6ab6afce00d2da232d27262fe4a6eacac5b733fa))
+* **tests:** update payloadToSign format in signed request challenge fixtures ([a05550a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a05550acb38e48bdfb0741ba6d15707f017e7c37))
+
+
+### Documentation
+
+* **api:** clarify Grid-Wallet-Signature header format in quotes ([484cef0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/484cef001dc1ba19613d89964aae95d844e28f0d))
+* **api:** clarify multiple passkey support in auth credentials create ([cb5cda3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/cb5cda30464bb92359d8c97fbaccf5e9dd3087fb))
+* **api:** clarify OAuth credentials don't use challenge endpoint ([e1663cf](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e1663cf77312335409996de4ec31f49215d90a6c))
+* **api:** clarify requestId format in auth challenge models ([d08b119](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d08b119508e90e16d081a9431aad087cbbad18d0))
+* **api:** clarify session delete and quote expiresAt behavior ([7b4487d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7b4487d06c1f1a1e2fce2b3aacd26d029ff9d266))
+* **api:** remove OTHER from accepted document types in documents/verification ([1228c90](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1228c9043db13d3439d41068ecb6a0af77149075))
+* **api:** update approval endpoint reference in transfer and quote methods ([bb13313](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/bb1331377d0eff9223b4b911c35b87a1fb88d2ff))
+* **api:** update credential registration documentation ([ad874e0](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/ad874e0d029d800765e01dfde10c9b4cc3c7fa08))
+* **api:** update credential verification and session signing key documentation ([8512485](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/85124858a8ff4bd3bec23161ad5725b56ebf4cf3))
+* **api:** update nickname field descriptions in credential models ([1115d49](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/1115d4988face2fd70db51db01e9aa4dc703ef06))
+* **api:** update OAuth credential verification documentation ([e414c69](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e414c69e70174f8395d0ffe6c7182d020d18e1b7))
+* clarify forwards compat behavior ([d08c924](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d08c924512c0a9868436c469642ce4cf43604a7a))
+* **documents:** split document upload by identity vs non-identity ([f51aee4](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/f51aee43f9c02d073d8a458b682d677bf6e1bb93))
+* sync country coverage with Grid Switch Corridor List ([b81f415](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b81f4154dd09f3d864e49511db09e98a8307d69e))
+
 ## 1.7.1 (2026-04-28)
 
 Full Changelog: [v1.7.0...v1.7.1](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.0...v1.7.1)
