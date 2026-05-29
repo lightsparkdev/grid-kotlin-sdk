@@ -15,9 +15,9 @@ internal class CopExternalAccountInfoTest {
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bancolombia"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
     }
 
@@ -27,9 +27,9 @@ internal class CopExternalAccountInfoTest {
         val copExternalAccountInfo =
             CopExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bancolombia"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
 
         val roundtrippedCopExternalAccountInfo =
