@@ -108,7 +108,7 @@ private constructor(
     fun countryOfResidence(): String? = countryOfResidence.getNullable("countryOfResidence")
 
     /**
-     * Identity document number — required by most Colombian banks
+     * The identity document number
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -116,9 +116,7 @@ private constructor(
     fun documentNumber(): String? = documentNumber.getNullable("documentNumber")
 
     /**
-     * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
-     * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación Tributaria,
-     * PP: Passport
+     * Identity document type (Colombia)
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -345,7 +343,7 @@ private constructor(
             this.countryOfResidence = countryOfResidence
         }
 
-        /** Identity document number — required by most Colombian banks */
+        /** The identity document number */
         fun documentNumber(documentNumber: String) = documentNumber(JsonField.of(documentNumber))
 
         /**
@@ -359,11 +357,7 @@ private constructor(
             this.documentNumber = documentNumber
         }
 
-        /**
-         * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
-         * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación
-         * Tributaria, PP: Passport
-         */
+        /** Identity document type (Colombia) */
         fun documentType(documentType: DocumentType) = documentType(JsonField.of(documentType))
 
         /**
@@ -645,11 +639,7 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /**
-     * Identity document type — required by most Colombian banks. CC: Cédula de Ciudadanía, CE:
-     * Cédula de Extranjería, TI: Tarjeta de Identidad, NIT: Número de Identificación Tributaria,
-     * PP: Passport
-     */
+    /** Identity document type (Colombia) */
     class DocumentType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 

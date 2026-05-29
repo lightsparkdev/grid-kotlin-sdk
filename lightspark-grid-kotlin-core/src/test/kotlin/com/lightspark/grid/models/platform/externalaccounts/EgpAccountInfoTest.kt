@@ -13,21 +13,17 @@ internal class EgpAccountInfoTest {
     fun create() {
         val egpAccountInfo =
             EgpAccountInfo.builder()
-                .accountNumber("1234567890")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("EG380019000500000000263180002")
-                .swiftCode("NBEGEGCX")
+                .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(egpAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(egpAccountInfo.accountType()).isEqualTo(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(egpAccountInfo.paymentRails())
             .containsExactly(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(egpAccountInfo.iban()).isEqualTo("EG380019000500000000263180002")
-        assertThat(egpAccountInfo.swiftCode()).isEqualTo("NBEGEGCX")
+        assertThat(egpAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -35,12 +31,10 @@ internal class EgpAccountInfoTest {
         val jsonMapper = jsonMapper()
         val egpAccountInfo =
             EgpAccountInfo.builder()
-                .accountNumber("1234567890")
                 .accountType(EgpAccountInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(EgpAccountInfo.PaymentRail.BANK_TRANSFER)
                 .iban("EG380019000500000000263180002")
-                .swiftCode("NBEGEGCX")
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedEgpAccountInfo =

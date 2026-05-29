@@ -17,7 +17,6 @@ internal class CopAccountInfoTest {
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 
@@ -27,7 +26,6 @@ internal class CopAccountInfoTest {
         assertThat(copAccountInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(copAccountInfo.bankAccountType())
             .isEqualTo(CopAccountInfo.BankAccountType.CHECKING)
-        assertThat(copAccountInfo.bankName()).isEqualTo("Bancolombia")
         assertThat(copAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -40,7 +38,6 @@ internal class CopAccountInfoTest {
                 .addPaymentRail(CopAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .bankAccountType(CopAccountInfo.BankAccountType.CHECKING)
-                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 

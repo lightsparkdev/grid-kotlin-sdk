@@ -40,7 +40,6 @@ internal class CopExternalAccountCreateInfoTest {
                 )
                 .accountNumber("1234567890")
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 
@@ -75,7 +74,6 @@ internal class CopExternalAccountCreateInfoTest {
         assertThat(copExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(copExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("Bancolombia")
         assertThat(copExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
@@ -110,7 +108,6 @@ internal class CopExternalAccountCreateInfoTest {
                 )
                 .accountNumber("1234567890")
                 .bankAccountType(CopExternalAccountCreateInfo.BankAccountType.CHECKING)
-                .bankName("Bancolombia")
                 .phoneNumber("+1234567890")
                 .build()
 

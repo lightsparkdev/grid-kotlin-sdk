@@ -14,11 +14,11 @@ internal class EgpExternalAccountCreateInfoTest {
     fun create() {
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
-                .accountNumber("1234567890")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     EgpBeneficiary.builder()
+                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -29,27 +29,25 @@ internal class EgpExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
-                        .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .iban("EG380019000500000000263180002")
-                .swiftCode("NBEGEGCX")
+                .phoneNumber("+1234567890")
                 .build()
 
-        assertThat(egpExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(egpExternalAccountCreateInfo.accountType())
             .isEqualTo(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(egpExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     EgpBeneficiary.builder()
+                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -60,18 +58,16 @@ internal class EgpExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
-                        .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
             )
         assertThat(egpExternalAccountCreateInfo.iban()).isEqualTo("EG380019000500000000263180002")
-        assertThat(egpExternalAccountCreateInfo.swiftCode()).isEqualTo("NBEGEGCX")
+        assertThat(egpExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
 
     @Test
@@ -79,11 +75,11 @@ internal class EgpExternalAccountCreateInfoTest {
         val jsonMapper = jsonMapper()
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
-                .accountNumber("1234567890")
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     EgpBeneficiary.builder()
+                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -94,17 +90,15 @@ internal class EgpExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .countryOfResidence("countryOfResidence")
-                        .fullName("fullName")
-                        .phoneNumber("phoneNumber")
                         .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
+                        .phoneNumber("phoneNumber")
                         .build()
                 )
                 .iban("EG380019000500000000263180002")
-                .swiftCode("NBEGEGCX")
+                .phoneNumber("+1234567890")
                 .build()
 
         val roundtrippedEgpExternalAccountCreateInfo =

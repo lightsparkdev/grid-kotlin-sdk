@@ -31,6 +31,7 @@ import com.lightspark.grid.models.CadExternalAccountCreateInfo
 import com.lightspark.grid.models.CopBeneficiary
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
+import com.lightspark.grid.models.EgpBeneficiary
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
@@ -365,6 +366,71 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
         fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofEgpAccount(egpAccount))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * EgpExternalAccountCreateInfo.builder()
+         *     .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun egpAccountAccountInfo(beneficiary: EgpExternalAccountCreateInfo.Beneficiary) =
+            accountInfo(
+                EgpExternalAccountCreateInfo.builder()
+                    .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
+                    .beneficiary(beneficiary)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [egpAccountAccountInfo] with
+         * `EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun egpAccountAccountInfo(individual: EgpBeneficiary) =
+            egpAccountAccountInfo(EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [egpAccountAccountInfo] with the following:
+         * ```kotlin
+         * EgpBeneficiary.builder()
+         *     .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualEgpAccountAccountInfo(fullName: String) =
+            egpAccountAccountInfo(
+                EgpBeneficiary.builder()
+                    .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [egpAccountAccountInfo] with
+         * `EgpExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun egpAccountAccountInfo(business: BusinessBeneficiary) =
+            egpAccountAccountInfo(EgpExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+        /**
+         * Alias for calling [egpAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessEgpAccountAccountInfo(legalName: String) =
+            egpAccountAccountInfo(
+                BusinessBeneficiary.builder()
+                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                    .legalName(legalName)
+                    .build()
+            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
         fun accountInfo(eurAccount: EurExternalAccountCreateInfo) =
@@ -852,13 +918,18 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+         * - BANK_TRANSFER: accountNumber, bankAccountType
          * - MOBILE_MONEY: phoneNumber
          */
         fun copAccount(): CopExternalAccountCreateInfo? = copAccount
 
         fun dkkAccount(): DkkExternalAccountCreateInfo? = dkkAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: iban
+         * - MOBILE_MONEY: phoneNumber
+         */
         fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
 
         fun eurAccount(): EurExternalAccountCreateInfo? = eurAccount
@@ -1025,13 +1096,18 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+         * - BANK_TRANSFER: accountNumber, bankAccountType
          * - MOBILE_MONEY: phoneNumber
          */
         fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
 
         fun asDkkAccount(): DkkExternalAccountCreateInfo = dkkAccount.getOrThrow("dkkAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: iban
+         * - MOBILE_MONEY: phoneNumber
+         */
         fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
 
         fun asEurAccount(): EurExternalAccountCreateInfo = eurAccount.getOrThrow("eurAccount")
@@ -1631,7 +1707,7 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+             * - BANK_TRANSFER: accountNumber, bankAccountType
              * - MOBILE_MONEY: phoneNumber
              */
             fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
@@ -1640,6 +1716,11 @@ private constructor(
             fun ofDkkAccount(dkkAccount: DkkExternalAccountCreateInfo) =
                 AccountInfo(dkkAccount = dkkAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: iban
+             * - MOBILE_MONEY: phoneNumber
+             */
             fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
                 AccountInfo(egpAccount = egpAccount)
 
@@ -1769,13 +1850,18 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+             * - BANK_TRANSFER: accountNumber, bankAccountType
              * - MOBILE_MONEY: phoneNumber
              */
             fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
 
             fun visitDkkAccount(dkkAccount: DkkExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: iban
+             * - MOBILE_MONEY: phoneNumber
+             */
             fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
 
             fun visitEurAccount(eurAccount: EurExternalAccountCreateInfo): T
