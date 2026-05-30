@@ -9,7 +9,7 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
 
 /** Endpoints to trigger test cases in sandbox */
 interface SimulateService {
@@ -87,15 +87,15 @@ interface SimulateService {
      *
      * Production returns `404` on this path.
      */
-    fun refund(
+    fun return_(
         id: String,
-        params: SimulateRefundParams,
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CardTransaction = refund(params.toBuilder().id(id).build(), requestOptions)
+    ): CardTransaction = return_(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see refund */
-    fun refund(
-        params: SimulateRefundParams,
+    /** @see return_ */
+    fun return_(
+        params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CardTransaction
 
@@ -149,20 +149,20 @@ interface SimulateService {
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/return`, but is
-         * otherwise the same as [SimulateService.refund].
+         * otherwise the same as [SimulateService.return_].
          */
         @MustBeClosed
-        fun refund(
+        fun return_(
             id: String,
-            params: SimulateRefundParams,
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CardTransaction> =
-            refund(params.toBuilder().id(id).build(), requestOptions)
+            return_(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see refund */
+        /** @see return_ */
         @MustBeClosed
-        fun refund(
-            params: SimulateRefundParams,
+        fun return_(
+            params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<CardTransaction>
     }
