@@ -10,7 +10,7 @@ import com.lightspark.grid.models.sandbox.cards.simulate.ClearingRequest
 import com.lightspark.grid.models.sandbox.cards.simulate.RefundRequest
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -90,7 +90,7 @@ internal class SimulateServiceTest {
 
     @Disabled("Mock server tests are disabled")
     @Test
-    fun refund() {
+    fun return_() {
         val client =
             LightsparkGridOkHttpClient.builder()
                 .username("My Username")
@@ -101,8 +101,8 @@ internal class SimulateServiceTest {
         val simulateService = client.sandbox().cards().simulate()
 
         val cardTransaction =
-            simulateService.refund(
-                SimulateRefundParams.builder()
+            simulateService.return_(
+                SimulateReturnParams.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
                     .refundRequest(
                         RefundRequest.builder()
