@@ -20,7 +20,7 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateRefundParams
+import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
 
 /** Endpoints to trigger test cases in sandbox */
 class SimulateServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -49,12 +49,12 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
         // post /sandbox/cards/{id}/simulate/clearing
         withRawResponse().clearing(params, requestOptions).parse()
 
-    override suspend fun refund(
-        params: SimulateRefundParams,
+    override suspend fun return_(
+        params: SimulateReturnParams,
         requestOptions: RequestOptions,
     ): CardTransaction =
         // post /sandbox/cards/{id}/simulate/return
-        withRawResponse().refund(params, requestOptions).parse()
+        withRawResponse().return_(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
         SimulateServiceAsync.WithRawResponse {
@@ -151,11 +151,11 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val refundHandler: Handler<CardTransaction> =
+        private val returnHandler: Handler<CardTransaction> =
             jsonHandler<CardTransaction>(clientOptions.jsonMapper)
 
-        override suspend fun refund(
-            params: SimulateRefundParams,
+        override suspend fun return_(
+            params: SimulateReturnParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<CardTransaction> {
             // We check here instead of in the params builder because this can be specified
@@ -177,7 +177,7 @@ class SimulateServiceAsyncImpl internal constructor(private val clientOptions: C
             val response = clientOptions.httpClient.executeAsync(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { refundHandler.handle(it) }
+                    .use { returnHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
