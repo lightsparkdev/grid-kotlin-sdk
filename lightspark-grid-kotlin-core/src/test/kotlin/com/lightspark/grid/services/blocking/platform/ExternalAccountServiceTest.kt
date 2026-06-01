@@ -3,10 +3,10 @@
 package com.lightspark.grid.services.blocking.platform
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
-import com.lightspark.grid.models.UsdExternalAccountCreateInfo
+import com.lightspark.grid.models.AedBeneficiary
+import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
-import com.lightspark.grid.models.customers.externalaccounts.UsdBeneficiary
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
+import com.lightspark.grid.models.platform.externalaccounts.PlatformExternalAccountCreateRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -26,15 +26,12 @@ internal class ExternalAccountServiceTest {
 
         val externalAccount =
             externalAccountService.create(
-                ExternalAccountCreateParams.builder()
+                PlatformExternalAccountCreateRequest.builder()
                     .accountInfo(
-                        UsdExternalAccountCreateInfo.builder()
-                            .accountNumber("12345678901")
-                            .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                        AedExternalAccountCreateInfo.builder()
+                            .accountType(AedExternalAccountCreateInfo.AccountType.AED_ACCOUNT)
                             .beneficiary(
-                                UsdBeneficiary.builder()
-                                    .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
-                                    .fullName("John Doe")
+                                AedBeneficiary.builder()
                                     .address(
                                         Address.builder()
                                             .country("US")
@@ -45,14 +42,17 @@ internal class ExternalAccountServiceTest {
                                             .state("CA")
                                             .build()
                                     )
-                                    .birthDate("1990-01-15")
+                                    .beneficiaryType(AedBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                    .fullName("fullName")
+                                    .birthDate("birthDate")
                                     .countryOfResidence("countryOfResidence")
                                     .email("email")
-                                    .nationality("US")
+                                    .nationality("nationality")
                                     .phoneNumber("phoneNumber")
                                     .build()
                             )
-                            .routingNumber("123456789")
+                            .iban("AE070331234567890123456")
+                            .swiftCode("EBILAEAD")
                             .build()
                     )
                     .currency("USD")

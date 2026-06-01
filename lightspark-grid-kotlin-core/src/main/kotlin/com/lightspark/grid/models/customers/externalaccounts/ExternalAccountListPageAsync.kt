@@ -13,34 +13,34 @@ class ExternalAccountListPageAsync
 private constructor(
     private val service: ExternalAccountServiceAsync,
     private val params: ExternalAccountListParams,
-    private val response: ExternalAccountListPageResponse,
+    private val response: ExternalAccountListResponse,
 ) : PageAsync<ExternalAccount> {
 
     /**
-     * Delegates to [ExternalAccountListPageResponse], but gracefully handles missing data.
+     * Delegates to [ExternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see ExternalAccountListPageResponse.data
+     * @see ExternalAccountListResponse.data
      */
     fun data(): List<ExternalAccount> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [ExternalAccountListPageResponse], but gracefully handles missing data.
+     * Delegates to [ExternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see ExternalAccountListPageResponse.nextCursor
+     * @see ExternalAccountListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [ExternalAccountListPageResponse], but gracefully handles missing data.
+     * Delegates to [ExternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see ExternalAccountListPageResponse.hasMore
+     * @see ExternalAccountListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [ExternalAccountListPageResponse], but gracefully handles missing data.
+     * Delegates to [ExternalAccountListResponse], but gracefully handles missing data.
      *
-     * @see ExternalAccountListPageResponse.totalCount
+     * @see ExternalAccountListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -62,7 +62,7 @@ private constructor(
     fun params(): ExternalAccountListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): ExternalAccountListPageResponse = response
+    fun response(): ExternalAccountListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -86,7 +86,7 @@ private constructor(
 
         private var service: ExternalAccountServiceAsync? = null
         private var params: ExternalAccountListParams? = null
-        private var response: ExternalAccountListPageResponse? = null
+        private var response: ExternalAccountListResponse? = null
 
         internal fun from(externalAccountListPageAsync: ExternalAccountListPageAsync) = apply {
             service = externalAccountListPageAsync.service
@@ -100,7 +100,7 @@ private constructor(
         fun params(params: ExternalAccountListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: ExternalAccountListPageResponse) = apply { this.response = response }
+        fun response(response: ExternalAccountListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [ExternalAccountListPageAsync].

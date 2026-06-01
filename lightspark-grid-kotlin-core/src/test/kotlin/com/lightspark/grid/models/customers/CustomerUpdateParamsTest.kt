@@ -19,24 +19,23 @@ internal class CustomerUpdateParamsTest {
             )
             .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
             .updateCustomerRequest(
-                CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                IndividualCustomerUpdateRequest.builder()
+                    .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
-                            .line1("456 Market St")
-                            .postalCode("94103")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
                             .city("San Francisco")
                             .line2("Apt 4B")
                             .state("CA")
                             .build()
                     )
-                    .birthDate(LocalDate.parse("1985-06-15"))
+                    .birthDate(LocalDate.parse("1990-01-15"))
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
-                    .fullName("John Smith")
-                    .kycStatus(
-                        CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .fullName("John Michael Doe")
+                    .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
@@ -50,7 +49,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder().build()
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
                 .build()
 
@@ -69,24 +70,23 @@ internal class CustomerUpdateParamsTest {
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("456 Market St")
-                                .postalCode("94103")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
                                 .city("San Francisco")
                                 .line2("Apt 4B")
                                 .state("CA")
                                 .build()
                         )
-                        .birthDate(LocalDate.parse("1985-06-15"))
+                        .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
-                        .fullName("John Smith")
-                        .kycStatus(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                         .nationality("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .build()
@@ -113,7 +113,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder().build()
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
                 .build()
 
@@ -132,24 +134,23 @@ internal class CustomerUpdateParamsTest {
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("456 Market St")
-                                .postalCode("94103")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
                                 .city("San Francisco")
                                 .line2("Apt 4B")
                                 .state("CA")
                                 .build()
                         )
-                        .birthDate(LocalDate.parse("1985-06-15"))
+                        .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
-                        .fullName("John Smith")
-                        .kycStatus(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                         .nationality("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .build()
@@ -160,25 +161,24 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder()
+                CustomerUpdateRequestOneOf.ofIndividual(
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
-                                .line1("456 Market St")
-                                .postalCode("94103")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
                                 .city("San Francisco")
                                 .line2("Apt 4B")
                                 .state("CA")
                                 .build()
                         )
-                        .birthDate(LocalDate.parse("1985-06-15"))
+                        .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
-                        .fullName("John Smith")
-                        .kycStatus(
-                            CustomerUpdateParams.UpdateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                         .nationality("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .build()
@@ -192,7 +192,9 @@ internal class CustomerUpdateParamsTest {
             CustomerUpdateParams.builder()
                 .customerId("customerId")
                 .updateCustomerRequest(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder().build()
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
                 .build()
 
@@ -200,8 +202,10 @@ internal class CustomerUpdateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerUpdateParams.UpdateCustomerRequest.ofIndividual(
-                    CustomerUpdateParams.UpdateCustomerRequest.Individual.builder().build()
+                CustomerUpdateRequestOneOf.ofIndividual(
+                    IndividualCustomerUpdateRequest.builder()
+                        .customerType(IndividualCustomerUpdateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
             )
     }

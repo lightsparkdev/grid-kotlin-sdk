@@ -13,7 +13,7 @@ import java.util.Objects
 
 /**
  * Required fields depend on the selected paymentRails:
- * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+ * - BANK_TRANSFER: accountNumber, bankAccountType
  * - MOBILE_MONEY: phoneNumber
  */
 class CopExternalAccountInfo

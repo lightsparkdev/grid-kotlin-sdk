@@ -3,6 +3,7 @@
 package com.lightspark.grid.models
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
@@ -17,10 +18,17 @@ internal class BusinessCustomerTest {
     fun create() {
         val businessCustomer =
             BusinessCustomer.builder()
-                .customerType(BusinessCustomer.CustomerType.BUSINESS)
+                .customerType(JsonValue.from("BUSINESS"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .email("john.doe@example.com")
+                .isDeleted(false)
+                .region("US")
+                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(
                     Address.builder()
                         .country("US")
@@ -69,43 +77,48 @@ internal class BusinessCustomerTest {
                 )
                 .businessInfo(
                     BusinessCustomer.BusinessInfo.builder()
+                        .legalName("Acme Corporation, Inc.")
                         .businessType(
-                            BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            BusinessCustomer.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(BusinessInfoUpdate.EntityType.LLC)
+                        .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
-                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .addCurrency("USD")
-                .addCurrency("USDC")
-                .email("john.doe@example.com")
-                .isDeleted(false)
                 .kybStatus(BusinessCustomer.KybStatus.APPROVED)
-                .region("US")
-                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 
-        assertThat(businessCustomer.customerType())
-            .isEqualTo(BusinessCustomer.CustomerType.BUSINESS)
+        assertThat(businessCustomer._customerType()).isEqualTo(JsonValue.from("BUSINESS"))
         assertThat(businessCustomer.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(businessCustomer.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
         assertThat(businessCustomer.id()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        assertThat(businessCustomer.createdAt())
+            .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+        assertThat(businessCustomer.currencies()).containsExactly("USD", "USDC")
+        assertThat(businessCustomer.email()).isEqualTo("john.doe@example.com")
+        assertThat(businessCustomer.isDeleted()).isEqualTo(false)
+        assertThat(businessCustomer.region()).isEqualTo("US")
+        assertThat(businessCustomer.updatedAt())
+            .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
         assertThat(businessCustomer.address())
             .isEqualTo(
                 Address.builder()
@@ -157,37 +170,34 @@ internal class BusinessCustomerTest {
         assertThat(businessCustomer.businessInfo())
             .isEqualTo(
                 BusinessCustomer.BusinessInfo.builder()
+                    .legalName("Acme Corporation, Inc.")
                     .businessType(
-                        BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                        BusinessCustomer.BusinessInfo.BusinessType
+                            .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                     )
                     .addCountriesOfOperation("US")
                     .country("US")
                     .doingBusinessAs("Acme")
-                    .entityType(BusinessInfoUpdate.EntityType.LLC)
+                    .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                     .expectedMonthlyTransactionCount(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
                     )
                     .expectedMonthlyTransactionVolume(
-                        BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
                     )
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
-                    .legalName("Acme Corporation, Inc.")
-                    .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                    .purposeOfAccount(
+                        BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
                     .taxId("47-1234567")
                     .build()
             )
-        assertThat(businessCustomer.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-        assertThat(businessCustomer.currencies()).containsExactly("USD", "USDC")
-        assertThat(businessCustomer.email()).isEqualTo("john.doe@example.com")
-        assertThat(businessCustomer.isDeleted()).isEqualTo(false)
         assertThat(businessCustomer.kybStatus()).isEqualTo(BusinessCustomer.KybStatus.APPROVED)
-        assertThat(businessCustomer.region()).isEqualTo("US")
-        assertThat(businessCustomer.updatedAt())
-            .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
     }
 
     @Test
@@ -195,10 +205,17 @@ internal class BusinessCustomerTest {
         val jsonMapper = jsonMapper()
         val businessCustomer =
             BusinessCustomer.builder()
-                .customerType(BusinessCustomer.CustomerType.BUSINESS)
+                .customerType(JsonValue.from("BUSINESS"))
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                .addCurrency("USD")
+                .addCurrency("USDC")
+                .email("john.doe@example.com")
+                .isDeleted(false)
+                .region("US")
+                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(
                     Address.builder()
                         .country("US")
@@ -247,36 +264,34 @@ internal class BusinessCustomerTest {
                 )
                 .businessInfo(
                     BusinessCustomer.BusinessInfo.builder()
+                        .legalName("Acme Corporation, Inc.")
                         .businessType(
-                            BusinessInfoUpdate.BusinessType.AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
+                            BusinessCustomer.BusinessInfo.BusinessType
+                                .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
                         .addCountriesOfOperation("US")
                         .country("US")
                         .doingBusinessAs("Acme")
-                        .entityType(BusinessInfoUpdate.EntityType.LLC)
+                        .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
                         .expectedMonthlyTransactionCount(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
+                                .COUNT_100_TO_500
                         )
                         .expectedMonthlyTransactionVolume(
-                            BusinessInfoUpdate.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                            BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionVolume
+                                .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
-                        .legalName("Acme Corporation, Inc.")
-                        .purposeOfAccount(BusinessInfoUpdate.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccount(
+                            BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                        )
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
                         .taxId("47-1234567")
                         .build()
                 )
-                .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                .addCurrency("USD")
-                .addCurrency("USDC")
-                .email("john.doe@example.com")
-                .isDeleted(false)
                 .kybStatus(BusinessCustomer.KybStatus.APPROVED)
-                .region("US")
-                .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .build()
 
         val roundtrippedBusinessCustomer =

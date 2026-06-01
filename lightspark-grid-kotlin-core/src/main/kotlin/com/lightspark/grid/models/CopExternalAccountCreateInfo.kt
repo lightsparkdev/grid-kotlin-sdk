@@ -29,7 +29,7 @@ import java.util.Objects
 
 /**
  * Required fields depend on the selected paymentRails:
- * - BANK_TRANSFER: bankName, accountNumber, bankAccountType
+ * - BANK_TRANSFER: accountNumber, bankAccountType
  * - MOBILE_MONEY: phoneNumber
  */
 class CopExternalAccountCreateInfo
@@ -39,7 +39,6 @@ private constructor(
     private val beneficiary: JsonField<Beneficiary>,
     private val accountNumber: JsonField<String>,
     private val bankAccountType: JsonField<BankAccountType>,
-    private val bankName: JsonField<String>,
     private val phoneNumber: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -58,19 +57,10 @@ private constructor(
         @JsonProperty("bankAccountType")
         @ExcludeMissing
         bankAccountType: JsonField<BankAccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
         phoneNumber: JsonField<String> = JsonMissing.of(),
-    ) : this(
-        accountType,
-        beneficiary,
-        accountNumber,
-        bankAccountType,
-        bankName,
-        phoneNumber,
-        mutableMapOf(),
-    )
+    ) : this(accountType, beneficiary, accountNumber, bankAccountType, phoneNumber, mutableMapOf())
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -85,7 +75,7 @@ private constructor(
     fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
     /**
-     * The account number of the bank (BANK_TRANSFER only)
+     * The account number of the bank
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -93,7 +83,7 @@ private constructor(
     fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
 
     /**
-     * The bank account type (BANK_TRANSFER only)
+     * The bank account type
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -101,15 +91,7 @@ private constructor(
     fun bankAccountType(): BankAccountType? = bankAccountType.getNullable("bankAccountType")
 
     /**
-     * The name of the bank (BANK_TRANSFER only)
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun bankName(): String? = bankName.getNullable("bankName")
-
-    /**
-     * The phone number in international format (MOBILE_MONEY only — Nequi, Daviplata)
+     * The phone number in international format
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -153,13 +135,6 @@ private constructor(
     fun _bankAccountType(): JsonField<BankAccountType> = bankAccountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [phoneNumber].
      *
      * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
@@ -199,7 +174,6 @@ private constructor(
         private var beneficiary: JsonField<Beneficiary>? = null
         private var accountNumber: JsonField<String> = JsonMissing.of()
         private var bankAccountType: JsonField<BankAccountType> = JsonMissing.of()
-        private var bankName: JsonField<String> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -208,7 +182,6 @@ private constructor(
             beneficiary = copExternalAccountCreateInfo.beneficiary
             accountNumber = copExternalAccountCreateInfo.accountNumber
             bankAccountType = copExternalAccountCreateInfo.bankAccountType
-            bankName = copExternalAccountCreateInfo.bankName
             phoneNumber = copExternalAccountCreateInfo.phoneNumber
             additionalProperties = copExternalAccountCreateInfo.additionalProperties.toMutableMap()
         }
@@ -281,7 +254,7 @@ private constructor(
                     .build()
             )
 
-        /** The account number of the bank (BANK_TRANSFER only) */
+        /** The account number of the bank */
         fun accountNumber(accountNumber: String) = accountNumber(JsonField.of(accountNumber))
 
         /**
@@ -295,7 +268,7 @@ private constructor(
             this.accountNumber = accountNumber
         }
 
-        /** The bank account type (BANK_TRANSFER only) */
+        /** The bank account type */
         fun bankAccountType(bankAccountType: BankAccountType) =
             bankAccountType(JsonField.of(bankAccountType))
 
@@ -310,18 +283,7 @@ private constructor(
             this.bankAccountType = bankAccountType
         }
 
-        /** The name of the bank (BANK_TRANSFER only) */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
-
-        /** The phone number in international format (MOBILE_MONEY only — Nequi, Daviplata) */
+        /** The phone number in international format */
         fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
 
         /**
@@ -371,7 +333,6 @@ private constructor(
                 checkRequired("beneficiary", beneficiary),
                 accountNumber,
                 bankAccountType,
-                bankName,
                 phoneNumber,
                 additionalProperties.toMutableMap(),
             )
@@ -396,7 +357,6 @@ private constructor(
         beneficiary().validate()
         accountNumber()
         bankAccountType()?.validate()
-        bankName()
         phoneNumber()
         validated = true
     }
@@ -419,7 +379,6 @@ private constructor(
             (beneficiary.asKnown()?.validity() ?: 0) +
             (if (accountNumber.asKnown() == null) 0 else 1) +
             (bankAccountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1)
 
     class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -754,7 +713,7 @@ private constructor(
         }
     }
 
-    /** The bank account type (BANK_TRANSFER only) */
+    /** The bank account type */
     class BankAccountType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -903,7 +862,6 @@ private constructor(
             beneficiary == other.beneficiary &&
             accountNumber == other.accountNumber &&
             bankAccountType == other.bankAccountType &&
-            bankName == other.bankName &&
             phoneNumber == other.phoneNumber &&
             additionalProperties == other.additionalProperties
     }
@@ -914,7 +872,6 @@ private constructor(
             beneficiary,
             accountNumber,
             bankAccountType,
-            bankName,
             phoneNumber,
             additionalProperties,
         )
@@ -923,5 +880,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CopExternalAccountCreateInfo{accountType=$accountType, beneficiary=$beneficiary, accountNumber=$accountNumber, bankAccountType=$bankAccountType, bankName=$bankName, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        "CopExternalAccountCreateInfo{accountType=$accountType, beneficiary=$beneficiary, accountNumber=$accountNumber, bankAccountType=$bankAccountType, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
 }

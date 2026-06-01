@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.async.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.auth.sessions.AuthSessionRefreshRequest
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionRefreshParams
@@ -75,8 +76,12 @@ internal class SessionServiceAsyncTest {
                         "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
                     )
                     .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
-                    .clientPublicKey(
-                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    .authSessionRefreshRequest(
+                        AuthSessionRefreshRequest.builder()
+                            .clientPublicKey(
+                                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                            )
+                            .build()
                     )
                     .build()
             )

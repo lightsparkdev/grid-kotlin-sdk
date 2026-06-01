@@ -15,42 +15,55 @@ internal class VerificationListResponseTest {
     fun create() {
         val verificationListResponse =
             VerificationListResponse.builder()
-                .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
-                .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .addError(
-                    VerificationError.builder()
-                        .reason("Business address line 1 is required")
-                        .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .type(VerificationError.Type.MISSING_FIELD)
-                        .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
-                        .field("customer.address.line1")
+                .addData(
+                    Verification.builder()
+                        .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addError(
+                            VerificationError.builder()
+                                .reason("Business address line 1 is required")
+                                .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .type(VerificationError.Type.MISSING_FIELD)
+                                .addAcceptedDocumentType(
+                                    VerificationError.AcceptedDocumentType.PASSPORT
+                                )
+                                .field("customer.address.line1")
+                                .build()
+                        )
+                        .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
+                        .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
-                .verificationStatus(VerificationListResponse.VerificationStatus.RESOLVE_ERRORS)
-                .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                .hasMore(true)
+                .nextCursor("nextCursor")
+                .totalCount(0L)
                 .build()
 
-        assertThat(verificationListResponse.id())
-            .isEqualTo("Verification:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(verificationListResponse.createdAt())
-            .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-        assertThat(verificationListResponse.customerId())
-            .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
-        assertThat(verificationListResponse.errors())
+        assertThat(verificationListResponse.data())
             .containsExactly(
-                VerificationError.builder()
-                    .reason("Business address line 1 is required")
-                    .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .type(VerificationError.Type.MISSING_FIELD)
-                    .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
-                    .field("customer.address.line1")
+                Verification.builder()
+                    .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
+                    .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .addError(
+                        VerificationError.builder()
+                            .reason("Business address line 1 is required")
+                            .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .type(VerificationError.Type.MISSING_FIELD)
+                            .addAcceptedDocumentType(
+                                VerificationError.AcceptedDocumentType.PASSPORT
+                            )
+                            .field("customer.address.line1")
+                            .build()
+                    )
+                    .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
+                    .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .build()
             )
-        assertThat(verificationListResponse.verificationStatus())
-            .isEqualTo(VerificationListResponse.VerificationStatus.RESOLVE_ERRORS)
-        assertThat(verificationListResponse.updatedAt())
-            .isEqualTo(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+        assertThat(verificationListResponse.hasMore()).isEqualTo(true)
+        assertThat(verificationListResponse.nextCursor()).isEqualTo("nextCursor")
+        assertThat(verificationListResponse.totalCount()).isEqualTo(0L)
     }
 
     @Test
@@ -58,20 +71,29 @@ internal class VerificationListResponseTest {
         val jsonMapper = jsonMapper()
         val verificationListResponse =
             VerificationListResponse.builder()
-                .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
-                .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
-                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                .addError(
-                    VerificationError.builder()
-                        .reason("Business address line 1 is required")
-                        .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                        .type(VerificationError.Type.MISSING_FIELD)
-                        .addAcceptedDocumentType(VerificationError.AcceptedDocumentType.PASSPORT)
-                        .field("customer.address.line1")
+                .addData(
+                    Verification.builder()
+                        .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addError(
+                            VerificationError.builder()
+                                .reason("Business address line 1 is required")
+                                .resourceId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                                .type(VerificationError.Type.MISSING_FIELD)
+                                .addAcceptedDocumentType(
+                                    VerificationError.AcceptedDocumentType.PASSPORT
+                                )
+                                .field("customer.address.line1")
+                                .build()
+                        )
+                        .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
+                        .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
-                .verificationStatus(VerificationListResponse.VerificationStatus.RESOLVE_ERRORS)
-                .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
+                .hasMore(true)
+                .nextCursor("nextCursor")
+                .totalCount(0L)
                 .build()
 
         val roundtrippedVerificationListResponse =

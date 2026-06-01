@@ -22,8 +22,8 @@ import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountDeleteParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListPageAsync
-import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListParams
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountRetrieveParams
 
 /** External account management endpoints for creating and managing external bank accounts */
@@ -149,8 +149,8 @@ internal constructor(private val clientOptions: ClientOptions) : ExternalAccount
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListPageResponse> =
-            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListResponse> =
+            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: ExternalAccountListParams,

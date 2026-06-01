@@ -6,6 +6,7 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import com.lightspark.grid.models.transferin.TransferInCreateParams
+import com.lightspark.grid.models.transferin.TransferInRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -27,17 +28,25 @@ internal class TransferInServiceAsyncTest {
             transferInServiceAsync.create(
                 TransferInCreateParams.builder()
                     .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
-                    .destination(
-                        InternalAccountReference.builder()
-                            .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                    .transferInRequest(
+                        TransferInRequest.builder()
+                            .destination(
+                                InternalAccountReference.builder()
+                                    .accountId(
+                                        "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .build()
+                            )
+                            .source(
+                                ExternalAccountReference.builder()
+                                    .accountId(
+                                        "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
+                                    )
+                                    .build()
+                            )
+                            .amount(12550L)
                             .build()
                     )
-                    .source(
-                        ExternalAccountReference.builder()
-                            .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .build()
-                    )
-                    .amount(12550L)
                     .build()
             )
 

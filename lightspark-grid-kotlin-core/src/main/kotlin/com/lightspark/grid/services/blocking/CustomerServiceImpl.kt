@@ -17,25 +17,22 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
-import com.lightspark.grid.models.customers.CustomerCreateResponse
 import com.lightspark.grid.models.customers.CustomerDeleteParams
-import com.lightspark.grid.models.customers.CustomerDeleteResponse
 import com.lightspark.grid.models.customers.CustomerExportParams
-import com.lightspark.grid.models.customers.CustomerExportResponse
-import com.lightspark.grid.models.customers.CustomerGenerateKycLinkParams
-import com.lightspark.grid.models.customers.CustomerGenerateKycLinkResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
-import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
-import com.lightspark.grid.models.customers.CustomerListPageResponse
 import com.lightspark.grid.models.customers.CustomerListParams
+import com.lightspark.grid.models.customers.CustomerListResponse
+import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
-import com.lightspark.grid.models.customers.CustomerRetrieveResponse
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.CustomerUpdateResponse
+import com.lightspark.grid.models.customers.InternalAccountExportResponse
+import com.lightspark.grid.models.customers.InternalAccountListResponse
+import com.lightspark.grid.models.customers.KycLinkResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.blocking.customers.BulkService
 import com.lightspark.grid.services.blocking.customers.BulkServiceImpl
@@ -69,21 +66,21 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun create(
         params: CustomerCreateParams,
         requestOptions: RequestOptions,
-    ): CustomerCreateResponse =
+    ): CustomerOneOf =
         // post /customers
         withRawResponse().create(params, requestOptions).parse()
 
     override fun retrieve(
         params: CustomerRetrieveParams,
         requestOptions: RequestOptions,
-    ): CustomerRetrieveResponse =
+    ): CustomerOneOf =
         // get /customers/{customerId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
     override fun update(
         params: CustomerUpdateParams,
         requestOptions: RequestOptions,
-    ): CustomerUpdateResponse =
+    ): CustomerOneOf =
         // patch /customers/{customerId}
         withRawResponse().update(params, requestOptions).parse()
 
@@ -97,23 +94,23 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
     override fun delete(
         params: CustomerDeleteParams,
         requestOptions: RequestOptions,
-    ): CustomerDeleteResponse =
+    ): CustomerOneOf =
         // delete /customers/{customerId}
         withRawResponse().delete(params, requestOptions).parse()
+
+    override fun createKycLink(
+        params: CustomerCreateKycLinkParams,
+        requestOptions: RequestOptions,
+    ): KycLinkResponse =
+        // post /customers/{customerId}/kyc-link
+        withRawResponse().createKycLink(params, requestOptions).parse()
 
     override fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions,
-    ): CustomerExportResponse =
+    ): InternalAccountExportResponse =
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
-
-    override fun generateKycLink(
-        params: CustomerGenerateKycLinkParams,
-        requestOptions: RequestOptions,
-    ): CustomerGenerateKycLinkResponse =
-        // post /customers/{customerId}/kyc-link
-        withRawResponse().generateKycLink(params, requestOptions).parse()
 
     override fun listInternalAccounts(
         params: CustomerListInternalAccountsParams,
@@ -158,13 +155,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         /** Customer management endpoints for creating and updating customer information */
         override fun bulk(): BulkService.WithRawResponse = bulk
 
-        private val createHandler: Handler<CustomerCreateResponse> =
-            jsonHandler<CustomerCreateResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<CustomerOneOf> =
+            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
 
         override fun create(
             params: CustomerCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerCreateResponse> {
+        ): HttpResponseFor<CustomerOneOf> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -190,13 +187,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val retrieveHandler: Handler<CustomerRetrieveResponse> =
-            jsonHandler<CustomerRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<CustomerOneOf> =
+            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
 
         override fun retrieve(
             params: CustomerRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerRetrieveResponse> {
+        ): HttpResponseFor<CustomerOneOf> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -224,13 +221,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val updateHandler: Handler<CustomerUpdateResponse> =
-            jsonHandler<CustomerUpdateResponse>(clientOptions.jsonMapper)
+        private val updateHandler: Handler<CustomerOneOf> =
+            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
 
         override fun update(
             params: CustomerUpdateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerUpdateResponse> {
+        ): HttpResponseFor<CustomerOneOf> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -259,8 +256,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val listHandler: Handler<CustomerListPageResponse> =
-            jsonHandler<CustomerListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<CustomerListResponse> =
+            jsonHandler<CustomerListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: CustomerListParams,
@@ -297,13 +294,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val deleteHandler: Handler<CustomerDeleteResponse> =
-            jsonHandler<CustomerDeleteResponse>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<CustomerOneOf> =
+            jsonHandler<CustomerOneOf>(clientOptions.jsonMapper)
 
         override fun delete(
             params: CustomerDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerDeleteResponse> {
+        ): HttpResponseFor<CustomerOneOf> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("customerId", params.customerId())
@@ -332,13 +329,48 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val exportHandler: Handler<CustomerExportResponse> =
-            jsonHandler<CustomerExportResponse>(clientOptions.jsonMapper)
+        private val createKycLinkHandler: Handler<KycLinkResponse> =
+            jsonHandler<KycLinkResponse>(clientOptions.jsonMapper)
+
+        override fun createKycLink(
+            params: CustomerCreateKycLinkParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<KycLinkResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("customerId", params.customerId())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("customers", params._pathParam(0), "kyc-link")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { createKycLinkHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val exportHandler: Handler<InternalAccountExportResponse> =
+            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
 
         override fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerExportResponse> {
+        ): HttpResponseFor<InternalAccountExportResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -367,43 +399,8 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
-        private val generateKycLinkHandler: Handler<CustomerGenerateKycLinkResponse> =
-            jsonHandler<CustomerGenerateKycLinkResponse>(clientOptions.jsonMapper)
-
-        override fun generateKycLink(
-            params: CustomerGenerateKycLinkParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<CustomerGenerateKycLinkResponse> {
-            // We check here instead of in the params builder because this can be specified
-            // positionally or in the params class.
-            checkRequired("customerId", params.customerId())
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("customers", params._pathParam(0), "kyc-link")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().basicAuth(true).build(),
-                    )
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { generateKycLinkHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val listInternalAccountsHandler: Handler<CustomerListInternalAccountsPageResponse> =
-            jsonHandler<CustomerListInternalAccountsPageResponse>(clientOptions.jsonMapper)
+        private val listInternalAccountsHandler: Handler<InternalAccountListResponse> =
+            jsonHandler<InternalAccountListResponse>(clientOptions.jsonMapper)
 
         override fun listInternalAccounts(
             params: CustomerListInternalAccountsParams,

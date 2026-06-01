@@ -5,6 +5,7 @@ package com.lightspark.grid.models.agents.me.transactions
 import com.lightspark.grid.core.AutoPager
 import com.lightspark.grid.core.Page
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.models.transactions.TransactionListResponse
 import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.services.blocking.agents.me.TransactionService
 import java.util.Objects
@@ -14,34 +15,34 @@ class TransactionListPage
 private constructor(
     private val service: TransactionService,
     private val params: TransactionListParams,
-    private val response: TransactionListPageResponse,
+    private val response: TransactionListResponse,
 ) : Page<Transaction> {
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.data
+     * @see TransactionListResponse.data
      */
     fun data(): List<Transaction> = response._data().getNullable("data") ?: emptyList()
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.nextCursor
+     * @see TransactionListResponse.nextCursor
      */
     fun nextCursor(): String? = response._nextCursor().getNullable("nextCursor")
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.hasMore
+     * @see TransactionListResponse.hasMore
      */
     fun hasMore(): Boolean? = response._hasMore().getNullable("hasMore")
 
     /**
-     * Delegates to [TransactionListPageResponse], but gracefully handles missing data.
+     * Delegates to [TransactionListResponse], but gracefully handles missing data.
      *
-     * @see TransactionListPageResponse.totalCount
+     * @see TransactionListResponse.totalCount
      */
     fun totalCount(): Long? = response._totalCount().getNullable("totalCount")
 
@@ -63,7 +64,7 @@ private constructor(
     fun params(): TransactionListParams = params
 
     /** The response that this page was parsed from. */
-    fun response(): TransactionListPageResponse = response
+    fun response(): TransactionListResponse = response
 
     fun toBuilder() = Builder().from(this)
 
@@ -87,7 +88,7 @@ private constructor(
 
         private var service: TransactionService? = null
         private var params: TransactionListParams? = null
-        private var response: TransactionListPageResponse? = null
+        private var response: TransactionListResponse? = null
 
         internal fun from(transactionListPage: TransactionListPage) = apply {
             service = transactionListPage.service
@@ -101,7 +102,7 @@ private constructor(
         fun params(params: TransactionListParams) = apply { this.params = params }
 
         /** The response that this page was parsed from. */
-        fun response(response: TransactionListPageResponse) = apply { this.response = response }
+        fun response(response: TransactionListResponse) = apply { this.response = response }
 
         /**
          * Returns an immutable instance of [TransactionListPage].

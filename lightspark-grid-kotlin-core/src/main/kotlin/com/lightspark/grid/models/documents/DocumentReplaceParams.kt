@@ -31,7 +31,7 @@ import kotlin.io.path.name
 class DocumentReplaceParams
 private constructor(
     private val documentId: String?,
-    private val body: Body,
+    private val documentReplaceRequest: DocumentReplaceRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -44,7 +44,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun country(): String = body.country()
+    fun country(): String = documentReplaceRequest.country()
 
     /**
      * Type of identity or business verification document. Document types are grouped by
@@ -59,7 +59,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun documentType(): DocumentType = body.documentType()
+    fun documentType(): DocumentType = documentReplaceRequest.documentType()
 
     /**
      * The document file (PDF, JPEG, or PNG, max 10 MB)
@@ -67,7 +67,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun file(): InputStream = body.file()
+    fun file(): InputStream = documentReplaceRequest.file()
 
     /**
      * Document identification number (e.g., passport number)
@@ -75,7 +75,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun documentNumber(): String? = body.documentNumber()
+    fun documentNumber(): String? = documentReplaceRequest.documentNumber()
 
     /**
      * Name of the government agency or organization that issued the document
@@ -83,7 +83,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun issuingAuthority(): String? = body.issuingAuthority()
+    fun issuingAuthority(): String? = documentReplaceRequest.issuingAuthority()
 
     /**
      * Which side of the document (for two-sided documents like driver's licenses)
@@ -91,14 +91,14 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun side(): Side? = body.side()
+    fun side(): Side? = documentReplaceRequest.side()
 
     /**
      * Returns the raw multipart value of [country].
      *
      * Unlike [country], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _country(): MultipartField<String> = body._country()
+    fun _country(): MultipartField<String> = documentReplaceRequest._country()
 
     /**
      * Returns the raw multipart value of [documentType].
@@ -106,14 +106,14 @@ private constructor(
      * Unlike [documentType], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _documentType(): MultipartField<DocumentType> = body._documentType()
+    fun _documentType(): MultipartField<DocumentType> = documentReplaceRequest._documentType()
 
     /**
      * Returns the raw multipart value of [file].
      *
      * Unlike [file], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _file(): MultipartField<InputStream> = body._file()
+    fun _file(): MultipartField<InputStream> = documentReplaceRequest._file()
 
     /**
      * Returns the raw multipart value of [documentNumber].
@@ -121,7 +121,7 @@ private constructor(
      * Unlike [documentNumber], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _documentNumber(): MultipartField<String> = body._documentNumber()
+    fun _documentNumber(): MultipartField<String> = documentReplaceRequest._documentNumber()
 
     /**
      * Returns the raw multipart value of [issuingAuthority].
@@ -129,16 +129,17 @@ private constructor(
      * Unlike [issuingAuthority], this method doesn't throw if the multipart field has an unexpected
      * type.
      */
-    fun _issuingAuthority(): MultipartField<String> = body._issuingAuthority()
+    fun _issuingAuthority(): MultipartField<String> = documentReplaceRequest._issuingAuthority()
 
     /**
      * Returns the raw multipart value of [side].
      *
      * Unlike [side], this method doesn't throw if the multipart field has an unexpected type.
      */
-    fun _side(): MultipartField<Side> = body._side()
+    fun _side(): MultipartField<Side> = documentReplaceRequest._side()
 
-    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        documentReplaceRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -167,13 +168,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var documentId: String? = null
-        private var body: Body.Builder = Body.builder()
+        private var documentReplaceRequest: DocumentReplaceRequest.Builder =
+            DocumentReplaceRequest.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(documentReplaceParams: DocumentReplaceParams) = apply {
             documentId = documentReplaceParams.documentId
-            body = documentReplaceParams.body.toBuilder()
+            documentReplaceRequest = documentReplaceParams.documentReplaceRequest.toBuilder()
             additionalHeaders = documentReplaceParams.additionalHeaders.toBuilder()
             additionalQueryParams = documentReplaceParams.additionalQueryParams.toBuilder()
         }
@@ -192,10 +194,12 @@ private constructor(
          * - [issuingAuthority]
          * - etc.
          */
-        fun body(body: Body) = apply { this.body = body.toBuilder() }
+        fun documentReplaceRequest(documentReplaceRequest: DocumentReplaceRequest) = apply {
+            this.documentReplaceRequest = documentReplaceRequest.toBuilder()
+        }
 
         /** Country that issued the document (ISO 3166-1 alpha-2) */
-        fun country(country: String) = apply { body.country(country) }
+        fun country(country: String) = apply { documentReplaceRequest.country(country) }
 
         /**
          * Sets [Builder.country] to an arbitrary multipart value.
@@ -203,7 +207,9 @@ private constructor(
          * You should usually call [Builder.country] with a well-typed [String] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun country(country: MultipartField<String>) = apply { body.country(country) }
+        fun country(country: MultipartField<String>) = apply {
+            documentReplaceRequest.country(country)
+        }
 
         /**
          * Type of identity or business verification document. Document types are grouped by
@@ -215,7 +221,9 @@ private constructor(
          * PARTNERSHIP_AGREEMENT **Proof of address** — UTILITY_BILL, RENT_OR_LEASE_AGREEMENT,
          * ELECTRICITY_BILL, BANK_STATEMENT, TAX_RETURN
          */
-        fun documentType(documentType: DocumentType) = apply { body.documentType(documentType) }
+        fun documentType(documentType: DocumentType) = apply {
+            documentReplaceRequest.documentType(documentType)
+        }
 
         /**
          * Sets [Builder.documentType] to an arbitrary multipart value.
@@ -225,11 +233,11 @@ private constructor(
          * supported value.
          */
         fun documentType(documentType: MultipartField<DocumentType>) = apply {
-            body.documentType(documentType)
+            documentReplaceRequest.documentType(documentType)
         }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(file: InputStream) = apply { body.file(file) }
+        fun file(file: InputStream) = apply { documentReplaceRequest.file(file) }
 
         /**
          * Sets [Builder.file] to an arbitrary multipart value.
@@ -238,16 +246,18 @@ private constructor(
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun file(file: MultipartField<InputStream>) = apply { body.file(file) }
+        fun file(file: MultipartField<InputStream>) = apply { documentReplaceRequest.file(file) }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(file: ByteArray) = apply { body.file(file) }
+        fun file(file: ByteArray) = apply { documentReplaceRequest.file(file) }
 
         /** The document file (PDF, JPEG, or PNG, max 10 MB) */
-        fun file(path: Path) = apply { body.file(path) }
+        fun file(path: Path) = apply { documentReplaceRequest.file(path) }
 
         /** Document identification number (e.g., passport number) */
-        fun documentNumber(documentNumber: String) = apply { body.documentNumber(documentNumber) }
+        fun documentNumber(documentNumber: String) = apply {
+            documentReplaceRequest.documentNumber(documentNumber)
+        }
 
         /**
          * Sets [Builder.documentNumber] to an arbitrary multipart value.
@@ -257,12 +267,12 @@ private constructor(
          * supported value.
          */
         fun documentNumber(documentNumber: MultipartField<String>) = apply {
-            body.documentNumber(documentNumber)
+            documentReplaceRequest.documentNumber(documentNumber)
         }
 
         /** Name of the government agency or organization that issued the document */
         fun issuingAuthority(issuingAuthority: String) = apply {
-            body.issuingAuthority(issuingAuthority)
+            documentReplaceRequest.issuingAuthority(issuingAuthority)
         }
 
         /**
@@ -273,11 +283,11 @@ private constructor(
          * supported value.
          */
         fun issuingAuthority(issuingAuthority: MultipartField<String>) = apply {
-            body.issuingAuthority(issuingAuthority)
+            documentReplaceRequest.issuingAuthority(issuingAuthority)
         }
 
         /** Which side of the document (for two-sided documents like driver's licenses) */
-        fun side(side: Side) = apply { body.side(side) }
+        fun side(side: Side) = apply { documentReplaceRequest.side(side) }
 
         /**
          * Sets [Builder.side] to an arbitrary multipart value.
@@ -285,25 +295,27 @@ private constructor(
          * You should usually call [Builder.side] with a well-typed [Side] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun side(side: MultipartField<Side>) = apply { body.side(side) }
+        fun side(side: MultipartField<Side>) = apply { documentReplaceRequest.side(side) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            body.additionalProperties(additionalBodyProperties)
+            documentReplaceRequest.additionalProperties(additionalBodyProperties)
         }
 
         fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            body.putAdditionalProperty(key, value)
+            documentReplaceRequest.putAdditionalProperty(key, value)
         }
 
         fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
             apply {
-                body.putAllAdditionalProperties(additionalBodyProperties)
+                documentReplaceRequest.putAllAdditionalProperties(additionalBodyProperties)
             }
 
-        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+        fun removeAdditionalBodyProperty(key: String) = apply {
+            documentReplaceRequest.removeAdditionalProperty(key)
+        }
 
         fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            body.removeAllAdditionalProperties(keys)
+            documentReplaceRequest.removeAllAdditionalProperties(keys)
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -421,7 +433,7 @@ private constructor(
         fun build(): DocumentReplaceParams =
             DocumentReplaceParams(
                 documentId,
-                body.build(),
+                documentReplaceRequest.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -448,7 +460,7 @@ private constructor(
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
-    class Body
+    class DocumentReplaceRequest
     private constructor(
         private val country: MultipartField<String>,
         private val documentType: MultipartField<DocumentType>,
@@ -581,7 +593,7 @@ private constructor(
         companion object {
 
             /**
-             * Returns a mutable builder for constructing an instance of [Body].
+             * Returns a mutable builder for constructing an instance of [DocumentReplaceRequest].
              *
              * The following fields are required:
              * ```kotlin
@@ -593,7 +605,7 @@ private constructor(
             fun builder() = Builder()
         }
 
-        /** A builder for [Body]. */
+        /** A builder for [DocumentReplaceRequest]. */
         class Builder internal constructor() {
 
             private var country: MultipartField<String>? = null
@@ -604,14 +616,14 @@ private constructor(
             private var side: MultipartField<Side> = MultipartField.of(null)
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-            internal fun from(body: Body) = apply {
-                country = body.country
-                documentType = body.documentType
-                file = body.file
-                documentNumber = body.documentNumber
-                issuingAuthority = body.issuingAuthority
-                side = body.side
-                additionalProperties = body.additionalProperties.toMutableMap()
+            internal fun from(documentReplaceRequest: DocumentReplaceRequest) = apply {
+                country = documentReplaceRequest.country
+                documentType = documentReplaceRequest.documentType
+                file = documentReplaceRequest.file
+                documentNumber = documentReplaceRequest.documentNumber
+                issuingAuthority = documentReplaceRequest.issuingAuthority
+                side = documentReplaceRequest.side
+                additionalProperties = documentReplaceRequest.additionalProperties.toMutableMap()
             }
 
             /** Country that issued the document (ISO 3166-1 alpha-2) */
@@ -736,7 +748,7 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [Body].
+             * Returns an immutable instance of [DocumentReplaceRequest].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              *
@@ -749,8 +761,8 @@ private constructor(
              *
              * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): Body =
-                Body(
+            fun build(): DocumentReplaceRequest =
+                DocumentReplaceRequest(
                     checkRequired("country", country),
                     checkRequired("documentType", documentType),
                     checkRequired("file", file),
@@ -772,7 +784,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): Body = apply {
+        fun validate(): DocumentReplaceRequest = apply {
             if (validated) {
                 return@apply
             }
@@ -799,7 +811,7 @@ private constructor(
                 return true
             }
 
-            return other is Body &&
+            return other is DocumentReplaceRequest &&
                 country == other.country &&
                 documentType == other.documentType &&
                 file == other.file &&
@@ -824,7 +836,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{country=$country, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
+            "DocumentReplaceRequest{country=$country, documentType=$documentType, file=$file, documentNumber=$documentNumber, issuingAuthority=$issuingAuthority, side=$side, additionalProperties=$additionalProperties}"
     }
 
     /**
@@ -1260,14 +1272,14 @@ private constructor(
 
         return other is DocumentReplaceParams &&
             documentId == other.documentId &&
-            body == other.body &&
+            documentReplaceRequest == other.documentReplaceRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(documentId, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(documentId, documentReplaceRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "DocumentReplaceParams{documentId=$documentId, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "DocumentReplaceParams{documentId=$documentId, documentReplaceRequest=$documentReplaceRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

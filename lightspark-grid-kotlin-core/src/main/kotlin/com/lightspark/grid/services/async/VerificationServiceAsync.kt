@@ -6,12 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.verifications.Verification
 import com.lightspark.grid.models.verifications.VerificationListPageAsync
 import com.lightspark.grid.models.verifications.VerificationListParams
+import com.lightspark.grid.models.verifications.VerificationRequest
 import com.lightspark.grid.models.verifications.VerificationRetrieveParams
-import com.lightspark.grid.models.verifications.VerificationRetrieveResponse
 import com.lightspark.grid.models.verifications.VerificationSubmitParams
-import com.lightspark.grid.models.verifications.VerificationSubmitResponse
 
 /**
  * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
@@ -36,20 +36,17 @@ interface VerificationServiceAsync {
         verificationId: String,
         params: VerificationRetrieveParams = VerificationRetrieveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationRetrieveResponse =
+    ): Verification =
         retrieve(params.toBuilder().verificationId(verificationId).build(), requestOptions)
 
     /** @see retrieve */
     suspend fun retrieve(
         params: VerificationRetrieveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationRetrieveResponse
+    ): Verification
 
     /** @see retrieve */
-    suspend fun retrieve(
-        verificationId: String,
-        requestOptions: RequestOptions,
-    ): VerificationRetrieveResponse =
+    suspend fun retrieve(verificationId: String, requestOptions: RequestOptions): Verification =
         retrieve(verificationId, VerificationRetrieveParams.none(), requestOptions)
 
     /** Retrieve a list of verifications with optional filtering by customer ID and status. */
@@ -68,11 +65,59 @@ interface VerificationServiceAsync {
      * `errors` array describes exactly what needs to be supplied before verification can proceed.
      *
      * Call this endpoint again after resolving errors to re-submit.
+     *
+     * ### What to collect for KYB
+     *
+     * Before submitting a `BUSINESS` customer, collect the following via `POST /customers`, `POST
+     * /beneficial-owners`, and `POST /documents`:
+     *
+     * **Business identifying information**
+     * - Entity full legal name
+     * - Doing Business As (DBA) name, if applicable
+     * - Physical address — principal place of business
+     * - Countries of operation
+     * - Identification number — U.S. taxpayer identification number, or, for a foreign business
+     *   without one, alternative government-issued documentation certifying the existence of the
+     *   business
+     *
+     * **Ownership and control structure** — collected for **one control person** (an individual
+     * with significant responsibility to control, manage, or direct the legal entity) **and all
+     * beneficial owners** (every individual who owns 25% or more, directly or indirectly). For
+     * each, provide:
+     * - Full name
+     * - Date of birth
+     * - Address
+     * - Identification number:
+     *     - U.S. persons — SSN or ITIN
+     *     - Non-U.S. persons — one or more of: ITIN, passport (with country of issuance), alien
+     *       identification card, or another government-issued photo ID evidencing nationality or
+     *       residence
+     *
+     * **Required documents**
+     * - Company formation and existence documents (certificate of incorporation, articles of
+     *   association, etc.)
+     * - Proof of ownership and control structure (organization and ownership chart, shareholder
+     *   agreements, operating agreements, register of members, or certification of controlling
+     *   person and beneficial owners)
+     * - Proof of address dated within the last 3 months (utility bill, bank statement, lease
+     *   agreement, or official correspondence)
+     * - Tax ID or equivalent identifying-number documents
+     * - For non-U.S. beneficial owners — passport plus one additional government-issued ID
      */
     suspend fun submit(
         params: VerificationSubmitParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): VerificationSubmitResponse
+    ): Verification
+
+    /** @see submit */
+    suspend fun submit(
+        verificationRequest: VerificationRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Verification =
+        submit(
+            VerificationSubmitParams.builder().verificationRequest(verificationRequest).build(),
+            requestOptions,
+        )
 
     /**
      * A view of [VerificationServiceAsync] that provides access to raw HTTP responses for each
@@ -98,7 +143,7 @@ interface VerificationServiceAsync {
             verificationId: String,
             params: VerificationRetrieveParams = VerificationRetrieveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationRetrieveResponse> =
+        ): HttpResponseFor<Verification> =
             retrieve(params.toBuilder().verificationId(verificationId).build(), requestOptions)
 
         /** @see retrieve */
@@ -106,14 +151,14 @@ interface VerificationServiceAsync {
         suspend fun retrieve(
             params: VerificationRetrieveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationRetrieveResponse>
+        ): HttpResponseFor<Verification>
 
         /** @see retrieve */
         @MustBeClosed
         suspend fun retrieve(
             verificationId: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<VerificationRetrieveResponse> =
+        ): HttpResponseFor<Verification> =
             retrieve(verificationId, VerificationRetrieveParams.none(), requestOptions)
 
         /**
@@ -141,6 +186,17 @@ interface VerificationServiceAsync {
         suspend fun submit(
             params: VerificationSubmitParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<VerificationSubmitResponse>
+        ): HttpResponseFor<Verification>
+
+        /** @see submit */
+        @MustBeClosed
+        suspend fun submit(
+            verificationRequest: VerificationRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Verification> =
+            submit(
+                VerificationSubmitParams.builder().verificationRequest(verificationRequest).build(),
+                requestOptions,
+            )
     }
 }

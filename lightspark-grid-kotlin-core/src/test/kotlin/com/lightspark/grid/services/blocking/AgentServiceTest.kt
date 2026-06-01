@@ -8,6 +8,7 @@ import com.lightspark.grid.models.agents.AgentAccountRule
 import com.lightspark.grid.models.agents.AgentApprovalThresholds
 import com.lightspark.grid.models.agents.AgentCreateRequest
 import com.lightspark.grid.models.agents.AgentPolicy
+import com.lightspark.grid.models.agents.AgentPolicyUpdateRequest
 import com.lightspark.grid.models.agents.AgentUpdateParams
 import com.lightspark.grid.models.agents.AgentUpdatePolicyParams
 import com.lightspark.grid.models.agents.AgentUpdateRequest
@@ -186,30 +187,43 @@ internal class AgentServiceTest {
             agentService.updatePolicy(
                 AgentUpdatePolicyParams.builder()
                     .agentId("agentId")
-                    .accountRestrictions(
-                        AgentAccountRestrictions.builder()
-                            .addAccountRule(
-                                AgentAccountRule.builder()
-                                    .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
-                                    .perTransactionLimit(10000L)
+                    .agentPolicyUpdateRequest(
+                        AgentPolicyUpdateRequest.builder()
+                            .accountRestrictions(
+                                AgentAccountRestrictions.builder()
+                                    .addAccountRule(
+                                        AgentAccountRule.builder()
+                                            .accountId(
+                                                "Account:019542f5-b3e7-1d02-0000-000000000001"
+                                            )
+                                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                            .perTransactionLimit(10000L)
+                                            .build()
+                                    )
+                                    .addAllowedAccountId(
+                                        "Account:019542f5-b3e7-1d02-0000-000000000001"
+                                    )
                                     .build()
                             )
-                            .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .build()
-                    )
-                    .approvalThresholds(
-                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
-                    )
-                    .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
-                    .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
-                    .spendingLimits(
-                        AgentUpdatePolicyParams.SpendingLimits.builder()
-                            .currency("USD")
-                            .dailyLimit(500000L)
-                            .dailyTransactionLimit(10L)
-                            .monthlyLimit(5000000L)
-                            .perTransactionLimit(50000L)
+                            .approvalThresholds(
+                                AgentApprovalThresholds.builder()
+                                    .amount(100000L)
+                                    .currency("USD")
+                                    .build()
+                            )
+                            .defaultExecutionMode(
+                                AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO
+                            )
+                            .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
+                            .spendingLimits(
+                                AgentPolicyUpdateRequest.SpendingLimits.builder()
+                                    .currency("USD")
+                                    .dailyLimit(500000L)
+                                    .dailyTransactionLimit(10L)
+                                    .monthlyLimit(5000000L)
+                                    .perTransactionLimit(50000L)
+                                    .build()
+                            )
                             .build()
                     )
                     .build()

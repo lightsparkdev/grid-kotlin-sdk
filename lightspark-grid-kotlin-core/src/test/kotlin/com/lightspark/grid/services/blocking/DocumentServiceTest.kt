@@ -71,7 +71,7 @@ internal class DocumentServiceTest {
                 .build()
         val documentService = client.documents()
 
-        val response =
+        val document =
             documentService.replace(
                 DocumentReplaceParams.builder()
                     .documentId("documentId")
@@ -84,7 +84,7 @@ internal class DocumentServiceTest {
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -99,7 +99,7 @@ internal class DocumentServiceTest {
                 .build()
         val documentService = client.documents()
 
-        val response =
+        val document =
             documentService.upload(
                 DocumentUploadParams.builder()
                     .country("US")
@@ -112,6 +112,6 @@ internal class DocumentServiceTest {
                     .build()
             )
 
-        response.validate()
+        document.validate()
     }
 }

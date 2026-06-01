@@ -15,10 +15,8 @@ internal class EgpExternalAccountInfoTest {
         val egpExternalAccountInfo =
             EgpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EGP_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("iban", JsonValue.from("EG380019000500000000263180002"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("NBEGEGCX"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
     }
 
@@ -28,10 +26,8 @@ internal class EgpExternalAccountInfoTest {
         val egpExternalAccountInfo =
             EgpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EGP_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
-                .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("iban", JsonValue.from("EG380019000500000000263180002"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("NBEGEGCX"))
+                .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
 
         val roundtrippedEgpExternalAccountInfo =

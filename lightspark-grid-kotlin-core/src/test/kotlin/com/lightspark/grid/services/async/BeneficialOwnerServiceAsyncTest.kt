@@ -3,10 +3,11 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
-import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerCreateRequest
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerListParams
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateParams
+import com.lightspark.grid.models.beneficialowners.BeneficialOwnerUpdateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import org.junit.jupiter.api.Disabled
@@ -28,7 +29,7 @@ internal class BeneficialOwnerServiceAsyncTest {
 
         val beneficialOwner =
             beneficialOwnerServiceAsync.create(
-                BeneficialOwnerCreateParams.builder()
+                BeneficialOwnerCreateRequest.builder()
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .ownershipPercentage(51L)
                     .personalInfo(
@@ -55,8 +56,8 @@ internal class BeneficialOwnerServiceAsyncTest {
                             .phoneNumber("+14155550192")
                             .build()
                     )
-                    .addRole(BeneficialOwnerCreateParams.Role.UBO)
-                    .addRole(BeneficialOwnerCreateParams.Role.DIRECTOR)
+                    .addRole(BeneficialOwnerCreateRequest.Role.UBO)
+                    .addRole(BeneficialOwnerCreateRequest.Role.DIRECTOR)
                     .build()
             )
 
@@ -96,33 +97,37 @@ internal class BeneficialOwnerServiceAsyncTest {
             beneficialOwnerServiceAsync.update(
                 BeneficialOwnerUpdateParams.builder()
                     .beneficialOwnerId("beneficialOwnerId")
-                    .ownershipPercentage(51L)
-                    .personalInfo(
-                        BeneficialOwnerUpdateParams.PersonalInfo.builder()
-                            .address(
-                                Address.builder()
-                                    .country("US")
-                                    .line1("123 Main Street")
-                                    .postalCode("94105")
-                                    .city("San Francisco")
-                                    .line2("Apt 4B")
-                                    .state("CA")
+                    .beneficialOwnerUpdateRequest(
+                        BeneficialOwnerUpdateRequest.builder()
+                            .ownershipPercentage(51L)
+                            .personalInfo(
+                                BeneficialOwnerUpdateRequest.PersonalInfo.builder()
+                                    .address(
+                                        Address.builder()
+                                            .country("US")
+                                            .line1("123 Main Street")
+                                            .postalCode("94105")
+                                            .city("San Francisco")
+                                            .line2("Apt 4B")
+                                            .state("CA")
+                                            .build()
+                                    )
+                                    .birthDate(LocalDate.parse("1978-06-15"))
+                                    .countryOfIssuance("US")
+                                    .email("jane.smith@acmecorp.com")
+                                    .firstName("Jane")
+                                    .identifier("123-45-6789")
+                                    .idType(BeneficialOwnerUpdateRequest.PersonalInfo.IdType.SSN)
+                                    .lastName("Smith")
+                                    .middleName("Marie")
+                                    .nationality("US")
+                                    .phoneNumber("+14155550192")
                                     .build()
                             )
-                            .birthDate(LocalDate.parse("1978-06-15"))
-                            .countryOfIssuance("US")
-                            .email("jane.smith@acmecorp.com")
-                            .firstName("Jane")
-                            .identifier("123-45-6789")
-                            .idType(BeneficialOwnerUpdateParams.PersonalInfo.IdType.SSN)
-                            .lastName("Smith")
-                            .middleName("Marie")
-                            .nationality("US")
-                            .phoneNumber("+14155550192")
+                            .addRole(BeneficialOwnerUpdateRequest.Role.UBO)
+                            .addRole(BeneficialOwnerUpdateRequest.Role.DIRECTOR)
                             .build()
                     )
-                    .addRole(BeneficialOwnerUpdateParams.Role.UBO)
-                    .addRole(BeneficialOwnerUpdateParams.Role.DIRECTOR)
                     .build()
             )
 

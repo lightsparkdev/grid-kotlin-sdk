@@ -3,8 +3,8 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.tokens.ApiTokenCreateRequest
 import com.lightspark.grid.models.tokens.Permission
-import com.lightspark.grid.models.tokens.TokenCreateParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -24,7 +24,7 @@ internal class TokenServiceAsyncTest {
 
         val apiToken =
             tokenServiceAsync.create(
-                TokenCreateParams.builder()
+                ApiTokenCreateRequest.builder()
                     .name("Sandbox read-only")
                     .addPermission(Permission.VIEW)
                     .build()

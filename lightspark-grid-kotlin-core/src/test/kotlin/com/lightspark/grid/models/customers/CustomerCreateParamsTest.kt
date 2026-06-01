@@ -13,7 +13,8 @@ internal class CustomerCreateParamsTest {
     fun create() {
         CustomerCreateParams.builder()
             .createCustomerRequest(
-                CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                IndividualCustomerCreateRequest.builder()
+                    .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
                     .address(
                         Address.builder()
                             .country("US")
@@ -28,12 +29,10 @@ internal class CustomerCreateParamsTest {
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
-                    .fullName("Jane Smith")
-                    .kycStatus(
-                        CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                    )
+                    .fullName("John Michael Doe")
+                    .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
-                    .platformCustomerId("ind-9f84e0c2")
+                    .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
@@ -46,7 +45,8 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                    IndividualCustomerCreateRequest.builder()
+                        .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -61,12 +61,10 @@ internal class CustomerCreateParamsTest {
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
-                        .fullName("Jane Smith")
-                        .kycStatus(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                         .nationality("US")
-                        .platformCustomerId("ind-9f84e0c2")
+                        .platformCustomerId("9f84e0c2a72c4fa")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .build()
@@ -77,8 +75,9 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder()
+                CustomerCreateRequestOneOf.ofIndividual(
+                    IndividualCustomerCreateRequest.builder()
+                        .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
                         .address(
                             Address.builder()
                                 .country("US")
@@ -93,12 +92,10 @@ internal class CustomerCreateParamsTest {
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
-                        .fullName("Jane Smith")
-                        .kycStatus(
-                            CustomerCreateParams.CreateCustomerRequest.Individual.KycStatus.APPROVED
-                        )
+                        .fullName("John Michael Doe")
+                        .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                         .nationality("US")
-                        .platformCustomerId("ind-9f84e0c2")
+                        .platformCustomerId("9f84e0c2a72c4fa")
                         .region("US")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .build()
@@ -111,7 +108,9 @@ internal class CustomerCreateParamsTest {
         val params =
             CustomerCreateParams.builder()
                 .createCustomerRequest(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
+                    IndividualCustomerCreateRequest.builder()
+                        .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
                 .build()
 
@@ -119,8 +118,10 @@ internal class CustomerCreateParamsTest {
 
         assertThat(body)
             .isEqualTo(
-                CustomerCreateParams.CreateCustomerRequest.ofIndividual(
-                    CustomerCreateParams.CreateCustomerRequest.Individual.builder().build()
+                CustomerCreateRequestOneOf.ofIndividual(
+                    IndividualCustomerCreateRequest.builder()
+                        .customerType(IndividualCustomerCreateRequest.CustomerType.INDIVIDUAL)
+                        .build()
                 )
             )
     }

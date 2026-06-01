@@ -4,7 +4,6 @@ package com.lightspark.grid.services
 
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
-import com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath
 import com.github.tomakehurst.wiremock.client.WireMock.ok
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
@@ -17,6 +16,7 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
+import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
@@ -50,39 +50,26 @@ internal class ServiceParamsTest {
         quoteService.create(
             QuoteCreateParams.builder()
                 .idempotencyKey("<uuid>")
-                .destination(
-                    QuoteDestinationOneOf.builder()
-                        .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                        .putAdditionalProperty(
-                            "accountId",
-                            JsonValue.from("ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"),
+                .quoteRequest(
+                    QuoteRequest.builder()
+                        .destination(QuoteDestinationOneOf.builder().build())
+                        .lockedCurrencyAmount(1000L)
+                        .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                        .source(QuoteSourceOneOf.builder().build())
+                        .description("Invoice #1234 payment")
+                        .immediatelyExecute(false)
+                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                        .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                        .senderCustomerInfo(
+                            QuoteRequest.SenderCustomerInfo.builder()
+                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                .build()
                         )
-                        .build()
-                )
-                .lockedCurrencyAmount(10000L)
-                .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                .source(
-                    QuoteSourceOneOf.builder()
-                        .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                        .putAdditionalProperty(
-                            "accountId",
-                            JsonValue.from("InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"),
-                        )
-                        .build()
-                )
-                .description("Transfer between accounts, either internal or external.")
-                .immediatelyExecute(false)
-                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                .senderCustomerInfo(
-                    QuoteCreateParams.SenderCustomerInfo.builder()
-                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                         .build()
                 )
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
-                .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
                 .build()
         )
 
@@ -90,7 +77,6 @@ internal class ServiceParamsTest {
             postRequestedFor(anyUrl())
                 .withHeader("Secret-Header", equalTo("42"))
                 .withQueryParam("secret_query_param", equalTo("42"))
-                .withRequestBody(matchingJsonPath("$.secretProperty", equalTo("42")))
         )
     }
 }

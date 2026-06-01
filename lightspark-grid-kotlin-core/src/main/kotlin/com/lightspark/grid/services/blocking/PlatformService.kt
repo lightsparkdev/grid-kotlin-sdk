@@ -6,8 +6,8 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.platform.PlatformInternalAccountListResponse
 import com.lightspark.grid.models.platform.PlatformListInternalAccountsParams
-import com.lightspark.grid.models.platform.PlatformListInternalAccountsResponse
 import com.lightspark.grid.services.blocking.platform.ExternalAccountService
 
 /** Internal account management endpoints for creating and managing internal accounts */
@@ -39,10 +39,10 @@ interface PlatformService {
     fun listInternalAccounts(
         params: PlatformListInternalAccountsParams = PlatformListInternalAccountsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): PlatformListInternalAccountsResponse
+    ): PlatformInternalAccountListResponse
 
     /** @see listInternalAccounts */
-    fun listInternalAccounts(requestOptions: RequestOptions): PlatformListInternalAccountsResponse =
+    fun listInternalAccounts(requestOptions: RequestOptions): PlatformInternalAccountListResponse =
         listInternalAccounts(PlatformListInternalAccountsParams.none(), requestOptions)
 
     /** A view of [PlatformService] that provides access to raw HTTP responses for each method. */
@@ -68,13 +68,13 @@ interface PlatformService {
         fun listInternalAccounts(
             params: PlatformListInternalAccountsParams = PlatformListInternalAccountsParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<PlatformListInternalAccountsResponse>
+        ): HttpResponseFor<PlatformInternalAccountListResponse>
 
         /** @see listInternalAccounts */
         @MustBeClosed
         fun listInternalAccounts(
             requestOptions: RequestOptions
-        ): HttpResponseFor<PlatformListInternalAccountsResponse> =
+        ): HttpResponseFor<PlatformInternalAccountListResponse> =
             listInternalAccounts(PlatformListInternalAccountsParams.none(), requestOptions)
     }
 }

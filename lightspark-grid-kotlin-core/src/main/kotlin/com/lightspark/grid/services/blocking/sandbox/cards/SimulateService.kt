@@ -6,12 +6,10 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateAuthorizationResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateClearingResponse
 import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnParams
-import com.lightspark.grid.models.sandbox.cards.simulate.SimulateReturnResponse
 
 /** Endpoints to trigger test cases in sandbox */
 interface SimulateService {
@@ -48,14 +46,13 @@ interface SimulateService {
         id: String,
         params: SimulateAuthorizationParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateAuthorizationResponse =
-        authorization(params.toBuilder().id(id).build(), requestOptions)
+    ): CardTransaction = authorization(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see authorization */
     fun authorization(
         params: SimulateAuthorizationParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateAuthorizationResponse
+    ): CardTransaction
 
     /**
      * Simulate a clearing (settlement) event against an existing `CardTransaction` in the sandbox
@@ -74,13 +71,13 @@ interface SimulateService {
         id: String,
         params: SimulateClearingParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateClearingResponse = clearing(params.toBuilder().id(id).build(), requestOptions)
+    ): CardTransaction = clearing(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see clearing */
     fun clearing(
         params: SimulateClearingParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateClearingResponse
+    ): CardTransaction
 
     /**
      * Simulate a merchant-initiated `RETURN` against an existing settled card transaction in the
@@ -94,13 +91,13 @@ interface SimulateService {
         id: String,
         params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateReturnResponse = return_(params.toBuilder().id(id).build(), requestOptions)
+    ): CardTransaction = return_(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see return_ */
     fun return_(
         params: SimulateReturnParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SimulateReturnResponse
+    ): CardTransaction
 
     /** A view of [SimulateService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -121,7 +118,7 @@ interface SimulateService {
             id: String,
             params: SimulateAuthorizationParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateAuthorizationResponse> =
+        ): HttpResponseFor<CardTransaction> =
             authorization(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see authorization */
@@ -129,7 +126,7 @@ interface SimulateService {
         fun authorization(
             params: SimulateAuthorizationParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateAuthorizationResponse>
+        ): HttpResponseFor<CardTransaction>
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/clearing`, but is
@@ -140,7 +137,7 @@ interface SimulateService {
             id: String,
             params: SimulateClearingParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateClearingResponse> =
+        ): HttpResponseFor<CardTransaction> =
             clearing(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see clearing */
@@ -148,7 +145,7 @@ interface SimulateService {
         fun clearing(
             params: SimulateClearingParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateClearingResponse>
+        ): HttpResponseFor<CardTransaction>
 
         /**
          * Returns a raw HTTP response for `post /sandbox/cards/{id}/simulate/return`, but is
@@ -159,7 +156,7 @@ interface SimulateService {
             id: String,
             params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateReturnResponse> =
+        ): HttpResponseFor<CardTransaction> =
             return_(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see return_ */
@@ -167,6 +164,6 @@ interface SimulateService {
         fun return_(
             params: SimulateReturnParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SimulateReturnResponse>
+        ): HttpResponseFor<CardTransaction>
     }
 }

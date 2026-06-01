@@ -19,10 +19,10 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountListResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountCreateParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountDeleteParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPage
-import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListPageResponse
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountListParams
 import com.lightspark.grid.models.platform.externalaccounts.ExternalAccountRetrieveParams
 
@@ -144,8 +144,8 @@ class ExternalAccountServiceImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val listHandler: Handler<ExternalAccountListPageResponse> =
-            jsonHandler<ExternalAccountListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<ExternalAccountListResponse> =
+            jsonHandler<ExternalAccountListResponse>(clientOptions.jsonMapper)
 
         override fun list(
             params: ExternalAccountListParams,

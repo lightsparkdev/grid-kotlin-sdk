@@ -11,30 +11,34 @@ internal class AgentUpdatePolicyParamsTest {
     fun create() {
         AgentUpdatePolicyParams.builder()
             .agentId("agentId")
-            .accountRestrictions(
-                AgentAccountRestrictions.builder()
-                    .addAccountRule(
-                        AgentAccountRule.builder()
-                            .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
-                            .perTransactionLimit(10000L)
+            .agentPolicyUpdateRequest(
+                AgentPolicyUpdateRequest.builder()
+                    .accountRestrictions(
+                        AgentAccountRestrictions.builder()
+                            .addAccountRule(
+                                AgentAccountRule.builder()
+                                    .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
+                                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                    .perTransactionLimit(10000L)
+                                    .build()
+                            )
+                            .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                             .build()
                     )
-                    .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                    .build()
-            )
-            .approvalThresholds(
-                AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
-            )
-            .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
-            .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
-            .spendingLimits(
-                AgentUpdatePolicyParams.SpendingLimits.builder()
-                    .currency("USD")
-                    .dailyLimit(500000L)
-                    .dailyTransactionLimit(10L)
-                    .monthlyLimit(5000000L)
-                    .perTransactionLimit(50000L)
+                    .approvalThresholds(
+                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
+                    )
+                    .defaultExecutionMode(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
+                    .spendingLimits(
+                        AgentPolicyUpdateRequest.SpendingLimits.builder()
+                            .currency("USD")
+                            .dailyLimit(500000L)
+                            .dailyTransactionLimit(10L)
+                            .monthlyLimit(5000000L)
+                            .perTransactionLimit(50000L)
+                            .build()
+                    )
                     .build()
             )
             .build()
@@ -42,7 +46,11 @@ internal class AgentUpdatePolicyParamsTest {
 
     @Test
     fun pathParams() {
-        val params = AgentUpdatePolicyParams.builder().agentId("agentId").build()
+        val params =
+            AgentUpdatePolicyParams.builder()
+                .agentId("agentId")
+                .agentPolicyUpdateRequest(AgentPolicyUpdateRequest.builder().build())
+                .build()
 
         assertThat(params._pathParam(0)).isEqualTo("agentId")
         // out-of-bound path param
@@ -54,71 +62,86 @@ internal class AgentUpdatePolicyParamsTest {
         val params =
             AgentUpdatePolicyParams.builder()
                 .agentId("agentId")
-                .accountRestrictions(
-                    AgentAccountRestrictions.builder()
-                        .addAccountRule(
-                            AgentAccountRule.builder()
-                                .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                                .executionMode(AgentAccountRule.ExecutionMode.AUTO)
-                                .perTransactionLimit(10000L)
+                .agentPolicyUpdateRequest(
+                    AgentPolicyUpdateRequest.builder()
+                        .accountRestrictions(
+                            AgentAccountRestrictions.builder()
+                                .addAccountRule(
+                                    AgentAccountRule.builder()
+                                        .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
+                                        .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                        .perTransactionLimit(10000L)
+                                        .build()
+                                )
+                                .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                                 .build()
                         )
-                        .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                        .build()
-                )
-                .approvalThresholds(
-                    AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
-                )
-                .defaultExecutionMode(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
-                .addPermission(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
-                .spendingLimits(
-                    AgentUpdatePolicyParams.SpendingLimits.builder()
-                        .currency("USD")
-                        .dailyLimit(500000L)
-                        .dailyTransactionLimit(10L)
-                        .monthlyLimit(5000000L)
-                        .perTransactionLimit(50000L)
+                        .approvalThresholds(
+                            AgentApprovalThresholds.builder()
+                                .amount(100000L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .defaultExecutionMode(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
+                        .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
+                        .spendingLimits(
+                            AgentPolicyUpdateRequest.SpendingLimits.builder()
+                                .currency("USD")
+                                .dailyLimit(500000L)
+                                .dailyTransactionLimit(10L)
+                                .monthlyLimit(5000000L)
+                                .perTransactionLimit(50000L)
+                                .build()
+                        )
                         .build()
                 )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.accountRestrictions())
+        assertThat(body)
             .isEqualTo(
-                AgentAccountRestrictions.builder()
-                    .addAccountRule(
-                        AgentAccountRule.builder()
-                            .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                            .executionMode(AgentAccountRule.ExecutionMode.AUTO)
-                            .perTransactionLimit(10000L)
+                AgentPolicyUpdateRequest.builder()
+                    .accountRestrictions(
+                        AgentAccountRestrictions.builder()
+                            .addAccountRule(
+                                AgentAccountRule.builder()
+                                    .accountId("Account:019542f5-b3e7-1d02-0000-000000000001")
+                                    .executionMode(AgentAccountRule.ExecutionMode.AUTO)
+                                    .perTransactionLimit(10000L)
+                                    .build()
+                            )
+                            .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
                             .build()
                     )
-                    .addAllowedAccountId("Account:019542f5-b3e7-1d02-0000-000000000001")
-                    .build()
-            )
-        assertThat(body.approvalThresholds())
-            .isEqualTo(AgentApprovalThresholds.builder().amount(100000L).currency("USD").build())
-        assertThat(body.defaultExecutionMode())
-            .isEqualTo(AgentUpdatePolicyParams.DefaultExecutionMode.AUTO)
-        assertThat(body.permissions())
-            .containsExactly(AgentUpdatePolicyParams.Permission.VIEW_TRANSACTIONS)
-        assertThat(body.spendingLimits())
-            .isEqualTo(
-                AgentUpdatePolicyParams.SpendingLimits.builder()
-                    .currency("USD")
-                    .dailyLimit(500000L)
-                    .dailyTransactionLimit(10L)
-                    .monthlyLimit(5000000L)
-                    .perTransactionLimit(50000L)
+                    .approvalThresholds(
+                        AgentApprovalThresholds.builder().amount(100000L).currency("USD").build()
+                    )
+                    .defaultExecutionMode(AgentPolicyUpdateRequest.DefaultExecutionMode.AUTO)
+                    .addPermission(AgentPolicyUpdateRequest.Permission.VIEW_TRANSACTIONS)
+                    .spendingLimits(
+                        AgentPolicyUpdateRequest.SpendingLimits.builder()
+                            .currency("USD")
+                            .dailyLimit(500000L)
+                            .dailyTransactionLimit(10L)
+                            .monthlyLimit(5000000L)
+                            .perTransactionLimit(50000L)
+                            .build()
+                    )
                     .build()
             )
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = AgentUpdatePolicyParams.builder().agentId("agentId").build()
+        val params =
+            AgentUpdatePolicyParams.builder()
+                .agentId("agentId")
+                .agentPolicyUpdateRequest(AgentPolicyUpdateRequest.builder().build())
+                .build()
 
         val body = params._body()
+
+        assertThat(body).isEqualTo(AgentPolicyUpdateRequest.builder().build())
     }
 }

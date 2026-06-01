@@ -11,7 +11,9 @@ internal class InvitationClaimParamsTest {
     fun create() {
         InvitationClaimParams.builder()
             .invitationCode("invitationCode")
-            .inviteeUma("\$invitee@uma.domain")
+            .umaInvitationClaimRequest(
+                UmaInvitationClaimRequest.builder().inviteeUma("\$invitee@uma.domain").build()
+            )
             .build()
     }
 
@@ -20,7 +22,9 @@ internal class InvitationClaimParamsTest {
         val params =
             InvitationClaimParams.builder()
                 .invitationCode("invitationCode")
-                .inviteeUma("\$invitee@uma.domain")
+                .umaInvitationClaimRequest(
+                    UmaInvitationClaimRequest.builder().inviteeUma("\$invitee@uma.domain").build()
+                )
                 .build()
 
         assertThat(params._pathParam(0)).isEqualTo("invitationCode")
@@ -33,11 +37,16 @@ internal class InvitationClaimParamsTest {
         val params =
             InvitationClaimParams.builder()
                 .invitationCode("invitationCode")
-                .inviteeUma("\$invitee@uma.domain")
+                .umaInvitationClaimRequest(
+                    UmaInvitationClaimRequest.builder().inviteeUma("\$invitee@uma.domain").build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.inviteeUma()).isEqualTo("\$invitee@uma.domain")
+        assertThat(body)
+            .isEqualTo(
+                UmaInvitationClaimRequest.builder().inviteeUma("\$invitee@uma.domain").build()
+            )
     }
 }

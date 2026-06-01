@@ -21,7 +21,7 @@ internal class PlatformServiceTest {
                 .build()
         val platformService = client.platform()
 
-        val response =
+        val platformInternalAccountListResponse =
             platformService.listInternalAccounts(
                 PlatformListInternalAccountsParams.builder()
                     .currency("currency")
@@ -29,6 +29,6 @@ internal class PlatformServiceTest {
                     .build()
             )
 
-        response.validate()
+        platformInternalAccountListResponse.validate()
     }
 }

@@ -2,75 +2,262 @@
 
 package com.lightspark.grid.models.customers
 
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.ObjectCodec
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.SerializerProvider
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import com.lightspark.grid.core.BaseDeserializer
-import com.lightspark.grid.core.BaseSerializer
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.ExcludeMissing
+import com.lightspark.grid.core.JsonField
+import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.getOrThrow
+import com.lightspark.grid.core.checkKnown
+import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.BusinessCustomer
 import com.lightspark.grid.models.IndividualCustomer
+import java.util.Collections
 import java.util.Objects
 
-@JsonDeserialize(using = CustomerListResponse.Deserializer::class)
-@JsonSerialize(using = CustomerListResponse.Serializer::class)
 class CustomerListResponse
+@JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val individual: IndividualCustomer? = null,
-    private val business: BusinessCustomer? = null,
-    private val _json: JsonValue? = null,
+    private val data: JsonField<List<CustomerOneOf>>,
+    private val hasMore: JsonField<Boolean>,
+    private val nextCursor: JsonField<String>,
+    private val totalCount: JsonField<Long>,
+    private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
-    fun individual(): IndividualCustomer? = individual
-
-    fun business(): BusinessCustomer? = business
-
-    fun isIndividual(): Boolean = individual != null
-
-    fun isBusiness(): Boolean = business != null
-
-    fun asIndividual(): IndividualCustomer = individual.getOrThrow("individual")
-
-    fun asBusiness(): BusinessCustomer = business.getOrThrow("business")
-
-    fun _json(): JsonValue? = _json
+    @JsonCreator
+    private constructor(
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<List<CustomerOneOf>> = JsonMissing.of(),
+        @JsonProperty("hasMore") @ExcludeMissing hasMore: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("nextCursor")
+        @ExcludeMissing
+        nextCursor: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("totalCount") @ExcludeMissing totalCount: JsonField<Long> = JsonMissing.of(),
+    ) : this(data, hasMore, nextCursor, totalCount, mutableMapOf())
 
     /**
-     * Maps this instance's current variant to a value of type [T] using the given [visitor].
+     * List of customers matching the filter criteria
      *
-     * Note that this method is _not_ forwards compatible with new variants from the API, unless
-     * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of the
-     * SDK gracefully, consider overriding [Visitor.unknown]:
-     * ```kotlin
-     * import com.lightspark.grid.core.JsonValue
-     *
-     * val result: String? = customerListResponse.accept(object : CustomerListResponse.Visitor<String?> {
-     *     override fun visitIndividual(individual: IndividualCustomer): String? = individual.toString()
-     *
-     *     // ...
-     *
-     *     override fun unknown(json: JsonValue?): String? {
-     *         // Or inspect the `json`.
-     *         return null
-     *     }
-     * })
-     * ```
-     *
-     * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
-     *   [visitor] and the current variant is unknown.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun <T> accept(visitor: Visitor<T>): T =
-        when {
-            individual != null -> visitor.visitIndividual(individual)
-            business != null -> visitor.visitBusiness(business)
-            else -> visitor.unknown(_json)
+    fun data(): List<CustomerOneOf> = data.getRequired("data")
+
+    /**
+     * Indicates if more results are available beyond this page
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun hasMore(): Boolean = hasMore.getRequired("hasMore")
+
+    /**
+     * Cursor to retrieve the next page of results (only present if hasMore is true)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun nextCursor(): String? = nextCursor.getNullable("nextCursor")
+
+    /**
+     * Total number of customers matching the criteria (excluding pagination)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun totalCount(): Long? = totalCount.getNullable("totalCount")
+
+    /**
+     * Returns the raw JSON value of [data].
+     *
+     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<CustomerOneOf>> = data
+
+    /**
+     * Returns the raw JSON value of [hasMore].
+     *
+     * Unlike [hasMore], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("hasMore") @ExcludeMissing fun _hasMore(): JsonField<Boolean> = hasMore
+
+    /**
+     * Returns the raw JSON value of [nextCursor].
+     *
+     * Unlike [nextCursor], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("nextCursor") @ExcludeMissing fun _nextCursor(): JsonField<String> = nextCursor
+
+    /**
+     * Returns the raw JSON value of [totalCount].
+     *
+     * Unlike [totalCount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("totalCount") @ExcludeMissing fun _totalCount(): JsonField<Long> = totalCount
+
+    @JsonAnySetter
+    private fun putAdditionalProperty(key: String, value: JsonValue) {
+        additionalProperties.put(key, value)
+    }
+
+    @JsonAnyGetter
+    @ExcludeMissing
+    fun _additionalProperties(): Map<String, JsonValue> =
+        Collections.unmodifiableMap(additionalProperties)
+
+    fun toBuilder() = Builder().from(this)
+
+    companion object {
+
+        /**
+         * Returns a mutable builder for constructing an instance of [CustomerListResponse].
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .data()
+         * .hasMore()
+         * ```
+         */
+        fun builder() = Builder()
+    }
+
+    /** A builder for [CustomerListResponse]. */
+    class Builder internal constructor() {
+
+        private var data: JsonField<MutableList<CustomerOneOf>>? = null
+        private var hasMore: JsonField<Boolean>? = null
+        private var nextCursor: JsonField<String> = JsonMissing.of()
+        private var totalCount: JsonField<Long> = JsonMissing.of()
+        private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+        internal fun from(customerListResponse: CustomerListResponse) = apply {
+            data = customerListResponse.data.map { it.toMutableList() }
+            hasMore = customerListResponse.hasMore
+            nextCursor = customerListResponse.nextCursor
+            totalCount = customerListResponse.totalCount
+            additionalProperties = customerListResponse.additionalProperties.toMutableMap()
         }
+
+        /** List of customers matching the filter criteria */
+        fun data(data: List<CustomerOneOf>) = data(JsonField.of(data))
+
+        /**
+         * Sets [Builder.data] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.data] with a well-typed `List<CustomerOneOf>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun data(data: JsonField<List<CustomerOneOf>>) = apply {
+            this.data = data.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [CustomerOneOf] to [Builder.data].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addData(data: CustomerOneOf) = apply {
+            this.data =
+                (this.data ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("data", it).add(data)
+                }
+        }
+
+        /**
+         * Alias for calling [addData] with
+         * `CustomerOneOf.ofIndividualCustomer(individualCustomer)`.
+         */
+        fun addData(individualCustomer: IndividualCustomer) =
+            addData(CustomerOneOf.ofIndividualCustomer(individualCustomer))
+
+        /**
+         * Alias for calling [addData] with `CustomerOneOf.ofBusinessCustomer(businessCustomer)`.
+         */
+        fun addData(businessCustomer: BusinessCustomer) =
+            addData(CustomerOneOf.ofBusinessCustomer(businessCustomer))
+
+        /** Indicates if more results are available beyond this page */
+        fun hasMore(hasMore: Boolean) = hasMore(JsonField.of(hasMore))
+
+        /**
+         * Sets [Builder.hasMore] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.hasMore] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun hasMore(hasMore: JsonField<Boolean>) = apply { this.hasMore = hasMore }
+
+        /** Cursor to retrieve the next page of results (only present if hasMore is true) */
+        fun nextCursor(nextCursor: String) = nextCursor(JsonField.of(nextCursor))
+
+        /**
+         * Sets [Builder.nextCursor] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.nextCursor] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun nextCursor(nextCursor: JsonField<String>) = apply { this.nextCursor = nextCursor }
+
+        /** Total number of customers matching the criteria (excluding pagination) */
+        fun totalCount(totalCount: Long) = totalCount(JsonField.of(totalCount))
+
+        /**
+         * Sets [Builder.totalCount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.totalCount] with a well-typed [Long] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun totalCount(totalCount: JsonField<Long>) = apply { this.totalCount = totalCount }
+
+        fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.clear()
+            putAllAdditionalProperties(additionalProperties)
+        }
+
+        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+            additionalProperties.put(key, value)
+        }
+
+        fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+            this.additionalProperties.putAll(additionalProperties)
+        }
+
+        fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+            keys.forEach(::removeAdditionalProperty)
+        }
+
+        /**
+         * Returns an immutable instance of [CustomerListResponse].
+         *
+         * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```kotlin
+         * .data()
+         * .hasMore()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
+         */
+        fun build(): CustomerListResponse =
+            CustomerListResponse(
+                checkRequired("data", data).map { it.toImmutable() },
+                checkRequired("hasMore", hasMore),
+                nextCursor,
+                totalCount,
+                additionalProperties.toMutableMap(),
+            )
+    }
 
     private var validated: Boolean = false
 
@@ -87,17 +274,10 @@ private constructor(
             return@apply
         }
 
-        accept(
-            object : Visitor<Unit> {
-                override fun visitIndividual(individual: IndividualCustomer) {
-                    individual.validate()
-                }
-
-                override fun visitBusiness(business: BusinessCustomer) {
-                    business.validate()
-                }
-            }
-        )
+        data().forEach { it.validate() }
+        hasMore()
+        nextCursor()
+        totalCount()
         validated = true
     }
 
@@ -115,15 +295,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        accept(
-            object : Visitor<Int> {
-                override fun visitIndividual(individual: IndividualCustomer) = individual.validity()
-
-                override fun visitBusiness(business: BusinessCustomer) = business.validity()
-
-                override fun unknown(json: JsonValue?) = 0
-            }
-        )
+        (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (hasMore.asKnown() == null) 0 else 1) +
+            (if (nextCursor.asKnown() == null) 0 else 1) +
+            (if (totalCount.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -131,90 +306,19 @@ private constructor(
         }
 
         return other is CustomerListResponse &&
-            individual == other.individual &&
-            business == other.business
+            data == other.data &&
+            hasMore == other.hasMore &&
+            nextCursor == other.nextCursor &&
+            totalCount == other.totalCount &&
+            additionalProperties == other.additionalProperties
     }
 
-    override fun hashCode(): Int = Objects.hash(individual, business)
-
-    override fun toString(): String =
-        when {
-            individual != null -> "CustomerListResponse{individual=$individual}"
-            business != null -> "CustomerListResponse{business=$business}"
-            _json != null -> "CustomerListResponse{_unknown=$_json}"
-            else -> throw IllegalStateException("Invalid CustomerListResponse")
-        }
-
-    companion object {
-
-        fun ofIndividual(individual: IndividualCustomer) =
-            CustomerListResponse(individual = individual)
-
-        fun ofBusiness(business: BusinessCustomer) = CustomerListResponse(business = business)
+    private val hashCode: Int by lazy {
+        Objects.hash(data, hasMore, nextCursor, totalCount, additionalProperties)
     }
 
-    /**
-     * An interface that defines how to map each variant of [CustomerListResponse] to a value of
-     * type [T].
-     */
-    interface Visitor<out T> {
+    override fun hashCode(): Int = hashCode
 
-        fun visitIndividual(individual: IndividualCustomer): T
-
-        fun visitBusiness(business: BusinessCustomer): T
-
-        /**
-         * Maps an unknown variant of [CustomerListResponse] to a value of type [T].
-         *
-         * An instance of [CustomerListResponse] can contain an unknown variant if it was
-         * deserialized from data that doesn't match any known variant. For example, if the SDK is
-         * on an older version than the API, then the API may respond with new variants that the SDK
-         * is unaware of.
-         *
-         * @throws LightsparkGridInvalidDataException in the default implementation.
-         */
-        fun unknown(json: JsonValue?): T {
-            throw LightsparkGridInvalidDataException("Unknown CustomerListResponse: $json")
-        }
-    }
-
-    internal class Deserializer :
-        BaseDeserializer<CustomerListResponse>(CustomerListResponse::class) {
-
-        override fun ObjectCodec.deserialize(node: JsonNode): CustomerListResponse {
-            val json = JsonValue.fromJsonNode(node)
-            val customerType = json.asObject()?.get("customerType")?.asString()
-
-            when (customerType) {
-                "INDIVIDUAL" -> {
-                    return tryDeserialize(node, jacksonTypeRef<IndividualCustomer>())?.let {
-                        CustomerListResponse(individual = it, _json = json)
-                    } ?: CustomerListResponse(_json = json)
-                }
-                "BUSINESS" -> {
-                    return tryDeserialize(node, jacksonTypeRef<BusinessCustomer>())?.let {
-                        CustomerListResponse(business = it, _json = json)
-                    } ?: CustomerListResponse(_json = json)
-                }
-            }
-
-            return CustomerListResponse(_json = json)
-        }
-    }
-
-    internal class Serializer : BaseSerializer<CustomerListResponse>(CustomerListResponse::class) {
-
-        override fun serialize(
-            value: CustomerListResponse,
-            generator: JsonGenerator,
-            provider: SerializerProvider,
-        ) {
-            when {
-                value.individual != null -> generator.writeObject(value.individual)
-                value.business != null -> generator.writeObject(value.business)
-                value._json != null -> generator.writeObject(value._json)
-                else -> throw IllegalStateException("Invalid CustomerListResponse")
-            }
-        }
-    }
+    override fun toString() =
+        "CustomerListResponse{data=$data, hasMore=$hasMore, nextCursor=$nextCursor, totalCount=$totalCount, additionalProperties=$additionalProperties}"
 }

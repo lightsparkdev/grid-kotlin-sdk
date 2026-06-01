@@ -14,6 +14,8 @@ internal class EgpBeneficiaryTest {
     fun create() {
         val egpBeneficiary =
             EgpBeneficiary.builder()
+                .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -24,15 +26,16 @@ internal class EgpBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
-                .fullName("fullName")
-                .phoneNumber("phoneNumber")
                 .birthDate("birthDate")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
+                .phoneNumber("phoneNumber")
                 .build()
 
+        assertThat(egpBeneficiary.beneficiaryType())
+            .isEqualTo(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+        assertThat(egpBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(egpBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -44,14 +47,11 @@ internal class EgpBeneficiaryTest {
                     .state("CA")
                     .build()
             )
-        assertThat(egpBeneficiary.beneficiaryType())
-            .isEqualTo(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(egpBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
-        assertThat(egpBeneficiary.fullName()).isEqualTo("fullName")
-        assertThat(egpBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
         assertThat(egpBeneficiary.birthDate()).isEqualTo("birthDate")
+        assertThat(egpBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(egpBeneficiary.email()).isEqualTo("email")
         assertThat(egpBeneficiary.nationality()).isEqualTo("nationality")
+        assertThat(egpBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
     }
 
     @Test
@@ -59,6 +59,8 @@ internal class EgpBeneficiaryTest {
         val jsonMapper = jsonMapper()
         val egpBeneficiary =
             EgpBeneficiary.builder()
+                .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -69,13 +71,11 @@ internal class EgpBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .countryOfResidence("countryOfResidence")
-                .fullName("fullName")
-                .phoneNumber("phoneNumber")
                 .birthDate("birthDate")
+                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
+                .phoneNumber("phoneNumber")
                 .build()
 
         val roundtrippedEgpBeneficiary =

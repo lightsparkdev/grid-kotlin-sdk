@@ -4,6 +4,7 @@ package com.lightspark.grid.services.async.auth
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.models.auth.credentials.AuthCredentialChallengeRequest
 import com.lightspark.grid.models.auth.credentials.AuthCredentialVerifyRequestOneOf
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
@@ -109,8 +110,12 @@ internal class CredentialServiceAsyncTest {
             credentialServiceAsync.challenge(
                 CredentialChallengeParams.builder()
                     .id("id")
-                    .clientPublicKey(
-                        "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    .authCredentialChallengeRequest(
+                        AuthCredentialChallengeRequest.builder()
+                            .clientPublicKey(
+                                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                            )
+                            .build()
                     )
                     .build()
             )

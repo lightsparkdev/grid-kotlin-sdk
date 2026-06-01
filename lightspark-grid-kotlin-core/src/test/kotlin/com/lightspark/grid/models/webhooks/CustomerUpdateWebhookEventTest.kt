@@ -3,8 +3,10 @@
 package com.lightspark.grid.models.webhooks
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.customers.CustomerOneOf
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -20,10 +22,17 @@ internal class CustomerUpdateWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
                             Address.builder()
                                 .country("US")
@@ -35,16 +44,9 @@ internal class CustomerUpdateWebhookEventTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -55,12 +57,19 @@ internal class CustomerUpdateWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(customerUpdateWebhookEvent.data())
             .isEqualTo(
-                CustomerUpdateWebhookEvent.Data.ofIndividual(
+                CustomerOneOf.ofIndividualCustomer(
                     IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
                             Address.builder()
                                 .country("US")
@@ -72,16 +81,9 @@ internal class CustomerUpdateWebhookEventTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
             )
@@ -99,10 +101,17 @@ internal class CustomerUpdateWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     IndividualCustomer.builder()
-                        .customerType(IndividualCustomer.CustomerType.INDIVIDUAL)
+                        .customerType(JsonValue.from("INDIVIDUAL"))
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
+                        .addCurrency("USD")
+                        .addCurrency("USDC")
+                        .email("john.doe@example.com")
+                        .isDeleted(false)
+                        .region("US")
+                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
                             Address.builder()
                                 .country("US")
@@ -114,16 +123,9 @@ internal class CustomerUpdateWebhookEventTest {
                                 .build()
                         )
                         .birthDate(LocalDate.parse("1990-01-15"))
-                        .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
-                        .addCurrency("USD")
-                        .addCurrency("USDC")
-                        .email("john.doe@example.com")
                         .fullName("John Michael Doe")
-                        .isDeleted(false)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
-                        .region("US")
-                        .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))

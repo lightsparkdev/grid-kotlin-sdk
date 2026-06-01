@@ -21,7 +21,7 @@ internal class ExchangeRateServiceTest {
                 .build()
         val exchangeRateService = client.exchangeRates()
 
-        val exchangeRates =
+        val exchangeRateListResponse =
             exchangeRateService.list(
                 ExchangeRateListParams.builder()
                     .addDestinationCurrency("string")
@@ -30,6 +30,6 @@ internal class ExchangeRateServiceTest {
                     .build()
             )
 
-        exchangeRates.validate()
+        exchangeRateListResponse.validate()
     }
 }

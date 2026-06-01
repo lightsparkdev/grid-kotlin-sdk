@@ -17,13 +17,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
+import com.lightspark.grid.models.verifications.Verification
 import com.lightspark.grid.models.verifications.VerificationListPageAsync
-import com.lightspark.grid.models.verifications.VerificationListPageResponse
 import com.lightspark.grid.models.verifications.VerificationListParams
+import com.lightspark.grid.models.verifications.VerificationListResponse
 import com.lightspark.grid.models.verifications.VerificationRetrieveParams
-import com.lightspark.grid.models.verifications.VerificationRetrieveResponse
 import com.lightspark.grid.models.verifications.VerificationSubmitParams
-import com.lightspark.grid.models.verifications.VerificationSubmitResponse
 
 /**
  * Endpoints for Know Your Customer (KYC) and Know Your Business (KYB) verification, including
@@ -44,7 +43,7 @@ class VerificationServiceAsyncImpl internal constructor(private val clientOption
     override suspend fun retrieve(
         params: VerificationRetrieveParams,
         requestOptions: RequestOptions,
-    ): VerificationRetrieveResponse =
+    ): Verification =
         // get /verifications/{verificationId}
         withRawResponse().retrieve(params, requestOptions).parse()
 
@@ -58,7 +57,7 @@ class VerificationServiceAsyncImpl internal constructor(private val clientOption
     override suspend fun submit(
         params: VerificationSubmitParams,
         requestOptions: RequestOptions,
-    ): VerificationSubmitResponse =
+    ): Verification =
         // post /verifications
         withRawResponse().submit(params, requestOptions).parse()
 
@@ -75,13 +74,13 @@ class VerificationServiceAsyncImpl internal constructor(private val clientOption
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val retrieveHandler: Handler<VerificationRetrieveResponse> =
-            jsonHandler<VerificationRetrieveResponse>(clientOptions.jsonMapper)
+        private val retrieveHandler: Handler<Verification> =
+            jsonHandler<Verification>(clientOptions.jsonMapper)
 
         override suspend fun retrieve(
             params: VerificationRetrieveParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<VerificationRetrieveResponse> {
+        ): HttpResponseFor<Verification> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("verificationId", params.verificationId())
@@ -109,8 +108,8 @@ class VerificationServiceAsyncImpl internal constructor(private val clientOption
             }
         }
 
-        private val listHandler: Handler<VerificationListPageResponse> =
-            jsonHandler<VerificationListPageResponse>(clientOptions.jsonMapper)
+        private val listHandler: Handler<VerificationListResponse> =
+            jsonHandler<VerificationListResponse>(clientOptions.jsonMapper)
 
         override suspend fun list(
             params: VerificationListParams,
@@ -147,13 +146,13 @@ class VerificationServiceAsyncImpl internal constructor(private val clientOption
             }
         }
 
-        private val submitHandler: Handler<VerificationSubmitResponse> =
-            jsonHandler<VerificationSubmitResponse>(clientOptions.jsonMapper)
+        private val submitHandler: Handler<Verification> =
+            jsonHandler<Verification>(clientOptions.jsonMapper)
 
         override suspend fun submit(
             params: VerificationSubmitParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<VerificationSubmitResponse> {
+        ): HttpResponseFor<Verification> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)

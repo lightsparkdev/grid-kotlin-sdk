@@ -9,6 +9,7 @@ import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -146,11 +147,11 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingTransaction.Refund.builder()
+                            Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                                .status(Refund.Status.COMPLETED)
+                                .reason(Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )
@@ -288,11 +289,11 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .refund(
-                        OutgoingTransaction.Refund.builder()
+                        Refund.builder()
                             .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .reference("UMA-Q12345-REFUND")
-                            .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                            .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                            .status(Refund.Status.COMPLETED)
+                            .reason(Refund.Reason.TRANSACTION_FAILED)
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                             .build()
                     )
@@ -435,11 +436,11 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .refund(
-                            OutgoingTransaction.Refund.builder()
+                            Refund.builder()
                                 .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .reference("UMA-Q12345-REFUND")
-                                .status(OutgoingTransaction.Refund.Status.COMPLETED)
-                                .reason(OutgoingTransaction.Refund.Reason.TRANSACTION_FAILED)
+                                .status(Refund.Status.COMPLETED)
+                                .reason(Refund.Reason.TRANSACTION_FAILED)
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
                                 .build()
                         )

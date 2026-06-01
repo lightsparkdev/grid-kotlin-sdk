@@ -24,6 +24,7 @@ import com.lightspark.grid.errors.UnexpectedStatusCodeException
 import com.lightspark.grid.errors.UnprocessableEntityException
 import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
+import com.lightspark.grid.models.quotes.QuoteRequest
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
@@ -78,38 +79,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -136,38 +121,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -194,38 +163,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -252,38 +205,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -310,38 +247,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -368,38 +289,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -426,38 +331,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -484,38 +373,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -542,38 +415,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -600,38 +457,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -658,38 +499,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -716,38 +541,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -774,38 +583,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -832,38 +625,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -890,38 +667,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -948,38 +709,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()
@@ -1004,38 +749,22 @@ internal class ErrorHandlingTest {
                 quoteService.create(
                     QuoteCreateParams.builder()
                         .idempotencyKey("<uuid>")
-                        .destination(
-                            QuoteDestinationOneOf.builder()
-                                .putAdditionalProperty("destinationType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    ),
+                        .quoteRequest(
+                            QuoteRequest.builder()
+                                .destination(QuoteDestinationOneOf.builder().build())
+                                .lockedCurrencyAmount(1000L)
+                                .lockedCurrencySide(QuoteRequest.LockedCurrencySide.SENDING)
+                                .source(QuoteSourceOneOf.builder().build())
+                                .description("Invoice #1234 payment")
+                                .immediatelyExecute(false)
+                                .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .senderCustomerInfo(
+                                    QuoteRequest.SenderCustomerInfo.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
                                 )
-                                .build()
-                        )
-                        .lockedCurrencyAmount(10000L)
-                        .lockedCurrencySide(QuoteCreateParams.LockedCurrencySide.SENDING)
-                        .source(
-                            QuoteSourceOneOf.builder()
-                                .putAdditionalProperty("sourceType", JsonValue.from("ACCOUNT"))
-                                .putAdditionalProperty(
-                                    "accountId",
-                                    JsonValue.from(
-                                        "InternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    ),
-                                )
-                                .build()
-                        )
-                        .description("Transfer between accounts, either internal or external.")
-                        .immediatelyExecute(false)
-                        .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
-                        .purposeOfPayment(QuoteCreateParams.PurposeOfPayment.GIFT)
-                        .senderCustomerInfo(
-                            QuoteCreateParams.SenderCustomerInfo.builder()
-                                .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
                                 .build()
                         )
                         .build()

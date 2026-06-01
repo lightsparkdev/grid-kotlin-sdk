@@ -3,8 +3,8 @@
 package com.lightspark.grid.models.agents.me
 
 import com.lightspark.grid.core.http.Headers
-import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
+import com.lightspark.grid.models.transferout.TransferOutRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,17 +14,22 @@ internal class MeCreateTransferOutParamsTest {
     fun create() {
         MeCreateTransferOutParams.builder()
             .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
-            .destination(
-                ExternalAccountReference.builder()
-                    .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+            .transferOutRequest(
+                TransferOutRequest.builder()
+                    .destination(
+                        TransferOutRequest.Destination.builder()
+                            .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
+                            .build()
+                    )
+                    .source(
+                        InternalAccountReference.builder()
+                            .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .build()
+                    )
+                    .amount(12550L)
                     .build()
             )
-            .source(
-                InternalAccountReference.builder()
-                    .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .build()
-            )
-            .amount(12550L)
             .build()
     }
 
@@ -33,17 +38,22 @@ internal class MeCreateTransferOutParamsTest {
         val params =
             MeCreateTransferOutParams.builder()
                 .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
-                .destination(
-                    ExternalAccountReference.builder()
-                        .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                .transferOutRequest(
+                    TransferOutRequest.builder()
+                        .destination(
+                            TransferOutRequest.Destination.builder()
+                                .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
+                                .build()
+                        )
+                        .source(
+                            InternalAccountReference.builder()
+                                .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
+                        .amount(12550L)
                         .build()
                 )
-                .source(
-                    InternalAccountReference.builder()
-                        .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
-                .amount(12550L)
                 .build()
 
         val headers = params._headers()
@@ -60,14 +70,18 @@ internal class MeCreateTransferOutParamsTest {
     fun headersWithoutOptionalFields() {
         val params =
             MeCreateTransferOutParams.builder()
-                .destination(
-                    ExternalAccountReference.builder()
-                        .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-                .source(
-                    InternalAccountReference.builder()
-                        .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .transferOutRequest(
+                    TransferOutRequest.builder()
+                        .destination(
+                            TransferOutRequest.Destination.builder()
+                                .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .build()
+                        )
+                        .source(
+                            InternalAccountReference.builder()
+                                .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -82,64 +96,80 @@ internal class MeCreateTransferOutParamsTest {
         val params =
             MeCreateTransferOutParams.builder()
                 .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
-                .destination(
-                    ExternalAccountReference.builder()
-                        .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                .transferOutRequest(
+                    TransferOutRequest.builder()
+                        .destination(
+                            TransferOutRequest.Destination.builder()
+                                .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
+                                .build()
+                        )
+                        .source(
+                            InternalAccountReference.builder()
+                                .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
+                        .amount(12550L)
                         .build()
                 )
-                .source(
-                    InternalAccountReference.builder()
-                        .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
-                .amount(12550L)
                 .build()
 
         val body = params._body()
 
-        assertThat(body.destination())
+        assertThat(body)
             .isEqualTo(
-                ExternalAccountReference.builder()
-                    .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                TransferOutRequest.builder()
+                    .destination(
+                        TransferOutRequest.Destination.builder()
+                            .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
+                            .build()
+                    )
+                    .source(
+                        InternalAccountReference.builder()
+                            .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .build()
+                    )
+                    .amount(12550L)
                     .build()
             )
-        assertThat(body.source())
-            .isEqualTo(
-                InternalAccountReference.builder()
-                    .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .build()
-            )
-        assertThat(body.amount()).isEqualTo(12550L)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
             MeCreateTransferOutParams.builder()
-                .destination(
-                    ExternalAccountReference.builder()
-                        .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                        .build()
-                )
-                .source(
-                    InternalAccountReference.builder()
-                        .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                .transferOutRequest(
+                    TransferOutRequest.builder()
+                        .destination(
+                            TransferOutRequest.Destination.builder()
+                                .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .build()
+                        )
+                        .source(
+                            InternalAccountReference.builder()
+                                .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                                .build()
+                        )
                         .build()
                 )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.destination())
+        assertThat(body)
             .isEqualTo(
-                ExternalAccountReference.builder()
-                    .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                    .build()
-            )
-        assertThat(body.source())
-            .isEqualTo(
-                InternalAccountReference.builder()
-                    .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                TransferOutRequest.builder()
+                    .destination(
+                        TransferOutRequest.Destination.builder()
+                            .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .build()
+                    )
+                    .source(
+                        InternalAccountReference.builder()
+                            .accountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
+                            .build()
+                    )
                     .build()
             )
     }

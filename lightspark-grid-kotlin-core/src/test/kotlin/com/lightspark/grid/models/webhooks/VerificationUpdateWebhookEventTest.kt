@@ -5,6 +5,7 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.VerificationError
+import com.lightspark.grid.models.verifications.Verification
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,7 +18,7 @@ internal class VerificationUpdateWebhookEventTest {
             VerificationUpdateWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    VerificationUpdateWebhookEvent.Data.builder()
+                    Verification.builder()
                         .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -32,9 +33,7 @@ internal class VerificationUpdateWebhookEventTest {
                                 .field("customer.address.line1")
                                 .build()
                         )
-                        .verificationStatus(
-                            VerificationUpdateWebhookEvent.Data.VerificationStatus.RESOLVE_ERRORS
-                        )
+                        .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )
@@ -46,7 +45,7 @@ internal class VerificationUpdateWebhookEventTest {
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
         assertThat(verificationUpdateWebhookEvent.data())
             .isEqualTo(
-                VerificationUpdateWebhookEvent.Data.builder()
+                Verification.builder()
                     .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
                     .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -61,9 +60,7 @@ internal class VerificationUpdateWebhookEventTest {
                             .field("customer.address.line1")
                             .build()
                     )
-                    .verificationStatus(
-                        VerificationUpdateWebhookEvent.Data.VerificationStatus.RESOLVE_ERRORS
-                    )
+                    .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                     .build()
             )
@@ -80,7 +77,7 @@ internal class VerificationUpdateWebhookEventTest {
             VerificationUpdateWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
-                    VerificationUpdateWebhookEvent.Data.builder()
+                    Verification.builder()
                         .id("Verification:019542f5-b3e7-1d02-0000-000000000001")
                         .createdAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -95,9 +92,7 @@ internal class VerificationUpdateWebhookEventTest {
                                 .field("customer.address.line1")
                                 .build()
                         )
-                        .verificationStatus(
-                            VerificationUpdateWebhookEvent.Data.VerificationStatus.RESOLVE_ERRORS
-                        )
+                        .verificationStatus(Verification.VerificationStatus.RESOLVE_ERRORS)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:00:00Z"))
                         .build()
                 )

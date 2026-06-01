@@ -9,20 +9,36 @@ internal class TokenCreateParamsTest {
 
     @Test
     fun create() {
-        TokenCreateParams.builder().name("Sandbox read-only").addPermission(Permission.VIEW).build()
+        TokenCreateParams.builder()
+            .apiTokenCreateRequest(
+                ApiTokenCreateRequest.builder()
+                    .name("Sandbox read-only")
+                    .addPermission(Permission.VIEW)
+                    .build()
+            )
+            .build()
     }
 
     @Test
     fun body() {
         val params =
             TokenCreateParams.builder()
-                .name("Sandbox read-only")
-                .addPermission(Permission.VIEW)
+                .apiTokenCreateRequest(
+                    ApiTokenCreateRequest.builder()
+                        .name("Sandbox read-only")
+                        .addPermission(Permission.VIEW)
+                        .build()
+                )
                 .build()
 
         val body = params._body()
 
-        assertThat(body.name()).isEqualTo("Sandbox read-only")
-        assertThat(body.permissions()).containsExactly(Permission.VIEW)
+        assertThat(body)
+            .isEqualTo(
+                ApiTokenCreateRequest.builder()
+                    .name("Sandbox read-only")
+                    .addPermission(Permission.VIEW)
+                    .build()
+            )
     }
 }
