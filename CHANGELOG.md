@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.9.0 (2026-06-01)
+
+Full Changelog: [v1.8.0...v1.9.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.8.0...v1.9.0)
+
+### Features
+
+* **api:** add SwiftAccount, remove bank fields from COP/EGP, add EGP mobile money support ([7fd13b3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7fd13b3e5ab372c1cdb32511942a895017cc2657))
+* **api:** manual updates ([b3668dd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b3668ddb89177291303c7112052d07c80bb7c3a9))
+* **api:** manual updates ([d54e243](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d54e243d95cc49d865aaecf1d949a21351ea4459))
+* **api:** manual updates ([3aa7536](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3aa7536f1cefab654d31fb5ab569bbda2064f8a3))
+* **api:** manual updates ([915609c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/915609ce54f7a8f1a609fd62bdc7cf6e343db617))
+* **transfers:** allow selecting payment rail on transfer-out destination ([03aa2d5](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/03aa2d523f1e56e143fd540a5f1d64240e2c2ec2))
+
+
+### Documentation
+
+* **api:** add documentation to passkey credential models ([a742863](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a742863d85043c4b57f04f709740dc1733cb0def))
+* **api:** add KYB requirements documentation to verification submit ([c05901d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c05901daa0bee6267a87aba9d589bf6867f89532))
+
 ## 1.8.0 (2026-05-28)
 
 Full Changelog: [v1.7.1...v1.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.1...v1.8.0)
