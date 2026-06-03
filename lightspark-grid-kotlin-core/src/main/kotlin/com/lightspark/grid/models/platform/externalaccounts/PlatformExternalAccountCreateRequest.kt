@@ -23,19 +23,15 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.AedExternalAccountCreateInfo
-import com.lightspark.grid.models.BdtBeneficiary
 import com.lightspark.grid.models.BdtExternalAccountCreateInfo
 import com.lightspark.grid.models.BrlExternalAccountCreateInfo
 import com.lightspark.grid.models.BwpExternalAccountCreateInfo
 import com.lightspark.grid.models.CadExternalAccountCreateInfo
-import com.lightspark.grid.models.CopBeneficiary
 import com.lightspark.grid.models.CopExternalAccountCreateInfo
 import com.lightspark.grid.models.DkkExternalAccountCreateInfo
-import com.lightspark.grid.models.EgpBeneficiary
 import com.lightspark.grid.models.EgpExternalAccountCreateInfo
 import com.lightspark.grid.models.EurExternalAccountCreateInfo
 import com.lightspark.grid.models.GbpExternalAccountCreateInfo
-import com.lightspark.grid.models.GhsBeneficiary
 import com.lightspark.grid.models.GhsExternalAccountCreateInfo
 import com.lightspark.grid.models.GtqExternalAccountCreateInfo
 import com.lightspark.grid.models.HkdExternalAccountCreateInfo
@@ -49,7 +45,6 @@ import com.lightspark.grid.models.MxnExternalAccountCreateInfo
 import com.lightspark.grid.models.MyrExternalAccountCreateInfo
 import com.lightspark.grid.models.NgnExternalAccountCreateInfo
 import com.lightspark.grid.models.PhpExternalAccountCreateInfo
-import com.lightspark.grid.models.PkrBeneficiary
 import com.lightspark.grid.models.PkrExternalAccountCreateInfo
 import com.lightspark.grid.models.RwfExternalAccountCreateInfo
 import com.lightspark.grid.models.SgdExternalAccountCreateInfo
@@ -91,8 +86,8 @@ private constructor(
 
     /**
      * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber
-     * - MOBILE_MONEY: phoneNumber
+     * - BANK_TRANSFER: accountNumber, bankName
+     * - MOBILE_MONEY: bankName, phoneNumber
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -189,8 +184,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun accountInfo(accountInfo: AccountInfo) = accountInfo(JsonField.of(accountInfo))
 
@@ -213,71 +208,6 @@ private constructor(
         fun accountInfo(bdtAccount: BdtExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofBdtAccount(bdtAccount))
 
-        /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * BdtExternalAccountCreateInfo.builder()
-         *     .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-         *     .beneficiary(beneficiary)
-         *     .build()
-         * ```
-         */
-        fun bdtAccountAccountInfo(beneficiary: BdtExternalAccountCreateInfo.Beneficiary) =
-            accountInfo(
-                BdtExternalAccountCreateInfo.builder()
-                    .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-                    .beneficiary(beneficiary)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [bdtAccountAccountInfo] with
-         * `BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
-         */
-        fun bdtAccountAccountInfo(individual: BdtBeneficiary) =
-            bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [bdtAccountAccountInfo] with the following:
-         * ```kotlin
-         * BdtBeneficiary.builder()
-         *     .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualBdtAccountAccountInfo(fullName: String) =
-            bdtAccountAccountInfo(
-                BdtBeneficiary.builder()
-                    .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [bdtAccountAccountInfo] with
-         * `BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
-         */
-        fun bdtAccountAccountInfo(business: BusinessBeneficiary) =
-            bdtAccountAccountInfo(BdtExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [bdtAccountAccountInfo] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessBdtAccountAccountInfo(legalName: String) =
-            bdtAccountAccountInfo(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
-
         /** Alias for calling [accountInfo] with `AccountInfo.ofBrlAccount(brlAccount)`. */
         fun accountInfo(brlAccount: BrlExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofBrlAccount(brlAccount))
@@ -294,71 +224,6 @@ private constructor(
         fun accountInfo(copAccount: CopExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofCopAccount(copAccount))
 
-        /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * CopExternalAccountCreateInfo.builder()
-         *     .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
-         *     .beneficiary(beneficiary)
-         *     .build()
-         * ```
-         */
-        fun copAccountAccountInfo(beneficiary: CopExternalAccountCreateInfo.Beneficiary) =
-            accountInfo(
-                CopExternalAccountCreateInfo.builder()
-                    .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
-                    .beneficiary(beneficiary)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [copAccountAccountInfo] with
-         * `CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
-         */
-        fun copAccountAccountInfo(individual: CopBeneficiary) =
-            copAccountAccountInfo(CopExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [copAccountAccountInfo] with the following:
-         * ```kotlin
-         * CopBeneficiary.builder()
-         *     .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualCopAccountAccountInfo(fullName: String) =
-            copAccountAccountInfo(
-                CopBeneficiary.builder()
-                    .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [copAccountAccountInfo] with
-         * `CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
-         */
-        fun copAccountAccountInfo(business: BusinessBeneficiary) =
-            copAccountAccountInfo(CopExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [copAccountAccountInfo] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessCopAccountAccountInfo(legalName: String) =
-            copAccountAccountInfo(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
-
         /** Alias for calling [accountInfo] with `AccountInfo.ofDkkAccount(dkkAccount)`. */
         fun accountInfo(dkkAccount: DkkExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofDkkAccount(dkkAccount))
@@ -366,71 +231,6 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofEgpAccount(egpAccount)`. */
         fun accountInfo(egpAccount: EgpExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofEgpAccount(egpAccount))
-
-        /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * EgpExternalAccountCreateInfo.builder()
-         *     .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-         *     .beneficiary(beneficiary)
-         *     .build()
-         * ```
-         */
-        fun egpAccountAccountInfo(beneficiary: EgpExternalAccountCreateInfo.Beneficiary) =
-            accountInfo(
-                EgpExternalAccountCreateInfo.builder()
-                    .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                    .beneficiary(beneficiary)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [egpAccountAccountInfo] with
-         * `EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
-         */
-        fun egpAccountAccountInfo(individual: EgpBeneficiary) =
-            egpAccountAccountInfo(EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [egpAccountAccountInfo] with the following:
-         * ```kotlin
-         * EgpBeneficiary.builder()
-         *     .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualEgpAccountAccountInfo(fullName: String) =
-            egpAccountAccountInfo(
-                EgpBeneficiary.builder()
-                    .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [egpAccountAccountInfo] with
-         * `EgpExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
-         */
-        fun egpAccountAccountInfo(business: BusinessBeneficiary) =
-            egpAccountAccountInfo(EgpExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [egpAccountAccountInfo] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessEgpAccountAccountInfo(legalName: String) =
-            egpAccountAccountInfo(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofEurAccount(eurAccount)`. */
         fun accountInfo(eurAccount: EurExternalAccountCreateInfo) =
@@ -443,71 +243,6 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofGhsAccount(ghsAccount)`. */
         fun accountInfo(ghsAccount: GhsExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofGhsAccount(ghsAccount))
-
-        /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * GhsExternalAccountCreateInfo.builder()
-         *     .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-         *     .beneficiary(beneficiary)
-         *     .build()
-         * ```
-         */
-        fun ghsAccountAccountInfo(beneficiary: GhsExternalAccountCreateInfo.Beneficiary) =
-            accountInfo(
-                GhsExternalAccountCreateInfo.builder()
-                    .accountType(GhsExternalAccountCreateInfo.AccountType.GHS_ACCOUNT)
-                    .beneficiary(beneficiary)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [ghsAccountAccountInfo] with
-         * `GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
-         */
-        fun ghsAccountAccountInfo(individual: GhsBeneficiary) =
-            ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [ghsAccountAccountInfo] with the following:
-         * ```kotlin
-         * GhsBeneficiary.builder()
-         *     .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualGhsAccountAccountInfo(fullName: String) =
-            ghsAccountAccountInfo(
-                GhsBeneficiary.builder()
-                    .beneficiaryType(GhsBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [ghsAccountAccountInfo] with
-         * `GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
-         */
-        fun ghsAccountAccountInfo(business: BusinessBeneficiary) =
-            ghsAccountAccountInfo(GhsExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [ghsAccountAccountInfo] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessGhsAccountAccountInfo(legalName: String) =
-            ghsAccountAccountInfo(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofGtqAccount(gtqAccount)`. */
         fun accountInfo(gtqAccount: GtqExternalAccountCreateInfo) =
@@ -560,71 +295,6 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofPkrAccount(pkrAccount)`. */
         fun accountInfo(pkrAccount: PkrExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofPkrAccount(pkrAccount))
-
-        /**
-         * Alias for calling [accountInfo] with the following:
-         * ```kotlin
-         * PkrExternalAccountCreateInfo.builder()
-         *     .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-         *     .beneficiary(beneficiary)
-         *     .build()
-         * ```
-         */
-        fun pkrAccountAccountInfo(beneficiary: PkrExternalAccountCreateInfo.Beneficiary) =
-            accountInfo(
-                PkrExternalAccountCreateInfo.builder()
-                    .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
-                    .beneficiary(beneficiary)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [pkrAccountAccountInfo] with
-         * `PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
-         */
-        fun pkrAccountAccountInfo(individual: PkrBeneficiary) =
-            pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
-
-        /**
-         * Alias for calling [pkrAccountAccountInfo] with the following:
-         * ```kotlin
-         * PkrBeneficiary.builder()
-         *     .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-         *     .fullName(fullName)
-         *     .build()
-         * ```
-         */
-        fun individualPkrAccountAccountInfo(fullName: String) =
-            pkrAccountAccountInfo(
-                PkrBeneficiary.builder()
-                    .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
-                    .fullName(fullName)
-                    .build()
-            )
-
-        /**
-         * Alias for calling [pkrAccountAccountInfo] with
-         * `PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
-         */
-        fun pkrAccountAccountInfo(business: BusinessBeneficiary) =
-            pkrAccountAccountInfo(PkrExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
-
-        /**
-         * Alias for calling [pkrAccountAccountInfo] with the following:
-         * ```kotlin
-         * BusinessBeneficiary.builder()
-         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-         *     .legalName(legalName)
-         *     .build()
-         * ```
-         */
-        fun businessPkrAccountAccountInfo(legalName: String) =
-            pkrAccountAccountInfo(
-                BusinessBeneficiary.builder()
-                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
-                    .legalName(legalName)
-                    .build()
-            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofRwfAccount(rwfAccount)`. */
         fun accountInfo(rwfAccount: RwfExternalAccountCreateInfo) =
@@ -854,8 +524,8 @@ private constructor(
 
     /**
      * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber
-     * - MOBILE_MONEY: phoneNumber
+     * - BANK_TRANSFER: accountNumber, bankName
+     * - MOBILE_MONEY: bankName, phoneNumber
      */
     @JsonDeserialize(using = AccountInfo.Deserializer::class)
     @JsonSerialize(using = AccountInfo.Serializer::class)
@@ -905,8 +575,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun bdtAccount(): BdtExternalAccountCreateInfo? = bdtAccount
 
@@ -918,8 +588,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankAccountType
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun copAccount(): CopExternalAccountCreateInfo? = copAccount
 
@@ -927,8 +597,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: iban
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: bankName, iban
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun egpAccount(): EgpExternalAccountCreateInfo? = egpAccount
 
@@ -938,8 +608,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun ghsAccount(): GhsExternalAccountCreateInfo? = ghsAccount
 
@@ -969,7 +639,7 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
+         * - BANK_TRANSFER: accountNumber, bankName
          * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun pkrAccount(): PkrExternalAccountCreateInfo? = pkrAccount
@@ -1083,8 +753,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asBdtAccount(): BdtExternalAccountCreateInfo = bdtAccount.getOrThrow("bdtAccount")
 
@@ -1096,8 +766,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankAccountType
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asCopAccount(): CopExternalAccountCreateInfo = copAccount.getOrThrow("copAccount")
 
@@ -1105,8 +775,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: iban
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: bankName, iban
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asEgpAccount(): EgpExternalAccountCreateInfo = egpAccount.getOrThrow("egpAccount")
 
@@ -1116,8 +786,8 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
-         * - MOBILE_MONEY: phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asGhsAccount(): GhsExternalAccountCreateInfo = ghsAccount.getOrThrow("ghsAccount")
 
@@ -1147,7 +817,7 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber
+         * - BANK_TRANSFER: accountNumber, bankName
          * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asPkrAccount(): PkrExternalAccountCreateInfo = pkrAccount.getOrThrow("pkrAccount")
@@ -1690,8 +1360,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofBdtAccount(bdtAccount: BdtExternalAccountCreateInfo) =
                 AccountInfo(bdtAccount = bdtAccount)
@@ -1707,8 +1377,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankAccountType
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofCopAccount(copAccount: CopExternalAccountCreateInfo) =
                 AccountInfo(copAccount = copAccount)
@@ -1718,8 +1388,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: iban
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: bankName, iban
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofEgpAccount(egpAccount: EgpExternalAccountCreateInfo) =
                 AccountInfo(egpAccount = egpAccount)
@@ -1732,8 +1402,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofGhsAccount(ghsAccount: GhsExternalAccountCreateInfo) =
                 AccountInfo(ghsAccount = ghsAccount)
@@ -1776,7 +1446,7 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
+             * - BANK_TRANSFER: accountNumber, bankName
              * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofPkrAccount(pkrAccount: PkrExternalAccountCreateInfo) =
@@ -1837,8 +1507,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitBdtAccount(bdtAccount: BdtExternalAccountCreateInfo): T
 
@@ -1850,8 +1520,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber, bankAccountType
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankAccountType, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitCopAccount(copAccount: CopExternalAccountCreateInfo): T
 
@@ -1859,8 +1529,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: iban
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: bankName, iban
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitEgpAccount(egpAccount: EgpExternalAccountCreateInfo): T
 
@@ -1870,8 +1540,8 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
-             * - MOBILE_MONEY: phoneNumber
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitGhsAccount(ghsAccount: GhsExternalAccountCreateInfo): T
 
@@ -1901,7 +1571,7 @@ private constructor(
 
             /**
              * Required fields depend on the selected paymentRails:
-             * - BANK_TRANSFER: accountNumber
+             * - BANK_TRANSFER: accountNumber, bankName
              * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitPkrAccount(pkrAccount: PkrExternalAccountCreateInfo): T
