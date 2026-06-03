@@ -16,6 +16,7 @@ internal class GhsExternalAccountInfoTest {
             GhsExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("GHS_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
     }
@@ -27,6 +28,7 @@ internal class GhsExternalAccountInfoTest {
             GhsExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("GHS_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
 

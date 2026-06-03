@@ -15,10 +15,10 @@ internal class PkrExternalAccountInfoTest {
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PKR_ACCOUNT"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("iban", JsonValue.from("PK36SCBL0000001123456702"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
     }
 
@@ -28,10 +28,10 @@ internal class PkrExternalAccountInfoTest {
         val pkrExternalAccountInfo =
             PkrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PKR_ACCOUNT"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("iban", JsonValue.from("PK36SCBL0000001123456702"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
 
         val roundtrippedPkrExternalAccountInfo =
