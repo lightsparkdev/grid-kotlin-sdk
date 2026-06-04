@@ -116,7 +116,6 @@ internal class OutgoingTransactionTest {
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
-                .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .receivedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -254,8 +253,6 @@ internal class OutgoingTransactionTest {
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
-        assertThat(outgoingTransaction.receiptDeliveryConfirmedAt())
-            .isEqualTo(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
         assertThat(outgoingTransaction.receivedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
@@ -396,7 +393,6 @@ internal class OutgoingTransactionTest {
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
-                .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .receivedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)

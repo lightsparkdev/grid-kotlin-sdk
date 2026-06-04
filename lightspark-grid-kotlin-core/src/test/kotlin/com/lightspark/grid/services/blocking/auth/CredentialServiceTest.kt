@@ -33,7 +33,7 @@ internal class CredentialServiceTest {
             credentialService.create(
                 CredentialCreateParams.builder()
                     .gridWalletSignature(
-                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                     )
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .authCredentialCreateRequest(
@@ -83,7 +83,7 @@ internal class CredentialServiceTest {
                 CredentialDeleteParams.builder()
                     .id("id")
                     .gridWalletSignature(
-                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                     )
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
@@ -137,6 +137,9 @@ internal class CredentialServiceTest {
             credentialService.verify(
                 CredentialVerifyParams.builder()
                     .id("id")
+                    .gridWalletSignature(
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
+                    )
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .authCredentialVerifyRequest(AuthCredentialVerifyRequestOneOf.builder().build())
                     .build()
