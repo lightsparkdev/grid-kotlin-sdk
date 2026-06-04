@@ -42,6 +42,10 @@ private constructor(
      * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
      * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
      * ambiguously match both branches.
+     *
+     * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
+     * client can HPKE-encrypt the OTP code in the subsequent `POST /auth/credentials/{id}/verify`
+     * call without the plaintext code ever transiting the server.
      */
     fun methodResponse(): AuthMethodResponse? = methodResponse
 
@@ -65,6 +69,10 @@ private constructor(
      * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
      * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
      * ambiguously match both branches.
+     *
+     * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
+     * client can HPKE-encrypt the OTP code in the subsequent `POST /auth/credentials/{id}/verify`
+     * call without the plaintext code ever transiting the server.
      */
     fun asMethodResponse(): AuthMethodResponse = methodResponse.getOrThrow("methodResponse")
 
@@ -196,6 +204,11 @@ private constructor(
          * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
          * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
          * fields would ambiguously match both branches.
+         *
+         * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
+         * client can HPKE-encrypt the OTP code in the subsequent `POST
+         * /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+         * server.
          */
         fun ofMethodResponse(methodResponse: AuthMethodResponse) =
             AuthCredentialResponseOneOf(methodResponse = methodResponse)
@@ -224,6 +237,11 @@ private constructor(
          * difference from `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the
          * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
          * fields would ambiguously match both branches.
+         *
+         * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
+         * client can HPKE-encrypt the OTP code in the subsequent `POST
+         * /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+         * server.
          */
         fun visitMethodResponse(methodResponse: AuthMethodResponse): T
 

@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.agents.me
 
 import com.lightspark.grid.core.http.Headers
+import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import com.lightspark.grid.models.transferout.TransferOutRequest
 import org.assertj.core.api.Assertions.assertThat
@@ -17,9 +18,8 @@ internal class MeCreateTransferOutParamsTest {
             .transferOutRequest(
                 TransferOutRequest.builder()
                     .destination(
-                        TransferOutRequest.Destination.builder()
+                        ExternalAccountReference.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                             .build()
                     )
                     .source(
@@ -41,9 +41,8 @@ internal class MeCreateTransferOutParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            TransferOutRequest.Destination.builder()
+                            ExternalAccountReference.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                 .build()
                         )
                         .source(
@@ -73,7 +72,7 @@ internal class MeCreateTransferOutParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            TransferOutRequest.Destination.builder()
+                            ExternalAccountReference.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -99,9 +98,8 @@ internal class MeCreateTransferOutParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            TransferOutRequest.Destination.builder()
+                            ExternalAccountReference.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                 .build()
                         )
                         .source(
@@ -120,9 +118,8 @@ internal class MeCreateTransferOutParamsTest {
             .isEqualTo(
                 TransferOutRequest.builder()
                     .destination(
-                        TransferOutRequest.Destination.builder()
+                        ExternalAccountReference.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                             .build()
                     )
                     .source(
@@ -142,7 +139,7 @@ internal class MeCreateTransferOutParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            TransferOutRequest.Destination.builder()
+                            ExternalAccountReference.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -161,7 +158,7 @@ internal class MeCreateTransferOutParamsTest {
             .isEqualTo(
                 TransferOutRequest.builder()
                     .destination(
-                        TransferOutRequest.Destination.builder()
+                        ExternalAccountReference.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )

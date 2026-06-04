@@ -13,8 +13,8 @@ import java.util.Objects
 
 /**
  * Required fields depend on the selected paymentRails:
- * - BANK_TRANSFER: bankName, iban
- * - MOBILE_MONEY: bankName, phoneNumber
+ * - BANK_TRANSFER: iban
+ * - MOBILE_MONEY: phoneNumber
  */
 class EgpExternalAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

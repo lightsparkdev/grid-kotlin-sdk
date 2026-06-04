@@ -44,7 +44,6 @@ private constructor(
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val quoteId: JsonField<String>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
-    private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
     private val receivedAmount: JsonField<CurrencyAmount>,
     private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
     private val refund: JsonField<Refund>,
@@ -95,9 +94,6 @@ private constructor(
         @JsonProperty("rateDetails")
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
-        @JsonProperty("receiptDeliveryConfirmedAt")
-        @ExcludeMissing
-        receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("receivedAmount")
         @ExcludeMissing
         receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
@@ -130,7 +126,6 @@ private constructor(
         paymentInstructions,
         quoteId,
         rateDetails,
-        receiptDeliveryConfirmedAt,
         receivedAmount,
         reconciliationInstructions,
         refund,
@@ -292,15 +287,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
-
-    /**
-     * The time at which the platform confirmed delivery of the receipt to their customer.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun receiptDeliveryConfirmedAt(): OffsetDateTime? =
-        receiptDeliveryConfirmedAt.getNullable("receiptDeliveryConfirmedAt")
 
     /**
      * Amount to be received by recipient in the recipient's currency
@@ -485,16 +471,6 @@ private constructor(
     fun _rateDetails(): JsonField<OutgoingRateDetails> = rateDetails
 
     /**
-     * Returns the raw JSON value of [receiptDeliveryConfirmedAt].
-     *
-     * Unlike [receiptDeliveryConfirmedAt], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    @JsonProperty("receiptDeliveryConfirmedAt")
-    @ExcludeMissing
-    fun _receiptDeliveryConfirmedAt(): JsonField<OffsetDateTime> = receiptDeliveryConfirmedAt
-
-    /**
      * Returns the raw JSON value of [receivedAmount].
      *
      * Unlike [receivedAmount], this method doesn't throw if the JSON field has an unexpected type.
@@ -592,7 +568,6 @@ private constructor(
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
-        private var receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
             JsonMissing.of()
@@ -620,7 +595,6 @@ private constructor(
             paymentInstructions = outgoingTransaction.paymentInstructions.map { it.toMutableList() }
             quoteId = outgoingTransaction.quoteId
             rateDetails = outgoingTransaction.rateDetails
-            receiptDeliveryConfirmedAt = outgoingTransaction.receiptDeliveryConfirmedAt
             receivedAmount = outgoingTransaction.receivedAmount
             reconciliationInstructions = outgoingTransaction.reconciliationInstructions
             refund = outgoingTransaction.refund
@@ -877,22 +851,6 @@ private constructor(
             this.rateDetails = rateDetails
         }
 
-        /** The time at which the platform confirmed delivery of the receipt to their customer. */
-        fun receiptDeliveryConfirmedAt(receiptDeliveryConfirmedAt: OffsetDateTime) =
-            receiptDeliveryConfirmedAt(JsonField.of(receiptDeliveryConfirmedAt))
-
-        /**
-         * Sets [Builder.receiptDeliveryConfirmedAt] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.receiptDeliveryConfirmedAt] with a well-typed
-         * [OffsetDateTime] value instead. This method is primarily for setting the field to an
-         * undocumented or not yet supported value.
-         */
-        fun receiptDeliveryConfirmedAt(receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>) =
-            apply {
-                this.receiptDeliveryConfirmedAt = receiptDeliveryConfirmedAt
-            }
-
         /** Amount to be received by recipient in the recipient's currency */
         fun receivedAmount(receivedAmount: CurrencyAmount) =
             receivedAmount(JsonField.of(receivedAmount))
@@ -1019,7 +977,6 @@ private constructor(
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 quoteId,
                 rateDetails,
-                receiptDeliveryConfirmedAt,
                 receivedAmount,
                 reconciliationInstructions,
                 refund,
@@ -1060,7 +1017,6 @@ private constructor(
         paymentInstructions()?.forEach { it.validate() }
         quoteId()
         rateDetails()?.validate()
-        receiptDeliveryConfirmedAt()
         receivedAmount()?.validate()
         reconciliationInstructions()?.validate()
         refund()?.validate()
@@ -1099,7 +1055,6 @@ private constructor(
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
-            (if (receiptDeliveryConfirmedAt.asKnown() == null) 0 else 1) +
             (receivedAmount.asKnown()?.validity() ?: 0) +
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
             (refund.asKnown()?.validity() ?: 0) +
@@ -1694,7 +1649,6 @@ private constructor(
             paymentInstructions == other.paymentInstructions &&
             quoteId == other.quoteId &&
             rateDetails == other.rateDetails &&
-            receiptDeliveryConfirmedAt == other.receiptDeliveryConfirmedAt &&
             receivedAmount == other.receivedAmount &&
             reconciliationInstructions == other.reconciliationInstructions &&
             refund == other.refund &&
@@ -1723,7 +1677,6 @@ private constructor(
             paymentInstructions,
             quoteId,
             rateDetails,
-            receiptDeliveryConfirmedAt,
             receivedAmount,
             reconciliationInstructions,
             refund,
@@ -1736,5 +1689,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, quoteId=$quoteId, rateDetails=$rateDetails, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

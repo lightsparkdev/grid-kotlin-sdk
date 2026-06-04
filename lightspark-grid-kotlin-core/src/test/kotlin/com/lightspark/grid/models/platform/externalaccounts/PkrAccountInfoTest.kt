@@ -14,18 +14,18 @@ internal class PkrAccountInfoTest {
         val pkrAccountInfo =
             PkrAccountInfo.builder()
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
+                .bankName("Example Bank")
                 .iban("PK36SCBL0000001123456702")
                 .phoneNumber("+1234567890")
                 .build()
 
         assertThat(pkrAccountInfo.accountType()).isEqualTo(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-        assertThat(pkrAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(pkrAccountInfo.paymentRails())
             .containsExactly(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(pkrAccountInfo.accountNumber()).isEqualTo("1234567890")
+        assertThat(pkrAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(pkrAccountInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
         assertThat(pkrAccountInfo.phoneNumber()).isEqualTo("+1234567890")
     }
@@ -36,9 +36,9 @@ internal class PkrAccountInfoTest {
         val pkrAccountInfo =
             PkrAccountInfo.builder()
                 .accountType(PkrAccountInfo.AccountType.PKR_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(PkrAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
+                .bankName("Example Bank")
                 .iban("PK36SCBL0000001123456702")
                 .phoneNumber("+1234567890")
                 .build()

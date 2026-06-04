@@ -17,7 +17,6 @@ internal class CopExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
     }
@@ -30,7 +29,6 @@ internal class CopExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("COP_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .putAdditionalProperty("phoneNumber", JsonValue.from("+1234567890"))
                 .build()
 

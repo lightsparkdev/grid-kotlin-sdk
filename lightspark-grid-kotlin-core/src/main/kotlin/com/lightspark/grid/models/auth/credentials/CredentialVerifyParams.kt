@@ -10,26 +10,42 @@ import java.util.Objects
 
 /**
  * Complete the verification step for a previously created authentication credential and issue a
- * session signing key.
+ * session.
  *
- * For `EMAIL_OTP` credentials, supply the one-time password that was emailed to the user along with
- * a client-generated public key. For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be
- * less than 60 seconds before the request) along with the client-generated public key; this is also
- * the reauthentication path after a prior session expired. The token identity (`iss`, `aud`, and
- * `sub`) must match the OAuth credential being verified. In sandbox, the token's `nonce` must equal
- * `sha256(clientPublicKey)`. For `PASSKEY` credentials, the client completes a WebAuthn assertion
+ * For `EMAIL_OTP` credentials, submit the `encryptedOtpBundle` produced by HPKE-encrypting
+ * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from the credential's
+ * registration or re-issued via `POST /auth/credentials/{id}/challenge`. The server is a
+ * pass-through and never sees the plaintext OTP code. On success the response is `202` with a
+ * `payloadToSign` carrying the `verificationToken` bound to the client's TEK public key — sign that
+ * token with the matching TEK private key, then retry the same request with the full stamp in
+ * `Grid-Wallet-Signature` and the `requestId` echoed in `Request-Id`. The signed retry returns
+ * `200` with the issued `AuthSession`. The TEK public key becomes the session API key on successful
+ * completion. In sandbox mode, the EMAIL_OTP flow runs real HPKE end-to-end against a sandbox
+ * enclave keypair — clients build a real `encryptedOtpBundle` against the sandbox
+ * `otpEncryptionTargetBundle` and sign a real `verificationToken` with their TEK keypair. The only
+ * sandbox shortcut is the magic OTP code (`"000000"`) the user "receives" instead of a real email
+ * delivery.
+ *
+ * For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be less than 60 seconds before the
+ * request) along with the client-generated public key; this is also the reauthentication path after
+ * a prior session expired. The token identity (`iss`, `aud`, and `sub`) must match the OAuth
+ * credential being verified. In sandbox, the token's `nonce` must equal `sha256(clientPublicKey)`.
+ * For `PASSKEY` credentials, the client completes a WebAuthn assertion
  * (`navigator.credentials.get()`) against the Grid-issued `challenge` returned from `POST
  * /auth/credentials/{id}/challenge`, and submits the resulting `assertion` with the `Request-Id`
  * header. The `clientPublicKey` for `PASSKEY` credentials is supplied on the challenge call, where
  * it is bound into the pending session-creation request.
  *
- * On success, the response contains an `encryptedSessionSigningKey` that is encrypted to the
- * supplied `clientPublicKey`, along with an `expiresAt` timestamp marking when the session expires.
- * The `clientPublicKey` is ephemeral and one-time-use per verification request.
+ * On success for `OAUTH` and `PASSKEY`, and on the signed retry for `EMAIL_OTP`, the response
+ * contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is delivered as
+ * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for `EMAIL_OTP` the
+ * client already holds the session signing key (the TEK private key it generated) and that field is
+ * omitted from the response. The `expiresAt` timestamp marks when the session expires.
  */
 class CredentialVerifyParams
 private constructor(
     private val id: String?,
+    private val gridWalletSignature: String?,
     private val requestId: String?,
     private val authCredentialVerifyRequest: AuthCredentialVerifyRequestOneOf,
     private val additionalHeaders: Headers,
@@ -37,6 +53,8 @@ private constructor(
 ) : Params {
 
     fun id(): String? = id
+
+    fun gridWalletSignature(): String? = gridWalletSignature
 
     fun requestId(): String? = requestId
 
@@ -68,6 +86,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
+        private var gridWalletSignature: String? = null
         private var requestId: String? = null
         private var authCredentialVerifyRequest: AuthCredentialVerifyRequestOneOf? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -75,6 +94,7 @@ private constructor(
 
         internal fun from(credentialVerifyParams: CredentialVerifyParams) = apply {
             id = credentialVerifyParams.id
+            gridWalletSignature = credentialVerifyParams.gridWalletSignature
             requestId = credentialVerifyParams.requestId
             authCredentialVerifyRequest = credentialVerifyParams.authCredentialVerifyRequest
             additionalHeaders = credentialVerifyParams.additionalHeaders.toBuilder()
@@ -82,6 +102,10 @@ private constructor(
         }
 
         fun id(id: String?) = apply { this.id = id }
+
+        fun gridWalletSignature(gridWalletSignature: String?) = apply {
+            this.gridWalletSignature = gridWalletSignature
+        }
 
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
@@ -202,6 +226,7 @@ private constructor(
         fun build(): CredentialVerifyParams =
             CredentialVerifyParams(
                 id,
+                gridWalletSignature,
                 requestId,
                 checkRequired("authCredentialVerifyRequest", authCredentialVerifyRequest),
                 additionalHeaders.build(),
@@ -220,6 +245,7 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
+                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
                 requestId?.let { put("Request-Id", it) }
                 putAll(additionalHeaders)
             }
@@ -234,6 +260,7 @@ private constructor(
 
         return other is CredentialVerifyParams &&
             id == other.id &&
+            gridWalletSignature == other.gridWalletSignature &&
             requestId == other.requestId &&
             authCredentialVerifyRequest == other.authCredentialVerifyRequest &&
             additionalHeaders == other.additionalHeaders &&
@@ -243,6 +270,7 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             id,
+            gridWalletSignature,
             requestId,
             authCredentialVerifyRequest,
             additionalHeaders,
@@ -250,5 +278,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CredentialVerifyParams{id=$id, requestId=$requestId, authCredentialVerifyRequest=$authCredentialVerifyRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CredentialVerifyParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, authCredentialVerifyRequest=$authCredentialVerifyRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

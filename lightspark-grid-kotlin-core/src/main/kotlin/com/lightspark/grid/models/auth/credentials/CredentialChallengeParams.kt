@@ -12,10 +12,10 @@ import java.util.Objects
 /**
  * Re-issue the challenge for an existing authentication credential.
  *
- * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on file.
- * The response is a plain `AuthMethod`; there is no challenge body to surface because the OTP is
- * delivered out-of-band via email. After the user receives the new OTP, call `POST
- * /auth/credentials/{id}/verify` to complete verification and issue a session.
+ * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on file
+ * and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP attempt
+ * against. After the user receives the new OTP, build the `encryptedOtpBundle` under the new target
+ * bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP login flow.
  *
  * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
  * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
