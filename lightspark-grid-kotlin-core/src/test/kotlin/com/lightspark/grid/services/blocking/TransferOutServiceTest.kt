@@ -3,6 +3,7 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import com.lightspark.grid.models.transferout.TransferOutCreateParams
 import com.lightspark.grid.models.transferout.TransferOutRequest
@@ -30,11 +31,10 @@ internal class TransferOutServiceTest {
                     .transferOutRequest(
                         TransferOutRequest.builder()
                             .destination(
-                                TransferOutRequest.Destination.builder()
+                                ExternalAccountReference.builder()
                                     .accountId(
                                         "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
                                     )
-                                    .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                     .build()
                             )
                             .source(

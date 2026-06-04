@@ -66,7 +66,6 @@ internal class IncomingPaymentWebhookEventTest {
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
-                        .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .reconciliationInstructions(
                             ReconciliationInstructions.builder()
                                 .reference("UMA-Q12345-REF")
@@ -134,7 +133,6 @@ internal class IncomingPaymentWebhookEventTest {
                             .gridApiVariableFeeRate(0.003)
                             .build()
                     )
-                    .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                     .reconciliationInstructions(
                         ReconciliationInstructions.builder()
                             .reference("UMA-Q12345-REF")
@@ -207,7 +205,6 @@ internal class IncomingPaymentWebhookEventTest {
                                 .gridApiVariableFeeRate(0.003)
                                 .build()
                         )
-                        .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .reconciliationInstructions(
                             ReconciliationInstructions.builder()
                                 .reference("UMA-Q12345-REF")

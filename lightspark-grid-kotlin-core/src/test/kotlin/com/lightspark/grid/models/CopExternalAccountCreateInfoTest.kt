@@ -15,7 +15,6 @@ internal class CopExternalAccountCreateInfoTest {
         val copExternalAccountCreateInfo =
             CopExternalAccountCreateInfo.builder()
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -46,7 +45,6 @@ internal class CopExternalAccountCreateInfoTest {
 
         assertThat(copExternalAccountCreateInfo.accountType())
             .isEqualTo(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
-        assertThat(copExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(copExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 CopExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -85,7 +83,6 @@ internal class CopExternalAccountCreateInfoTest {
         val copExternalAccountCreateInfo =
             CopExternalAccountCreateInfo.builder()
                 .accountType(CopExternalAccountCreateInfo.AccountType.COP_ACCOUNT)
-                .bankName("Example Bank")
                 .beneficiary(
                     CopBeneficiary.builder()
                         .beneficiaryType(CopBeneficiary.BeneficiaryType.INDIVIDUAL)

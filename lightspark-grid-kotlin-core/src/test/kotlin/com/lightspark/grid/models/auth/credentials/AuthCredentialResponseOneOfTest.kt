@@ -28,6 +28,9 @@ internal class AuthCredentialResponseOneOfTest {
                 .credentialId(
                     "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
                 )
+                .otpEncryptionTargetBundle(
+                    "{\"version\":\"v1.0.0\",\"data\":\"7b227461726765745075626c6963...\",\"dataSignature\":\"30450221...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
+                )
                 .build()
 
         val authCredentialResponseOneOf =
@@ -51,6 +54,9 @@ internal class AuthCredentialResponseOneOfTest {
                     .updatedAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                     .credentialId(
                         "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
+                    )
+                    .otpEncryptionTargetBundle(
+                        "{\"version\":\"v1.0.0\",\"data\":\"7b227461726765745075626c6963...\",\"dataSignature\":\"30450221...\",\"enclaveQuorumPublic\":\"04a1b2c3...\"}"
                     )
                     .build()
             )

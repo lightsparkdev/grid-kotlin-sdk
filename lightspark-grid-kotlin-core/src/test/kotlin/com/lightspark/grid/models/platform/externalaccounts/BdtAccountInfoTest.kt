@@ -14,7 +14,6 @@ internal class BdtAccountInfoTest {
         val bdtAccountInfo =
             BdtAccountInfo.builder()
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .branchCode("11111")
@@ -23,7 +22,6 @@ internal class BdtAccountInfoTest {
                 .build()
 
         assertThat(bdtAccountInfo.accountType()).isEqualTo(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-        assertThat(bdtAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(bdtAccountInfo.paymentRails())
             .containsExactly(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(bdtAccountInfo.accountNumber()).isEqualTo("1234567890")
@@ -38,7 +36,6 @@ internal class BdtAccountInfoTest {
         val bdtAccountInfo =
             BdtAccountInfo.builder()
                 .accountType(BdtAccountInfo.AccountType.BDT_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(BdtAccountInfo.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .branchCode("11111")

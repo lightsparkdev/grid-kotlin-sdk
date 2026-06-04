@@ -13,7 +13,7 @@ internal class SessionRefreshParamsTest {
         SessionRefreshParams.builder()
             .id("Session:019542f5-b3e7-1d02-0000-000000000003")
             .gridWalletSignature(
-                "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
             )
             .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
             .authSessionRefreshRequest(
@@ -51,7 +51,7 @@ internal class SessionRefreshParamsTest {
             SessionRefreshParams.builder()
                 .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                 .gridWalletSignature(
-                    "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                    "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .authSessionRefreshRequest(
@@ -70,7 +70,7 @@ internal class SessionRefreshParamsTest {
                 Headers.builder()
                     .put(
                         "Grid-Wallet-Signature",
-                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ",
+                        "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9",
                     )
                     .put("Request-Id", "Request:019542f5-b3e7-1d02-0000-000000000010")
                     .build()
@@ -102,7 +102,7 @@ internal class SessionRefreshParamsTest {
             SessionRefreshParams.builder()
                 .id("Session:019542f5-b3e7-1d02-0000-000000000003")
                 .gridWalletSignature(
-                    "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzaWduYXR1cmUiOiIzMDQ1MDIyMTAwLi4uIiwic2NoZW1lIjoiUDI1Nl9FQ0RTQV9TSEEyNTYifQ"
+                    "eyJwdWJsaWNLZXkiOiIwMmExYjIuLi4iLCJzY2hlbWUiOiJTSUdOQVRVUkVfU0NIRU1FX1RLX0FQSV9QMjU2Iiwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMC4uLiJ9"
                 )
                 .requestId("Request:019542f5-b3e7-1d02-0000-000000000010")
                 .authSessionRefreshRequest(

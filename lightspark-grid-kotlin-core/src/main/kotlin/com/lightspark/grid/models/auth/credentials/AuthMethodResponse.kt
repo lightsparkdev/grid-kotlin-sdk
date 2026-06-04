@@ -23,6 +23,10 @@ import java.util.Objects
  * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
  * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
  * ambiguously match both branches.
+ *
+ * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the client
+ * can HPKE-encrypt the OTP code in the subsequent `POST /auth/credentials/{id}/verify` call without
+ * the plaintext code ever transiting the server.
  */
 class AuthMethodResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -34,6 +38,7 @@ private constructor(
     private val type: JsonField<AuthMethodType>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val credentialId: JsonField<String>,
+    private val otpEncryptionTargetBundle: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -52,7 +57,31 @@ private constructor(
         @JsonProperty("credentialId")
         @ExcludeMissing
         credentialId: JsonField<String> = JsonMissing.of(),
-    ) : this(id, accountId, createdAt, nickname, type, updatedAt, credentialId, mutableMapOf())
+        @JsonProperty("otpEncryptionTargetBundle")
+        @ExcludeMissing
+        otpEncryptionTargetBundle: JsonField<String> = JsonMissing.of(),
+    ) : this(
+        id,
+        accountId,
+        createdAt,
+        nickname,
+        type,
+        updatedAt,
+        credentialId,
+        otpEncryptionTargetBundle,
+        mutableMapOf(),
+    )
+
+    fun toAuthMethod(): AuthMethod =
+        AuthMethod.builder()
+            .id(id)
+            .accountId(accountId)
+            .createdAt(createdAt)
+            .nickname(nickname)
+            .type(type)
+            .updatedAt(updatedAt)
+            .credentialId(credentialId)
+            .build()
 
     /**
      * System-generated unique identifier for the authentication credential.
@@ -119,6 +148,23 @@ private constructor(
     fun credentialId(): String? = credentialId.getNullable("credentialId")
 
     /**
+     * HPKE encryption target bundle for the freshly initiated OTP challenge. Returned only for
+     * `EMAIL_OTP` credentials. The client generates an ephemeral P-256 keypair (the Target
+     * Encryption Key, or TEK) and uses this bundle as the recipient when HPKE-encrypting
+     * `{otp_code, public_key}`; the encrypted payload is submitted as `encryptedOtpBundle` on `POST
+     * /auth/credentials/{id}/verify`. The bundle is one-time-use per OTP issuance — re-issue via
+     * `POST /auth/credentials/{id}/challenge` to obtain a fresh bundle. The matching TEK private
+     * key must remain on the client and is used to sign the `verificationToken` returned on the
+     * subsequent signed-retry. Treat the bundle as opaque and pass it to your HPKE library; the
+     * Global Accounts client-keys guide shows how.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun otpEncryptionTargetBundle(): String? =
+        otpEncryptionTargetBundle.getNullable("otpEncryptionTargetBundle")
+
+    /**
      * Returns the raw JSON value of [id].
      *
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
@@ -173,6 +219,16 @@ private constructor(
     @ExcludeMissing
     fun _credentialId(): JsonField<String> = credentialId
 
+    /**
+     * Returns the raw JSON value of [otpEncryptionTargetBundle].
+     *
+     * Unlike [otpEncryptionTargetBundle], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("otpEncryptionTargetBundle")
+    @ExcludeMissing
+    fun _otpEncryptionTargetBundle(): JsonField<String> = otpEncryptionTargetBundle
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -213,6 +269,7 @@ private constructor(
         private var type: JsonField<AuthMethodType>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var credentialId: JsonField<String> = JsonMissing.of()
+        private var otpEncryptionTargetBundle: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(authMethodResponse: AuthMethodResponse) = apply {
@@ -223,6 +280,7 @@ private constructor(
             type = authMethodResponse.type
             updatedAt = authMethodResponse.updatedAt
             credentialId = authMethodResponse.credentialId
+            otpEncryptionTargetBundle = authMethodResponse.otpEncryptionTargetBundle
             additionalProperties = authMethodResponse.additionalProperties.toMutableMap()
         }
 
@@ -325,6 +383,31 @@ private constructor(
             this.credentialId = credentialId
         }
 
+        /**
+         * HPKE encryption target bundle for the freshly initiated OTP challenge. Returned only for
+         * `EMAIL_OTP` credentials. The client generates an ephemeral P-256 keypair (the Target
+         * Encryption Key, or TEK) and uses this bundle as the recipient when HPKE-encrypting
+         * `{otp_code, public_key}`; the encrypted payload is submitted as `encryptedOtpBundle` on
+         * `POST /auth/credentials/{id}/verify`. The bundle is one-time-use per OTP issuance —
+         * re-issue via `POST /auth/credentials/{id}/challenge` to obtain a fresh bundle. The
+         * matching TEK private key must remain on the client and is used to sign the
+         * `verificationToken` returned on the subsequent signed-retry. Treat the bundle as opaque
+         * and pass it to your HPKE library; the Global Accounts client-keys guide shows how.
+         */
+        fun otpEncryptionTargetBundle(otpEncryptionTargetBundle: String) =
+            otpEncryptionTargetBundle(JsonField.of(otpEncryptionTargetBundle))
+
+        /**
+         * Sets [Builder.otpEncryptionTargetBundle] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.otpEncryptionTargetBundle] with a well-typed [String]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun otpEncryptionTargetBundle(otpEncryptionTargetBundle: JsonField<String>) = apply {
+            this.otpEncryptionTargetBundle = otpEncryptionTargetBundle
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -370,6 +453,7 @@ private constructor(
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
                 credentialId,
+                otpEncryptionTargetBundle,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -396,6 +480,7 @@ private constructor(
         type().validate()
         updatedAt()
         credentialId()
+        otpEncryptionTargetBundle()
         validated = true
     }
 
@@ -419,7 +504,8 @@ private constructor(
             (if (nickname.asKnown() == null) 0 else 1) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
-            (if (credentialId.asKnown() == null) 0 else 1)
+            (if (credentialId.asKnown() == null) 0 else 1) +
+            (if (otpEncryptionTargetBundle.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -434,6 +520,7 @@ private constructor(
             type == other.type &&
             updatedAt == other.updatedAt &&
             credentialId == other.credentialId &&
+            otpEncryptionTargetBundle == other.otpEncryptionTargetBundle &&
             additionalProperties == other.additionalProperties
     }
 
@@ -446,6 +533,7 @@ private constructor(
             type,
             updatedAt,
             credentialId,
+            otpEncryptionTargetBundle,
             additionalProperties,
         )
     }
@@ -453,5 +541,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AuthMethodResponse{id=$id, accountId=$accountId, createdAt=$createdAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, credentialId=$credentialId, additionalProperties=$additionalProperties}"
+        "AuthMethodResponse{id=$id, accountId=$accountId, createdAt=$createdAt, nickname=$nickname, type=$type, updatedAt=$updatedAt, credentialId=$credentialId, otpEncryptionTargetBundle=$otpEncryptionTargetBundle, additionalProperties=$additionalProperties}"
 }

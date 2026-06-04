@@ -13,8 +13,8 @@ import java.util.Objects
 
 /**
  * Required fields depend on the selected paymentRails:
- * - BANK_TRANSFER: accountNumber, bankName
- * - MOBILE_MONEY: bankName, phoneNumber
+ * - BANK_TRANSFER: accountNumber
+ * - MOBILE_MONEY: phoneNumber
  */
 class BdtExternalAccountInfo
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
