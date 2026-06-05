@@ -326,6 +326,12 @@ private constructor(
         fun accountInfo(swiftAccount: ExternalAccountInfoOneOf.SwiftAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofSwiftAccount(swiftAccount))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofCnyAccount(cnyAccount)`.
+         */
+        fun accountInfo(cnyAccount: ExternalAccountInfoOneOf.CnyAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofCnyAccount(cnyAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
