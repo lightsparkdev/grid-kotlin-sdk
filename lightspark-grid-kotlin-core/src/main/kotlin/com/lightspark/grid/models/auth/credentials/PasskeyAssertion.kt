@@ -15,6 +15,11 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * WebAuthn assertion returned by `navigator.credentials.get()`. In sandbox, Grid validates the
+ * assertion against the registered passkey credential so the client-side flow can match production.
+ * In production, Turnkey validates the WebAuthn assertion.
+ */
 class PasskeyAssertion
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

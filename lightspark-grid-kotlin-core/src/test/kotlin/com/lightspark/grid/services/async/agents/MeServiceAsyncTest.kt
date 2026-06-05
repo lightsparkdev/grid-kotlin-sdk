@@ -91,10 +91,11 @@ internal class MeServiceAsyncTest {
                     .transferOutRequest(
                         TransferOutRequest.builder()
                             .destination(
-                                ExternalAccountReference.builder()
+                                TransferOutRequest.Destination.builder()
                                     .accountId(
                                         "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
                                     )
+                                    .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                     .build()
                             )
                             .source(
