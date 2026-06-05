@@ -15,6 +15,7 @@ internal class PkrExternalAccountCreateInfoTest {
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                .bankName("Example Bank")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -37,13 +38,13 @@ internal class PkrExternalAccountCreateInfoTest {
                         .build()
                 )
                 .accountNumber("1234567890")
-                .bankName("Example Bank")
                 .iban("PK36SCBL0000001123456702")
                 .phoneNumber("+1234567890")
                 .build()
 
         assertThat(pkrExternalAccountCreateInfo.accountType())
             .isEqualTo(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(pkrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 PkrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -69,7 +70,6 @@ internal class PkrExternalAccountCreateInfoTest {
                 )
             )
         assertThat(pkrExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
-        assertThat(pkrExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
         assertThat(pkrExternalAccountCreateInfo.iban()).isEqualTo("PK36SCBL0000001123456702")
         assertThat(pkrExternalAccountCreateInfo.phoneNumber()).isEqualTo("+1234567890")
     }
@@ -80,6 +80,7 @@ internal class PkrExternalAccountCreateInfoTest {
         val pkrExternalAccountCreateInfo =
             PkrExternalAccountCreateInfo.builder()
                 .accountType(PkrExternalAccountCreateInfo.AccountType.PKR_ACCOUNT)
+                .bankName("Example Bank")
                 .beneficiary(
                     PkrBeneficiary.builder()
                         .beneficiaryType(PkrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -102,7 +103,6 @@ internal class PkrExternalAccountCreateInfoTest {
                         .build()
                 )
                 .accountNumber("1234567890")
-                .bankName("Example Bank")
                 .iban("PK36SCBL0000001123456702")
                 .phoneNumber("+1234567890")
                 .build()

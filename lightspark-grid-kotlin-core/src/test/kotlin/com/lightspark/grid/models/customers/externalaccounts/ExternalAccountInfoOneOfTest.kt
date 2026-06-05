@@ -52,6 +52,7 @@ internal class ExternalAccountInfoOneOfTest {
 
         assertThat(externalAccountInfoOneOf.slvAccount()).isEqualTo(slvAccount)
         assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
     }
 
     @Test
@@ -135,6 +136,7 @@ internal class ExternalAccountInfoOneOfTest {
 
         assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
         assertThat(externalAccountInfoOneOf.swiftAccount()).isEqualTo(swiftAccount)
+        assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
     }
 
     @Test
@@ -170,6 +172,83 @@ internal class ExternalAccountInfoOneOfTest {
                     .swiftCode("DEUTDEFF")
                     .accountNumber("1234567890")
                     .iban("GB29NWBK60161331926819")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofCnyAccount() {
+        val cnyAccount =
+            ExternalAccountInfoOneOf.CnyAccount.builder()
+                .bankName("Example Bank")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                .phoneNumber("+1234567890")
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofCnyAccount(cnyAccount)
+
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cnyAccount()).isEqualTo(cnyAccount)
+    }
+
+    @Test
+    fun ofCnyAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofCnyAccount(
+                ExternalAccountInfoOneOf.CnyAccount.builder()
+                    .bankName("Example Bank")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                    .phoneNumber("+1234567890")
                     .build()
             )
 

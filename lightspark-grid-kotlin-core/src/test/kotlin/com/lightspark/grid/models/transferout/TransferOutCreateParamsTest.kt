@@ -3,7 +3,6 @@
 package com.lightspark.grid.models.transferout
 
 import com.lightspark.grid.core.http.Headers
-import com.lightspark.grid.models.transferin.ExternalAccountReference
 import com.lightspark.grid.models.transferin.InternalAccountReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,8 +16,9 @@ internal class TransferOutCreateParamsTest {
             .transferOutRequest(
                 TransferOutRequest.builder()
                     .destination(
-                        ExternalAccountReference.builder()
+                        TransferOutRequest.Destination.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                             .build()
                     )
                     .source(
@@ -40,8 +40,9 @@ internal class TransferOutCreateParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            ExternalAccountReference.builder()
+                            TransferOutRequest.Destination.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                 .build()
                         )
                         .source(
@@ -71,7 +72,7 @@ internal class TransferOutCreateParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            ExternalAccountReference.builder()
+                            TransferOutRequest.Destination.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -97,8 +98,9 @@ internal class TransferOutCreateParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            ExternalAccountReference.builder()
+                            TransferOutRequest.Destination.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                                .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                                 .build()
                         )
                         .source(
@@ -117,8 +119,9 @@ internal class TransferOutCreateParamsTest {
             .isEqualTo(
                 TransferOutRequest.builder()
                     .destination(
-                        ExternalAccountReference.builder()
+                        TransferOutRequest.Destination.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .paymentRail(TransferOutRequest.Destination.PaymentRail.ACH)
                             .build()
                     )
                     .source(
@@ -138,7 +141,7 @@ internal class TransferOutCreateParamsTest {
                 .transferOutRequest(
                     TransferOutRequest.builder()
                         .destination(
-                            ExternalAccountReference.builder()
+                            TransferOutRequest.Destination.builder()
                                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                                 .build()
                         )
@@ -157,7 +160,7 @@ internal class TransferOutCreateParamsTest {
             .isEqualTo(
                 TransferOutRequest.builder()
                     .destination(
-                        ExternalAccountReference.builder()
+                        TransferOutRequest.Destination.builder()
                             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                             .build()
                     )
