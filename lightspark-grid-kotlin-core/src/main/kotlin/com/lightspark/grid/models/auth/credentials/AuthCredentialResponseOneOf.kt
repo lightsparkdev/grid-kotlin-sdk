@@ -53,8 +53,10 @@ private constructor(
      * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
      * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
      * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
-     * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
-     * submitted to `POST /auth/credentials/{id}/verify`.
+     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+     * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
+     * encodes this string as the WebAuthn challenge and signs it with the passkey to produce the
+     * assertion submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun passkeyAuthChallenge(): PasskeyAuthChallenge? = passkeyAuthChallenge
 
@@ -80,8 +82,10 @@ private constructor(
      * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
      * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
      * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
-     * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
-     * submitted to `POST /auth/credentials/{id}/verify`.
+     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+     * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
+     * encodes this string as the WebAuthn challenge and signs it with the passkey to produce the
+     * assertion submitted to `POST /auth/credentials/{id}/verify`.
      */
     fun asPasskeyAuthChallenge(): PasskeyAuthChallenge =
         passkeyAuthChallenge.getOrThrow("passkeyAuthChallenge")
@@ -217,8 +221,10 @@ private constructor(
          * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
          * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
          * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
-         * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
-         * submitted to `POST /auth/credentials/{id}/verify`.
+         * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+         * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
+         * encodes this string as the WebAuthn challenge and signs it with the passkey to produce
+         * the assertion submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun ofPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge) =
             AuthCredentialResponseOneOf(passkeyAuthChallenge = passkeyAuthChallenge)
@@ -249,8 +255,10 @@ private constructor(
          * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
          * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target
          * the passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge
-         * `expiresAt`. The client signs the challenge with the passkey to produce the assertion
-         * submitted to `POST /auth/credentials/{id}/verify`.
+         * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
+         * canonical Turnkey session-creation request body, not a base64url string. The client UTF-8
+         * encodes this string as the WebAuthn challenge and signs it with the passkey to produce
+         * the assertion submitted to `POST /auth/credentials/{id}/verify`.
          */
         fun visitPasskeyAuthChallenge(passkeyAuthChallenge: PasskeyAuthChallenge): T
 
