@@ -83,7 +83,7 @@ internal class AuthCredentialResponseOneOfTest {
                 .credentialId(
                     "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
                 )
-                .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                .challenge("6b35a4c41d9aa7a2a0e742f9f9e7a1c2d65a2db33a3fb748f6d4f1ce78d9a729")
                 .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                 .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                 .build()
@@ -111,7 +111,7 @@ internal class AuthCredentialResponseOneOfTest {
                     .credentialId(
                         "KEbWNCc7NgaYnUyrNeFGX9_3Y-8oJ3KwzjnaiD1d1LVTxR7v3CaKfCz2Vy_g_MHSh7yJ8yL0Pxg6jo_o0hYiew"
                     )
-                    .challenge("VjZ6o8KfE9V3q3LkR2nH5eZ6dM8yA1xW")
+                    .challenge("6b35a4c41d9aa7a2a0e742f9f9e7a1c2d65a2db33a3fb748f6d4f1ce78d9a729")
                     .expiresAt(OffsetDateTime.parse("2026-04-08T15:35:00Z"))
                     .requestId("Request:7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .build()
