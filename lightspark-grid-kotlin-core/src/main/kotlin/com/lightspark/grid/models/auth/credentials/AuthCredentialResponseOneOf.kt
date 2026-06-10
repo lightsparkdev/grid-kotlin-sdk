@@ -43,9 +43,11 @@ private constructor(
      * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
      * ambiguously match both branches.
      *
-     * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
-     * client can HPKE-encrypt the OTP code in the subsequent `POST /auth/credentials/{id}/verify`
-     * call without the plaintext code ever transiting the server.
+     * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
+     * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
+     * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+     * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
+     * /auth/credentials/{id}/challenge` if it is absent.
      */
     fun methodResponse(): AuthMethodResponse? = methodResponse
 
@@ -72,9 +74,11 @@ private constructor(
      * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
      * ambiguously match both branches.
      *
-     * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
-     * client can HPKE-encrypt the OTP code in the subsequent `POST /auth/credentials/{id}/verify`
-     * call without the plaintext code ever transiting the server.
+     * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
+     * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
+     * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+     * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
+     * /auth/credentials/{id}/challenge` if it is absent.
      */
     fun asMethodResponse(): AuthMethodResponse = methodResponse.getOrThrow("methodResponse")
 
@@ -209,10 +213,11 @@ private constructor(
          * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
          * fields would ambiguously match both branches.
          *
-         * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
-         * client can HPKE-encrypt the OTP code in the subsequent `POST
-         * /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-         * server.
+         * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
+         * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
+         * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+         * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
+         * /auth/credentials/{id}/challenge` if it is absent.
          */
         fun ofMethodResponse(methodResponse: AuthMethodResponse) =
             AuthCredentialResponseOneOf(methodResponse = methodResponse)
@@ -244,10 +249,11 @@ private constructor(
          * oneOf against `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra
          * fields would ambiguously match both branches.
          *
-         * For `EMAIL_OTP` credentials, the response also carries `otpEncryptionTargetBundle` so the
-         * client can HPKE-encrypt the OTP code in the subsequent `POST
-         * /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
-         * server.
+         * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
+         * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
+         * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the
+         * server. First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
+         * /auth/credentials/{id}/challenge` if it is absent.
          */
         fun visitMethodResponse(methodResponse: AuthMethodResponse): T
 
