@@ -14,6 +14,9 @@ internal class EurBeneficiaryTest {
     fun create() {
         val eurBeneficiary =
             EurBeneficiary.builder()
+                .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .countryOfResidence("countryOfResidence")
+                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -24,15 +27,16 @@ internal class EurBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
                 .build()
 
+        assertThat(eurBeneficiary.beneficiaryType())
+            .isEqualTo(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+        assertThat(eurBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
+        assertThat(eurBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(eurBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -44,11 +48,7 @@ internal class EurBeneficiaryTest {
                     .state("CA")
                     .build()
             )
-        assertThat(eurBeneficiary.beneficiaryType())
-            .isEqualTo(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(eurBeneficiary.fullName()).isEqualTo("fullName")
         assertThat(eurBeneficiary.birthDate()).isEqualTo("birthDate")
-        assertThat(eurBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
         assertThat(eurBeneficiary.email()).isEqualTo("email")
         assertThat(eurBeneficiary.nationality()).isEqualTo("nationality")
         assertThat(eurBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
@@ -59,6 +59,9 @@ internal class EurBeneficiaryTest {
         val jsonMapper = jsonMapper()
         val eurBeneficiary =
             EurBeneficiary.builder()
+                .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+                .countryOfResidence("countryOfResidence")
+                .fullName("fullName")
                 .address(
                     Address.builder()
                         .country("US")
@@ -69,10 +72,7 @@ internal class EurBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
                 .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
                 .email("email")
                 .nationality("nationality")
                 .phoneNumber("phoneNumber")
