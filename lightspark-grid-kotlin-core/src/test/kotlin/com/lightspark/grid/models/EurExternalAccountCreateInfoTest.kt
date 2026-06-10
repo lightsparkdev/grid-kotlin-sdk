@@ -17,6 +17,9 @@ internal class EurExternalAccountCreateInfoTest {
                 .accountType(EurExternalAccountCreateInfo.AccountType.EUR_ACCOUNT)
                 .beneficiary(
                     EurBeneficiary.builder()
+                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -27,10 +30,7 @@ internal class EurExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -46,6 +46,9 @@ internal class EurExternalAccountCreateInfoTest {
             .isEqualTo(
                 EurExternalAccountCreateInfo.Beneficiary.ofIndividual(
                     EurBeneficiary.builder()
+                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -56,10 +59,7 @@ internal class EurExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
@@ -78,6 +78,9 @@ internal class EurExternalAccountCreateInfoTest {
                 .accountType(EurExternalAccountCreateInfo.AccountType.EUR_ACCOUNT)
                 .beneficiary(
                     EurBeneficiary.builder()
+                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
                         .address(
                             Address.builder()
                                 .country("US")
@@ -88,10 +91,7 @@ internal class EurExternalAccountCreateInfoTest {
                                 .state("CA")
                                 .build()
                         )
-                        .beneficiaryType(EurBeneficiary.BeneficiaryType.INDIVIDUAL)
-                        .fullName("fullName")
                         .birthDate("birthDate")
-                        .countryOfResidence("countryOfResidence")
                         .email("email")
                         .nationality("nationality")
                         .phoneNumber("phoneNumber")
