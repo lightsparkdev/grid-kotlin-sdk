@@ -201,18 +201,18 @@ interface CredentialServiceAsync {
      * session.
      *
      * For `EMAIL_OTP` credentials, submit the `encryptedOtpBundle` produced by HPKE-encrypting
-     * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from the credential's
-     * registration or re-issued via `POST /auth/credentials/{id}/challenge`. The server is a
-     * pass-through and never sees the plaintext OTP code. On success the response is `202` with a
-     * `payloadToSign` carrying the `verificationToken` bound to the client's TEK public key — sign
-     * that token with the matching TEK private key, then retry the same request with the full stamp
-     * in `Grid-Wallet-Signature` and the `requestId` echoed in `Request-Id`. The signed retry
-     * returns `200` with the issued `AuthSession`. The TEK public key becomes the session API key
-     * on successful completion. In sandbox mode, the EMAIL_OTP flow runs real HPKE end-to-end
-     * against a sandbox enclave keypair — clients build a real `encryptedOtpBundle` against the
-     * sandbox `otpEncryptionTargetBundle` and sign a real `verificationToken` with their TEK
-     * keypair. The only sandbox shortcut is the magic OTP code (`"000000"`) the user "receives"
-     * instead of a real email delivery.
+     * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from registration
+     * when present, or from `POST /auth/credentials/{id}/challenge` when registration omitted it or
+     * the OTP must be reissued. The server is a pass-through and never sees the plaintext OTP code.
+     * On success the response is `202` with a `payloadToSign` carrying the `verificationToken`
+     * bound to the client's TEK public key — sign that token with the matching TEK private key,
+     * then retry the same request with the full stamp in `Grid-Wallet-Signature` and the
+     * `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued
+     * `AuthSession`. The TEK public key becomes the session API key on successful completion. In
+     * sandbox mode, the EMAIL_OTP flow runs real HPKE end-to-end against a sandbox enclave keypair
+     * — clients build a real `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle`
+     * and sign a real `verificationToken` with their TEK keypair. The only sandbox shortcut is the
+     * magic OTP code (`"000000"`) the user "receives" instead of a real email delivery.
      *
      * For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be less than 60 seconds before
      * the request) along with the client-generated public key; this is also the reauthentication

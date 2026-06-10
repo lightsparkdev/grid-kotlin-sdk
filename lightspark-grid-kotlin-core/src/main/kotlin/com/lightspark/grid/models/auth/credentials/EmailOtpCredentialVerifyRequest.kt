@@ -13,12 +13,12 @@ import java.util.Objects
 
 /**
  * Verify an email-OTP credential via the secure two-leg flow. The client HPKE-encrypts the OTP code
- * (together with its public key) under the `otpEncryptionTargetBundle` returned from the
- * credential's registration or `POST /auth/credentials/{id}/challenge`, submits the result here,
- * and receives `202` with a `payloadToSign` carrying a `verificationToken` bound to the client's
- * public key. The client signs that token with the matching private key and retries this request
- * with `Grid-Wallet-Signature` + `Request-Id` headers to obtain the session. Plaintext OTP codes
- * are never sent over the wire.
+ * (together with its public key) under the `otpEncryptionTargetBundle` returned from registration
+ * when present, or from `POST /auth/credentials/{id}/challenge` when registration omitted it or the
+ * OTP must be reissued, submits the result here, and receives `202` with a `payloadToSign` carrying
+ * a `verificationToken` bound to the client's public key. The client signs that token with the
+ * matching private key and retries this request with `Grid-Wallet-Signature` + `Request-Id` headers
+ * to obtain the session. Plaintext OTP codes are never sent over the wire.
  */
 class EmailOtpCredentialVerifyRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
