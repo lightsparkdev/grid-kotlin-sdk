@@ -364,6 +364,11 @@ private constructor(
 
         fun swiftAccount(): SwiftAccount? = swiftAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: phoneNumber, bankName
+         */
         fun cnyAccount(): CnyAccount? = cnyAccount
 
         fun embeddedWallet(): EmbeddedWallet? = embeddedWallet
@@ -389,6 +394,11 @@ private constructor(
 
         fun asSwiftAccount(): SwiftAccount = swiftAccount.getOrThrow("swiftAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: phoneNumber, bankName
+         */
         fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
 
         fun asEmbeddedWallet(): EmbeddedWallet = embeddedWallet.getOrThrow("embeddedWallet")
@@ -545,6 +555,11 @@ private constructor(
             fun ofSwiftAccount(swiftAccount: SwiftAccount) =
                 AccountOrWalletInfo(swiftAccount = swiftAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: phoneNumber, bankName
+             */
             fun ofCnyAccount(cnyAccount: CnyAccount) = AccountOrWalletInfo(cnyAccount = cnyAccount)
 
             fun ofEmbeddedWallet(embeddedWallet: EmbeddedWallet) =
@@ -568,6 +583,11 @@ private constructor(
 
             fun visitSwiftAccount(swiftAccount: SwiftAccount): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - BANK_TRANSFER: accountNumber, bankName
+             * - MOBILE_MONEY: phoneNumber, bankName
+             */
             fun visitCnyAccount(cnyAccount: CnyAccount): T
 
             fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet): T
@@ -2274,14 +2294,20 @@ private constructor(
                 "SwiftAccount{accountType=$accountType, bankName=$bankName, country=$country, paymentRails=$paymentRails, reference=$reference, swiftCode=$swiftCode, accountNumber=$accountNumber, iban=$iban, additionalProperties=$additionalProperties}"
         }
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - BANK_TRANSFER: accountNumber, bankName
+         * - MOBILE_MONEY: phoneNumber, bankName
+         */
         class CnyAccount
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
             private val accountType: JsonValue,
             private val bankName: JsonField<String>,
             private val paymentRails: JsonField<List<PaymentRail>>,
-            private val phoneNumber: JsonField<String>,
             private val reference: JsonField<String>,
+            private val accountNumber: JsonField<String>,
+            private val phoneNumber: JsonField<String>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
@@ -2296,13 +2322,24 @@ private constructor(
                 @JsonProperty("paymentRails")
                 @ExcludeMissing
                 paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
-                @JsonProperty("phoneNumber")
-                @ExcludeMissing
-                phoneNumber: JsonField<String> = JsonMissing.of(),
                 @JsonProperty("reference")
                 @ExcludeMissing
                 reference: JsonField<String> = JsonMissing.of(),
-            ) : this(accountType, bankName, paymentRails, phoneNumber, reference, mutableMapOf())
+                @JsonProperty("accountNumber")
+                @ExcludeMissing
+                accountNumber: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("phoneNumber")
+                @ExcludeMissing
+                phoneNumber: JsonField<String> = JsonMissing.of(),
+            ) : this(
+                accountType,
+                bankName,
+                paymentRails,
+                reference,
+                accountNumber,
+                phoneNumber,
+                mutableMapOf(),
+            )
 
             /**
              * Expected to always return the following:
@@ -2316,7 +2353,7 @@ private constructor(
             @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
 
             /**
-             * The name of the bank
+             * The name of the bank or mobile-wallet provider
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2332,15 +2369,6 @@ private constructor(
             fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
 
             /**
-             * The phone number in international format
-             *
-             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
-             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
-             *   value).
-             */
-            fun phoneNumber(): String = phoneNumber.getRequired("phoneNumber")
-
-            /**
              * Unique reference code that must be included with the payment to properly credit it
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
@@ -2348,6 +2376,22 @@ private constructor(
              *   value).
              */
             fun reference(): String = reference.getRequired("reference")
+
+            /**
+             * The destination bank account number (BANK_TRANSFER rail)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
+
+            /**
+             * The phone number in international format (MOBILE_MONEY rail)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
             /**
              * Returns the raw JSON value of [bankName].
@@ -2368,16 +2412,6 @@ private constructor(
             fun _paymentRails(): JsonField<List<PaymentRail>> = paymentRails
 
             /**
-             * Returns the raw JSON value of [phoneNumber].
-             *
-             * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected
-             * type.
-             */
-            @JsonProperty("phoneNumber")
-            @ExcludeMissing
-            fun _phoneNumber(): JsonField<String> = phoneNumber
-
-            /**
              * Returns the raw JSON value of [reference].
              *
              * Unlike [reference], this method doesn't throw if the JSON field has an unexpected
@@ -2386,6 +2420,26 @@ private constructor(
             @JsonProperty("reference")
             @ExcludeMissing
             fun _reference(): JsonField<String> = reference
+
+            /**
+             * Returns the raw JSON value of [accountNumber].
+             *
+             * Unlike [accountNumber], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("accountNumber")
+            @ExcludeMissing
+            fun _accountNumber(): JsonField<String> = accountNumber
+
+            /**
+             * Returns the raw JSON value of [phoneNumber].
+             *
+             * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("phoneNumber")
+            @ExcludeMissing
+            fun _phoneNumber(): JsonField<String> = phoneNumber
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -2408,7 +2462,6 @@ private constructor(
                  * ```kotlin
                  * .bankName()
                  * .paymentRails()
-                 * .phoneNumber()
                  * .reference()
                  * ```
                  */
@@ -2421,16 +2474,18 @@ private constructor(
                 private var accountType: JsonValue = JsonValue.from("CNY_ACCOUNT")
                 private var bankName: JsonField<String>? = null
                 private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
-                private var phoneNumber: JsonField<String>? = null
                 private var reference: JsonField<String>? = null
+                private var accountNumber: JsonField<String> = JsonMissing.of()
+                private var phoneNumber: JsonField<String> = JsonMissing.of()
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
                 internal fun from(cnyAccount: CnyAccount) = apply {
                     accountType = cnyAccount.accountType
                     bankName = cnyAccount.bankName
                     paymentRails = cnyAccount.paymentRails.map { it.toMutableList() }
-                    phoneNumber = cnyAccount.phoneNumber
                     reference = cnyAccount.reference
+                    accountNumber = cnyAccount.accountNumber
+                    phoneNumber = cnyAccount.phoneNumber
                     additionalProperties = cnyAccount.additionalProperties.toMutableMap()
                 }
 
@@ -2448,7 +2503,7 @@ private constructor(
                  */
                 fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
 
-                /** The name of the bank */
+                /** The name of the bank or mobile-wallet provider */
                 fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
                 /**
@@ -2486,20 +2541,6 @@ private constructor(
                         }
                 }
 
-                /** The phone number in international format */
-                fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
-
-                /**
-                 * Sets [Builder.phoneNumber] to an arbitrary JSON value.
-                 *
-                 * You should usually call [Builder.phoneNumber] with a well-typed [String] value
-                 * instead. This method is primarily for setting the field to an undocumented or not
-                 * yet supported value.
-                 */
-                fun phoneNumber(phoneNumber: JsonField<String>) = apply {
-                    this.phoneNumber = phoneNumber
-                }
-
                 /**
                  * Unique reference code that must be included with the payment to properly credit
                  * it
@@ -2514,6 +2555,35 @@ private constructor(
                  * yet supported value.
                  */
                 fun reference(reference: JsonField<String>) = apply { this.reference = reference }
+
+                /** The destination bank account number (BANK_TRANSFER rail) */
+                fun accountNumber(accountNumber: String) =
+                    accountNumber(JsonField.of(accountNumber))
+
+                /**
+                 * Sets [Builder.accountNumber] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.accountNumber] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun accountNumber(accountNumber: JsonField<String>) = apply {
+                    this.accountNumber = accountNumber
+                }
+
+                /** The phone number in international format (MOBILE_MONEY rail) */
+                fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+                /**
+                 * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.phoneNumber] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun phoneNumber(phoneNumber: JsonField<String>) = apply {
+                    this.phoneNumber = phoneNumber
+                }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
@@ -2546,7 +2616,6 @@ private constructor(
                  * ```kotlin
                  * .bankName()
                  * .paymentRails()
-                 * .phoneNumber()
                  * .reference()
                  * ```
                  *
@@ -2557,8 +2626,9 @@ private constructor(
                         accountType,
                         checkRequired("bankName", bankName),
                         checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
-                        checkRequired("phoneNumber", phoneNumber),
                         checkRequired("reference", reference),
+                        accountNumber,
+                        phoneNumber,
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -2589,8 +2659,9 @@ private constructor(
                 }
                 bankName()
                 paymentRails().forEach { it.validate() }
-                phoneNumber()
                 reference()
+                accountNumber()
+                phoneNumber()
                 validated = true
             }
 
@@ -2612,8 +2683,9 @@ private constructor(
                 accountType.let { if (it == JsonValue.from("CNY_ACCOUNT")) 1 else 0 } +
                     (if (bankName.asKnown() == null) 0 else 1) +
                     (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-                    (if (phoneNumber.asKnown() == null) 0 else 1) +
-                    (if (reference.asKnown() == null) 0 else 1)
+                    (if (reference.asKnown() == null) 0 else 1) +
+                    (if (accountNumber.asKnown() == null) 0 else 1) +
+                    (if (phoneNumber.asKnown() == null) 0 else 1)
 
             class PaymentRail
             @JsonCreator
@@ -2633,12 +2705,15 @@ private constructor(
 
                     val MOBILE_MONEY = of("MOBILE_MONEY")
 
+                    val BANK_TRANSFER = of("BANK_TRANSFER")
+
                     fun of(value: String) = PaymentRail(JsonField.of(value))
                 }
 
                 /** An enum containing [PaymentRail]'s known values. */
                 enum class Known {
-                    MOBILE_MONEY
+                    MOBILE_MONEY,
+                    BANK_TRANSFER,
                 }
 
                 /**
@@ -2652,6 +2727,7 @@ private constructor(
                  */
                 enum class Value {
                     MOBILE_MONEY,
+                    BANK_TRANSFER,
                     /**
                      * An enum member indicating that [PaymentRail] was instantiated with an unknown
                      * value.
@@ -2669,6 +2745,7 @@ private constructor(
                 fun value(): Value =
                     when (this) {
                         MOBILE_MONEY -> Value.MOBILE_MONEY
+                        BANK_TRANSFER -> Value.BANK_TRANSFER
                         else -> Value._UNKNOWN
                     }
 
@@ -2684,6 +2761,7 @@ private constructor(
                 fun known(): Known =
                     when (this) {
                         MOBILE_MONEY -> Known.MOBILE_MONEY
+                        BANK_TRANSFER -> Known.BANK_TRANSFER
                         else ->
                             throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
                     }
@@ -2760,8 +2838,9 @@ private constructor(
                     accountType == other.accountType &&
                     bankName == other.bankName &&
                     paymentRails == other.paymentRails &&
-                    phoneNumber == other.phoneNumber &&
                     reference == other.reference &&
+                    accountNumber == other.accountNumber &&
+                    phoneNumber == other.phoneNumber &&
                     additionalProperties == other.additionalProperties
             }
 
@@ -2770,8 +2849,9 @@ private constructor(
                     accountType,
                     bankName,
                     paymentRails,
-                    phoneNumber,
                     reference,
+                    accountNumber,
+                    phoneNumber,
                     additionalProperties,
                 )
             }
@@ -2779,7 +2859,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "CnyAccount{accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, phoneNumber=$phoneNumber, reference=$reference, additionalProperties=$additionalProperties}"
+                "CnyAccount{accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, reference=$reference, accountNumber=$accountNumber, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
         }
 
         class EmbeddedWallet
