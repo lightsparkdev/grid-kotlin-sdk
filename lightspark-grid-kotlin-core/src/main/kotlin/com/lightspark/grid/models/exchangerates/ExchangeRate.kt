@@ -550,13 +550,15 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val fixed: JsonField<Long>,
+        private val total: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
-            @JsonProperty("fixed") @ExcludeMissing fixed: JsonField<Long> = JsonMissing.of()
-        ) : this(fixed, mutableMapOf())
+            @JsonProperty("fixed") @ExcludeMissing fixed: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("total") @ExcludeMissing total: JsonField<Long> = JsonMissing.of(),
+        ) : this(fixed, total, mutableMapOf())
 
         /**
          * Fixed fee in the smallest unit of the sending currency (e.g., cents for USD)
@@ -567,11 +569,28 @@ private constructor(
         fun fixed(): Long? = fixed.getNullable("fixed")
 
         /**
+         * Total fees in the smallest unit of the sending currency (e.g., cents for USD). This value
+         * may change depending on the sending amount used; if no sending amount is specified, it
+         * falls back to the default.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun total(): Long? = total.getNullable("total")
+
+        /**
          * Returns the raw JSON value of [fixed].
          *
          * Unlike [fixed], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("fixed") @ExcludeMissing fun _fixed(): JsonField<Long> = fixed
+
+        /**
+         * Returns the raw JSON value of [total].
+         *
+         * Unlike [total], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("total") @ExcludeMissing fun _total(): JsonField<Long> = total
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -595,10 +614,12 @@ private constructor(
         class Builder internal constructor() {
 
             private var fixed: JsonField<Long> = JsonMissing.of()
+            private var total: JsonField<Long> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(fees: Fees) = apply {
                 fixed = fees.fixed
+                total = fees.total
                 additionalProperties = fees.additionalProperties.toMutableMap()
             }
 
@@ -613,6 +634,22 @@ private constructor(
              * value.
              */
             fun fixed(fixed: JsonField<Long>) = apply { this.fixed = fixed }
+
+            /**
+             * Total fees in the smallest unit of the sending currency (e.g., cents for USD). This
+             * value may change depending on the sending amount used; if no sending amount is
+             * specified, it falls back to the default.
+             */
+            fun total(total: Long) = total(JsonField.of(total))
+
+            /**
+             * Sets [Builder.total] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.total] with a well-typed [Long] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun total(total: JsonField<Long>) = apply { this.total = total }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -638,7 +675,7 @@ private constructor(
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): Fees = Fees(fixed, additionalProperties.toMutableMap())
+            fun build(): Fees = Fees(fixed, total, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -658,6 +695,7 @@ private constructor(
             }
 
             fixed()
+            total()
             validated = true
         }
 
@@ -675,7 +713,8 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        internal fun validity(): Int = (if (fixed.asKnown() == null) 0 else 1)
+        internal fun validity(): Int =
+            (if (fixed.asKnown() == null) 0 else 1) + (if (total.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -684,14 +723,16 @@ private constructor(
 
             return other is Fees &&
                 fixed == other.fixed &&
+                total == other.total &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(fixed, additionalProperties) }
+        private val hashCode: Int by lazy { Objects.hash(fixed, total, additionalProperties) }
 
         override fun hashCode(): Int = hashCode
 
-        override fun toString() = "Fees{fixed=$fixed, additionalProperties=$additionalProperties}"
+        override fun toString() =
+            "Fees{fixed=$fixed, total=$total, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
