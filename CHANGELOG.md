@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.9.0 (2026-06-12)
+
+Full Changelog: [v1.8.0...v1.9.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.8.0...v1.9.0)
+
+### Features
+
+* Add encrypted OTP flow ([76ac2ee](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/76ac2ee69fa5d1bb5324f64ff5d448f857dc89d7))
+* **api:** add accountNumber field and BANK_TRANSFER payment rail to CnyAccount ([5ef2fe3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5ef2fe3e5b410c609301f74f01c02b10b64eb357))
+* **api:** add CNY account support to external accounts ([a1ad7af](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a1ad7af546c648f5e870a3df3c4374f6eec320b2))
+* **api:** add CnyAccount variant to ExternalAccountInfoOneOf and AccountOrWalletInfo ([c55627a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c55627a16aad422515038ac5b441af9caae8b84c))
+* **api:** add ID_TYPE and ID_NUMBER to CustomerInfoFieldName ([5caf077](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/5caf0776e03be26ae43c1703e2c76c70476e8c91))
+* **api:** add receiptDeliveryConfirmedAt to transaction and webhook models ([8e74f70](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/8e74f70939574ff7438ac383b62ef2cce3474cf3))
+* **api:** add required bankName field to BDT/COP/EGP/GHS/PKR external accounts ([16391cf](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/16391cf6d26fe0f54f19cf9c211cdf1b465e3347))
+* **api:** add SwiftAccount, remove bank fields from COP/EGP, add EGP mobile money support ([7fd13b3](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7fd13b3e5ab372c1cdb32511942a895017cc2657))
+* **api:** add total field to ExchangeRate.Fees model ([7d58854](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/7d58854bbe67ed9cd32ea649bcf6c1a56b76e2e6))
+* **api:** manual updates ([b3668dd](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/b3668ddb89177291303c7112052d07c80bb7c3a9))
+* **api:** manual updates ([d54e243](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/d54e243d95cc49d865aaecf1d949a21351ea4459))
+* **api:** manual updates ([3aa7536](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/3aa7536f1cefab654d31fb5ab569bbda2064f8a3))
+* **api:** manual updates ([915609c](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/915609ce54f7a8f1a609fd62bdc7cf6e343db617))
+* **transfers:** allow selecting payment rail on transfer-out destination ([03aa2d5](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/03aa2d523f1e56e143fd540a5f1d64240e2c2ec2))
+
+
+### Bug Fixes
+
+* **types:** make address optional, countryOfResidence required in EurBeneficiary ([c4e7152](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c4e71527b76df27639bc4ebf113b82379894dc5a))
+
+
+### Documentation
+
+* **api:** add documentation to passkey credential models ([a742863](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/a742863d85043c4b57f04f709740dc1733cb0def))
+* **api:** add KYB requirements documentation to verification submit ([c05901d](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/c05901daa0bee6267a87aba9d589bf6867f89532))
+* **api:** clarify otpEncryptionTargetBundle optionality in EMAIL_OTP credential flow ([e092a0a](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/e092a0a21c3e1447b7c0c2efea4568596583e0b9))
+* **api:** clarify passkey challenge encoding in auth credentials ([795d5be](https://github.com/lightsparkdev/grid-kotlin-sdk/commit/795d5bed7ea9658a3db0facf604eb7cb90095975))
+
 ## 1.8.0 (2026-05-28)
 
 Full Changelog: [v1.7.1...v1.8.0](https://github.com/lightsparkdev/grid-kotlin-sdk/compare/v1.7.1...v1.8.0)
