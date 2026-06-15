@@ -14,7 +14,7 @@ internal class GbpBeneficiaryTest {
         val gbpBeneficiary =
             GbpBeneficiary.builder()
                 .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
+                .fullName("Jane Smith")
                 .address(
                     Address.builder()
                         .country("US")
@@ -25,16 +25,16 @@ internal class GbpBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
-                .email("email")
-                .nationality("nationality")
-                .phoneNumber("phoneNumber")
+                .birthDate("1990-01-15")
+                .countryOfResidence("GB")
+                .email("jane.smith@example.com")
+                .nationality("GB")
+                .phoneNumber("+447700900123")
                 .build()
 
         assertThat(gbpBeneficiary.beneficiaryType())
             .isEqualTo(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-        assertThat(gbpBeneficiary.fullName()).isEqualTo("fullName")
+        assertThat(gbpBeneficiary.fullName()).isEqualTo("Jane Smith")
         assertThat(gbpBeneficiary.address())
             .isEqualTo(
                 Address.builder()
@@ -46,11 +46,11 @@ internal class GbpBeneficiaryTest {
                     .state("CA")
                     .build()
             )
-        assertThat(gbpBeneficiary.birthDate()).isEqualTo("birthDate")
-        assertThat(gbpBeneficiary.countryOfResidence()).isEqualTo("countryOfResidence")
-        assertThat(gbpBeneficiary.email()).isEqualTo("email")
-        assertThat(gbpBeneficiary.nationality()).isEqualTo("nationality")
-        assertThat(gbpBeneficiary.phoneNumber()).isEqualTo("phoneNumber")
+        assertThat(gbpBeneficiary.birthDate()).isEqualTo("1990-01-15")
+        assertThat(gbpBeneficiary.countryOfResidence()).isEqualTo("GB")
+        assertThat(gbpBeneficiary.email()).isEqualTo("jane.smith@example.com")
+        assertThat(gbpBeneficiary.nationality()).isEqualTo("GB")
+        assertThat(gbpBeneficiary.phoneNumber()).isEqualTo("+447700900123")
     }
 
     @Test
@@ -59,7 +59,7 @@ internal class GbpBeneficiaryTest {
         val gbpBeneficiary =
             GbpBeneficiary.builder()
                 .beneficiaryType(GbpBeneficiary.BeneficiaryType.INDIVIDUAL)
-                .fullName("fullName")
+                .fullName("Jane Smith")
                 .address(
                     Address.builder()
                         .country("US")
@@ -70,11 +70,11 @@ internal class GbpBeneficiaryTest {
                         .state("CA")
                         .build()
                 )
-                .birthDate("birthDate")
-                .countryOfResidence("countryOfResidence")
-                .email("email")
-                .nationality("nationality")
-                .phoneNumber("phoneNumber")
+                .birthDate("1990-01-15")
+                .countryOfResidence("GB")
+                .email("jane.smith@example.com")
+                .nationality("GB")
+                .phoneNumber("+447700900123")
                 .build()
 
         val roundtrippedGbpBeneficiary =

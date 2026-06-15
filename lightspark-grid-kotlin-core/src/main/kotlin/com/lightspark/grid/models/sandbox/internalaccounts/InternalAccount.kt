@@ -29,6 +29,7 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val fundingPaymentInstructions: JsonField<List<PaymentInstructions>>,
     private val status: JsonField<Status>,
+    private val totalBalance: JsonField<CurrencyAmount>,
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val customerId: JsonField<String>,
@@ -49,6 +50,9 @@ private constructor(
         @ExcludeMissing
         fundingPaymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("totalBalance")
+        @ExcludeMissing
+        totalBalance: JsonField<CurrencyAmount> = JsonMissing.of(),
         @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -65,6 +69,7 @@ private constructor(
         createdAt,
         fundingPaymentInstructions,
         status,
+        totalBalance,
         type,
         updatedAt,
         customerId,
@@ -81,6 +86,8 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
+     * The balance available to spend, excluding pending and held funds
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -119,6 +126,14 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun status(): Status = status.getRequired("status")
+
+    /**
+     * The total balance, including pending and held funds
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun totalBalance(): CurrencyAmount = totalBalance.getRequired("totalBalance")
 
     /**
      * Classification of an internal account.
@@ -203,6 +218,15 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
+     * Returns the raw JSON value of [totalBalance].
+     *
+     * Unlike [totalBalance], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("totalBalance")
+    @ExcludeMissing
+    fun _totalBalance(): JsonField<CurrencyAmount> = totalBalance
+
+    /**
      * Returns the raw JSON value of [type].
      *
      * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
@@ -258,6 +282,7 @@ private constructor(
          * .createdAt()
          * .fundingPaymentInstructions()
          * .status()
+         * .totalBalance()
          * .type()
          * .updatedAt()
          * ```
@@ -273,6 +298,7 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var fundingPaymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var status: JsonField<Status>? = null
+        private var totalBalance: JsonField<CurrencyAmount>? = null
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
@@ -286,6 +312,7 @@ private constructor(
             fundingPaymentInstructions =
                 internalAccount.fundingPaymentInstructions.map { it.toMutableList() }
             status = internalAccount.status
+            totalBalance = internalAccount.totalBalance
             type = internalAccount.type
             updatedAt = internalAccount.updatedAt
             customerId = internalAccount.customerId
@@ -304,6 +331,7 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
+        /** The balance available to spend, excluding pending and held funds */
         fun balance(balance: CurrencyAmount) = balance(JsonField.of(balance))
 
         /**
@@ -377,6 +405,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
+
+        /** The total balance, including pending and held funds */
+        fun totalBalance(totalBalance: CurrencyAmount) = totalBalance(JsonField.of(totalBalance))
+
+        /**
+         * Sets [Builder.totalBalance] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.totalBalance] with a well-typed [CurrencyAmount] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun totalBalance(totalBalance: JsonField<CurrencyAmount>) = apply {
+            this.totalBalance = totalBalance
+        }
 
         /**
          * Classification of an internal account.
@@ -473,6 +515,7 @@ private constructor(
          * .createdAt()
          * .fundingPaymentInstructions()
          * .status()
+         * .totalBalance()
          * .type()
          * .updatedAt()
          * ```
@@ -488,6 +531,7 @@ private constructor(
                     it.toImmutable()
                 },
                 checkRequired("status", status),
+                checkRequired("totalBalance", totalBalance),
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
                 customerId,
@@ -516,6 +560,7 @@ private constructor(
         createdAt()
         fundingPaymentInstructions().forEach { it.validate() }
         status().validate()
+        totalBalance().validate()
         type().validate()
         updatedAt()
         customerId()
@@ -542,6 +587,7 @@ private constructor(
             (if (createdAt.asKnown() == null) 0 else 1) +
             (fundingPaymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
+            (totalBalance.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
@@ -866,6 +912,7 @@ private constructor(
             createdAt == other.createdAt &&
             fundingPaymentInstructions == other.fundingPaymentInstructions &&
             status == other.status &&
+            totalBalance == other.totalBalance &&
             type == other.type &&
             updatedAt == other.updatedAt &&
             customerId == other.customerId &&
@@ -880,6 +927,7 @@ private constructor(
             createdAt,
             fundingPaymentInstructions,
             status,
+            totalBalance,
             type,
             updatedAt,
             customerId,
@@ -891,5 +939,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, status=$status, type=$type, updatedAt=$updatedAt, customerId=$customerId, privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
+        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, status=$status, totalBalance=$totalBalance, type=$type, updatedAt=$updatedAt, customerId=$customerId, privateEnabled=$privateEnabled, additionalProperties=$additionalProperties}"
 }
