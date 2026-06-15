@@ -463,7 +463,13 @@ private constructor(
 
                 val ACH = of("ACH")
 
+                val ACH_COLOMBIA = of("ACH_COLOMBIA")
+
                 val BANK_TRANSFER = of("BANK_TRANSFER")
+
+                val BRE_B = of("BRE_B")
+
+                val CIPS = of("CIPS")
 
                 val FAST = of("FAST")
 
@@ -471,11 +477,19 @@ private constructor(
 
                 val FEDNOW = of("FEDNOW")
 
+                val INSTAPAY = of("INSTAPAY")
+
                 val MOBILE_MONEY = of("MOBILE_MONEY")
+
+                val NEFT = of("NEFT")
 
                 val PAYNOW = of("PAYNOW")
 
+                val PESONET = of("PESONET")
+
                 val PIX = of("PIX")
+
+                val RTGS = of("RTGS")
 
                 val RTP = of("RTP")
 
@@ -487,6 +501,8 @@ private constructor(
 
                 val SWIFT = of("SWIFT")
 
+                val UNIONPAY = of("UNIONPAY")
+
                 val UPI = of("UPI")
 
                 val WIRE = of("WIRE")
@@ -497,18 +513,26 @@ private constructor(
             /** An enum containing [PaymentRail]'s known values. */
             enum class Known {
                 ACH,
+                ACH_COLOMBIA,
                 BANK_TRANSFER,
+                BRE_B,
+                CIPS,
                 FAST,
                 FASTER_PAYMENTS,
                 FEDNOW,
+                INSTAPAY,
                 MOBILE_MONEY,
+                NEFT,
                 PAYNOW,
+                PESONET,
                 PIX,
+                RTGS,
                 RTP,
                 SEPA,
                 SEPA_INSTANT,
                 SPEI,
                 SWIFT,
+                UNIONPAY,
                 UPI,
                 WIRE,
             }
@@ -524,18 +548,26 @@ private constructor(
              */
             enum class Value {
                 ACH,
+                ACH_COLOMBIA,
                 BANK_TRANSFER,
+                BRE_B,
+                CIPS,
                 FAST,
                 FASTER_PAYMENTS,
                 FEDNOW,
+                INSTAPAY,
                 MOBILE_MONEY,
+                NEFT,
                 PAYNOW,
+                PESONET,
                 PIX,
+                RTGS,
                 RTP,
                 SEPA,
                 SEPA_INSTANT,
                 SPEI,
                 SWIFT,
+                UNIONPAY,
                 UPI,
                 WIRE,
                 /**
@@ -555,18 +587,26 @@ private constructor(
             fun value(): Value =
                 when (this) {
                     ACH -> Value.ACH
+                    ACH_COLOMBIA -> Value.ACH_COLOMBIA
                     BANK_TRANSFER -> Value.BANK_TRANSFER
+                    BRE_B -> Value.BRE_B
+                    CIPS -> Value.CIPS
                     FAST -> Value.FAST
                     FASTER_PAYMENTS -> Value.FASTER_PAYMENTS
                     FEDNOW -> Value.FEDNOW
+                    INSTAPAY -> Value.INSTAPAY
                     MOBILE_MONEY -> Value.MOBILE_MONEY
+                    NEFT -> Value.NEFT
                     PAYNOW -> Value.PAYNOW
+                    PESONET -> Value.PESONET
                     PIX -> Value.PIX
+                    RTGS -> Value.RTGS
                     RTP -> Value.RTP
                     SEPA -> Value.SEPA
                     SEPA_INSTANT -> Value.SEPA_INSTANT
                     SPEI -> Value.SPEI
                     SWIFT -> Value.SWIFT
+                    UNIONPAY -> Value.UNIONPAY
                     UPI -> Value.UPI
                     WIRE -> Value.WIRE
                     else -> Value._UNKNOWN
@@ -584,18 +624,26 @@ private constructor(
             fun known(): Known =
                 when (this) {
                     ACH -> Known.ACH
+                    ACH_COLOMBIA -> Known.ACH_COLOMBIA
                     BANK_TRANSFER -> Known.BANK_TRANSFER
+                    BRE_B -> Known.BRE_B
+                    CIPS -> Known.CIPS
                     FAST -> Known.FAST
                     FASTER_PAYMENTS -> Known.FASTER_PAYMENTS
                     FEDNOW -> Known.FEDNOW
+                    INSTAPAY -> Known.INSTAPAY
                     MOBILE_MONEY -> Known.MOBILE_MONEY
+                    NEFT -> Known.NEFT
                     PAYNOW -> Known.PAYNOW
+                    PESONET -> Known.PESONET
                     PIX -> Known.PIX
+                    RTGS -> Known.RTGS
                     RTP -> Known.RTP
                     SEPA -> Known.SEPA
                     SEPA_INSTANT -> Known.SEPA_INSTANT
                     SPEI -> Known.SPEI
                     SWIFT -> Known.SWIFT
+                    UNIONPAY -> Known.UNIONPAY
                     UPI -> Known.UPI
                     WIRE -> Known.WIRE
                     else -> throw LightsparkGridInvalidDataException("Unknown PaymentRail: $value")
