@@ -119,7 +119,7 @@ interface CardServiceAsync {
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
-     * New cards start in `state: "PENDING_ISSUE"` while the card issuer provisions the card. The
+     * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
      * `card.state_change` webhook fires on the transition to `ACTIVE` (or to `CLOSED` with
      * `stateReason: "ISSUER_REJECTED"` if provisioning fails).
      */
