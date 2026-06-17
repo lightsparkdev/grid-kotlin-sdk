@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.beneficialowners.BeneficialOwnerPersonalInfo
+import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -22,6 +23,12 @@ internal class BusinessCustomerTest {
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .addCurrency("USD")
                 .addCurrency("USDC")
@@ -111,6 +118,13 @@ internal class BusinessCustomerTest {
         assertThat(businessCustomer.platformCustomerId()).isEqualTo("9f84e0c2a72c4fa")
         assertThat(businessCustomer.umaAddress()).isEqualTo("\$john.doe@uma.domain.com")
         assertThat(businessCustomer.id()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        assertThat(businessCustomer.contactVerification())
+            .isEqualTo(
+                Customer.ContactVerification.builder()
+                    .email(Customer.ContactVerification.Email.VERIFIED)
+                    .phone(Customer.ContactVerification.Phone.VERIFIED)
+                    .build()
+            )
         assertThat(businessCustomer.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
         assertThat(businessCustomer.currencies()).containsExactly("USD", "USDC")
@@ -209,6 +223,12 @@ internal class BusinessCustomerTest {
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .addCurrency("USD")
                 .addCurrency("USDC")
