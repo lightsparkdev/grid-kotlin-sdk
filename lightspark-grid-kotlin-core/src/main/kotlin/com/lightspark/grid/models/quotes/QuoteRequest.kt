@@ -743,6 +743,10 @@ private constructor(
 
             val TRAVEL = of("TRAVEL")
 
+            val FAMILY_SUPPORT = of("FAMILY_SUPPORT")
+
+            val SALARY_PAYMENT = of("SALARY_PAYMENT")
+
             val OTHER = of("OTHER")
 
             fun of(value: String) = PurposeOfPayment(JsonField.of(value))
@@ -761,6 +765,8 @@ private constructor(
             UTILITY_BILL,
             DONATION,
             TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
             OTHER,
         }
 
@@ -785,6 +791,8 @@ private constructor(
             UTILITY_BILL,
             DONATION,
             TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
             OTHER,
             /**
              * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
@@ -813,6 +821,8 @@ private constructor(
                 UTILITY_BILL -> Value.UTILITY_BILL
                 DONATION -> Value.DONATION
                 TRAVEL -> Value.TRAVEL
+                FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Value.SALARY_PAYMENT
                 OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
             }
@@ -839,6 +849,8 @@ private constructor(
                 UTILITY_BILL -> Known.UTILITY_BILL
                 DONATION -> Known.DONATION
                 TRAVEL -> Known.TRAVEL
+                FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Known.SALARY_PAYMENT
                 OTHER -> Known.OTHER
                 else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
             }
