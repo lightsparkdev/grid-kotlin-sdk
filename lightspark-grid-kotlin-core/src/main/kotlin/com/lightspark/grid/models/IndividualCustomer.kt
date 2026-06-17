@@ -29,6 +29,7 @@ private constructor(
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
+    private val contactVerification: JsonField<Customer.ContactVerification>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
@@ -53,6 +54,9 @@ private constructor(
         @ExcludeMissing
         umaAddress: JsonField<String> = JsonMissing.of(),
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("contactVerification")
+        @ExcludeMissing
+        contactVerification: JsonField<Customer.ContactVerification> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -81,6 +85,7 @@ private constructor(
         platformCustomerId,
         umaAddress,
         id,
+        contactVerification,
         createdAt,
         currencies,
         email,
@@ -101,6 +106,7 @@ private constructor(
             .platformCustomerId(platformCustomerId)
             .umaAddress(umaAddress)
             .id(id)
+            .contactVerification(contactVerification)
             .createdAt(createdAt)
             .currencies(currencies)
             .email(email)
@@ -141,6 +147,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun id(): String? = id.getNullable("id")
+
+    /**
+     * Email and phone verification state. **Only present when the customer's payment provider
+     * requires it** (e.g. EU customers); omitted otherwise.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun contactVerification(): Customer.ContactVerification? =
+        contactVerification.getNullable("contactVerification")
 
     /**
      * Creation timestamp
@@ -252,6 +268,16 @@ private constructor(
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
+     * Returns the raw JSON value of [contactVerification].
+     *
+     * Unlike [contactVerification], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("contactVerification")
+    @ExcludeMissing
+    fun _contactVerification(): JsonField<Customer.ContactVerification> = contactVerification
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -370,6 +396,7 @@ private constructor(
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
+        private var contactVerification: JsonField<Customer.ContactVerification> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
@@ -388,6 +415,7 @@ private constructor(
             platformCustomerId = individualCustomer.platformCustomerId
             umaAddress = individualCustomer.umaAddress
             id = individualCustomer.id
+            contactVerification = individualCustomer.contactVerification
             createdAt = individualCustomer.createdAt
             currencies = individualCustomer.currencies.map { it.toMutableList() }
             email = individualCustomer.email
@@ -444,6 +472,25 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /**
+         * Email and phone verification state. **Only present when the customer's payment provider
+         * requires it** (e.g. EU customers); omitted otherwise.
+         */
+        fun contactVerification(contactVerification: Customer.ContactVerification) =
+            contactVerification(JsonField.of(contactVerification))
+
+        /**
+         * Sets [Builder.contactVerification] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.contactVerification] with a well-typed
+         * [Customer.ContactVerification] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun contactVerification(contactVerification: JsonField<Customer.ContactVerification>) =
+            apply {
+                this.contactVerification = contactVerification
+            }
 
         /** Creation timestamp */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
@@ -628,6 +675,7 @@ private constructor(
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
+                contactVerification,
                 createdAt,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
@@ -661,6 +709,7 @@ private constructor(
         platformCustomerId()
         umaAddress()
         id()
+        contactVerification()?.validate()
         createdAt()
         currencies()
         email()
@@ -692,6 +741,7 @@ private constructor(
         (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1) +
             (if (id.asKnown() == null) 0 else 1) +
+            (contactVerification.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
@@ -994,6 +1044,7 @@ private constructor(
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
+            contactVerification == other.contactVerification &&
             createdAt == other.createdAt &&
             currencies == other.currencies &&
             email == other.email &&
@@ -1014,6 +1065,7 @@ private constructor(
             platformCustomerId,
             umaAddress,
             id,
+            contactVerification,
             createdAt,
             currencies,
             email,
@@ -1032,5 +1084,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
 }

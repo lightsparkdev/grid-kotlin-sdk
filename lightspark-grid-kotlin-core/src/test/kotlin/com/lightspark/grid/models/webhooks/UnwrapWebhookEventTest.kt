@@ -13,6 +13,7 @@ import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.cards.Card
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
@@ -1242,6 +1243,12 @@ internal class UnwrapWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .contactVerification(
+                            Customer.ContactVerification.builder()
+                                .email(Customer.ContactVerification.Email.VERIFIED)
+                                .phone(Customer.ContactVerification.Phone.VERIFIED)
+                                .build()
+                        )
                         .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .addCurrency("USD")
                         .addCurrency("USDC")
@@ -1297,6 +1304,12 @@ internal class UnwrapWebhookEventTest {
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .contactVerification(
+                                Customer.ContactVerification.builder()
+                                    .email(Customer.ContactVerification.Email.VERIFIED)
+                                    .phone(Customer.ContactVerification.Phone.VERIFIED)
+                                    .build()
+                            )
                             .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                             .addCurrency("USD")
                             .addCurrency("USDC")
