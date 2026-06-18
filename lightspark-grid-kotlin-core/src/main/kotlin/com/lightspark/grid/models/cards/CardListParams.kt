@@ -412,6 +412,8 @@ private constructor(
 
             val PENDING_KYC = of("PENDING_KYC")
 
+            val PENDING_AUTH = of("PENDING_AUTH")
+
             val PROCESSING = of("PROCESSING")
 
             val ACTIVE = of("ACTIVE")
@@ -426,6 +428,7 @@ private constructor(
         /** An enum containing [State]'s known values. */
         enum class Known {
             PENDING_KYC,
+            PENDING_AUTH,
             PROCESSING,
             ACTIVE,
             FROZEN,
@@ -443,6 +446,7 @@ private constructor(
          */
         enum class Value {
             PENDING_KYC,
+            PENDING_AUTH,
             PROCESSING,
             ACTIVE,
             FROZEN,
@@ -461,6 +465,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING_KYC -> Value.PENDING_KYC
+                PENDING_AUTH -> Value.PENDING_AUTH
                 PROCESSING -> Value.PROCESSING
                 ACTIVE -> Value.ACTIVE
                 FROZEN -> Value.FROZEN
@@ -480,6 +485,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING_KYC -> Known.PENDING_KYC
+                PENDING_AUTH -> Known.PENDING_AUTH
                 PROCESSING -> Known.PROCESSING
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
