@@ -23,9 +23,9 @@ class SgdAccountInfo
 private constructor(
     private val accountNumber: JsonField<String>,
     private val accountType: JsonField<AccountType>,
-    private val bankName: JsonField<String>,
     private val paymentRails: JsonField<List<PaymentRail>>,
     private val swiftCode: JsonField<String>,
+    private val bankName: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -37,12 +37,12 @@ private constructor(
         @JsonProperty("accountType")
         @ExcludeMissing
         accountType: JsonField<AccountType> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
         @JsonProperty("swiftCode") @ExcludeMissing swiftCode: JsonField<String> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, bankName, paymentRails, swiftCode, mutableMapOf())
+        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
+    ) : this(accountNumber, accountType, paymentRails, swiftCode, bankName, mutableMapOf())
 
     /**
      * Bank account number
@@ -59,14 +59,6 @@ private constructor(
     fun accountType(): AccountType = accountType.getRequired("accountType")
 
     /**
-     * Name of the beneficiary's bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun bankName(): String = bankName.getRequired("bankName")
-
-    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
@@ -79,6 +71,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun swiftCode(): String = swiftCode.getRequired("swiftCode")
+
+    /**
+     * Name of the beneficiary's bank. When omitted, resolved from swiftCode via the payout partner
+     * bank directory at account creation.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun bankName(): String? = bankName.getNullable("bankName")
 
     /**
      * Returns the raw JSON value of [accountNumber].
@@ -99,13 +100,6 @@ private constructor(
     fun _accountType(): JsonField<AccountType> = accountType
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [paymentRails].
      *
      * Unlike [paymentRails], this method doesn't throw if the JSON field has an unexpected type.
@@ -120,6 +114,13 @@ private constructor(
      * Unlike [swiftCode], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("swiftCode") @ExcludeMissing fun _swiftCode(): JsonField<String> = swiftCode
+
+    /**
+     * Returns the raw JSON value of [bankName].
+     *
+     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -142,7 +143,6 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
-         * .bankName()
          * .paymentRails()
          * .swiftCode()
          * ```
@@ -155,17 +155,17 @@ private constructor(
 
         private var accountNumber: JsonField<String>? = null
         private var accountType: JsonField<AccountType>? = null
-        private var bankName: JsonField<String>? = null
         private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
         private var swiftCode: JsonField<String>? = null
+        private var bankName: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(sgdAccountInfo: SgdAccountInfo) = apply {
             accountNumber = sgdAccountInfo.accountNumber
             accountType = sgdAccountInfo.accountType
-            bankName = sgdAccountInfo.bankName
             paymentRails = sgdAccountInfo.paymentRails.map { it.toMutableList() }
             swiftCode = sgdAccountInfo.swiftCode
+            bankName = sgdAccountInfo.bankName
             additionalProperties = sgdAccountInfo.additionalProperties.toMutableMap()
         }
 
@@ -195,17 +195,6 @@ private constructor(
         fun accountType(accountType: JsonField<AccountType>) = apply {
             this.accountType = accountType
         }
-
-        /** Name of the beneficiary's bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         fun paymentRails(paymentRails: List<PaymentRail>) = paymentRails(JsonField.of(paymentRails))
 
@@ -244,6 +233,20 @@ private constructor(
          */
         fun swiftCode(swiftCode: JsonField<String>) = apply { this.swiftCode = swiftCode }
 
+        /**
+         * Name of the beneficiary's bank. When omitted, resolved from swiftCode via the payout
+         * partner bank directory at account creation.
+         */
+        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
+
+        /**
+         * Sets [Builder.bankName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -272,7 +275,6 @@ private constructor(
          * ```kotlin
          * .accountNumber()
          * .accountType()
-         * .bankName()
          * .paymentRails()
          * .swiftCode()
          * ```
@@ -283,9 +285,9 @@ private constructor(
             SgdAccountInfo(
                 checkRequired("accountNumber", accountNumber),
                 checkRequired("accountType", accountType),
-                checkRequired("bankName", bankName),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                 checkRequired("swiftCode", swiftCode),
+                bankName,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -307,9 +309,9 @@ private constructor(
 
         accountNumber()
         accountType().validate()
-        bankName()
         paymentRails().forEach { it.validate() }
         swiftCode()
+        bankName()
         validated = true
     }
 
@@ -329,9 +331,9 @@ private constructor(
     internal fun validity(): Int =
         (if (accountNumber.asKnown() == null) 0 else 1) +
             (accountType.asKnown()?.validity() ?: 0) +
-            (if (bankName.asKnown() == null) 0 else 1) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (swiftCode.asKnown() == null) 0 else 1)
+            (if (swiftCode.asKnown() == null) 0 else 1) +
+            (if (bankName.asKnown() == null) 0 else 1)
 
     class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -615,9 +617,9 @@ private constructor(
         return other is SgdAccountInfo &&
             accountNumber == other.accountNumber &&
             accountType == other.accountType &&
-            bankName == other.bankName &&
             paymentRails == other.paymentRails &&
             swiftCode == other.swiftCode &&
+            bankName == other.bankName &&
             additionalProperties == other.additionalProperties
     }
 
@@ -625,9 +627,9 @@ private constructor(
         Objects.hash(
             accountNumber,
             accountType,
-            bankName,
             paymentRails,
             swiftCode,
+            bankName,
             additionalProperties,
         )
     }
@@ -635,5 +637,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SgdAccountInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, swiftCode=$swiftCode, additionalProperties=$additionalProperties}"
+        "SgdAccountInfo{accountNumber=$accountNumber, accountType=$accountType, paymentRails=$paymentRails, swiftCode=$swiftCode, bankName=$bankName, additionalProperties=$additionalProperties}"
 }
