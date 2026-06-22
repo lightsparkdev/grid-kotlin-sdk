@@ -693,7 +693,7 @@ private constructor(
         /**
          * Required fields depend on the selected paymentRails:
          * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: phoneNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun cnyAccount(): CnyAccount? = cnyAccount
 
@@ -880,7 +880,7 @@ private constructor(
         /**
          * Required fields depend on the selected paymentRails:
          * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: phoneNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
 
@@ -1508,7 +1508,7 @@ private constructor(
             /**
              * Required fields depend on the selected paymentRails:
              * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: phoneNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofCnyAccount(cnyAccount: CnyAccount) = AccountInfo(cnyAccount = cnyAccount)
 
@@ -1658,7 +1658,7 @@ private constructor(
             /**
              * Required fields depend on the selected paymentRails:
              * - BANK_TRANSFER: accountNumber, bankName
-             * - MOBILE_MONEY: phoneNumber, bankName
+             * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitCnyAccount(cnyAccount: CnyAccount): T
 
@@ -2027,7 +2027,7 @@ private constructor(
         /**
          * Required fields depend on the selected paymentRails:
          * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: phoneNumber, bankName
+         * - MOBILE_MONEY: bankName, phoneNumber
          */
         class CnyAccount
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -2071,7 +2071,7 @@ private constructor(
             @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
 
             /**
-             * The name of the bank or mobile-wallet provider
+             * The name of the bank
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2087,7 +2087,7 @@ private constructor(
             fun beneficiary(): Beneficiary = beneficiary.getRequired("beneficiary")
 
             /**
-             * The destination bank account number (BANK_TRANSFER rail)
+             * The account number of the bank
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2095,7 +2095,7 @@ private constructor(
             fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
 
             /**
-             * The phone number in international format (MOBILE_MONEY rail)
+             * The phone number in international format
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -2199,7 +2199,7 @@ private constructor(
                  */
                 fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
 
-                /** The name of the bank or mobile-wallet provider */
+                /** The name of the bank */
                 fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
                 /**
@@ -2260,7 +2260,7 @@ private constructor(
                             .build()
                     )
 
-                /** The destination bank account number (BANK_TRANSFER rail) */
+                /** The account number of the bank */
                 fun accountNumber(accountNumber: String) =
                     accountNumber(JsonField.of(accountNumber))
 
@@ -2275,7 +2275,7 @@ private constructor(
                     this.accountNumber = accountNumber
                 }
 
-                /** The phone number in international format (MOBILE_MONEY rail) */
+                /** The phone number in international format */
                 fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
 
                 /**

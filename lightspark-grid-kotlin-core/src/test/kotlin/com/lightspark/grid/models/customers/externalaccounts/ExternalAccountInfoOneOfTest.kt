@@ -188,7 +188,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofCnyAccount() {
         val cnyAccount =
             ExternalAccountInfoOneOf.CnyAccount.builder()
-                .bankName("China Construction Bank")
+                .bankName("Example Bank")
                 .beneficiary(
                     ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -209,7 +209,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .phoneNumber("+1234567890")
                 .build()
@@ -227,7 +227,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofCnyAccount(
                 ExternalAccountInfoOneOf.CnyAccount.builder()
-                    .bankName("China Construction Bank")
+                    .bankName("Example Bank")
                     .beneficiary(
                         ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -248,7 +248,7 @@ internal class ExternalAccountInfoOneOfTest {
                             .phoneNumber("phoneNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.BANK_TRANSFER)
                     .accountNumber("1234567890")
                     .phoneNumber("+1234567890")
                     .build()
