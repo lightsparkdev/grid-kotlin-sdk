@@ -139,14 +139,13 @@ private constructor(
     /**
      * Lifecycle state of a card.
      *
-     * |State         |Description                                                                                                                                                                                                                    |
-     * |--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC` |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                                                                                                 |
-     * |`PENDING_AUTH`|The card has been created with an Embedded Wallet funding source, but the cardholder has not yet completed card-specific delegated signing authorization with `POST /auth/delegated-keys`. Cards in this state cannot transact.|
-     * |`PROCESSING`  |The card has been requested and is being provisioned with the issuer.                                                                                                                                                          |
-     * |`ACTIVE`      |The card is live and can authorize transactions.                                                                                                                                                                               |
-     * |`FROZEN`      |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.                                                                  |
-     * |`CLOSED`      |The card is permanently closed. Terminal, irreversible state.                                                                                                                                                                  |
+     * |State        |Description                                                                                                                                                  |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -522,14 +521,13 @@ private constructor(
         /**
          * Lifecycle state of a card.
          *
-         * |State         |Description                                                                                                                                                                                                                    |
-         * |--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-         * |`PENDING_KYC` |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                                                                                                 |
-         * |`PENDING_AUTH`|The card has been created with an Embedded Wallet funding source, but the cardholder has not yet completed card-specific delegated signing authorization with `POST /auth/delegated-keys`. Cards in this state cannot transact.|
-         * |`PROCESSING`  |The card has been requested and is being provisioned with the issuer.                                                                                                                                                          |
-         * |`ACTIVE`      |The card is live and can authorize transactions.                                                                                                                                                                               |
-         * |`FROZEN`      |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.                                                                  |
-         * |`CLOSED`      |The card is permanently closed. Terminal, irreversible state.                                                                                                                                                                  |
+         * |State        |Description                                                                                                                                                  |
+         * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+         * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+         * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+         * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
          */
         fun state(state: State) = state(JsonField.of(state))
 
@@ -939,14 +937,13 @@ private constructor(
     /**
      * Lifecycle state of a card.
      *
-     * |State         |Description                                                                                                                                                                                                                    |
-     * |--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC` |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                                                                                                 |
-     * |`PENDING_AUTH`|The card has been created with an Embedded Wallet funding source, but the cardholder has not yet completed card-specific delegated signing authorization with `POST /auth/delegated-keys`. Cards in this state cannot transact.|
-     * |`PROCESSING`  |The card has been requested and is being provisioned with the issuer.                                                                                                                                                          |
-     * |`ACTIVE`      |The card is live and can authorize transactions.                                                                                                                                                                               |
-     * |`FROZEN`      |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.                                                                  |
-     * |`CLOSED`      |The card is permanently closed. Terminal, irreversible state.                                                                                                                                                                  |
+     * |State        |Description                                                                                                                                                  |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
      */
     class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -964,8 +961,6 @@ private constructor(
 
             val PENDING_KYC = of("PENDING_KYC")
 
-            val PENDING_AUTH = of("PENDING_AUTH")
-
             val PROCESSING = of("PROCESSING")
 
             val ACTIVE = of("ACTIVE")
@@ -980,7 +975,6 @@ private constructor(
         /** An enum containing [State]'s known values. */
         enum class Known {
             PENDING_KYC,
-            PENDING_AUTH,
             PROCESSING,
             ACTIVE,
             FROZEN,
@@ -998,7 +992,6 @@ private constructor(
          */
         enum class Value {
             PENDING_KYC,
-            PENDING_AUTH,
             PROCESSING,
             ACTIVE,
             FROZEN,
@@ -1017,7 +1010,6 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING_KYC -> Value.PENDING_KYC
-                PENDING_AUTH -> Value.PENDING_AUTH
                 PROCESSING -> Value.PROCESSING
                 ACTIVE -> Value.ACTIVE
                 FROZEN -> Value.FROZEN
@@ -1037,7 +1029,6 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING_KYC -> Known.PENDING_KYC
-                PENDING_AUTH -> Known.PENDING_AUTH
                 PROCESSING -> Known.PROCESSING
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN

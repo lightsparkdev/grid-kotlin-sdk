@@ -120,15 +120,14 @@ interface CardService {
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
      * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
-     * Grid to sign Spark token transactions for that card by completing the delegated-key creation
-     * flow with `POST /auth/delegated-keys`. Until an active delegated key exists for the card, the
-     * card remains in `state: "PENDING_AUTH"` and cannot transact.
+     * Grid to sign Spark token transactions for that card funding source by completing the
+     * delegated-key creation flow with `POST /auth/delegated-keys`. Until an active delegated key
+     * exists for that funding source, Authorization Decisioning cannot use it to fund card
+     * transactions.
      *
-     * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. Cards
-     * that require delegated signing authorization move from `PENDING_AUTH` to `PROCESSING` after
-     * delegated-key creation is complete. The `card.state_change` webhook fires on each state
-     * transition, including the transition to `ACTIVE` (or to `CLOSED` with `stateReason:
-     * "ISSUER_REJECTED"` if provisioning fails).
+     * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
+     * `card.state_change` webhook fires on each state transition, including the transition to
+     * `ACTIVE` (or to `CLOSED` with `stateReason: "ISSUER_REJECTED"` if provisioning fails).
      */
     fun issue(params: CardIssueParams, requestOptions: RequestOptions = RequestOptions.none()): Card
 
