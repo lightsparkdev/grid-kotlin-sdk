@@ -20,7 +20,7 @@ import java.util.Objects
  * Extended `AuthMethod` shape returned for `PASSKEY` credentials from `POST
  * /auth/credentials/{id}/challenge`. Includes the WebAuthn `credentialId` needed to target the
  * passkey, plus the Grid-issued `challenge`, corresponding `requestId`, and challenge `expiresAt`.
- * The `challenge` value is the lowercase hex-encoded SHA-256 digest of the canonical Turnkey
+ * The `challenge` value is the lowercase hex-encoded SHA-256 digest of the canonical
  * session-creation request body, not a base64url string. The client UTF-8 encodes this string as
  * the WebAuthn challenge and signs it with the passkey to produce the assertion submitted to `POST
  * /auth/credentials/{id}/verify`.
@@ -151,10 +151,10 @@ private constructor(
     fun credentialId(): String? = credentialId.getNullable("credentialId")
 
     /**
-     * Lowercase hex-encoded SHA-256 digest of the canonical Turnkey session-creation request body
-     * for the pending passkey authentication. Do not base64url-decode this field; pass UTF-8 bytes
-     * of the string (for example, `new TextEncoder().encode(challenge)`) as the WebAuthn challenge
-     * to `navigator.credentials.get()`. Single-use; a new challenge is issued on the next call to
+     * Lowercase hex-encoded SHA-256 digest of the canonical session-creation request body for the
+     * pending passkey authentication. Do not base64url-decode this field; pass UTF-8 bytes of the
+     * string (for example, `new TextEncoder().encode(challenge)`) as the WebAuthn challenge to
+     * `navigator.credentials.get()`. Single-use; a new challenge is issued on the next call to
      * `POST /auth/credentials/{id}/challenge`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -423,11 +423,11 @@ private constructor(
         }
 
         /**
-         * Lowercase hex-encoded SHA-256 digest of the canonical Turnkey session-creation request
-         * body for the pending passkey authentication. Do not base64url-decode this field; pass
-         * UTF-8 bytes of the string (for example, `new TextEncoder().encode(challenge)`) as the
-         * WebAuthn challenge to `navigator.credentials.get()`. Single-use; a new challenge is
-         * issued on the next call to `POST /auth/credentials/{id}/challenge`.
+         * Lowercase hex-encoded SHA-256 digest of the canonical session-creation request body for
+         * the pending passkey authentication. Do not base64url-decode this field; pass UTF-8 bytes
+         * of the string (for example, `new TextEncoder().encode(challenge)`) as the WebAuthn
+         * challenge to `navigator.credentials.get()`. Single-use; a new challenge is issued on the
+         * next call to `POST /auth/credentials/{id}/challenge`.
          */
         fun challenge(challenge: String) = challenge(JsonField.of(challenge))
 

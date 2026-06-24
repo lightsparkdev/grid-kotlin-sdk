@@ -2896,7 +2896,7 @@ private constructor(
             /**
              * JSON-encoded transaction signing payload that must be stamped, as-is (byte-for-byte,
              * without re-serialization), with the session private key of a verified authentication
-             * credential on the source Embedded Wallet. The resulting Turnkey API-key stamp is
+             * credential on the source Embedded Wallet. The resulting Grid wallet signature is
              * passed as the `Grid-Wallet-Signature` header on `POST /quotes/{quoteId}/execute` to
              * authorize the outbound transfer from the wallet.
              *
@@ -2972,7 +2972,7 @@ private constructor(
                  * JSON-encoded transaction signing payload that must be stamped, as-is
                  * (byte-for-byte, without re-serialization), with the session private key of a
                  * verified authentication credential on the source Embedded Wallet. The resulting
-                 * Turnkey API-key stamp is passed as the `Grid-Wallet-Signature` header on `POST
+                 * Grid wallet signature is passed as the `Grid-Wallet-Signature` header on `POST
                  * /quotes/{quoteId}/execute` to authorize the outbound transfer from the wallet.
                  */
                 fun payloadToSign(payloadToSign: String) =

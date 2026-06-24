@@ -17,7 +17,7 @@ import java.util.Objects
 
 /**
  * Request body for refreshing an active authentication session. The `clientPublicKey` is required
- * on both steps of the signed-retry flow. On the initial call, Grid binds this key into the Turnkey
+ * on both steps of the signed-retry flow. On the initial call, Grid binds this key into the
  * session-creation payload returned as `payloadToSign`; on the signed retry, the client echoes the
  * same key back and Grid uses it to encrypt the newly issued session signing key.
  */

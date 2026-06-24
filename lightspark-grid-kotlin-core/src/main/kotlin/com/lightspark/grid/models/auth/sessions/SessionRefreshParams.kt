@@ -13,9 +13,9 @@ import java.util.Objects
  * Refresh an active Embedded Wallet auth session and create a new session signing key. Session
  * refresh is a two-step signed-retry flow:
  * 1. Call `POST /auth/sessions/{id}/refresh` with the request body `{ "clientPublicKey": "04..." }`
- *    and no signature headers. Grid builds a Turnkey create-read-write-session payload, binds the
- *    supplied `clientPublicKey` into that payload, persists it as a pending request, and returns
- *    `202` with `payloadToSign`, `requestId`, and `expiresAt`.
+ *    and no signature headers. Grid builds a Grid session-refresh payload, binds the supplied
+ *    `clientPublicKey` into that payload, persists it as a pending request, and returns `202` with
+ *    `payloadToSign`, `requestId`, and `expiresAt`.
  * 2. Sign `payloadToSign` with the current session signing key, then retry the same request with
  *    the full API-key stamp as `Grid-Wallet-Signature`, the `requestId` echoed back as
  *    `Request-Id`, and the same `clientPublicKey` in the request body. On success, Grid returns a
@@ -43,9 +43,9 @@ private constructor(
     /**
      * Request body for refreshing an active authentication session. The `clientPublicKey` is
      * required on both steps of the signed-retry flow. On the initial call, Grid binds this key
-     * into the Turnkey session-creation payload returned as `payloadToSign`; on the signed retry,
-     * the client echoes the same key back and Grid uses it to encrypt the newly issued session
-     * signing key.
+     * into the session-creation payload returned as `payloadToSign`; on the signed retry, the
+     * client echoes the same key back and Grid uses it to encrypt the newly issued session signing
+     * key.
      */
     fun authSessionRefreshRequest(): AuthSessionRefreshRequest = authSessionRefreshRequest
 
@@ -103,9 +103,9 @@ private constructor(
         /**
          * Request body for refreshing an active authentication session. The `clientPublicKey` is
          * required on both steps of the signed-retry flow. On the initial call, Grid binds this key
-         * into the Turnkey session-creation payload returned as `payloadToSign`; on the signed
-         * retry, the client echoes the same key back and Grid uses it to encrypt the newly issued
-         * session signing key.
+         * into the session-creation payload returned as `payloadToSign`; on the signed retry, the
+         * client echoes the same key back and Grid uses it to encrypt the newly issued session
+         * signing key.
          */
         fun authSessionRefreshRequest(authSessionRefreshRequest: AuthSessionRefreshRequest) =
             apply {
