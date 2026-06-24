@@ -179,6 +179,7 @@ internal class UnwrapWebhookEventTest {
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .destination(JsonValue.from(mapOf<String, Any>()))
+                                .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
                                 .receivedAmount(
                                     CurrencyAmount.builder()
@@ -414,6 +415,7 @@ internal class UnwrapWebhookEventTest {
                                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                     .destination(JsonValue.from(mapOf<String, Any>()))
+                                    .direction(IncomingTransaction.Direction.CREDIT)
                                     .platformCustomerId("18d3e5f7b4a9c2")
                                     .receivedAmount(
                                         CurrencyAmount.builder()
@@ -513,6 +515,7 @@ internal class UnwrapWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(IncomingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .receivedAmount(
                             CurrencyAmount.builder()
@@ -600,6 +603,7 @@ internal class UnwrapWebhookEventTest {
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(JsonValue.from(mapOf<String, Any>()))
+                            .direction(IncomingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .receivedAmount(
                                 CurrencyAmount.builder()
@@ -682,6 +686,7 @@ internal class UnwrapWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -844,6 +849,7 @@ internal class UnwrapWebhookEventTest {
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(JsonValue.from(mapOf<String, Any>()))
+                            .direction(OutgoingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
                             .sentAmount(
                                 CurrencyAmount.builder()

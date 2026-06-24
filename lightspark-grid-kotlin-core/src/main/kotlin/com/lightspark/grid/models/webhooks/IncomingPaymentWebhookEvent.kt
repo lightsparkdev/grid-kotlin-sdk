@@ -283,6 +283,7 @@ private constructor(
         private val id: JsonField<String>,
         private val customerId: JsonField<String>,
         private val destination: JsonValue,
+        private val direction: JsonField<IncomingTransaction.Direction>,
         private val platformCustomerId: JsonField<String>,
         private val receivedAmount: JsonField<CurrencyAmount>,
         private val status: JsonField<TransactionStatus>,
@@ -311,6 +312,9 @@ private constructor(
             @ExcludeMissing
             customerId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
+            @JsonProperty("direction")
+            @ExcludeMissing
+            direction: JsonField<IncomingTransaction.Direction> = JsonMissing.of(),
             @JsonProperty("platformCustomerId")
             @ExcludeMissing
             platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -364,6 +368,7 @@ private constructor(
             id,
             customerId,
             destination,
+            direction,
             platformCustomerId,
             receivedAmount,
             status,
@@ -389,6 +394,7 @@ private constructor(
                 .id(id)
                 .customerId(customerId)
                 .destination(destination)
+                .direction(direction)
                 .platformCustomerId(platformCustomerId)
                 .receivedAmount(receivedAmount)
                 .status(status)
@@ -430,6 +436,14 @@ private constructor(
          * ```
          */
         @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
+
+        /**
+         * Whether this transaction credits or debits the customer's account.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun direction(): IncomingTransaction.Direction = direction.getRequired("direction")
 
         /**
          * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -601,6 +615,15 @@ private constructor(
         @JsonProperty("customerId")
         @ExcludeMissing
         fun _customerId(): JsonField<String> = customerId
+
+        /**
+         * Returns the raw JSON value of [direction].
+         *
+         * Unlike [direction], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("direction")
+        @ExcludeMissing
+        fun _direction(): JsonField<IncomingTransaction.Direction> = direction
 
         /**
          * Returns the raw JSON value of [platformCustomerId].
@@ -781,6 +804,7 @@ private constructor(
              * .id()
              * .customerId()
              * .destination()
+             * .direction()
              * .platformCustomerId()
              * .receivedAmount()
              * .status()
@@ -796,6 +820,7 @@ private constructor(
             private var id: JsonField<String>? = null
             private var customerId: JsonField<String>? = null
             private var destination: JsonValue? = null
+            private var direction: JsonField<IncomingTransaction.Direction>? = null
             private var platformCustomerId: JsonField<String>? = null
             private var receivedAmount: JsonField<CurrencyAmount>? = null
             private var status: JsonField<TransactionStatus>? = null
@@ -825,6 +850,7 @@ private constructor(
                 id = data.id
                 customerId = data.customerId
                 destination = data.destination
+                direction = data.direction
                 platformCustomerId = data.platformCustomerId
                 receivedAmount = data.receivedAmount
                 status = data.status
@@ -871,6 +897,21 @@ private constructor(
             fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
             fun destination(destination: JsonValue) = apply { this.destination = destination }
+
+            /** Whether this transaction credits or debits the customer's account. */
+            fun direction(direction: IncomingTransaction.Direction) =
+                direction(JsonField.of(direction))
+
+            /**
+             * Sets [Builder.direction] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.direction] with a well-typed
+             * [IncomingTransaction.Direction] value instead. This method is primarily for setting
+             * the field to an undocumented or not yet supported value.
+             */
+            fun direction(direction: JsonField<IncomingTransaction.Direction>) = apply {
+                this.direction = direction
+            }
 
             /**
              * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -1190,6 +1231,7 @@ private constructor(
              * .id()
              * .customerId()
              * .destination()
+             * .direction()
              * .platformCustomerId()
              * .receivedAmount()
              * .status()
@@ -1203,6 +1245,7 @@ private constructor(
                     checkRequired("id", id),
                     checkRequired("customerId", customerId),
                     checkRequired("destination", destination),
+                    checkRequired("direction", direction),
                     checkRequired("platformCustomerId", platformCustomerId),
                     checkRequired("receivedAmount", receivedAmount),
                     checkRequired("status", status),
@@ -1244,6 +1287,7 @@ private constructor(
 
             id()
             customerId()
+            direction().validate()
             platformCustomerId()
             receivedAmount().validate()
             status().validate()
@@ -1280,6 +1324,7 @@ private constructor(
         internal fun validity(): Int =
             (if (id.asKnown() == null) 0 else 1) +
                 (if (customerId.asKnown() == null) 0 else 1) +
+                (direction.asKnown()?.validity() ?: 0) +
                 (if (platformCustomerId.asKnown() == null) 0 else 1) +
                 (receivedAmount.asKnown()?.validity() ?: 0) +
                 (status.asKnown()?.validity() ?: 0) +
@@ -1307,6 +1352,7 @@ private constructor(
                 id == other.id &&
                 customerId == other.customerId &&
                 destination == other.destination &&
+                direction == other.direction &&
                 platformCustomerId == other.platformCustomerId &&
                 receivedAmount == other.receivedAmount &&
                 status == other.status &&
@@ -1332,6 +1378,7 @@ private constructor(
                 id,
                 customerId,
                 destination,
+                direction,
                 platformCustomerId,
                 receivedAmount,
                 status,
@@ -1356,7 +1403,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+            "Data{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

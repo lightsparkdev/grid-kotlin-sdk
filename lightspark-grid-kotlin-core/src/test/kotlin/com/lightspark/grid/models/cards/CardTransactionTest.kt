@@ -38,6 +38,7 @@ internal class CardTransactionTest {
                 .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .direction(CardTransaction.Direction.DEBIT)
                 .merchant(
                     CardMerchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
@@ -107,6 +108,7 @@ internal class CardTransactionTest {
         assertThat(cardTransaction.cardId()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
         assertThat(cardTransaction.createdAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+        assertThat(cardTransaction.direction()).isEqualTo(CardTransaction.Direction.DEBIT)
         assertThat(cardTransaction.merchant())
             .isEqualTo(
                 CardMerchant.builder()
@@ -182,6 +184,7 @@ internal class CardTransactionTest {
                 .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .direction(CardTransaction.Direction.DEBIT)
                 .merchant(
                     CardMerchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")

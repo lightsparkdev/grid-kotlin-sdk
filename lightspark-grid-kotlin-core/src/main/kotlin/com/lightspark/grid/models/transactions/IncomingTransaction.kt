@@ -25,6 +25,7 @@ private constructor(
     private val id: JsonField<String>,
     private val customerId: JsonField<String>,
     private val destination: JsonValue,
+    private val direction: JsonField<Direction>,
     private val platformCustomerId: JsonField<String>,
     private val receivedAmount: JsonField<CurrencyAmount>,
     private val status: JsonField<TransactionStatus>,
@@ -51,6 +52,9 @@ private constructor(
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("destination") @ExcludeMissing destination: JsonValue = JsonMissing.of(),
+        @JsonProperty("direction")
+        @ExcludeMissing
+        direction: JsonField<Direction> = JsonMissing.of(),
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
@@ -97,6 +101,7 @@ private constructor(
         id,
         customerId,
         destination,
+        direction,
         platformCustomerId,
         receivedAmount,
         status,
@@ -139,6 +144,14 @@ private constructor(
      * ```
      */
     @JsonProperty("destination") @ExcludeMissing fun _destination(): JsonValue = destination
+
+    /**
+     * Whether this transaction credits or debits the customer's account.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun direction(): Direction = direction.getRequired("direction")
 
     /**
      * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
@@ -296,6 +309,13 @@ private constructor(
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
+
+    /**
+     * Returns the raw JSON value of [direction].
+     *
+     * Unlike [direction], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("direction") @ExcludeMissing fun _direction(): JsonField<Direction> = direction
 
     /**
      * Returns the raw JSON value of [platformCustomerId].
@@ -458,6 +478,7 @@ private constructor(
          * .id()
          * .customerId()
          * .destination()
+         * .direction()
          * .platformCustomerId()
          * .receivedAmount()
          * .status()
@@ -473,6 +494,7 @@ private constructor(
         private var id: JsonField<String>? = null
         private var customerId: JsonField<String>? = null
         private var destination: JsonValue? = null
+        private var direction: JsonField<Direction>? = null
         private var platformCustomerId: JsonField<String>? = null
         private var receivedAmount: JsonField<CurrencyAmount>? = null
         private var status: JsonField<TransactionStatus>? = null
@@ -496,6 +518,7 @@ private constructor(
             id = incomingTransaction.id
             customerId = incomingTransaction.customerId
             destination = incomingTransaction.destination
+            direction = incomingTransaction.direction
             platformCustomerId = incomingTransaction.platformCustomerId
             receivedAmount = incomingTransaction.receivedAmount
             status = incomingTransaction.status
@@ -539,6 +562,18 @@ private constructor(
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         fun destination(destination: JsonValue) = apply { this.destination = destination }
+
+        /** Whether this transaction credits or debits the customer's account. */
+        fun direction(direction: Direction) = direction(JsonField.of(direction))
+
+        /**
+         * Sets [Builder.direction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.direction] with a well-typed [Direction] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun direction(direction: JsonField<Direction>) = apply { this.direction = direction }
 
         /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
         fun platformCustomerId(platformCustomerId: String) =
@@ -800,6 +835,7 @@ private constructor(
          * .id()
          * .customerId()
          * .destination()
+         * .direction()
          * .platformCustomerId()
          * .receivedAmount()
          * .status()
@@ -813,6 +849,7 @@ private constructor(
                 checkRequired("id", id),
                 checkRequired("customerId", customerId),
                 checkRequired("destination", destination),
+                checkRequired("direction", direction),
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("receivedAmount", receivedAmount),
                 checkRequired("status", status),
@@ -850,6 +887,7 @@ private constructor(
 
         id()
         customerId()
+        direction().validate()
         platformCustomerId()
         receivedAmount().validate()
         status().validate()
@@ -884,6 +922,7 @@ private constructor(
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
+            (direction.asKnown()?.validity() ?: 0) +
             (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (receivedAmount.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
@@ -899,6 +938,143 @@ private constructor(
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
             (if (settledAt.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1)
+
+    /** Whether this transaction credits or debits the customer's account. */
+    class Direction @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CREDIT = of("CREDIT")
+
+            val DEBIT = of("DEBIT")
+
+            fun of(value: String) = Direction(JsonField.of(value))
+        }
+
+        /** An enum containing [Direction]'s known values. */
+        enum class Known {
+            CREDIT,
+            DEBIT,
+        }
+
+        /**
+         * An enum containing [Direction]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Direction] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CREDIT,
+            DEBIT,
+            /**
+             * An enum member indicating that [Direction] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CREDIT -> Value.CREDIT
+                DEBIT -> Value.DEBIT
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CREDIT -> Known.CREDIT
+                DEBIT -> Known.DEBIT
+                else -> throw LightsparkGridInvalidDataException("Unknown Direction: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Direction = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Direction && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     /** Type of transaction (incoming payment or outgoing payment) */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1328,6 +1504,7 @@ private constructor(
             id == other.id &&
             customerId == other.customerId &&
             destination == other.destination &&
+            direction == other.direction &&
             platformCustomerId == other.platformCustomerId &&
             receivedAmount == other.receivedAmount &&
             status == other.status &&
@@ -1352,6 +1529,7 @@ private constructor(
             id,
             customerId,
             destination,
+            direction,
             platformCustomerId,
             receivedAmount,
             status,
@@ -1375,5 +1553,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
