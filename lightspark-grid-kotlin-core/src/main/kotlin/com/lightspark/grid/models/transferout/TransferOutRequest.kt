@@ -23,6 +23,7 @@ private constructor(
     private val destination: JsonField<Destination>,
     private val source: JsonField<InternalAccountReference>,
     private val amount: JsonField<Long>,
+    private val remittanceInformation: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -35,7 +36,10 @@ private constructor(
         @ExcludeMissing
         source: JsonField<InternalAccountReference> = JsonMissing.of(),
         @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
-    ) : this(destination, source, amount, mutableMapOf())
+        @JsonProperty("remittanceInformation")
+        @ExcludeMissing
+        remittanceInformation: JsonField<String> = JsonMissing.of(),
+    ) : this(destination, source, amount, remittanceInformation, mutableMapOf())
 
     /**
      * Destination external account details
@@ -62,6 +66,18 @@ private constructor(
     fun amount(): Long? = amount.getNullable("amount")
 
     /**
+     * Free-form information about the payment that travels with it to the recipient. The field this
+     * populates depends on the payment rail: for ACH it populates the Addenda record, for FedNow
+     * and RTP it populates the remittanceInformation field, and for wires it populates the OBI
+     * (Originator to Beneficiary Information) / beneficiary information.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun remittanceInformation(): String? =
+        remittanceInformation.getNullable("remittanceInformation")
+
+    /**
      * Returns the raw JSON value of [destination].
      *
      * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
@@ -85,6 +101,16 @@ private constructor(
      * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+    /**
+     * Returns the raw JSON value of [remittanceInformation].
+     *
+     * Unlike [remittanceInformation], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("remittanceInformation")
+    @ExcludeMissing
+    fun _remittanceInformation(): JsonField<String> = remittanceInformation
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -118,12 +144,14 @@ private constructor(
         private var destination: JsonField<Destination>? = null
         private var source: JsonField<InternalAccountReference>? = null
         private var amount: JsonField<Long> = JsonMissing.of()
+        private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(transferOutRequest: TransferOutRequest) = apply {
             destination = transferOutRequest.destination
             source = transferOutRequest.source
             amount = transferOutRequest.amount
+            remittanceInformation = transferOutRequest.remittanceInformation
             additionalProperties = transferOutRequest.additionalProperties.toMutableMap()
         }
 
@@ -166,6 +194,26 @@ private constructor(
          */
         fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
 
+        /**
+         * Free-form information about the payment that travels with it to the recipient. The field
+         * this populates depends on the payment rail: for ACH it populates the Addenda record, for
+         * FedNow and RTP it populates the remittanceInformation field, and for wires it populates
+         * the OBI (Originator to Beneficiary Information) / beneficiary information.
+         */
+        fun remittanceInformation(remittanceInformation: String) =
+            remittanceInformation(JsonField.of(remittanceInformation))
+
+        /**
+         * Sets [Builder.remittanceInformation] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.remittanceInformation] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun remittanceInformation(remittanceInformation: JsonField<String>) = apply {
+            this.remittanceInformation = remittanceInformation
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -203,6 +251,7 @@ private constructor(
                 checkRequired("destination", destination),
                 checkRequired("source", source),
                 amount,
+                remittanceInformation,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -225,6 +274,7 @@ private constructor(
         destination().validate()
         source().validate()
         amount()
+        remittanceInformation()
         validated = true
     }
 
@@ -244,7 +294,8 @@ private constructor(
     internal fun validity(): Int =
         (destination.asKnown()?.validity() ?: 0) +
             (source.asKnown()?.validity() ?: 0) +
-            (if (amount.asKnown() == null) 0 else 1)
+            (if (amount.asKnown() == null) 0 else 1) +
+            (if (remittanceInformation.asKnown() == null) 0 else 1)
 
     /** Destination external account details */
     class Destination
@@ -742,15 +793,16 @@ private constructor(
             destination == other.destination &&
             source == other.source &&
             amount == other.amount &&
+            remittanceInformation == other.remittanceInformation &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(destination, source, amount, additionalProperties)
+        Objects.hash(destination, source, amount, remittanceInformation, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, additionalProperties=$additionalProperties}"
+        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, remittanceInformation=$remittanceInformation, additionalProperties=$additionalProperties}"
 }

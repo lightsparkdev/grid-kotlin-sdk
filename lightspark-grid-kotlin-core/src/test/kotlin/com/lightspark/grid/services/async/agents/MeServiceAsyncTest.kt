@@ -106,6 +106,7 @@ internal class MeServiceAsyncTest {
                                     .build()
                             )
                             .amount(12550L)
+                            .remittanceInformation("12345")
                             .build()
                     )
                     .build()
