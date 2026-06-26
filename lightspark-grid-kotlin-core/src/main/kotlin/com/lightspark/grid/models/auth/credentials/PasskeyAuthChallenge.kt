@@ -112,8 +112,9 @@ private constructor(
 
     /**
      * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the email
-     * address; for OAUTH credentials it is typically the email claim from the OIDC token; for
-     * PASSKEY credentials it is the validated nickname provided at registration time.
+     * address; for SMS_OTP credentials this is the E.164 phone number; for OAUTH credentials it is
+     * typically the email claim from the OIDC token; for PASSKEY credentials it is the validated
+     * nickname provided at registration time.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -125,6 +126,7 @@ private constructor(
      * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
      *   Apple.
      * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+     * - `SMS_OTP`: A one-time password delivered to the user's phone number.
      * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -360,8 +362,9 @@ private constructor(
 
         /**
          * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
-         * email address; for OAUTH credentials it is typically the email claim from the OIDC token;
-         * for PASSKEY credentials it is the validated nickname provided at registration time.
+         * email address; for SMS_OTP credentials this is the E.164 phone number; for OAUTH
+         * credentials it is typically the email claim from the OIDC token; for PASSKEY credentials
+         * it is the validated nickname provided at registration time.
          */
         fun nickname(nickname: String) = nickname(JsonField.of(nickname))
 
@@ -378,6 +381,7 @@ private constructor(
          * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
          *   Apple.
          * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+         * - `SMS_OTP`: A one-time password delivered to the user's phone number.
          * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
          */
         fun type(type: AuthMethodType) = type(JsonField.of(type))

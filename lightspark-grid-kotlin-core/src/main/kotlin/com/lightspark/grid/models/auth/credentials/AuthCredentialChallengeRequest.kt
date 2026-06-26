@@ -17,9 +17,10 @@ import java.util.Objects
 /**
  * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
  * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the session-creation
- * payload the returned challenge is computed from. Ignored for `EMAIL_OTP`, where the credential
- * type alone is sufficient because the OTP is delivered out-of-band. OAuth credentials do not use
- * this endpoint; authenticate or reauthenticate them with `POST /auth/credentials/{id}/verify`.
+ * payload the returned challenge is computed from. Ignored for `EMAIL_OTP` and `SMS_OTP`, where the
+ * credential type alone is sufficient because the OTP is delivered out-of-band. OAuth credentials
+ * do not use this endpoint; authenticate or reauthenticate them with `POST
+ * /auth/credentials/{id}/verify`.
  */
 class AuthCredentialChallengeRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -40,7 +41,8 @@ private constructor(
      * uncompressed SEC1 format (`04` prefix followed by the 32-byte X and 32-byte Y coordinates;
      * 130 hex characters total). The matching private key must remain on the client. Grid bakes
      * this key into the session-creation payload that the returned `challenge` is computed from, so
-     * the resulting session signing key is sealed to the client. Ignored for `EMAIL_OTP`.
+     * the resulting session signing key is sealed to the client. Ignored for `EMAIL_OTP` and
+     * `SMS_OTP`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -95,7 +97,7 @@ private constructor(
          * coordinates; 130 hex characters total). The matching private key must remain on the
          * client. Grid bakes this key into the session-creation payload that the returned
          * `challenge` is computed from, so the resulting session signing key is sealed to the
-         * client. Ignored for `EMAIL_OTP`.
+         * client. Ignored for `EMAIL_OTP` and `SMS_OTP`.
          */
         fun clientPublicKey(clientPublicKey: String) =
             clientPublicKey(JsonField.of(clientPublicKey))

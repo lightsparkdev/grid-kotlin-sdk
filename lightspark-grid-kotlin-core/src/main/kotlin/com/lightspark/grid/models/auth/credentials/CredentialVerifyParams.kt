@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.auth.credentials
 
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
@@ -12,19 +13,19 @@ import java.util.Objects
  * Complete the verification step for a previously created authentication credential and issue a
  * session.
  *
- * For `EMAIL_OTP` credentials, submit the `encryptedOtpBundle` produced by HPKE-encrypting
- * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from registration when
- * present, or from `POST /auth/credentials/{id}/challenge` when registration omitted it or the OTP
- * must be reissued. The server is a pass-through and never sees the plaintext OTP code. On success
- * the response is `202` with a `payloadToSign` carrying the `verificationToken` bound to the
- * client's TEK public key — sign that token with the matching TEK private key, then retry the same
- * request with the full stamp in `Grid-Wallet-Signature` and the `requestId` echoed in
- * `Request-Id`. The signed retry returns `200` with the issued `AuthSession`. The TEK public key
- * becomes the session API key on successful completion. In sandbox mode, the EMAIL_OTP flow runs
- * real HPKE end-to-end against a sandbox enclave keypair — clients build a real
+ * For `EMAIL_OTP` and `SMS_OTP` credentials, submit the `encryptedOtpBundle` produced by
+ * HPKE-encrypting `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from
+ * registration when present, or from `POST /auth/credentials/{id}/challenge` when registration
+ * omitted it or the OTP must be reissued. The server is a pass-through and never sees the plaintext
+ * OTP code. On success the response is `202` with a `payloadToSign` carrying the
+ * `verificationToken` bound to the client's TEK public key — sign that token with the matching TEK
+ * private key, then retry the same request with the full stamp in `Grid-Wallet-Signature` and the
+ * `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued `AuthSession`.
+ * The TEK public key becomes the session API key on successful completion. In sandbox mode, the OTP
+ * flow runs real HPKE end-to-end against a sandbox enclave keypair — clients build a real
  * `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle` and sign a real
  * `verificationToken` with their TEK keypair. The only sandbox shortcut is the magic OTP code
- * (`"000000"`) the user "receives" instead of a real email delivery.
+ * (`"000000"`) the user "receives" instead of a real email or SMS delivery.
  *
  * For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be less than 60 seconds before the
  * request) along with the client-generated public key; this is also the reauthentication path after
@@ -36,11 +37,11 @@ import java.util.Objects
  * header. The `clientPublicKey` for `PASSKEY` credentials is supplied on the challenge call, where
  * it is bound into the pending session-creation request.
  *
- * On success for `OAUTH` and `PASSKEY`, and on the signed retry for `EMAIL_OTP`, the response
+ * On success for `OAUTH` and `PASSKEY`, and on the signed retry for OTP credentials, the response
  * contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is delivered as
- * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for `EMAIL_OTP` the
- * client already holds the session signing key (the TEK private key it generated) and that field is
- * omitted from the response. The `expiresAt` timestamp marks when the session expires.
+ * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for OTP credentials
+ * the client already holds the session signing key (the TEK private key it generated) and that
+ * field is omitted from the response. The `expiresAt` timestamp marks when the session expires.
  */
 class CredentialVerifyParams
 private constructor(
@@ -58,8 +59,21 @@ private constructor(
 
     fun requestId(): String? = requestId
 
+    /**
+     * Verify an SMS-OTP credential via the same secure two-leg flow as email OTP. The client
+     * HPKE-encrypts the OTP code (together with its public key) under the
+     * `otpEncryptionTargetBundle` returned from registration or `POST
+     * /auth/credentials/{id}/challenge`, submits the result here, and receives `202` with a
+     * `payloadToSign` carrying a `verificationToken` bound to the client's public key. The client
+     * signs that token with the matching private key and retries this request with
+     * `Grid-Wallet-Signature` + `Request-Id` headers to obtain the session. Plaintext OTP codes are
+     * never sent over the wire.
+     */
     fun authCredentialVerifyRequest(): AuthCredentialVerifyRequestOneOf =
         authCredentialVerifyRequest
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> =
+        authCredentialVerifyRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -109,6 +123,16 @@ private constructor(
 
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
+        /**
+         * Verify an SMS-OTP credential via the same secure two-leg flow as email OTP. The client
+         * HPKE-encrypts the OTP code (together with its public key) under the
+         * `otpEncryptionTargetBundle` returned from registration or `POST
+         * /auth/credentials/{id}/challenge`, submits the result here, and receives `202` with a
+         * `payloadToSign` carrying a `verificationToken` bound to the client's public key. The
+         * client signs that token with the matching private key and retries this request with
+         * `Grid-Wallet-Signature` + `Request-Id` headers to obtain the session. Plaintext OTP codes
+         * are never sent over the wire.
+         */
         fun authCredentialVerifyRequest(
             authCredentialVerifyRequest: AuthCredentialVerifyRequestOneOf
         ) = apply { this.authCredentialVerifyRequest = authCredentialVerifyRequest }

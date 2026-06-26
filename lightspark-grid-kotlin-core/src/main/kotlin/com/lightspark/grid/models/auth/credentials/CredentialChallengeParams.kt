@@ -12,10 +12,11 @@ import java.util.Objects
 /**
  * Re-issue the challenge for an existing authentication credential.
  *
- * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on file
- * and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP attempt
- * against. After the user receives the new OTP, build the `encryptedOtpBundle` under the new target
- * bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP login flow.
+ * For `EMAIL_OTP` and `SMS_OTP` credentials, this triggers a new one-time password to the contact
+ * on file and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP
+ * attempt against. After the user receives the new OTP, build the `encryptedOtpBundle` under the
+ * new target bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP login
+ * flow.
  *
  * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
  * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
@@ -45,10 +46,10 @@ private constructor(
     /**
      * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
      * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the
-     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`,
-     * where the credential type alone is sufficient because the OTP is delivered out-of-band. OAuth
-     * credentials do not use this endpoint; authenticate or reauthenticate them with `POST
-     * /auth/credentials/{id}/verify`.
+     * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP` and
+     * `SMS_OTP`, where the credential type alone is sufficient because the OTP is delivered
+     * out-of-band. OAuth credentials do not use this endpoint; authenticate or reauthenticate them
+     * with `POST /auth/credentials/{id}/verify`.
      */
     fun authCredentialChallengeRequest(): AuthCredentialChallengeRequest? =
         authCredentialChallengeRequest
@@ -95,8 +96,8 @@ private constructor(
         /**
          * Request body for `POST /auth/credentials/{id}/challenge`. Required when re-challenging a
          * `PASSKEY` credential — must carry `clientPublicKey` so Grid can bake it into the
-         * session-creation payload the returned challenge is computed from. Ignored for
-         * `EMAIL_OTP`, where the credential type alone is sufficient because the OTP is delivered
+         * session-creation payload the returned challenge is computed from. Ignored for `EMAIL_OTP`
+         * and `SMS_OTP`, where the credential type alone is sufficient because the OTP is delivered
          * out-of-band. OAuth credentials do not use this endpoint; authenticate or reauthenticate
          * them with `POST /auth/credentials/{id}/verify`.
          */

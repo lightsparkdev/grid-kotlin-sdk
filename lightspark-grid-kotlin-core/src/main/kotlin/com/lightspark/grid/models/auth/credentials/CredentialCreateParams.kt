@@ -12,9 +12,10 @@ import java.util.Objects
  * Register an authentication credential for an Embedded Wallet customer.
  *
  * Embedded Wallet internal accounts are initialized with an `EMAIL_OTP` credential tied to the
- * customer email on the account. Use this endpoint to add another credential (`OAUTH` or
- * `PASSKEY`), or to add `EMAIL_OTP` back after it has been removed. Only one `EMAIL_OTP` credential
- * is supported per internal account; multiple distinct `PASSKEY` credentials may be registered.
+ * customer email on the account. Use this endpoint to add another credential (`SMS_OTP`, `OAUTH`,
+ * or `PASSKEY`), or to add `EMAIL_OTP` / `SMS_OTP` back after it has been removed. Only one
+ * `EMAIL_OTP` and one `SMS_OTP` credential are supported per internal account; multiple distinct
+ * `PASSKEY` credentials may be registered.
  *
  * Adding a credential requires a signature from an existing verified credential on the same
  * account. Call this endpoint with the new credential's details to receive `202` with
@@ -22,8 +23,8 @@ import java.util.Objects
  * (decrypted client-side from its `encryptedSessionSigningKey`) to build an API-key stamp over
  * `payloadToSign`, then retry the same request with that full stamp as the `Grid-Wallet-Signature`
  * header and the `requestId` echoed back as the `Request-Id` header. The signed retry returns `201`
- * with the created `AuthMethod`. For `EMAIL_OTP`, the OTP email is triggered on the signed retry,
- * and the credential must then be activated via `POST /auth/credentials/{id}/verify`.
+ * with the created `AuthMethod`. For OTP credentials, the one-time password is triggered on the
+ * signed retry, and the credential must then be activated via `POST /auth/credentials/{id}/verify`.
  */
 class CredentialCreateParams
 private constructor(
@@ -99,6 +100,20 @@ private constructor(
             authCredentialCreateRequest(
                 AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                     emailOtpCredentialCreateRequest
+                )
+            )
+
+        /**
+         * Alias for calling [authCredentialCreateRequest] with
+         * `AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(smsOtpCredentialCreateRequest)`.
+         */
+        fun authCredentialCreateRequest(
+            smsOtpCredentialCreateRequest:
+                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest
+        ) =
+            authCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                    smsOtpCredentialCreateRequest
                 )
             )
 
