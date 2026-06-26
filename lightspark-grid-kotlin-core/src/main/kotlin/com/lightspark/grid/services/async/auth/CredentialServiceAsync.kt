@@ -43,10 +43,10 @@ interface CredentialServiceAsync {
      * Register an authentication credential for an Embedded Wallet customer.
      *
      * Embedded Wallet internal accounts are initialized with an `EMAIL_OTP` credential tied to the
-     * customer email on the account. Use this endpoint to add another credential (`OAUTH` or
-     * `PASSKEY`), or to add `EMAIL_OTP` back after it has been removed. Only one `EMAIL_OTP`
-     * credential is supported per internal account; multiple distinct `PASSKEY` credentials may be
-     * registered.
+     * customer email on the account. Use this endpoint to add another credential (`SMS_OTP`,
+     * `OAUTH`, or `PASSKEY`), or to add `EMAIL_OTP` / `SMS_OTP` back after it has been removed.
+     * Only one `EMAIL_OTP` and one `SMS_OTP` credential are supported per internal account;
+     * multiple distinct `PASSKEY` credentials may be registered.
      *
      * Adding a credential requires a signature from an existing verified credential on the same
      * account. Call this endpoint with the new credential's details to receive `202` with
@@ -54,9 +54,9 @@ interface CredentialServiceAsync {
      * credential (decrypted client-side from its `encryptedSessionSigningKey`) to build an API-key
      * stamp over `payloadToSign`, then retry the same request with that full stamp as the
      * `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     * The signed retry returns `201` with the created `AuthMethod`. For `EMAIL_OTP`, the OTP email
-     * is triggered on the signed retry, and the credential must then be activated via `POST
-     * /auth/credentials/{id}/verify`.
+     * The signed retry returns `201` with the created `AuthMethod`. For OTP credentials, the
+     * one-time password is triggered on the signed retry, and the credential must then be activated
+     * via `POST /auth/credentials/{id}/verify`.
      */
     suspend fun create(
         params: CredentialCreateParams,
@@ -83,6 +83,19 @@ interface CredentialServiceAsync {
         create(
             AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                 emailOtpCredentialCreateRequest
+            ),
+            requestOptions,
+        )
+
+    /** @see create */
+    suspend fun create(
+        smsOtpCredentialCreateRequest:
+            AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AuthMethodResponse =
+        create(
+            AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                smsOtpCredentialCreateRequest
             ),
             requestOptions,
         )
@@ -158,11 +171,11 @@ interface CredentialServiceAsync {
     /**
      * Re-issue the challenge for an existing authentication credential.
      *
-     * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on
-     * file and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP
-     * attempt against. After the user receives the new OTP, build the `encryptedOtpBundle` under
-     * the new target bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP
-     * login flow.
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, this triggers a new one-time password to the
+     * contact on file and returns a fresh `otpEncryptionTargetBundle` for the client to
+     * HPKE-encrypt the OTP attempt against. After the user receives the new OTP, build the
+     * `encryptedOtpBundle` under the new target bundle and call `POST
+     * /auth/credentials/{id}/verify` to begin the secure OTP login flow.
      *
      * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
      * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
@@ -200,19 +213,19 @@ interface CredentialServiceAsync {
      * Complete the verification step for a previously created authentication credential and issue a
      * session.
      *
-     * For `EMAIL_OTP` credentials, submit the `encryptedOtpBundle` produced by HPKE-encrypting
-     * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from registration
-     * when present, or from `POST /auth/credentials/{id}/challenge` when registration omitted it or
-     * the OTP must be reissued. The server is a pass-through and never sees the plaintext OTP code.
-     * On success the response is `202` with a `payloadToSign` carrying the `verificationToken`
-     * bound to the client's TEK public key — sign that token with the matching TEK private key,
-     * then retry the same request with the full stamp in `Grid-Wallet-Signature` and the
-     * `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, submit the `encryptedOtpBundle` produced by
+     * HPKE-encrypting `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from
+     * registration when present, or from `POST /auth/credentials/{id}/challenge` when registration
+     * omitted it or the OTP must be reissued. The server is a pass-through and never sees the
+     * plaintext OTP code. On success the response is `202` with a `payloadToSign` carrying the
+     * `verificationToken` bound to the client's TEK public key — sign that token with the matching
+     * TEK private key, then retry the same request with the full stamp in `Grid-Wallet-Signature`
+     * and the `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued
      * `AuthSession`. The TEK public key becomes the session API key on successful completion. In
-     * sandbox mode, the EMAIL_OTP flow runs real HPKE end-to-end against a sandbox enclave keypair
-     * — clients build a real `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle`
-     * and sign a real `verificationToken` with their TEK keypair. The only sandbox shortcut is the
-     * magic OTP code (`"000000"`) the user "receives" instead of a real email delivery.
+     * sandbox mode, the OTP flow runs real HPKE end-to-end against a sandbox enclave keypair —
+     * clients build a real `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle` and
+     * sign a real `verificationToken` with their TEK keypair. The only sandbox shortcut is the
+     * magic OTP code (`"000000"`) the user "receives" instead of a real email or SMS delivery.
      *
      * For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be less than 60 seconds before
      * the request) along with the client-generated public key; this is also the reauthentication
@@ -224,11 +237,12 @@ interface CredentialServiceAsync {
      * `Request-Id` header. The `clientPublicKey` for `PASSKEY` credentials is supplied on the
      * challenge call, where it is bound into the pending session-creation request.
      *
-     * On success for `OAUTH` and `PASSKEY`, and on the signed retry for `EMAIL_OTP`, the response
-     * contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is delivered as
-     * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for `EMAIL_OTP`
-     * the client already holds the session signing key (the TEK private key it generated) and that
-     * field is omitted from the response. The `expiresAt` timestamp marks when the session expires.
+     * On success for `OAUTH` and `PASSKEY`, and on the signed retry for OTP credentials, the
+     * response contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is
+     * delivered as `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`);
+     * for OTP credentials the client already holds the session signing key (the TEK private key it
+     * generated) and that field is omitted from the response. The `expiresAt` timestamp marks when
+     * the session expires.
      */
     suspend fun verify(
         id: String,
@@ -289,6 +303,20 @@ interface CredentialServiceAsync {
             create(
                 AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                     emailOtpCredentialCreateRequest
+                ),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
+            smsOtpCredentialCreateRequest:
+                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AuthMethodResponse> =
+            create(
+                AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                    smsOtpCredentialCreateRequest
                 ),
                 requestOptions,
             )
