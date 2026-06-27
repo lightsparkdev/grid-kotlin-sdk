@@ -14,6 +14,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.AgentTransferDetails
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
@@ -535,6 +536,9 @@ private constructor(
         /** Alias for calling [transaction] with `Transaction.ofOutgoing(outgoing)`. */
         fun transaction(outgoing: OutgoingTransaction) =
             transaction(Transaction.ofOutgoing(outgoing))
+
+        /** Alias for calling [transaction] with `Transaction.ofCard(card)`. */
+        fun transaction(card: CardTransaction) = transaction(Transaction.ofCard(card))
 
         /**
          * Details of the transfer being requested. Populated for `TRANSFER_OUT` and `TRANSFER_IN`

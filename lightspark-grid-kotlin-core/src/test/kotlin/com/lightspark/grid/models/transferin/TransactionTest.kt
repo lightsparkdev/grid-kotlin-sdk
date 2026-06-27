@@ -6,10 +6,15 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
+import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
+import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
+import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
@@ -88,6 +93,7 @@ internal class TransactionTest {
 
         assertThat(transaction.incoming()).isEqualTo(incoming)
         assertThat(transaction.outgoing()).isNull()
+        assertThat(transaction.card()).isNull()
     }
 
     @Test
@@ -300,6 +306,7 @@ internal class TransactionTest {
 
         assertThat(transaction.incoming()).isNull()
         assertThat(transaction.outgoing()).isEqualTo(outgoing)
+        assertThat(transaction.card()).isNull()
     }
 
     @Test
@@ -441,6 +448,173 @@ internal class TransactionTest {
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .build()
+            )
+
+        val roundtrippedTransaction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(transaction),
+                jacksonTypeRef<Transaction>(),
+            )
+
+        assertThat(roundtrippedTransaction).isEqualTo(transaction)
+    }
+
+    @Test
+    fun ofCard() {
+        val card =
+            CardTransaction.builder()
+                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .authorizedAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .direction(CardTransaction.Direction.DEBIT)
+                .merchant(
+                    CardMerchant.builder()
+                        .descriptor("BLUE BOTTLE COFFEE SF")
+                        .country("US")
+                        .mcc("5814")
+                        .build()
+                )
+                .platformCustomerId("18d3e5f7b4a9c2")
+                .status(CardTransaction.Status.AUTHORIZED)
+                .type(CardTransaction.Type.CARD)
+                .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .issuerTransactionToken("lithic_txn_b81c2a4f")
+                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .pullSummary(
+                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
+                )
+                .refundedAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                .settledAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .settlementSummary(
+                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                )
+                .build()
+
+        val transaction = Transaction.ofCard(card)
+
+        assertThat(transaction.incoming()).isNull()
+        assertThat(transaction.outgoing()).isNull()
+        assertThat(transaction.card()).isEqualTo(card)
+    }
+
+    @Test
+    fun ofCardRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val transaction =
+            Transaction.ofCard(
+                CardTransaction.builder()
+                    .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                    .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .authorizedAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                    .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .direction(CardTransaction.Direction.DEBIT)
+                    .merchant(
+                        CardMerchant.builder()
+                            .descriptor("BLUE BOTTLE COFFEE SF")
+                            .country("US")
+                            .mcc("5814")
+                            .build()
+                    )
+                    .platformCustomerId("18d3e5f7b4a9c2")
+                    .status(CardTransaction.Status.AUTHORIZED)
+                    .type(CardTransaction.Type.CARD)
+                    .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                    .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                    .issuerTransactionToken("lithic_txn_b81c2a4f")
+                    .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                    .pullSummary(
+                        CardPullSummary.builder()
+                            .count(2L)
+                            .totalAmount(1500L)
+                            .pendingCount(0L)
+                            .build()
+                    )
+                    .refundedAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                    .settledAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .settlementSummary(
+                        CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                    )
                     .build()
             )
 
