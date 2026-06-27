@@ -26,10 +26,11 @@ internal class CardTest {
                 .currency("USD")
                 .expMonth(12L)
                 .expYear(2029L)
-                .issuerRef("lithic_card_4f8d3a2b1c")
+                .issuerRef("lead_card_7a1b9c3d")
                 .last4("4242")
                 .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                 .platformCardId("card-emp-aary-001")
+                .processorRef("card_b81c2a4f")
                 .stateReason(Card.StateReason.ISSUER_REJECTED)
                 .build()
 
@@ -48,10 +49,11 @@ internal class CardTest {
         assertThat(card.currency()).isEqualTo("USD")
         assertThat(card.expMonth()).isEqualTo(12L)
         assertThat(card.expYear()).isEqualTo(2029L)
-        assertThat(card.issuerRef()).isEqualTo("lithic_card_4f8d3a2b1c")
+        assertThat(card.issuerRef()).isEqualTo("lead_card_7a1b9c3d")
         assertThat(card.last4()).isEqualTo("4242")
         assertThat(card.panEmbedUrl()).isEqualTo("https://embed.lithic.com/iframe/...?t=...")
         assertThat(card.platformCardId()).isEqualTo("card-emp-aary-001")
+        assertThat(card.processorRef()).isEqualTo("card_b81c2a4f")
         assertThat(card.stateReason()).isEqualTo(Card.StateReason.ISSUER_REJECTED)
     }
 
@@ -72,10 +74,11 @@ internal class CardTest {
                 .currency("USD")
                 .expMonth(12L)
                 .expYear(2029L)
-                .issuerRef("lithic_card_4f8d3a2b1c")
+                .issuerRef("lead_card_7a1b9c3d")
                 .last4("4242")
                 .panEmbedUrl("https://embed.lithic.com/iframe/...?t=...")
                 .platformCardId("card-emp-aary-001")
+                .processorRef("card_b81c2a4f")
                 .stateReason(Card.StateReason.ISSUER_REJECTED)
                 .build()
 

@@ -37,6 +37,7 @@ private constructor(
     private val last4: JsonField<String>,
     private val panEmbedUrl: JsonField<String>,
     private val platformCardId: JsonField<String>,
+    private val processorRef: JsonField<String>,
     private val stateReason: JsonField<StateReason>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -70,6 +71,9 @@ private constructor(
         @JsonProperty("platformCardId")
         @ExcludeMissing
         platformCardId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("processorRef")
+        @ExcludeMissing
+        processorRef: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stateReason")
         @ExcludeMissing
         stateReason: JsonField<StateReason> = JsonMissing.of(),
@@ -89,6 +93,7 @@ private constructor(
         last4,
         panEmbedUrl,
         platformCardId,
+        processorRef,
         stateReason,
         mutableMapOf(),
     )
@@ -196,8 +201,9 @@ private constructor(
     fun expYear(): Long? = expYear.getNullable("expYear")
 
     /**
-     * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-     * issuer dashboards; not used for any Grid request routing.
+     * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+     * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid request
+     * routing.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -213,7 +219,7 @@ private constructor(
     fun last4(): String? = last4.getNullable("last4")
 
     /**
-     * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
+     * URL of the card processor's iframe that securely displays the PAN, CVV, and expiry to the
      * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an iframe in
      * your client to reveal card details.
      *
@@ -230,6 +236,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
+
+    /**
+     * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+     * cross-referencing in the processor's dashboards; not used for any Grid request routing.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun processorRef(): String? = processorRef.getNullable("processorRef")
 
     /**
      * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
@@ -356,6 +371,15 @@ private constructor(
     fun _platformCardId(): JsonField<String> = platformCardId
 
     /**
+     * Returns the raw JSON value of [processorRef].
+     *
+     * Unlike [processorRef], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("processorRef")
+    @ExcludeMissing
+    fun _processorRef(): JsonField<String> = processorRef
+
+    /**
      * Returns the raw JSON value of [stateReason].
      *
      * Unlike [stateReason], this method doesn't throw if the JSON field has an unexpected type.
@@ -413,6 +437,7 @@ private constructor(
         private var last4: JsonField<String> = JsonMissing.of()
         private var panEmbedUrl: JsonField<String> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
+        private var processorRef: JsonField<String> = JsonMissing.of()
         private var stateReason: JsonField<StateReason> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -432,6 +457,7 @@ private constructor(
             last4 = card.last4
             panEmbedUrl = card.panEmbedUrl
             platformCardId = card.platformCardId
+            processorRef = card.processorRef
             stateReason = card.stateReason
             additionalProperties = card.additionalProperties.toMutableMap()
         }
@@ -603,8 +629,9 @@ private constructor(
         fun expYear(expYear: JsonField<Long>) = apply { this.expYear = expYear }
 
         /**
-         * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-         * issuer dashboards; not used for any Grid request routing.
+         * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+         * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid
+         * request routing.
          */
         fun issuerRef(issuerRef: String) = issuerRef(JsonField.of(issuerRef))
 
@@ -629,7 +656,7 @@ private constructor(
         fun last4(last4: JsonField<String>) = apply { this.last4 = last4 }
 
         /**
-         * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
+         * URL of the card processor's iframe that securely displays the PAN, CVV, and expiry to the
          * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an
          * iframe in your client to reveal card details.
          */
@@ -659,6 +686,23 @@ private constructor(
          */
         fun platformCardId(platformCardId: JsonField<String>) = apply {
             this.platformCardId = platformCardId
+        }
+
+        /**
+         * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+         * cross-referencing in the processor's dashboards; not used for any Grid request routing.
+         */
+        fun processorRef(processorRef: String) = processorRef(JsonField.of(processorRef))
+
+        /**
+         * Sets [Builder.processorRef] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.processorRef] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun processorRef(processorRef: JsonField<String>) = apply {
+            this.processorRef = processorRef
         }
 
         /**
@@ -732,6 +776,7 @@ private constructor(
                 last4,
                 panEmbedUrl,
                 platformCardId,
+                processorRef,
                 stateReason,
                 additionalProperties.toMutableMap(),
             )
@@ -767,6 +812,7 @@ private constructor(
         last4()
         panEmbedUrl()
         platformCardId()
+        processorRef()
         stateReason()?.validate()
         validated = true
     }
@@ -800,6 +846,7 @@ private constructor(
             (if (last4.asKnown() == null) 0 else 1) +
             (if (panEmbedUrl.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
+            (if (processorRef.asKnown() == null) 0 else 1) +
             (stateReason.asKnown()?.validity() ?: 0)
 
     /**
@@ -1403,6 +1450,7 @@ private constructor(
             last4 == other.last4 &&
             panEmbedUrl == other.panEmbedUrl &&
             platformCardId == other.platformCardId &&
+            processorRef == other.processorRef &&
             stateReason == other.stateReason &&
             additionalProperties == other.additionalProperties
     }
@@ -1424,6 +1472,7 @@ private constructor(
             last4,
             panEmbedUrl,
             platformCardId,
+            processorRef,
             stateReason,
             additionalProperties,
         )
@@ -1432,5 +1481,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
 }
