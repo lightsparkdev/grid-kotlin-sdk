@@ -35,19 +35,22 @@ private constructor(
     private val accountId: JsonField<String>,
     private val authorizedAmount: JsonField<CurrencyAmount>,
     private val authorizedAt: JsonField<OffsetDateTime>,
-    private val cardId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val customerId: JsonField<String>,
     private val direction: JsonField<Direction>,
     private val merchant: JsonField<CardMerchant>,
-    private val pullSummary: JsonField<CardPullSummary>,
-    private val refundSummary: JsonField<CardRefundSummary>,
-    private val settlementSummary: JsonField<CardSettlementSummary>,
+    private val platformCustomerId: JsonField<String>,
     private val status: JsonField<Status>,
+    private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val cardId: JsonField<String>,
     private val issuerTransactionToken: JsonField<String>,
     private val lastEventAt: JsonField<OffsetDateTime>,
+    private val pullSummary: JsonField<CardPullSummary>,
     private val refundedAmount: JsonField<CurrencyAmount>,
+    private val refundSummary: JsonField<CardRefundSummary>,
     private val settledAmount: JsonField<CurrencyAmount>,
+    private val settlementSummary: JsonField<CardSettlementSummary>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -61,59 +64,69 @@ private constructor(
         @JsonProperty("authorizedAt")
         @ExcludeMissing
         authorizedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("customerId")
+        @ExcludeMissing
+        customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("direction")
         @ExcludeMissing
         direction: JsonField<Direction> = JsonMissing.of(),
         @JsonProperty("merchant")
         @ExcludeMissing
         merchant: JsonField<CardMerchant> = JsonMissing.of(),
-        @JsonProperty("pullSummary")
+        @JsonProperty("platformCustomerId")
         @ExcludeMissing
-        pullSummary: JsonField<CardPullSummary> = JsonMissing.of(),
-        @JsonProperty("refundSummary")
-        @ExcludeMissing
-        refundSummary: JsonField<CardRefundSummary> = JsonMissing.of(),
-        @JsonProperty("settlementSummary")
-        @ExcludeMissing
-        settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of(),
+        platformCustomerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("issuerTransactionToken")
         @ExcludeMissing
         issuerTransactionToken: JsonField<String> = JsonMissing.of(),
         @JsonProperty("lastEventAt")
         @ExcludeMissing
         lastEventAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("pullSummary")
+        @ExcludeMissing
+        pullSummary: JsonField<CardPullSummary> = JsonMissing.of(),
         @JsonProperty("refundedAmount")
         @ExcludeMissing
         refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        @JsonProperty("refundSummary")
+        @ExcludeMissing
+        refundSummary: JsonField<CardRefundSummary> = JsonMissing.of(),
         @JsonProperty("settledAmount")
         @ExcludeMissing
         settledAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
+        @JsonProperty("settlementSummary")
+        @ExcludeMissing
+        settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of(),
     ) : this(
         id,
         accountId,
         authorizedAmount,
         authorizedAt,
-        cardId,
         createdAt,
+        customerId,
         direction,
         merchant,
-        pullSummary,
-        refundSummary,
-        settlementSummary,
+        platformCustomerId,
         status,
+        type,
         updatedAt,
+        cardId,
         issuerTransactionToken,
         lastEventAt,
+        pullSummary,
         refundedAmount,
+        refundSummary,
         settledAmount,
+        settlementSummary,
         mutableMapOf(),
     )
 
@@ -149,20 +162,20 @@ private constructor(
     fun authorizedAt(): OffsetDateTime = authorizedAt.getRequired("authorizedAt")
 
     /**
-     * The id of the `Card` this transaction was made on.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun cardId(): String = cardId.getRequired("cardId")
-
-    /**
      * Creation timestamp (same as `authorizedAt` for card transactions).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+    /**
+     * System ID of the customer (cardholder) this transaction belongs to.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerId(): String = customerId.getRequired("customerId")
 
     /**
      * Card transactions debit the customer's account.
@@ -179,23 +192,12 @@ private constructor(
     fun merchant(): CardMerchant = merchant.getRequired("merchant")
 
     /**
+     * Platform-specific ID of the customer (cardholder) this transaction belongs to.
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun pullSummary(): CardPullSummary = pullSummary.getRequired("pullSummary")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun refundSummary(): CardRefundSummary = refundSummary.getRequired("refundSummary")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun settlementSummary(): CardSettlementSummary =
-        settlementSummary.getRequired("settlementSummary")
+    fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
      * Lifecycle status of a card transaction.
@@ -214,12 +216,28 @@ private constructor(
     fun status(): Status = status.getRequired("status")
 
     /**
+     * Discriminator identifying this transaction as a card transaction in the `Transaction` list.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun type(): Type = type.getRequired("type")
+
+    /**
      * Last update timestamp.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * The id of the `Card` this transaction was made on.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardId(): String? = cardId.getNullable("cardId")
 
     /**
      * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference Grid
@@ -244,13 +262,32 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
+    fun pullSummary(): CardPullSummary? = pullSummary.getNullable("pullSummary")
+
+    /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
     fun refundedAmount(): CurrencyAmount? = refundedAmount.getNullable("refundedAmount")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
+    fun refundSummary(): CardRefundSummary? = refundSummary.getNullable("refundSummary")
+
+    /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
     fun settledAmount(): CurrencyAmount? = settledAmount.getNullable("settledAmount")
+
+    /**
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun settlementSummary(): CardSettlementSummary? =
+        settlementSummary.getNullable("settlementSummary")
 
     /**
      * Returns the raw JSON value of [id].
@@ -286,13 +323,6 @@ private constructor(
     fun _authorizedAt(): JsonField<OffsetDateTime> = authorizedAt
 
     /**
-     * Returns the raw JSON value of [cardId].
-     *
-     * Unlike [cardId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cardId") @ExcludeMissing fun _cardId(): JsonField<String> = cardId
-
-    /**
      * Returns the raw JSON value of [createdAt].
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -300,6 +330,13 @@ private constructor(
     @JsonProperty("createdAt")
     @ExcludeMissing
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+
+    /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
 
     /**
      * Returns the raw JSON value of [direction].
@@ -316,32 +353,14 @@ private constructor(
     @JsonProperty("merchant") @ExcludeMissing fun _merchant(): JsonField<CardMerchant> = merchant
 
     /**
-     * Returns the raw JSON value of [pullSummary].
+     * Returns the raw JSON value of [platformCustomerId].
      *
-     * Unlike [pullSummary], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("pullSummary")
-    @ExcludeMissing
-    fun _pullSummary(): JsonField<CardPullSummary> = pullSummary
-
-    /**
-     * Returns the raw JSON value of [refundSummary].
-     *
-     * Unlike [refundSummary], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("refundSummary")
-    @ExcludeMissing
-    fun _refundSummary(): JsonField<CardRefundSummary> = refundSummary
-
-    /**
-     * Returns the raw JSON value of [settlementSummary].
-     *
-     * Unlike [settlementSummary], this method doesn't throw if the JSON field has an unexpected
+     * Unlike [platformCustomerId], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
-    @JsonProperty("settlementSummary")
+    @JsonProperty("platformCustomerId")
     @ExcludeMissing
-    fun _settlementSummary(): JsonField<CardSettlementSummary> = settlementSummary
+    fun _platformCustomerId(): JsonField<String> = platformCustomerId
 
     /**
      * Returns the raw JSON value of [status].
@@ -351,6 +370,13 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
+     * Returns the raw JSON value of [type].
+     *
+     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+    /**
      * Returns the raw JSON value of [updatedAt].
      *
      * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -358,6 +384,13 @@ private constructor(
     @JsonProperty("updatedAt")
     @ExcludeMissing
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
+
+    /**
+     * Returns the raw JSON value of [cardId].
+     *
+     * Unlike [cardId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("cardId") @ExcludeMissing fun _cardId(): JsonField<String> = cardId
 
     /**
      * Returns the raw JSON value of [issuerTransactionToken].
@@ -379,6 +412,15 @@ private constructor(
     fun _lastEventAt(): JsonField<OffsetDateTime> = lastEventAt
 
     /**
+     * Returns the raw JSON value of [pullSummary].
+     *
+     * Unlike [pullSummary], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("pullSummary")
+    @ExcludeMissing
+    fun _pullSummary(): JsonField<CardPullSummary> = pullSummary
+
+    /**
      * Returns the raw JSON value of [refundedAmount].
      *
      * Unlike [refundedAmount], this method doesn't throw if the JSON field has an unexpected type.
@@ -388,6 +430,15 @@ private constructor(
     fun _refundedAmount(): JsonField<CurrencyAmount> = refundedAmount
 
     /**
+     * Returns the raw JSON value of [refundSummary].
+     *
+     * Unlike [refundSummary], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("refundSummary")
+    @ExcludeMissing
+    fun _refundSummary(): JsonField<CardRefundSummary> = refundSummary
+
+    /**
      * Returns the raw JSON value of [settledAmount].
      *
      * Unlike [settledAmount], this method doesn't throw if the JSON field has an unexpected type.
@@ -395,6 +446,16 @@ private constructor(
     @JsonProperty("settledAmount")
     @ExcludeMissing
     fun _settledAmount(): JsonField<CurrencyAmount> = settledAmount
+
+    /**
+     * Returns the raw JSON value of [settlementSummary].
+     *
+     * Unlike [settlementSummary], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("settlementSummary")
+    @ExcludeMissing
+    fun _settlementSummary(): JsonField<CardSettlementSummary> = settlementSummary
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -419,14 +480,13 @@ private constructor(
          * .accountId()
          * .authorizedAmount()
          * .authorizedAt()
-         * .cardId()
          * .createdAt()
+         * .customerId()
          * .direction()
          * .merchant()
-         * .pullSummary()
-         * .refundSummary()
-         * .settlementSummary()
+         * .platformCustomerId()
          * .status()
+         * .type()
          * .updatedAt()
          * ```
          */
@@ -440,19 +500,22 @@ private constructor(
         private var accountId: JsonField<String>? = null
         private var authorizedAmount: JsonField<CurrencyAmount>? = null
         private var authorizedAt: JsonField<OffsetDateTime>? = null
-        private var cardId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var customerId: JsonField<String>? = null
         private var direction: JsonField<Direction>? = null
         private var merchant: JsonField<CardMerchant>? = null
-        private var pullSummary: JsonField<CardPullSummary>? = null
-        private var refundSummary: JsonField<CardRefundSummary>? = null
-        private var settlementSummary: JsonField<CardSettlementSummary>? = null
+        private var platformCustomerId: JsonField<String>? = null
         private var status: JsonField<Status>? = null
+        private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var cardId: JsonField<String> = JsonMissing.of()
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
         private var lastEventAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var pullSummary: JsonField<CardPullSummary> = JsonMissing.of()
         private var refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
+        private var refundSummary: JsonField<CardRefundSummary> = JsonMissing.of()
         private var settledAmount: JsonField<CurrencyAmount> = JsonMissing.of()
+        private var settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardTransaction: CardTransaction) = apply {
@@ -460,19 +523,22 @@ private constructor(
             accountId = cardTransaction.accountId
             authorizedAmount = cardTransaction.authorizedAmount
             authorizedAt = cardTransaction.authorizedAt
-            cardId = cardTransaction.cardId
             createdAt = cardTransaction.createdAt
+            customerId = cardTransaction.customerId
             direction = cardTransaction.direction
             merchant = cardTransaction.merchant
-            pullSummary = cardTransaction.pullSummary
-            refundSummary = cardTransaction.refundSummary
-            settlementSummary = cardTransaction.settlementSummary
+            platformCustomerId = cardTransaction.platformCustomerId
             status = cardTransaction.status
+            type = cardTransaction.type
             updatedAt = cardTransaction.updatedAt
+            cardId = cardTransaction.cardId
             issuerTransactionToken = cardTransaction.issuerTransactionToken
             lastEventAt = cardTransaction.lastEventAt
+            pullSummary = cardTransaction.pullSummary
             refundedAmount = cardTransaction.refundedAmount
+            refundSummary = cardTransaction.refundSummary
             settledAmount = cardTransaction.settledAmount
+            settlementSummary = cardTransaction.settlementSummary
             additionalProperties = cardTransaction.additionalProperties.toMutableMap()
         }
 
@@ -530,17 +596,6 @@ private constructor(
             this.authorizedAt = authorizedAt
         }
 
-        /** The id of the `Card` this transaction was made on. */
-        fun cardId(cardId: String) = cardId(JsonField.of(cardId))
-
-        /**
-         * Sets [Builder.cardId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cardId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun cardId(cardId: JsonField<String>) = apply { this.cardId = cardId }
-
         /** Creation timestamp (same as `authorizedAt` for card transactions). */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
@@ -552,6 +607,18 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+
+        /** System ID of the customer (cardholder) this transaction belongs to. */
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+        /**
+         * Sets [Builder.customerId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /** Card transactions debit the customer's account. */
         fun direction(direction: Direction) = direction(JsonField.of(direction))
@@ -576,45 +643,19 @@ private constructor(
          */
         fun merchant(merchant: JsonField<CardMerchant>) = apply { this.merchant = merchant }
 
-        fun pullSummary(pullSummary: CardPullSummary) = pullSummary(JsonField.of(pullSummary))
+        /** Platform-specific ID of the customer (cardholder) this transaction belongs to. */
+        fun platformCustomerId(platformCustomerId: String) =
+            platformCustomerId(JsonField.of(platformCustomerId))
 
         /**
-         * Sets [Builder.pullSummary] to an arbitrary JSON value.
+         * Sets [Builder.platformCustomerId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.pullSummary] with a well-typed [CardPullSummary] value
+         * You should usually call [Builder.platformCustomerId] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun pullSummary(pullSummary: JsonField<CardPullSummary>) = apply {
-            this.pullSummary = pullSummary
-        }
-
-        fun refundSummary(refundSummary: CardRefundSummary) =
-            refundSummary(JsonField.of(refundSummary))
-
-        /**
-         * Sets [Builder.refundSummary] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.refundSummary] with a well-typed [CardRefundSummary]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun refundSummary(refundSummary: JsonField<CardRefundSummary>) = apply {
-            this.refundSummary = refundSummary
-        }
-
-        fun settlementSummary(settlementSummary: CardSettlementSummary) =
-            settlementSummary(JsonField.of(settlementSummary))
-
-        /**
-         * Sets [Builder.settlementSummary] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.settlementSummary] with a well-typed
-         * [CardSettlementSummary] value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
-         */
-        fun settlementSummary(settlementSummary: JsonField<CardSettlementSummary>) = apply {
-            this.settlementSummary = settlementSummary
+        fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
+            this.platformCustomerId = platformCustomerId
         }
 
         /**
@@ -638,6 +679,20 @@ private constructor(
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
 
+        /**
+         * Discriminator identifying this transaction as a card transaction in the `Transaction`
+         * list.
+         */
+        fun type(type: Type) = type(JsonField.of(type))
+
+        /**
+         * Sets [Builder.type] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun type(type: JsonField<Type>) = apply { this.type = type }
+
         /** Last update timestamp. */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -649,6 +704,17 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        /** The id of the `Card` this transaction was made on. */
+        fun cardId(cardId: String) = cardId(JsonField.of(cardId))
+
+        /**
+         * Sets [Builder.cardId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun cardId(cardId: JsonField<String>) = apply { this.cardId = cardId }
 
         /**
          * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference
@@ -685,6 +751,19 @@ private constructor(
             this.lastEventAt = lastEventAt
         }
 
+        fun pullSummary(pullSummary: CardPullSummary) = pullSummary(JsonField.of(pullSummary))
+
+        /**
+         * Sets [Builder.pullSummary] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.pullSummary] with a well-typed [CardPullSummary] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun pullSummary(pullSummary: JsonField<CardPullSummary>) = apply {
+            this.pullSummary = pullSummary
+        }
+
         fun refundedAmount(refundedAmount: CurrencyAmount) =
             refundedAmount(JsonField.of(refundedAmount))
 
@@ -699,6 +778,20 @@ private constructor(
             this.refundedAmount = refundedAmount
         }
 
+        fun refundSummary(refundSummary: CardRefundSummary) =
+            refundSummary(JsonField.of(refundSummary))
+
+        /**
+         * Sets [Builder.refundSummary] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.refundSummary] with a well-typed [CardRefundSummary]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun refundSummary(refundSummary: JsonField<CardRefundSummary>) = apply {
+            this.refundSummary = refundSummary
+        }
+
         fun settledAmount(settledAmount: CurrencyAmount) =
             settledAmount(JsonField.of(settledAmount))
 
@@ -711,6 +804,20 @@ private constructor(
          */
         fun settledAmount(settledAmount: JsonField<CurrencyAmount>) = apply {
             this.settledAmount = settledAmount
+        }
+
+        fun settlementSummary(settlementSummary: CardSettlementSummary) =
+            settlementSummary(JsonField.of(settlementSummary))
+
+        /**
+         * Sets [Builder.settlementSummary] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.settlementSummary] with a well-typed
+         * [CardSettlementSummary] value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun settlementSummary(settlementSummary: JsonField<CardSettlementSummary>) = apply {
+            this.settlementSummary = settlementSummary
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -743,14 +850,13 @@ private constructor(
          * .accountId()
          * .authorizedAmount()
          * .authorizedAt()
-         * .cardId()
          * .createdAt()
+         * .customerId()
          * .direction()
          * .merchant()
-         * .pullSummary()
-         * .refundSummary()
-         * .settlementSummary()
+         * .platformCustomerId()
          * .status()
+         * .type()
          * .updatedAt()
          * ```
          *
@@ -762,19 +868,22 @@ private constructor(
                 checkRequired("accountId", accountId),
                 checkRequired("authorizedAmount", authorizedAmount),
                 checkRequired("authorizedAt", authorizedAt),
-                checkRequired("cardId", cardId),
                 checkRequired("createdAt", createdAt),
+                checkRequired("customerId", customerId),
                 checkRequired("direction", direction),
                 checkRequired("merchant", merchant),
-                checkRequired("pullSummary", pullSummary),
-                checkRequired("refundSummary", refundSummary),
-                checkRequired("settlementSummary", settlementSummary),
+                checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("status", status),
+                checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
+                cardId,
                 issuerTransactionToken,
                 lastEventAt,
+                pullSummary,
                 refundedAmount,
+                refundSummary,
                 settledAmount,
+                settlementSummary,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -798,19 +907,22 @@ private constructor(
         accountId()
         authorizedAmount().validate()
         authorizedAt()
-        cardId()
         createdAt()
+        customerId()
         direction().validate()
         merchant().validate()
-        pullSummary().validate()
-        refundSummary().validate()
-        settlementSummary().validate()
+        platformCustomerId()
         status().validate()
+        type().validate()
         updatedAt()
+        cardId()
         issuerTransactionToken()
         lastEventAt()
+        pullSummary()?.validate()
         refundedAmount()?.validate()
+        refundSummary()?.validate()
         settledAmount()?.validate()
+        settlementSummary()?.validate()
         validated = true
     }
 
@@ -832,19 +944,22 @@ private constructor(
             (if (accountId.asKnown() == null) 0 else 1) +
             (authorizedAmount.asKnown()?.validity() ?: 0) +
             (if (authorizedAt.asKnown() == null) 0 else 1) +
-            (if (cardId.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (if (customerId.asKnown() == null) 0 else 1) +
             (direction.asKnown()?.validity() ?: 0) +
             (merchant.asKnown()?.validity() ?: 0) +
-            (pullSummary.asKnown()?.validity() ?: 0) +
-            (refundSummary.asKnown()?.validity() ?: 0) +
-            (settlementSummary.asKnown()?.validity() ?: 0) +
+            (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (status.asKnown()?.validity() ?: 0) +
+            (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (if (cardId.asKnown() == null) 0 else 1) +
             (if (issuerTransactionToken.asKnown() == null) 0 else 1) +
             (if (lastEventAt.asKnown() == null) 0 else 1) +
+            (pullSummary.asKnown()?.validity() ?: 0) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
-            (settledAmount.asKnown()?.validity() ?: 0)
+            (refundSummary.asKnown()?.validity() ?: 0) +
+            (settledAmount.asKnown()?.validity() ?: 0) +
+            (settlementSummary.asKnown()?.validity() ?: 0)
 
     /** Card transactions debit the customer's account. */
     class Direction @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1146,6 +1261,137 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /**
+     * Discriminator identifying this transaction as a card transaction in the `Transaction` list.
+     */
+    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CARD = of("CARD")
+
+            fun of(value: String) = Type(JsonField.of(value))
+        }
+
+        /** An enum containing [Type]'s known values. */
+        enum class Known {
+            CARD
+        }
+
+        /**
+         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Type] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CARD,
+            /** An enum member indicating that [Type] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CARD -> Value.CARD
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CARD -> Known.CARD
+                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Type = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -1156,19 +1402,22 @@ private constructor(
             accountId == other.accountId &&
             authorizedAmount == other.authorizedAmount &&
             authorizedAt == other.authorizedAt &&
-            cardId == other.cardId &&
             createdAt == other.createdAt &&
+            customerId == other.customerId &&
             direction == other.direction &&
             merchant == other.merchant &&
-            pullSummary == other.pullSummary &&
-            refundSummary == other.refundSummary &&
-            settlementSummary == other.settlementSummary &&
+            platformCustomerId == other.platformCustomerId &&
             status == other.status &&
+            type == other.type &&
             updatedAt == other.updatedAt &&
+            cardId == other.cardId &&
             issuerTransactionToken == other.issuerTransactionToken &&
             lastEventAt == other.lastEventAt &&
+            pullSummary == other.pullSummary &&
             refundedAmount == other.refundedAmount &&
+            refundSummary == other.refundSummary &&
             settledAmount == other.settledAmount &&
+            settlementSummary == other.settlementSummary &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1178,19 +1427,22 @@ private constructor(
             accountId,
             authorizedAmount,
             authorizedAt,
-            cardId,
             createdAt,
+            customerId,
             direction,
             merchant,
-            pullSummary,
-            refundSummary,
-            settlementSummary,
+            platformCustomerId,
             status,
+            type,
             updatedAt,
+            cardId,
             issuerTransactionToken,
             lastEventAt,
+            pullSummary,
             refundedAmount,
+            refundSummary,
             settledAmount,
+            settlementSummary,
             additionalProperties,
         )
     }
@@ -1198,5 +1450,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, cardId=$cardId, createdAt=$createdAt, direction=$direction, merchant=$merchant, pullSummary=$pullSummary, refundSummary=$refundSummary, settlementSummary=$settlementSummary, status=$status, updatedAt=$updatedAt, issuerTransactionToken=$issuerTransactionToken, lastEventAt=$lastEventAt, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, issuerTransactionToken=$issuerTransactionToken, lastEventAt=$lastEventAt, pullSummary=$pullSummary, refundedAmount=$refundedAmount, refundSummary=$refundSummary, settledAmount=$settledAmount, settlementSummary=$settlementSummary, additionalProperties=$additionalProperties}"
 }
