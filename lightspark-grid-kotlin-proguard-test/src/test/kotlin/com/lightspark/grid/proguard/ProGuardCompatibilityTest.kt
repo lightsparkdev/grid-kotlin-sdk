@@ -124,6 +124,7 @@ internal class ProGuardCompatibilityTest {
                     .fullName("John Michael Doe")
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")

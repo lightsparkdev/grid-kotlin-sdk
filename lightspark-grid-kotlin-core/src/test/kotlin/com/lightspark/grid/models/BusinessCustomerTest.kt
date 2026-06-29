@@ -34,6 +34,7 @@ internal class BusinessCustomerTest {
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
                 .isDeleted(false)
+                .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(
@@ -130,6 +131,7 @@ internal class BusinessCustomerTest {
         assertThat(businessCustomer.currencies()).containsExactly("USD", "USDC")
         assertThat(businessCustomer.email()).isEqualTo("john.doe@example.com")
         assertThat(businessCustomer.isDeleted()).isEqualTo(false)
+        assertThat(businessCustomer.phoneNumber()).isEqualTo("+14155551234")
         assertThat(businessCustomer.region()).isEqualTo("US")
         assertThat(businessCustomer.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
@@ -234,6 +236,7 @@ internal class BusinessCustomerTest {
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
                 .isDeleted(false)
+                .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(

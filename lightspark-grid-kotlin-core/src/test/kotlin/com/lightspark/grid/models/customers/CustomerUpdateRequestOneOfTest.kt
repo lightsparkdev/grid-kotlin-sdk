@@ -37,6 +37,7 @@ internal class CustomerUpdateRequestOneOfTest {
                 .fullName("John Michael Doe")
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -69,6 +70,7 @@ internal class CustomerUpdateRequestOneOfTest {
                     .fullName("John Michael Doe")
                     .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .phoneNumber("+14155551234")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -132,6 +134,7 @@ internal class CustomerUpdateRequestOneOfTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -195,6 +198,7 @@ internal class CustomerUpdateRequestOneOfTest {
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
                     .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                    .phoneNumber("+14155551234")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )

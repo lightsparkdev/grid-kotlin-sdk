@@ -19,7 +19,10 @@ import java.util.Objects
 /**
  * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with tied
  * Embedded Wallet internal accounts, Grid updates the customer email and every tied `EMAIL_OTP`
- * credential across all tied Embedded Wallets through the endpoint's signed-retry flow.
+ * credential through the endpoint's signed-retry flow. When `phoneNumber` changes for a customer
+ * with tied Embedded Wallet internal accounts, Grid updates the customer phone number and every
+ * tied `SMS_OTP` credential through the same signed-retry flow. Update `email` and `phoneNumber` in
+ * separate PATCH calls.
  */
 @JsonDeserialize(using = CustomerUpdateRequestOneOf.Deserializer::class)
 @JsonSerialize(using = CustomerUpdateRequestOneOf.Serializer::class)
@@ -33,16 +36,20 @@ private constructor(
     /**
      * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
      * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
-     * flow.
+     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
+     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
+     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
+     * and `phoneNumber` in separate PATCH calls.
      */
     fun individual(): IndividualCustomerUpdateRequest? = individual
 
     /**
      * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
      * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
-     * flow.
+     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
+     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
+     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
+     * and `phoneNumber` in separate PATCH calls.
      */
     fun business(): BusinessCustomerUpdateRequest? = business
 
@@ -53,16 +60,20 @@ private constructor(
     /**
      * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
      * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
-     * flow.
+     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
+     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
+     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
+     * and `phoneNumber` in separate PATCH calls.
      */
     fun asIndividual(): IndividualCustomerUpdateRequest = individual.getOrThrow("individual")
 
     /**
      * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
      * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
-     * flow.
+     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
+     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
+     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
+     * and `phoneNumber` in separate PATCH calls.
      */
     fun asBusiness(): BusinessCustomerUpdateRequest = business.getOrThrow("business")
 
@@ -179,8 +190,10 @@ private constructor(
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
          * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
+         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
+         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
+         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
+         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
          */
         fun ofIndividual(individual: IndividualCustomerUpdateRequest) =
             CustomerUpdateRequestOneOf(individual = individual)
@@ -188,8 +201,10 @@ private constructor(
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
          * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
+         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
+         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
+         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
+         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
          */
         fun ofBusiness(business: BusinessCustomerUpdateRequest) =
             CustomerUpdateRequestOneOf(business = business)
@@ -204,16 +219,20 @@ private constructor(
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
          * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
+         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
+         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
+         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
+         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
          */
         fun visitIndividual(individual: IndividualCustomerUpdateRequest): T
 
         /**
          * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
          * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
+         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
+         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
+         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
+         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
          */
         fun visitBusiness(business: BusinessCustomerUpdateRequest): T
 

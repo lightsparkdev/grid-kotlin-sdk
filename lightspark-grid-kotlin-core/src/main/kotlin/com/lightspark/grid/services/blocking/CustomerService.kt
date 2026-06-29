@@ -99,16 +99,21 @@ interface CustomerService {
      *
      * Most customer updates complete synchronously and return `200` with the updated customer. If
      * the request changes `email` for a customer that has one or more tied Embedded Wallet internal
-     * accounts with `EMAIL_OTP` credentials, the email change uses the two-step signed-retry flow
-     * so the customer's wallet session authorizes the authentication credential update. On the
-     * signed retry, Grid updates the customer email and every tied `EMAIL_OTP` credential across
-     * all tied Embedded Wallets as one logical operation. If any tied credential cannot be updated,
-     * the customer email is not changed.
+     * accounts with `EMAIL_OTP` credentials, or changes `phoneNumber` for a customer that has one
+     * or more tied Embedded Wallet internal accounts with `SMS_OTP` credentials, the contact update
+     * uses the two-step signed-retry flow so the customer's wallet session authorizes the
+     * authentication credential update. On the signed retry, Grid updates the customer contact
+     * field and every tied matching OTP credential across all tied Embedded Wallets as one logical
+     * operation. If any tied credential cannot be updated, the customer contact field is not
+     * changed.
      *
-     * For an Embedded Wallet email update:
+     * Update `email` and `phoneNumber` in separate PATCH calls. A request that includes both fields
+     * is rejected.
+     *
+     * For an Embedded Wallet email or SMS auth phone update:
      * 1. Call `PATCH /customers/{customerId}` with the full update body and no signature headers.
      *    Grid returns `202` with `payloadToSign`, `requestId`, and `expiresAt`. The pending
-     *    challenge binds the submitted update fields and the set of tied Embedded Wallet email OTP
+     *    challenge binds the submitted update fields and the set of tied Embedded Wallet OTP
      *    credentials that must be updated.
      * 2. Use the session API keypair of a verified authentication credential on one of the
      *    customer's tied Embedded Wallets to build an API-key stamp over `payloadToSign`, then

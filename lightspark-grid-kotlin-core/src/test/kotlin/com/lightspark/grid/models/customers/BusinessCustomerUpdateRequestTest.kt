@@ -61,6 +61,7 @@ internal class BusinessCustomerUpdateRequestTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -112,6 +113,7 @@ internal class BusinessCustomerUpdateRequestTest {
         assertThat(businessCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
         assertThat(businessCustomerUpdateRequest.kybStatus())
             .isEqualTo(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+        assertThat(businessCustomerUpdateRequest.phoneNumber()).isEqualTo("+14155551234")
         assertThat(businessCustomerUpdateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -167,6 +169,7 @@ internal class BusinessCustomerUpdateRequestTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 

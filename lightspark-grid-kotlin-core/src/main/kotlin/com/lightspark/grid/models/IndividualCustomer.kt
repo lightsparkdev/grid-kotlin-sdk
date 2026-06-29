@@ -34,6 +34,7 @@ private constructor(
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
     private val isDeleted: JsonField<Boolean>,
+    private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val address: JsonField<Address>,
@@ -65,6 +66,9 @@ private constructor(
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("isDeleted") @ExcludeMissing isDeleted: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -90,6 +94,7 @@ private constructor(
         currencies,
         email,
         isDeleted,
+        phoneNumber,
         region,
         updatedAt,
         address,
@@ -111,6 +116,7 @@ private constructor(
             .currencies(currencies)
             .email(email)
             .isDeleted(isDeleted)
+            .phoneNumber(phoneNumber)
             .region(region)
             .updatedAt(updatedAt)
             .build()
@@ -189,6 +195,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
+
+    /**
+     * Phone number for the customer in strict E.164 format.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
@@ -312,6 +326,13 @@ private constructor(
     @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
 
     /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
+
+    /**
      * Returns the raw JSON value of [region].
      *
      * Unlike [region], this method doesn't throw if the JSON field has an unexpected type.
@@ -401,6 +422,7 @@ private constructor(
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
         private var isDeleted: JsonField<Boolean> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var address: JsonField<Address> = JsonMissing.of()
@@ -420,6 +442,7 @@ private constructor(
             currencies = individualCustomer.currencies.map { it.toMutableList() }
             email = individualCustomer.email
             isDeleted = individualCustomer.isDeleted
+            phoneNumber = individualCustomer.phoneNumber
             region = individualCustomer.region
             updatedAt = individualCustomer.updatedAt
             address = individualCustomer.address
@@ -553,6 +576,18 @@ private constructor(
          */
         fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
 
+        /** Phone number for the customer in strict E.164 format. */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
+
         /**
          * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
          * regulatory jurisdiction.
@@ -680,6 +715,7 @@ private constructor(
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
                 isDeleted,
+                phoneNumber,
                 region,
                 updatedAt,
                 address,
@@ -714,6 +750,7 @@ private constructor(
         currencies()
         email()
         isDeleted()
+        phoneNumber()
         region()
         updatedAt()
         address()?.validate()
@@ -746,6 +783,7 @@ private constructor(
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
             (if (isDeleted.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (address.asKnown()?.validity() ?: 0) +
@@ -1049,6 +1087,7 @@ private constructor(
             currencies == other.currencies &&
             email == other.email &&
             isDeleted == other.isDeleted &&
+            phoneNumber == other.phoneNumber &&
             region == other.region &&
             updatedAt == other.updatedAt &&
             address == other.address &&
@@ -1070,6 +1109,7 @@ private constructor(
             currencies,
             email,
             isDeleted,
+            phoneNumber,
             region,
             updatedAt,
             address,
@@ -1084,5 +1124,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, birthDate=$birthDate, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, additionalProperties=$additionalProperties}"
 }
