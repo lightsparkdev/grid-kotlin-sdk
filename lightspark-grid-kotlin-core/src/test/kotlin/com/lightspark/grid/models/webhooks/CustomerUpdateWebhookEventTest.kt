@@ -38,6 +38,7 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .isDeleted(false)
+                        .phoneNumber("+14155551234")
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
@@ -81,6 +82,7 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .isDeleted(false)
+                        .phoneNumber("+14155551234")
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(
@@ -129,6 +131,7 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .isDeleted(false)
+                        .phoneNumber("+14155551234")
                         .region("US")
                         .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                         .address(

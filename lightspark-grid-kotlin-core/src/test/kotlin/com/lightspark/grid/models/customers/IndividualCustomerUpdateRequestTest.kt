@@ -32,6 +32,7 @@ internal class IndividualCustomerUpdateRequestTest {
                 .fullName("John Michael Doe")
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -57,6 +58,7 @@ internal class IndividualCustomerUpdateRequestTest {
         assertThat(individualCustomerUpdateRequest.kycStatus())
             .isEqualTo(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
         assertThat(individualCustomerUpdateRequest.nationality()).isEqualTo("US")
+        assertThat(individualCustomerUpdateRequest.phoneNumber()).isEqualTo("+14155551234")
         assertThat(individualCustomerUpdateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -83,6 +85,7 @@ internal class IndividualCustomerUpdateRequestTest {
                 .fullName("John Michael Doe")
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 

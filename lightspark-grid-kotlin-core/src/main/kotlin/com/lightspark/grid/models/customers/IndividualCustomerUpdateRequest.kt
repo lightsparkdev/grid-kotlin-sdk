@@ -23,7 +23,10 @@ import java.util.Objects
 /**
  * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with tied
  * Embedded Wallet internal accounts, Grid updates the customer email and every tied `EMAIL_OTP`
- * credential across all tied Embedded Wallets through the endpoint's signed-retry flow.
+ * credential through the endpoint's signed-retry flow. When `phoneNumber` changes for a customer
+ * with tied Embedded Wallet internal accounts, Grid updates the customer phone number and every
+ * tied `SMS_OTP` credential through the same signed-retry flow. Update `email` and `phoneNumber` in
+ * separate PATCH calls.
  */
 class IndividualCustomerUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -36,6 +39,7 @@ private constructor(
     private val fullName: JsonField<String>,
     private val kycStatus: JsonField<KycStatus>,
     private val nationality: JsonField<String>,
+    private val phoneNumber: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -60,6 +64,9 @@ private constructor(
         @JsonProperty("nationality")
         @ExcludeMissing
         nationality: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
     ) : this(
         customerType,
@@ -70,6 +77,7 @@ private constructor(
         fullName,
         kycStatus,
         nationality,
+        phoneNumber,
         umaAddress,
         mutableMapOf(),
     )
@@ -138,6 +146,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun nationality(): String? = nationality.getNullable("nationality")
+
+    /**
+     * Phone number for the customer in strict E.164 format. For customers with tied Embedded Wallet
+     * internal accounts, changing this value also updates every tied `SMS_OTP` credential across
+     * all tied Embedded Wallets. Send phone number and email updates as separate PATCH calls.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * Optional UMA address identifier. If provided, the customer's UMA address will be updated.
@@ -209,6 +227,13 @@ private constructor(
     @JsonProperty("nationality") @ExcludeMissing fun _nationality(): JsonField<String> = nationality
 
     /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
+
+    /**
      * Returns the raw JSON value of [umaAddress].
      *
      * Unlike [umaAddress], this method doesn't throw if the JSON field has an unexpected type.
@@ -252,6 +277,7 @@ private constructor(
         private var fullName: JsonField<String> = JsonMissing.of()
         private var kycStatus: JsonField<KycStatus> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var umaAddress: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -265,6 +291,7 @@ private constructor(
                 fullName = individualCustomerUpdateRequest.fullName
                 kycStatus = individualCustomerUpdateRequest.kycStatus
                 nationality = individualCustomerUpdateRequest.nationality
+                phoneNumber = individualCustomerUpdateRequest.phoneNumber
                 umaAddress = individualCustomerUpdateRequest.umaAddress
                 additionalProperties =
                     individualCustomerUpdateRequest.additionalProperties.toMutableMap()
@@ -387,6 +414,23 @@ private constructor(
         fun nationality(nationality: JsonField<String>) = apply { this.nationality = nationality }
 
         /**
+         * Phone number for the customer in strict E.164 format. For customers with tied Embedded
+         * Wallet internal accounts, changing this value also updates every tied `SMS_OTP`
+         * credential across all tied Embedded Wallets. Send phone number and email updates as
+         * separate PATCH calls.
+         */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
+
+        /**
          * Optional UMA address identifier. If provided, the customer's UMA address will be updated.
          * This is an optional identifier to route payments to the customer.
          */
@@ -442,6 +486,7 @@ private constructor(
                 fullName,
                 kycStatus,
                 nationality,
+                phoneNumber,
                 umaAddress,
                 additionalProperties.toMutableMap(),
             )
@@ -470,6 +515,7 @@ private constructor(
         fullName()
         kycStatus()?.validate()
         nationality()
+        phoneNumber()
         umaAddress()
         validated = true
     }
@@ -496,6 +542,7 @@ private constructor(
             (if (fullName.asKnown() == null) 0 else 1) +
             (kycStatus.asKnown()?.validity() ?: 0) +
             (if (nationality.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1)
 
     class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -792,6 +839,7 @@ private constructor(
             fullName == other.fullName &&
             kycStatus == other.kycStatus &&
             nationality == other.nationality &&
+            phoneNumber == other.phoneNumber &&
             umaAddress == other.umaAddress &&
             additionalProperties == other.additionalProperties
     }
@@ -806,6 +854,7 @@ private constructor(
             fullName,
             kycStatus,
             nationality,
+            phoneNumber,
             umaAddress,
             additionalProperties,
         )
@@ -814,5 +863,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomerUpdateRequest{customerType=$customerType, address=$address, birthDate=$birthDate, currencies=$currencies, email=$email, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "IndividualCustomerUpdateRequest{customerType=$customerType, address=$address, birthDate=$birthDate, currencies=$currencies, email=$email, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, phoneNumber=$phoneNumber, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }
