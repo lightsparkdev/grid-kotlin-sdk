@@ -17,6 +17,7 @@ internal class GtqExternalAccountCreateInfoTest {
                 .accountNumber("1234567890")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("Banco GYT Continental")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,6 +46,7 @@ internal class GtqExternalAccountCreateInfoTest {
             .isEqualTo(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
         assertThat(gtqExternalAccountCreateInfo.bankAccountType())
             .isEqualTo(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
+        assertThat(gtqExternalAccountCreateInfo.bankName()).isEqualTo("Banco GYT Continental")
         assertThat(gtqExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 GtqExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -79,6 +81,7 @@ internal class GtqExternalAccountCreateInfoTest {
                 .accountNumber("1234567890")
                 .accountType(GtqExternalAccountCreateInfo.AccountType.GTQ_ACCOUNT)
                 .bankAccountType(GtqExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("Banco GYT Continental")
                 .beneficiary(
                     GtqBeneficiary.builder()
                         .beneficiaryType(GtqBeneficiary.BeneficiaryType.INDIVIDUAL)
