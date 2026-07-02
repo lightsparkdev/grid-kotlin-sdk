@@ -50,6 +50,8 @@ internal class CustomerServiceTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .phoneNumber("+14155551234")
