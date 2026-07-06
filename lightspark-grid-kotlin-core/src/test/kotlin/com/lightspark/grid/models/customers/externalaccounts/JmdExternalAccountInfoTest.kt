@@ -18,7 +18,7 @@ internal class JmdExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("branchCode", JsonValue.from("11111"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bank of Nova Scotia"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
     }
 
@@ -31,7 +31,7 @@ internal class JmdExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("branchCode", JsonValue.from("11111"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
-                .putAdditionalProperty("bankName", JsonValue.from("Bank of Nova Scotia"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
 
         val roundtrippedJmdExternalAccountInfo =
