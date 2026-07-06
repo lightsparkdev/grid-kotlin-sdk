@@ -62,6 +62,7 @@ import com.lightspark.grid.models.ZarExternalAccountCreateInfo
 import com.lightspark.grid.models.ZmwExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.BusinessBeneficiary
+import com.lightspark.grid.models.customers.externalaccounts.InrBeneficiary
 import java.util.Collections
 import java.util.Objects
 
@@ -268,6 +269,71 @@ private constructor(
         /** Alias for calling [accountInfo] with `AccountInfo.ofInrAccount(inrAccount)`. */
         fun accountInfo(inrAccount: InrExternalAccountCreateInfo) =
             accountInfo(AccountInfo.ofInrAccount(inrAccount))
+
+        /**
+         * Alias for calling [accountInfo] with the following:
+         * ```kotlin
+         * InrExternalAccountCreateInfo.builder()
+         *     .accountType(InrExternalAccountCreateInfo.AccountType.INR_ACCOUNT)
+         *     .beneficiary(beneficiary)
+         *     .build()
+         * ```
+         */
+        fun inrAccountAccountInfo(beneficiary: InrExternalAccountCreateInfo.Beneficiary) =
+            accountInfo(
+                InrExternalAccountCreateInfo.builder()
+                    .accountType(InrExternalAccountCreateInfo.AccountType.INR_ACCOUNT)
+                    .beneficiary(beneficiary)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with
+         * `InrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual)`.
+         */
+        fun inrAccountAccountInfo(individual: InrBeneficiary) =
+            inrAccountAccountInfo(InrExternalAccountCreateInfo.Beneficiary.ofIndividual(individual))
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with the following:
+         * ```kotlin
+         * InrBeneficiary.builder()
+         *     .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+         *     .fullName(fullName)
+         *     .build()
+         * ```
+         */
+        fun individualInrAccountAccountInfo(fullName: String) =
+            inrAccountAccountInfo(
+                InrBeneficiary.builder()
+                    .beneficiaryType(InrBeneficiary.BeneficiaryType.INDIVIDUAL)
+                    .fullName(fullName)
+                    .build()
+            )
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with
+         * `InrExternalAccountCreateInfo.Beneficiary.ofBusiness(business)`.
+         */
+        fun inrAccountAccountInfo(business: BusinessBeneficiary) =
+            inrAccountAccountInfo(InrExternalAccountCreateInfo.Beneficiary.ofBusiness(business))
+
+        /**
+         * Alias for calling [inrAccountAccountInfo] with the following:
+         * ```kotlin
+         * BusinessBeneficiary.builder()
+         *     .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+         *     .legalName(legalName)
+         *     .build()
+         * ```
+         */
+        fun businessInrAccountAccountInfo(legalName: String) =
+            inrAccountAccountInfo(
+                BusinessBeneficiary.builder()
+                    .beneficiaryType(BusinessBeneficiary.BeneficiaryType.BUSINESS)
+                    .legalName(legalName)
+                    .build()
+            )
 
         /** Alias for calling [accountInfo] with `AccountInfo.ofJmdAccount(jmdAccount)`. */
         fun accountInfo(jmdAccount: JmdExternalAccountCreateInfo) =
@@ -634,6 +700,12 @@ private constructor(
 
         fun idrAccount(): IdrExternalAccountCreateInfo? = idrAccount
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - NEFT: accountNumber, ifsc, rail
+         * - RTGS: accountNumber, ifsc, rail
+         * - UPI: vpa
+         */
         fun inrAccount(): InrExternalAccountCreateInfo? = inrAccount
 
         fun jmdAccount(): JmdExternalAccountCreateInfo? = jmdAccount
@@ -821,6 +893,12 @@ private constructor(
 
         fun asIdrAccount(): IdrExternalAccountCreateInfo = idrAccount.getOrThrow("idrAccount")
 
+        /**
+         * Required fields depend on the selected paymentRails:
+         * - NEFT: accountNumber, ifsc, rail
+         * - RTGS: accountNumber, ifsc, rail
+         * - UPI: vpa
+         */
         fun asInrAccount(): InrExternalAccountCreateInfo = inrAccount.getOrThrow("inrAccount")
 
         fun asJmdAccount(): JmdExternalAccountCreateInfo = jmdAccount.getOrThrow("jmdAccount")
@@ -1459,6 +1537,12 @@ private constructor(
             fun ofIdrAccount(idrAccount: IdrExternalAccountCreateInfo) =
                 AccountInfo(idrAccount = idrAccount)
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - NEFT: accountNumber, ifsc, rail
+             * - RTGS: accountNumber, ifsc, rail
+             * - UPI: vpa
+             */
             fun ofInrAccount(inrAccount: InrExternalAccountCreateInfo) =
                 AccountInfo(inrAccount = inrAccount)
 
@@ -1599,6 +1683,12 @@ private constructor(
 
             fun visitIdrAccount(idrAccount: IdrExternalAccountCreateInfo): T
 
+            /**
+             * Required fields depend on the selected paymentRails:
+             * - NEFT: accountNumber, ifsc, rail
+             * - RTGS: accountNumber, ifsc, rail
+             * - UPI: vpa
+             */
             fun visitInrAccount(inrAccount: InrExternalAccountCreateInfo): T
 
             fun visitJmdAccount(jmdAccount: JmdExternalAccountCreateInfo): T
