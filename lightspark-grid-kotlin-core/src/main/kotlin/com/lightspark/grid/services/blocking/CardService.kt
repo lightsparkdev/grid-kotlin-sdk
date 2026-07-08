@@ -32,7 +32,11 @@ interface CardService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CardService
 
-    /** Retrieve a card by its system-generated id. */
+    /**
+     * Retrieve a card by its system-generated id. To display the card's full PAN, CVV, and expiry
+     * to the cardholder, request a reveal with `POST /cards/{id}/reveal` — the card resource itself
+     * never carries the reveal URL.
+     */
     fun retrieve(
         id: String,
         params: CardRetrieveParams = CardRetrieveParams.none(),
