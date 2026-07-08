@@ -121,6 +121,8 @@ private constructor(
      * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
      *   response to compliance or fraud signals; payments are blocked while the account remains
      *   frozen.
+     * - `FAILED`: The account could not be provisioned. Grid was unable to create the underlying
+     *   account, so it cannot send or receive payments and requires remediation.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -395,6 +397,8 @@ private constructor(
          * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
          *   response to compliance or fraud signals; payments are blocked while the account remains
          *   frozen.
+         * - `FAILED`: The account could not be provisioned. Grid was unable to create the
+         *   underlying account, so it cannot send or receive payments and requires remediation.
          */
         fun status(status: Status) = status(JsonField.of(status))
 
@@ -604,6 +608,8 @@ private constructor(
      * - `FROZEN`: The account cannot send or receive payments. Grid may freeze an account in
      *   response to compliance or fraud signals; payments are blocked while the account remains
      *   frozen.
+     * - `FAILED`: The account could not be provisioned. Grid was unable to create the underlying
+     *   account, so it cannot send or receive payments and requires remediation.
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -627,6 +633,8 @@ private constructor(
 
             val FROZEN = of("FROZEN")
 
+            val FAILED = of("FAILED")
+
             fun of(value: String) = Status(JsonField.of(value))
         }
 
@@ -636,6 +644,7 @@ private constructor(
             ACTIVE,
             CLOSED,
             FROZEN,
+            FAILED,
         }
 
         /**
@@ -652,6 +661,7 @@ private constructor(
             ACTIVE,
             CLOSED,
             FROZEN,
+            FAILED,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -669,6 +679,7 @@ private constructor(
                 ACTIVE -> Value.ACTIVE
                 CLOSED -> Value.CLOSED
                 FROZEN -> Value.FROZEN
+                FAILED -> Value.FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -687,6 +698,7 @@ private constructor(
                 ACTIVE -> Known.ACTIVE
                 CLOSED -> Known.CLOSED
                 FROZEN -> Known.FROZEN
+                FAILED -> Known.FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
 

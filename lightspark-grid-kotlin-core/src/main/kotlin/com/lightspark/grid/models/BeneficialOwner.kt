@@ -93,7 +93,8 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
-     * The current KYC status of a customer
+     * The current KYC status of a customer. `HOLD` means the customer is placed on hold and may be
+     * required to update or provide more information.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -286,7 +287,10 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-        /** The current KYC status of a customer */
+        /**
+         * The current KYC status of a customer. `HOLD` means the customer is placed on hold and may
+         * be required to update or provide more information.
+         */
         fun kycStatus(kycStatus: KycStatus) = kycStatus(JsonField.of(kycStatus))
 
         /**
@@ -463,7 +467,10 @@ private constructor(
             (roles.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1)
 
-    /** The current KYC status of a customer */
+    /**
+     * The current KYC status of a customer. `HOLD` means the customer is placed on hold and may be
+     * required to update or provide more information.
+     */
     class KycStatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -486,6 +493,8 @@ private constructor(
 
             val REJECTED = of("REJECTED")
 
+            val HOLD = of("HOLD")
+
             fun of(value: String) = KycStatus(JsonField.of(value))
         }
 
@@ -495,6 +504,7 @@ private constructor(
             PENDING,
             APPROVED,
             REJECTED,
+            HOLD,
         }
 
         /**
@@ -511,6 +521,7 @@ private constructor(
             PENDING,
             APPROVED,
             REJECTED,
+            HOLD,
             /**
              * An enum member indicating that [KycStatus] was instantiated with an unknown value.
              */
@@ -530,6 +541,7 @@ private constructor(
                 PENDING -> Value.PENDING
                 APPROVED -> Value.APPROVED
                 REJECTED -> Value.REJECTED
+                HOLD -> Value.HOLD
                 else -> Value._UNKNOWN
             }
 
@@ -548,6 +560,7 @@ private constructor(
                 PENDING -> Known.PENDING
                 APPROVED -> Known.APPROVED
                 REJECTED -> Known.REJECTED
+                HOLD -> Known.HOLD
                 else -> throw LightsparkGridInvalidDataException("Unknown KycStatus: $value")
             }
 
