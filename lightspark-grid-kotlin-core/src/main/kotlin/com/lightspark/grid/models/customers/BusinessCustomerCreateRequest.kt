@@ -115,7 +115,8 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * The current KYB status of a business customer
+     * The current KYB status of a business customer. `HOLD` means the customer is placed on hold
+     * and may be required to update or provide more information.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -376,7 +377,10 @@ private constructor(
          */
         fun email(email: JsonField<String>) = apply { this.email = email }
 
-        /** The current KYB status of a business customer */
+        /**
+         * The current KYB status of a business customer. `HOLD` means the customer is placed on
+         * hold and may be required to update or provide more information.
+         */
         fun kybStatus(kybStatus: KybStatus) = kybStatus(JsonField.of(kybStatus))
 
         /**
@@ -2454,7 +2458,10 @@ private constructor(
             "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, additionalProperties=$additionalProperties}"
     }
 
-    /** The current KYB status of a business customer */
+    /**
+     * The current KYB status of a business customer. `HOLD` means the customer is placed on hold
+     * and may be required to update or provide more information.
+     */
     class KybStatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -2477,6 +2484,8 @@ private constructor(
 
             val REJECTED = of("REJECTED")
 
+            val HOLD = of("HOLD")
+
             fun of(value: String) = KybStatus(JsonField.of(value))
         }
 
@@ -2486,6 +2495,7 @@ private constructor(
             PENDING,
             APPROVED,
             REJECTED,
+            HOLD,
         }
 
         /**
@@ -2502,6 +2512,7 @@ private constructor(
             PENDING,
             APPROVED,
             REJECTED,
+            HOLD,
             /**
              * An enum member indicating that [KybStatus] was instantiated with an unknown value.
              */
@@ -2521,6 +2532,7 @@ private constructor(
                 PENDING -> Value.PENDING
                 APPROVED -> Value.APPROVED
                 REJECTED -> Value.REJECTED
+                HOLD -> Value.HOLD
                 else -> Value._UNKNOWN
             }
 
@@ -2539,6 +2551,7 @@ private constructor(
                 PENDING -> Known.PENDING
                 APPROVED -> Known.APPROVED
                 REJECTED -> Known.REJECTED
+                HOLD -> Known.HOLD
                 else -> throw LightsparkGridInvalidDataException("Unknown KybStatus: $value")
             }
 
