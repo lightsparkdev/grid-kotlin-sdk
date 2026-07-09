@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.customers
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
@@ -39,6 +40,7 @@ internal class BusinessCustomerCreateRequestTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerCreateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -50,12 +52,16 @@ internal class BusinessCustomerCreateRequestTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .build()
                 )
                 .addCurrency("USD")
@@ -95,6 +101,7 @@ internal class BusinessCustomerCreateRequestTest {
                     .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                    .addExpectedCounterpartyCountry("US")
                     .expectedMonthlyTransactionCount(
                         BusinessCustomerCreateRequest.BusinessInfo.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -104,12 +111,16 @@ internal class BusinessCustomerCreateRequestTest {
                             .VOLUME_100_K_TO_1_M
                     )
                     .addExpectedRecipientJurisdiction("US")
+                    .naicsCode("541511")
                     .purposeOfAccount(
                         BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                             .CONTRACTOR_PAYOUTS
                     )
+                    .purposeOfAccountOtherDescription("Escrow for equipment leases")
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
+                    .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                    .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                     .build()
             )
         assertThat(businessCustomerCreateRequest.currencies()).containsExactly("USD", "USDC")
@@ -152,6 +163,7 @@ internal class BusinessCustomerCreateRequestTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerCreateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -163,12 +175,16 @@ internal class BusinessCustomerCreateRequestTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .build()
                 )
                 .addCurrency("USD")

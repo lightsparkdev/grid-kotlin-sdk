@@ -699,12 +699,17 @@ private constructor(
         private val country: JsonField<String>,
         private val doingBusinessAs: JsonField<String>,
         private val entityType: JsonField<EntityType>,
+        private val expectedCounterpartyCountries: JsonField<List<String>>,
         private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
         private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
         private val expectedRecipientJurisdictions: JsonField<List<String>>,
+        private val naicsCode: JsonField<String>,
         private val purposeOfAccount: JsonField<PurposeOfAccount>,
+        private val purposeOfAccountOtherDescription: JsonField<String>,
         private val registrationNumber: JsonField<String>,
         private val sourceOfFunds: JsonField<String>,
+        private val sourceOfFundsCategories: JsonField<List<JsonValue>>,
+        private val sourceOfFundsOtherDescription: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -730,6 +735,9 @@ private constructor(
             @JsonProperty("entityType")
             @ExcludeMissing
             entityType: JsonField<EntityType> = JsonMissing.of(),
+            @JsonProperty("expectedCounterpartyCountries")
+            @ExcludeMissing
+            expectedCounterpartyCountries: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("expectedMonthlyTransactionCount")
             @ExcludeMissing
             expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
@@ -741,15 +749,27 @@ private constructor(
             @JsonProperty("expectedRecipientJurisdictions")
             @ExcludeMissing
             expectedRecipientJurisdictions: JsonField<List<String>> = JsonMissing.of(),
+            @JsonProperty("naicsCode")
+            @ExcludeMissing
+            naicsCode: JsonField<String> = JsonMissing.of(),
             @JsonProperty("purposeOfAccount")
             @ExcludeMissing
             purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of(),
+            @JsonProperty("purposeOfAccountOtherDescription")
+            @ExcludeMissing
+            purposeOfAccountOtherDescription: JsonField<String> = JsonMissing.of(),
             @JsonProperty("registrationNumber")
             @ExcludeMissing
             registrationNumber: JsonField<String> = JsonMissing.of(),
             @JsonProperty("sourceOfFunds")
             @ExcludeMissing
             sourceOfFunds: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("sourceOfFundsCategories")
+            @ExcludeMissing
+            sourceOfFundsCategories: JsonField<List<JsonValue>> = JsonMissing.of(),
+            @JsonProperty("sourceOfFundsOtherDescription")
+            @ExcludeMissing
+            sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of(),
         ) : this(
             incorporatedOn,
             legalName,
@@ -759,12 +779,17 @@ private constructor(
             country,
             doingBusinessAs,
             entityType,
+            expectedCounterpartyCountries,
             expectedMonthlyTransactionCount,
             expectedMonthlyTransactionVolume,
             expectedRecipientJurisdictions,
+            naicsCode,
             purposeOfAccount,
+            purposeOfAccountOtherDescription,
             registrationNumber,
             sourceOfFunds,
+            sourceOfFundsCategories,
+            sourceOfFundsOtherDescription,
             mutableMapOf(),
         )
 
@@ -834,6 +859,16 @@ private constructor(
         fun entityType(): EntityType? = entityType.getNullable("entityType")
 
         /**
+         * List of countries of the business's expected transaction counterparties (ISO 3166-1
+         * alpha-2)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun expectedCounterpartyCountries(): List<String>? =
+            expectedCounterpartyCountries.getNullable("expectedCounterpartyCountries")
+
+        /**
          * Expected number of transactions per month
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -861,12 +896,29 @@ private constructor(
             expectedRecipientJurisdictions.getNullable("expectedRecipientJurisdictions")
 
         /**
+         * NAICS code describing the nature of the business (2-6 digits)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun naicsCode(): String? = naicsCode.getNullable("naicsCode")
+
+        /**
          * The intended purpose for using the Grid account
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
          */
         fun purposeOfAccount(): PurposeOfAccount? = purposeOfAccount.getNullable("purposeOfAccount")
+
+        /**
+         * Description of the account purpose when OTHER is selected
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun purposeOfAccountOtherDescription(): String? =
+            purposeOfAccountOtherDescription.getNullable("purposeOfAccountOtherDescription")
 
         /**
          * Business registration number
@@ -883,6 +935,24 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun sourceOfFunds(): String? = sourceOfFunds.getNullable("sourceOfFunds")
+
+        /**
+         * Structured source-of-funds categories for the business
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun sourceOfFundsCategories(): List<JsonValue>? =
+            sourceOfFundsCategories.getNullable("sourceOfFundsCategories")
+
+        /**
+         * Description of the source of funds when OTHER is selected
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun sourceOfFundsOtherDescription(): String? =
+            sourceOfFundsOtherDescription.getNullable("sourceOfFundsOtherDescription")
 
         /**
          * Returns the raw JSON value of [incorporatedOn].
@@ -955,6 +1025,17 @@ private constructor(
         fun _entityType(): JsonField<EntityType> = entityType
 
         /**
+         * Returns the raw JSON value of [expectedCounterpartyCountries].
+         *
+         * Unlike [expectedCounterpartyCountries], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("expectedCounterpartyCountries")
+        @ExcludeMissing
+        fun _expectedCounterpartyCountries(): JsonField<List<String>> =
+            expectedCounterpartyCountries
+
+        /**
          * Returns the raw JSON value of [expectedMonthlyTransactionCount].
          *
          * Unlike [expectedMonthlyTransactionCount], this method doesn't throw if the JSON field has
@@ -988,6 +1069,13 @@ private constructor(
             expectedRecipientJurisdictions
 
         /**
+         * Returns the raw JSON value of [naicsCode].
+         *
+         * Unlike [naicsCode], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("naicsCode") @ExcludeMissing fun _naicsCode(): JsonField<String> = naicsCode
+
+        /**
          * Returns the raw JSON value of [purposeOfAccount].
          *
          * Unlike [purposeOfAccount], this method doesn't throw if the JSON field has an unexpected
@@ -996,6 +1084,17 @@ private constructor(
         @JsonProperty("purposeOfAccount")
         @ExcludeMissing
         fun _purposeOfAccount(): JsonField<PurposeOfAccount> = purposeOfAccount
+
+        /**
+         * Returns the raw JSON value of [purposeOfAccountOtherDescription].
+         *
+         * Unlike [purposeOfAccountOtherDescription], this method doesn't throw if the JSON field
+         * has an unexpected type.
+         */
+        @JsonProperty("purposeOfAccountOtherDescription")
+        @ExcludeMissing
+        fun _purposeOfAccountOtherDescription(): JsonField<String> =
+            purposeOfAccountOtherDescription
 
         /**
          * Returns the raw JSON value of [registrationNumber].
@@ -1016,6 +1115,26 @@ private constructor(
         @JsonProperty("sourceOfFunds")
         @ExcludeMissing
         fun _sourceOfFunds(): JsonField<String> = sourceOfFunds
+
+        /**
+         * Returns the raw JSON value of [sourceOfFundsCategories].
+         *
+         * Unlike [sourceOfFundsCategories], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("sourceOfFundsCategories")
+        @ExcludeMissing
+        fun _sourceOfFundsCategories(): JsonField<List<JsonValue>> = sourceOfFundsCategories
+
+        /**
+         * Returns the raw JSON value of [sourceOfFundsOtherDescription].
+         *
+         * Unlike [sourceOfFundsOtherDescription], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("sourceOfFundsOtherDescription")
+        @ExcludeMissing
+        fun _sourceOfFundsOtherDescription(): JsonField<String> = sourceOfFundsOtherDescription
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -1055,6 +1174,7 @@ private constructor(
             private var country: JsonField<String> = JsonMissing.of()
             private var doingBusinessAs: JsonField<String> = JsonMissing.of()
             private var entityType: JsonField<EntityType> = JsonMissing.of()
+            private var expectedCounterpartyCountries: JsonField<MutableList<String>>? = null
             private var expectedMonthlyTransactionCount:
                 JsonField<ExpectedMonthlyTransactionCount> =
                 JsonMissing.of()
@@ -1062,9 +1182,13 @@ private constructor(
                 JsonField<ExpectedMonthlyTransactionVolume> =
                 JsonMissing.of()
             private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? = null
+            private var naicsCode: JsonField<String> = JsonMissing.of()
             private var purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of()
+            private var purposeOfAccountOtherDescription: JsonField<String> = JsonMissing.of()
             private var registrationNumber: JsonField<String> = JsonMissing.of()
             private var sourceOfFunds: JsonField<String> = JsonMissing.of()
+            private var sourceOfFundsCategories: JsonField<MutableList<JsonValue>>? = null
+            private var sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(businessInfo: BusinessInfo) = apply {
@@ -1076,13 +1200,20 @@ private constructor(
                 country = businessInfo.country
                 doingBusinessAs = businessInfo.doingBusinessAs
                 entityType = businessInfo.entityType
+                expectedCounterpartyCountries =
+                    businessInfo.expectedCounterpartyCountries.map { it.toMutableList() }
                 expectedMonthlyTransactionCount = businessInfo.expectedMonthlyTransactionCount
                 expectedMonthlyTransactionVolume = businessInfo.expectedMonthlyTransactionVolume
                 expectedRecipientJurisdictions =
                     businessInfo.expectedRecipientJurisdictions.map { it.toMutableList() }
+                naicsCode = businessInfo.naicsCode
                 purposeOfAccount = businessInfo.purposeOfAccount
+                purposeOfAccountOtherDescription = businessInfo.purposeOfAccountOtherDescription
                 registrationNumber = businessInfo.registrationNumber
                 sourceOfFunds = businessInfo.sourceOfFunds
+                sourceOfFundsCategories =
+                    businessInfo.sourceOfFundsCategories.map { it.toMutableList() }
+                sourceOfFundsOtherDescription = businessInfo.sourceOfFundsOtherDescription
                 additionalProperties = businessInfo.additionalProperties.toMutableMap()
             }
 
@@ -1207,6 +1338,40 @@ private constructor(
                 this.entityType = entityType
             }
 
+            /**
+             * List of countries of the business's expected transaction counterparties (ISO 3166-1
+             * alpha-2)
+             */
+            fun expectedCounterpartyCountries(expectedCounterpartyCountries: List<String>) =
+                expectedCounterpartyCountries(JsonField.of(expectedCounterpartyCountries))
+
+            /**
+             * Sets [Builder.expectedCounterpartyCountries] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.expectedCounterpartyCountries] with a well-typed
+             * `List<String>` value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun expectedCounterpartyCountries(
+                expectedCounterpartyCountries: JsonField<List<String>>
+            ) = apply {
+                this.expectedCounterpartyCountries =
+                    expectedCounterpartyCountries.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [expectedCounterpartyCountries].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addExpectedCounterpartyCountry(expectedCounterpartyCountry: String) = apply {
+                expectedCounterpartyCountries =
+                    (expectedCounterpartyCountries ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("expectedCounterpartyCountries", it)
+                            .add(expectedCounterpartyCountry)
+                    }
+            }
+
             /** Expected number of transactions per month */
             fun expectedMonthlyTransactionCount(
                 expectedMonthlyTransactionCount: ExpectedMonthlyTransactionCount
@@ -1272,6 +1437,18 @@ private constructor(
                     }
             }
 
+            /** NAICS code describing the nature of the business (2-6 digits) */
+            fun naicsCode(naicsCode: String) = naicsCode(JsonField.of(naicsCode))
+
+            /**
+             * Sets [Builder.naicsCode] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.naicsCode] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun naicsCode(naicsCode: JsonField<String>) = apply { this.naicsCode = naicsCode }
+
             /** The intended purpose for using the Grid account */
             fun purposeOfAccount(purposeOfAccount: PurposeOfAccount) =
                 purposeOfAccount(JsonField.of(purposeOfAccount))
@@ -1286,6 +1463,21 @@ private constructor(
             fun purposeOfAccount(purposeOfAccount: JsonField<PurposeOfAccount>) = apply {
                 this.purposeOfAccount = purposeOfAccount
             }
+
+            /** Description of the account purpose when OTHER is selected */
+            fun purposeOfAccountOtherDescription(purposeOfAccountOtherDescription: String) =
+                purposeOfAccountOtherDescription(JsonField.of(purposeOfAccountOtherDescription))
+
+            /**
+             * Sets [Builder.purposeOfAccountOtherDescription] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.purposeOfAccountOtherDescription] with a well-typed
+             * [String] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun purposeOfAccountOtherDescription(
+                purposeOfAccountOtherDescription: JsonField<String>
+            ) = apply { this.purposeOfAccountOtherDescription = purposeOfAccountOtherDescription }
 
             /** Business registration number */
             fun registrationNumber(registrationNumber: String) =
@@ -1315,6 +1507,51 @@ private constructor(
             fun sourceOfFunds(sourceOfFunds: JsonField<String>) = apply {
                 this.sourceOfFunds = sourceOfFunds
             }
+
+            /** Structured source-of-funds categories for the business */
+            fun sourceOfFundsCategories(sourceOfFundsCategories: List<JsonValue>) =
+                sourceOfFundsCategories(JsonField.of(sourceOfFundsCategories))
+
+            /**
+             * Sets [Builder.sourceOfFundsCategories] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sourceOfFundsCategories] with a well-typed
+             * `List<JsonValue>` value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun sourceOfFundsCategories(sourceOfFundsCategories: JsonField<List<JsonValue>>) =
+                apply {
+                    this.sourceOfFundsCategories =
+                        sourceOfFundsCategories.map { it.toMutableList() }
+                }
+
+            /**
+             * Adds a single [JsonValue] to [sourceOfFundsCategories].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addSourceOfFundsCategory(sourceOfFundsCategory: JsonValue) = apply {
+                sourceOfFundsCategories =
+                    (sourceOfFundsCategories ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("sourceOfFundsCategories", it).add(sourceOfFundsCategory)
+                    }
+            }
+
+            /** Description of the source of funds when OTHER is selected */
+            fun sourceOfFundsOtherDescription(sourceOfFundsOtherDescription: String) =
+                sourceOfFundsOtherDescription(JsonField.of(sourceOfFundsOtherDescription))
+
+            /**
+             * Sets [Builder.sourceOfFundsOtherDescription] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sourceOfFundsOtherDescription] with a well-typed
+             * [String] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun sourceOfFundsOtherDescription(sourceOfFundsOtherDescription: JsonField<String>) =
+                apply {
+                    this.sourceOfFundsOtherDescription = sourceOfFundsOtherDescription
+                }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -1359,12 +1596,17 @@ private constructor(
                     country,
                     doingBusinessAs,
                     entityType,
+                    (expectedCounterpartyCountries ?: JsonMissing.of()).map { it.toImmutable() },
                     expectedMonthlyTransactionCount,
                     expectedMonthlyTransactionVolume,
                     (expectedRecipientJurisdictions ?: JsonMissing.of()).map { it.toImmutable() },
+                    naicsCode,
                     purposeOfAccount,
+                    purposeOfAccountOtherDescription,
                     registrationNumber,
                     sourceOfFunds,
+                    (sourceOfFundsCategories ?: JsonMissing.of()).map { it.toImmutable() },
+                    sourceOfFundsOtherDescription,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -1393,12 +1635,17 @@ private constructor(
             country()
             doingBusinessAs()
             entityType()?.validate()
+            expectedCounterpartyCountries()
             expectedMonthlyTransactionCount()?.validate()
             expectedMonthlyTransactionVolume()?.validate()
             expectedRecipientJurisdictions()
+            naicsCode()
             purposeOfAccount()?.validate()
+            purposeOfAccountOtherDescription()
             registrationNumber()
             sourceOfFunds()
+            sourceOfFundsCategories()
+            sourceOfFundsOtherDescription()
             validated = true
         }
 
@@ -1425,12 +1672,17 @@ private constructor(
                 (if (country.asKnown() == null) 0 else 1) +
                 (if (doingBusinessAs.asKnown() == null) 0 else 1) +
                 (entityType.asKnown()?.validity() ?: 0) +
+                (expectedCounterpartyCountries.asKnown()?.size ?: 0) +
                 (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
                 (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
                 (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
+                (if (naicsCode.asKnown() == null) 0 else 1) +
                 (purposeOfAccount.asKnown()?.validity() ?: 0) +
+                (if (purposeOfAccountOtherDescription.asKnown() == null) 0 else 1) +
                 (if (registrationNumber.asKnown() == null) 0 else 1) +
-                (if (sourceOfFunds.asKnown() == null) 0 else 1)
+                (if (sourceOfFunds.asKnown() == null) 0 else 1) +
+                (sourceOfFundsCategories.asKnown()?.size ?: 0) +
+                (if (sourceOfFundsOtherDescription.asKnown() == null) 0 else 1)
 
         /** The high-level industry category of the business */
         class BusinessType @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -2423,12 +2675,17 @@ private constructor(
                 country == other.country &&
                 doingBusinessAs == other.doingBusinessAs &&
                 entityType == other.entityType &&
+                expectedCounterpartyCountries == other.expectedCounterpartyCountries &&
                 expectedMonthlyTransactionCount == other.expectedMonthlyTransactionCount &&
                 expectedMonthlyTransactionVolume == other.expectedMonthlyTransactionVolume &&
                 expectedRecipientJurisdictions == other.expectedRecipientJurisdictions &&
+                naicsCode == other.naicsCode &&
                 purposeOfAccount == other.purposeOfAccount &&
+                purposeOfAccountOtherDescription == other.purposeOfAccountOtherDescription &&
                 registrationNumber == other.registrationNumber &&
                 sourceOfFunds == other.sourceOfFunds &&
+                sourceOfFundsCategories == other.sourceOfFundsCategories &&
+                sourceOfFundsOtherDescription == other.sourceOfFundsOtherDescription &&
                 additionalProperties == other.additionalProperties
         }
 
@@ -2442,12 +2699,17 @@ private constructor(
                 country,
                 doingBusinessAs,
                 entityType,
+                expectedCounterpartyCountries,
                 expectedMonthlyTransactionCount,
                 expectedMonthlyTransactionVolume,
                 expectedRecipientJurisdictions,
+                naicsCode,
                 purposeOfAccount,
+                purposeOfAccountOtherDescription,
                 registrationNumber,
                 sourceOfFunds,
+                sourceOfFundsCategories,
+                sourceOfFundsOtherDescription,
                 additionalProperties,
             )
         }
@@ -2455,7 +2717,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, purposeOfAccount=$purposeOfAccount, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, additionalProperties=$additionalProperties}"
+            "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, naicsCode=$naicsCode, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, additionalProperties=$additionalProperties}"
     }
 
     /**

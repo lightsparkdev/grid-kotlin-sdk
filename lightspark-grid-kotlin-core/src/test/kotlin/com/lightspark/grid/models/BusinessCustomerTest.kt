@@ -94,6 +94,7 @@ internal class BusinessCustomerTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500
@@ -104,11 +105,15 @@ internal class BusinessCustomerTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
@@ -195,6 +200,7 @@ internal class BusinessCustomerTest {
                     .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                    .addExpectedCounterpartyCountry("US")
                     .expectedMonthlyTransactionCount(
                         BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -205,11 +211,15 @@ internal class BusinessCustomerTest {
                     )
                     .addExpectedRecipientJurisdiction("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
+                    .naicsCode("541511")
                     .purposeOfAccount(
                         BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                     )
+                    .purposeOfAccountOtherDescription("Escrow for equipment leases")
                     .registrationNumber("5523041")
                     .sourceOfFunds("Funds derived from customer payments for software services")
+                    .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                    .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                     .taxId("47-1234567")
                     .build()
             )
@@ -296,6 +306,7 @@ internal class BusinessCustomerTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500
@@ -306,11 +317,15 @@ internal class BusinessCustomerTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
