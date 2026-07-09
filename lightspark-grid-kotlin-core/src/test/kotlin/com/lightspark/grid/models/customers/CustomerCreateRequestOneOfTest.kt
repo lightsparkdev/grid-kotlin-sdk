@@ -122,6 +122,7 @@ internal class CustomerCreateRequestOneOfTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerCreateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -133,12 +134,16 @@ internal class CustomerCreateRequestOneOfTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .build()
                 )
                 .addCurrency("USD")
@@ -187,6 +192,7 @@ internal class CustomerCreateRequestOneOfTest {
                             .country("US")
                             .doingBusinessAs("Acme")
                             .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
                             .expectedMonthlyTransactionCount(
                                 BusinessCustomerCreateRequest.BusinessInfo
                                     .ExpectedMonthlyTransactionCount
@@ -198,14 +204,18 @@ internal class CustomerCreateRequestOneOfTest {
                                     .VOLUME_100_K_TO_1_M
                             )
                             .addExpectedRecipientJurisdiction("US")
+                            .naicsCode("541511")
                             .purposeOfAccount(
                                 BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                     .CONTRACTOR_PAYOUTS
                             )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
+                            .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                             .build()
                     )
                     .addCurrency("USD")

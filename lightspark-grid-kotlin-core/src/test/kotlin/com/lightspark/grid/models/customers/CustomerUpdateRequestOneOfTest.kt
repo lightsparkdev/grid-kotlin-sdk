@@ -109,6 +109,7 @@ internal class CustomerUpdateRequestOneOfTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerUpdateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -122,12 +123,19 @@ internal class CustomerUpdateRequestOneOfTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
+                        .naicsCode("541511")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(
+                            BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                .OPERATING_REVENUE
+                        )
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
@@ -171,6 +179,7 @@ internal class CustomerUpdateRequestOneOfTest {
                             .country("US")
                             .doingBusinessAs("Acme")
                             .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
                             .expectedMonthlyTransactionCount(
                                 BusinessCustomerUpdateRequest.BusinessInfo
                                     .ExpectedMonthlyTransactionCount
@@ -184,14 +193,21 @@ internal class CustomerUpdateRequestOneOfTest {
                             .addExpectedRecipientJurisdiction("US")
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .legalName("Acme Corporation, Inc.")
+                            .naicsCode("541511")
                             .purposeOfAccount(
                                 BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                     .CONTRACTOR_PAYOUTS
                             )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
+                            .addSourceOfFundsCategory(
+                                BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                    .OPERATING_REVENUE
+                            )
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                             .taxId("47-1234567")
                             .build()
                     )
