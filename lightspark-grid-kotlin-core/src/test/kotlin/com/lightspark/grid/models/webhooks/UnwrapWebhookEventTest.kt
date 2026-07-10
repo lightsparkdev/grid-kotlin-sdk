@@ -169,6 +169,7 @@ internal class UnwrapWebhookEventTest {
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
+                                .remittanceInformation("12345")
                                 .build()
                         )
                         .rejectionReason(
@@ -405,6 +406,7 @@ internal class UnwrapWebhookEventTest {
                                             .gridApiVariableFeeRate(0.003)
                                             .build()
                                     )
+                                    .remittanceInformation("12345")
                                     .build()
                             )
                             .rejectionReason(

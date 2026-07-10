@@ -26,6 +26,7 @@ internal class QuoteCreateParamsTest {
                     .immediatelyExecute(false)
                     .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                     .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                    .remittanceInformation("12345")
                     .senderCustomerInfo(
                         QuoteRequest.SenderCustomerInfo.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -52,6 +53,7 @@ internal class QuoteCreateParamsTest {
                         .immediatelyExecute(false)
                         .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                         .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                        .remittanceInformation("12345")
                         .senderCustomerInfo(
                             QuoteRequest.SenderCustomerInfo.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -101,6 +103,7 @@ internal class QuoteCreateParamsTest {
                         .immediatelyExecute(false)
                         .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                         .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                        .remittanceInformation("12345")
                         .senderCustomerInfo(
                             QuoteRequest.SenderCustomerInfo.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -124,6 +127,7 @@ internal class QuoteCreateParamsTest {
                     .immediatelyExecute(false)
                     .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                     .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                    .remittanceInformation("12345")
                     .senderCustomerInfo(
                         QuoteRequest.SenderCustomerInfo.builder()
                             .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

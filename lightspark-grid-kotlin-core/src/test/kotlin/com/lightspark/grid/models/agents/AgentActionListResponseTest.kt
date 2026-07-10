@@ -148,6 +148,7 @@ internal class AgentActionListResponseTest {
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
+                                .remittanceInformation("12345")
                                 .build()
                         )
                         .rejectionReason(
@@ -342,6 +343,7 @@ internal class AgentActionListResponseTest {
                                     .gridApiVariableFeeRate(0.003)
                                     .build()
                             )
+                            .remittanceInformation("12345")
                             .build()
                     )
                     .rejectionReason("Transaction amount exceeds customer's current risk limit.")
@@ -545,6 +547,7 @@ internal class AgentActionListResponseTest {
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
+                                .remittanceInformation("12345")
                                 .build()
                         )
                         .rejectionReason(

@@ -28,6 +28,7 @@ private constructor(
     private val immediatelyExecute: JsonField<Boolean>,
     private val lookupId: JsonField<String>,
     private val purposeOfPayment: JsonField<PurposeOfPayment>,
+    private val remittanceInformation: JsonField<String>,
     private val senderCustomerInfo: JsonField<SenderCustomerInfo>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -56,6 +57,9 @@ private constructor(
         @JsonProperty("purposeOfPayment")
         @ExcludeMissing
         purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of(),
+        @JsonProperty("remittanceInformation")
+        @ExcludeMissing
+        remittanceInformation: JsonField<String> = JsonMissing.of(),
         @JsonProperty("senderCustomerInfo")
         @ExcludeMissing
         senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of(),
@@ -68,6 +72,7 @@ private constructor(
         immediatelyExecute,
         lookupId,
         purposeOfPayment,
+        remittanceInformation,
         senderCustomerInfo,
         mutableMapOf(),
     )
@@ -150,6 +155,18 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
+
+    /**
+     * Free-form information about the payment that travels with it to the recipient. The field this
+     * populates depends on the payment rail: for ACH it populates the Addenda record, for FedNow
+     * and RTP it populates the remittanceInformation field, and for wires it populates the OBI
+     * (Originator to Beneficiary Information) / beneficiary information.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun remittanceInformation(): String? =
+        remittanceInformation.getNullable("remittanceInformation")
 
     /**
      * Key-value pairs of additional information about the sender which was requested by the
@@ -237,6 +254,16 @@ private constructor(
     fun _purposeOfPayment(): JsonField<PurposeOfPayment> = purposeOfPayment
 
     /**
+     * Returns the raw JSON value of [remittanceInformation].
+     *
+     * Unlike [remittanceInformation], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("remittanceInformation")
+    @ExcludeMissing
+    fun _remittanceInformation(): JsonField<String> = remittanceInformation
+
+    /**
      * Returns the raw JSON value of [senderCustomerInfo].
      *
      * Unlike [senderCustomerInfo], this method doesn't throw if the JSON field has an unexpected
@@ -285,6 +312,7 @@ private constructor(
         private var immediatelyExecute: JsonField<Boolean> = JsonMissing.of()
         private var lookupId: JsonField<String> = JsonMissing.of()
         private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
+        private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -297,6 +325,7 @@ private constructor(
             immediatelyExecute = quoteRequest.immediatelyExecute
             lookupId = quoteRequest.lookupId
             purposeOfPayment = quoteRequest.purposeOfPayment
+            remittanceInformation = quoteRequest.remittanceInformation
             senderCustomerInfo = quoteRequest.senderCustomerInfo
             additionalProperties = quoteRequest.additionalProperties.toMutableMap()
         }
@@ -438,6 +467,26 @@ private constructor(
         }
 
         /**
+         * Free-form information about the payment that travels with it to the recipient. The field
+         * this populates depends on the payment rail: for ACH it populates the Addenda record, for
+         * FedNow and RTP it populates the remittanceInformation field, and for wires it populates
+         * the OBI (Originator to Beneficiary Information) / beneficiary information.
+         */
+        fun remittanceInformation(remittanceInformation: String) =
+            remittanceInformation(JsonField.of(remittanceInformation))
+
+        /**
+         * Sets [Builder.remittanceInformation] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.remittanceInformation] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun remittanceInformation(remittanceInformation: JsonField<String>) = apply {
+            this.remittanceInformation = remittanceInformation
+        }
+
+        /**
          * Key-value pairs of additional information about the sender which was requested by the
          * destination. This is relevant when the destination requires more sender info than was
          * provided during customer creation. Any fields specified in `requiredPayerDataFields` from
@@ -504,6 +553,7 @@ private constructor(
                 immediatelyExecute,
                 lookupId,
                 purposeOfPayment,
+                remittanceInformation,
                 senderCustomerInfo,
                 additionalProperties.toMutableMap(),
             )
@@ -530,6 +580,7 @@ private constructor(
         immediatelyExecute()
         lookupId()
         purposeOfPayment()?.validate()
+        remittanceInformation()
         senderCustomerInfo()?.validate()
         validated = true
     }
@@ -554,6 +605,7 @@ private constructor(
             (if (immediatelyExecute.asKnown() == null) 0 else 1) +
             (if (lookupId.asKnown() == null) 0 else 1) +
             (purposeOfPayment.asKnown()?.validity() ?: 0) +
+            (if (remittanceInformation.asKnown() == null) 0 else 1) +
             (senderCustomerInfo.asKnown()?.validity() ?: 0)
 
     /**
@@ -1045,6 +1097,7 @@ private constructor(
             immediatelyExecute == other.immediatelyExecute &&
             lookupId == other.lookupId &&
             purposeOfPayment == other.purposeOfPayment &&
+            remittanceInformation == other.remittanceInformation &&
             senderCustomerInfo == other.senderCustomerInfo &&
             additionalProperties == other.additionalProperties
     }
@@ -1059,6 +1112,7 @@ private constructor(
             immediatelyExecute,
             lookupId,
             purposeOfPayment,
+            remittanceInformation,
             senderCustomerInfo,
             additionalProperties,
         )
@@ -1067,5 +1121,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
+        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, remittanceInformation=$remittanceInformation, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
 }
