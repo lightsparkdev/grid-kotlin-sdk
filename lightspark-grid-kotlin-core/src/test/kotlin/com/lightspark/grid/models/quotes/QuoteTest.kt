@@ -111,6 +111,7 @@ internal class QuoteTest {
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
+                .remittanceInformation("12345")
                 .build()
 
         assertThat(quote.id()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
@@ -211,6 +212,7 @@ internal class QuoteTest {
                     .gridApiVariableFeeRate(0.003)
                     .build()
             )
+        assertThat(quote.remittanceInformation()).isEqualTo("12345")
     }
 
     @Test
@@ -314,6 +316,7 @@ internal class QuoteTest {
                         .gridApiVariableFeeRate(0.003)
                         .build()
                 )
+                .remittanceInformation("12345")
                 .build()
 
         val roundtrippedQuote =

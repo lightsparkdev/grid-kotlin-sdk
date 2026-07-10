@@ -22,6 +22,7 @@ internal class QuoteRequestTest {
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
                 .senderCustomerInfo(
                     QuoteRequest.SenderCustomerInfo.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -39,6 +40,7 @@ internal class QuoteRequestTest {
         assertThat(quoteRequest.immediatelyExecute()).isEqualTo(false)
         assertThat(quoteRequest.lookupId()).isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
         assertThat(quoteRequest.purposeOfPayment()).isEqualTo(QuoteRequest.PurposeOfPayment.GIFT)
+        assertThat(quoteRequest.remittanceInformation()).isEqualTo("12345")
         assertThat(quoteRequest.senderCustomerInfo())
             .isEqualTo(
                 QuoteRequest.SenderCustomerInfo.builder()
@@ -61,6 +63,7 @@ internal class QuoteRequestTest {
                 .immediatelyExecute(false)
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
                 .senderCustomerInfo(
                     QuoteRequest.SenderCustomerInfo.builder()
                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

@@ -38,6 +38,7 @@ private constructor(
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
+    private val remittanceInformation: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -87,6 +88,9 @@ private constructor(
         @JsonProperty("rateDetails")
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
+        @JsonProperty("remittanceInformation")
+        @ExcludeMissing
+        remittanceInformation: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
         createdAt,
@@ -104,6 +108,7 @@ private constructor(
         counterpartyInformation,
         paymentInstructions,
         rateDetails,
+        remittanceInformation,
         mutableMapOf(),
     )
 
@@ -242,6 +247,18 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
+
+    /**
+     * Free-form information about the payment that travels with it to the recipient, as provided on
+     * the quote request. The field this populates depends on the payment rail: for ACH it populates
+     * the Addenda record, for FedNow and RTP it populates the remittanceInformation field, and for
+     * wires it populates the OBI (Originator to Beneficiary Information) / beneficiary information.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun remittanceInformation(): String? =
+        remittanceInformation.getNullable("remittanceInformation")
 
     /**
      * Returns the raw JSON value of [id].
@@ -386,6 +403,16 @@ private constructor(
     @ExcludeMissing
     fun _rateDetails(): JsonField<OutgoingRateDetails> = rateDetails
 
+    /**
+     * Returns the raw JSON value of [remittanceInformation].
+     *
+     * Unlike [remittanceInformation], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("remittanceInformation")
+    @ExcludeMissing
+    fun _remittanceInformation(): JsonField<String> = remittanceInformation
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -442,6 +469,7 @@ private constructor(
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
+        private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(quote: Quote) = apply {
@@ -461,6 +489,7 @@ private constructor(
             counterpartyInformation = quote.counterpartyInformation
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
             rateDetails = quote.rateDetails
+            remittanceInformation = quote.remittanceInformation
             additionalProperties = quote.additionalProperties.toMutableMap()
         }
 
@@ -714,6 +743,27 @@ private constructor(
             this.rateDetails = rateDetails
         }
 
+        /**
+         * Free-form information about the payment that travels with it to the recipient, as
+         * provided on the quote request. The field this populates depends on the payment rail: for
+         * ACH it populates the Addenda record, for FedNow and RTP it populates the
+         * remittanceInformation field, and for wires it populates the OBI (Originator to
+         * Beneficiary Information) / beneficiary information.
+         */
+        fun remittanceInformation(remittanceInformation: String) =
+            remittanceInformation(JsonField.of(remittanceInformation))
+
+        /**
+         * Sets [Builder.remittanceInformation] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.remittanceInformation] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun remittanceInformation(remittanceInformation: JsonField<String>) = apply {
+            this.remittanceInformation = remittanceInformation
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -775,6 +825,7 @@ private constructor(
                 counterpartyInformation,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 rateDetails,
+                remittanceInformation,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -808,6 +859,7 @@ private constructor(
         counterpartyInformation()?.validate()
         paymentInstructions()?.forEach { it.validate() }
         rateDetails()?.validate()
+        remittanceInformation()
         validated = true
     }
 
@@ -838,7 +890,8 @@ private constructor(
             (if (transactionId.asKnown() == null) 0 else 1) +
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (rateDetails.asKnown()?.validity() ?: 0)
+            (rateDetails.asKnown()?.validity() ?: 0) +
+            (if (remittanceInformation.asKnown() == null) 0 else 1)
 
     /** Current status of the quote */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1130,6 +1183,7 @@ private constructor(
             counterpartyInformation == other.counterpartyInformation &&
             paymentInstructions == other.paymentInstructions &&
             rateDetails == other.rateDetails &&
+            remittanceInformation == other.remittanceInformation &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1151,6 +1205,7 @@ private constructor(
             counterpartyInformation,
             paymentInstructions,
             rateDetails,
+            remittanceInformation,
             additionalProperties,
         )
     }
@@ -1158,5 +1213,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, remittanceInformation=$remittanceInformation, additionalProperties=$additionalProperties}"
 }
