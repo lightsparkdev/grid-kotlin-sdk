@@ -374,8 +374,8 @@ private constructor(
     fun receivedAmount(): CurrencyAmount? = receivedAmount.getNullable("receivedAmount")
 
     /**
-     * Reconciliation details for this transaction, including crypto transaction hash when
-     * available.
+     * Reconciliation details for this transaction. For the on-chain hash of a crypto payout to an
+     * external wallet, see the destination's `onChainTransaction` instead.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -1105,8 +1105,8 @@ private constructor(
         }
 
         /**
-         * Reconciliation details for this transaction, including crypto transaction hash when
-         * available.
+         * Reconciliation details for this transaction. For the on-chain hash of a crypto payout to
+         * an external wallet, see the destination's `onChainTransaction` instead.
          */
         fun reconciliationInstructions(reconciliationInstructions: ReconciliationInstructions) =
             reconciliationInstructions(JsonField.of(reconciliationInstructions))
