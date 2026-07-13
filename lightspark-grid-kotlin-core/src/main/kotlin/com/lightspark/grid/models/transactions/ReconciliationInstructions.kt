@@ -14,6 +14,11 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
+/**
+ * Instructions for reconciling a payment with this transaction. For the on-chain transaction to or
+ * from an external crypto wallet that is the transaction's own source or destination, use the
+ * `onChainTransaction` on the relevant source or destination instead.
+ */
 class ReconciliationInstructions
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
@@ -40,8 +45,10 @@ private constructor(
     fun reference(): String? = reference.getNullable("reference")
 
     /**
-     * Transaction hash for the crypto transfer that delivered funds to the transaction destination,
-     * when available.
+     * Transaction hash of the internal settlement transfer used to deliver a UMA payment — the
+     * inter-VASP settlement leg (e.g. USDC on Solana to the receiving partner), when available.
+     * This is not a transfer to a customer's own wallet; for that, see the `onChainTransaction` on
+     * the transaction's source or destination.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -113,8 +120,10 @@ private constructor(
         fun reference(reference: JsonField<String>) = apply { this.reference = reference }
 
         /**
-         * Transaction hash for the crypto transfer that delivered funds to the transaction
-         * destination, when available.
+         * Transaction hash of the internal settlement transfer used to deliver a UMA payment — the
+         * inter-VASP settlement leg (e.g. USDC on Solana to the receiving partner), when available.
+         * This is not a transfer to a customer's own wallet; for that, see the `onChainTransaction`
+         * on the transaction's source or destination.
          */
         fun transactionHash(transactionHash: String) =
             transactionHash(JsonField.of(transactionHash))
