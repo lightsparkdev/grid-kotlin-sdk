@@ -27,7 +27,6 @@ internal class TransferOutRequestTest {
                 )
                 .amount(12550L)
                 .remittanceInformation("12345")
-                .scaFactor(TransferOutRequest.ScaFactor.SMS_OTP)
                 .build()
 
         assertThat(transferOutRequest.destination())
@@ -45,7 +44,6 @@ internal class TransferOutRequestTest {
             )
         assertThat(transferOutRequest.amount()).isEqualTo(12550L)
         assertThat(transferOutRequest.remittanceInformation()).isEqualTo("12345")
-        assertThat(transferOutRequest.scaFactor()).isEqualTo(TransferOutRequest.ScaFactor.SMS_OTP)
     }
 
     @Test
@@ -66,7 +64,6 @@ internal class TransferOutRequestTest {
                 )
                 .amount(12550L)
                 .remittanceInformation("12345")
-                .scaFactor(TransferOutRequest.ScaFactor.SMS_OTP)
                 .build()
 
         val roundtrippedTransferOutRequest =
