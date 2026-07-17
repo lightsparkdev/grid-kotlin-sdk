@@ -136,7 +136,7 @@ class QuoteServiceImpl internal constructor(private val clientOptions: ClientOpt
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("quotes", params._pathParam(0), "execute")
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(
                         clientOptions,

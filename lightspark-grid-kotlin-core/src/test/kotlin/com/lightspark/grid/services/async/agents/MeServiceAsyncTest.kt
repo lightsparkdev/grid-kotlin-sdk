@@ -107,6 +107,7 @@ internal class MeServiceAsyncTest {
                             )
                             .amount(12550L)
                             .remittanceInformation("12345")
+                            .scaFactor(TransferOutRequest.ScaFactor.SMS_OTP)
                             .build()
                     )
                     .build()

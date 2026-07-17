@@ -112,6 +112,21 @@ internal class QuoteTest {
                         .build()
                 )
                 .remittanceInformation("12345")
+                .scaChallenge(
+                    Quote.ScaChallenge.builder()
+                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                        .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                        .addPasskeyAllowedOrigin("https://app.example.com")
+                        .passkeyAssertionOptions(
+                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .purpose("PAYOUT")
+                        .build()
+                )
                 .build()
 
         assertThat(quote.id()).isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
@@ -213,6 +228,22 @@ internal class QuoteTest {
                     .build()
             )
         assertThat(quote.remittanceInformation()).isEqualTo("12345")
+        assertThat(quote.scaChallenge())
+            .isEqualTo(
+                Quote.ScaChallenge.builder()
+                    .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                    .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                    .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                    .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                    .addPasskeyAllowedOrigin("https://app.example.com")
+                    .passkeyAssertionOptions(
+                        Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .purpose("PAYOUT")
+                    .build()
+            )
     }
 
     @Test
@@ -317,6 +348,21 @@ internal class QuoteTest {
                         .build()
                 )
                 .remittanceInformation("12345")
+                .scaChallenge(
+                    Quote.ScaChallenge.builder()
+                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                        .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                        .addPasskeyAllowedOrigin("https://app.example.com")
+                        .passkeyAssertionOptions(
+                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .purpose("PAYOUT")
+                        .build()
+                )
                 .build()
 
         val roundtrippedQuote =

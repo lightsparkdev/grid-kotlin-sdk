@@ -221,13 +221,14 @@ private constructor(
     /**
      * Status of an outgoing payment transaction.
      *
-     * | Status       | Description                                             |
-     * |--------------|---------------------------------------------------------|
-     * | `PENDING`    | Quote is pending confirmation                           |
-     * | `EXPIRED`    | Quote wasn't executed before expiry window              |
-     * | `PROCESSING` | Executing the quote after receiving funds               |
-     * | `COMPLETED`  | Payout successfully reached the destination             |
-     * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+     * |Status                 |Description                                                                                                                                                           |
+     * |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING`              |Quote is pending confirmation                                                                                                                                         |
+     * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU); authorize the transaction's `scaChallenge` to proceed.|
+     * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                            |
+     * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                             |
+     * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                           |
+     * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                               |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -838,13 +839,14 @@ private constructor(
         /**
          * Status of an outgoing payment transaction.
          *
-         * | Status       | Description                                             |
-         * |--------------|---------------------------------------------------------|
-         * | `PENDING`    | Quote is pending confirmation                           |
-         * | `EXPIRED`    | Quote wasn't executed before expiry window              |
-         * | `PROCESSING` | Executing the quote after receiving funds               |
-         * | `COMPLETED`  | Payout successfully reached the destination             |
-         * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+         * |Status                 |Description                                                                                                                                                           |
+         * |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`PENDING`              |Quote is pending confirmation                                                                                                                                         |
+         * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU); authorize the transaction's `scaChallenge` to proceed.|
+         * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                            |
+         * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                             |
+         * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                           |
+         * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                               |
          */
         fun status(status: Status) = status(JsonField.of(status))
 
@@ -1483,13 +1485,14 @@ private constructor(
     /**
      * Status of an outgoing payment transaction.
      *
-     * | Status       | Description                                             |
-     * |--------------|---------------------------------------------------------|
-     * | `PENDING`    | Quote is pending confirmation                           |
-     * | `EXPIRED`    | Quote wasn't executed before expiry window              |
-     * | `PROCESSING` | Executing the quote after receiving funds               |
-     * | `COMPLETED`  | Payout successfully reached the destination             |
-     * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+     * |Status                 |Description                                                                                                                                                           |
+     * |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING`              |Quote is pending confirmation                                                                                                                                         |
+     * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU); authorize the transaction's `scaChallenge` to proceed.|
+     * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                            |
+     * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                             |
+     * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                           |
+     * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                               |
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -1507,6 +1510,8 @@ private constructor(
 
             val PENDING = of("PENDING")
 
+            val PENDING_AUTHORIZATION = of("PENDING_AUTHORIZATION")
+
             val PROCESSING = of("PROCESSING")
 
             val COMPLETED = of("COMPLETED")
@@ -1521,6 +1526,7 @@ private constructor(
         /** An enum containing [Status]'s known values. */
         enum class Known {
             PENDING,
+            PENDING_AUTHORIZATION,
             PROCESSING,
             COMPLETED,
             FAILED,
@@ -1538,6 +1544,7 @@ private constructor(
          */
         enum class Value {
             PENDING,
+            PENDING_AUTHORIZATION,
             PROCESSING,
             COMPLETED,
             FAILED,
@@ -1556,6 +1563,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING -> Value.PENDING
+                PENDING_AUTHORIZATION -> Value.PENDING_AUTHORIZATION
                 PROCESSING -> Value.PROCESSING
                 COMPLETED -> Value.COMPLETED
                 FAILED -> Value.FAILED
@@ -1575,6 +1583,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING -> Known.PENDING
+                PENDING_AUTHORIZATION -> Known.PENDING_AUTHORIZATION
                 PROCESSING -> Known.PROCESSING
                 COMPLETED -> Known.COMPLETED
                 FAILED -> Known.FAILED
