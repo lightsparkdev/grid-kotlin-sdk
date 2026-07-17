@@ -24,7 +24,6 @@ private constructor(
     private val source: JsonField<InternalAccountReference>,
     private val amount: JsonField<Long>,
     private val remittanceInformation: JsonField<String>,
-    private val scaFactor: JsonField<ScaFactor>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -40,10 +39,7 @@ private constructor(
         @JsonProperty("remittanceInformation")
         @ExcludeMissing
         remittanceInformation: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("scaFactor")
-        @ExcludeMissing
-        scaFactor: JsonField<ScaFactor> = JsonMissing.of(),
-    ) : this(destination, source, amount, remittanceInformation, scaFactor, mutableMapOf())
+    ) : this(destination, source, amount, remittanceInformation, mutableMapOf())
 
     /**
      * Destination external account details
@@ -82,17 +78,6 @@ private constructor(
         remittanceInformation.getNullable("remittanceInformation")
 
     /**
-     * Optional preferred factor for the Strong Customer Authentication challenge this call issues.
-     * Only relevant for customers in a region where SCA is required (e.g. EU); ignored otherwise.
-     * Valid values for a per-transaction challenge are `SMS_OTP` (default) and `PASSKEY` — `TOTP`
-     * cannot carry the required dynamic linking and is rejected here. Omit to default to `SMS_OTP`.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun scaFactor(): ScaFactor? = scaFactor.getNullable("scaFactor")
-
-    /**
      * Returns the raw JSON value of [destination].
      *
      * Unlike [destination], this method doesn't throw if the JSON field has an unexpected type.
@@ -127,13 +112,6 @@ private constructor(
     @ExcludeMissing
     fun _remittanceInformation(): JsonField<String> = remittanceInformation
 
-    /**
-     * Returns the raw JSON value of [scaFactor].
-     *
-     * Unlike [scaFactor], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("scaFactor") @ExcludeMissing fun _scaFactor(): JsonField<ScaFactor> = scaFactor
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -167,7 +145,6 @@ private constructor(
         private var source: JsonField<InternalAccountReference>? = null
         private var amount: JsonField<Long> = JsonMissing.of()
         private var remittanceInformation: JsonField<String> = JsonMissing.of()
-        private var scaFactor: JsonField<ScaFactor> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(transferOutRequest: TransferOutRequest) = apply {
@@ -175,7 +152,6 @@ private constructor(
             source = transferOutRequest.source
             amount = transferOutRequest.amount
             remittanceInformation = transferOutRequest.remittanceInformation
-            scaFactor = transferOutRequest.scaFactor
             additionalProperties = transferOutRequest.additionalProperties.toMutableMap()
         }
 
@@ -238,24 +214,6 @@ private constructor(
             this.remittanceInformation = remittanceInformation
         }
 
-        /**
-         * Optional preferred factor for the Strong Customer Authentication challenge this call
-         * issues. Only relevant for customers in a region where SCA is required (e.g. EU); ignored
-         * otherwise. Valid values for a per-transaction challenge are `SMS_OTP` (default) and
-         * `PASSKEY` — `TOTP` cannot carry the required dynamic linking and is rejected here. Omit
-         * to default to `SMS_OTP`.
-         */
-        fun scaFactor(scaFactor: ScaFactor) = scaFactor(JsonField.of(scaFactor))
-
-        /**
-         * Sets [Builder.scaFactor] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.scaFactor] with a well-typed [ScaFactor] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun scaFactor(scaFactor: JsonField<ScaFactor>) = apply { this.scaFactor = scaFactor }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -294,7 +252,6 @@ private constructor(
                 checkRequired("source", source),
                 amount,
                 remittanceInformation,
-                scaFactor,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -318,7 +275,6 @@ private constructor(
         source().validate()
         amount()
         remittanceInformation()
-        scaFactor()?.validate()
         validated = true
     }
 
@@ -339,8 +295,7 @@ private constructor(
         (destination.asKnown()?.validity() ?: 0) +
             (source.asKnown()?.validity() ?: 0) +
             (if (amount.asKnown() == null) 0 else 1) +
-            (if (remittanceInformation.asKnown() == null) 0 else 1) +
-            (scaFactor.asKnown()?.validity() ?: 0)
+            (if (remittanceInformation.asKnown() == null) 0 else 1)
 
     /** Destination external account details */
     class Destination
@@ -829,154 +784,6 @@ private constructor(
             "Destination{accountId=$accountId, paymentRail=$paymentRail, additionalProperties=$additionalProperties}"
     }
 
-    /**
-     * Optional preferred factor for the Strong Customer Authentication challenge this call issues.
-     * Only relevant for customers in a region where SCA is required (e.g. EU); ignored otherwise.
-     * Valid values for a per-transaction challenge are `SMS_OTP` (default) and `PASSKEY` — `TOTP`
-     * cannot carry the required dynamic linking and is rejected here. Omit to default to `SMS_OTP`.
-     */
-    class ScaFactor @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val SMS_OTP = of("SMS_OTP")
-
-            val TOTP = of("TOTP")
-
-            val PASSKEY = of("PASSKEY")
-
-            fun of(value: String) = ScaFactor(JsonField.of(value))
-        }
-
-        /** An enum containing [ScaFactor]'s known values. */
-        enum class Known {
-            SMS_OTP,
-            TOTP,
-            PASSKEY,
-        }
-
-        /**
-         * An enum containing [ScaFactor]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [ScaFactor] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            SMS_OTP,
-            TOTP,
-            PASSKEY,
-            /**
-             * An enum member indicating that [ScaFactor] was instantiated with an unknown value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                SMS_OTP -> Value.SMS_OTP
-                TOTP -> Value.TOTP
-                PASSKEY -> Value.PASSKEY
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                SMS_OTP -> Known.SMS_OTP
-                TOTP -> Known.TOTP
-                PASSKEY -> Known.PASSKEY
-                else -> throw LightsparkGridInvalidDataException("Unknown ScaFactor: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): ScaFactor = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is ScaFactor && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -987,23 +794,15 @@ private constructor(
             source == other.source &&
             amount == other.amount &&
             remittanceInformation == other.remittanceInformation &&
-            scaFactor == other.scaFactor &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(
-            destination,
-            source,
-            amount,
-            remittanceInformation,
-            scaFactor,
-            additionalProperties,
-        )
+        Objects.hash(destination, source, amount, remittanceInformation, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, remittanceInformation=$remittanceInformation, scaFactor=$scaFactor, additionalProperties=$additionalProperties}"
+        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, remittanceInformation=$remittanceInformation, additionalProperties=$additionalProperties}"
 }
