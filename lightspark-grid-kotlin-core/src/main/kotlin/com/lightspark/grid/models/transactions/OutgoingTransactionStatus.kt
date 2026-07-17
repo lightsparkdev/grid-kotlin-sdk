@@ -10,13 +10,14 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 /**
  * Status of an outgoing payment transaction.
  *
- * | Status       | Description                                             |
- * |--------------|---------------------------------------------------------|
- * | `PENDING`    | Quote is pending confirmation                           |
- * | `EXPIRED`    | Quote wasn't executed before expiry window              |
- * | `PROCESSING` | Executing the quote after receiving funds               |
- * | `COMPLETED`  | Payout successfully reached the destination             |
- * | `FAILED`     | Something went wrong — accompanied by a `failureReason` |
+ * |Status                 |Description                                                                                                                                                           |
+ * |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * |`PENDING`              |Quote is pending confirmation                                                                                                                                         |
+ * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU); authorize the transaction's `scaChallenge` to proceed.|
+ * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                            |
+ * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                             |
+ * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                           |
+ * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                               |
  */
 class OutgoingTransactionStatus
 @JsonCreator
@@ -35,6 +36,8 @@ private constructor(private val value: JsonField<String>) : Enum {
 
         val PENDING = of("PENDING")
 
+        val PENDING_AUTHORIZATION = of("PENDING_AUTHORIZATION")
+
         val EXPIRED = of("EXPIRED")
 
         val PROCESSING = of("PROCESSING")
@@ -49,6 +52,7 @@ private constructor(private val value: JsonField<String>) : Enum {
     /** An enum containing [OutgoingTransactionStatus]'s known values. */
     enum class Known {
         PENDING,
+        PENDING_AUTHORIZATION,
         EXPIRED,
         PROCESSING,
         COMPLETED,
@@ -67,6 +71,7 @@ private constructor(private val value: JsonField<String>) : Enum {
      */
     enum class Value {
         PENDING,
+        PENDING_AUTHORIZATION,
         EXPIRED,
         PROCESSING,
         COMPLETED,
@@ -88,6 +93,7 @@ private constructor(private val value: JsonField<String>) : Enum {
     fun value(): Value =
         when (this) {
             PENDING -> Value.PENDING
+            PENDING_AUTHORIZATION -> Value.PENDING_AUTHORIZATION
             EXPIRED -> Value.EXPIRED
             PROCESSING -> Value.PROCESSING
             COMPLETED -> Value.COMPLETED
@@ -107,6 +113,7 @@ private constructor(private val value: JsonField<String>) : Enum {
     fun known(): Known =
         when (this) {
             PENDING -> Known.PENDING
+            PENDING_AUTHORIZATION -> Known.PENDING_AUTHORIZATION
             EXPIRED -> Known.EXPIRED
             PROCESSING -> Known.PROCESSING
             COMPLETED -> Known.COMPLETED

@@ -61,6 +61,7 @@ internal class ServiceParamsTest {
                         .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
                         .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
                         .remittanceInformation("12345")
+                        .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                         .senderCustomerInfo(
                             QuoteRequest.SenderCustomerInfo.builder()
                                 .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

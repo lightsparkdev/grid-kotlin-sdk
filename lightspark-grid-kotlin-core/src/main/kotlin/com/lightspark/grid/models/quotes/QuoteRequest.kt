@@ -29,6 +29,7 @@ private constructor(
     private val lookupId: JsonField<String>,
     private val purposeOfPayment: JsonField<PurposeOfPayment>,
     private val remittanceInformation: JsonField<String>,
+    private val scaFactor: JsonField<ScaFactor>,
     private val senderCustomerInfo: JsonField<SenderCustomerInfo>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -60,6 +61,9 @@ private constructor(
         @JsonProperty("remittanceInformation")
         @ExcludeMissing
         remittanceInformation: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("scaFactor")
+        @ExcludeMissing
+        scaFactor: JsonField<ScaFactor> = JsonMissing.of(),
         @JsonProperty("senderCustomerInfo")
         @ExcludeMissing
         senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of(),
@@ -73,6 +77,7 @@ private constructor(
         lookupId,
         purposeOfPayment,
         remittanceInformation,
+        scaFactor,
         senderCustomerInfo,
         mutableMapOf(),
     )
@@ -167,6 +172,18 @@ private constructor(
      */
     fun remittanceInformation(): String? =
         remittanceInformation.getNullable("remittanceInformation")
+
+    /**
+     * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+     * creation. Only relevant for a realtime-funding source in a region where SCA is required (e.g.
+     * EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP` cannot
+     * carry the required dynamic linking and is rejected. When the quote is returned in
+     * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun scaFactor(): ScaFactor? = scaFactor.getNullable("scaFactor")
 
     /**
      * Key-value pairs of additional information about the sender which was requested by the
@@ -264,6 +281,13 @@ private constructor(
     fun _remittanceInformation(): JsonField<String> = remittanceInformation
 
     /**
+     * Returns the raw JSON value of [scaFactor].
+     *
+     * Unlike [scaFactor], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("scaFactor") @ExcludeMissing fun _scaFactor(): JsonField<ScaFactor> = scaFactor
+
+    /**
      * Returns the raw JSON value of [senderCustomerInfo].
      *
      * Unlike [senderCustomerInfo], this method doesn't throw if the JSON field has an unexpected
@@ -313,6 +337,7 @@ private constructor(
         private var lookupId: JsonField<String> = JsonMissing.of()
         private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
         private var remittanceInformation: JsonField<String> = JsonMissing.of()
+        private var scaFactor: JsonField<ScaFactor> = JsonMissing.of()
         private var senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -326,6 +351,7 @@ private constructor(
             lookupId = quoteRequest.lookupId
             purposeOfPayment = quoteRequest.purposeOfPayment
             remittanceInformation = quoteRequest.remittanceInformation
+            scaFactor = quoteRequest.scaFactor
             senderCustomerInfo = quoteRequest.senderCustomerInfo
             additionalProperties = quoteRequest.additionalProperties.toMutableMap()
         }
@@ -487,6 +513,24 @@ private constructor(
         }
 
         /**
+         * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+         * creation. Only relevant for a realtime-funding source in a region where SCA is required
+         * (e.g. EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP`
+         * cannot carry the required dynamic linking and is rejected. When the quote is returned in
+         * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+         */
+        fun scaFactor(scaFactor: ScaFactor) = scaFactor(JsonField.of(scaFactor))
+
+        /**
+         * Sets [Builder.scaFactor] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.scaFactor] with a well-typed [ScaFactor] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun scaFactor(scaFactor: JsonField<ScaFactor>) = apply { this.scaFactor = scaFactor }
+
+        /**
          * Key-value pairs of additional information about the sender which was requested by the
          * destination. This is relevant when the destination requires more sender info than was
          * provided during customer creation. Any fields specified in `requiredPayerDataFields` from
@@ -554,6 +598,7 @@ private constructor(
                 lookupId,
                 purposeOfPayment,
                 remittanceInformation,
+                scaFactor,
                 senderCustomerInfo,
                 additionalProperties.toMutableMap(),
             )
@@ -581,6 +626,7 @@ private constructor(
         lookupId()
         purposeOfPayment()?.validate()
         remittanceInformation()
+        scaFactor()?.validate()
         senderCustomerInfo()?.validate()
         validated = true
     }
@@ -606,6 +652,7 @@ private constructor(
             (if (lookupId.asKnown() == null) 0 else 1) +
             (purposeOfPayment.asKnown()?.validity() ?: 0) +
             (if (remittanceInformation.asKnown() == null) 0 else 1) +
+            (scaFactor.asKnown()?.validity() ?: 0) +
             (senderCustomerInfo.asKnown()?.validity() ?: 0)
 
     /**
@@ -969,6 +1016,155 @@ private constructor(
     }
 
     /**
+     * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+     * creation. Only relevant for a realtime-funding source in a region where SCA is required (e.g.
+     * EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP` cannot
+     * carry the required dynamic linking and is rejected. When the quote is returned in
+     * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+     */
+    class ScaFactor @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val SMS_OTP = of("SMS_OTP")
+
+            val TOTP = of("TOTP")
+
+            val PASSKEY = of("PASSKEY")
+
+            fun of(value: String) = ScaFactor(JsonField.of(value))
+        }
+
+        /** An enum containing [ScaFactor]'s known values. */
+        enum class Known {
+            SMS_OTP,
+            TOTP,
+            PASSKEY,
+        }
+
+        /**
+         * An enum containing [ScaFactor]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [ScaFactor] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            SMS_OTP,
+            TOTP,
+            PASSKEY,
+            /**
+             * An enum member indicating that [ScaFactor] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                SMS_OTP -> Value.SMS_OTP
+                TOTP -> Value.TOTP
+                PASSKEY -> Value.PASSKEY
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                SMS_OTP -> Known.SMS_OTP
+                TOTP -> Known.TOTP
+                PASSKEY -> Known.PASSKEY
+                else -> throw LightsparkGridInvalidDataException("Unknown ScaFactor: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): ScaFactor = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ScaFactor && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
      * Key-value pairs of additional information about the sender which was requested by the
      * destination. This is relevant when the destination requires more sender info than was
      * provided during customer creation. Any fields specified in `requiredPayerDataFields` from the
@@ -1098,6 +1294,7 @@ private constructor(
             lookupId == other.lookupId &&
             purposeOfPayment == other.purposeOfPayment &&
             remittanceInformation == other.remittanceInformation &&
+            scaFactor == other.scaFactor &&
             senderCustomerInfo == other.senderCustomerInfo &&
             additionalProperties == other.additionalProperties
     }
@@ -1113,6 +1310,7 @@ private constructor(
             lookupId,
             purposeOfPayment,
             remittanceInformation,
+            scaFactor,
             senderCustomerInfo,
             additionalProperties,
         )
@@ -1121,5 +1319,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, remittanceInformation=$remittanceInformation, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
+        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, remittanceInformation=$remittanceInformation, scaFactor=$scaFactor, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
 }
