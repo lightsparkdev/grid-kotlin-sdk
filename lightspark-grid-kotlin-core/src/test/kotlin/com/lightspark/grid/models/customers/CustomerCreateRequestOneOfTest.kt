@@ -98,17 +98,6 @@ internal class CustomerCreateRequestOneOfTest {
     fun ofBusiness() {
         val business =
             BusinessCustomerCreateRequest.builder()
-                .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
-                .address(
-                    Address.builder()
-                        .country("US")
-                        .line1("123 Main Street")
-                        .postalCode("94105")
-                        .city("San Francisco")
-                        .line2("Apt 4B")
-                        .state("CA")
-                        .build()
-                )
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
@@ -146,6 +135,17 @@ internal class CustomerCreateRequestOneOfTest {
                         .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .build()
                 )
+                .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                .address(
+                    Address.builder()
+                        .country("US")
+                        .line1("123 Main Street")
+                        .postalCode("94105")
+                        .city("San Francisco")
+                        .line2("Apt 4B")
+                        .state("CA")
+                        .build()
+                )
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
@@ -168,17 +168,6 @@ internal class CustomerCreateRequestOneOfTest {
         val customerCreateRequestOneOf =
             CustomerCreateRequestOneOf.ofBusiness(
                 BusinessCustomerCreateRequest.builder()
-                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
-                    .address(
-                        Address.builder()
-                            .country("US")
-                            .line1("123 Main Street")
-                            .postalCode("94105")
-                            .city("San Francisco")
-                            .line2("Apt 4B")
-                            .state("CA")
-                            .build()
-                    )
                     .businessInfo(
                         BusinessCustomerCreateRequest.BusinessInfo.builder()
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
@@ -216,6 +205,17 @@ internal class CustomerCreateRequestOneOfTest {
                             )
                             .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
                             .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                            .build()
+                    )
+                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                    .address(
+                        Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
                             .build()
                     )
                     .addCurrency("USD")

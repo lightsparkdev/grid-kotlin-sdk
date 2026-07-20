@@ -23,9 +23,9 @@ import java.util.Objects
 class BusinessCustomerCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
+    private val businessInfo: JsonField<BusinessInfo>,
     private val customerType: JsonField<CustomerType>,
     private val address: JsonField<Address>,
-    private val businessInfo: JsonField<BusinessInfo>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
     private val kybStatus: JsonField<KybStatus>,
@@ -38,13 +38,13 @@ private constructor(
 
     @JsonCreator
     private constructor(
+        @JsonProperty("businessInfo")
+        @ExcludeMissing
+        businessInfo: JsonField<BusinessInfo> = JsonMissing.of(),
         @JsonProperty("customerType")
         @ExcludeMissing
         customerType: JsonField<CustomerType> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
-        @JsonProperty("businessInfo")
-        @ExcludeMissing
-        businessInfo: JsonField<BusinessInfo> = JsonMissing.of(),
         @JsonProperty("currencies")
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
@@ -61,9 +61,9 @@ private constructor(
         @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
         @JsonProperty("umaAddress") @ExcludeMissing umaAddress: JsonField<String> = JsonMissing.of(),
     ) : this(
+        businessInfo,
         customerType,
         address,
-        businessInfo,
         currencies,
         email,
         kybStatus,
@@ -73,6 +73,14 @@ private constructor(
         umaAddress,
         mutableMapOf(),
     )
+
+    /**
+     * Additional information required for business entities
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun businessInfo(): BusinessInfo = businessInfo.getRequired("businessInfo")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -85,14 +93,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun address(): Address? = address.getNullable("address")
-
-    /**
-     * Additional information required for business entities
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun businessInfo(): BusinessInfo? = businessInfo.getNullable("businessInfo")
 
     /**
      * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR"; tickers
@@ -163,6 +163,15 @@ private constructor(
     fun umaAddress(): String? = umaAddress.getNullable("umaAddress")
 
     /**
+     * Returns the raw JSON value of [businessInfo].
+     *
+     * Unlike [businessInfo], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("businessInfo")
+    @ExcludeMissing
+    fun _businessInfo(): JsonField<BusinessInfo> = businessInfo
+
+    /**
      * Returns the raw JSON value of [customerType].
      *
      * Unlike [customerType], this method doesn't throw if the JSON field has an unexpected type.
@@ -177,15 +186,6 @@ private constructor(
      * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
-
-    /**
-     * Returns the raw JSON value of [businessInfo].
-     *
-     * Unlike [businessInfo], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("businessInfo")
-    @ExcludeMissing
-    fun _businessInfo(): JsonField<BusinessInfo> = businessInfo
 
     /**
      * Returns the raw JSON value of [currencies].
@@ -261,6 +261,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .businessInfo()
          * .customerType()
          * ```
          */
@@ -270,9 +271,9 @@ private constructor(
     /** A builder for [BusinessCustomerCreateRequest]. */
     class Builder internal constructor() {
 
+        private var businessInfo: JsonField<BusinessInfo>? = null
         private var customerType: JsonField<CustomerType>? = null
         private var address: JsonField<Address> = JsonMissing.of()
-        private var businessInfo: JsonField<BusinessInfo> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
         private var kybStatus: JsonField<KybStatus> = JsonMissing.of()
@@ -283,9 +284,9 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(businessCustomerCreateRequest: BusinessCustomerCreateRequest) = apply {
+            businessInfo = businessCustomerCreateRequest.businessInfo
             customerType = businessCustomerCreateRequest.customerType
             address = businessCustomerCreateRequest.address
-            businessInfo = businessCustomerCreateRequest.businessInfo
             currencies = businessCustomerCreateRequest.currencies.map { it.toMutableList() }
             email = businessCustomerCreateRequest.email
             kybStatus = businessCustomerCreateRequest.kybStatus
@@ -294,6 +295,20 @@ private constructor(
             region = businessCustomerCreateRequest.region
             umaAddress = businessCustomerCreateRequest.umaAddress
             additionalProperties = businessCustomerCreateRequest.additionalProperties.toMutableMap()
+        }
+
+        /** Additional information required for business entities */
+        fun businessInfo(businessInfo: BusinessInfo) = businessInfo(JsonField.of(businessInfo))
+
+        /**
+         * Sets [Builder.businessInfo] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.businessInfo] with a well-typed [BusinessInfo] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun businessInfo(businessInfo: JsonField<BusinessInfo>) = apply {
+            this.businessInfo = businessInfo
         }
 
         fun customerType(customerType: CustomerType) = customerType(JsonField.of(customerType))
@@ -318,20 +333,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun address(address: JsonField<Address>) = apply { this.address = address }
-
-        /** Additional information required for business entities */
-        fun businessInfo(businessInfo: BusinessInfo) = businessInfo(JsonField.of(businessInfo))
-
-        /**
-         * Sets [Builder.businessInfo] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.businessInfo] with a well-typed [BusinessInfo] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun businessInfo(businessInfo: JsonField<BusinessInfo>) = apply {
-            this.businessInfo = businessInfo
-        }
 
         /**
          * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
@@ -482,6 +483,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .businessInfo()
          * .customerType()
          * ```
          *
@@ -489,9 +491,9 @@ private constructor(
          */
         fun build(): BusinessCustomerCreateRequest =
             BusinessCustomerCreateRequest(
+                checkRequired("businessInfo", businessInfo),
                 checkRequired("customerType", customerType),
                 address,
-                businessInfo,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
                 kybStatus,
@@ -518,9 +520,9 @@ private constructor(
             return@apply
         }
 
+        businessInfo().validate()
         customerType().validate()
         address()?.validate()
-        businessInfo()?.validate()
         currencies()
         email()
         kybStatus()?.validate()
@@ -545,9 +547,9 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (customerType.asKnown()?.validity() ?: 0) +
+        (businessInfo.asKnown()?.validity() ?: 0) +
+            (customerType.asKnown()?.validity() ?: 0) +
             (address.asKnown()?.validity() ?: 0) +
-            (businessInfo.asKnown()?.validity() ?: 0) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
             (kybStatus.asKnown()?.validity() ?: 0) +
@@ -555,137 +557,6 @@ private constructor(
             (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1)
-
-    class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
-        Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val BUSINESS = of("BUSINESS")
-
-            fun of(value: String) = CustomerType(JsonField.of(value))
-        }
-
-        /** An enum containing [CustomerType]'s known values. */
-        enum class Known {
-            BUSINESS
-        }
-
-        /**
-         * An enum containing [CustomerType]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [CustomerType] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            BUSINESS,
-            /**
-             * An enum member indicating that [CustomerType] was instantiated with an unknown value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                BUSINESS -> Value.BUSINESS
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                BUSINESS -> Known.BUSINESS
-                else -> throw LightsparkGridInvalidDataException("Unknown CustomerType: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): CustomerType = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is CustomerType && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
 
     /** Additional information required for business entities */
     class BusinessInfo
@@ -2720,6 +2591,137 @@ private constructor(
             "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, naicsCode=$naicsCode, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, additionalProperties=$additionalProperties}"
     }
 
+    class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val BUSINESS = of("BUSINESS")
+
+            fun of(value: String) = CustomerType(JsonField.of(value))
+        }
+
+        /** An enum containing [CustomerType]'s known values. */
+        enum class Known {
+            BUSINESS
+        }
+
+        /**
+         * An enum containing [CustomerType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [CustomerType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            BUSINESS,
+            /**
+             * An enum member indicating that [CustomerType] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                BUSINESS -> Value.BUSINESS
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                BUSINESS -> Known.BUSINESS
+                else -> throw LightsparkGridInvalidDataException("Unknown CustomerType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CustomerType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CustomerType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     /**
      * The current KYB status of a business customer. `HOLD` means the customer is placed on hold
      * and may be required to update or provide more information.
@@ -2884,9 +2886,9 @@ private constructor(
         }
 
         return other is BusinessCustomerCreateRequest &&
+            businessInfo == other.businessInfo &&
             customerType == other.customerType &&
             address == other.address &&
-            businessInfo == other.businessInfo &&
             currencies == other.currencies &&
             email == other.email &&
             kybStatus == other.kybStatus &&
@@ -2899,9 +2901,9 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
+            businessInfo,
             customerType,
             address,
-            businessInfo,
             currencies,
             email,
             kybStatus,
@@ -2916,5 +2918,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BusinessCustomerCreateRequest{customerType=$customerType, address=$address, businessInfo=$businessInfo, currencies=$currencies, email=$email, kybStatus=$kybStatus, phoneNumber=$phoneNumber, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "BusinessCustomerCreateRequest{businessInfo=$businessInfo, customerType=$customerType, address=$address, currencies=$currencies, email=$email, kybStatus=$kybStatus, phoneNumber=$phoneNumber, platformCustomerId=$platformCustomerId, region=$region, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }
