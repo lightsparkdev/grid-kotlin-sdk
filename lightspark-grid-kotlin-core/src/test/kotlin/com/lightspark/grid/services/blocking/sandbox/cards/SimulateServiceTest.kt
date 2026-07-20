@@ -28,7 +28,7 @@ internal class SimulateServiceTest {
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
-        val cardTransaction =
+        val response =
             simulateService.authorization(
                 SimulateAuthorizationParams.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -55,7 +55,7 @@ internal class SimulateServiceTest {
                     .build()
             )
 
-        cardTransaction.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -70,7 +70,7 @@ internal class SimulateServiceTest {
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
-        val cardTransaction =
+        val response =
             simulateService.clearing(
                 SimulateClearingParams.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -85,7 +85,7 @@ internal class SimulateServiceTest {
                     .build()
             )
 
-        cardTransaction.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -100,7 +100,7 @@ internal class SimulateServiceTest {
                 .build()
         val simulateService = client.sandbox().cards().simulate()
 
-        val cardTransaction =
+        val response =
             simulateService.return_(
                 SimulateReturnParams.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -115,6 +115,6 @@ internal class SimulateServiceTest {
                     .build()
             )
 
-        cardTransaction.validate()
+        response.validate()
     }
 }
