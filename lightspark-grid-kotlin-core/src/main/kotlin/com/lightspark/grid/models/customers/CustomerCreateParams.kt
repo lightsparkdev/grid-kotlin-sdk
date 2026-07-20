@@ -70,6 +70,25 @@ private constructor(
         fun createCustomerRequest(business: BusinessCustomerCreateRequest) =
             createCustomerRequest(CustomerCreateRequestOneOf.ofBusiness(business))
 
+        /**
+         * Alias for calling [createCustomerRequest] with the following:
+         * ```kotlin
+         * BusinessCustomerCreateRequest.builder()
+         *     .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+         *     .businessInfo(businessInfo)
+         *     .build()
+         * ```
+         */
+        fun businessCreateCustomerRequest(
+            businessInfo: BusinessCustomerCreateRequest.BusinessInfo
+        ) =
+            createCustomerRequest(
+                BusinessCustomerCreateRequest.builder()
+                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                    .businessInfo(businessInfo)
+                    .build()
+            )
+
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
             putAllAdditionalHeaders(additionalHeaders)
