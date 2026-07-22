@@ -15,6 +15,7 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
@@ -34,11 +35,14 @@ private constructor(
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val description: JsonField<String>,
+    private val exchangeRate: JsonField<Double>,
     private val failureReason: JsonField<FailureReason>,
     private val fees: JsonField<Long>,
-    private val rateDetails: JsonField<IncomingRateDetails>,
+    private val quoteId: JsonField<String>,
     private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
     private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
+    private val refund: JsonField<Refund>,
+    private val sentAmount: JsonField<CurrencyAmount>,
     private val settledAt: JsonField<OffsetDateTime>,
     private val source: JsonField<TransactionSourceOneOf>,
     private val updatedAt: JsonField<OffsetDateTime>,
@@ -75,19 +79,24 @@ private constructor(
         @JsonProperty("description")
         @ExcludeMissing
         description: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("exchangeRate")
+        @ExcludeMissing
+        exchangeRate: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("failureReason")
         @ExcludeMissing
         failureReason: JsonField<FailureReason> = JsonMissing.of(),
         @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("rateDetails")
-        @ExcludeMissing
-        rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of(),
+        @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("receiptDeliveryConfirmedAt")
         @ExcludeMissing
         receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("reconciliationInstructions")
         @ExcludeMissing
         reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
+        @JsonProperty("refund") @ExcludeMissing refund: JsonField<Refund> = JsonMissing.of(),
+        @JsonProperty("sentAmount")
+        @ExcludeMissing
+        sentAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
         @JsonProperty("settledAt")
         @ExcludeMissing
         settledAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -110,11 +119,14 @@ private constructor(
         counterpartyInformation,
         createdAt,
         description,
+        exchangeRate,
         failureReason,
         fees,
-        rateDetails,
+        quoteId,
         receiptDeliveryConfirmedAt,
         reconciliationInstructions,
+        refund,
+        sentAmount,
         settledAt,
         source,
         updatedAt,
@@ -233,6 +245,14 @@ private constructor(
     fun description(): String? = description.getNullable("description")
 
     /**
+     * Number of sending currency units per receiving currency unit.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun exchangeRate(): Double? = exchangeRate.getNullable("exchangeRate")
+
+    /**
      * If the transaction failed, this field provides the reason for failure.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -241,8 +261,8 @@ private constructor(
     fun failureReason(): FailureReason? = failureReason.getNullable("failureReason")
 
     /**
-     * The total fees available from the receive quote in the smallest unit of the receiving
-     * currency (eg. cents).
+     * The total fees available from the receive quote in the smallest unit of the sending currency
+     * (eg. cents).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -250,12 +270,12 @@ private constructor(
     fun fees(): Long? = fees.getNullable("fees")
 
     /**
-     * Details about the rate and fees for the transaction.
+     * The ID of the quote that was used to trigger this payment
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun rateDetails(): IncomingRateDetails? = rateDetails.getNullable("rateDetails")
+    fun quoteId(): String? = quoteId.getNullable("quoteId")
 
     /**
      * The time at which the platform confirmed delivery of the receipt to their customer.
@@ -274,6 +294,22 @@ private constructor(
      */
     fun reconciliationInstructions(): ReconciliationInstructions? =
         reconciliationInstructions.getNullable("reconciliationInstructions")
+
+    /**
+     * The refund if transaction was refunded.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun refund(): Refund? = refund.getNullable("refund")
+
+    /**
+     * Amount sent in the sender's currency
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun sentAmount(): CurrencyAmount? = sentAmount.getNullable("sentAmount")
 
     /**
      * When the payment was or will be settled
@@ -385,6 +421,15 @@ private constructor(
     @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
 
     /**
+     * Returns the raw JSON value of [exchangeRate].
+     *
+     * Unlike [exchangeRate], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("exchangeRate")
+    @ExcludeMissing
+    fun _exchangeRate(): JsonField<Double> = exchangeRate
+
+    /**
      * Returns the raw JSON value of [failureReason].
      *
      * Unlike [failureReason], this method doesn't throw if the JSON field has an unexpected type.
@@ -401,13 +446,11 @@ private constructor(
     @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
 
     /**
-     * Returns the raw JSON value of [rateDetails].
+     * Returns the raw JSON value of [quoteId].
      *
-     * Unlike [rateDetails], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("rateDetails")
-    @ExcludeMissing
-    fun _rateDetails(): JsonField<IncomingRateDetails> = rateDetails
+    @JsonProperty("quoteId") @ExcludeMissing fun _quoteId(): JsonField<String> = quoteId
 
     /**
      * Returns the raw JSON value of [receiptDeliveryConfirmedAt].
@@ -429,6 +472,22 @@ private constructor(
     @ExcludeMissing
     fun _reconciliationInstructions(): JsonField<ReconciliationInstructions> =
         reconciliationInstructions
+
+    /**
+     * Returns the raw JSON value of [refund].
+     *
+     * Unlike [refund], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("refund") @ExcludeMissing fun _refund(): JsonField<Refund> = refund
+
+    /**
+     * Returns the raw JSON value of [sentAmount].
+     *
+     * Unlike [sentAmount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("sentAmount")
+    @ExcludeMissing
+    fun _sentAmount(): JsonField<CurrencyAmount> = sentAmount
 
     /**
      * Returns the raw JSON value of [settledAt].
@@ -504,12 +563,15 @@ private constructor(
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
+        private var exchangeRate: JsonField<Double> = JsonMissing.of()
         private var failureReason: JsonField<FailureReason> = JsonMissing.of()
         private var fees: JsonField<Long> = JsonMissing.of()
-        private var rateDetails: JsonField<IncomingRateDetails> = JsonMissing.of()
+        private var quoteId: JsonField<String> = JsonMissing.of()
         private var receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
             JsonMissing.of()
+        private var refund: JsonField<Refund> = JsonMissing.of()
+        private var sentAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var settledAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var source: JsonField<TransactionSourceOneOf> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -528,11 +590,14 @@ private constructor(
             counterpartyInformation = incomingTransaction.counterpartyInformation
             createdAt = incomingTransaction.createdAt
             description = incomingTransaction.description
+            exchangeRate = incomingTransaction.exchangeRate
             failureReason = incomingTransaction.failureReason
             fees = incomingTransaction.fees
-            rateDetails = incomingTransaction.rateDetails
+            quoteId = incomingTransaction.quoteId
             receiptDeliveryConfirmedAt = incomingTransaction.receiptDeliveryConfirmedAt
             reconciliationInstructions = incomingTransaction.reconciliationInstructions
+            refund = incomingTransaction.refund
+            sentAmount = incomingTransaction.sentAmount
             settledAt = incomingTransaction.settledAt
             source = incomingTransaction.source
             updatedAt = incomingTransaction.updatedAt
@@ -700,6 +765,20 @@ private constructor(
          */
         fun description(description: JsonField<String>) = apply { this.description = description }
 
+        /** Number of sending currency units per receiving currency unit. */
+        fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
+
+        /**
+         * Sets [Builder.exchangeRate] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.exchangeRate] with a well-typed [Double] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun exchangeRate(exchangeRate: JsonField<Double>) = apply {
+            this.exchangeRate = exchangeRate
+        }
+
         /** If the transaction failed, this field provides the reason for failure. */
         fun failureReason(failureReason: FailureReason) = failureReason(JsonField.of(failureReason))
 
@@ -715,7 +794,7 @@ private constructor(
         }
 
         /**
-         * The total fees available from the receive quote in the smallest unit of the receiving
+         * The total fees available from the receive quote in the smallest unit of the sending
          * currency (eg. cents).
          */
         fun fees(fees: Long) = fees(JsonField.of(fees))
@@ -728,19 +807,16 @@ private constructor(
          */
         fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
 
-        /** Details about the rate and fees for the transaction. */
-        fun rateDetails(rateDetails: IncomingRateDetails) = rateDetails(JsonField.of(rateDetails))
+        /** The ID of the quote that was used to trigger this payment */
+        fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
 
         /**
-         * Sets [Builder.rateDetails] to an arbitrary JSON value.
+         * Sets [Builder.quoteId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.rateDetails] with a well-typed [IncomingRateDetails]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
+         * You should usually call [Builder.quoteId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun rateDetails(rateDetails: JsonField<IncomingRateDetails>) = apply {
-            this.rateDetails = rateDetails
-        }
+        fun quoteId(quoteId: JsonField<String>) = apply { this.quoteId = quoteId }
 
         /** The time at which the platform confirmed delivery of the receipt to their customer. */
         fun receiptDeliveryConfirmedAt(receiptDeliveryConfirmedAt: OffsetDateTime) =
@@ -772,6 +848,31 @@ private constructor(
         fun reconciliationInstructions(
             reconciliationInstructions: JsonField<ReconciliationInstructions>
         ) = apply { this.reconciliationInstructions = reconciliationInstructions }
+
+        /** The refund if transaction was refunded. */
+        fun refund(refund: Refund) = refund(JsonField.of(refund))
+
+        /**
+         * Sets [Builder.refund] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.refund] with a well-typed [Refund] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun refund(refund: JsonField<Refund>) = apply { this.refund = refund }
+
+        /** Amount sent in the sender's currency */
+        fun sentAmount(sentAmount: CurrencyAmount) = sentAmount(JsonField.of(sentAmount))
+
+        /**
+         * Sets [Builder.sentAmount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.sentAmount] with a well-typed [CurrencyAmount] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun sentAmount(sentAmount: JsonField<CurrencyAmount>) = apply {
+            this.sentAmount = sentAmount
+        }
 
         /** When the payment was or will be settled */
         fun settledAt(settledAt: OffsetDateTime) = settledAt(JsonField.of(settledAt))
@@ -860,11 +961,14 @@ private constructor(
                 counterpartyInformation,
                 createdAt,
                 description,
+                exchangeRate,
                 failureReason,
                 fees,
-                rateDetails,
+                quoteId,
                 receiptDeliveryConfirmedAt,
                 reconciliationInstructions,
+                refund,
+                sentAmount,
                 settledAt,
                 source,
                 updatedAt,
@@ -898,11 +1002,14 @@ private constructor(
         counterpartyInformation()?.validate()
         createdAt()
         description()
+        exchangeRate()
         failureReason()?.validate()
         fees()
-        rateDetails()?.validate()
+        quoteId()
         receiptDeliveryConfirmedAt()
         reconciliationInstructions()?.validate()
+        refund()?.validate()
+        sentAmount()?.validate()
         settledAt()
         updatedAt()
         validated = true
@@ -933,11 +1040,14 @@ private constructor(
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (if (description.asKnown() == null) 0 else 1) +
+            (if (exchangeRate.asKnown() == null) 0 else 1) +
             (failureReason.asKnown()?.validity() ?: 0) +
             (if (fees.asKnown() == null) 0 else 1) +
-            (rateDetails.asKnown()?.validity() ?: 0) +
+            (if (quoteId.asKnown() == null) 0 else 1) +
             (if (receiptDeliveryConfirmedAt.asKnown() == null) 0 else 1) +
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
+            (refund.asKnown()?.validity() ?: 0) +
+            (sentAmount.asKnown()?.validity() ?: 0) +
             (if (settledAt.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1)
 
@@ -1515,11 +1625,14 @@ private constructor(
             counterpartyInformation == other.counterpartyInformation &&
             createdAt == other.createdAt &&
             description == other.description &&
+            exchangeRate == other.exchangeRate &&
             failureReason == other.failureReason &&
             fees == other.fees &&
-            rateDetails == other.rateDetails &&
+            quoteId == other.quoteId &&
             receiptDeliveryConfirmedAt == other.receiptDeliveryConfirmedAt &&
             reconciliationInstructions == other.reconciliationInstructions &&
+            refund == other.refund &&
+            sentAmount == other.sentAmount &&
             settledAt == other.settledAt &&
             source == other.source &&
             updatedAt == other.updatedAt &&
@@ -1540,11 +1653,14 @@ private constructor(
             counterpartyInformation,
             createdAt,
             description,
+            exchangeRate,
             failureReason,
             fees,
-            rateDetails,
+            quoteId,
             receiptDeliveryConfirmedAt,
             reconciliationInstructions,
+            refund,
+            sentAmount,
             settledAt,
             source,
             updatedAt,
@@ -1555,5 +1671,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, failureReason=$failureReason, fees=$fees, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

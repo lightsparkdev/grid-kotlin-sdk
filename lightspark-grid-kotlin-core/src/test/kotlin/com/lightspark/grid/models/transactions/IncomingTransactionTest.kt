@@ -7,6 +7,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -47,22 +48,38 @@ internal class IncomingTransactionTest {
                 )
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
+                .exchangeRate(1.08)
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
-                .rateDetails(
-                    IncomingRateDetails.builder()
-                        .gridApiFixedFee(10L)
-                        .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30L)
-                        .gridApiVariableFeeRate(0.003)
-                        .build()
-                )
+                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(
                     ReconciliationInstructions.builder()
                         .reference("UMA-Q12345-REF")
                         .transactionHash(
                             "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
+                )
+                .refund(
+                    Refund.builder()
+                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .reference("UMA-Q12345-REFUND")
+                        .status(Refund.Status.COMPLETED)
+                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                        .build()
+                )
+                .sentAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
                         )
                         .build()
                 )
@@ -108,18 +125,12 @@ internal class IncomingTransactionTest {
         assertThat(incomingTransaction.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
         assertThat(incomingTransaction.description()).isEqualTo("Payment for invoice #1234")
+        assertThat(incomingTransaction.exchangeRate()).isEqualTo(1.08)
         assertThat(incomingTransaction.failureReason())
             .isEqualTo(IncomingTransaction.FailureReason.LNURLP_FAILED)
         assertThat(incomingTransaction.fees()).isEqualTo(10L)
-        assertThat(incomingTransaction.rateDetails())
-            .isEqualTo(
-                IncomingRateDetails.builder()
-                    .gridApiFixedFee(10L)
-                    .gridApiMultiplier(0.925)
-                    .gridApiVariableFeeAmount(30L)
-                    .gridApiVariableFeeRate(0.003)
-                    .build()
-            )
+        assertThat(incomingTransaction.quoteId())
+            .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(incomingTransaction.receiptDeliveryConfirmedAt())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
         assertThat(incomingTransaction.reconciliationInstructions())
@@ -128,6 +139,30 @@ internal class IncomingTransactionTest {
                     .reference("UMA-Q12345-REF")
                     .transactionHash(
                         "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                    )
+                    .build()
+            )
+        assertThat(incomingTransaction.refund())
+            .isEqualTo(
+                Refund.builder()
+                    .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .reference("UMA-Q12345-REFUND")
+                    .status(Refund.Status.COMPLETED)
+                    .reason(Refund.Reason.TRANSACTION_FAILED)
+                    .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                    .build()
+            )
+        assertThat(incomingTransaction.sentAmount())
+            .isEqualTo(
+                CurrencyAmount.builder()
+                    .amount(12550L)
+                    .currency(
+                        Currency.builder()
+                            .code("USD")
+                            .decimals(2L)
+                            .name("United States Dollar")
+                            .symbol("\$")
+                            .build()
                     )
                     .build()
             )
@@ -173,22 +208,38 @@ internal class IncomingTransactionTest {
                 )
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
+                .exchangeRate(1.08)
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
-                .rateDetails(
-                    IncomingRateDetails.builder()
-                        .gridApiFixedFee(10L)
-                        .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30L)
-                        .gridApiVariableFeeRate(0.003)
-                        .build()
-                )
+                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(
                     ReconciliationInstructions.builder()
                         .reference("UMA-Q12345-REF")
                         .transactionHash(
                             "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
+                )
+                .refund(
+                    Refund.builder()
+                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .reference("UMA-Q12345-REFUND")
+                        .status(Refund.Status.COMPLETED)
+                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                        .build()
+                )
+                .sentAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
                         )
                         .build()
                 )
