@@ -21,6 +21,7 @@ class PlatformConfig
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
+    private val cardTokenization2faConfig: JsonField<CardTokenization2faConfig>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val embeddedWalletConfig: JsonField<EmbeddedWalletConfig>,
     private val isRegulatedFinancialInstitution: JsonField<Boolean>,
@@ -35,6 +36,9 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("cardTokenization2faConfig")
+        @ExcludeMissing
+        cardTokenization2faConfig: JsonField<CardTokenization2faConfig> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -59,6 +63,7 @@ private constructor(
         webhookEndpoint: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
+        cardTokenization2faConfig,
         createdAt,
         embeddedWalletConfig,
         isRegulatedFinancialInstitution,
@@ -77,6 +82,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun id(): String? = id.getNullable("id")
+
+    /**
+     * Branding and sender configuration for card-tokenization authentication messages. This
+     * configuration is independent of embedded-wallet support.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardTokenization2faConfig(): CardTokenization2faConfig? =
+        cardTokenization2faConfig.getNullable("cardTokenization2faConfig")
 
     /**
      * Creation timestamp
@@ -155,6 +170,17 @@ private constructor(
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
+     * Returns the raw JSON value of [cardTokenization2faConfig].
+     *
+     * Unlike [cardTokenization2faConfig], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("cardTokenization2faConfig")
+    @ExcludeMissing
+    fun _cardTokenization2faConfig(): JsonField<CardTokenization2faConfig> =
+        cardTokenization2faConfig
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -252,6 +278,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String> = JsonMissing.of()
+        private var cardTokenization2faConfig: JsonField<CardTokenization2faConfig> =
+            JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var embeddedWalletConfig: JsonField<EmbeddedWalletConfig> = JsonMissing.of()
         private var isRegulatedFinancialInstitution: JsonField<Boolean> = JsonMissing.of()
@@ -264,6 +292,7 @@ private constructor(
 
         internal fun from(platformConfig: PlatformConfig) = apply {
             id = platformConfig.id
+            cardTokenization2faConfig = platformConfig.cardTokenization2faConfig
             createdAt = platformConfig.createdAt
             embeddedWalletConfig = platformConfig.embeddedWalletConfig
             isRegulatedFinancialInstitution = platformConfig.isRegulatedFinancialInstitution
@@ -285,6 +314,24 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /**
+         * Branding and sender configuration for card-tokenization authentication messages. This
+         * configuration is independent of embedded-wallet support.
+         */
+        fun cardTokenization2faConfig(cardTokenization2faConfig: CardTokenization2faConfig) =
+            cardTokenization2faConfig(JsonField.of(cardTokenization2faConfig))
+
+        /**
+         * Sets [Builder.cardTokenization2faConfig] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardTokenization2faConfig] with a well-typed
+         * [CardTokenization2faConfig] value instead. This method is primarily for setting the field
+         * to an undocumented or not yet supported value.
+         */
+        fun cardTokenization2faConfig(
+            cardTokenization2faConfig: JsonField<CardTokenization2faConfig>
+        ) = apply { this.cardTokenization2faConfig = cardTokenization2faConfig }
 
         /** Creation timestamp */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
@@ -448,6 +495,7 @@ private constructor(
         fun build(): PlatformConfig =
             PlatformConfig(
                 id,
+                cardTokenization2faConfig,
                 createdAt,
                 embeddedWalletConfig,
                 isRegulatedFinancialInstitution,
@@ -476,6 +524,7 @@ private constructor(
         }
 
         id()
+        cardTokenization2faConfig()?.validate()
         createdAt()
         embeddedWalletConfig()?.validate()
         isRegulatedFinancialInstitution()
@@ -502,6 +551,7 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
+            (cardTokenization2faConfig.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (embeddedWalletConfig.asKnown()?.validity() ?: 0) +
             (if (isRegulatedFinancialInstitution.asKnown() == null) 0 else 1) +
@@ -511,6 +561,840 @@ private constructor(
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (webhookEndpoint.asKnown() == null) 0 else 1)
 
+    /**
+     * Branding and sender configuration for card-tokenization authentication messages. This
+     * configuration is independent of embedded-wallet support.
+     */
+    class CardTokenization2faConfig
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val displayName: JsonField<String>,
+        private val email: JsonField<Email>,
+        private val logoUrl: JsonField<String>,
+        private val sms: JsonField<Sms>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("displayName")
+            @ExcludeMissing
+            displayName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("email") @ExcludeMissing email: JsonField<Email> = JsonMissing.of(),
+            @JsonProperty("logoUrl") @ExcludeMissing logoUrl: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("sms") @ExcludeMissing sms: JsonField<Sms> = JsonMissing.of(),
+        ) : this(displayName, email, logoUrl, sms, mutableMapOf())
+
+        /**
+         * Platform name displayed in authentication messages.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun displayName(): String? = displayName.getNullable("displayName")
+
+        /**
+         * Email branding and sender settings for card-tokenization authentication messages. Invalid
+         * or unverified sender identities can cause delivery to fail.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun email(): Email? = email.getNullable("email")
+
+        /**
+         * HTTPS URL of the logo displayed in email messages.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun logoUrl(): String? = logoUrl.getNullable("logoUrl")
+
+        /**
+         * SMS settings for card-tokenization authentication messages delivered through a
+         * Lightspark-managed Twilio sender.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun sms(): Sms? = sms.getNullable("sms")
+
+        /**
+         * Returns the raw JSON value of [displayName].
+         *
+         * Unlike [displayName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("displayName")
+        @ExcludeMissing
+        fun _displayName(): JsonField<String> = displayName
+
+        /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<Email> = email
+
+        /**
+         * Returns the raw JSON value of [logoUrl].
+         *
+         * Unlike [logoUrl], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("logoUrl") @ExcludeMissing fun _logoUrl(): JsonField<String> = logoUrl
+
+        /**
+         * Returns the raw JSON value of [sms].
+         *
+         * Unlike [sms], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("sms") @ExcludeMissing fun _sms(): JsonField<Sms> = sms
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of
+             * [CardTokenization2faConfig].
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CardTokenization2faConfig]. */
+        class Builder internal constructor() {
+
+            private var displayName: JsonField<String> = JsonMissing.of()
+            private var email: JsonField<Email> = JsonMissing.of()
+            private var logoUrl: JsonField<String> = JsonMissing.of()
+            private var sms: JsonField<Sms> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(cardTokenization2faConfig: CardTokenization2faConfig) = apply {
+                displayName = cardTokenization2faConfig.displayName
+                email = cardTokenization2faConfig.email
+                logoUrl = cardTokenization2faConfig.logoUrl
+                sms = cardTokenization2faConfig.sms
+                additionalProperties = cardTokenization2faConfig.additionalProperties.toMutableMap()
+            }
+
+            /** Platform name displayed in authentication messages. */
+            fun displayName(displayName: String) = displayName(JsonField.of(displayName))
+
+            /**
+             * Sets [Builder.displayName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.displayName] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun displayName(displayName: JsonField<String>) = apply {
+                this.displayName = displayName
+            }
+
+            /**
+             * Email branding and sender settings for card-tokenization authentication messages.
+             * Invalid or unverified sender identities can cause delivery to fail.
+             */
+            fun email(email: Email) = email(JsonField.of(email))
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [Email] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun email(email: JsonField<Email>) = apply { this.email = email }
+
+            /** HTTPS URL of the logo displayed in email messages. */
+            fun logoUrl(logoUrl: String) = logoUrl(JsonField.of(logoUrl))
+
+            /**
+             * Sets [Builder.logoUrl] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.logoUrl] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun logoUrl(logoUrl: JsonField<String>) = apply { this.logoUrl = logoUrl }
+
+            /**
+             * SMS settings for card-tokenization authentication messages delivered through a
+             * Lightspark-managed Twilio sender.
+             */
+            fun sms(sms: Sms) = sms(JsonField.of(sms))
+
+            /**
+             * Sets [Builder.sms] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.sms] with a well-typed [Sms] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun sms(sms: JsonField<Sms>) = apply { this.sms = sms }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CardTokenization2faConfig].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): CardTokenization2faConfig =
+                CardTokenization2faConfig(
+                    displayName,
+                    email,
+                    logoUrl,
+                    sms,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardTokenization2faConfig = apply {
+            if (validated) {
+                return@apply
+            }
+
+            displayName()
+            email()?.validate()
+            logoUrl()
+            sms()?.validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (displayName.asKnown() == null) 0 else 1) +
+                (email.asKnown()?.validity() ?: 0) +
+                (if (logoUrl.asKnown() == null) 0 else 1) +
+                (sms.asKnown()?.validity() ?: 0)
+
+        /**
+         * Email branding and sender settings for card-tokenization authentication messages. Invalid
+         * or unverified sender identities can cause delivery to fail.
+         */
+        class Email
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val bodyText: JsonField<String>,
+            private val fromAddress: JsonField<String>,
+            private val fromName: JsonField<String>,
+            private val replyToAddress: JsonField<String>,
+            private val subject: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("bodyText")
+                @ExcludeMissing
+                bodyText: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("fromAddress")
+                @ExcludeMissing
+                fromAddress: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("fromName")
+                @ExcludeMissing
+                fromName: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("replyToAddress")
+                @ExcludeMissing
+                replyToAddress: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("subject")
+                @ExcludeMissing
+                subject: JsonField<String> = JsonMissing.of(),
+            ) : this(bodyText, fromAddress, fromName, replyToAddress, subject, mutableMapOf())
+
+            /**
+             * Plain-text message content. Lightspark inserts the authentication code into a
+             * controlled text and HTML template; arbitrary HTML and template variables are not
+             * supported.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun bodyText(): String? = bodyText.getNullable("bodyText")
+
+            /**
+             * Sender address for card-tokenization authentication emails.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun fromAddress(): String? = fromAddress.getNullable("fromAddress")
+
+            /**
+             * Sender display name.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun fromName(): String? = fromName.getNullable("fromName")
+
+            /**
+             * Reply-to address for card-tokenization authentication emails.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun replyToAddress(): String? = replyToAddress.getNullable("replyToAddress")
+
+            /**
+             * Subject for the authentication email.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun subject(): String? = subject.getNullable("subject")
+
+            /**
+             * Returns the raw JSON value of [bodyText].
+             *
+             * Unlike [bodyText], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("bodyText") @ExcludeMissing fun _bodyText(): JsonField<String> = bodyText
+
+            /**
+             * Returns the raw JSON value of [fromAddress].
+             *
+             * Unlike [fromAddress], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("fromAddress")
+            @ExcludeMissing
+            fun _fromAddress(): JsonField<String> = fromAddress
+
+            /**
+             * Returns the raw JSON value of [fromName].
+             *
+             * Unlike [fromName], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("fromName") @ExcludeMissing fun _fromName(): JsonField<String> = fromName
+
+            /**
+             * Returns the raw JSON value of [replyToAddress].
+             *
+             * Unlike [replyToAddress], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("replyToAddress")
+            @ExcludeMissing
+            fun _replyToAddress(): JsonField<String> = replyToAddress
+
+            /**
+             * Returns the raw JSON value of [subject].
+             *
+             * Unlike [subject], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("subject") @ExcludeMissing fun _subject(): JsonField<String> = subject
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Email]. */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [Email]. */
+            class Builder internal constructor() {
+
+                private var bodyText: JsonField<String> = JsonMissing.of()
+                private var fromAddress: JsonField<String> = JsonMissing.of()
+                private var fromName: JsonField<String> = JsonMissing.of()
+                private var replyToAddress: JsonField<String> = JsonMissing.of()
+                private var subject: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(email: Email) = apply {
+                    bodyText = email.bodyText
+                    fromAddress = email.fromAddress
+                    fromName = email.fromName
+                    replyToAddress = email.replyToAddress
+                    subject = email.subject
+                    additionalProperties = email.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Plain-text message content. Lightspark inserts the authentication code into a
+                 * controlled text and HTML template; arbitrary HTML and template variables are not
+                 * supported.
+                 */
+                fun bodyText(bodyText: String) = bodyText(JsonField.of(bodyText))
+
+                /**
+                 * Sets [Builder.bodyText] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.bodyText] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun bodyText(bodyText: JsonField<String>) = apply { this.bodyText = bodyText }
+
+                /** Sender address for card-tokenization authentication emails. */
+                fun fromAddress(fromAddress: String) = fromAddress(JsonField.of(fromAddress))
+
+                /**
+                 * Sets [Builder.fromAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.fromAddress] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun fromAddress(fromAddress: JsonField<String>) = apply {
+                    this.fromAddress = fromAddress
+                }
+
+                /** Sender display name. */
+                fun fromName(fromName: String) = fromName(JsonField.of(fromName))
+
+                /**
+                 * Sets [Builder.fromName] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.fromName] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun fromName(fromName: JsonField<String>) = apply { this.fromName = fromName }
+
+                /** Reply-to address for card-tokenization authentication emails. */
+                fun replyToAddress(replyToAddress: String) =
+                    replyToAddress(JsonField.of(replyToAddress))
+
+                /**
+                 * Sets [Builder.replyToAddress] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.replyToAddress] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun replyToAddress(replyToAddress: JsonField<String>) = apply {
+                    this.replyToAddress = replyToAddress
+                }
+
+                /** Subject for the authentication email. */
+                fun subject(subject: String) = subject(JsonField.of(subject))
+
+                /**
+                 * Sets [Builder.subject] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.subject] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun subject(subject: JsonField<String>) = apply { this.subject = subject }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Email].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Email =
+                    Email(
+                        bodyText,
+                        fromAddress,
+                        fromName,
+                        replyToAddress,
+                        subject,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Email = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                bodyText()
+                fromAddress()
+                fromName()
+                replyToAddress()
+                subject()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (bodyText.asKnown() == null) 0 else 1) +
+                    (if (fromAddress.asKnown() == null) 0 else 1) +
+                    (if (fromName.asKnown() == null) 0 else 1) +
+                    (if (replyToAddress.asKnown() == null) 0 else 1) +
+                    (if (subject.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Email &&
+                    bodyText == other.bodyText &&
+                    fromAddress == other.fromAddress &&
+                    fromName == other.fromName &&
+                    replyToAddress == other.replyToAddress &&
+                    subject == other.subject &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    bodyText,
+                    fromAddress,
+                    fromName,
+                    replyToAddress,
+                    subject,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Email{bodyText=$bodyText, fromAddress=$fromAddress, fromName=$fromName, replyToAddress=$replyToAddress, subject=$subject, additionalProperties=$additionalProperties}"
+        }
+
+        /**
+         * SMS settings for card-tokenization authentication messages delivered through a
+         * Lightspark-managed Twilio sender.
+         */
+        class Sms
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val bodyText: JsonField<String>,
+            private val templateSid: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("bodyText")
+                @ExcludeMissing
+                bodyText: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("templateSid")
+                @ExcludeMissing
+                templateSid: JsonField<String> = JsonMissing.of(),
+            ) : this(bodyText, templateSid, mutableMapOf())
+
+            /**
+             * Plain-text fallback message used when Twilio Verify is unavailable for the
+             * authentication code. Lightspark appends the code to this text.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun bodyText(): String? = bodyText.getNullable("bodyText")
+
+            /**
+             * Twilio Verify template SID to use for this platform. An invalid or unavailable
+             * template can cause delivery to fail.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun templateSid(): String? = templateSid.getNullable("templateSid")
+
+            /**
+             * Returns the raw JSON value of [bodyText].
+             *
+             * Unlike [bodyText], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("bodyText") @ExcludeMissing fun _bodyText(): JsonField<String> = bodyText
+
+            /**
+             * Returns the raw JSON value of [templateSid].
+             *
+             * Unlike [templateSid], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("templateSid")
+            @ExcludeMissing
+            fun _templateSid(): JsonField<String> = templateSid
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Sms]. */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [Sms]. */
+            class Builder internal constructor() {
+
+                private var bodyText: JsonField<String> = JsonMissing.of()
+                private var templateSid: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(sms: Sms) = apply {
+                    bodyText = sms.bodyText
+                    templateSid = sms.templateSid
+                    additionalProperties = sms.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Plain-text fallback message used when Twilio Verify is unavailable for the
+                 * authentication code. Lightspark appends the code to this text.
+                 */
+                fun bodyText(bodyText: String) = bodyText(JsonField.of(bodyText))
+
+                /**
+                 * Sets [Builder.bodyText] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.bodyText] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun bodyText(bodyText: JsonField<String>) = apply { this.bodyText = bodyText }
+
+                /**
+                 * Twilio Verify template SID to use for this platform. An invalid or unavailable
+                 * template can cause delivery to fail.
+                 */
+                fun templateSid(templateSid: String) = templateSid(JsonField.of(templateSid))
+
+                /**
+                 * Sets [Builder.templateSid] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.templateSid] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun templateSid(templateSid: JsonField<String>) = apply {
+                    this.templateSid = templateSid
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Sms].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Sms = Sms(bodyText, templateSid, additionalProperties.toMutableMap())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Sms = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                bodyText()
+                templateSid()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (bodyText.asKnown() == null) 0 else 1) +
+                    (if (templateSid.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Sms &&
+                    bodyText == other.bodyText &&
+                    templateSid == other.templateSid &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(bodyText, templateSid, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Sms{bodyText=$bodyText, templateSid=$templateSid, additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardTokenization2faConfig &&
+                displayName == other.displayName &&
+                email == other.email &&
+                logoUrl == other.logoUrl &&
+                sms == other.sms &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(displayName, email, logoUrl, sms, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CardTokenization2faConfig{displayName=$displayName, email=$email, logoUrl=$logoUrl, sms=$sms, additionalProperties=$additionalProperties}"
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -518,6 +1402,7 @@ private constructor(
 
         return other is PlatformConfig &&
             id == other.id &&
+            cardTokenization2faConfig == other.cardTokenization2faConfig &&
             createdAt == other.createdAt &&
             embeddedWalletConfig == other.embeddedWalletConfig &&
             isRegulatedFinancialInstitution == other.isRegulatedFinancialInstitution &&
@@ -532,6 +1417,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             id,
+            cardTokenization2faConfig,
             createdAt,
             embeddedWalletConfig,
             isRegulatedFinancialInstitution,
@@ -547,5 +1433,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PlatformConfig{id=$id, createdAt=$createdAt, embeddedWalletConfig=$embeddedWalletConfig, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
+        "PlatformConfig{id=$id, cardTokenization2faConfig=$cardTokenization2faConfig, createdAt=$createdAt, embeddedWalletConfig=$embeddedWalletConfig, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
 }

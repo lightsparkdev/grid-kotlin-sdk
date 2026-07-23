@@ -17,6 +17,31 @@ internal class PlatformConfigTest {
         val platformConfig =
             PlatformConfig.builder()
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+                .cardTokenization2faConfig(
+                    PlatformConfig.CardTokenization2faConfig.builder()
+                        .displayName("Acme")
+                        .email(
+                            PlatformConfig.CardTokenization2faConfig.Email.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .fromAddress("cards@acme.com")
+                                .fromName("Acme Cards")
+                                .replyToAddress("support@acme.com")
+                                .subject("Your Acme card verification code")
+                                .build()
+                        )
+                        .logoUrl("https://acme.com/card-email-logo.png")
+                        .sms(
+                            PlatformConfig.CardTokenization2faConfig.Sms.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                .build()
+                        )
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
                 .embeddedWalletConfig(
                     EmbeddedWalletConfig.builder()
@@ -72,6 +97,32 @@ internal class PlatformConfigTest {
 
         assertThat(platformConfig.id())
             .isEqualTo("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+        assertThat(platformConfig.cardTokenization2faConfig())
+            .isEqualTo(
+                PlatformConfig.CardTokenization2faConfig.builder()
+                    .displayName("Acme")
+                    .email(
+                        PlatformConfig.CardTokenization2faConfig.Email.builder()
+                            .bodyText(
+                                "Use this code to finish adding your Acme card to your digital wallet."
+                            )
+                            .fromAddress("cards@acme.com")
+                            .fromName("Acme Cards")
+                            .replyToAddress("support@acme.com")
+                            .subject("Your Acme card verification code")
+                            .build()
+                    )
+                    .logoUrl("https://acme.com/card-email-logo.png")
+                    .sms(
+                        PlatformConfig.CardTokenization2faConfig.Sms.builder()
+                            .bodyText(
+                                "Use this code to finish adding your Acme card to your digital wallet."
+                            )
+                            .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                            .build()
+                    )
+                    .build()
+            )
         assertThat(platformConfig.createdAt())
             .isEqualTo(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
         assertThat(platformConfig.embeddedWalletConfig())
@@ -134,6 +185,31 @@ internal class PlatformConfigTest {
         val platformConfig =
             PlatformConfig.builder()
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+                .cardTokenization2faConfig(
+                    PlatformConfig.CardTokenization2faConfig.builder()
+                        .displayName("Acme")
+                        .email(
+                            PlatformConfig.CardTokenization2faConfig.Email.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .fromAddress("cards@acme.com")
+                                .fromName("Acme Cards")
+                                .replyToAddress("support@acme.com")
+                                .subject("Your Acme card verification code")
+                                .build()
+                        )
+                        .logoUrl("https://acme.com/card-email-logo.png")
+                        .sms(
+                            PlatformConfig.CardTokenization2faConfig.Sms.builder()
+                                .bodyText(
+                                    "Use this code to finish adding your Acme card to your digital wallet."
+                                )
+                                .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                .build()
+                        )
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-06-15T12:30:45Z"))
                 .embeddedWalletConfig(
                     EmbeddedWalletConfig.builder()
