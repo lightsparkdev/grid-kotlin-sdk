@@ -173,7 +173,7 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * System ID of the customer (sender for outgoing, recipient for incoming)
+     * System ID of the customer this transaction belongs to
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -197,7 +197,7 @@ private constructor(
     fun direction(): Direction = direction.getRequired("direction")
 
     /**
-     * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
+     * Platform-specific ID of the customer this transaction belongs to
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -770,7 +770,7 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** System ID of the customer (sender for outgoing, recipient for incoming) */
+        /** System ID of the customer this transaction belongs to */
         fun customerId(customerId: String) = customerId(JsonField.of(customerId))
 
         /**
@@ -796,7 +796,7 @@ private constructor(
          */
         fun direction(direction: JsonField<Direction>) = apply { this.direction = direction }
 
-        /** Platform-specific ID of the customer (sender for outgoing, recipient for incoming) */
+        /** Platform-specific ID of the customer this transaction belongs to */
         fun platformCustomerId(platformCustomerId: String) =
             platformCustomerId(JsonField.of(platformCustomerId))
 
