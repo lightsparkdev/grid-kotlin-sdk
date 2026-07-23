@@ -14,6 +14,32 @@ internal class ConfigUpdateParamsTest {
         ConfigUpdateParams.builder()
             .platformConfigUpdateRequest(
                 PlatformConfigUpdateRequest.builder()
+                    .cardTokenization2faConfig(
+                        PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                            .displayName("Acme")
+                            .email(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Email
+                                    .builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .fromAddress("cards@acme.com")
+                                    .fromName("Acme Cards")
+                                    .replyToAddress("support@acme.com")
+                                    .subject("Your Acme card verification code")
+                                    .build()
+                            )
+                            .logoUrl("https://acme.com/card-email-logo.png")
+                            .sms(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .embeddedWalletConfig(
                         EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
@@ -72,6 +98,33 @@ internal class ConfigUpdateParamsTest {
             ConfigUpdateParams.builder()
                 .platformConfigUpdateRequest(
                     PlatformConfigUpdateRequest.builder()
+                        .cardTokenization2faConfig(
+                            PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                                .displayName("Acme")
+                                .email(
+                                    PlatformConfigUpdateRequest.CardTokenization2faConfig.Email
+                                        .builder()
+                                        .bodyText(
+                                            "Use this code to finish adding your Acme card to your digital wallet."
+                                        )
+                                        .fromAddress("cards@acme.com")
+                                        .fromName("Acme Cards")
+                                        .replyToAddress("support@acme.com")
+                                        .subject("Your Acme card verification code")
+                                        .build()
+                                )
+                                .logoUrl("https://acme.com/card-email-logo.png")
+                                .sms(
+                                    PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms
+                                        .builder()
+                                        .bodyText(
+                                            "Use this code to finish adding your Acme card to your digital wallet."
+                                        )
+                                        .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                        .build()
+                                )
+                                .build()
+                        )
                         .embeddedWalletConfig(
                             EmbeddedWalletConfig.builder()
                                 .alphanumeric(false)
@@ -128,6 +181,32 @@ internal class ConfigUpdateParamsTest {
         assertThat(body)
             .isEqualTo(
                 PlatformConfigUpdateRequest.builder()
+                    .cardTokenization2faConfig(
+                        PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                            .displayName("Acme")
+                            .email(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Email
+                                    .builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .fromAddress("cards@acme.com")
+                                    .fromName("Acme Cards")
+                                    .replyToAddress("support@acme.com")
+                                    .subject("Your Acme card verification code")
+                                    .build()
+                            )
+                            .logoUrl("https://acme.com/card-email-logo.png")
+                            .sms(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .embeddedWalletConfig(
                         EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
