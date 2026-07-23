@@ -436,7 +436,7 @@ private constructor(
         fun id(): String = id.getRequired("id")
 
         /**
-         * System ID of the customer (sender for outgoing, recipient for incoming)
+         * System ID of the customer this transaction belongs to
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -460,7 +460,7 @@ private constructor(
         fun direction(): IncomingTransaction.Direction = direction.getRequired("direction")
 
         /**
-         * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
+         * Platform-specific ID of the customer this transaction belongs to
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -953,7 +953,7 @@ private constructor(
              */
             fun id(id: JsonField<String>) = apply { this.id = id }
 
-            /** System ID of the customer (sender for outgoing, recipient for incoming) */
+            /** System ID of the customer this transaction belongs to */
             fun customerId(customerId: String) = customerId(JsonField.of(customerId))
 
             /**
@@ -982,9 +982,7 @@ private constructor(
                 this.direction = direction
             }
 
-            /**
-             * Platform-specific ID of the customer (sender for outgoing, recipient for incoming)
-             */
+            /** Platform-specific ID of the customer this transaction belongs to */
             fun platformCustomerId(platformCustomerId: String) =
                 platformCustomerId(JsonField.of(platformCustomerId))
 
@@ -1548,6 +1546,12 @@ private constructor(
 
             val INCOMING_PAYMENT_FAILED = of("INCOMING_PAYMENT.FAILED")
 
+            val INCOMING_PAYMENT_REFUND_PENDING = of("INCOMING_PAYMENT.REFUND_PENDING")
+
+            val INCOMING_PAYMENT_REFUND_COMPLETED = of("INCOMING_PAYMENT.REFUND_COMPLETED")
+
+            val INCOMING_PAYMENT_REFUND_FAILED = of("INCOMING_PAYMENT.REFUND_FAILED")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -1556,6 +1560,9 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
+            INCOMING_PAYMENT_REFUND_PENDING,
+            INCOMING_PAYMENT_REFUND_COMPLETED,
+            INCOMING_PAYMENT_REFUND_FAILED,
         }
 
         /**
@@ -1571,6 +1578,9 @@ private constructor(
             INCOMING_PAYMENT_PENDING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
+            INCOMING_PAYMENT_REFUND_PENDING,
+            INCOMING_PAYMENT_REFUND_COMPLETED,
+            INCOMING_PAYMENT_REFUND_FAILED,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -1587,6 +1597,9 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Value.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Value.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Value.INCOMING_PAYMENT_FAILED
+                INCOMING_PAYMENT_REFUND_PENDING -> Value.INCOMING_PAYMENT_REFUND_PENDING
+                INCOMING_PAYMENT_REFUND_COMPLETED -> Value.INCOMING_PAYMENT_REFUND_COMPLETED
+                INCOMING_PAYMENT_REFUND_FAILED -> Value.INCOMING_PAYMENT_REFUND_FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -1604,6 +1617,9 @@ private constructor(
                 INCOMING_PAYMENT_PENDING -> Known.INCOMING_PAYMENT_PENDING
                 INCOMING_PAYMENT_COMPLETED -> Known.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Known.INCOMING_PAYMENT_FAILED
+                INCOMING_PAYMENT_REFUND_PENDING -> Known.INCOMING_PAYMENT_REFUND_PENDING
+                INCOMING_PAYMENT_REFUND_COMPLETED -> Known.INCOMING_PAYMENT_REFUND_COMPLETED
+                INCOMING_PAYMENT_REFUND_FAILED -> Known.INCOMING_PAYMENT_REFUND_FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
