@@ -4,6 +4,8 @@ package com.lightspark.grid.models.config
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
+import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import java.time.OffsetDateTime
@@ -53,6 +55,26 @@ internal class PlatformConfigTest {
                         .replyToEmailAddress("support@acme.com")
                         .sendFromEmailAddress("noreply@acme.com")
                         .sendFromEmailSenderName("Acme Notifications")
+                        .build()
+                )
+                .addFeeConfig(
+                    PlatformConfig.FeeConfig.builder()
+                        .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
+                        .fixedFee(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
                         .build()
                 )
                 .isRegulatedFinancialInstitution(false)
@@ -138,6 +160,27 @@ internal class PlatformConfigTest {
                     .sendFromEmailSenderName("Acme Notifications")
                     .build()
             )
+        assertThat(platformConfig.feeConfigs())
+            .containsExactly(
+                PlatformConfig.FeeConfig.builder()
+                    .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
+                    .fixedFee(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .sourceCurrency("USD")
+                    .variableFeeBps(30L)
+                    .build()
+            )
         assertThat(platformConfig.isRegulatedFinancialInstitution()).isEqualTo(false)
         assertThat(platformConfig.proxyUmaSubdomain()).isEqualTo("platform")
         assertThat(platformConfig.supportedCurrencies())
@@ -221,6 +264,26 @@ internal class PlatformConfigTest {
                         .replyToEmailAddress("support@acme.com")
                         .sendFromEmailAddress("noreply@acme.com")
                         .sendFromEmailSenderName("Acme Notifications")
+                        .build()
+                )
+                .addFeeConfig(
+                    PlatformConfig.FeeConfig.builder()
+                        .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
+                        .fixedFee(
+                            CurrencyAmount.builder()
+                                .amount(12550L)
+                                .currency(
+                                    Currency.builder()
+                                        .code("USD")
+                                        .decimals(2L)
+                                        .name("United States Dollar")
+                                        .symbol("\$")
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
                         .build()
                 )
                 .isRegulatedFinancialInstitution(false)

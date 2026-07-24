@@ -7,6 +7,8 @@ import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.config.EmbeddedWalletConfig
 import com.lightspark.grid.models.config.PlatformConfigUpdateRequest
 import com.lightspark.grid.models.config.PlatformCurrencyConfig
+import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import org.junit.jupiter.api.Disabled
@@ -82,6 +84,29 @@ internal class ConfigServiceAsyncTest {
                             .replyToEmailAddress("support@acme.com")
                             .sendFromEmailAddress("noreply@acme.com")
                             .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addFeeConfig(
+                        PlatformConfigUpdateRequest.FeeConfig.builder()
+                            .feeType(
+                                PlatformConfigUpdateRequest.FeeConfig.FeeType
+                                    .CROSS_CURRENCY_TRANSACTION
+                            )
+                            .fixedFee(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .sourceCurrency("USD")
+                            .variableFeeBps(30L)
                             .build()
                     )
                     .addSupportedCurrency(

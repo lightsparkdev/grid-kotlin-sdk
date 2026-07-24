@@ -117,6 +117,7 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
@@ -265,6 +266,7 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                     .rateDetails(
@@ -418,6 +420,7 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(

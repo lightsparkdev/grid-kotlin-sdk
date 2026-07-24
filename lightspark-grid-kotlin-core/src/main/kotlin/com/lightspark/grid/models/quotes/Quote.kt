@@ -37,6 +37,7 @@ private constructor(
     private val transactionId: JsonField<String>,
     private val counterpartyInformation: JsonField<CounterpartyInformation>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
+    private val platformFeesIncluded: JsonField<Long>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
     private val remittanceInformation: JsonField<String>,
     private val scaChallenge: JsonField<ScaChallenge>,
@@ -86,6 +87,9 @@ private constructor(
         @JsonProperty("paymentInstructions")
         @ExcludeMissing
         paymentInstructions: JsonField<List<PaymentInstructions>> = JsonMissing.of(),
+        @JsonProperty("platformFeesIncluded")
+        @ExcludeMissing
+        platformFeesIncluded: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("rateDetails")
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
@@ -111,6 +115,7 @@ private constructor(
         transactionId,
         counterpartyInformation,
         paymentInstructions,
+        platformFeesIncluded,
         rateDetails,
         remittanceInformation,
         scaChallenge,
@@ -247,6 +252,17 @@ private constructor(
      */
     fun paymentInstructions(): List<PaymentInstructions>? =
         paymentInstructions.getNullable("paymentInstructions")
+
+    /**
+     * The portion of `feesIncluded` collected by the platform (platform-configured transaction
+     * fees), in the smallest unit of the sending currency. 0 when the platform has no applicable
+     * fee configured. Already included in `feesIncluded`. May be omitted from payloads produced
+     * before platform fees existed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun platformFeesIncluded(): Long? = platformFeesIncluded.getNullable("platformFeesIncluded")
 
     /**
      * Details about the rate and fees for the transaction.
@@ -414,6 +430,16 @@ private constructor(
     fun _paymentInstructions(): JsonField<List<PaymentInstructions>> = paymentInstructions
 
     /**
+     * Returns the raw JSON value of [platformFeesIncluded].
+     *
+     * Unlike [platformFeesIncluded], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("platformFeesIncluded")
+    @ExcludeMissing
+    fun _platformFeesIncluded(): JsonField<Long> = platformFeesIncluded
+
+    /**
      * Returns the raw JSON value of [rateDetails].
      *
      * Unlike [rateDetails], this method doesn't throw if the JSON field has an unexpected type.
@@ -496,6 +522,7 @@ private constructor(
         private var transactionId: JsonField<String>? = null
         private var counterpartyInformation: JsonField<CounterpartyInformation> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
+        private var platformFeesIncluded: JsonField<Long> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
         private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var scaChallenge: JsonField<ScaChallenge> = JsonMissing.of()
@@ -517,6 +544,7 @@ private constructor(
             transactionId = quote.transactionId
             counterpartyInformation = quote.counterpartyInformation
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
+            platformFeesIncluded = quote.platformFeesIncluded
             rateDetails = quote.rateDetails
             remittanceInformation = quote.remittanceInformation
             scaChallenge = quote.scaChallenge
@@ -764,6 +792,26 @@ private constructor(
                 }
         }
 
+        /**
+         * The portion of `feesIncluded` collected by the platform (platform-configured transaction
+         * fees), in the smallest unit of the sending currency. 0 when the platform has no
+         * applicable fee configured. Already included in `feesIncluded`. May be omitted from
+         * payloads produced before platform fees existed.
+         */
+        fun platformFeesIncluded(platformFeesIncluded: Long) =
+            platformFeesIncluded(JsonField.of(platformFeesIncluded))
+
+        /**
+         * Sets [Builder.platformFeesIncluded] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.platformFeesIncluded] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun platformFeesIncluded(platformFeesIncluded: JsonField<Long>) = apply {
+            this.platformFeesIncluded = platformFeesIncluded
+        }
+
         /** Details about the rate and fees for the transaction. */
         fun rateDetails(rateDetails: OutgoingRateDetails) = rateDetails(JsonField.of(rateDetails))
 
@@ -878,6 +926,7 @@ private constructor(
                 checkRequired("transactionId", transactionId),
                 counterpartyInformation,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
+                platformFeesIncluded,
                 rateDetails,
                 remittanceInformation,
                 scaChallenge,
@@ -913,6 +962,7 @@ private constructor(
         transactionId()
         counterpartyInformation()?.validate()
         paymentInstructions()?.forEach { it.validate() }
+        platformFeesIncluded()
         rateDetails()?.validate()
         remittanceInformation()
         scaChallenge()?.validate()
@@ -946,6 +996,7 @@ private constructor(
             (if (transactionId.asKnown() == null) 0 else 1) +
             (counterpartyInformation.asKnown()?.validity() ?: 0) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (platformFeesIncluded.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
             (if (remittanceInformation.asKnown() == null) 0 else 1) +
             (scaChallenge.asKnown()?.validity() ?: 0)
@@ -2180,6 +2231,7 @@ private constructor(
             transactionId == other.transactionId &&
             counterpartyInformation == other.counterpartyInformation &&
             paymentInstructions == other.paymentInstructions &&
+            platformFeesIncluded == other.platformFeesIncluded &&
             rateDetails == other.rateDetails &&
             remittanceInformation == other.remittanceInformation &&
             scaChallenge == other.scaChallenge &&
@@ -2203,6 +2255,7 @@ private constructor(
             transactionId,
             counterpartyInformation,
             paymentInstructions,
+            platformFeesIncluded,
             rateDetails,
             remittanceInformation,
             scaChallenge,
@@ -2213,5 +2266,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, rateDetails=$rateDetails, remittanceInformation=$remittanceInformation, scaChallenge=$scaChallenge, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, platformFeesIncluded=$platformFeesIncluded, rateDetails=$rateDetails, remittanceInformation=$remittanceInformation, scaChallenge=$scaChallenge, additionalProperties=$additionalProperties}"
 }
