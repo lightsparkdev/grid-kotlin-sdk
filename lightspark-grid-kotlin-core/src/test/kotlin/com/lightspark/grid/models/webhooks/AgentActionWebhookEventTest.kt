@@ -140,6 +140,7 @@ internal class AgentActionWebhookEventTest {
                                         .isPlatformAccount(true)
                                         .build()
                                 )
+                                .platformFeesIncluded(5L)
                                 .rateDetails(
                                     OutgoingRateDetails.builder()
                                         .counterpartyFixedFee(10L)
@@ -369,6 +370,7 @@ internal class AgentActionWebhookEventTest {
                                     .isPlatformAccount(true)
                                     .build()
                             )
+                            .platformFeesIncluded(5L)
                             .rateDetails(
                                 OutgoingRateDetails.builder()
                                     .counterpartyFixedFee(10L)
@@ -606,6 +608,7 @@ internal class AgentActionWebhookEventTest {
                                         .isPlatformAccount(true)
                                         .build()
                                 )
+                                .platformFeesIncluded(5L)
                                 .rateDetails(
                                     OutgoingRateDetails.builder()
                                         .counterpartyFixedFee(10L)

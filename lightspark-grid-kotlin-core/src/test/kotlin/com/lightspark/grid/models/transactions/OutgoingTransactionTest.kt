@@ -108,6 +108,7 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                .platformFees(5L)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                 .rateDetails(
@@ -250,6 +251,7 @@ internal class OutgoingTransactionTest {
                     .build(),
             )
         assertThat(outgoingTransaction.paymentRail()).isEqualTo(OutgoingTransaction.PaymentRail.ACH)
+        assertThat(outgoingTransaction.platformFees()).isEqualTo(5L)
         assertThat(outgoingTransaction.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(outgoingTransaction.railSelectionMode())
@@ -400,6 +402,7 @@ internal class OutgoingTransactionTest {
                         .build()
                 )
                 .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                .platformFees(5L)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                 .rateDetails(

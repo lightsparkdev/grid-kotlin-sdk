@@ -45,6 +45,7 @@ private constructor(
     private val fees: JsonField<Long>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val paymentRail: JsonField<PaymentRail>,
+    private val platformFees: JsonField<Long>,
     private val quoteId: JsonField<String>,
     private val railSelectionMode: JsonField<RailSelectionMode>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
@@ -105,6 +106,9 @@ private constructor(
         @JsonProperty("paymentRail")
         @ExcludeMissing
         paymentRail: JsonField<PaymentRail> = JsonMissing.of(),
+        @JsonProperty("platformFees")
+        @ExcludeMissing
+        platformFees: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("railSelectionMode")
         @ExcludeMissing
@@ -151,6 +155,7 @@ private constructor(
         fees,
         paymentInstructions,
         paymentRail,
+        platformFees,
         quoteId,
         railSelectionMode,
         rateDetails,
@@ -331,6 +336,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun paymentRail(): PaymentRail? = paymentRail.getNullable("paymentRail")
+
+    /**
+     * The portion of `fees` collected by the platform (platform-configured transaction fees), in
+     * the smallest unit of the sending currency. 0 when the platform has no applicable fee
+     * configured. Already included in `fees`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun platformFees(): Long? = platformFees.getNullable("platformFees")
 
     /**
      * The ID of the quote that was used to trigger this payment
@@ -568,6 +583,15 @@ private constructor(
     fun _paymentRail(): JsonField<PaymentRail> = paymentRail
 
     /**
+     * Returns the raw JSON value of [platformFees].
+     *
+     * Unlike [platformFees], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("platformFees")
+    @ExcludeMissing
+    fun _platformFees(): JsonField<Long> = platformFees
+
+    /**
      * Returns the raw JSON value of [quoteId].
      *
      * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
@@ -713,6 +737,7 @@ private constructor(
         private var fees: JsonField<Long> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var paymentRail: JsonField<PaymentRail> = JsonMissing.of()
+        private var platformFees: JsonField<Long> = JsonMissing.of()
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var railSelectionMode: JsonField<RailSelectionMode> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
@@ -746,6 +771,7 @@ private constructor(
             fees = outgoingTransaction.fees
             paymentInstructions = outgoingTransaction.paymentInstructions.map { it.toMutableList() }
             paymentRail = outgoingTransaction.paymentRail
+            platformFees = outgoingTransaction.platformFees
             quoteId = outgoingTransaction.quoteId
             railSelectionMode = outgoingTransaction.railSelectionMode
             rateDetails = outgoingTransaction.rateDetails
@@ -1032,6 +1058,22 @@ private constructor(
             this.paymentRail = paymentRail
         }
 
+        /**
+         * The portion of `fees` collected by the platform (platform-configured transaction fees),
+         * in the smallest unit of the sending currency. 0 when the platform has no applicable fee
+         * configured. Already included in `fees`.
+         */
+        fun platformFees(platformFees: Long) = platformFees(JsonField.of(platformFees))
+
+        /**
+         * Sets [Builder.platformFees] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.platformFees] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun platformFees(platformFees: JsonField<Long>) = apply { this.platformFees = platformFees }
+
         /** The ID of the quote that was used to trigger this payment */
         fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
 
@@ -1244,6 +1286,7 @@ private constructor(
                 fees,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 paymentRail,
+                platformFees,
                 quoteId,
                 railSelectionMode,
                 rateDetails,
@@ -1290,6 +1333,7 @@ private constructor(
         fees()
         paymentInstructions()?.forEach { it.validate() }
         paymentRail()?.validate()
+        platformFees()
         quoteId()
         railSelectionMode()?.validate()
         rateDetails()?.validate()
@@ -1334,6 +1378,7 @@ private constructor(
             (if (fees.asKnown() == null) 0 else 1) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (paymentRail.asKnown()?.validity() ?: 0) +
+            (if (platformFees.asKnown() == null) 0 else 1) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (railSelectionMode.asKnown()?.validity() ?: 0) +
             (rateDetails.asKnown()?.validity() ?: 0) +
@@ -2490,6 +2535,7 @@ private constructor(
             fees == other.fees &&
             paymentInstructions == other.paymentInstructions &&
             paymentRail == other.paymentRail &&
+            platformFees == other.platformFees &&
             quoteId == other.quoteId &&
             railSelectionMode == other.railSelectionMode &&
             rateDetails == other.rateDetails &&
@@ -2524,6 +2570,7 @@ private constructor(
             fees,
             paymentInstructions,
             paymentRail,
+            platformFees,
             quoteId,
             railSelectionMode,
             rateDetails,
@@ -2541,5 +2588,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, expectedSettlementAt=$expectedSettlementAt, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, paymentRail=$paymentRail, quoteId=$quoteId, railSelectionMode=$railSelectionMode, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, settlementTimelineSeconds=$settlementTimelineSeconds, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, expectedSettlementAt=$expectedSettlementAt, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, paymentRail=$paymentRail, platformFees=$platformFees, quoteId=$quoteId, railSelectionMode=$railSelectionMode, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, settlementTimelineSeconds=$settlementTimelineSeconds, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

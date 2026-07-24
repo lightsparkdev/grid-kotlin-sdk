@@ -2,6 +2,8 @@
 
 package com.lightspark.grid.models.config
 
+import com.lightspark.grid.models.invitations.CurrencyAmount
+import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import org.assertj.core.api.Assertions.assertThat
@@ -50,6 +52,29 @@ internal class ConfigUpdateParamsTest {
                             .replyToEmailAddress("support@acme.com")
                             .sendFromEmailAddress("noreply@acme.com")
                             .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addFeeConfig(
+                        PlatformConfigUpdateRequest.FeeConfig.builder()
+                            .feeType(
+                                PlatformConfigUpdateRequest.FeeConfig.FeeType
+                                    .CROSS_CURRENCY_TRANSACTION
+                            )
+                            .fixedFee(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .sourceCurrency("USD")
+                            .variableFeeBps(30L)
                             .build()
                     )
                     .addSupportedCurrency(
@@ -137,6 +162,29 @@ internal class ConfigUpdateParamsTest {
                                 .sendFromEmailSenderName("Acme Notifications")
                                 .build()
                         )
+                        .addFeeConfig(
+                            PlatformConfigUpdateRequest.FeeConfig.builder()
+                                .feeType(
+                                    PlatformConfigUpdateRequest.FeeConfig.FeeType
+                                        .CROSS_CURRENCY_TRANSACTION
+                                )
+                                .fixedFee(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .sourceCurrency("USD")
+                                .variableFeeBps(30L)
+                                .build()
+                        )
                         .addSupportedCurrency(
                             PlatformCurrencyConfig.builder()
                                 .currencyCode("USD")
@@ -217,6 +265,29 @@ internal class ConfigUpdateParamsTest {
                             .replyToEmailAddress("support@acme.com")
                             .sendFromEmailAddress("noreply@acme.com")
                             .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addFeeConfig(
+                        PlatformConfigUpdateRequest.FeeConfig.builder()
+                            .feeType(
+                                PlatformConfigUpdateRequest.FeeConfig.FeeType
+                                    .CROSS_CURRENCY_TRANSACTION
+                            )
+                            .fixedFee(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .sourceCurrency("USD")
+                            .variableFeeBps(30L)
                             .build()
                     )
                     .addSupportedCurrency(

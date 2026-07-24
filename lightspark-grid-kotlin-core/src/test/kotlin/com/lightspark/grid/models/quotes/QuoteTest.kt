@@ -101,6 +101,7 @@ internal class QuoteTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .platformFeesIncluded(5L)
                 .rateDetails(
                     OutgoingRateDetails.builder()
                         .counterpartyFixedFee(10L)
@@ -216,6 +217,7 @@ internal class QuoteTest {
                     .isPlatformAccount(true)
                     .build(),
             )
+        assertThat(quote.platformFeesIncluded()).isEqualTo(5L)
         assertThat(quote.rateDetails())
             .isEqualTo(
                 OutgoingRateDetails.builder()
@@ -337,6 +339,7 @@ internal class QuoteTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .platformFeesIncluded(5L)
                 .rateDetails(
                     OutgoingRateDetails.builder()
                         .counterpartyFixedFee(10L)

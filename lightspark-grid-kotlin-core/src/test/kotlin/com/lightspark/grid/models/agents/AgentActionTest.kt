@@ -128,6 +128,7 @@ internal class AgentActionTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .platformFeesIncluded(5L)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -342,6 +343,7 @@ internal class AgentActionTest {
                             .isPlatformAccount(true)
                             .build()
                     )
+                    .platformFeesIncluded(5L)
                     .rateDetails(
                         OutgoingRateDetails.builder()
                             .counterpartyFixedFee(10L)
@@ -562,6 +564,7 @@ internal class AgentActionTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .platformFeesIncluded(5L)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
