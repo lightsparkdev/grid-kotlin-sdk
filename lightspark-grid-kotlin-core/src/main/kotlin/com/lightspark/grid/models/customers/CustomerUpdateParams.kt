@@ -51,12 +51,12 @@ private constructor(
     fun requestId(): String? = requestId
 
     /**
-     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
-     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber` changes
-     * for a customer with tied Embedded Wallet internal accounts, Grid updates the customer phone
-     * number and every tied `SMS_OTP` credential through the same signed-retry flow. Update `email`
-     * and `phoneNumber` in separate PATCH calls.
+     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
+     * as top-level optional fields on the customer resource itself; there is no separate EDD
+     * resource. The specific set required for a given customer is driven by the KYC provider's
+     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
+     * on `POST /verifications`).
      */
     fun updateCustomerRequest(): CustomerUpdateRequestOneOf = updateCustomerRequest
 
@@ -109,12 +109,12 @@ private constructor(
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         /**
-         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
-         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential through the endpoint's signed-retry flow. When `phoneNumber`
-         * changes for a customer with tied Embedded Wallet internal accounts, Grid updates the
-         * customer phone number and every tied `SMS_OTP` credential through the same signed-retry
-         * flow. Update `email` and `phoneNumber` in separate PATCH calls.
+         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
+         * appear as top-level optional fields on the customer resource itself; there is no separate
+         * EDD resource. The specific set required for a given customer is driven by the KYC
+         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
+         * `MISSING_FIELD` errors on `POST /verifications`).
          */
         fun updateCustomerRequest(updateCustomerRequest: CustomerUpdateRequestOneOf) = apply {
             this.updateCustomerRequest = updateCustomerRequest
