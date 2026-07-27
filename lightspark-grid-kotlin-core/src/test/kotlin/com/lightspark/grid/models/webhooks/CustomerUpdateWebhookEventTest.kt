@@ -51,10 +51,31 @@ internal class CustomerUpdateWebhookEventTest {
                                 .state("CA")
                                 .build()
                         )
+                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .expectedMonthlyTransactionCount(
+                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        )
                         .fullName("John Michael Doe")
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
+                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                        .pepStatus(IndividualCustomer.PepStatus.NONE)
+                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                        .sourceOfFundsOtherDescription("Contest winnings")
+                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                        .addSourceOfWealthCategory(
+                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                        )
+                        .sourceOfWealthOtherDescription("Royalty income from published works")
+                        .taxIdCountryOfIssuance("US")
+                        .taxIdentifier("123-45-6789")
+                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -95,10 +116,31 @@ internal class CustomerUpdateWebhookEventTest {
                                 .state("CA")
                                 .build()
                         )
+                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .expectedMonthlyTransactionCount(
+                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        )
                         .fullName("John Michael Doe")
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
+                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                        .pepStatus(IndividualCustomer.PepStatus.NONE)
+                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                        .sourceOfFundsOtherDescription("Contest winnings")
+                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                        .addSourceOfWealthCategory(
+                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                        )
+                        .sourceOfWealthOtherDescription("Royalty income from published works")
+                        .taxIdCountryOfIssuance("US")
+                        .taxIdentifier("123-45-6789")
+                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
             )
@@ -144,10 +186,31 @@ internal class CustomerUpdateWebhookEventTest {
                                 .state("CA")
                                 .build()
                         )
+                        .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .expectedMonthlyTransactionCount(
+                            IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                        )
+                        .expectedMonthlyTransactionVolume(
+                            IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                        )
                         .fullName("John Michael Doe")
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
+                        .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                        .pepStatus(IndividualCustomer.PepStatus.NONE)
+                        .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                        .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                        .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                        .sourceOfFundsOtherDescription("Contest winnings")
+                        .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                        .addSourceOfWealthCategory(
+                            IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                        )
+                        .sourceOfWealthOtherDescription("Royalty income from published works")
+                        .taxIdCountryOfIssuance("US")
+                        .taxIdentifier("123-45-6789")
+                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))

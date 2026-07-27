@@ -45,18 +45,49 @@ internal class CustomerServiceTest {
                             .state("CA")
                             .build()
                     )
+                    .annualIncomeRange(
+                        IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
                     .identifier("123-45-6789")
                     .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
                     .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
+                    .purposeOfAccount(
+                        IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
                     .region("US")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
+                    .taxIdCountryOfIssuance("US")
+                    .taxIdentifier("123-45-6789")
+                    .taxIdType(IndividualCustomerCreateRequest.TaxIdType.SSN)
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -114,13 +145,46 @@ internal class CustomerServiceTest {
                                     .state("CA")
                                     .build()
                             )
+                            .annualIncomeRange(
+                                IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                            )
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
+                            .expectedMonthlyTransactionCount(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
+                                    .COUNT_100_TO_500
+                            )
+                            .expectedMonthlyTransactionVolume(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
+                                    .VOLUME_100_K_TO_1_M
+                            )
                             .fullName("John Michael Doe")
                             .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                             .nationality("US")
+                            .netWorthRange(
+                                IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M
+                            )
+                            .pepStatus(IndividualCustomerUpdateRequest.PepStatus.NONE)
                             .phoneNumber("+14155551234")
+                            .purposeOfAccount(
+                                IndividualCustomerUpdateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                            )
+                            .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                            .addSourceOfFundsCategory(
+                                IndividualCustomerUpdateRequest.SourceOfFundsCategory.SALARY
+                            )
+                            .sourceOfFundsOtherDescription("Contest winnings")
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.SALARY
+                            )
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
+                            )
+                            .sourceOfWealthOtherDescription("Royalty income from published works")
+                            .taxIdCountryOfIssuance("US")
+                            .taxIdentifier("123-45-6789")
+                            .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                             .umaAddress("\$john.doe@uma.domain.com")
                             .build()
                     )
