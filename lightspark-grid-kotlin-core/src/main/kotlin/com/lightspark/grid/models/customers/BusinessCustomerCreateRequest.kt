@@ -107,7 +107,8 @@ private constructor(
     fun currencies(): List<String>? = currencies.getNullable("currencies")
 
     /**
-     * Email address for the customer.
+     * Email address for the customer. **Required in regions that verify the email address before
+     * identity verification** (e.g. the EU); optional otherwise.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -124,7 +125,8 @@ private constructor(
     fun kybStatus(): KybStatus? = kybStatus.getNullable("kybStatus")
 
     /**
-     * Phone number for the customer in strict E.164 format.
+     * Phone number for the customer in strict E.164 format. **Required in regions that verify the
+     * phone number before identity verification** (e.g. the EU); optional otherwise.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -367,7 +369,10 @@ private constructor(
                 }
         }
 
-        /** Email address for the customer. */
+        /**
+         * Email address for the customer. **Required in regions that verify the email address
+         * before identity verification** (e.g. the EU); optional otherwise.
+         */
         fun email(email: String) = email(JsonField.of(email))
 
         /**
@@ -393,7 +398,10 @@ private constructor(
          */
         fun kybStatus(kybStatus: JsonField<KybStatus>) = apply { this.kybStatus = kybStatus }
 
-        /** Phone number for the customer in strict E.164 format. */
+        /**
+         * Phone number for the customer in strict E.164 format. **Required in regions that verify
+         * the phone number before identity verification** (e.g. the EU); optional otherwise.
+         */
         fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
 
         /**
