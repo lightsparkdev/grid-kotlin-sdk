@@ -39,7 +39,6 @@ private constructor(
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val platformFeesIncluded: JsonField<Long>,
     private val rateDetails: JsonField<OutgoingRateDetails>,
-    private val remittanceInformation: JsonField<String>,
     private val scaChallenge: JsonField<ScaChallenge>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -93,9 +92,6 @@ private constructor(
         @JsonProperty("rateDetails")
         @ExcludeMissing
         rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of(),
-        @JsonProperty("remittanceInformation")
-        @ExcludeMissing
-        remittanceInformation: JsonField<String> = JsonMissing.of(),
         @JsonProperty("scaChallenge")
         @ExcludeMissing
         scaChallenge: JsonField<ScaChallenge> = JsonMissing.of(),
@@ -117,7 +113,6 @@ private constructor(
         paymentInstructions,
         platformFeesIncluded,
         rateDetails,
-        remittanceInformation,
         scaChallenge,
         mutableMapOf(),
     )
@@ -271,18 +266,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun rateDetails(): OutgoingRateDetails? = rateDetails.getNullable("rateDetails")
-
-    /**
-     * Free-form information about the payment that travels with it to the recipient, as provided on
-     * the quote request. The field this populates depends on the payment rail: for ACH it populates
-     * the Addenda record, for FedNow and RTP it populates the remittanceInformation field, and for
-     * wires it populates the OBI (Originator to Beneficiary Information) / beneficiary information.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun remittanceInformation(): String? =
-        remittanceInformation.getNullable("remittanceInformation")
 
     /**
      * Present only while `status` is `PENDING_AUTHORIZATION`: the Strong Customer Authentication
@@ -449,16 +432,6 @@ private constructor(
     fun _rateDetails(): JsonField<OutgoingRateDetails> = rateDetails
 
     /**
-     * Returns the raw JSON value of [remittanceInformation].
-     *
-     * Unlike [remittanceInformation], this method doesn't throw if the JSON field has an unexpected
-     * type.
-     */
-    @JsonProperty("remittanceInformation")
-    @ExcludeMissing
-    fun _remittanceInformation(): JsonField<String> = remittanceInformation
-
-    /**
      * Returns the raw JSON value of [scaChallenge].
      *
      * Unlike [scaChallenge], this method doesn't throw if the JSON field has an unexpected type.
@@ -524,7 +497,6 @@ private constructor(
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var platformFeesIncluded: JsonField<Long> = JsonMissing.of()
         private var rateDetails: JsonField<OutgoingRateDetails> = JsonMissing.of()
-        private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var scaChallenge: JsonField<ScaChallenge> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -546,7 +518,6 @@ private constructor(
             paymentInstructions = quote.paymentInstructions.map { it.toMutableList() }
             platformFeesIncluded = quote.platformFeesIncluded
             rateDetails = quote.rateDetails
-            remittanceInformation = quote.remittanceInformation
             scaChallenge = quote.scaChallenge
             additionalProperties = quote.additionalProperties.toMutableMap()
         }
@@ -827,27 +798,6 @@ private constructor(
         }
 
         /**
-         * Free-form information about the payment that travels with it to the recipient, as
-         * provided on the quote request. The field this populates depends on the payment rail: for
-         * ACH it populates the Addenda record, for FedNow and RTP it populates the
-         * remittanceInformation field, and for wires it populates the OBI (Originator to
-         * Beneficiary Information) / beneficiary information.
-         */
-        fun remittanceInformation(remittanceInformation: String) =
-            remittanceInformation(JsonField.of(remittanceInformation))
-
-        /**
-         * Sets [Builder.remittanceInformation] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.remittanceInformation] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun remittanceInformation(remittanceInformation: JsonField<String>) = apply {
-            this.remittanceInformation = remittanceInformation
-        }
-
-        /**
          * Present only while `status` is `PENDING_AUTHORIZATION`: the Strong Customer
          * Authentication challenge to satisfy before this quote can be executed (or, for
          * realtime-funding sources, before `paymentInstructions` are issued). Omitted for customers
@@ -928,7 +878,6 @@ private constructor(
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 platformFeesIncluded,
                 rateDetails,
-                remittanceInformation,
                 scaChallenge,
                 additionalProperties.toMutableMap(),
             )
@@ -964,7 +913,6 @@ private constructor(
         paymentInstructions()?.forEach { it.validate() }
         platformFeesIncluded()
         rateDetails()?.validate()
-        remittanceInformation()
         scaChallenge()?.validate()
         validated = true
     }
@@ -998,7 +946,6 @@ private constructor(
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (platformFeesIncluded.asKnown() == null) 0 else 1) +
             (rateDetails.asKnown()?.validity() ?: 0) +
-            (if (remittanceInformation.asKnown() == null) 0 else 1) +
             (scaChallenge.asKnown()?.validity() ?: 0)
 
     /**
@@ -2233,7 +2180,6 @@ private constructor(
             paymentInstructions == other.paymentInstructions &&
             platformFeesIncluded == other.platformFeesIncluded &&
             rateDetails == other.rateDetails &&
-            remittanceInformation == other.remittanceInformation &&
             scaChallenge == other.scaChallenge &&
             additionalProperties == other.additionalProperties
     }
@@ -2257,7 +2203,6 @@ private constructor(
             paymentInstructions,
             platformFeesIncluded,
             rateDetails,
-            remittanceInformation,
             scaChallenge,
             additionalProperties,
         )
@@ -2266,5 +2211,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, platformFeesIncluded=$platformFeesIncluded, rateDetails=$rateDetails, remittanceInformation=$remittanceInformation, scaChallenge=$scaChallenge, additionalProperties=$additionalProperties}"
+        "Quote{id=$id, createdAt=$createdAt, destination=$destination, exchangeRate=$exchangeRate, expiresAt=$expiresAt, feesIncluded=$feesIncluded, receivingCurrency=$receivingCurrency, sendingCurrency=$sendingCurrency, source=$source, status=$status, totalReceivingAmount=$totalReceivingAmount, totalSendingAmount=$totalSendingAmount, transactionId=$transactionId, counterpartyInformation=$counterpartyInformation, paymentInstructions=$paymentInstructions, platformFeesIncluded=$platformFeesIncluded, rateDetails=$rateDetails, scaChallenge=$scaChallenge, additionalProperties=$additionalProperties}"
 }
