@@ -174,7 +174,6 @@ internal class UnwrapWebhookEventTest {
                                         .gridApiVariableFeeRate(0.003)
                                         .build()
                                 )
-                                .remittanceInformation("12345")
                                 .scaChallenge(
                                     Quote.ScaChallenge.builder()
                                         .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
@@ -446,7 +445,6 @@ internal class UnwrapWebhookEventTest {
                                             .gridApiVariableFeeRate(0.003)
                                             .build()
                                     )
-                                    .remittanceInformation("12345")
                                     .scaChallenge(
                                         Quote.ScaChallenge.builder()
                                             .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
