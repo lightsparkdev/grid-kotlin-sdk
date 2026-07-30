@@ -9,7 +9,11 @@ import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.toImmutable
 import java.util.Objects
 
-/** Delete a customer external account by its system-generated ID */
+/**
+ * Delete a customer external account by its system-generated ID. An account that is currently a
+ * trusted beneficiary for SCA cannot be deleted — untrust it first via `POST
+ * /customers/external-accounts/{externalAccountId}/untrust` (and its `/confirm`), then delete.
+ */
 class ExternalAccountDeleteParams
 private constructor(
     private val externalAccountId: String?,
