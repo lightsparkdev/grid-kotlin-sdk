@@ -1967,6 +1967,8 @@ private constructor(
 
             val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
 
+            val SCA_NOT_COMPLETED = of("SCA_NOT_COMPLETED")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -1977,6 +1979,7 @@ private constructor(
             LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
+            SCA_NOT_COMPLETED,
         }
 
         /**
@@ -1994,6 +1997,7 @@ private constructor(
             LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
+            SCA_NOT_COMPLETED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2015,6 +2019,7 @@ private constructor(
                 LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
+                SCA_NOT_COMPLETED -> Value.SCA_NOT_COMPLETED
                 else -> Value._UNKNOWN
             }
 
@@ -2034,6 +2039,7 @@ private constructor(
                 LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
+                SCA_NOT_COMPLETED -> Known.SCA_NOT_COMPLETED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
