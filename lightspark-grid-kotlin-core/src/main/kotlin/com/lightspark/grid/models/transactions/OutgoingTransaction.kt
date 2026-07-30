@@ -1969,6 +1969,14 @@ private constructor(
 
             val SCA_NOT_COMPLETED = of("SCA_NOT_COMPLETED")
 
+            val EXECUTION_FAILED_POST_DEBIT = of("EXECUTION_FAILED_POST_DEBIT")
+
+            val SETTLEMENT_FAILED = of("SETTLEMENT_FAILED")
+
+            val TIMEOUT = of("TIMEOUT")
+
+            val MANUAL_REFUND = of("MANUAL_REFUND")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -1980,6 +1988,10 @@ private constructor(
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
             SCA_NOT_COMPLETED,
+            EXECUTION_FAILED_POST_DEBIT,
+            SETTLEMENT_FAILED,
+            TIMEOUT,
+            MANUAL_REFUND,
         }
 
         /**
@@ -1998,6 +2010,10 @@ private constructor(
             FUNDING_AMOUNT_MISMATCH,
             COUNTERPARTY_POST_TX_FAILED,
             SCA_NOT_COMPLETED,
+            EXECUTION_FAILED_POST_DEBIT,
+            SETTLEMENT_FAILED,
+            TIMEOUT,
+            MANUAL_REFUND,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2020,6 +2036,10 @@ private constructor(
                 FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
                 SCA_NOT_COMPLETED -> Value.SCA_NOT_COMPLETED
+                EXECUTION_FAILED_POST_DEBIT -> Value.EXECUTION_FAILED_POST_DEBIT
+                SETTLEMENT_FAILED -> Value.SETTLEMENT_FAILED
+                TIMEOUT -> Value.TIMEOUT
+                MANUAL_REFUND -> Value.MANUAL_REFUND
                 else -> Value._UNKNOWN
             }
 
@@ -2040,6 +2060,10 @@ private constructor(
                 FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
                 COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
                 SCA_NOT_COMPLETED -> Known.SCA_NOT_COMPLETED
+                EXECUTION_FAILED_POST_DEBIT -> Known.EXECUTION_FAILED_POST_DEBIT
+                SETTLEMENT_FAILED -> Known.SETTLEMENT_FAILED
+                TIMEOUT -> Known.TIMEOUT
+                MANUAL_REFUND -> Known.MANUAL_REFUND
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
