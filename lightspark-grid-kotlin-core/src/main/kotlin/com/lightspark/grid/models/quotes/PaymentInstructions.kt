@@ -209,6 +209,24 @@ private constructor(
 
         /**
          * Alias for calling [accountOrWalletInfo] with
+         * `AccountOrWalletInfo.ofBitcoinL1(bitcoinL1)`.
+         */
+        fun accountOrWalletInfo(bitcoinL1: AccountOrWalletInfo.BitcoinL1) =
+            accountOrWalletInfo(AccountOrWalletInfo.ofBitcoinL1(bitcoinL1))
+
+        /**
+         * Alias for calling [accountOrWalletInfo] with the following:
+         * ```kotlin
+         * AccountOrWalletInfo.BitcoinL1.builder()
+         *     .address(address)
+         *     .build()
+         * ```
+         */
+        fun bitcoinL1AccountOrWalletInfo(address: String) =
+            accountOrWalletInfo(AccountOrWalletInfo.BitcoinL1.builder().address(address).build())
+
+        /**
+         * Alias for calling [accountOrWalletInfo] with
          * `AccountOrWalletInfo.ofEmbeddedWallet(embeddedWallet)`.
          */
         fun accountOrWalletInfo(embeddedWallet: AccountOrWalletInfo.EmbeddedWallet) =
@@ -349,6 +367,7 @@ private constructor(
         private val slvAccount: SlvAccount? = null,
         private val swiftAccount: SwiftAccount? = null,
         private val cnyAccount: CnyAccount? = null,
+        private val bitcoinL1: BitcoinL1? = null,
         private val embeddedWallet: EmbeddedWallet? = null,
         private val _json: JsonValue? = null,
     ) {
@@ -371,6 +390,8 @@ private constructor(
          */
         fun cnyAccount(): CnyAccount? = cnyAccount
 
+        fun bitcoinL1(): BitcoinL1? = bitcoinL1
+
         fun embeddedWallet(): EmbeddedWallet? = embeddedWallet
 
         fun isArsAccount(): Boolean = arsAccount != null
@@ -380,6 +401,8 @@ private constructor(
         fun isSwiftAccount(): Boolean = swiftAccount != null
 
         fun isCnyAccount(): Boolean = cnyAccount != null
+
+        fun isBitcoinL1(): Boolean = bitcoinL1 != null
 
         fun isEmbeddedWallet(): Boolean = embeddedWallet != null
 
@@ -400,6 +423,8 @@ private constructor(
          * - MOBILE_MONEY: bankName, phoneNumber
          */
         fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
+
+        fun asBitcoinL1(): BitcoinL1 = bitcoinL1.getOrThrow("bitcoinL1")
 
         fun asEmbeddedWallet(): EmbeddedWallet = embeddedWallet.getOrThrow("embeddedWallet")
 
@@ -435,6 +460,7 @@ private constructor(
                 slvAccount != null -> visitor.visitSlvAccount(slvAccount)
                 swiftAccount != null -> visitor.visitSwiftAccount(swiftAccount)
                 cnyAccount != null -> visitor.visitCnyAccount(cnyAccount)
+                bitcoinL1 != null -> visitor.visitBitcoinL1(bitcoinL1)
                 embeddedWallet != null -> visitor.visitEmbeddedWallet(embeddedWallet)
                 else -> visitor.unknown(_json)
             }
@@ -473,6 +499,10 @@ private constructor(
                         cnyAccount.validate()
                     }
 
+                    override fun visitBitcoinL1(bitcoinL1: BitcoinL1) {
+                        bitcoinL1.validate()
+                    }
+
                     override fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet) {
                         embeddedWallet.validate()
                     }
@@ -507,6 +537,8 @@ private constructor(
 
                     override fun visitCnyAccount(cnyAccount: CnyAccount) = cnyAccount.validity()
 
+                    override fun visitBitcoinL1(bitcoinL1: BitcoinL1) = bitcoinL1.validity()
+
                     override fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet) =
                         embeddedWallet.validity()
 
@@ -524,11 +556,19 @@ private constructor(
                 slvAccount == other.slvAccount &&
                 swiftAccount == other.swiftAccount &&
                 cnyAccount == other.cnyAccount &&
+                bitcoinL1 == other.bitcoinL1 &&
                 embeddedWallet == other.embeddedWallet
         }
 
         override fun hashCode(): Int =
-            Objects.hash(arsAccount, slvAccount, swiftAccount, cnyAccount, embeddedWallet)
+            Objects.hash(
+                arsAccount,
+                slvAccount,
+                swiftAccount,
+                cnyAccount,
+                bitcoinL1,
+                embeddedWallet,
+            )
 
         override fun toString(): String =
             when {
@@ -536,6 +576,7 @@ private constructor(
                 slvAccount != null -> "AccountOrWalletInfo{slvAccount=$slvAccount}"
                 swiftAccount != null -> "AccountOrWalletInfo{swiftAccount=$swiftAccount}"
                 cnyAccount != null -> "AccountOrWalletInfo{cnyAccount=$cnyAccount}"
+                bitcoinL1 != null -> "AccountOrWalletInfo{bitcoinL1=$bitcoinL1}"
                 embeddedWallet != null -> "AccountOrWalletInfo{embeddedWallet=$embeddedWallet}"
                 _json != null -> "AccountOrWalletInfo{_unknown=$_json}"
                 else -> throw IllegalStateException("Invalid AccountOrWalletInfo")
@@ -561,6 +602,8 @@ private constructor(
              * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun ofCnyAccount(cnyAccount: CnyAccount) = AccountOrWalletInfo(cnyAccount = cnyAccount)
+
+            fun ofBitcoinL1(bitcoinL1: BitcoinL1) = AccountOrWalletInfo(bitcoinL1 = bitcoinL1)
 
             fun ofEmbeddedWallet(embeddedWallet: EmbeddedWallet) =
                 AccountOrWalletInfo(embeddedWallet = embeddedWallet)
@@ -589,6 +632,8 @@ private constructor(
              * - MOBILE_MONEY: bankName, phoneNumber
              */
             fun visitCnyAccount(cnyAccount: CnyAccount): T
+
+            fun visitBitcoinL1(bitcoinL1: BitcoinL1): T
 
             fun visitEmbeddedWallet(embeddedWallet: EmbeddedWallet): T
 
@@ -635,6 +680,11 @@ private constructor(
                             AccountOrWalletInfo(cnyAccount = it, _json = json)
                         } ?: AccountOrWalletInfo(_json = json)
                     }
+                    "BITCOIN_L1" -> {
+                        return tryDeserialize(node, jacksonTypeRef<BitcoinL1>())?.let {
+                            AccountOrWalletInfo(bitcoinL1 = it, _json = json)
+                        } ?: AccountOrWalletInfo(_json = json)
+                    }
                     "EMBEDDED_WALLET" -> {
                         return tryDeserialize(node, jacksonTypeRef<EmbeddedWallet>())?.let {
                             AccountOrWalletInfo(embeddedWallet = it, _json = json)
@@ -659,6 +709,7 @@ private constructor(
                     value.slvAccount != null -> generator.writeObject(value.slvAccount)
                     value.swiftAccount != null -> generator.writeObject(value.swiftAccount)
                     value.cnyAccount != null -> generator.writeObject(value.cnyAccount)
+                    value.bitcoinL1 != null -> generator.writeObject(value.bitcoinL1)
                     value.embeddedWallet != null -> generator.writeObject(value.embeddedWallet)
                     value._json != null -> generator.writeObject(value._json)
                     else -> throw IllegalStateException("Invalid AccountOrWalletInfo")
@@ -2860,6 +2911,396 @@ private constructor(
 
             override fun toString() =
                 "CnyAccount{accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, reference=$reference, accountNumber=$accountNumber, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
+        }
+
+        class BitcoinL1
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val accountType: JsonValue,
+            private val address: JsonField<String>,
+            private val network: JsonField<Network>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("accountType")
+                @ExcludeMissing
+                accountType: JsonValue = JsonMissing.of(),
+                @JsonProperty("address")
+                @ExcludeMissing
+                address: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("network")
+                @ExcludeMissing
+                network: JsonField<Network> = JsonMissing.of(),
+            ) : this(accountType, address, network, mutableMapOf())
+
+            /**
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("BITCOIN_L1")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
+
+            /**
+             * On-chain Bitcoin (L1) deposit address to send funds to
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun address(): String = address.getRequired("address")
+
+            /**
+             * The blockchain network for the deposit address.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   (e.g. if the server responded with an unexpected value).
+             */
+            fun network(): Network? = network.getNullable("network")
+
+            /**
+             * Returns the raw JSON value of [address].
+             *
+             * Unlike [address], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<String> = address
+
+            /**
+             * Returns the raw JSON value of [network].
+             *
+             * Unlike [network], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("network") @ExcludeMissing fun _network(): JsonField<Network> = network
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [BitcoinL1].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .address()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [BitcoinL1]. */
+            class Builder internal constructor() {
+
+                private var accountType: JsonValue = JsonValue.from("BITCOIN_L1")
+                private var address: JsonField<String>? = null
+                private var network: JsonField<Network> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(bitcoinL1: BitcoinL1) = apply {
+                    accountType = bitcoinL1.accountType
+                    address = bitcoinL1.address
+                    network = bitcoinL1.network
+                    additionalProperties = bitcoinL1.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("BITCOIN_L1")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
+
+                /** On-chain Bitcoin (L1) deposit address to send funds to */
+                fun address(address: String) = address(JsonField.of(address))
+
+                /**
+                 * Sets [Builder.address] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.address] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun address(address: JsonField<String>) = apply { this.address = address }
+
+                /** The blockchain network for the deposit address. */
+                fun network(network: Network) = network(JsonField.of(network))
+
+                /**
+                 * Sets [Builder.network] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.network] with a well-typed [Network] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun network(network: JsonField<Network>) = apply { this.network = network }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [BitcoinL1].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .address()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): BitcoinL1 =
+                    BitcoinL1(
+                        accountType,
+                        checkRequired("address", address),
+                        network,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): BitcoinL1 = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                _accountType().let {
+                    if (it != JsonValue.from("BITCOIN_L1")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'accountType' is invalid, received $it"
+                        )
+                    }
+                }
+                address()
+                network()?.validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                accountType.let { if (it == JsonValue.from("BITCOIN_L1")) 1 else 0 } +
+                    (if (address.asKnown() == null) 0 else 1) +
+                    (network.asKnown()?.validity() ?: 0)
+
+            /** The blockchain network for the deposit address. */
+            class Network @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val BITCOIN = of("BITCOIN")
+
+                    fun of(value: String) = Network(JsonField.of(value))
+                }
+
+                /** An enum containing [Network]'s known values. */
+                enum class Known {
+                    BITCOIN
+                }
+
+                /**
+                 * An enum containing [Network]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Network] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    BITCOIN,
+                    /**
+                     * An enum member indicating that [Network] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        BITCOIN -> Value.BITCOIN
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        BITCOIN -> Known.BITCOIN
+                        else -> throw LightsparkGridInvalidDataException("Unknown Network: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Network = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Network && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is BitcoinL1 &&
+                    accountType == other.accountType &&
+                    address == other.address &&
+                    network == other.network &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(accountType, address, network, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "BitcoinL1{accountType=$accountType, address=$address, network=$network, additionalProperties=$additionalProperties}"
         }
 
         class EmbeddedWallet
