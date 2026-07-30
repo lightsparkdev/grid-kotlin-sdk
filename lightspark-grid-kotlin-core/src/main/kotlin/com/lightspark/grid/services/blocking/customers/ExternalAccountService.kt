@@ -83,7 +83,11 @@ interface ExternalAccountService {
     fun list(requestOptions: RequestOptions): ExternalAccountListPage =
         list(ExternalAccountListParams.none(), requestOptions)
 
-    /** Delete a customer external account by its system-generated ID */
+    /**
+     * Delete a customer external account by its system-generated ID. An account that is currently a
+     * trusted beneficiary for SCA cannot be deleted — untrust it first via `POST
+     * /customers/external-accounts/{externalAccountId}/untrust` (and its `/confirm`), then delete.
+     */
     fun delete(
         externalAccountId: String,
         params: ExternalAccountDeleteParams = ExternalAccountDeleteParams.none(),
