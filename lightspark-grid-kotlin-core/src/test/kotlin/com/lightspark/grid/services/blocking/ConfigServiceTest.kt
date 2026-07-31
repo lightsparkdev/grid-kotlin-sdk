@@ -7,8 +7,6 @@ import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.config.EmbeddedWalletConfig
 import com.lightspark.grid.models.config.PlatformConfigUpdateRequest
 import com.lightspark.grid.models.config.PlatformCurrencyConfig
-import com.lightspark.grid.models.invitations.CurrencyAmount
-import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import org.junit.jupiter.api.Disabled
@@ -92,19 +90,7 @@ internal class ConfigServiceTest {
                                 PlatformConfigUpdateRequest.FeeConfig.FeeType
                                     .CROSS_CURRENCY_TRANSACTION
                             )
-                            .fixedFee(
-                                CurrencyAmount.builder()
-                                    .amount(12550L)
-                                    .currency(
-                                        Currency.builder()
-                                            .code("USD")
-                                            .decimals(2L)
-                                            .name("United States Dollar")
-                                            .symbol("\$")
-                                            .build()
-                                    )
-                                    .build()
-                            )
+                            .fixedFee(100L)
                             .sourceCurrency("USD")
                             .variableFeeBps(30L)
                             .build()

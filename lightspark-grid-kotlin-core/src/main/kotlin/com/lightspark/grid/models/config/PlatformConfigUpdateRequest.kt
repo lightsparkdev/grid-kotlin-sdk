@@ -15,7 +15,6 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.invitations.CurrencyAmount
 import java.util.Collections
 import java.util.Objects
 
@@ -1251,7 +1250,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val feeType: JsonField<FeeType>,
-        private val fixedFee: JsonField<CurrencyAmount>,
+        private val fixedFee: JsonField<Long>,
         private val sourceCurrency: JsonField<String>,
         private val variableFeeBps: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1260,9 +1259,7 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("feeType") @ExcludeMissing feeType: JsonField<FeeType> = JsonMissing.of(),
-            @JsonProperty("fixedFee")
-            @ExcludeMissing
-            fixedFee: JsonField<CurrencyAmount> = JsonMissing.of(),
+            @JsonProperty("fixedFee") @ExcludeMissing fixedFee: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("sourceCurrency")
             @ExcludeMissing
             sourceCurrency: JsonField<String> = JsonMissing.of(),
@@ -1282,13 +1279,13 @@ private constructor(
         fun feeType(): FeeType = feeType.getRequired("feeType")
 
         /**
-         * Fixed fee charged per transaction, in the smallest unit of the source currency. The fixed
-         * fee currency must match the fee config's `sourceCurrency`.
+         * Fixed fee charged per transaction, denominated in the smallest unit of the fee config's
+         * `sourceCurrency` (e.g., cents for USD).
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun fixedFee(): CurrencyAmount = fixedFee.getRequired("fixedFee")
+        fun fixedFee(): Long = fixedFee.getRequired("fixedFee")
 
         /**
          * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
@@ -1320,9 +1317,7 @@ private constructor(
          *
          * Unlike [fixedFee], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("fixedFee")
-        @ExcludeMissing
-        fun _fixedFee(): JsonField<CurrencyAmount> = fixedFee
+        @JsonProperty("fixedFee") @ExcludeMissing fun _fixedFee(): JsonField<Long> = fixedFee
 
         /**
          * Returns the raw JSON value of [sourceCurrency].
@@ -1376,7 +1371,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var feeType: JsonField<FeeType>? = null
-            private var fixedFee: JsonField<CurrencyAmount>? = null
+            private var fixedFee: JsonField<Long>? = null
             private var sourceCurrency: JsonField<String>? = null
             private var variableFeeBps: JsonField<Long>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1406,19 +1401,19 @@ private constructor(
             fun feeType(feeType: JsonField<FeeType>) = apply { this.feeType = feeType }
 
             /**
-             * Fixed fee charged per transaction, in the smallest unit of the source currency. The
-             * fixed fee currency must match the fee config's `sourceCurrency`.
+             * Fixed fee charged per transaction, denominated in the smallest unit of the fee
+             * config's `sourceCurrency` (e.g., cents for USD).
              */
-            fun fixedFee(fixedFee: CurrencyAmount) = fixedFee(JsonField.of(fixedFee))
+            fun fixedFee(fixedFee: Long) = fixedFee(JsonField.of(fixedFee))
 
             /**
              * Sets [Builder.fixedFee] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.fixedFee] with a well-typed [CurrencyAmount] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.fixedFee] with a well-typed [Long] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun fixedFee(fixedFee: JsonField<CurrencyAmount>) = apply { this.fixedFee = fixedFee }
+            fun fixedFee(fixedFee: JsonField<Long>) = apply { this.fixedFee = fixedFee }
 
             /**
              * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
@@ -1516,7 +1511,7 @@ private constructor(
             }
 
             feeType().validate()
-            fixedFee().validate()
+            fixedFee()
             sourceCurrency()
             variableFeeBps()
             validated = true
@@ -1538,7 +1533,7 @@ private constructor(
          */
         internal fun validity(): Int =
             (feeType.asKnown()?.validity() ?: 0) +
-                (fixedFee.asKnown()?.validity() ?: 0) +
+                (if (fixedFee.asKnown() == null) 0 else 1) +
                 (if (sourceCurrency.asKnown() == null) 0 else 1) +
                 (if (variableFeeBps.asKnown() == null) 0 else 1)
 
