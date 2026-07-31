@@ -23,6 +23,7 @@ private constructor(
     private val destination: JsonField<Destination>,
     private val source: JsonField<InternalAccountReference>,
     private val amount: JsonField<Long>,
+    private val purposeOfPayment: JsonField<PurposeOfPayment>,
     private val remittanceInformation: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -36,10 +37,13 @@ private constructor(
         @ExcludeMissing
         source: JsonField<InternalAccountReference> = JsonMissing.of(),
         @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("purposeOfPayment")
+        @ExcludeMissing
+        purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of(),
         @JsonProperty("remittanceInformation")
         @ExcludeMissing
         remittanceInformation: JsonField<String> = JsonMissing.of(),
-    ) : this(destination, source, amount, remittanceInformation, mutableMapOf())
+    ) : this(destination, source, amount, purposeOfPayment, remittanceInformation, mutableMapOf())
 
     /**
      * Destination external account details
@@ -64,6 +68,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun amount(): Long? = amount.getNullable("amount")
+
+    /**
+     * The purpose of the payment. This may be required when sending to certain geographies (e.g.
+     * India).
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
 
     /**
      * Free-form information about the payment that travels with it to the recipient. The field this
@@ -101,6 +114,16 @@ private constructor(
      * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+    /**
+     * Returns the raw JSON value of [purposeOfPayment].
+     *
+     * Unlike [purposeOfPayment], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("purposeOfPayment")
+    @ExcludeMissing
+    fun _purposeOfPayment(): JsonField<PurposeOfPayment> = purposeOfPayment
 
     /**
      * Returns the raw JSON value of [remittanceInformation].
@@ -144,6 +167,7 @@ private constructor(
         private var destination: JsonField<Destination>? = null
         private var source: JsonField<InternalAccountReference>? = null
         private var amount: JsonField<Long> = JsonMissing.of()
+        private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
         private var remittanceInformation: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -151,6 +175,7 @@ private constructor(
             destination = transferOutRequest.destination
             source = transferOutRequest.source
             amount = transferOutRequest.amount
+            purposeOfPayment = transferOutRequest.purposeOfPayment
             remittanceInformation = transferOutRequest.remittanceInformation
             additionalProperties = transferOutRequest.additionalProperties.toMutableMap()
         }
@@ -193,6 +218,24 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+
+        /**
+         * The purpose of the payment. This may be required when sending to certain geographies
+         * (e.g. India).
+         */
+        fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
+            purposeOfPayment(JsonField.of(purposeOfPayment))
+
+        /**
+         * Sets [Builder.purposeOfPayment] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.purposeOfPayment] with a well-typed [PurposeOfPayment]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun purposeOfPayment(purposeOfPayment: JsonField<PurposeOfPayment>) = apply {
+            this.purposeOfPayment = purposeOfPayment
+        }
 
         /**
          * Free-form information about the payment that travels with it to the recipient. The field
@@ -251,6 +294,7 @@ private constructor(
                 checkRequired("destination", destination),
                 checkRequired("source", source),
                 amount,
+                purposeOfPayment,
                 remittanceInformation,
                 additionalProperties.toMutableMap(),
             )
@@ -274,6 +318,7 @@ private constructor(
         destination().validate()
         source().validate()
         amount()
+        purposeOfPayment()?.validate()
         remittanceInformation()
         validated = true
     }
@@ -295,6 +340,7 @@ private constructor(
         (destination.asKnown()?.validity() ?: 0) +
             (source.asKnown()?.validity() ?: 0) +
             (if (amount.asKnown() == null) 0 else 1) +
+            (purposeOfPayment.asKnown()?.validity() ?: 0) +
             (if (remittanceInformation.asKnown() == null) 0 else 1)
 
     /** Destination external account details */
@@ -784,6 +830,220 @@ private constructor(
             "Destination{accountId=$accountId, paymentRail=$paymentRail, additionalProperties=$additionalProperties}"
     }
 
+    /**
+     * The purpose of the payment. This may be required when sending to certain geographies (e.g.
+     * India).
+     */
+    class PurposeOfPayment @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val GIFT = of("GIFT")
+
+            val SELF = of("SELF")
+
+            val GOODS_OR_SERVICES = of("GOODS_OR_SERVICES")
+
+            val EDUCATION = of("EDUCATION")
+
+            val HEALTH_OR_MEDICAL = of("HEALTH_OR_MEDICAL")
+
+            val REAL_ESTATE_PURCHASE = of("REAL_ESTATE_PURCHASE")
+
+            val TAX_PAYMENT = of("TAX_PAYMENT")
+
+            val LOAN_PAYMENT = of("LOAN_PAYMENT")
+
+            val UTILITY_BILL = of("UTILITY_BILL")
+
+            val DONATION = of("DONATION")
+
+            val TRAVEL = of("TRAVEL")
+
+            val FAMILY_SUPPORT = of("FAMILY_SUPPORT")
+
+            val SALARY_PAYMENT = of("SALARY_PAYMENT")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = PurposeOfPayment(JsonField.of(value))
+        }
+
+        /** An enum containing [PurposeOfPayment]'s known values. */
+        enum class Known {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [PurposeOfPayment]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [PurposeOfPayment] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            GIFT,
+            SELF,
+            GOODS_OR_SERVICES,
+            EDUCATION,
+            HEALTH_OR_MEDICAL,
+            REAL_ESTATE_PURCHASE,
+            TAX_PAYMENT,
+            LOAN_PAYMENT,
+            UTILITY_BILL,
+            DONATION,
+            TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
+            OTHER,
+            /**
+             * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                GIFT -> Value.GIFT
+                SELF -> Value.SELF
+                GOODS_OR_SERVICES -> Value.GOODS_OR_SERVICES
+                EDUCATION -> Value.EDUCATION
+                HEALTH_OR_MEDICAL -> Value.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Value.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Value.TAX_PAYMENT
+                LOAN_PAYMENT -> Value.LOAN_PAYMENT
+                UTILITY_BILL -> Value.UTILITY_BILL
+                DONATION -> Value.DONATION
+                TRAVEL -> Value.TRAVEL
+                FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Value.SALARY_PAYMENT
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                GIFT -> Known.GIFT
+                SELF -> Known.SELF
+                GOODS_OR_SERVICES -> Known.GOODS_OR_SERVICES
+                EDUCATION -> Known.EDUCATION
+                HEALTH_OR_MEDICAL -> Known.HEALTH_OR_MEDICAL
+                REAL_ESTATE_PURCHASE -> Known.REAL_ESTATE_PURCHASE
+                TAX_PAYMENT -> Known.TAX_PAYMENT
+                LOAN_PAYMENT -> Known.LOAN_PAYMENT
+                UTILITY_BILL -> Known.UTILITY_BILL
+                DONATION -> Known.DONATION
+                TRAVEL -> Known.TRAVEL
+                FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Known.SALARY_PAYMENT
+                OTHER -> Known.OTHER
+                else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PurposeOfPayment = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PurposeOfPayment && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -793,16 +1053,24 @@ private constructor(
             destination == other.destination &&
             source == other.source &&
             amount == other.amount &&
+            purposeOfPayment == other.purposeOfPayment &&
             remittanceInformation == other.remittanceInformation &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(destination, source, amount, remittanceInformation, additionalProperties)
+        Objects.hash(
+            destination,
+            source,
+            amount,
+            purposeOfPayment,
+            remittanceInformation,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, remittanceInformation=$remittanceInformation, additionalProperties=$additionalProperties}"
+        "TransferOutRequest{destination=$destination, source=$source, amount=$amount, purposeOfPayment=$purposeOfPayment, remittanceInformation=$remittanceInformation, additionalProperties=$additionalProperties}"
 }
