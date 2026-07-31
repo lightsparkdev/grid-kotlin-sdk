@@ -2210,6 +2210,14 @@ private constructor(
 
                 val NON_PROFIT = of("NON_PROFIT")
 
+                val PUBLICLY_LISTED_COMPANY = of("PUBLICLY_LISTED_COMPANY")
+
+                val TRUST = of("TRUST")
+
+                val PRIVATE_FOUNDATION = of("PRIVATE_FOUNDATION")
+
+                val CHARITY = of("CHARITY")
+
                 val OTHER = of("OTHER")
 
                 fun of(value: String) = EntityType(JsonField.of(value))
@@ -2223,6 +2231,10 @@ private constructor(
                 CORPORATION,
                 S_CORPORATION,
                 NON_PROFIT,
+                PUBLICLY_LISTED_COMPANY,
+                TRUST,
+                PRIVATE_FOUNDATION,
+                CHARITY,
                 OTHER,
             }
 
@@ -2242,6 +2254,10 @@ private constructor(
                 CORPORATION,
                 S_CORPORATION,
                 NON_PROFIT,
+                PUBLICLY_LISTED_COMPANY,
+                TRUST,
+                PRIVATE_FOUNDATION,
+                CHARITY,
                 OTHER,
                 /**
                  * An enum member indicating that [EntityType] was instantiated with an unknown
@@ -2265,6 +2281,10 @@ private constructor(
                     CORPORATION -> Value.CORPORATION
                     S_CORPORATION -> Value.S_CORPORATION
                     NON_PROFIT -> Value.NON_PROFIT
+                    PUBLICLY_LISTED_COMPANY -> Value.PUBLICLY_LISTED_COMPANY
+                    TRUST -> Value.TRUST
+                    PRIVATE_FOUNDATION -> Value.PRIVATE_FOUNDATION
+                    CHARITY -> Value.CHARITY
                     OTHER -> Value.OTHER
                     else -> Value._UNKNOWN
                 }
@@ -2286,6 +2306,10 @@ private constructor(
                     CORPORATION -> Known.CORPORATION
                     S_CORPORATION -> Known.S_CORPORATION
                     NON_PROFIT -> Known.NON_PROFIT
+                    PUBLICLY_LISTED_COMPANY -> Known.PUBLICLY_LISTED_COMPANY
+                    TRUST -> Known.TRUST
+                    PRIVATE_FOUNDATION -> Known.PRIVATE_FOUNDATION
+                    CHARITY -> Known.CHARITY
                     OTHER -> Known.OTHER
                     else -> throw LightsparkGridInvalidDataException("Unknown EntityType: $value")
                 }
