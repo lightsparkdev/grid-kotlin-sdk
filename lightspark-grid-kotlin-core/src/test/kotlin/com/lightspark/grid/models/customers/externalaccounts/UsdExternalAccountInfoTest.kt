@@ -17,6 +17,8 @@ internal class UsdExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("USD_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
+                .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
+                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
     }
 
@@ -28,6 +30,8 @@ internal class UsdExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("USD_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
+                .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
+                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .build()
 
         val roundtrippedUsdExternalAccountInfo =
