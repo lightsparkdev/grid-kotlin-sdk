@@ -2,8 +2,6 @@
 
 package com.lightspark.grid.models.config
 
-import com.lightspark.grid.models.invitations.CurrencyAmount
-import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.transactions.TransactionType
 import org.assertj.core.api.Assertions.assertThat
@@ -60,19 +58,7 @@ internal class ConfigUpdateParamsTest {
                                 PlatformConfigUpdateRequest.FeeConfig.FeeType
                                     .CROSS_CURRENCY_TRANSACTION
                             )
-                            .fixedFee(
-                                CurrencyAmount.builder()
-                                    .amount(12550L)
-                                    .currency(
-                                        Currency.builder()
-                                            .code("USD")
-                                            .decimals(2L)
-                                            .name("United States Dollar")
-                                            .symbol("\$")
-                                            .build()
-                                    )
-                                    .build()
-                            )
+                            .fixedFee(100L)
                             .sourceCurrency("USD")
                             .variableFeeBps(30L)
                             .build()
@@ -168,19 +154,7 @@ internal class ConfigUpdateParamsTest {
                                     PlatformConfigUpdateRequest.FeeConfig.FeeType
                                         .CROSS_CURRENCY_TRANSACTION
                                 )
-                                .fixedFee(
-                                    CurrencyAmount.builder()
-                                        .amount(12550L)
-                                        .currency(
-                                            Currency.builder()
-                                                .code("USD")
-                                                .decimals(2L)
-                                                .name("United States Dollar")
-                                                .symbol("\$")
-                                                .build()
-                                        )
-                                        .build()
-                                )
+                                .fixedFee(100L)
                                 .sourceCurrency("USD")
                                 .variableFeeBps(30L)
                                 .build()
@@ -273,19 +247,7 @@ internal class ConfigUpdateParamsTest {
                                 PlatformConfigUpdateRequest.FeeConfig.FeeType
                                     .CROSS_CURRENCY_TRANSACTION
                             )
-                            .fixedFee(
-                                CurrencyAmount.builder()
-                                    .amount(12550L)
-                                    .currency(
-                                        Currency.builder()
-                                            .code("USD")
-                                            .decimals(2L)
-                                            .name("United States Dollar")
-                                            .symbol("\$")
-                                            .build()
-                                    )
-                                    .build()
-                            )
+                            .fixedFee(100L)
                             .sourceCurrency("USD")
                             .variableFeeBps(30L)
                             .build()
