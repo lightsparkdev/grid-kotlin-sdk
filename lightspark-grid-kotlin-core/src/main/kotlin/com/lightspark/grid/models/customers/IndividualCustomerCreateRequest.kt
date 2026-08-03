@@ -199,11 +199,9 @@ private constructor(
     fun birthDate(): LocalDate? = birthDate.getNullable("birthDate")
 
     /**
-     * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR"; tickers
-     * for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than one sending
-     * currency, since the correct currencies cannot always be inferred. If not provided, currencies
-     * will be inferred from the customer's region. Some currency combinations may require separate
-     * customers — if so, the request will be rejected with details.
+     * Currency codes the customer will use — ISO 4217 for fiat, tickers for crypto (e.g. "USDC").
+     * Optional — send them if your platform supports more than one currency, so we know which ones
+     * this customer needs. Some combinations require separate customers.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -335,11 +333,9 @@ private constructor(
         purposeOfAccountOtherDescription.getNullable("purposeOfAccountOtherDescription")
 
     /**
-     * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
-     * determines the regulatory jurisdiction and KYC requirements for the customer. Required if the
-     * customer will use currencies with different KYC requirements across regions. A customer with
-     * accounts in multiple regions should be registered as separate customers. This field is
-     * immutable after creation.
+     * Country code (ISO 3166-1 alpha-2) for the customer's region. Optional — send it only when the
+     * same currency is offered in more than one of your regions, to pick the one that applies to
+     * this customer.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -822,12 +818,9 @@ private constructor(
         fun birthDate(birthDate: JsonField<LocalDate>) = apply { this.birthDate = birthDate }
 
         /**
-         * List of currency codes the customer will use (ISO 4217 for fiat, e.g. "USD", "EUR";
-         * tickers for crypto, e.g. "BTC", "USDC"). Required if the customer will use more than one
-         * sending currency, since the correct currencies cannot always be inferred. If not
-         * provided, currencies will be inferred from the customer's region. Some currency
-         * combinations may require separate customers — if so, the request will be rejected with
-         * details.
+         * Currency codes the customer will use — ISO 4217 for fiat, tickers for crypto (e.g.
+         * "USDC"). Optional — send them if your platform supports more than one currency, so we
+         * know which ones this customer needs. Some combinations require separate customers.
          */
         fun currencies(currencies: List<String>) = currencies(JsonField.of(currencies))
 
@@ -1067,11 +1060,9 @@ private constructor(
             }
 
         /**
-         * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity. This
-         * determines the regulatory jurisdiction and KYC requirements for the customer. Required if
-         * the customer will use currencies with different KYC requirements across regions. A
-         * customer with accounts in multiple regions should be registered as separate customers.
-         * This field is immutable after creation.
+         * Country code (ISO 3166-1 alpha-2) for the customer's region. Optional — send it only when
+         * the same currency is offered in more than one of your regions, to pick the one that
+         * applies to this customer.
          */
         fun region(region: String) = region(JsonField.of(region))
 
