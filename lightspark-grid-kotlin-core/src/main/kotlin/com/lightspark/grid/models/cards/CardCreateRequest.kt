@@ -25,6 +25,7 @@ private constructor(
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
     private val platformCardId: JsonField<String>,
+    private val threeDSecurePassword: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -40,7 +41,17 @@ private constructor(
         @JsonProperty("platformCardId")
         @ExcludeMissing
         platformCardId: JsonField<String> = JsonMissing.of(),
-    ) : this(cardholderId, form, fundingSources, platformCardId, mutableMapOf())
+        @JsonProperty("threeDSecurePassword")
+        @ExcludeMissing
+        threeDSecurePassword: JsonField<String> = JsonMissing.of(),
+    ) : this(
+        cardholderId,
+        form,
+        fundingSources,
+        platformCardId,
+        threeDSecurePassword,
+        mutableMapOf(),
+    )
 
     /**
      * The id of the `Customer` to issue the card to. The customer must have KYC status `APPROVED`;
@@ -81,6 +92,18 @@ private constructor(
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
     /**
+     * Optional static password used as the card's 3-D Secure factor. Only accepted for card
+     * programs whose issuer supports a static-password factor (EU cards today); supplying it for a
+     * program that does not is rejected with `INVALID_INPUT`. When omitted, one is generated on the
+     * cardholder's behalf. Grid does not retain the value: it is forwarded to the issuer and
+     * discarded, so it cannot be read back afterwards.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun threeDSecurePassword(): String? = threeDSecurePassword.getNullable("threeDSecurePassword")
+
+    /**
      * Returns the raw JSON value of [cardholderId].
      *
      * Unlike [cardholderId], this method doesn't throw if the JSON field has an unexpected type.
@@ -113,6 +136,16 @@ private constructor(
     @JsonProperty("platformCardId")
     @ExcludeMissing
     fun _platformCardId(): JsonField<String> = platformCardId
+
+    /**
+     * Returns the raw JSON value of [threeDSecurePassword].
+     *
+     * Unlike [threeDSecurePassword], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("threeDSecurePassword")
+    @ExcludeMissing
+    fun _threeDSecurePassword(): JsonField<String> = threeDSecurePassword
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -148,6 +181,7 @@ private constructor(
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
         private var platformCardId: JsonField<String> = JsonMissing.of()
+        private var threeDSecurePassword: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardCreateRequest: CardCreateRequest) = apply {
@@ -155,6 +189,7 @@ private constructor(
             form = cardCreateRequest.form
             fundingSources = cardCreateRequest.fundingSources.map { it.toMutableList() }
             platformCardId = cardCreateRequest.platformCardId
+            threeDSecurePassword = cardCreateRequest.threeDSecurePassword
             additionalProperties = cardCreateRequest.additionalProperties.toMutableMap()
         }
 
@@ -239,6 +274,27 @@ private constructor(
             this.platformCardId = platformCardId
         }
 
+        /**
+         * Optional static password used as the card's 3-D Secure factor. Only accepted for card
+         * programs whose issuer supports a static-password factor (EU cards today); supplying it
+         * for a program that does not is rejected with `INVALID_INPUT`. When omitted, one is
+         * generated on the cardholder's behalf. Grid does not retain the value: it is forwarded to
+         * the issuer and discarded, so it cannot be read back afterwards.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: String) =
+            threeDSecurePassword(JsonField.of(threeDSecurePassword))
+
+        /**
+         * Sets [Builder.threeDSecurePassword] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.threeDSecurePassword] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: JsonField<String>) = apply {
+            this.threeDSecurePassword = threeDSecurePassword
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -278,6 +334,7 @@ private constructor(
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
                 platformCardId,
+                threeDSecurePassword,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -301,6 +358,7 @@ private constructor(
         form().validate()
         fundingSources()
         platformCardId()
+        threeDSecurePassword()
         validated = true
     }
 
@@ -321,7 +379,8 @@ private constructor(
         (if (cardholderId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
-            (if (platformCardId.asKnown() == null) 0 else 1)
+            (if (platformCardId.asKnown() == null) 0 else 1) +
+            (if (threeDSecurePassword.asKnown() == null) 0 else 1)
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -465,15 +524,23 @@ private constructor(
             form == other.form &&
             fundingSources == other.fundingSources &&
             platformCardId == other.platformCardId &&
+            threeDSecurePassword == other.threeDSecurePassword &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(cardholderId, form, fundingSources, platformCardId, additionalProperties)
+        Objects.hash(
+            cardholderId,
+            form,
+            fundingSources,
+            platformCardId,
+            threeDSecurePassword,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, platformCardId=$platformCardId, additionalProperties=$additionalProperties}"
+        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }

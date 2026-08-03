@@ -16,6 +16,7 @@ internal class CardIssueParamsTest {
                     .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .platformCardId("card-emp-aary-001")
+                    .threeDSecurePassword("AbCd1234EfGh5678")
                     .build()
             )
             .build()
@@ -31,6 +32,7 @@ internal class CardIssueParamsTest {
                         .form(CardCreateRequest.Form.VIRTUAL)
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .platformCardId("card-emp-aary-001")
+                        .threeDSecurePassword("AbCd1234EfGh5678")
                         .build()
                 )
                 .build()
@@ -44,6 +46,7 @@ internal class CardIssueParamsTest {
                     .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .platformCardId("card-emp-aary-001")
+                    .threeDSecurePassword("AbCd1234EfGh5678")
                     .build()
             )
     }
