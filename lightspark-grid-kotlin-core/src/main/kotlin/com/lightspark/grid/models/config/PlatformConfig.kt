@@ -1463,7 +1463,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val feeType: JsonField<FeeType>,
-        private val fixedFee: JsonField<Long>,
+        private val fixedFee: JsonField<FixedFee>,
         private val sourceCurrency: JsonField<String>,
         private val variableFeeBps: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -1472,7 +1472,9 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("feeType") @ExcludeMissing feeType: JsonField<FeeType> = JsonMissing.of(),
-            @JsonProperty("fixedFee") @ExcludeMissing fixedFee: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("fixedFee")
+            @ExcludeMissing
+            fixedFee: JsonField<FixedFee> = JsonMissing.of(),
             @JsonProperty("sourceCurrency")
             @ExcludeMissing
             sourceCurrency: JsonField<String> = JsonMissing.of(),
@@ -1492,13 +1494,12 @@ private constructor(
         fun feeType(): FeeType = feeType.getRequired("feeType")
 
         /**
-         * Fixed fee charged per transaction, denominated in the smallest unit of the fee config's
-         * `sourceCurrency` (e.g., cents for USD).
+         * Fixed fee charged per transaction.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun fixedFee(): Long = fixedFee.getRequired("fixedFee")
+        fun fixedFee(): FixedFee = fixedFee.getRequired("fixedFee")
 
         /**
          * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
@@ -1530,7 +1531,7 @@ private constructor(
          *
          * Unlike [fixedFee], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("fixedFee") @ExcludeMissing fun _fixedFee(): JsonField<Long> = fixedFee
+        @JsonProperty("fixedFee") @ExcludeMissing fun _fixedFee(): JsonField<FixedFee> = fixedFee
 
         /**
          * Returns the raw JSON value of [sourceCurrency].
@@ -1584,7 +1585,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var feeType: JsonField<FeeType>? = null
-            private var fixedFee: JsonField<Long>? = null
+            private var fixedFee: JsonField<FixedFee>? = null
             private var sourceCurrency: JsonField<String>? = null
             private var variableFeeBps: JsonField<Long>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -1613,20 +1614,17 @@ private constructor(
              */
             fun feeType(feeType: JsonField<FeeType>) = apply { this.feeType = feeType }
 
-            /**
-             * Fixed fee charged per transaction, denominated in the smallest unit of the fee
-             * config's `sourceCurrency` (e.g., cents for USD).
-             */
-            fun fixedFee(fixedFee: Long) = fixedFee(JsonField.of(fixedFee))
+            /** Fixed fee charged per transaction. */
+            fun fixedFee(fixedFee: FixedFee) = fixedFee(JsonField.of(fixedFee))
 
             /**
              * Sets [Builder.fixedFee] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.fixedFee] with a well-typed [Long] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.fixedFee] with a well-typed [FixedFee] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun fixedFee(fixedFee: JsonField<Long>) = apply { this.fixedFee = fixedFee }
+            fun fixedFee(fixedFee: JsonField<FixedFee>) = apply { this.fixedFee = fixedFee }
 
             /**
              * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
@@ -1724,7 +1722,7 @@ private constructor(
             }
 
             feeType().validate()
-            fixedFee()
+            fixedFee().validate()
             sourceCurrency()
             variableFeeBps()
             validated = true
@@ -1746,7 +1744,7 @@ private constructor(
          */
         internal fun validity(): Int =
             (feeType.asKnown()?.validity() ?: 0) +
-                (if (fixedFee.asKnown() == null) 0 else 1) +
+                (fixedFee.asKnown()?.validity() ?: 0) +
                 (if (sourceCurrency.asKnown() == null) 0 else 1) +
                 (if (variableFeeBps.asKnown() == null) 0 else 1)
 
@@ -1886,6 +1884,232 @@ private constructor(
             override fun hashCode() = value.hashCode()
 
             override fun toString() = value.toString()
+        }
+
+        /** Fixed fee charged per transaction. */
+        class FixedFee
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val amount: JsonField<Long>,
+            private val currency: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
+                @JsonProperty("currency")
+                @ExcludeMissing
+                currency: JsonField<String> = JsonMissing.of(),
+            ) : this(amount, currency, mutableMapOf())
+
+            /**
+             * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for USD).
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun amount(): Long = amount.getRequired("amount")
+
+            /**
+             * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+             * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC" for
+             * USDC, etc.)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currency(): String = currency.getRequired("currency")
+
+            /**
+             * Returns the raw JSON value of [amount].
+             *
+             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+            /**
+             * Returns the raw JSON value of [currency].
+             *
+             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [FixedFee].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .amount()
+                 * .currency()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [FixedFee]. */
+            class Builder internal constructor() {
+
+                private var amount: JsonField<Long>? = null
+                private var currency: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(fixedFee: FixedFee) = apply {
+                    amount = fixedFee.amount
+                    currency = fixedFee.currency
+                    additionalProperties = fixedFee.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for
+                 * USD).
+                 */
+                fun amount(amount: Long) = amount(JsonField.of(amount))
+
+                /**
+                 * Sets [Builder.amount] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.amount] with a well-typed [Long] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+
+                /**
+                 * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                 * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC"
+                 * for USDC, etc.)
+                 */
+                fun currency(currency: String) = currency(JsonField.of(currency))
+
+                /**
+                 * Sets [Builder.currency] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currency] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [FixedFee].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .amount()
+                 * .currency()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): FixedFee =
+                    FixedFee(
+                        checkRequired("amount", amount),
+                        checkRequired("currency", currency),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): FixedFee = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                amount()
+                currency()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (amount.asKnown() == null) 0 else 1) +
+                    (if (currency.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is FixedFee &&
+                    amount == other.amount &&
+                    currency == other.currency &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(amount, currency, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "FixedFee{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
         }
 
         override fun equals(other: Any?): Boolean {
