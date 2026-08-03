@@ -90,7 +90,12 @@ internal class ConfigServiceAsyncTest {
                                 PlatformConfigUpdateRequest.FeeConfig.FeeType
                                     .CROSS_CURRENCY_TRANSACTION
                             )
-                            .fixedFee(100L)
+                            .fixedFee(
+                                PlatformConfigUpdateRequest.FeeConfig.FixedFee.builder()
+                                    .amount(100L)
+                                    .currency("USD")
+                                    .build()
+                            )
                             .sourceCurrency("USD")
                             .variableFeeBps(30L)
                             .build()

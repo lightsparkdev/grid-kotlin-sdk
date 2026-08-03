@@ -58,7 +58,12 @@ internal class PlatformConfigTest {
                 .addFeeConfig(
                     PlatformConfig.FeeConfig.builder()
                         .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
-                        .fixedFee(100L)
+                        .fixedFee(
+                            PlatformConfig.FeeConfig.FixedFee.builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
                         .sourceCurrency("USD")
                         .variableFeeBps(30L)
                         .build()
@@ -150,7 +155,12 @@ internal class PlatformConfigTest {
             .containsExactly(
                 PlatformConfig.FeeConfig.builder()
                     .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
-                    .fixedFee(100L)
+                    .fixedFee(
+                        PlatformConfig.FeeConfig.FixedFee.builder()
+                            .amount(100L)
+                            .currency("USD")
+                            .build()
+                    )
                     .sourceCurrency("USD")
                     .variableFeeBps(30L)
                     .build()
@@ -243,7 +253,12 @@ internal class PlatformConfigTest {
                 .addFeeConfig(
                     PlatformConfig.FeeConfig.builder()
                         .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
-                        .fixedFee(100L)
+                        .fixedFee(
+                            PlatformConfig.FeeConfig.FixedFee.builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
                         .sourceCurrency("USD")
                         .variableFeeBps(30L)
                         .build()
