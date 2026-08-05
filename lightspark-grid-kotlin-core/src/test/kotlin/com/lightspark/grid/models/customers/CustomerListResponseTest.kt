@@ -34,6 +34,16 @@ internal class CustomerListResponseTest {
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .isDeleted(false)
                         .phoneNumber("+14155551234")
                         .region("US")
@@ -98,6 +108,16 @@ internal class CustomerListResponseTest {
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .isDeleted(false)
                         .phoneNumber("+14155551234")
                         .region("US")
@@ -166,6 +186,16 @@ internal class CustomerListResponseTest {
                         .addCurrency("USD")
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .isDeleted(false)
                         .phoneNumber("+14155551234")
                         .region("US")

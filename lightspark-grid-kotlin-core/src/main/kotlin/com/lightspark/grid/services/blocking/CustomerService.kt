@@ -17,9 +17,11 @@ import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerRetrieveEndUserTermsParams
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.EndUserTerms
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
@@ -246,6 +248,16 @@ interface CustomerService {
     /** @see listInternalAccounts */
     fun listInternalAccounts(requestOptions: RequestOptions): CustomerListInternalAccountsPage =
         listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+    /** Retrieve the current version and Grid-hosted URL of the End User Terms. */
+    fun retrieveEndUserTerms(
+        params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EndUserTerms
+
+    /** @see retrieveEndUserTerms */
+    fun retrieveEndUserTerms(requestOptions: RequestOptions): EndUserTerms =
+        retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)
 
     /**
      * Update mutable fields on an internal account. Today this supports updating the wallet privacy
@@ -478,6 +490,21 @@ interface CustomerService {
             requestOptions: RequestOptions
         ): HttpResponseFor<CustomerListInternalAccountsPage> =
             listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /customers/end-user-terms`, but is otherwise the
+         * same as [CustomerService.retrieveEndUserTerms].
+         */
+        @MustBeClosed
+        fun retrieveEndUserTerms(
+            params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EndUserTerms>
+
+        /** @see retrieveEndUserTerms */
+        @MustBeClosed
+        fun retrieveEndUserTerms(requestOptions: RequestOptions): HttpResponseFor<EndUserTerms> =
+            retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `patch /internal-accounts/{id}`, but is otherwise the

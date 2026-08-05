@@ -7,6 +7,7 @@ import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.IndividualCustomerUpdateRequest
 import com.lightspark.grid.models.customers.InternalAccountExportRequest
@@ -14,6 +15,7 @@ import com.lightspark.grid.models.customers.InternalAccountUpdateRequest
 import com.lightspark.grid.models.customers.KycLinkCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -52,6 +54,14 @@ internal class CustomerServiceAsyncTest {
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .expectedMonthlyTransactionCount(
                         IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -151,6 +161,16 @@ internal class CustomerServiceAsyncTest {
                             .birthDate(LocalDate.parse("1990-01-15"))
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
+                            .endUserTermsConsent(
+                                EndUserTermsConsentRequest.builder()
+                                    .acceptanceMethod(
+                                        EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                    )
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("V1")
+                                    .build()
+                            )
                             .expectedMonthlyTransactionCount(
                                 IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                                     .COUNT_100_TO_500
@@ -304,6 +324,23 @@ internal class CustomerServiceAsyncTest {
         val page = customerServiceAsync.listInternalAccounts()
 
         page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun retrieveEndUserTerms() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerServiceAsync = client.customers()
+
+        val endUserTerms = customerServiceAsync.retrieveEndUserTerms()
+
+        endUserTerms.validate()
     }
 
     @Disabled("Mock server tests are disabled")

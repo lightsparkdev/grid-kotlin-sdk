@@ -5,6 +5,7 @@ package com.lightspark.grid.models.customers
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -37,6 +38,14 @@ internal class CustomerUpdateParamsTest {
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .expectedMonthlyTransactionCount(
                         IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -120,6 +129,16 @@ internal class CustomerUpdateParamsTest {
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .expectedMonthlyTransactionCount(
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500
@@ -218,6 +237,16 @@ internal class CustomerUpdateParamsTest {
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .expectedMonthlyTransactionCount(
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500
@@ -280,6 +309,16 @@ internal class CustomerUpdateParamsTest {
                         .birthDate(LocalDate.parse("1990-01-15"))
                         .currencies(listOf("USD", "EUR", "USDC"))
                         .email("john.doe@example.com")
+                        .endUserTermsConsent(
+                            EndUserTermsConsentRequest.builder()
+                                .acceptanceMethod(
+                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
+                                )
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("V1")
+                                .build()
+                        )
                         .expectedMonthlyTransactionCount(
                             IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500

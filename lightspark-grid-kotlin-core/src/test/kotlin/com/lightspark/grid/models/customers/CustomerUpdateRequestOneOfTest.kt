@@ -8,6 +8,7 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -37,6 +38,14 @@ internal class CustomerUpdateRequestOneOfTest {
                 .birthDate(LocalDate.parse("1990-01-15"))
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .expectedMonthlyTransactionCount(
                     IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )
@@ -100,6 +109,14 @@ internal class CustomerUpdateRequestOneOfTest {
                     .birthDate(LocalDate.parse("1990-01-15"))
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .expectedMonthlyTransactionCount(
                         IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500
@@ -202,6 +219,14 @@ internal class CustomerUpdateRequestOneOfTest {
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                 .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
@@ -274,6 +299,14 @@ internal class CustomerUpdateRequestOneOfTest {
                     )
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                     .phoneNumber("+14155551234")
                     .umaAddress("\$john.doe@uma.domain.com")

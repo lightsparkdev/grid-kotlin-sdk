@@ -7,6 +7,7 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -67,6 +68,14 @@ internal class BusinessCustomerCreateRequestTest {
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
                 .phoneNumber("+14155551234")
                 .platformCustomerId("9f84e0c2a72c4fa")
@@ -125,6 +134,15 @@ internal class BusinessCustomerCreateRequestTest {
             )
         assertThat(businessCustomerCreateRequest.currencies()).containsExactly("USD", "USDC")
         assertThat(businessCustomerCreateRequest.email()).isEqualTo("john.doe@example.com")
+        assertThat(businessCustomerCreateRequest.endUserTermsConsent())
+            .isEqualTo(
+                EndUserTermsConsentRequest.builder()
+                    .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("V1")
+                    .build()
+            )
         assertThat(businessCustomerCreateRequest.kybStatus())
             .isEqualTo(BusinessCustomerCreateRequest.KybStatus.APPROVED)
         assertThat(businessCustomerCreateRequest.phoneNumber()).isEqualTo("+14155551234")
@@ -190,6 +208,14 @@ internal class BusinessCustomerCreateRequestTest {
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
                 .phoneNumber("+14155551234")
                 .platformCustomerId("9f84e0c2a72c4fa")
