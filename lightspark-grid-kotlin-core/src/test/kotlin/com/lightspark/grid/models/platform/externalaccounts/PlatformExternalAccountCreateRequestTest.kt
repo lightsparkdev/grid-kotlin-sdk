@@ -45,6 +45,7 @@ internal class PlatformExternalAccountCreateRequestTest {
                         .build()
                 )
                 .currency("USD")
+                .ownershipType(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
                 .platformAccountId("ext_acc_123456")
                 .build()
 
@@ -80,6 +81,8 @@ internal class PlatformExternalAccountCreateRequestTest {
                 )
             )
         assertThat(platformExternalAccountCreateRequest.currency()).isEqualTo("USD")
+        assertThat(platformExternalAccountCreateRequest.ownershipType())
+            .isEqualTo(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
         assertThat(platformExternalAccountCreateRequest.platformAccountId())
             .isEqualTo("ext_acc_123456")
     }
@@ -118,6 +121,7 @@ internal class PlatformExternalAccountCreateRequestTest {
                         .build()
                 )
                 .currency("USD")
+                .ownershipType(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
                 .platformAccountId("ext_acc_123456")
                 .build()
 
