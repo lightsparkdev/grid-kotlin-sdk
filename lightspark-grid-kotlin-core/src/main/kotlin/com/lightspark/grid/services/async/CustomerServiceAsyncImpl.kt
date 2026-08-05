@@ -27,9 +27,11 @@ import com.lightspark.grid.models.customers.CustomerListPageAsync
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerListResponse
 import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerRetrieveEndUserTermsParams
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.EndUserTerms
 import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
@@ -118,6 +120,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     ): CustomerListInternalAccountsPageAsync =
         // get /customers/internal-accounts
         withRawResponse().listInternalAccounts(params, requestOptions).parse()
+
+    override suspend fun retrieveEndUserTerms(
+        params: CustomerRetrieveEndUserTermsParams,
+        requestOptions: RequestOptions,
+    ): EndUserTerms =
+        // get /customers/end-user-terms
+        withRawResponse().retrieveEndUserTerms(params, requestOptions).parse()
 
     override suspend fun updateInternalAccount(
         params: CustomerUpdateInternalAccountParams,
@@ -434,6 +443,37 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
                             .params(params)
                             .response(it)
                             .build()
+                    }
+            }
+        }
+
+        private val retrieveEndUserTermsHandler: Handler<EndUserTerms> =
+            jsonHandler<EndUserTerms>(clientOptions.jsonMapper)
+
+        override suspend fun retrieveEndUserTerms(
+            params: CustomerRetrieveEndUserTermsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<EndUserTerms> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("customers", "end-user-terms")
+                    .build()
+                    .prepareAsync(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.executeAsync(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { retrieveEndUserTermsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
                     }
             }
         }

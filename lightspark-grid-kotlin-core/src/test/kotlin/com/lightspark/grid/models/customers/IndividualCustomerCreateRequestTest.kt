@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -33,6 +34,14 @@ internal class IndividualCustomerCreateRequestTest {
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .expectedMonthlyTransactionCount(
                     IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )
@@ -90,6 +99,15 @@ internal class IndividualCustomerCreateRequestTest {
             .isEqualTo(LocalDate.parse("1990-01-15"))
         assertThat(individualCustomerCreateRequest.currencies()).containsExactly("USD", "USDC")
         assertThat(individualCustomerCreateRequest.email()).isEqualTo("john.doe@example.com")
+        assertThat(individualCustomerCreateRequest.endUserTermsConsent())
+            .isEqualTo(
+                EndUserTermsConsentRequest.builder()
+                    .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("V1")
+                    .build()
+            )
         assertThat(individualCustomerCreateRequest.expectedMonthlyTransactionCount())
             .isEqualTo(
                 IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
@@ -159,6 +177,14 @@ internal class IndividualCustomerCreateRequestTest {
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .expectedMonthlyTransactionCount(
                     IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )

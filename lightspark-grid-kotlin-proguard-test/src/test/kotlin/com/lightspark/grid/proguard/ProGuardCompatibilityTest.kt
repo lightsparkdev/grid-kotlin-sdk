@@ -8,10 +8,12 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
+import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -124,6 +126,14 @@ internal class ProGuardCompatibilityTest {
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .expectedMonthlyTransactionCount(
                         IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
                             .COUNT_100_TO_500

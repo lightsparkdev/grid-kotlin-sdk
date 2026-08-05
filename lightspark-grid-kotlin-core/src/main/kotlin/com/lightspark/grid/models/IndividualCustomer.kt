@@ -16,6 +16,7 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.Customer
+import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -40,6 +41,7 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
+    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
     private val isDeleted: JsonField<Boolean>,
     private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
@@ -86,6 +88,9 @@ private constructor(
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("endUserTermsConsent")
+        @ExcludeMissing
+        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
         @JsonProperty("isDeleted") @ExcludeMissing isDeleted: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
@@ -158,6 +163,7 @@ private constructor(
         createdAt,
         currencies,
         email,
+        endUserTermsConsent,
         isDeleted,
         phoneNumber,
         region,
@@ -194,6 +200,7 @@ private constructor(
             .createdAt(createdAt)
             .currencies(currencies)
             .email(email)
+            .endUserTermsConsent(endUserTermsConsent)
             .isDeleted(isDeleted)
             .phoneNumber(phoneNumber)
             .region(region)
@@ -266,6 +273,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun email(): String? = email.getNullable("email")
+
+    /**
+     * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has been
+     * recorded.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+        endUserTermsConsent.getNullable("endUserTermsConsent")
 
     /**
      * Whether the customer is marked as deleted
@@ -528,6 +545,16 @@ private constructor(
     @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     /**
+     * Returns the raw JSON value of [endUserTermsConsent].
+     *
+     * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("endUserTermsConsent")
+    @ExcludeMissing
+    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+
+    /**
      * Returns the raw JSON value of [isDeleted].
      *
      * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
@@ -765,6 +792,7 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
         private var isDeleted: JsonField<Boolean> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
@@ -801,6 +829,7 @@ private constructor(
             createdAt = individualCustomer.createdAt
             currencies = individualCustomer.currencies.map { it.toMutableList() }
             email = individualCustomer.email
+            endUserTermsConsent = individualCustomer.endUserTermsConsent
             isDeleted = individualCustomer.isDeleted
             phoneNumber = individualCustomer.phoneNumber
             region = individualCustomer.region
@@ -939,6 +968,25 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun email(email: JsonField<String>) = apply { this.email = email }
+
+        /**
+         * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has
+         * been recorded.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+            endUserTermsConsent(JsonField.of(endUserTermsConsent))
+
+        /**
+         * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.endUserTermsConsent] with a well-typed
+         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
+            apply {
+                this.endUserTermsConsent = endUserTermsConsent
+            }
 
         /** Whether the customer is marked as deleted */
         fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
@@ -1353,6 +1401,7 @@ private constructor(
                 createdAt,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
+                endUserTermsConsent,
                 isDeleted,
                 phoneNumber,
                 region,
@@ -1402,6 +1451,7 @@ private constructor(
         createdAt()
         currencies()
         email()
+        endUserTermsConsent()?.validate()
         isDeleted()
         phoneNumber()
         region()
@@ -1449,6 +1499,7 @@ private constructor(
             (if (createdAt.asKnown() == null) 0 else 1) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
+            (endUserTermsConsent.asKnown()?.validity() ?: 0) +
             (if (isDeleted.asKnown() == null) 0 else 1) +
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
@@ -3333,6 +3384,7 @@ private constructor(
             createdAt == other.createdAt &&
             currencies == other.currencies &&
             email == other.email &&
+            endUserTermsConsent == other.endUserTermsConsent &&
             isDeleted == other.isDeleted &&
             phoneNumber == other.phoneNumber &&
             region == other.region &&
@@ -3369,6 +3421,7 @@ private constructor(
             createdAt,
             currencies,
             email,
+            endUserTermsConsent,
             isDeleted,
             phoneNumber,
             region,
@@ -3399,5 +3452,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, taxIdCountryOfIssuance=$taxIdCountryOfIssuance, taxIdentifier=$taxIdentifier, taxIdType=$taxIdType, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, taxIdCountryOfIssuance=$taxIdCountryOfIssuance, taxIdentifier=$taxIdentifier, taxIdType=$taxIdType, additionalProperties=$additionalProperties}"
 }

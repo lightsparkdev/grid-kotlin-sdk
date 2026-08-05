@@ -36,6 +36,7 @@ private constructor(
     private val businessInfo: JsonField<BusinessInfo>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
+    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
     private val kybStatus: JsonField<KybStatus>,
     private val phoneNumber: JsonField<String>,
     private val umaAddress: JsonField<String>,
@@ -55,6 +56,9 @@ private constructor(
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("endUserTermsConsent")
+        @ExcludeMissing
+        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
         @JsonProperty("kybStatus")
         @ExcludeMissing
         kybStatus: JsonField<KybStatus> = JsonMissing.of(),
@@ -68,6 +72,7 @@ private constructor(
         businessInfo,
         currencies,
         email,
+        endUserTermsConsent,
         kybStatus,
         phoneNumber,
         umaAddress,
@@ -114,6 +119,17 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun email(): String? = email.getNullable("email")
+
+    /**
+     * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
+     * provide this before initiating customer-scoped transactions; those transactions fail until
+     * consent is recorded.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+        endUserTermsConsent.getNullable("endUserTermsConsent")
 
     /**
      * The current KYB status of a business customer. `HOLD` means the customer is placed on hold
@@ -185,6 +201,16 @@ private constructor(
     @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     /**
+     * Returns the raw JSON value of [endUserTermsConsent].
+     *
+     * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("endUserTermsConsent")
+    @ExcludeMissing
+    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+
+    /**
      * Returns the raw JSON value of [kybStatus].
      *
      * Unlike [kybStatus], this method doesn't throw if the JSON field has an unexpected type.
@@ -239,6 +265,7 @@ private constructor(
         private var businessInfo: JsonField<BusinessInfo> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
         private var kybStatus: JsonField<KybStatus> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var umaAddress: JsonField<String> = JsonMissing.of()
@@ -250,6 +277,7 @@ private constructor(
             businessInfo = businessCustomerUpdateRequest.businessInfo
             currencies = businessCustomerUpdateRequest.currencies.map { it.toMutableList() }
             email = businessCustomerUpdateRequest.email
+            endUserTermsConsent = businessCustomerUpdateRequest.endUserTermsConsent
             kybStatus = businessCustomerUpdateRequest.kybStatus
             phoneNumber = businessCustomerUpdateRequest.phoneNumber
             umaAddress = businessCustomerUpdateRequest.umaAddress
@@ -340,6 +368,26 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
+         * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
+         * provide this before initiating customer-scoped transactions; those transactions fail
+         * until consent is recorded.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+            endUserTermsConsent(JsonField.of(endUserTermsConsent))
+
+        /**
+         * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.endUserTermsConsent] with a well-typed
+         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
+            apply {
+                this.endUserTermsConsent = endUserTermsConsent
+            }
+
+        /**
          * The current KYB status of a business customer. `HOLD` means the customer is placed on
          * hold and may be required to update or provide more information.
          */
@@ -424,6 +472,7 @@ private constructor(
                 businessInfo,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
+                endUserTermsConsent,
                 kybStatus,
                 phoneNumber,
                 umaAddress,
@@ -451,6 +500,7 @@ private constructor(
         businessInfo()?.validate()
         currencies()
         email()
+        endUserTermsConsent()?.validate()
         kybStatus()?.validate()
         phoneNumber()
         umaAddress()
@@ -476,6 +526,7 @@ private constructor(
             (businessInfo.asKnown()?.validity() ?: 0) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
+            (endUserTermsConsent.asKnown()?.validity() ?: 0) +
             (kybStatus.asKnown()?.validity() ?: 0) +
             (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1)
@@ -2998,6 +3049,7 @@ private constructor(
             businessInfo == other.businessInfo &&
             currencies == other.currencies &&
             email == other.email &&
+            endUserTermsConsent == other.endUserTermsConsent &&
             kybStatus == other.kybStatus &&
             phoneNumber == other.phoneNumber &&
             umaAddress == other.umaAddress &&
@@ -3011,6 +3063,7 @@ private constructor(
             businessInfo,
             currencies,
             email,
+            endUserTermsConsent,
             kybStatus,
             phoneNumber,
             umaAddress,
@@ -3021,5 +3074,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "BusinessCustomerUpdateRequest{customerType=$customerType, address=$address, businessInfo=$businessInfo, currencies=$currencies, email=$email, kybStatus=$kybStatus, phoneNumber=$phoneNumber, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "BusinessCustomerUpdateRequest{customerType=$customerType, address=$address, businessInfo=$businessInfo, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, kybStatus=$kybStatus, phoneNumber=$phoneNumber, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }

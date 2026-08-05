@@ -6,6 +6,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -68,6 +69,14 @@ internal class BusinessCustomerUpdateRequestTest {
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                 .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
@@ -127,6 +136,15 @@ internal class BusinessCustomerUpdateRequestTest {
             )
         assertThat(businessCustomerUpdateRequest.currencies()).containsExactly("USD", "EUR", "USDC")
         assertThat(businessCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
+        assertThat(businessCustomerUpdateRequest.endUserTermsConsent())
+            .isEqualTo(
+                EndUserTermsConsentRequest.builder()
+                    .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("V1")
+                    .build()
+            )
         assertThat(businessCustomerUpdateRequest.kybStatus())
             .isEqualTo(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
         assertThat(businessCustomerUpdateRequest.phoneNumber()).isEqualTo("+14155551234")
@@ -192,6 +210,14 @@ internal class BusinessCustomerUpdateRequestTest {
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
                 .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")

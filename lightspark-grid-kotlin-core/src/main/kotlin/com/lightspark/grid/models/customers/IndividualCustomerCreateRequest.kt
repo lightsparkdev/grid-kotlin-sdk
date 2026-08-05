@@ -36,6 +36,7 @@ private constructor(
     private val birthDate: JsonField<LocalDate>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
+    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
     private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
     private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
     private val fullName: JsonField<String>,
@@ -77,6 +78,9 @@ private constructor(
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("endUserTermsConsent")
+        @ExcludeMissing
+        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
         @JsonProperty("expectedMonthlyTransactionCount")
         @ExcludeMissing
         expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
@@ -144,6 +148,7 @@ private constructor(
         birthDate,
         currencies,
         email,
+        endUserTermsConsent,
         expectedMonthlyTransactionCount,
         expectedMonthlyTransactionVolume,
         fullName,
@@ -216,6 +221,18 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun email(): String? = email.getNullable("email")
+
+    /**
+     * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
+     * provide this before initiating customer-scoped transactions; those transactions fail until
+     * consent is recorded. This can be supplied during customer creation or in a later customer
+     * update.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+        endUserTermsConsent.getNullable("endUserTermsConsent")
 
     /**
      * Expected number of transactions per month
@@ -468,6 +485,16 @@ private constructor(
     @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     /**
+     * Returns the raw JSON value of [endUserTermsConsent].
+     *
+     * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("endUserTermsConsent")
+    @ExcludeMissing
+    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+
+    /**
      * Returns the raw JSON value of [expectedMonthlyTransactionCount].
      *
      * Unlike [expectedMonthlyTransactionCount], this method doesn't throw if the JSON field has an
@@ -693,6 +720,7 @@ private constructor(
         private var birthDate: JsonField<LocalDate> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
         private var expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
             JsonMissing.of()
         private var expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
@@ -727,6 +755,7 @@ private constructor(
                 birthDate = individualCustomerCreateRequest.birthDate
                 currencies = individualCustomerCreateRequest.currencies.map { it.toMutableList() }
                 email = individualCustomerCreateRequest.email
+                endUserTermsConsent = individualCustomerCreateRequest.endUserTermsConsent
                 expectedMonthlyTransactionCount =
                     individualCustomerCreateRequest.expectedMonthlyTransactionCount
                 expectedMonthlyTransactionVolume =
@@ -860,6 +889,27 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun email(email: JsonField<String>) = apply { this.email = email }
+
+        /**
+         * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
+         * provide this before initiating customer-scoped transactions; those transactions fail
+         * until consent is recorded. This can be supplied during customer creation or in a later
+         * customer update.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+            endUserTermsConsent(JsonField.of(endUserTermsConsent))
+
+        /**
+         * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.endUserTermsConsent] with a well-typed
+         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
+            apply {
+                this.endUserTermsConsent = endUserTermsConsent
+            }
 
         /** Expected number of transactions per month */
         fun expectedMonthlyTransactionCount(
@@ -1273,6 +1323,7 @@ private constructor(
                 birthDate,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
+                endUserTermsConsent,
                 expectedMonthlyTransactionCount,
                 expectedMonthlyTransactionVolume,
                 fullName,
@@ -1320,6 +1371,7 @@ private constructor(
         birthDate()
         currencies()
         email()
+        endUserTermsConsent()?.validate()
         expectedMonthlyTransactionCount()?.validate()
         expectedMonthlyTransactionVolume()?.validate()
         fullName()
@@ -1365,6 +1417,7 @@ private constructor(
             (if (birthDate.asKnown() == null) 0 else 1) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
+            (endUserTermsConsent.asKnown()?.validity() ?: 0) +
             (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
             (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
             (if (fullName.asKnown() == null) 0 else 1) +
@@ -3393,6 +3446,7 @@ private constructor(
             birthDate == other.birthDate &&
             currencies == other.currencies &&
             email == other.email &&
+            endUserTermsConsent == other.endUserTermsConsent &&
             expectedMonthlyTransactionCount == other.expectedMonthlyTransactionCount &&
             expectedMonthlyTransactionVolume == other.expectedMonthlyTransactionVolume &&
             fullName == other.fullName &&
@@ -3426,6 +3480,7 @@ private constructor(
             birthDate,
             currencies,
             email,
+            endUserTermsConsent,
             expectedMonthlyTransactionCount,
             expectedMonthlyTransactionVolume,
             fullName,
@@ -3455,5 +3510,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomerCreateRequest{customerType=$customerType, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, currencies=$currencies, email=$email, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, phoneNumber=$phoneNumber, platformCustomerId=$platformCustomerId, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, region=$region, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, taxIdCountryOfIssuance=$taxIdCountryOfIssuance, taxIdentifier=$taxIdentifier, taxIdType=$taxIdType, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "IndividualCustomerCreateRequest{customerType=$customerType, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, phoneNumber=$phoneNumber, platformCustomerId=$platformCustomerId, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, region=$region, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, taxIdCountryOfIssuance=$taxIdCountryOfIssuance, taxIdentifier=$taxIdentifier, taxIdType=$taxIdType, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }
