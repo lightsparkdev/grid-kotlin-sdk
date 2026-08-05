@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -71,6 +72,7 @@ class PlatformExternalAccountCreateRequest
 private constructor(
     private val accountInfo: JsonField<AccountInfo>,
     private val currency: JsonField<String>,
+    private val ownershipType: JsonField<OwnershipType>,
     private val platformAccountId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -81,10 +83,13 @@ private constructor(
         @ExcludeMissing
         accountInfo: JsonField<AccountInfo> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("ownershipType")
+        @ExcludeMissing
+        ownershipType: JsonField<OwnershipType> = JsonMissing.of(),
         @JsonProperty("platformAccountId")
         @ExcludeMissing
         platformAccountId: JsonField<String> = JsonMissing.of(),
-    ) : this(accountInfo, currency, platformAccountId, mutableMapOf())
+    ) : this(accountInfo, currency, ownershipType, platformAccountId, mutableMapOf())
 
     /**
      * Required fields depend on the selected paymentRails:
@@ -103,6 +108,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun currency(): String = currency.getRequired("currency")
+
+    /**
+     * Whether the external account belongs to the customer themselves (first party) or to someone
+     * else (third party)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun ownershipType(): OwnershipType? = ownershipType.getNullable("ownershipType")
 
     /**
      * Your platform's identifier for the account in your system. This can be used to reference the
@@ -128,6 +142,15 @@ private constructor(
      * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+    /**
+     * Returns the raw JSON value of [ownershipType].
+     *
+     * Unlike [ownershipType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("ownershipType")
+    @ExcludeMissing
+    fun _ownershipType(): JsonField<OwnershipType> = ownershipType
 
     /**
      * Returns the raw JSON value of [platformAccountId].
@@ -171,6 +194,7 @@ private constructor(
 
         private var accountInfo: JsonField<AccountInfo>? = null
         private var currency: JsonField<String>? = null
+        private var ownershipType: JsonField<OwnershipType> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -179,6 +203,7 @@ private constructor(
         ) = apply {
             accountInfo = platformExternalAccountCreateRequest.accountInfo
             currency = platformExternalAccountCreateRequest.currency
+            ownershipType = platformExternalAccountCreateRequest.ownershipType
             platformAccountId = platformExternalAccountCreateRequest.platformAccountId
             additionalProperties =
                 platformExternalAccountCreateRequest.additionalProperties.toMutableMap()
@@ -496,6 +521,23 @@ private constructor(
         fun currency(currency: JsonField<String>) = apply { this.currency = currency }
 
         /**
+         * Whether the external account belongs to the customer themselves (first party) or to
+         * someone else (third party)
+         */
+        fun ownershipType(ownershipType: OwnershipType) = ownershipType(JsonField.of(ownershipType))
+
+        /**
+         * Sets [Builder.ownershipType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ownershipType] with a well-typed [OwnershipType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun ownershipType(ownershipType: JsonField<OwnershipType>) = apply {
+            this.ownershipType = ownershipType
+        }
+
+        /**
          * Your platform's identifier for the account in your system. This can be used to reference
          * the account by your own identifier.
          */
@@ -549,6 +591,7 @@ private constructor(
             PlatformExternalAccountCreateRequest(
                 checkRequired("accountInfo", accountInfo),
                 checkRequired("currency", currency),
+                ownershipType,
                 platformAccountId,
                 additionalProperties.toMutableMap(),
             )
@@ -571,6 +614,7 @@ private constructor(
 
         accountInfo().validate()
         currency()
+        ownershipType()?.validate()
         platformAccountId()
         validated = true
     }
@@ -591,6 +635,7 @@ private constructor(
     internal fun validity(): Int =
         (accountInfo.asKnown()?.validity() ?: 0) +
             (if (currency.asKnown() == null) 0 else 1) +
+            (ownershipType.asKnown()?.validity() ?: 0) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
 
     /**
@@ -3111,6 +3156,148 @@ private constructor(
         }
     }
 
+    /**
+     * Whether the external account belongs to the customer themselves (first party) or to someone
+     * else (third party)
+     */
+    class OwnershipType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val FIRST_PARTY = of("FIRST_PARTY")
+
+            val THIRD_PARTY = of("THIRD_PARTY")
+
+            fun of(value: String) = OwnershipType(JsonField.of(value))
+        }
+
+        /** An enum containing [OwnershipType]'s known values. */
+        enum class Known {
+            FIRST_PARTY,
+            THIRD_PARTY,
+        }
+
+        /**
+         * An enum containing [OwnershipType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [OwnershipType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            FIRST_PARTY,
+            THIRD_PARTY,
+            /**
+             * An enum member indicating that [OwnershipType] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                FIRST_PARTY -> Value.FIRST_PARTY
+                THIRD_PARTY -> Value.THIRD_PARTY
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                FIRST_PARTY -> Known.FIRST_PARTY
+                THIRD_PARTY -> Known.THIRD_PARTY
+                else -> throw LightsparkGridInvalidDataException("Unknown OwnershipType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): OwnershipType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is OwnershipType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -3119,16 +3306,17 @@ private constructor(
         return other is PlatformExternalAccountCreateRequest &&
             accountInfo == other.accountInfo &&
             currency == other.currency &&
+            ownershipType == other.ownershipType &&
             platformAccountId == other.platformAccountId &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountInfo, currency, platformAccountId, additionalProperties)
+        Objects.hash(accountInfo, currency, ownershipType, platformAccountId, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PlatformExternalAccountCreateRequest{accountInfo=$accountInfo, currency=$currency, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "PlatformExternalAccountCreateRequest{accountInfo=$accountInfo, currency=$currency, ownershipType=$ownershipType, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }

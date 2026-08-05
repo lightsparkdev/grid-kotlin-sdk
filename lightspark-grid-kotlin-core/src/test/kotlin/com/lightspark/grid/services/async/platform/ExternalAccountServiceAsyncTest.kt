@@ -56,6 +56,7 @@ internal class ExternalAccountServiceAsyncTest {
                             .build()
                     )
                     .currency("USD")
+                    .ownershipType(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
                     .platformAccountId("ext_acc_123456")
                     .build()
             )

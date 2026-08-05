@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.BaseDeserializer
 import com.lightspark.grid.core.BaseSerializer
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -70,6 +71,7 @@ private constructor(
     private val currency: JsonField<String>,
     private val customerId: JsonField<String>,
     private val defaultUmaDepositAccount: JsonField<Boolean>,
+    private val ownershipType: JsonField<OwnershipType>,
     private val platformAccountId: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -86,6 +88,9 @@ private constructor(
         @JsonProperty("defaultUmaDepositAccount")
         @ExcludeMissing
         defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("ownershipType")
+        @ExcludeMissing
+        ownershipType: JsonField<OwnershipType> = JsonMissing.of(),
         @JsonProperty("platformAccountId")
         @ExcludeMissing
         platformAccountId: JsonField<String> = JsonMissing.of(),
@@ -94,6 +99,7 @@ private constructor(
         currency,
         customerId,
         defaultUmaDepositAccount,
+        ownershipType,
         platformAccountId,
         mutableMapOf(),
     )
@@ -141,6 +147,15 @@ private constructor(
         defaultUmaDepositAccount.getNullable("defaultUmaDepositAccount")
 
     /**
+     * Whether the external account belongs to the customer themselves (first party) or to someone
+     * else (third party)
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun ownershipType(): OwnershipType? = ownershipType.getNullable("ownershipType")
+
+    /**
      * Your platform's identifier for the account in your system. This can be used to reference the
      * account by your own identifier.
      *
@@ -181,6 +196,15 @@ private constructor(
     @JsonProperty("defaultUmaDepositAccount")
     @ExcludeMissing
     fun _defaultUmaDepositAccount(): JsonField<Boolean> = defaultUmaDepositAccount
+
+    /**
+     * Returns the raw JSON value of [ownershipType].
+     *
+     * Unlike [ownershipType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("ownershipType")
+    @ExcludeMissing
+    fun _ownershipType(): JsonField<OwnershipType> = ownershipType
 
     /**
      * Returns the raw JSON value of [platformAccountId].
@@ -225,6 +249,7 @@ private constructor(
         private var currency: JsonField<String>? = null
         private var customerId: JsonField<String> = JsonMissing.of()
         private var defaultUmaDepositAccount: JsonField<Boolean> = JsonMissing.of()
+        private var ownershipType: JsonField<OwnershipType> = JsonMissing.of()
         private var platformAccountId: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -233,6 +258,7 @@ private constructor(
             currency = externalAccountCreate.currency
             customerId = externalAccountCreate.customerId
             defaultUmaDepositAccount = externalAccountCreate.defaultUmaDepositAccount
+            ownershipType = externalAccountCreate.ownershipType
             platformAccountId = externalAccountCreate.platformAccountId
             additionalProperties = externalAccountCreate.additionalProperties.toMutableMap()
         }
@@ -587,6 +613,23 @@ private constructor(
         }
 
         /**
+         * Whether the external account belongs to the customer themselves (first party) or to
+         * someone else (third party)
+         */
+        fun ownershipType(ownershipType: OwnershipType) = ownershipType(JsonField.of(ownershipType))
+
+        /**
+         * Sets [Builder.ownershipType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.ownershipType] with a well-typed [OwnershipType] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun ownershipType(ownershipType: JsonField<OwnershipType>) = apply {
+            this.ownershipType = ownershipType
+        }
+
+        /**
          * Your platform's identifier for the account in your system. This can be used to reference
          * the account by your own identifier.
          */
@@ -642,6 +685,7 @@ private constructor(
                 checkRequired("currency", currency),
                 customerId,
                 defaultUmaDepositAccount,
+                ownershipType,
                 platformAccountId,
                 additionalProperties.toMutableMap(),
             )
@@ -666,6 +710,7 @@ private constructor(
         currency()
         customerId()
         defaultUmaDepositAccount()
+        ownershipType()?.validate()
         platformAccountId()
         validated = true
     }
@@ -688,6 +733,7 @@ private constructor(
             (if (currency.asKnown() == null) 0 else 1) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (defaultUmaDepositAccount.asKnown() == null) 0 else 1) +
+            (ownershipType.asKnown()?.validity() ?: 0) +
             (if (platformAccountId.asKnown() == null) 0 else 1)
 
     /**
@@ -3208,6 +3254,148 @@ private constructor(
         }
     }
 
+    /**
+     * Whether the external account belongs to the customer themselves (first party) or to someone
+     * else (third party)
+     */
+    class OwnershipType @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val FIRST_PARTY = of("FIRST_PARTY")
+
+            val THIRD_PARTY = of("THIRD_PARTY")
+
+            fun of(value: String) = OwnershipType(JsonField.of(value))
+        }
+
+        /** An enum containing [OwnershipType]'s known values. */
+        enum class Known {
+            FIRST_PARTY,
+            THIRD_PARTY,
+        }
+
+        /**
+         * An enum containing [OwnershipType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [OwnershipType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            FIRST_PARTY,
+            THIRD_PARTY,
+            /**
+             * An enum member indicating that [OwnershipType] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                FIRST_PARTY -> Value.FIRST_PARTY
+                THIRD_PARTY -> Value.THIRD_PARTY
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                FIRST_PARTY -> Known.FIRST_PARTY
+                THIRD_PARTY -> Known.THIRD_PARTY
+                else -> throw LightsparkGridInvalidDataException("Unknown OwnershipType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): OwnershipType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is OwnershipType && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -3218,6 +3406,7 @@ private constructor(
             currency == other.currency &&
             customerId == other.customerId &&
             defaultUmaDepositAccount == other.defaultUmaDepositAccount &&
+            ownershipType == other.ownershipType &&
             platformAccountId == other.platformAccountId &&
             additionalProperties == other.additionalProperties
     }
@@ -3228,6 +3417,7 @@ private constructor(
             currency,
             customerId,
             defaultUmaDepositAccount,
+            ownershipType,
             platformAccountId,
             additionalProperties,
         )
@@ -3236,5 +3426,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ExternalAccountCreate{accountInfo=$accountInfo, currency=$currency, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
+        "ExternalAccountCreate{accountInfo=$accountInfo, currency=$currency, customerId=$customerId, defaultUmaDepositAccount=$defaultUmaDepositAccount, ownershipType=$ownershipType, platformAccountId=$platformAccountId, additionalProperties=$additionalProperties}"
 }
