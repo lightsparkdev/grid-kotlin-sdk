@@ -990,6 +990,8 @@ private constructor(
         private val expectedRecipientJurisdictions: JsonField<List<String>>,
         private val incorporatedOn: JsonField<LocalDate>,
         private val naicsCode: JsonField<String>,
+        private val primaryContactFirstName: JsonField<String>,
+        private val primaryContactLastName: JsonField<String>,
         private val purposeOfAccount: JsonField<PurposeOfAccount>,
         private val purposeOfAccountOtherDescription: JsonField<String>,
         private val registrationNumber: JsonField<String>,
@@ -1038,6 +1040,12 @@ private constructor(
             @JsonProperty("naicsCode")
             @ExcludeMissing
             naicsCode: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("primaryContactFirstName")
+            @ExcludeMissing
+            primaryContactFirstName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("primaryContactLastName")
+            @ExcludeMissing
+            primaryContactLastName: JsonField<String> = JsonMissing.of(),
             @JsonProperty("purposeOfAccount")
             @ExcludeMissing
             purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of(),
@@ -1070,6 +1078,8 @@ private constructor(
             expectedRecipientJurisdictions,
             incorporatedOn,
             naicsCode,
+            primaryContactFirstName,
+            primaryContactLastName,
             purposeOfAccount,
             purposeOfAccountOtherDescription,
             registrationNumber,
@@ -1181,6 +1191,27 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun naicsCode(): String? = naicsCode.getNullable("naicsCode")
+
+        /**
+         * First name of the business's primary contact — a registered director or authorised
+         * representative of the business. Required in regions where a named individual is verified
+         * against the business during onboarding (e.g. the EU). The customer's `email` and
+         * `phoneNumber` are this person's contact details.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun primaryContactFirstName(): String? =
+            primaryContactFirstName.getNullable("primaryContactFirstName")
+
+        /**
+         * Last name of the business's primary contact.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun primaryContactLastName(): String? =
+            primaryContactLastName.getNullable("primaryContactLastName")
 
         /**
          * The intended purpose for using the Grid account
@@ -1356,6 +1387,26 @@ private constructor(
         @JsonProperty("naicsCode") @ExcludeMissing fun _naicsCode(): JsonField<String> = naicsCode
 
         /**
+         * Returns the raw JSON value of [primaryContactFirstName].
+         *
+         * Unlike [primaryContactFirstName], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("primaryContactFirstName")
+        @ExcludeMissing
+        fun _primaryContactFirstName(): JsonField<String> = primaryContactFirstName
+
+        /**
+         * Returns the raw JSON value of [primaryContactLastName].
+         *
+         * Unlike [primaryContactLastName], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("primaryContactLastName")
+        @ExcludeMissing
+        fun _primaryContactLastName(): JsonField<String> = primaryContactLastName
+
+        /**
          * Returns the raw JSON value of [purposeOfAccount].
          *
          * Unlike [purposeOfAccount], this method doesn't throw if the JSON field has an unexpected
@@ -1467,6 +1518,8 @@ private constructor(
             private var expectedRecipientJurisdictions: JsonField<MutableList<String>>? = null
             private var incorporatedOn: JsonField<LocalDate> = JsonMissing.of()
             private var naicsCode: JsonField<String> = JsonMissing.of()
+            private var primaryContactFirstName: JsonField<String> = JsonMissing.of()
+            private var primaryContactLastName: JsonField<String> = JsonMissing.of()
             private var purposeOfAccount: JsonField<PurposeOfAccount> = JsonMissing.of()
             private var purposeOfAccountOtherDescription: JsonField<String> = JsonMissing.of()
             private var registrationNumber: JsonField<String> = JsonMissing.of()
@@ -1491,6 +1544,8 @@ private constructor(
                     businessInfo.expectedRecipientJurisdictions.map { it.toMutableList() }
                 incorporatedOn = businessInfo.incorporatedOn
                 naicsCode = businessInfo.naicsCode
+                primaryContactFirstName = businessInfo.primaryContactFirstName
+                primaryContactLastName = businessInfo.primaryContactLastName
                 purposeOfAccount = businessInfo.purposeOfAccount
                 purposeOfAccountOtherDescription = businessInfo.purposeOfAccountOtherDescription
                 registrationNumber = businessInfo.registrationNumber
@@ -1722,6 +1777,41 @@ private constructor(
              */
             fun naicsCode(naicsCode: JsonField<String>) = apply { this.naicsCode = naicsCode }
 
+            /**
+             * First name of the business's primary contact — a registered director or authorised
+             * representative of the business. Required in regions where a named individual is
+             * verified against the business during onboarding (e.g. the EU). The customer's `email`
+             * and `phoneNumber` are this person's contact details.
+             */
+            fun primaryContactFirstName(primaryContactFirstName: String) =
+                primaryContactFirstName(JsonField.of(primaryContactFirstName))
+
+            /**
+             * Sets [Builder.primaryContactFirstName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.primaryContactFirstName] with a well-typed [String]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun primaryContactFirstName(primaryContactFirstName: JsonField<String>) = apply {
+                this.primaryContactFirstName = primaryContactFirstName
+            }
+
+            /** Last name of the business's primary contact. */
+            fun primaryContactLastName(primaryContactLastName: String) =
+                primaryContactLastName(JsonField.of(primaryContactLastName))
+
+            /**
+             * Sets [Builder.primaryContactLastName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.primaryContactLastName] with a well-typed [String]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun primaryContactLastName(primaryContactLastName: JsonField<String>) = apply {
+                this.primaryContactLastName = primaryContactLastName
+            }
+
             /** The intended purpose for using the Grid account */
             fun purposeOfAccount(purposeOfAccount: PurposeOfAccount) =
                 purposeOfAccount(JsonField.of(purposeOfAccount))
@@ -1883,6 +1973,8 @@ private constructor(
                     (expectedRecipientJurisdictions ?: JsonMissing.of()).map { it.toImmutable() },
                     incorporatedOn,
                     naicsCode,
+                    primaryContactFirstName,
+                    primaryContactLastName,
                     purposeOfAccount,
                     purposeOfAccountOtherDescription,
                     registrationNumber,
@@ -1922,6 +2014,8 @@ private constructor(
             expectedRecipientJurisdictions()
             incorporatedOn()
             naicsCode()
+            primaryContactFirstName()
+            primaryContactLastName()
             purposeOfAccount()?.validate()
             purposeOfAccountOtherDescription()
             registrationNumber()
@@ -1959,6 +2053,8 @@ private constructor(
                 (expectedRecipientJurisdictions.asKnown()?.size ?: 0) +
                 (if (incorporatedOn.asKnown() == null) 0 else 1) +
                 (if (naicsCode.asKnown() == null) 0 else 1) +
+                (if (primaryContactFirstName.asKnown() == null) 0 else 1) +
+                (if (primaryContactLastName.asKnown() == null) 0 else 1) +
                 (purposeOfAccount.asKnown()?.validity() ?: 0) +
                 (if (purposeOfAccountOtherDescription.asKnown() == null) 0 else 1) +
                 (if (registrationNumber.asKnown() == null) 0 else 1) +
@@ -2986,6 +3082,8 @@ private constructor(
                 expectedRecipientJurisdictions == other.expectedRecipientJurisdictions &&
                 incorporatedOn == other.incorporatedOn &&
                 naicsCode == other.naicsCode &&
+                primaryContactFirstName == other.primaryContactFirstName &&
+                primaryContactLastName == other.primaryContactLastName &&
                 purposeOfAccount == other.purposeOfAccount &&
                 purposeOfAccountOtherDescription == other.purposeOfAccountOtherDescription &&
                 registrationNumber == other.registrationNumber &&
@@ -3010,6 +3108,8 @@ private constructor(
                 expectedRecipientJurisdictions,
                 incorporatedOn,
                 naicsCode,
+                primaryContactFirstName,
+                primaryContactLastName,
                 purposeOfAccount,
                 purposeOfAccountOtherDescription,
                 registrationNumber,
@@ -3024,7 +3124,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "BusinessInfo{legalName=$legalName, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, incorporatedOn=$incorporatedOn, naicsCode=$naicsCode, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, taxId=$taxId, additionalProperties=$additionalProperties}"
+            "BusinessInfo{legalName=$legalName, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, incorporatedOn=$incorporatedOn, naicsCode=$naicsCode, primaryContactFirstName=$primaryContactFirstName, primaryContactLastName=$primaryContactLastName, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, taxId=$taxId, additionalProperties=$additionalProperties}"
     }
 
     /**

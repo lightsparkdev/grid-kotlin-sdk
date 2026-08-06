@@ -43,6 +43,8 @@ internal class BusinessCustomerCreateRequestTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
@@ -108,6 +110,8 @@ internal class BusinessCustomerCreateRequestTest {
                     )
                     .addExpectedRecipientJurisdiction("US")
                     .naicsCode("541511")
+                    .primaryContactFirstName("Jane")
+                    .primaryContactLastName("Smith")
                     .purposeOfAccount(
                         BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                             .CONTRACTOR_PAYOUTS
@@ -183,6 +187,8 @@ internal class BusinessCustomerCreateRequestTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
