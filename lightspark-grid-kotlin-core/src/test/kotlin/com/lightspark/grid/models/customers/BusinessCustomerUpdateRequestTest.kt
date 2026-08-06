@@ -52,6 +52,8 @@ internal class BusinessCustomerUpdateRequestTest {
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
                         .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
@@ -119,6 +121,8 @@ internal class BusinessCustomerUpdateRequestTest {
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
                     .naicsCode("541511")
+                    .primaryContactFirstName("Jane")
+                    .primaryContactLastName("Smith")
                     .purposeOfAccount(
                         BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                             .CONTRACTOR_PAYOUTS
@@ -193,6 +197,8 @@ internal class BusinessCustomerUpdateRequestTest {
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
                         .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
