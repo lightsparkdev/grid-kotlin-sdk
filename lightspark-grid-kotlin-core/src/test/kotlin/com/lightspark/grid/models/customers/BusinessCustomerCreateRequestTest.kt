@@ -19,6 +19,7 @@ internal class BusinessCustomerCreateRequestTest {
             BusinessCustomerCreateRequest.builder()
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
+                        .country("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
                         .taxId("47-1234567")
@@ -27,7 +28,6 @@ internal class BusinessCustomerCreateRequestTest {
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
                         .addCountriesOfOperation("US")
-                        .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
                         .addExpectedCounterpartyCountry("US")
@@ -88,6 +88,7 @@ internal class BusinessCustomerCreateRequestTest {
         assertThat(businessCustomerCreateRequest.businessInfo())
             .isEqualTo(
                 BusinessCustomerCreateRequest.BusinessInfo.builder()
+                    .country("US")
                     .incorporatedOn(LocalDate.parse("2018-03-14"))
                     .legalName("Acme Corporation, Inc.")
                     .taxId("47-1234567")
@@ -96,7 +97,6 @@ internal class BusinessCustomerCreateRequestTest {
                             .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                     )
                     .addCountriesOfOperation("US")
-                    .country("US")
                     .doingBusinessAs("Acme")
                     .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
                     .addExpectedCounterpartyCountry("US")
@@ -163,6 +163,7 @@ internal class BusinessCustomerCreateRequestTest {
             BusinessCustomerCreateRequest.builder()
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
+                        .country("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
                         .taxId("47-1234567")
@@ -171,7 +172,6 @@ internal class BusinessCustomerCreateRequestTest {
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
                         .addCountriesOfOperation("US")
-                        .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
                         .addExpectedCounterpartyCountry("US")
