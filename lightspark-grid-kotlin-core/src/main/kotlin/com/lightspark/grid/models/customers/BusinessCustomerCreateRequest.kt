@@ -614,12 +614,12 @@ private constructor(
     class BusinessInfo
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val country: JsonField<String>,
         private val incorporatedOn: JsonField<LocalDate>,
         private val legalName: JsonField<String>,
         private val taxId: JsonField<String>,
         private val businessType: JsonField<BusinessType>,
         private val countriesOfOperation: JsonField<List<String>>,
-        private val country: JsonField<String>,
         private val doingBusinessAs: JsonField<String>,
         private val entityType: JsonField<EntityType>,
         private val expectedCounterpartyCountries: JsonField<List<String>>,
@@ -640,6 +640,7 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("country") @ExcludeMissing country: JsonField<String> = JsonMissing.of(),
             @JsonProperty("incorporatedOn")
             @ExcludeMissing
             incorporatedOn: JsonField<LocalDate> = JsonMissing.of(),
@@ -653,7 +654,6 @@ private constructor(
             @JsonProperty("countriesOfOperation")
             @ExcludeMissing
             countriesOfOperation: JsonField<List<String>> = JsonMissing.of(),
-            @JsonProperty("country") @ExcludeMissing country: JsonField<String> = JsonMissing.of(),
             @JsonProperty("doingBusinessAs")
             @ExcludeMissing
             doingBusinessAs: JsonField<String> = JsonMissing.of(),
@@ -702,12 +702,12 @@ private constructor(
             @ExcludeMissing
             sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of(),
         ) : this(
+            country,
             incorporatedOn,
             legalName,
             taxId,
             businessType,
             countriesOfOperation,
-            country,
             doingBusinessAs,
             entityType,
             expectedCounterpartyCountries,
@@ -725,6 +725,14 @@ private constructor(
             sourceOfFundsOtherDescription,
             mutableMapOf(),
         )
+
+        /**
+         * Country of incorporation or registration (ISO 3166-1 alpha-2)
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun country(): String = country.getRequired("country")
 
         /**
          * Date of incorporation in ISO 8601 format (YYYY-MM-DD)
@@ -766,14 +774,6 @@ private constructor(
          */
         fun countriesOfOperation(): List<String>? =
             countriesOfOperation.getNullable("countriesOfOperation")
-
-        /**
-         * Country of incorporation or registration (ISO 3166-1 alpha-2)
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
-         *   if the server responded with an unexpected value).
-         */
-        fun country(): String? = country.getNullable("country")
 
         /**
          * Trade name or DBA name of the business, if different from the legal name
@@ -909,6 +909,13 @@ private constructor(
             sourceOfFundsOtherDescription.getNullable("sourceOfFundsOtherDescription")
 
         /**
+         * Returns the raw JSON value of [country].
+         *
+         * Unlike [country], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
+
+        /**
          * Returns the raw JSON value of [incorporatedOn].
          *
          * Unlike [incorporatedOn], this method doesn't throw if the JSON field has an unexpected
@@ -951,13 +958,6 @@ private constructor(
         @JsonProperty("countriesOfOperation")
         @ExcludeMissing
         fun _countriesOfOperation(): JsonField<List<String>> = countriesOfOperation
-
-        /**
-         * Returns the raw JSON value of [country].
-         *
-         * Unlike [country], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("country") @ExcludeMissing fun _country(): JsonField<String> = country
 
         /**
          * Returns the raw JSON value of [doingBusinessAs].
@@ -1129,6 +1129,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .country()
              * .incorporatedOn()
              * .legalName()
              * .taxId()
@@ -1140,12 +1141,12 @@ private constructor(
         /** A builder for [BusinessInfo]. */
         class Builder internal constructor() {
 
+            private var country: JsonField<String>? = null
             private var incorporatedOn: JsonField<LocalDate>? = null
             private var legalName: JsonField<String>? = null
             private var taxId: JsonField<String>? = null
             private var businessType: JsonField<BusinessType> = JsonMissing.of()
             private var countriesOfOperation: JsonField<MutableList<String>>? = null
-            private var country: JsonField<String> = JsonMissing.of()
             private var doingBusinessAs: JsonField<String> = JsonMissing.of()
             private var entityType: JsonField<EntityType> = JsonMissing.of()
             private var expectedCounterpartyCountries: JsonField<MutableList<String>>? = null
@@ -1168,12 +1169,12 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(businessInfo: BusinessInfo) = apply {
+                country = businessInfo.country
                 incorporatedOn = businessInfo.incorporatedOn
                 legalName = businessInfo.legalName
                 taxId = businessInfo.taxId
                 businessType = businessInfo.businessType
                 countriesOfOperation = businessInfo.countriesOfOperation.map { it.toMutableList() }
-                country = businessInfo.country
                 doingBusinessAs = businessInfo.doingBusinessAs
                 entityType = businessInfo.entityType
                 expectedCounterpartyCountries =
@@ -1194,6 +1195,18 @@ private constructor(
                 sourceOfFundsOtherDescription = businessInfo.sourceOfFundsOtherDescription
                 additionalProperties = businessInfo.additionalProperties.toMutableMap()
             }
+
+            /** Country of incorporation or registration (ISO 3166-1 alpha-2) */
+            fun country(country: String) = country(JsonField.of(country))
+
+            /**
+             * Sets [Builder.country] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.country] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun country(country: JsonField<String>) = apply { this.country = country }
 
             /** Date of incorporation in ISO 8601 format (YYYY-MM-DD) */
             fun incorporatedOn(incorporatedOn: LocalDate) =
@@ -1274,18 +1287,6 @@ private constructor(
                         checkKnown("countriesOfOperation", it).add(countriesOfOperation)
                     }
             }
-
-            /** Country of incorporation or registration (ISO 3166-1 alpha-2) */
-            fun country(country: String) = country(JsonField.of(country))
-
-            /**
-             * Sets [Builder.country] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.country] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun country(country: JsonField<String>) = apply { this.country = country }
 
             /** Trade name or DBA name of the business, if different from the legal name */
             fun doingBusinessAs(doingBusinessAs: String) =
@@ -1592,6 +1593,7 @@ private constructor(
              *
              * The following fields are required:
              * ```kotlin
+             * .country()
              * .incorporatedOn()
              * .legalName()
              * .taxId()
@@ -1601,12 +1603,12 @@ private constructor(
              */
             fun build(): BusinessInfo =
                 BusinessInfo(
+                    checkRequired("country", country),
                     checkRequired("incorporatedOn", incorporatedOn),
                     checkRequired("legalName", legalName),
                     checkRequired("taxId", taxId),
                     businessType,
                     (countriesOfOperation ?: JsonMissing.of()).map { it.toImmutable() },
-                    country,
                     doingBusinessAs,
                     entityType,
                     (expectedCounterpartyCountries ?: JsonMissing.of()).map { it.toImmutable() },
@@ -1642,12 +1644,12 @@ private constructor(
                 return@apply
             }
 
+            country()
             incorporatedOn()
             legalName()
             taxId()
             businessType()?.validate()
             countriesOfOperation()
-            country()
             doingBusinessAs()
             entityType()?.validate()
             expectedCounterpartyCountries()
@@ -1681,12 +1683,12 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (if (incorporatedOn.asKnown() == null) 0 else 1) +
+            (if (country.asKnown() == null) 0 else 1) +
+                (if (incorporatedOn.asKnown() == null) 0 else 1) +
                 (if (legalName.asKnown() == null) 0 else 1) +
                 (if (taxId.asKnown() == null) 0 else 1) +
                 (businessType.asKnown()?.validity() ?: 0) +
                 (countriesOfOperation.asKnown()?.size ?: 0) +
-                (if (country.asKnown() == null) 0 else 1) +
                 (if (doingBusinessAs.asKnown() == null) 0 else 1) +
                 (entityType.asKnown()?.validity() ?: 0) +
                 (expectedCounterpartyCountries.asKnown()?.size ?: 0) +
@@ -2710,12 +2712,12 @@ private constructor(
             }
 
             return other is BusinessInfo &&
+                country == other.country &&
                 incorporatedOn == other.incorporatedOn &&
                 legalName == other.legalName &&
                 taxId == other.taxId &&
                 businessType == other.businessType &&
                 countriesOfOperation == other.countriesOfOperation &&
-                country == other.country &&
                 doingBusinessAs == other.doingBusinessAs &&
                 entityType == other.entityType &&
                 expectedCounterpartyCountries == other.expectedCounterpartyCountries &&
@@ -2736,12 +2738,12 @@ private constructor(
 
         private val hashCode: Int by lazy {
             Objects.hash(
+                country,
                 incorporatedOn,
                 legalName,
                 taxId,
                 businessType,
                 countriesOfOperation,
-                country,
                 doingBusinessAs,
                 entityType,
                 expectedCounterpartyCountries,
@@ -2764,7 +2766,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "BusinessInfo{incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, country=$country, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, naicsCode=$naicsCode, primaryContactFirstName=$primaryContactFirstName, primaryContactLastName=$primaryContactLastName, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, additionalProperties=$additionalProperties}"
+            "BusinessInfo{country=$country, incorporatedOn=$incorporatedOn, legalName=$legalName, taxId=$taxId, businessType=$businessType, countriesOfOperation=$countriesOfOperation, doingBusinessAs=$doingBusinessAs, entityType=$entityType, expectedCounterpartyCountries=$expectedCounterpartyCountries, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, expectedRecipientJurisdictions=$expectedRecipientJurisdictions, naicsCode=$naicsCode, primaryContactFirstName=$primaryContactFirstName, primaryContactLastName=$primaryContactLastName, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, registrationNumber=$registrationNumber, sourceOfFunds=$sourceOfFunds, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, additionalProperties=$additionalProperties}"
     }
 
     class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
