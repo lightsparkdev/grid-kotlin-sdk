@@ -6,7 +6,12 @@ import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.AedBeneficiary
 import com.lightspark.grid.models.AedExternalAccountCreateInfo
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountChallengeParams
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountCreate
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountVerifyParams
+import com.lightspark.grid.models.customers.externalaccounts.OwnershipChallengeRequest
+import com.lightspark.grid.models.customers.externalaccounts.OwnershipVerificationMethod
+import com.lightspark.grid.models.customers.externalaccounts.OwnershipVerifyRequest
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -113,5 +118,62 @@ internal class ExternalAccountServiceTest {
         val externalAccountService = client.customers().externalAccounts()
 
         externalAccountService.delete("externalAccountId")
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun challenge() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val externalAccountService = client.customers().externalAccounts()
+
+        val ownershipChallenge =
+            externalAccountService.challenge(
+                ExternalAccountChallengeParams.builder()
+                    .externalAccountId("externalAccountId")
+                    .ownershipChallengeRequest(
+                        OwnershipChallengeRequest.builder()
+                            .method(OwnershipVerificationMethod.WALLET_SIGNATURE)
+                            .build()
+                    )
+                    .build()
+            )
+
+        ownershipChallenge.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun verify() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val externalAccountService = client.customers().externalAccounts()
+
+        val externalAccount =
+            externalAccountService.verify(
+                ExternalAccountVerifyParams.builder()
+                    .externalAccountId("externalAccountId")
+                    .ownershipVerifyRequest(
+                        OwnershipVerifyRequest.builder()
+                            .signature(
+                                "0x52d75f01c9e7b8b2ce2fbcbd21bfeeee7bcd1a2f01ce6b8ad9a67a45e83a8f5d1c"
+                            )
+                            .signatureScheme(OwnershipVerifyRequest.SignatureScheme.BIP137)
+                            .build()
+                    )
+                    .build()
+            )
+
+        externalAccount.validate()
     }
 }

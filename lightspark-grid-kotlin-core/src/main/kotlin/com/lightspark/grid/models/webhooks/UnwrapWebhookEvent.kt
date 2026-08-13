@@ -30,6 +30,7 @@ private constructor(
     private val invitationClaimed: InvitationClaimedWebhookEvent? = null,
     private val customerUpdate: CustomerUpdateWebhookEvent? = null,
     private val internalAccountStatus: InternalAccountStatusWebhookEvent? = null,
+    private val externalAccountStatusUpdated: ExternalAccountStatusWebhookEvent? = null,
     private val verificationUpdate: VerificationUpdateWebhookEvent? = null,
     private val cardStateChange: CardStateChangeWebhookEvent? = null,
     private val cardFundingSourceChange: CardFundingSourceChangeWebhookEvent? = null,
@@ -52,6 +53,9 @@ private constructor(
     fun customerUpdate(): CustomerUpdateWebhookEvent? = customerUpdate
 
     fun internalAccountStatus(): InternalAccountStatusWebhookEvent? = internalAccountStatus
+
+    fun externalAccountStatusUpdated(): ExternalAccountStatusWebhookEvent? =
+        externalAccountStatusUpdated
 
     fun verificationUpdate(): VerificationUpdateWebhookEvent? = verificationUpdate
 
@@ -76,6 +80,8 @@ private constructor(
     fun isCustomerUpdate(): Boolean = customerUpdate != null
 
     fun isInternalAccountStatus(): Boolean = internalAccountStatus != null
+
+    fun isExternalAccountStatusUpdated(): Boolean = externalAccountStatusUpdated != null
 
     fun isVerificationUpdate(): Boolean = verificationUpdate != null
 
@@ -105,6 +111,9 @@ private constructor(
 
     fun asInternalAccountStatus(): InternalAccountStatusWebhookEvent =
         internalAccountStatus.getOrThrow("internalAccountStatus")
+
+    fun asExternalAccountStatusUpdated(): ExternalAccountStatusWebhookEvent =
+        externalAccountStatusUpdated.getOrThrow("externalAccountStatusUpdated")
 
     fun asVerificationUpdate(): VerificationUpdateWebhookEvent =
         verificationUpdate.getOrThrow("verificationUpdate")
@@ -156,6 +165,8 @@ private constructor(
             customerUpdate != null -> visitor.visitCustomerUpdate(customerUpdate)
             internalAccountStatus != null ->
                 visitor.visitInternalAccountStatus(internalAccountStatus)
+            externalAccountStatusUpdated != null ->
+                visitor.visitExternalAccountStatusUpdated(externalAccountStatusUpdated)
             verificationUpdate != null -> visitor.visitVerificationUpdate(verificationUpdate)
             cardStateChange != null -> visitor.visitCardStateChange(cardStateChange)
             cardFundingSourceChange != null ->
@@ -217,6 +228,12 @@ private constructor(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) {
                     internalAccountStatus.validate()
+                }
+
+                override fun visitExternalAccountStatusUpdated(
+                    externalAccountStatusUpdated: ExternalAccountStatusWebhookEvent
+                ) {
+                    externalAccountStatusUpdated.validate()
                 }
 
                 override fun visitVerificationUpdate(
@@ -285,6 +302,10 @@ private constructor(
                     internalAccountStatus: InternalAccountStatusWebhookEvent
                 ) = internalAccountStatus.validity()
 
+                override fun visitExternalAccountStatusUpdated(
+                    externalAccountStatusUpdated: ExternalAccountStatusWebhookEvent
+                ) = externalAccountStatusUpdated.validity()
+
                 override fun visitVerificationUpdate(
                     verificationUpdate: VerificationUpdateWebhookEvent
                 ) = verificationUpdate.validity()
@@ -317,6 +338,7 @@ private constructor(
             invitationClaimed == other.invitationClaimed &&
             customerUpdate == other.customerUpdate &&
             internalAccountStatus == other.internalAccountStatus &&
+            externalAccountStatusUpdated == other.externalAccountStatusUpdated &&
             verificationUpdate == other.verificationUpdate &&
             cardStateChange == other.cardStateChange &&
             cardFundingSourceChange == other.cardFundingSourceChange &&
@@ -333,6 +355,7 @@ private constructor(
             invitationClaimed,
             customerUpdate,
             internalAccountStatus,
+            externalAccountStatusUpdated,
             verificationUpdate,
             cardStateChange,
             cardFundingSourceChange,
@@ -351,6 +374,8 @@ private constructor(
             customerUpdate != null -> "UnwrapWebhookEvent{customerUpdate=$customerUpdate}"
             internalAccountStatus != null ->
                 "UnwrapWebhookEvent{internalAccountStatus=$internalAccountStatus}"
+            externalAccountStatusUpdated != null ->
+                "UnwrapWebhookEvent{externalAccountStatusUpdated=$externalAccountStatusUpdated}"
             verificationUpdate != null ->
                 "UnwrapWebhookEvent{verificationUpdate=$verificationUpdate}"
             cardStateChange != null -> "UnwrapWebhookEvent{cardStateChange=$cardStateChange}"
@@ -385,6 +410,10 @@ private constructor(
 
         fun ofInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent) =
             UnwrapWebhookEvent(internalAccountStatus = internalAccountStatus)
+
+        fun ofExternalAccountStatusUpdated(
+            externalAccountStatusUpdated: ExternalAccountStatusWebhookEvent
+        ) = UnwrapWebhookEvent(externalAccountStatusUpdated = externalAccountStatusUpdated)
 
         fun ofVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent) =
             UnwrapWebhookEvent(verificationUpdate = verificationUpdate)
@@ -421,6 +450,10 @@ private constructor(
         fun visitCustomerUpdate(customerUpdate: CustomerUpdateWebhookEvent): T
 
         fun visitInternalAccountStatus(internalAccountStatus: InternalAccountStatusWebhookEvent): T
+
+        fun visitExternalAccountStatusUpdated(
+            externalAccountStatusUpdated: ExternalAccountStatusWebhookEvent
+        ): T
 
         fun visitVerificationUpdate(verificationUpdate: VerificationUpdateWebhookEvent): T
 
@@ -468,6 +501,12 @@ private constructor(
                     return tryDeserialize(node, jacksonTypeRef<InvitationClaimedWebhookEvent>())
                         ?.let { UnwrapWebhookEvent(invitationClaimed = it, _json = json) }
                         ?: UnwrapWebhookEvent(_json = json)
+                }
+                "EXTERNAL_ACCOUNT.STATUS_UPDATED" -> {
+                    return tryDeserialize(node, jacksonTypeRef<ExternalAccountStatusWebhookEvent>())
+                        ?.let {
+                            UnwrapWebhookEvent(externalAccountStatusUpdated = it, _json = json)
+                        } ?: UnwrapWebhookEvent(_json = json)
                 }
                 "CARD.STATE_CHANGE" -> {
                     return tryDeserialize(node, jacksonTypeRef<CardStateChangeWebhookEvent>())
@@ -539,6 +578,8 @@ private constructor(
                 value.customerUpdate != null -> generator.writeObject(value.customerUpdate)
                 value.internalAccountStatus != null ->
                     generator.writeObject(value.internalAccountStatus)
+                value.externalAccountStatusUpdated != null ->
+                    generator.writeObject(value.externalAccountStatusUpdated)
                 value.verificationUpdate != null -> generator.writeObject(value.verificationUpdate)
                 value.cardStateChange != null -> generator.writeObject(value.cardStateChange)
                 value.cardFundingSourceChange != null ->

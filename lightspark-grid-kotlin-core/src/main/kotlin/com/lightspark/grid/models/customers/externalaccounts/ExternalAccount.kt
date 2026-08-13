@@ -147,8 +147,11 @@ private constructor(
         defaultUmaDepositAccount.getNullable("defaultUmaDepositAccount")
 
     /**
-     * Whether the external account belongs to the customer themselves (first party) or to someone
-     * else (third party)
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -449,8 +452,11 @@ private constructor(
         }
 
         /**
-         * Whether the external account belongs to the customer themselves (first party) or to
-         * someone else (third party)
+         * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to
+         * someone else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external
+         * accounts on platforms subject to counterparty requirements — for example, under the EU
+         * Travel Rule or similar requirements in other regions; recommended for all other accounts,
+         * where providing it can unlock additional capabilities and smoother compliance handling.
          */
         fun ownershipType(ownershipType: OwnershipType) = ownershipType(JsonField.of(ownershipType))
 
@@ -602,6 +608,10 @@ private constructor(
 
             val ACTIVE = of("ACTIVE")
 
+            val PENDING_OWNERSHIP_VERIFICATION = of("PENDING_OWNERSHIP_VERIFICATION")
+
+            val UNVERIFIED = of("UNVERIFIED")
+
             val UNDER_REVIEW = of("UNDER_REVIEW")
 
             val INACTIVE = of("INACTIVE")
@@ -613,6 +623,8 @@ private constructor(
         enum class Known {
             PENDING,
             ACTIVE,
+            PENDING_OWNERSHIP_VERIFICATION,
+            UNVERIFIED,
             UNDER_REVIEW,
             INACTIVE,
         }
@@ -629,6 +641,8 @@ private constructor(
         enum class Value {
             PENDING,
             ACTIVE,
+            PENDING_OWNERSHIP_VERIFICATION,
+            UNVERIFIED,
             UNDER_REVIEW,
             INACTIVE,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
@@ -646,6 +660,8 @@ private constructor(
             when (this) {
                 PENDING -> Value.PENDING
                 ACTIVE -> Value.ACTIVE
+                PENDING_OWNERSHIP_VERIFICATION -> Value.PENDING_OWNERSHIP_VERIFICATION
+                UNVERIFIED -> Value.UNVERIFIED
                 UNDER_REVIEW -> Value.UNDER_REVIEW
                 INACTIVE -> Value.INACTIVE
                 else -> Value._UNKNOWN
@@ -664,6 +680,8 @@ private constructor(
             when (this) {
                 PENDING -> Known.PENDING
                 ACTIVE -> Known.ACTIVE
+                PENDING_OWNERSHIP_VERIFICATION -> Known.PENDING_OWNERSHIP_VERIFICATION
+                UNVERIFIED -> Known.UNVERIFIED
                 UNDER_REVIEW -> Known.UNDER_REVIEW
                 INACTIVE -> Known.INACTIVE
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
@@ -900,8 +918,11 @@ private constructor(
     }
 
     /**
-     * Whether the external account belongs to the customer themselves (first party) or to someone
-     * else (third party)
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
      */
     class OwnershipType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
