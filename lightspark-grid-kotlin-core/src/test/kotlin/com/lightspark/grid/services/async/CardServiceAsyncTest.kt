@@ -44,10 +44,6 @@ internal class CardServiceAsyncTest {
             cardServiceAsync.update(
                 CardUpdateParams.builder()
                     .id("id")
-                    .gridWalletSignature(
-                        "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
-                    )
-                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .cardUpdateRequest(
                         CardUpdateRequest.builder()
                             .addFundingSource(
