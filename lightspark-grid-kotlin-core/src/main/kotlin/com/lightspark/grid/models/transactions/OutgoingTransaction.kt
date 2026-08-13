@@ -1961,21 +1961,23 @@ private constructor(
 
             val QUOTE_EXECUTION_FAILED = of("QUOTE_EXECUTION_FAILED")
 
-            val LIGHTNING_PAYMENT_FAILED = of("LIGHTNING_PAYMENT_FAILED")
-
             val FUNDING_AMOUNT_MISMATCH = of("FUNDING_AMOUNT_MISMATCH")
-
-            val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
 
             val SCA_NOT_COMPLETED = of("SCA_NOT_COMPLETED")
 
-            val EXECUTION_FAILED_POST_DEBIT = of("EXECUTION_FAILED_POST_DEBIT")
+            val PAYOUT_RETURNED = of("PAYOUT_RETURNED")
 
-            val SETTLEMENT_FAILED = of("SETTLEMENT_FAILED")
+            val LIMIT_EXCEEDED = of("LIMIT_EXCEEDED")
 
-            val TIMEOUT = of("TIMEOUT")
+            val ACCOUNT_CANNOT_RECEIVE = of("ACCOUNT_CANNOT_RECEIVE")
 
-            val MANUAL_REFUND = of("MANUAL_REFUND")
+            val ACCOUNT_INVALID = of("ACCOUNT_INVALID")
+
+            val COMPLIANCE_REJECTED = of("COMPLIANCE_REJECTED")
+
+            val LIGHTNING_PAYMENT_FAILED = of("LIGHTNING_PAYMENT_FAILED")
+
+            val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
 
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
@@ -1984,14 +1986,15 @@ private constructor(
         enum class Known {
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
-            LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
-            COUNTERPARTY_POST_TX_FAILED,
             SCA_NOT_COMPLETED,
-            EXECUTION_FAILED_POST_DEBIT,
-            SETTLEMENT_FAILED,
-            TIMEOUT,
-            MANUAL_REFUND,
+            PAYOUT_RETURNED,
+            LIMIT_EXCEEDED,
+            ACCOUNT_CANNOT_RECEIVE,
+            ACCOUNT_INVALID,
+            COMPLIANCE_REJECTED,
+            LIGHTNING_PAYMENT_FAILED,
+            COUNTERPARTY_POST_TX_FAILED,
         }
 
         /**
@@ -2006,14 +2009,15 @@ private constructor(
         enum class Value {
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
-            LIGHTNING_PAYMENT_FAILED,
             FUNDING_AMOUNT_MISMATCH,
-            COUNTERPARTY_POST_TX_FAILED,
             SCA_NOT_COMPLETED,
-            EXECUTION_FAILED_POST_DEBIT,
-            SETTLEMENT_FAILED,
-            TIMEOUT,
-            MANUAL_REFUND,
+            PAYOUT_RETURNED,
+            LIMIT_EXCEEDED,
+            ACCOUNT_CANNOT_RECEIVE,
+            ACCOUNT_INVALID,
+            COMPLIANCE_REJECTED,
+            LIGHTNING_PAYMENT_FAILED,
+            COUNTERPARTY_POST_TX_FAILED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2032,14 +2036,15 @@ private constructor(
             when (this) {
                 QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
-                LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
-                COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
                 SCA_NOT_COMPLETED -> Value.SCA_NOT_COMPLETED
-                EXECUTION_FAILED_POST_DEBIT -> Value.EXECUTION_FAILED_POST_DEBIT
-                SETTLEMENT_FAILED -> Value.SETTLEMENT_FAILED
-                TIMEOUT -> Value.TIMEOUT
-                MANUAL_REFUND -> Value.MANUAL_REFUND
+                PAYOUT_RETURNED -> Value.PAYOUT_RETURNED
+                LIMIT_EXCEEDED -> Value.LIMIT_EXCEEDED
+                ACCOUNT_CANNOT_RECEIVE -> Value.ACCOUNT_CANNOT_RECEIVE
+                ACCOUNT_INVALID -> Value.ACCOUNT_INVALID
+                COMPLIANCE_REJECTED -> Value.COMPLIANCE_REJECTED
+                LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
+                COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -2056,14 +2061,15 @@ private constructor(
             when (this) {
                 QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
-                LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
-                COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
                 SCA_NOT_COMPLETED -> Known.SCA_NOT_COMPLETED
-                EXECUTION_FAILED_POST_DEBIT -> Known.EXECUTION_FAILED_POST_DEBIT
-                SETTLEMENT_FAILED -> Known.SETTLEMENT_FAILED
-                TIMEOUT -> Known.TIMEOUT
-                MANUAL_REFUND -> Known.MANUAL_REFUND
+                PAYOUT_RETURNED -> Known.PAYOUT_RETURNED
+                LIMIT_EXCEEDED -> Known.LIMIT_EXCEEDED
+                ACCOUNT_CANNOT_RECEIVE -> Known.ACCOUNT_CANNOT_RECEIVE
+                ACCOUNT_INVALID -> Known.ACCOUNT_INVALID
+                COMPLIANCE_REJECTED -> Known.COMPLIANCE_REJECTED
+                LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
+                COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
