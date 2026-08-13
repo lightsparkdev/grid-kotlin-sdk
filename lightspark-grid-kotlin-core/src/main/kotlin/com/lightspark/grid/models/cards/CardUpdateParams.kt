@@ -19,15 +19,14 @@ import java.util.Objects
  *   cardholder and be denominated in the card's currency; the list must contain at least one
  *   source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
  *
- * Because both updates are sensitive state changes, this endpoint uses Grid's 202 → signed-retry
- * pattern (same shape as `DELETE /auth/credentials/{id}` and `POST
- * /internal-accounts/{id}/export`):
- * 1. Call `PATCH /cards/{id}` with the target fields and no signing headers. The response is `202`
- *    with a `payloadToSign`, `requestId`, and `expiresAt`.
- * 2. Sign the `payloadToSign` with the session private key of a verified authentication credential
- *    on the card's owning internal account and retry with the signature as the
- *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header. The
- *    signed retry returns `200` with the updated `Card`.
+ * This endpoint is authenticated by the platform credential alone and returns `200` directly. It
+ * deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the session
+ * key of a credential on the owning internal account, so it models actions taken *by* the end user
+ * on their own credentials or funds. Freezing or closing a card is routinely an action taken
+ * *about* a user and without them present - fraud response, offboarding, an ops-driven freeze - and
+ * requiring the cardholder's signature would make exactly those cases impossible. Operations that
+ * expose sensitive card data (`POST /cards/{id}/reveal`, 3DS password retrieval) are SCA-railed
+ * instead, because there the cardholder is the party being served.
  *
  * Effects:
  * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
@@ -48,18 +47,12 @@ import java.util.Objects
 class CardUpdateParams
 private constructor(
     private val id: String?,
-    private val gridWalletSignature: String?,
-    private val requestId: String?,
     private val cardUpdateRequest: CardUpdateRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun id(): String? = id
-
-    fun gridWalletSignature(): String? = gridWalletSignature
-
-    fun requestId(): String? = requestId
 
     /**
      * Update request for `PATCH /cards/{id}`. At least one of `state` or `fundingSources` must be
@@ -99,28 +92,18 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var gridWalletSignature: String? = null
-        private var requestId: String? = null
         private var cardUpdateRequest: CardUpdateRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(cardUpdateParams: CardUpdateParams) = apply {
             id = cardUpdateParams.id
-            gridWalletSignature = cardUpdateParams.gridWalletSignature
-            requestId = cardUpdateParams.requestId
             cardUpdateRequest = cardUpdateParams.cardUpdateRequest
             additionalHeaders = cardUpdateParams.additionalHeaders.toBuilder()
             additionalQueryParams = cardUpdateParams.additionalQueryParams.toBuilder()
         }
 
         fun id(id: String?) = apply { this.id = id }
-
-        fun gridWalletSignature(gridWalletSignature: String?) = apply {
-            this.gridWalletSignature = gridWalletSignature
-        }
-
-        fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         /**
          * Update request for `PATCH /cards/{id}`. At least one of `state` or `fundingSources` must
@@ -247,8 +230,6 @@ private constructor(
         fun build(): CardUpdateParams =
             CardUpdateParams(
                 id,
-                gridWalletSignature,
-                requestId,
                 checkRequired("cardUpdateRequest", cardUpdateRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -263,14 +244,7 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers =
-        Headers.builder()
-            .apply {
-                gridWalletSignature?.let { put("Grid-Wallet-Signature", it) }
-                requestId?.let { put("Request-Id", it) }
-                putAll(additionalHeaders)
-            }
-            .build()
+    override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -281,23 +255,14 @@ private constructor(
 
         return other is CardUpdateParams &&
             id == other.id &&
-            gridWalletSignature == other.gridWalletSignature &&
-            requestId == other.requestId &&
             cardUpdateRequest == other.cardUpdateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            id,
-            gridWalletSignature,
-            requestId,
-            cardUpdateRequest,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(id, cardUpdateRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CardUpdateParams{id=$id, gridWalletSignature=$gridWalletSignature, requestId=$requestId, cardUpdateRequest=$cardUpdateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CardUpdateParams{id=$id, cardUpdateRequest=$cardUpdateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

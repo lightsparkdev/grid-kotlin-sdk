@@ -64,15 +64,15 @@ interface CardServiceAsync {
      *   to the cardholder and be denominated in the card's currency; the list must contain at least
      *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
      *
-     * Because both updates are sensitive state changes, this endpoint uses Grid's 202 →
-     * signed-retry pattern (same shape as `DELETE /auth/credentials/{id}` and `POST
-     * /internal-accounts/{id}/export`):
-     * 1. Call `PATCH /cards/{id}` with the target fields and no signing headers. The response is
-     *    `202` with a `payloadToSign`, `requestId`, and `expiresAt`.
-     * 2. Sign the `payloadToSign` with the session private key of a verified authentication
-     *    credential on the card's owning internal account and retry with the signature as the
-     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The signed retry returns `200` with the updated `Card`.
+     * This endpoint is authenticated by the platform credential alone and returns `200` directly.
+     * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
+     * session key of a credential on the owning internal account, so it models actions taken *by*
+     * the end user on their own credentials or funds. Freezing or closing a card is routinely an
+     * action taken *about* a user and without them present - fraud response, offboarding, an
+     * ops-driven freeze - and requiring the cardholder's signature would make exactly those cases
+     * impossible. Operations that expose sensitive card data (`POST /cards/{id}/reveal`, 3DS
+     * password retrieval) are SCA-railed instead, because there the cardholder is the party being
+     * served.
      *
      * Effects:
      * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
