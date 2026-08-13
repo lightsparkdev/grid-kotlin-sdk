@@ -147,8 +147,11 @@ private constructor(
         defaultUmaDepositAccount.getNullable("defaultUmaDepositAccount")
 
     /**
-     * Whether the external account belongs to the customer themselves (first party) or to someone
-     * else (third party)
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -613,8 +616,11 @@ private constructor(
         }
 
         /**
-         * Whether the external account belongs to the customer themselves (first party) or to
-         * someone else (third party)
+         * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to
+         * someone else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external
+         * accounts on platforms subject to counterparty requirements — for example, under the EU
+         * Travel Rule or similar requirements in other regions; recommended for all other accounts,
+         * where providing it can unlock additional capabilities and smoother compliance handling.
          */
         fun ownershipType(ownershipType: OwnershipType) = ownershipType(JsonField.of(ownershipType))
 
@@ -3255,8 +3261,11 @@ private constructor(
     }
 
     /**
-     * Whether the external account belongs to the customer themselves (first party) or to someone
-     * else (third party)
+     * Whether the external account belongs to the customer themselves (`FIRST_PARTY`) or to someone
+     * else (`THIRD_PARTY`). Required when creating self-custody crypto wallet external accounts on
+     * platforms subject to counterparty requirements — for example, under the EU Travel Rule or
+     * similar requirements in other regions; recommended for all other accounts, where providing it
+     * can unlock additional capabilities and smoother compliance handling.
      */
     class OwnershipType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {

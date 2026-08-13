@@ -9,6 +9,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.SlvBeneficiary
 import com.lightspark.grid.models.VerificationError
 import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.cards.Card
@@ -17,6 +18,9 @@ import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
+import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryVerifiedData
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
+import com.lightspark.grid.models.customers.externalaccounts.ExternalAccountInfoOneOf
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.invitations.UmaInvitation
 import com.lightspark.grid.models.quotes.Currency
@@ -301,6 +305,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -681,6 +686,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -949,6 +955,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1139,6 +1146,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1212,6 +1220,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1311,6 +1320,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isEqualTo(invitationClaimed)
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1450,6 +1460,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isEqualTo(customerUpdate)
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1635,6 +1646,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1726,6 +1738,160 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
+    fun ofExternalAccountStatusUpdated() {
+        val externalAccountStatusUpdated =
+            ExternalAccountStatusWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    ExternalAccount.builder()
+                        .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                        .accountInfo(
+                            ExternalAccountInfoOneOf.SlvAccount.builder()
+                                .beneficiary(
+                                    SlvBeneficiary.builder()
+                                        .beneficiaryType(SlvBeneficiary.BeneficiaryType.INDIVIDUAL)
+                                        .fullName("fullName")
+                                        .address(
+                                            Address.builder()
+                                                .country("US")
+                                                .line1("123 Main Street")
+                                                .postalCode("94105")
+                                                .city("San Francisco")
+                                                .line2("Apt 4B")
+                                                .state("CA")
+                                                .build()
+                                        )
+                                        .birthDate("birthDate")
+                                        .countryOfResidence("countryOfResidence")
+                                        .email("email")
+                                        .nationality("nationality")
+                                        .phoneNumber("phoneNumber")
+                                        .build()
+                                )
+                                .addPaymentRail(
+                                    ExternalAccountInfoOneOf.SlvAccount.PaymentRail.BANK_TRANSFER
+                                )
+                                .accountNumber("0123456789")
+                                .bankAccountType(
+                                    ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                )
+                                .bankName("Banco Cuscatlan")
+                                .phoneNumber("+50312345678")
+                                .build()
+                        )
+                        .currency("USD")
+                        .status(ExternalAccount.Status.ACTIVE)
+                        .beneficiaryVerificationStatus(
+                            ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                        )
+                        .beneficiaryVerifiedData(
+                            BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                        )
+                        .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
+                        .defaultUmaDepositAccount(false)
+                        .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
+                        .platformAccountId("acc_123456789")
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(ExternalAccountStatusWebhookEvent.Type.EXTERNAL_ACCOUNT_STATUS_UPDATED)
+                .build()
+
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofExternalAccountStatusUpdated(externalAccountStatusUpdated)
+
+        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated())
+            .isEqualTo(externalAccountStatusUpdated)
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+    }
+
+    @Test
+    fun ofExternalAccountStatusUpdatedRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofExternalAccountStatusUpdated(
+                ExternalAccountStatusWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        ExternalAccount.builder()
+                            .id("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
+                            .accountInfo(
+                                ExternalAccountInfoOneOf.SlvAccount.builder()
+                                    .beneficiary(
+                                        SlvBeneficiary.builder()
+                                            .beneficiaryType(
+                                                SlvBeneficiary.BeneficiaryType.INDIVIDUAL
+                                            )
+                                            .fullName("fullName")
+                                            .address(
+                                                Address.builder()
+                                                    .country("US")
+                                                    .line1("123 Main Street")
+                                                    .postalCode("94105")
+                                                    .city("San Francisco")
+                                                    .line2("Apt 4B")
+                                                    .state("CA")
+                                                    .build()
+                                            )
+                                            .birthDate("birthDate")
+                                            .countryOfResidence("countryOfResidence")
+                                            .email("email")
+                                            .nationality("nationality")
+                                            .phoneNumber("phoneNumber")
+                                            .build()
+                                    )
+                                    .addPaymentRail(
+                                        ExternalAccountInfoOneOf.SlvAccount.PaymentRail
+                                            .BANK_TRANSFER
+                                    )
+                                    .accountNumber("0123456789")
+                                    .bankAccountType(
+                                        ExternalAccountInfoOneOf.SlvAccount.BankAccountType.CHECKING
+                                    )
+                                    .bankName("Banco Cuscatlan")
+                                    .phoneNumber("+50312345678")
+                                    .build()
+                            )
+                            .currency("USD")
+                            .status(ExternalAccount.Status.ACTIVE)
+                            .beneficiaryVerificationStatus(
+                                ExternalAccount.BeneficiaryVerificationStatus.MATCHED
+                            )
+                            .beneficiaryVerifiedData(
+                                BeneficiaryVerifiedData.builder().fullName("John Doe").build()
+                            )
+                            .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
+                            .defaultUmaDepositAccount(false)
+                            .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
+                            .platformAccountId("acc_123456789")
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(ExternalAccountStatusWebhookEvent.Type.EXTERNAL_ACCOUNT_STATUS_UPDATED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
     fun ofVerificationUpdate() {
         val verificationUpdate =
             VerificationUpdateWebhookEvent.builder()
@@ -1764,6 +1930,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1851,6 +2018,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
@@ -1944,6 +2112,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isEqualTo(cardFundingSourceChange)
@@ -2091,6 +2260,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
         assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
