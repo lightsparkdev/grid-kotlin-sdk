@@ -51,6 +51,7 @@ internal class IncomingTransactionTest {
                 .exchangeRate(1.08)
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
+                .pendingReason(IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(
@@ -129,6 +130,8 @@ internal class IncomingTransactionTest {
         assertThat(incomingTransaction.failureReason())
             .isEqualTo(IncomingTransaction.FailureReason.LNURLP_FAILED)
         assertThat(incomingTransaction.fees()).isEqualTo(10L)
+        assertThat(incomingTransaction.pendingReason())
+            .isEqualTo(IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
         assertThat(incomingTransaction.quoteId())
             .isEqualTo("Quote:019542f5-b3e7-1d02-0000-000000000006")
         assertThat(incomingTransaction.receiptDeliveryConfirmedAt())
@@ -211,6 +214,7 @@ internal class IncomingTransactionTest {
                 .exchangeRate(1.08)
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
+                .pendingReason(IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(

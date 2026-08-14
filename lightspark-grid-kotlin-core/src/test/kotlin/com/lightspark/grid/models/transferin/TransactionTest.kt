@@ -67,6 +67,7 @@ internal class TransactionTest {
                 .exchangeRate(1.08)
                 .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                 .fees(10L)
+                .pendingReason(IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(
@@ -150,6 +151,9 @@ internal class TransactionTest {
                     .exchangeRate(1.08)
                     .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                     .fees(10L)
+                    .pendingReason(
+                        IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                     .reconciliationInstructions(
@@ -289,6 +293,7 @@ internal class TransactionTest {
                         .build()
                 )
                 .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                .pendingReason(OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
                 .platformFees(5L)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                 .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
@@ -442,6 +447,9 @@ internal class TransactionTest {
                             .build()
                     )
                     .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .pendingReason(
+                        OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
                     .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)

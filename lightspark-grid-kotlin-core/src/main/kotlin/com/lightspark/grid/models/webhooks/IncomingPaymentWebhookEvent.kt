@@ -295,6 +295,7 @@ private constructor(
         private val exchangeRate: JsonField<Double>,
         private val failureReason: JsonField<IncomingTransaction.FailureReason>,
         private val fees: JsonField<Long>,
+        private val pendingReason: JsonField<IncomingTransaction.PendingReason>,
         private val quoteId: JsonField<String>,
         private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
         private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
@@ -348,6 +349,9 @@ private constructor(
             @ExcludeMissing
             failureReason: JsonField<IncomingTransaction.FailureReason> = JsonMissing.of(),
             @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("pendingReason")
+            @ExcludeMissing
+            pendingReason: JsonField<IncomingTransaction.PendingReason> = JsonMissing.of(),
             @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("receiptDeliveryConfirmedAt")
             @ExcludeMissing
@@ -388,6 +392,7 @@ private constructor(
             exchangeRate,
             failureReason,
             fees,
+            pendingReason,
             quoteId,
             receiptDeliveryConfirmedAt,
             reconciliationInstructions,
@@ -417,6 +422,7 @@ private constructor(
                 .exchangeRate(exchangeRate)
                 .failureReason(failureReason)
                 .fees(fees)
+                .pendingReason(pendingReason)
                 .quoteId(quoteId)
                 .receiptDeliveryConfirmedAt(receiptDeliveryConfirmedAt)
                 .reconciliationInstructions(reconciliationInstructions)
@@ -563,6 +569,15 @@ private constructor(
          *   if the server responded with an unexpected value).
          */
         fun fees(): Long? = fees.getNullable("fees")
+
+        /**
+         * Present when compliance review or required customer action is delaying settlement.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun pendingReason(): IncomingTransaction.PendingReason? =
+            pendingReason.getNullable("pendingReason")
 
         /**
          * The ID of the quote that was used to trigger this payment
@@ -764,6 +779,16 @@ private constructor(
         @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
 
         /**
+         * Returns the raw JSON value of [pendingReason].
+         *
+         * Unlike [pendingReason], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("pendingReason")
+        @ExcludeMissing
+        fun _pendingReason(): JsonField<IncomingTransaction.PendingReason> = pendingReason
+
+        /**
          * Returns the raw JSON value of [quoteId].
          *
          * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
@@ -898,6 +923,8 @@ private constructor(
             private var failureReason: JsonField<IncomingTransaction.FailureReason> =
                 JsonMissing.of()
             private var fees: JsonField<Long> = JsonMissing.of()
+            private var pendingReason: JsonField<IncomingTransaction.PendingReason> =
+                JsonMissing.of()
             private var quoteId: JsonField<String> = JsonMissing.of()
             private var receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of()
             private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
@@ -928,6 +955,7 @@ private constructor(
                 exchangeRate = data.exchangeRate
                 failureReason = data.failureReason
                 fees = data.fees
+                pendingReason = data.pendingReason
                 quoteId = data.quoteId
                 receiptDeliveryConfirmedAt = data.receiptDeliveryConfirmedAt
                 reconciliationInstructions = data.reconciliationInstructions
@@ -1156,6 +1184,23 @@ private constructor(
              */
             fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
 
+            /**
+             * Present when compliance review or required customer action is delaying settlement.
+             */
+            fun pendingReason(pendingReason: IncomingTransaction.PendingReason) =
+                pendingReason(JsonField.of(pendingReason))
+
+            /**
+             * Sets [Builder.pendingReason] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.pendingReason] with a well-typed
+             * [IncomingTransaction.PendingReason] value instead. This method is primarily for
+             * setting the field to an undocumented or not yet supported value.
+             */
+            fun pendingReason(pendingReason: JsonField<IncomingTransaction.PendingReason>) = apply {
+                this.pendingReason = pendingReason
+            }
+
             /** The ID of the quote that was used to trigger this payment */
             fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
 
@@ -1362,6 +1407,7 @@ private constructor(
                     exchangeRate,
                     failureReason,
                     fees,
+                    pendingReason,
                     quoteId,
                     receiptDeliveryConfirmedAt,
                     reconciliationInstructions,
@@ -1407,6 +1453,7 @@ private constructor(
             exchangeRate()
             failureReason()?.validate()
             fees()
+            pendingReason()?.validate()
             quoteId()
             receiptDeliveryConfirmedAt()
             reconciliationInstructions()?.validate()
@@ -1447,6 +1494,7 @@ private constructor(
                 (if (exchangeRate.asKnown() == null) 0 else 1) +
                 (failureReason.asKnown()?.validity() ?: 0) +
                 (if (fees.asKnown() == null) 0 else 1) +
+                (pendingReason.asKnown()?.validity() ?: 0) +
                 (if (quoteId.asKnown() == null) 0 else 1) +
                 (if (receiptDeliveryConfirmedAt.asKnown() == null) 0 else 1) +
                 (reconciliationInstructions.asKnown()?.validity() ?: 0) +
@@ -1478,6 +1526,7 @@ private constructor(
                 exchangeRate == other.exchangeRate &&
                 failureReason == other.failureReason &&
                 fees == other.fees &&
+                pendingReason == other.pendingReason &&
                 quoteId == other.quoteId &&
                 receiptDeliveryConfirmedAt == other.receiptDeliveryConfirmedAt &&
                 reconciliationInstructions == other.reconciliationInstructions &&
@@ -1507,6 +1556,7 @@ private constructor(
                 exchangeRate,
                 failureReason,
                 fees,
+                pendingReason,
                 quoteId,
                 receiptDeliveryConfirmedAt,
                 reconciliationInstructions,
@@ -1523,7 +1573,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
+            "Data{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, pendingReason=$pendingReason, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, requestedReceiverCustomerInfoFields=$requestedReceiverCustomerInfoFields, additionalProperties=$additionalProperties}"
     }
 
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {

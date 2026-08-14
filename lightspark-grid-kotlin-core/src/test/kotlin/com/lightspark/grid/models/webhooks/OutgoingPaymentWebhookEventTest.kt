@@ -117,6 +117,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
                         .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
@@ -266,6 +269,9 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .pendingReason(
+                        OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
                     .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
@@ -420,6 +426,9 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
                         .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
