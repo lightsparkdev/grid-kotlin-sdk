@@ -3,7 +3,7 @@
 <!-- x-release-please-start-version -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.lightspark.grid/lightspark-grid-kotlin)](https://central.sonatype.com/artifact/com.lightspark.grid/lightspark-grid-kotlin/1.9.0)
-[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/1.9.0/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.9.0)
+[![javadoc](https://javadoc.io/badge2/com.lightspark.grid/lightspark-grid-kotlin/javadoc.svg)](https://javadoc.io/doc/com.lightspark.grid/lightspark-grid-kotlin/1.9.0)
 
 <!-- x-release-please-end -->
 
