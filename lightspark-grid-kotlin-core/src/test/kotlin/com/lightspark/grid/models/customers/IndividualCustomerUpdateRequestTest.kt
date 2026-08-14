@@ -31,6 +31,7 @@ internal class IndividualCustomerUpdateRequestTest {
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
@@ -49,6 +50,8 @@ internal class IndividualCustomerUpdateRequestTest {
                         .VOLUME_100_K_TO_1_M
                 )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
                 .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
@@ -69,9 +72,6 @@ internal class IndividualCustomerUpdateRequestTest {
                     IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
                 )
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -92,6 +92,7 @@ internal class IndividualCustomerUpdateRequestTest {
             .isEqualTo(IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K)
         assertThat(individualCustomerUpdateRequest.birthDate())
             .isEqualTo(LocalDate.parse("1990-01-15"))
+        assertThat(individualCustomerUpdateRequest.countryOfIssuance()).isEqualTo("US")
         assertThat(individualCustomerUpdateRequest.currencies())
             .containsExactly("USD", "EUR", "USDC")
         assertThat(individualCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
@@ -113,6 +114,9 @@ internal class IndividualCustomerUpdateRequestTest {
                 IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
             )
         assertThat(individualCustomerUpdateRequest.fullName()).isEqualTo("John Michael Doe")
+        assertThat(individualCustomerUpdateRequest.identifier()).isEqualTo("123-45-6789")
+        assertThat(individualCustomerUpdateRequest.idType())
+            .isEqualTo(IndividualCustomerUpdateRequest.IdType.SSN)
         assertThat(individualCustomerUpdateRequest.kycStatus())
             .isEqualTo(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
         assertThat(individualCustomerUpdateRequest.nationality()).isEqualTo("US")
@@ -136,10 +140,6 @@ internal class IndividualCustomerUpdateRequestTest {
             )
         assertThat(individualCustomerUpdateRequest.sourceOfWealthOtherDescription())
             .isEqualTo("Royalty income from published works")
-        assertThat(individualCustomerUpdateRequest.taxIdCountryOfIssuance()).isEqualTo("US")
-        assertThat(individualCustomerUpdateRequest.taxIdentifier()).isEqualTo("123-45-6789")
-        assertThat(individualCustomerUpdateRequest.taxIdType())
-            .isEqualTo(IndividualCustomerUpdateRequest.TaxIdType.SSN)
         assertThat(individualCustomerUpdateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -164,6 +164,7 @@ internal class IndividualCustomerUpdateRequestTest {
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
@@ -182,6 +183,8 @@ internal class IndividualCustomerUpdateRequestTest {
                         .VOLUME_100_K_TO_1_M
                 )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
                 .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
@@ -202,9 +205,6 @@ internal class IndividualCustomerUpdateRequestTest {
                     IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
                 )
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 

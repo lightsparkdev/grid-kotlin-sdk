@@ -64,6 +64,7 @@ internal class CustomerUpdateWebhookEventTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -71,6 +72,8 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -84,9 +87,6 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
@@ -139,6 +139,7 @@ internal class CustomerUpdateWebhookEventTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -146,6 +147,8 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -159,9 +162,6 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
             )
@@ -219,6 +219,7 @@ internal class CustomerUpdateWebhookEventTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -226,6 +227,8 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -239,9 +242,6 @@ internal class CustomerUpdateWebhookEventTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))

@@ -51,6 +51,7 @@ internal class CustomerServiceAsyncTest {
                         IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
@@ -95,9 +96,6 @@ internal class CustomerServiceAsyncTest {
                         IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
                     )
                     .sourceOfWealthOtherDescription("Royalty income from published works")
-                    .taxIdCountryOfIssuance("US")
-                    .taxIdentifier("123-45-6789")
-                    .taxIdType(IndividualCustomerCreateRequest.TaxIdType.SSN)
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -159,6 +157,7 @@ internal class CustomerServiceAsyncTest {
                                 IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                             )
                             .birthDate(LocalDate.parse("1990-01-15"))
+                            .countryOfIssuance("US")
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
                             .endUserTermsConsent(
@@ -180,6 +179,8 @@ internal class CustomerServiceAsyncTest {
                                     .VOLUME_100_K_TO_1_M
                             )
                             .fullName("John Michael Doe")
+                            .identifier("123-45-6789")
+                            .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                             .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                             .nationality("US")
                             .netWorthRange(
@@ -202,9 +203,6 @@ internal class CustomerServiceAsyncTest {
                                 IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
                             )
                             .sourceOfWealthOtherDescription("Royalty income from published works")
-                            .taxIdCountryOfIssuance("US")
-                            .taxIdentifier("123-45-6789")
-                            .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                             .umaAddress("\$john.doe@uma.domain.com")
                             .build()
                     )
