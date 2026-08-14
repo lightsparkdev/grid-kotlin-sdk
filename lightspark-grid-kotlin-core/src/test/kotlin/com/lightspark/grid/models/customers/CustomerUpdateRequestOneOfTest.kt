@@ -36,6 +36,7 @@ internal class CustomerUpdateRequestOneOfTest {
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
@@ -54,6 +55,8 @@ internal class CustomerUpdateRequestOneOfTest {
                         .VOLUME_100_K_TO_1_M
                 )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
                 .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
@@ -74,9 +77,6 @@ internal class CustomerUpdateRequestOneOfTest {
                     IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
                 )
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -107,6 +107,7 @@ internal class CustomerUpdateRequestOneOfTest {
                         IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
                     .endUserTermsConsent(
@@ -126,6 +127,8 @@ internal class CustomerUpdateRequestOneOfTest {
                             .VOLUME_100_K_TO_1_M
                     )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                     .nationality("US")
                     .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
@@ -146,9 +149,6 @@ internal class CustomerUpdateRequestOneOfTest {
                         IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
                     )
                     .sourceOfWealthOtherDescription("Royalty income from published works")
-                    .taxIdCountryOfIssuance("US")
-                    .taxIdentifier("123-45-6789")
-                    .taxIdType(IndividualCustomerUpdateRequest.TaxIdType.SSN)
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )

@@ -57,6 +57,7 @@ internal class IndividualCustomerTest {
                 )
                 .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .expectedMonthlyTransactionCount(
                     IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )
@@ -64,6 +65,8 @@ internal class IndividualCustomerTest {
                     IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                 )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomer.IdType.SSN)
                 .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                 .nationality("US")
                 .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -75,9 +78,6 @@ internal class IndividualCustomerTest {
                 .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
                 .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.INVESTMENTS)
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomer.TaxIdType.SSN)
                 .build()
 
         assertThat(individualCustomer._customerType()).isEqualTo(JsonValue.from("INDIVIDUAL"))
@@ -124,11 +124,14 @@ internal class IndividualCustomerTest {
         assertThat(individualCustomer.annualIncomeRange())
             .isEqualTo(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
         assertThat(individualCustomer.birthDate()).isEqualTo(LocalDate.parse("1990-01-15"))
+        assertThat(individualCustomer.countryOfIssuance()).isEqualTo("US")
         assertThat(individualCustomer.expectedMonthlyTransactionCount())
             .isEqualTo(IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500)
         assertThat(individualCustomer.expectedMonthlyTransactionVolume())
             .isEqualTo(IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M)
         assertThat(individualCustomer.fullName()).isEqualTo("John Michael Doe")
+        assertThat(individualCustomer.identifier()).isEqualTo("123-45-6789")
+        assertThat(individualCustomer.idType()).isEqualTo(IndividualCustomer.IdType.SSN)
         assertThat(individualCustomer.kycStatus()).isEqualTo(IndividualCustomer.KycStatus.APPROVED)
         assertThat(individualCustomer.nationality()).isEqualTo("US")
         assertThat(individualCustomer.netWorthRange())
@@ -148,9 +151,6 @@ internal class IndividualCustomerTest {
             )
         assertThat(individualCustomer.sourceOfWealthOtherDescription())
             .isEqualTo("Royalty income from published works")
-        assertThat(individualCustomer.taxIdCountryOfIssuance()).isEqualTo("US")
-        assertThat(individualCustomer.taxIdentifier()).isEqualTo("123-45-6789")
-        assertThat(individualCustomer.taxIdType()).isEqualTo(IndividualCustomer.TaxIdType.SSN)
     }
 
     @Test
@@ -196,6 +196,7 @@ internal class IndividualCustomerTest {
                 )
                 .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .expectedMonthlyTransactionCount(
                     IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                 )
@@ -203,6 +204,8 @@ internal class IndividualCustomerTest {
                     IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                 )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomer.IdType.SSN)
                 .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                 .nationality("US")
                 .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -214,9 +217,6 @@ internal class IndividualCustomerTest {
                 .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
                 .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.INVESTMENTS)
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomer.TaxIdType.SSN)
                 .build()
 
         val roundtrippedIndividualCustomer =

@@ -60,6 +60,7 @@ internal class CustomerListResponseTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -67,6 +68,8 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -80,9 +83,6 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .hasMore(true)
@@ -134,6 +134,7 @@ internal class CustomerListResponseTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -141,6 +142,8 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -154,9 +157,6 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
             )
@@ -212,6 +212,7 @@ internal class CustomerListResponseTest {
                         )
                         .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                         .birthDate(LocalDate.parse("1990-01-15"))
+                        .countryOfIssuance("US")
                         .expectedMonthlyTransactionCount(
                             IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
                         )
@@ -219,6 +220,8 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
                         )
                         .fullName("John Michael Doe")
+                        .identifier("123-45-6789")
+                        .idType(IndividualCustomer.IdType.SSN)
                         .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                         .nationality("US")
                         .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
@@ -232,9 +235,6 @@ internal class CustomerListResponseTest {
                             IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
                         )
                         .sourceOfWealthOtherDescription("Royalty income from published works")
-                        .taxIdCountryOfIssuance("US")
-                        .taxIdentifier("123-45-6789")
-                        .taxIdType(IndividualCustomer.TaxIdType.SSN)
                         .build()
                 )
                 .hasMore(true)

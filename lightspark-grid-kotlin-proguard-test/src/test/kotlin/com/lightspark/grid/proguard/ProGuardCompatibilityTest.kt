@@ -123,6 +123,7 @@ internal class ProGuardCompatibilityTest {
                         IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
@@ -167,9 +168,6 @@ internal class ProGuardCompatibilityTest {
                         IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
                     )
                     .sourceOfWealthOtherDescription("Royalty income from published works")
-                    .taxIdCountryOfIssuance("US")
-                    .taxIdentifier("123-45-6789")
-                    .taxIdType(IndividualCustomerCreateRequest.TaxIdType.SSN)
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )

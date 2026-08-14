@@ -49,9 +49,12 @@ private constructor(
     private val address: JsonField<Address>,
     private val annualIncomeRange: JsonField<AnnualIncomeRange>,
     private val birthDate: JsonField<LocalDate>,
+    private val countryOfIssuance: JsonField<String>,
     private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
     private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
     private val fullName: JsonField<String>,
+    private val identifier: JsonField<String>,
+    private val idType: JsonField<IdType>,
     private val kycStatus: JsonField<KycStatus>,
     private val nationality: JsonField<String>,
     private val netWorthRange: JsonField<NetWorthRange>,
@@ -62,9 +65,6 @@ private constructor(
     private val sourceOfFundsOtherDescription: JsonField<String>,
     private val sourceOfWealthCategories: JsonField<List<SourceOfWealthCategory>>,
     private val sourceOfWealthOtherDescription: JsonField<String>,
-    private val taxIdCountryOfIssuance: JsonField<String>,
-    private val taxIdentifier: JsonField<String>,
-    private val taxIdType: JsonField<TaxIdType>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -106,6 +106,9 @@ private constructor(
         @JsonProperty("birthDate")
         @ExcludeMissing
         birthDate: JsonField<LocalDate> = JsonMissing.of(),
+        @JsonProperty("countryOfIssuance")
+        @ExcludeMissing
+        countryOfIssuance: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expectedMonthlyTransactionCount")
         @ExcludeMissing
         expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
@@ -115,6 +118,10 @@ private constructor(
         expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
             JsonMissing.of(),
         @JsonProperty("fullName") @ExcludeMissing fullName: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("identifier")
+        @ExcludeMissing
+        identifier: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("idType") @ExcludeMissing idType: JsonField<IdType> = JsonMissing.of(),
         @JsonProperty("kycStatus")
         @ExcludeMissing
         kycStatus: JsonField<KycStatus> = JsonMissing.of(),
@@ -145,15 +152,6 @@ private constructor(
         @JsonProperty("sourceOfWealthOtherDescription")
         @ExcludeMissing
         sourceOfWealthOtherDescription: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("taxIdCountryOfIssuance")
-        @ExcludeMissing
-        taxIdCountryOfIssuance: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("taxIdentifier")
-        @ExcludeMissing
-        taxIdentifier: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("taxIdType")
-        @ExcludeMissing
-        taxIdType: JsonField<TaxIdType> = JsonMissing.of(),
     ) : this(
         customerType,
         platformCustomerId,
@@ -171,9 +169,12 @@ private constructor(
         address,
         annualIncomeRange,
         birthDate,
+        countryOfIssuance,
         expectedMonthlyTransactionCount,
         expectedMonthlyTransactionVolume,
         fullName,
+        identifier,
+        idType,
         kycStatus,
         nationality,
         netWorthRange,
@@ -184,9 +185,6 @@ private constructor(
         sourceOfFundsOtherDescription,
         sourceOfWealthCategories,
         sourceOfWealthOtherDescription,
-        taxIdCountryOfIssuance,
-        taxIdentifier,
-        taxIdType,
         mutableMapOf(),
     )
 
@@ -341,6 +339,16 @@ private constructor(
     fun birthDate(): LocalDate? = birthDate.getNullable("birthDate")
 
     /**
+     * Country that issued the identification (ISO 3166-1 alpha-2). Optional for an individual
+     * account holder: SSN and ITIN are US-issued, so this defaults to `US` and is rejected if set
+     * to anything else.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun countryOfIssuance(): String? = countryOfIssuance.getNullable("countryOfIssuance")
+
+    /**
      * Expected number of transactions per month
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -365,6 +373,24 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun fullName(): String? = fullName.getNullable("fullName")
+
+    /**
+     * The individual's identification number, required to onboard them as a US account holder. Only
+     * SSN (format `###-##-####`) and ITIN are currently accepted; other identification types are
+     * rejected. Write-only — never returned in customer responses.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun identifier(): String? = identifier.getNullable("identifier")
+
+    /**
+     * Type of tax identification
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun idType(): IdType? = idType.getNullable("idType")
 
     /**
      * The current KYC status of a customer. `HOLD` means the customer is placed on hold and may be
@@ -457,33 +483,6 @@ private constructor(
      */
     fun sourceOfWealthOtherDescription(): String? =
         sourceOfWealthOtherDescription.getNullable("sourceOfWealthOtherDescription")
-
-    /**
-     * Country that issued the tax identifier (ISO 3166-1 alpha-2). Required when `taxIdType` is
-     * `NON_US_TAX_ID`.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun taxIdCountryOfIssuance(): String? =
-        taxIdCountryOfIssuance.getNullable("taxIdCountryOfIssuance")
-
-    /**
-     * Tax-identification number. For US persons this is the SSN (format `###-##-####`) or ITIN. For
-     * non-US persons this is the tax number issued by `taxIdCountryOfIssuance`.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun taxIdentifier(): String? = taxIdentifier.getNullable("taxIdentifier")
-
-    /**
-     * Type of tax identification
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun taxIdType(): TaxIdType? = taxIdType.getNullable("taxIdType")
 
     /**
      * Returns the raw JSON value of [platformCustomerId].
@@ -609,6 +608,16 @@ private constructor(
     @JsonProperty("birthDate") @ExcludeMissing fun _birthDate(): JsonField<LocalDate> = birthDate
 
     /**
+     * Returns the raw JSON value of [countryOfIssuance].
+     *
+     * Unlike [countryOfIssuance], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("countryOfIssuance")
+    @ExcludeMissing
+    fun _countryOfIssuance(): JsonField<String> = countryOfIssuance
+
+    /**
      * Returns the raw JSON value of [expectedMonthlyTransactionCount].
      *
      * Unlike [expectedMonthlyTransactionCount], this method doesn't throw if the JSON field has an
@@ -636,6 +645,20 @@ private constructor(
      * Unlike [fullName], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("fullName") @ExcludeMissing fun _fullName(): JsonField<String> = fullName
+
+    /**
+     * Returns the raw JSON value of [identifier].
+     *
+     * Unlike [identifier], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("identifier") @ExcludeMissing fun _identifier(): JsonField<String> = identifier
+
+    /**
+     * Returns the raw JSON value of [idType].
+     *
+     * Unlike [idType], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("idType") @ExcludeMissing fun _idType(): JsonField<IdType> = idType
 
     /**
      * Returns the raw JSON value of [kycStatus].
@@ -728,32 +751,6 @@ private constructor(
     @ExcludeMissing
     fun _sourceOfWealthOtherDescription(): JsonField<String> = sourceOfWealthOtherDescription
 
-    /**
-     * Returns the raw JSON value of [taxIdCountryOfIssuance].
-     *
-     * Unlike [taxIdCountryOfIssuance], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    @JsonProperty("taxIdCountryOfIssuance")
-    @ExcludeMissing
-    fun _taxIdCountryOfIssuance(): JsonField<String> = taxIdCountryOfIssuance
-
-    /**
-     * Returns the raw JSON value of [taxIdentifier].
-     *
-     * Unlike [taxIdentifier], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("taxIdentifier")
-    @ExcludeMissing
-    fun _taxIdentifier(): JsonField<String> = taxIdentifier
-
-    /**
-     * Returns the raw JSON value of [taxIdType].
-     *
-     * Unlike [taxIdType], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("taxIdType") @ExcludeMissing fun _taxIdType(): JsonField<TaxIdType> = taxIdType
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -800,11 +797,14 @@ private constructor(
         private var address: JsonField<Address> = JsonMissing.of()
         private var annualIncomeRange: JsonField<AnnualIncomeRange> = JsonMissing.of()
         private var birthDate: JsonField<LocalDate> = JsonMissing.of()
+        private var countryOfIssuance: JsonField<String> = JsonMissing.of()
         private var expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
             JsonMissing.of()
         private var expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
             JsonMissing.of()
         private var fullName: JsonField<String> = JsonMissing.of()
+        private var identifier: JsonField<String> = JsonMissing.of()
+        private var idType: JsonField<IdType> = JsonMissing.of()
         private var kycStatus: JsonField<KycStatus> = JsonMissing.of()
         private var nationality: JsonField<String> = JsonMissing.of()
         private var netWorthRange: JsonField<NetWorthRange> = JsonMissing.of()
@@ -815,9 +815,6 @@ private constructor(
         private var sourceOfFundsOtherDescription: JsonField<String> = JsonMissing.of()
         private var sourceOfWealthCategories: JsonField<MutableList<SourceOfWealthCategory>>? = null
         private var sourceOfWealthOtherDescription: JsonField<String> = JsonMissing.of()
-        private var taxIdCountryOfIssuance: JsonField<String> = JsonMissing.of()
-        private var taxIdentifier: JsonField<String> = JsonMissing.of()
-        private var taxIdType: JsonField<TaxIdType> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(individualCustomer: IndividualCustomer) = apply {
@@ -837,9 +834,12 @@ private constructor(
             address = individualCustomer.address
             annualIncomeRange = individualCustomer.annualIncomeRange
             birthDate = individualCustomer.birthDate
+            countryOfIssuance = individualCustomer.countryOfIssuance
             expectedMonthlyTransactionCount = individualCustomer.expectedMonthlyTransactionCount
             expectedMonthlyTransactionVolume = individualCustomer.expectedMonthlyTransactionVolume
             fullName = individualCustomer.fullName
+            identifier = individualCustomer.identifier
+            idType = individualCustomer.idType
             kycStatus = individualCustomer.kycStatus
             nationality = individualCustomer.nationality
             netWorthRange = individualCustomer.netWorthRange
@@ -852,9 +852,6 @@ private constructor(
             sourceOfWealthCategories =
                 individualCustomer.sourceOfWealthCategories.map { it.toMutableList() }
             sourceOfWealthOtherDescription = individualCustomer.sourceOfWealthOtherDescription
-            taxIdCountryOfIssuance = individualCustomer.taxIdCountryOfIssuance
-            taxIdentifier = individualCustomer.taxIdentifier
-            taxIdType = individualCustomer.taxIdType
             additionalProperties = individualCustomer.additionalProperties.toMutableMap()
         }
 
@@ -1078,6 +1075,25 @@ private constructor(
          */
         fun birthDate(birthDate: JsonField<LocalDate>) = apply { this.birthDate = birthDate }
 
+        /**
+         * Country that issued the identification (ISO 3166-1 alpha-2). Optional for an individual
+         * account holder: SSN and ITIN are US-issued, so this defaults to `US` and is rejected if
+         * set to anything else.
+         */
+        fun countryOfIssuance(countryOfIssuance: String) =
+            countryOfIssuance(JsonField.of(countryOfIssuance))
+
+        /**
+         * Sets [Builder.countryOfIssuance] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.countryOfIssuance] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun countryOfIssuance(countryOfIssuance: JsonField<String>) = apply {
+            this.countryOfIssuance = countryOfIssuance
+        }
+
         /** Expected number of transactions per month */
         fun expectedMonthlyTransactionCount(
             expectedMonthlyTransactionCount: ExpectedMonthlyTransactionCount
@@ -1120,6 +1136,33 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun fullName(fullName: JsonField<String>) = apply { this.fullName = fullName }
+
+        /**
+         * The individual's identification number, required to onboard them as a US account holder.
+         * Only SSN (format `###-##-####`) and ITIN are currently accepted; other identification
+         * types are rejected. Write-only — never returned in customer responses.
+         */
+        fun identifier(identifier: String) = identifier(JsonField.of(identifier))
+
+        /**
+         * Sets [Builder.identifier] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.identifier] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun identifier(identifier: JsonField<String>) = apply { this.identifier = identifier }
+
+        /** Type of tax identification */
+        fun idType(idType: IdType) = idType(JsonField.of(idType))
+
+        /**
+         * Sets [Builder.idType] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.idType] with a well-typed [IdType] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun idType(idType: JsonField<IdType>) = apply { this.idType = idType }
 
         /**
          * The current KYC status of a customer. `HOLD` means the customer is placed on hold and may
@@ -1311,53 +1354,6 @@ private constructor(
                 this.sourceOfWealthOtherDescription = sourceOfWealthOtherDescription
             }
 
-        /**
-         * Country that issued the tax identifier (ISO 3166-1 alpha-2). Required when `taxIdType` is
-         * `NON_US_TAX_ID`.
-         */
-        fun taxIdCountryOfIssuance(taxIdCountryOfIssuance: String) =
-            taxIdCountryOfIssuance(JsonField.of(taxIdCountryOfIssuance))
-
-        /**
-         * Sets [Builder.taxIdCountryOfIssuance] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.taxIdCountryOfIssuance] with a well-typed [String] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun taxIdCountryOfIssuance(taxIdCountryOfIssuance: JsonField<String>) = apply {
-            this.taxIdCountryOfIssuance = taxIdCountryOfIssuance
-        }
-
-        /**
-         * Tax-identification number. For US persons this is the SSN (format `###-##-####`) or ITIN.
-         * For non-US persons this is the tax number issued by `taxIdCountryOfIssuance`.
-         */
-        fun taxIdentifier(taxIdentifier: String) = taxIdentifier(JsonField.of(taxIdentifier))
-
-        /**
-         * Sets [Builder.taxIdentifier] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.taxIdentifier] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun taxIdentifier(taxIdentifier: JsonField<String>) = apply {
-            this.taxIdentifier = taxIdentifier
-        }
-
-        /** Type of tax identification */
-        fun taxIdType(taxIdType: TaxIdType) = taxIdType(JsonField.of(taxIdType))
-
-        /**
-         * Sets [Builder.taxIdType] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.taxIdType] with a well-typed [TaxIdType] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun taxIdType(taxIdType: JsonField<TaxIdType>) = apply { this.taxIdType = taxIdType }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -1409,9 +1405,12 @@ private constructor(
                 address,
                 annualIncomeRange,
                 birthDate,
+                countryOfIssuance,
                 expectedMonthlyTransactionCount,
                 expectedMonthlyTransactionVolume,
                 fullName,
+                identifier,
+                idType,
                 kycStatus,
                 nationality,
                 netWorthRange,
@@ -1422,9 +1421,6 @@ private constructor(
                 sourceOfFundsOtherDescription,
                 (sourceOfWealthCategories ?: JsonMissing.of()).map { it.toImmutable() },
                 sourceOfWealthOtherDescription,
-                taxIdCountryOfIssuance,
-                taxIdentifier,
-                taxIdType,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -1459,9 +1455,12 @@ private constructor(
         address()?.validate()
         annualIncomeRange()?.validate()
         birthDate()
+        countryOfIssuance()
         expectedMonthlyTransactionCount()?.validate()
         expectedMonthlyTransactionVolume()?.validate()
         fullName()
+        identifier()
+        idType()?.validate()
         kycStatus()?.validate()
         nationality()
         netWorthRange()?.validate()
@@ -1472,9 +1471,6 @@ private constructor(
         sourceOfFundsOtherDescription()
         sourceOfWealthCategories()?.forEach { it.validate() }
         sourceOfWealthOtherDescription()
-        taxIdCountryOfIssuance()
-        taxIdentifier()
-        taxIdType()?.validate()
         validated = true
     }
 
@@ -1507,9 +1503,12 @@ private constructor(
             (address.asKnown()?.validity() ?: 0) +
             (annualIncomeRange.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
+            (if (countryOfIssuance.asKnown() == null) 0 else 1) +
             (expectedMonthlyTransactionCount.asKnown()?.validity() ?: 0) +
             (expectedMonthlyTransactionVolume.asKnown()?.validity() ?: 0) +
             (if (fullName.asKnown() == null) 0 else 1) +
+            (if (identifier.asKnown() == null) 0 else 1) +
+            (idType.asKnown()?.validity() ?: 0) +
             (kycStatus.asKnown()?.validity() ?: 0) +
             (if (nationality.asKnown() == null) 0 else 1) +
             (netWorthRange.asKnown()?.validity() ?: 0) +
@@ -1519,10 +1518,7 @@ private constructor(
             (sourceOfFundsCategories.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (sourceOfFundsOtherDescription.asKnown() == null) 0 else 1) +
             (sourceOfWealthCategories.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
-            (if (sourceOfWealthOtherDescription.asKnown() == null) 0 else 1) +
-            (if (taxIdCountryOfIssuance.asKnown() == null) 0 else 1) +
-            (if (taxIdentifier.asKnown() == null) 0 else 1) +
-            (taxIdType.asKnown()?.validity() ?: 0)
+            (if (sourceOfWealthOtherDescription.asKnown() == null) 0 else 1)
 
     class CustomerType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -2135,6 +2131,153 @@ private constructor(
             }
 
             return other is ExpectedMonthlyTransactionVolume && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Type of tax identification */
+    class IdType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val SSN = of("SSN")
+
+            val ITIN = of("ITIN")
+
+            val EIN = of("EIN")
+
+            val NON_US_TAX_ID = of("NON_US_TAX_ID")
+
+            fun of(value: String) = IdType(JsonField.of(value))
+        }
+
+        /** An enum containing [IdType]'s known values. */
+        enum class Known {
+            SSN,
+            ITIN,
+            EIN,
+            NON_US_TAX_ID,
+        }
+
+        /**
+         * An enum containing [IdType]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [IdType] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            SSN,
+            ITIN,
+            EIN,
+            NON_US_TAX_ID,
+            /** An enum member indicating that [IdType] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                SSN -> Value.SSN
+                ITIN -> Value.ITIN
+                EIN -> Value.EIN
+                NON_US_TAX_ID -> Value.NON_US_TAX_ID
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                SSN -> Known.SSN
+                ITIN -> Known.ITIN
+                EIN -> Known.EIN
+                NON_US_TAX_ID -> Known.NON_US_TAX_ID
+                else -> throw LightsparkGridInvalidDataException("Unknown IdType: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): IdType = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is IdType && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -3221,155 +3364,6 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /** Type of tax identification */
-    class TaxIdType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            val SSN = of("SSN")
-
-            val ITIN = of("ITIN")
-
-            val EIN = of("EIN")
-
-            val NON_US_TAX_ID = of("NON_US_TAX_ID")
-
-            fun of(value: String) = TaxIdType(JsonField.of(value))
-        }
-
-        /** An enum containing [TaxIdType]'s known values. */
-        enum class Known {
-            SSN,
-            ITIN,
-            EIN,
-            NON_US_TAX_ID,
-        }
-
-        /**
-         * An enum containing [TaxIdType]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [TaxIdType] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            SSN,
-            ITIN,
-            EIN,
-            NON_US_TAX_ID,
-            /**
-             * An enum member indicating that [TaxIdType] was instantiated with an unknown value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                SSN -> Value.SSN
-                ITIN -> Value.ITIN
-                EIN -> Value.EIN
-                NON_US_TAX_ID -> Value.NON_US_TAX_ID
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-         *   known member.
-         */
-        fun known(): Known =
-            when (this) {
-                SSN -> Known.SSN
-                ITIN -> Known.ITIN
-                EIN -> Known.EIN
-                NON_US_TAX_ID -> Known.NON_US_TAX_ID
-                else -> throw LightsparkGridInvalidDataException("Unknown TaxIdType: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
-         *   the expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-        private var validated: Boolean = false
-
-        /**
-         * Validates that the types of all values in this object match their expected types
-         * recursively.
-         *
-         * This method is _not_ forwards compatible with new types from the API for existing fields.
-         *
-         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
-         *   its expected type.
-         */
-        fun validate(): TaxIdType = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: LightsparkGridInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is TaxIdType && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -3392,9 +3386,12 @@ private constructor(
             address == other.address &&
             annualIncomeRange == other.annualIncomeRange &&
             birthDate == other.birthDate &&
+            countryOfIssuance == other.countryOfIssuance &&
             expectedMonthlyTransactionCount == other.expectedMonthlyTransactionCount &&
             expectedMonthlyTransactionVolume == other.expectedMonthlyTransactionVolume &&
             fullName == other.fullName &&
+            identifier == other.identifier &&
+            idType == other.idType &&
             kycStatus == other.kycStatus &&
             nationality == other.nationality &&
             netWorthRange == other.netWorthRange &&
@@ -3405,9 +3402,6 @@ private constructor(
             sourceOfFundsOtherDescription == other.sourceOfFundsOtherDescription &&
             sourceOfWealthCategories == other.sourceOfWealthCategories &&
             sourceOfWealthOtherDescription == other.sourceOfWealthOtherDescription &&
-            taxIdCountryOfIssuance == other.taxIdCountryOfIssuance &&
-            taxIdentifier == other.taxIdentifier &&
-            taxIdType == other.taxIdType &&
             additionalProperties == other.additionalProperties
     }
 
@@ -3429,9 +3423,12 @@ private constructor(
             address,
             annualIncomeRange,
             birthDate,
+            countryOfIssuance,
             expectedMonthlyTransactionCount,
             expectedMonthlyTransactionVolume,
             fullName,
+            identifier,
+            idType,
             kycStatus,
             nationality,
             netWorthRange,
@@ -3442,9 +3439,6 @@ private constructor(
             sourceOfFundsOtherDescription,
             sourceOfWealthCategories,
             sourceOfWealthOtherDescription,
-            taxIdCountryOfIssuance,
-            taxIdentifier,
-            taxIdType,
             additionalProperties,
         )
     }
@@ -3452,5 +3446,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, taxIdCountryOfIssuance=$taxIdCountryOfIssuance, taxIdentifier=$taxIdentifier, taxIdType=$taxIdType, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, additionalProperties=$additionalProperties}"
 }

@@ -31,6 +31,7 @@ internal class IndividualCustomerCreateRequestTest {
                     IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
@@ -74,9 +75,6 @@ internal class IndividualCustomerCreateRequestTest {
                     IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
                 )
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomerCreateRequest.TaxIdType.SSN)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -97,6 +95,7 @@ internal class IndividualCustomerCreateRequestTest {
             .isEqualTo(IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K)
         assertThat(individualCustomerCreateRequest.birthDate())
             .isEqualTo(LocalDate.parse("1990-01-15"))
+        assertThat(individualCustomerCreateRequest.countryOfIssuance()).isEqualTo("US")
         assertThat(individualCustomerCreateRequest.currencies()).containsExactly("USD", "USDC")
         assertThat(individualCustomerCreateRequest.email()).isEqualTo("john.doe@example.com")
         assertThat(individualCustomerCreateRequest.endUserTermsConsent())
@@ -146,10 +145,6 @@ internal class IndividualCustomerCreateRequestTest {
             )
         assertThat(individualCustomerCreateRequest.sourceOfWealthOtherDescription())
             .isEqualTo("Royalty income from published works")
-        assertThat(individualCustomerCreateRequest.taxIdCountryOfIssuance()).isEqualTo("US")
-        assertThat(individualCustomerCreateRequest.taxIdentifier()).isEqualTo("123-45-6789")
-        assertThat(individualCustomerCreateRequest.taxIdType())
-            .isEqualTo(IndividualCustomerCreateRequest.TaxIdType.SSN)
         assertThat(individualCustomerCreateRequest.umaAddress())
             .isEqualTo("\$john.doe@uma.domain.com")
     }
@@ -174,6 +169,7 @@ internal class IndividualCustomerCreateRequestTest {
                     IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
@@ -217,9 +213,6 @@ internal class IndividualCustomerCreateRequestTest {
                     IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
                 )
                 .sourceOfWealthOtherDescription("Royalty income from published works")
-                .taxIdCountryOfIssuance("US")
-                .taxIdentifier("123-45-6789")
-                .taxIdType(IndividualCustomerCreateRequest.TaxIdType.SSN)
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
