@@ -45,6 +45,7 @@ private constructor(
     private val fees: JsonField<Long>,
     private val paymentInstructions: JsonField<List<PaymentInstructions>>,
     private val paymentRail: JsonField<PaymentRail>,
+    private val pendingReason: JsonField<PendingReason>,
     private val platformFees: JsonField<Long>,
     private val quoteId: JsonField<String>,
     private val railSelectionMode: JsonField<RailSelectionMode>,
@@ -106,6 +107,9 @@ private constructor(
         @JsonProperty("paymentRail")
         @ExcludeMissing
         paymentRail: JsonField<PaymentRail> = JsonMissing.of(),
+        @JsonProperty("pendingReason")
+        @ExcludeMissing
+        pendingReason: JsonField<PendingReason> = JsonMissing.of(),
         @JsonProperty("platformFees")
         @ExcludeMissing
         platformFees: JsonField<Long> = JsonMissing.of(),
@@ -155,6 +159,7 @@ private constructor(
         fees,
         paymentInstructions,
         paymentRail,
+        pendingReason,
         platformFees,
         quoteId,
         railSelectionMode,
@@ -336,6 +341,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun paymentRail(): PaymentRail? = paymentRail.getNullable("paymentRail")
+
+    /**
+     * Present when compliance review or required customer action is delaying settlement.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun pendingReason(): PendingReason? = pendingReason.getNullable("pendingReason")
 
     /**
      * The portion of `fees` collected by the platform (platform-configured transaction fees), in
@@ -583,6 +596,15 @@ private constructor(
     fun _paymentRail(): JsonField<PaymentRail> = paymentRail
 
     /**
+     * Returns the raw JSON value of [pendingReason].
+     *
+     * Unlike [pendingReason], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("pendingReason")
+    @ExcludeMissing
+    fun _pendingReason(): JsonField<PendingReason> = pendingReason
+
+    /**
      * Returns the raw JSON value of [platformFees].
      *
      * Unlike [platformFees], this method doesn't throw if the JSON field has an unexpected type.
@@ -737,6 +759,7 @@ private constructor(
         private var fees: JsonField<Long> = JsonMissing.of()
         private var paymentInstructions: JsonField<MutableList<PaymentInstructions>>? = null
         private var paymentRail: JsonField<PaymentRail> = JsonMissing.of()
+        private var pendingReason: JsonField<PendingReason> = JsonMissing.of()
         private var platformFees: JsonField<Long> = JsonMissing.of()
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var railSelectionMode: JsonField<RailSelectionMode> = JsonMissing.of()
@@ -771,6 +794,7 @@ private constructor(
             fees = outgoingTransaction.fees
             paymentInstructions = outgoingTransaction.paymentInstructions.map { it.toMutableList() }
             paymentRail = outgoingTransaction.paymentRail
+            pendingReason = outgoingTransaction.pendingReason
             platformFees = outgoingTransaction.platformFees
             quoteId = outgoingTransaction.quoteId
             railSelectionMode = outgoingTransaction.railSelectionMode
@@ -1058,6 +1082,20 @@ private constructor(
             this.paymentRail = paymentRail
         }
 
+        /** Present when compliance review or required customer action is delaying settlement. */
+        fun pendingReason(pendingReason: PendingReason) = pendingReason(JsonField.of(pendingReason))
+
+        /**
+         * Sets [Builder.pendingReason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.pendingReason] with a well-typed [PendingReason] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun pendingReason(pendingReason: JsonField<PendingReason>) = apply {
+            this.pendingReason = pendingReason
+        }
+
         /**
          * The portion of `fees` collected by the platform (platform-configured transaction fees),
          * in the smallest unit of the sending currency. 0 when the platform has no applicable fee
@@ -1286,6 +1324,7 @@ private constructor(
                 fees,
                 (paymentInstructions ?: JsonMissing.of()).map { it.toImmutable() },
                 paymentRail,
+                pendingReason,
                 platformFees,
                 quoteId,
                 railSelectionMode,
@@ -1333,6 +1372,7 @@ private constructor(
         fees()
         paymentInstructions()?.forEach { it.validate() }
         paymentRail()?.validate()
+        pendingReason()?.validate()
         platformFees()
         quoteId()
         railSelectionMode()?.validate()
@@ -1378,6 +1418,7 @@ private constructor(
             (if (fees.asKnown() == null) 0 else 1) +
             (paymentInstructions.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (paymentRail.asKnown()?.validity() ?: 0) +
+            (pendingReason.asKnown()?.validity() ?: 0) +
             (if (platformFees.asKnown() == null) 0 else 1) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (railSelectionMode.asKnown()?.validity() ?: 0) +
@@ -2403,6 +2444,157 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** Present when compliance review or required customer action is delaying settlement. */
+    class PendingReason @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val COUNTERPARTY_DECLARATION_REQUIRED = of("COUNTERPARTY_DECLARATION_REQUIRED")
+
+            val WALLET_VERIFICATION_REQUIRED = of("WALLET_VERIFICATION_REQUIRED")
+
+            val COUNTERPARTY_INFORMATION_REQUIRED = of("COUNTERPARTY_INFORMATION_REQUIRED")
+
+            val COMPLIANCE_REVIEW = of("COMPLIANCE_REVIEW")
+
+            fun of(value: String) = PendingReason(JsonField.of(value))
+        }
+
+        /** An enum containing [PendingReason]'s known values. */
+        enum class Known {
+            COUNTERPARTY_DECLARATION_REQUIRED,
+            WALLET_VERIFICATION_REQUIRED,
+            COUNTERPARTY_INFORMATION_REQUIRED,
+            COMPLIANCE_REVIEW,
+        }
+
+        /**
+         * An enum containing [PendingReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [PendingReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            COUNTERPARTY_DECLARATION_REQUIRED,
+            WALLET_VERIFICATION_REQUIRED,
+            COUNTERPARTY_INFORMATION_REQUIRED,
+            COMPLIANCE_REVIEW,
+            /**
+             * An enum member indicating that [PendingReason] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                COUNTERPARTY_DECLARATION_REQUIRED -> Value.COUNTERPARTY_DECLARATION_REQUIRED
+                WALLET_VERIFICATION_REQUIRED -> Value.WALLET_VERIFICATION_REQUIRED
+                COUNTERPARTY_INFORMATION_REQUIRED -> Value.COUNTERPARTY_INFORMATION_REQUIRED
+                COMPLIANCE_REVIEW -> Value.COMPLIANCE_REVIEW
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                COUNTERPARTY_DECLARATION_REQUIRED -> Known.COUNTERPARTY_DECLARATION_REQUIRED
+                WALLET_VERIFICATION_REQUIRED -> Known.WALLET_VERIFICATION_REQUIRED
+                COUNTERPARTY_INFORMATION_REQUIRED -> Known.COUNTERPARTY_INFORMATION_REQUIRED
+                COMPLIANCE_REVIEW -> Known.COMPLIANCE_REVIEW
+                else -> throw LightsparkGridInvalidDataException("Unknown PendingReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PendingReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PendingReason && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     /**
      * How the rail was chosen — MANUAL when the platform specified a paymentRail on the
      * destination, AUTO when Lightspark selects it. Null when no rail is resolved.
@@ -2571,6 +2763,7 @@ private constructor(
             fees == other.fees &&
             paymentInstructions == other.paymentInstructions &&
             paymentRail == other.paymentRail &&
+            pendingReason == other.pendingReason &&
             platformFees == other.platformFees &&
             quoteId == other.quoteId &&
             railSelectionMode == other.railSelectionMode &&
@@ -2606,6 +2799,7 @@ private constructor(
             fees,
             paymentInstructions,
             paymentRail,
+            pendingReason,
             platformFees,
             quoteId,
             railSelectionMode,
@@ -2624,5 +2818,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, expectedSettlementAt=$expectedSettlementAt, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, paymentRail=$paymentRail, platformFees=$platformFees, quoteId=$quoteId, railSelectionMode=$railSelectionMode, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, settlementTimelineSeconds=$settlementTimelineSeconds, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "OutgoingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, sentAmount=$sentAmount, source=$source, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, expectedSettlementAt=$expectedSettlementAt, failureReason=$failureReason, fees=$fees, paymentInstructions=$paymentInstructions, paymentRail=$paymentRail, pendingReason=$pendingReason, platformFees=$platformFees, quoteId=$quoteId, railSelectionMode=$railSelectionMode, rateDetails=$rateDetails, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, settledAt=$settledAt, settlementTimelineSeconds=$settlementTimelineSeconds, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

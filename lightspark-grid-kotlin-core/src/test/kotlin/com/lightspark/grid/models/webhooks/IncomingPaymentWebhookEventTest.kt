@@ -60,6 +60,9 @@ internal class IncomingPaymentWebhookEventTest {
                         .exchangeRate(1.08)
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .fees(10L)
+                        .pendingReason(
+                            IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .reconciliationInstructions(
@@ -145,6 +148,9 @@ internal class IncomingPaymentWebhookEventTest {
                     .exchangeRate(1.08)
                     .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                     .fees(10L)
+                    .pendingReason(
+                        IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                     .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                     .reconciliationInstructions(
@@ -235,6 +241,9 @@ internal class IncomingPaymentWebhookEventTest {
                         .exchangeRate(1.08)
                         .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
                         .fees(10L)
+                        .pendingReason(
+                            IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                         .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                         .reconciliationInstructions(

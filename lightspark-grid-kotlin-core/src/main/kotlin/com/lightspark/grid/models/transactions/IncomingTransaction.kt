@@ -38,6 +38,7 @@ private constructor(
     private val exchangeRate: JsonField<Double>,
     private val failureReason: JsonField<FailureReason>,
     private val fees: JsonField<Long>,
+    private val pendingReason: JsonField<PendingReason>,
     private val quoteId: JsonField<String>,
     private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
     private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
@@ -86,6 +87,9 @@ private constructor(
         @ExcludeMissing
         failureReason: JsonField<FailureReason> = JsonMissing.of(),
         @JsonProperty("fees") @ExcludeMissing fees: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("pendingReason")
+        @ExcludeMissing
+        pendingReason: JsonField<PendingReason> = JsonMissing.of(),
         @JsonProperty("quoteId") @ExcludeMissing quoteId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("receiptDeliveryConfirmedAt")
         @ExcludeMissing
@@ -122,6 +126,7 @@ private constructor(
         exchangeRate,
         failureReason,
         fees,
+        pendingReason,
         quoteId,
         receiptDeliveryConfirmedAt,
         reconciliationInstructions,
@@ -268,6 +273,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun fees(): Long? = fees.getNullable("fees")
+
+    /**
+     * Present when compliance review or required customer action is delaying settlement.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun pendingReason(): PendingReason? = pendingReason.getNullable("pendingReason")
 
     /**
      * The ID of the quote that was used to trigger this payment
@@ -446,6 +459,15 @@ private constructor(
     @JsonProperty("fees") @ExcludeMissing fun _fees(): JsonField<Long> = fees
 
     /**
+     * Returns the raw JSON value of [pendingReason].
+     *
+     * Unlike [pendingReason], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("pendingReason")
+    @ExcludeMissing
+    fun _pendingReason(): JsonField<PendingReason> = pendingReason
+
+    /**
      * Returns the raw JSON value of [quoteId].
      *
      * Unlike [quoteId], this method doesn't throw if the JSON field has an unexpected type.
@@ -566,6 +588,7 @@ private constructor(
         private var exchangeRate: JsonField<Double> = JsonMissing.of()
         private var failureReason: JsonField<FailureReason> = JsonMissing.of()
         private var fees: JsonField<Long> = JsonMissing.of()
+        private var pendingReason: JsonField<PendingReason> = JsonMissing.of()
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
@@ -593,6 +616,7 @@ private constructor(
             exchangeRate = incomingTransaction.exchangeRate
             failureReason = incomingTransaction.failureReason
             fees = incomingTransaction.fees
+            pendingReason = incomingTransaction.pendingReason
             quoteId = incomingTransaction.quoteId
             receiptDeliveryConfirmedAt = incomingTransaction.receiptDeliveryConfirmedAt
             reconciliationInstructions = incomingTransaction.reconciliationInstructions
@@ -807,6 +831,20 @@ private constructor(
          */
         fun fees(fees: JsonField<Long>) = apply { this.fees = fees }
 
+        /** Present when compliance review or required customer action is delaying settlement. */
+        fun pendingReason(pendingReason: PendingReason) = pendingReason(JsonField.of(pendingReason))
+
+        /**
+         * Sets [Builder.pendingReason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.pendingReason] with a well-typed [PendingReason] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun pendingReason(pendingReason: JsonField<PendingReason>) = apply {
+            this.pendingReason = pendingReason
+        }
+
         /** The ID of the quote that was used to trigger this payment */
         fun quoteId(quoteId: String) = quoteId(JsonField.of(quoteId))
 
@@ -964,6 +1002,7 @@ private constructor(
                 exchangeRate,
                 failureReason,
                 fees,
+                pendingReason,
                 quoteId,
                 receiptDeliveryConfirmedAt,
                 reconciliationInstructions,
@@ -1005,6 +1044,7 @@ private constructor(
         exchangeRate()
         failureReason()?.validate()
         fees()
+        pendingReason()?.validate()
         quoteId()
         receiptDeliveryConfirmedAt()
         reconciliationInstructions()?.validate()
@@ -1043,6 +1083,7 @@ private constructor(
             (if (exchangeRate.asKnown() == null) 0 else 1) +
             (failureReason.asKnown()?.validity() ?: 0) +
             (if (fees.asKnown() == null) 0 else 1) +
+            (pendingReason.asKnown()?.validity() ?: 0) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (if (receiptDeliveryConfirmedAt.asKnown() == null) 0 else 1) +
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
@@ -1464,6 +1505,8 @@ private constructor(
 
             val QUOTE_EXECUTION_FAILED = of("QUOTE_EXECUTION_FAILED")
 
+            val COMPLIANCE_REJECTED = of("COMPLIANCE_REJECTED")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -1477,6 +1520,7 @@ private constructor(
             MISSING_MANDATORY_PAYEE_DATA,
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
+            COMPLIANCE_REJECTED,
         }
 
         /**
@@ -1497,6 +1541,7 @@ private constructor(
             MISSING_MANDATORY_PAYEE_DATA,
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
+            COMPLIANCE_REJECTED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -1521,6 +1566,7 @@ private constructor(
                 MISSING_MANDATORY_PAYEE_DATA -> Value.MISSING_MANDATORY_PAYEE_DATA
                 QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
+                COMPLIANCE_REJECTED -> Value.COMPLIANCE_REJECTED
                 else -> Value._UNKNOWN
             }
 
@@ -1543,6 +1589,7 @@ private constructor(
                 MISSING_MANDATORY_PAYEE_DATA -> Known.MISSING_MANDATORY_PAYEE_DATA
                 QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
+                COMPLIANCE_REJECTED -> Known.COMPLIANCE_REJECTED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
@@ -1607,6 +1654,157 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** Present when compliance review or required customer action is delaying settlement. */
+    class PendingReason @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val COUNTERPARTY_DECLARATION_REQUIRED = of("COUNTERPARTY_DECLARATION_REQUIRED")
+
+            val WALLET_VERIFICATION_REQUIRED = of("WALLET_VERIFICATION_REQUIRED")
+
+            val COUNTERPARTY_INFORMATION_REQUIRED = of("COUNTERPARTY_INFORMATION_REQUIRED")
+
+            val COMPLIANCE_REVIEW = of("COMPLIANCE_REVIEW")
+
+            fun of(value: String) = PendingReason(JsonField.of(value))
+        }
+
+        /** An enum containing [PendingReason]'s known values. */
+        enum class Known {
+            COUNTERPARTY_DECLARATION_REQUIRED,
+            WALLET_VERIFICATION_REQUIRED,
+            COUNTERPARTY_INFORMATION_REQUIRED,
+            COMPLIANCE_REVIEW,
+        }
+
+        /**
+         * An enum containing [PendingReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [PendingReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            COUNTERPARTY_DECLARATION_REQUIRED,
+            WALLET_VERIFICATION_REQUIRED,
+            COUNTERPARTY_INFORMATION_REQUIRED,
+            COMPLIANCE_REVIEW,
+            /**
+             * An enum member indicating that [PendingReason] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                COUNTERPARTY_DECLARATION_REQUIRED -> Value.COUNTERPARTY_DECLARATION_REQUIRED
+                WALLET_VERIFICATION_REQUIRED -> Value.WALLET_VERIFICATION_REQUIRED
+                COUNTERPARTY_INFORMATION_REQUIRED -> Value.COUNTERPARTY_INFORMATION_REQUIRED
+                COMPLIANCE_REVIEW -> Value.COMPLIANCE_REVIEW
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                COUNTERPARTY_DECLARATION_REQUIRED -> Known.COUNTERPARTY_DECLARATION_REQUIRED
+                WALLET_VERIFICATION_REQUIRED -> Known.WALLET_VERIFICATION_REQUIRED
+                COUNTERPARTY_INFORMATION_REQUIRED -> Known.COUNTERPARTY_INFORMATION_REQUIRED
+                COMPLIANCE_REVIEW -> Known.COMPLIANCE_REVIEW
+                else -> throw LightsparkGridInvalidDataException("Unknown PendingReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PendingReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PendingReason && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -1628,6 +1826,7 @@ private constructor(
             exchangeRate == other.exchangeRate &&
             failureReason == other.failureReason &&
             fees == other.fees &&
+            pendingReason == other.pendingReason &&
             quoteId == other.quoteId &&
             receiptDeliveryConfirmedAt == other.receiptDeliveryConfirmedAt &&
             reconciliationInstructions == other.reconciliationInstructions &&
@@ -1656,6 +1855,7 @@ private constructor(
             exchangeRate,
             failureReason,
             fees,
+            pendingReason,
             quoteId,
             receiptDeliveryConfirmedAt,
             reconciliationInstructions,
@@ -1671,5 +1871,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, pendingReason=$pendingReason, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }
