@@ -10,14 +10,14 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 /**
  * Status of an outgoing payment transaction.
  *
- * |Status                 |Description                                                                                                                                                           |
- * |-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
- * |`PENDING`              |Quote is pending confirmation                                                                                                                                         |
- * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU); authorize the transaction's `scaChallenge` to proceed.|
- * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                            |
- * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                             |
- * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                           |
- * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                               |
+ * |Status                 |Description                                                                                                                                                                                                                                                                                                            |
+ * |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+ * |`PENDING`              |Quote is pending confirmation                                                                                                                                                                                                                                                                                          |
+ * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU). The challenge is carried by the quote, not the transaction — fetch `GET /quotes/{quoteId}` using the transaction's `quoteId`, then authorize its `scaChallenge` via `POST /quotes/{quoteId}/authorize`.|
+ * |`EXPIRED`              |Quote wasn't executed before expiry window                                                                                                                                                                                                                                                                             |
+ * |`PROCESSING`           |Executing the quote after receiving funds                                                                                                                                                                                                                                                                              |
+ * |`COMPLETED`            |Payout successfully reached the destination                                                                                                                                                                                                                                                                            |
+ * |`FAILED`               |Something went wrong — accompanied by a `failureReason`                                                                                                                                                                                                                                                                |
  */
 class OutgoingTransactionStatus
 @JsonCreator
