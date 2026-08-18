@@ -56,8 +56,10 @@ private constructor(
 
     /**
      * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber, bankName
-     * - MOBILE_MONEY: bankName, phoneNumber
+     * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary must
+     *   be a business.
+     * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName selects
+     *   the wallet.
      */
     fun cnyAccount(): CnyAccount? = cnyAccount
 
@@ -78,8 +80,10 @@ private constructor(
 
     /**
      * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber, bankName
-     * - MOBILE_MONEY: bankName, phoneNumber
+     * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary must
+     *   be a business.
+     * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName selects
+     *   the wallet.
      */
     fun asCnyAccount(): CnyAccount = cnyAccount.getOrThrow("cnyAccount")
 
@@ -212,8 +216,10 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary
+         *   must be a business.
+         * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+         *   selects the wallet.
          */
         fun ofCnyAccount(cnyAccount: CnyAccount) = ExternalAccountInfoOneOf(cnyAccount = cnyAccount)
     }
@@ -235,8 +241,10 @@ private constructor(
 
         /**
          * Required fields depend on the selected paymentRails:
-         * - BANK_TRANSFER: accountNumber, bankName
-         * - MOBILE_MONEY: bankName, phoneNumber
+         * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary
+         *   must be a business.
+         * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName
+         *   selects the wallet.
          */
         fun visitCnyAccount(cnyAccount: CnyAccount): T
 
@@ -2154,8 +2162,10 @@ private constructor(
 
     /**
      * Required fields depend on the selected paymentRails:
-     * - BANK_TRANSFER: accountNumber, bankName
-     * - MOBILE_MONEY: bankName, phoneNumber
+     * - BANK_TRANSFER: accountNumber, bankName. Business-to-business only, so the beneficiary must
+     *   be a business.
+     * - MOBILE_MONEY: bankName, phoneNumber. Pays an AliPay or WeChat Pay wallet; bankName selects
+     *   the wallet.
      */
     class CnyAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
