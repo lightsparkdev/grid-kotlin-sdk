@@ -83,13 +83,17 @@ interface SessionService {
      * Refresh an active Embedded Wallet auth session and create a new session signing key. Session
      * refresh is a two-step signed-retry flow:
      * 1. Call `POST /auth/sessions/{id}/refresh` with the request body `{ "clientPublicKey":
-     *    "04..." }` and no signature headers. Grid builds a Grid session-refresh payload, binds the
-     *    supplied `clientPublicKey` into that payload, persists it as a pending request, and
-     *    returns `202` with `payloadToSign`, `requestId`, and `expiresAt`.
+     *    "02..." }` and no signature headers. Send a freshly generated client public key and retain
+     *    its private key. Grid binds the supplied `clientPublicKey` into the session-refresh
+     *    payload, persists it as a pending request, and returns `202` with `payloadToSign`,
+     *    `requestId`, and `expiresAt`.
      * 2. Sign `payloadToSign` with the current session signing key, then retry the same request
      *    with the full API-key stamp as `Grid-Wallet-Signature`, the `requestId` echoed back as
      *    `Request-Id`, and the same `clientPublicKey` in the request body. On success, Grid returns
-     *    a new `AuthSession` with an `encryptedSessionSigningKey` sealed to that client public key.
+     *    a new `AuthSession`. Sending a compressed `clientPublicKey` selects the recommended
+     *    client-held-key model, where the client retains the new session signing key and no key
+     *    material is returned; sending an uncompressed key selects the deprecated legacy flow,
+     *    where the new key is sealed to it and returned as `encryptedSessionSigningKey`.
      *
      * The original session must still be active on both steps so it can authorize the refresh. If
      * the session has already expired, use the credential reauthentication flow instead.

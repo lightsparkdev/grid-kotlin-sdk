@@ -17,9 +17,12 @@ import java.util.Objects
 
 /**
  * Request body for refreshing an active authentication session. The `clientPublicKey` is required
- * on both steps of the signed-retry flow. On the initial call, Grid binds this key into the
- * session-creation payload returned as `payloadToSign`; on the signed retry, the client echoes the
- * same key back and Grid uses it to encrypt the newly issued session signing key.
+ * on both steps of the signed-retry flow and must match on both. Its SEC1 encoding selects how the
+ * refreshed session signing key is delivered: a compressed key gets the recommended client-held-key
+ * model, where the client retains the new signing key itself; an uncompressed key gets the
+ * deprecated legacy flow, where Grid returns the new key as `encryptedSessionSigningKey` sealed to
+ * it. On the initial call, Grid binds the supplied key into the session-creation payload returned
+ * as `payloadToSign`.
  */
 class AuthSessionRefreshRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -36,11 +39,13 @@ private constructor(
     ) : this(clientPublicKey, mutableMapOf())
 
     /**
-     * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (`04` prefix
-     * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The matching
-     * private key must remain on the client. Grid binds this key into the session-creation payload
-     * on the initial call and seals the returned `encryptedSessionSigningKey` to it on the signed
-     * retry.
+     * Client-generated P-256 public key; the matching private key is retained on the client. Send a
+     * compressed SEC1 key (`02`/`03` prefix followed by the 32-byte X coordinate; 66 hex
+     * characters) for the recommended client-held-key model, where that private key becomes the new
+     * session signing key. Send an uncompressed SEC1 key (`04` prefix followed by the 32-byte X and
+     * 32-byte Y coordinates; 130 hex characters) for the deprecated legacy flow, where Grid seals
+     * the new session signing key to it and returns it as `encryptedSessionSigningKey` on the
+     * signed retry.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -93,11 +98,13 @@ private constructor(
         }
 
         /**
-         * Client-generated P-256 public key, hex-encoded in uncompressed SEC1 format (`04` prefix
-         * followed by the 32-byte X and 32-byte Y coordinates; 130 hex characters total). The
-         * matching private key must remain on the client. Grid binds this key into the
-         * session-creation payload on the initial call and seals the returned
-         * `encryptedSessionSigningKey` to it on the signed retry.
+         * Client-generated P-256 public key; the matching private key is retained on the client.
+         * Send a compressed SEC1 key (`02`/`03` prefix followed by the 32-byte X coordinate; 66 hex
+         * characters) for the recommended client-held-key model, where that private key becomes the
+         * new session signing key. Send an uncompressed SEC1 key (`04` prefix followed by the
+         * 32-byte X and 32-byte Y coordinates; 130 hex characters) for the deprecated legacy flow,
+         * where Grid seals the new session signing key to it and returns it as
+         * `encryptedSessionSigningKey` on the signed retry.
          */
         fun clientPublicKey(clientPublicKey: String) =
             clientPublicKey(JsonField.of(clientPublicKey))

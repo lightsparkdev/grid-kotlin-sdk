@@ -38,10 +38,13 @@ import java.util.Objects
  * it is bound into the pending session-creation request.
  *
  * On success for `OAUTH` and `PASSKEY`, and on the signed retry for OTP credentials, the response
- * contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is delivered as
- * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for OTP credentials
- * the client already holds the session signing key (the TEK private key it generated) and that
- * field is omitted from the response. The `expiresAt` timestamp marks when the session expires.
+ * contains an `AuthSession`. Sending a compressed `clientPublicKey` selects the recommended
+ * client-held-key model: the client already holds the session signing key — the private key it
+ * generated before authentication — so no key material is returned and the deprecated
+ * `encryptedSessionSigningKey` is omitted. Sending an uncompressed `clientPublicKey` selects the
+ * deprecated legacy flow, where the session signing key is HPKE-sealed to that key and returned as
+ * `encryptedSessionSigningKey` for the client to decrypt. The `expiresAt` timestamp marks when the
+ * session expires.
  */
 class CredentialVerifyParams
 private constructor(

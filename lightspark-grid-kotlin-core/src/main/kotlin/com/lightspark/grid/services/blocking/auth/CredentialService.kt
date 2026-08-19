@@ -51,8 +51,8 @@ interface CredentialService {
      * Adding a credential requires a signature from an existing verified credential on the same
      * account. Call this endpoint with the new credential's details to receive `202` with
      * `payloadToSign` and `requestId`. Use the session API keypair of an existing verified
-     * credential (decrypted client-side from its `encryptedSessionSigningKey`) to build an API-key
-     * stamp over `payloadToSign`, then retry the same request with that full stamp as the
+     * credential (the session signing key the client holds for it) to build an API-key stamp over
+     * `payloadToSign`, then retry the same request with that full stamp as the
      * `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
      * The signed retry returns `201` with the created `AuthMethod`. For OTP credentials, the
      * one-time password is triggered on the signed retry, and the credential must then be activated
@@ -183,15 +183,16 @@ interface CredentialService {
      *
      * For `PASSKEY` credentials, this issues a fresh Grid reauthentication challenge. The request
      * body must carry the client's ephemeral `clientPublicKey` so Grid can bake it into the
-     * session-creation payload the returned challenge is computed from — this seals the resulting
-     * session signing key to the client. The response is a `PasskeyAuthChallenge` — the passkey
-     * auth method fields plus the WebAuthn `credentialId`, new `challenge`, `requestId`, and
-     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-     * canonical session-creation body, not a base64url string. The client base64url-decodes
-     * `credentialId` for `allowCredentials[].id` and UTF-8 encodes `challenge` (for example, `new
-     * TextEncoder().encode(challenge)`) as the WebAuthn challenge in `navigator.credentials.get()`,
-     * then submits the resulting assertion to `POST /auth/credentials/{id}/verify` with
-     * `Request-Id: <requestId>` to receive a session.
+     * session-creation payload the returned challenge is computed from — send a compressed key for
+     * the recommended client-held-key model, where the client retains the matching private key as
+     * the resulting session signing key, or an uncompressed key for the deprecated legacy flow. The
+     * response is a `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn
+     * `credentialId`, new `challenge`, `requestId`, and `expiresAt`. The `challenge` value is the
+     * lowercase hex-encoded SHA-256 digest of the canonical session-creation body, not a base64url
+     * string. The client base64url-decodes `credentialId` for `allowCredentials[].id` and UTF-8
+     * encodes `challenge` (for example, `new TextEncoder().encode(challenge)`) as the WebAuthn
+     * challenge in `navigator.credentials.get()`, then submits the resulting assertion to `POST
+     * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
      */
     fun challenge(
         id: String,
@@ -238,11 +239,13 @@ interface CredentialService {
      * challenge call, where it is bound into the pending session-creation request.
      *
      * On success for `OAUTH` and `PASSKEY`, and on the signed retry for OTP credentials, the
-     * response contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is
-     * delivered as `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`);
-     * for OTP credentials the client already holds the session signing key (the TEK private key it
-     * generated) and that field is omitted from the response. The `expiresAt` timestamp marks when
-     * the session expires.
+     * response contains an `AuthSession`. Sending a compressed `clientPublicKey` selects the
+     * recommended client-held-key model: the client already holds the session signing key — the
+     * private key it generated before authentication — so no key material is returned and the
+     * deprecated `encryptedSessionSigningKey` is omitted. Sending an uncompressed `clientPublicKey`
+     * selects the deprecated legacy flow, where the session signing key is HPKE-sealed to that key
+     * and returned as `encryptedSessionSigningKey` for the client to decrypt. The `expiresAt`
+     * timestamp marks when the session expires.
      */
     fun verify(
         id: String,

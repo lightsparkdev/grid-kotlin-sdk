@@ -19,9 +19,12 @@ import java.util.Objects
 /**
  * An authentication session on an Embedded Wallet internal account. Returned from `GET
  * /auth/sessions` (list) and `POST /auth/credentials/{id}/verify` (on credential verification) or
- * `POST /auth/sessions/{id}/refresh` (on mid-session refresh). Only session-issuing responses
- * include `encryptedSessionSigningKey` — it is delivered exactly once at the moment the session is
- * issued and is never returned by the list endpoint.
+ * `POST /auth/sessions/{id}/refresh` (on mid-session refresh). The `clientPublicKey` encoding on
+ * the issuing request selects the flow: a compressed key gets the client-held-key model, where the
+ * client generates and retains the session signing key and session-issuing responses carry no key
+ * material; an uncompressed key gets the deprecated legacy flow, where Grid seals the session
+ * signing key to that public key and returns it as `encryptedSessionSigningKey`. Never returned by
+ * the list endpoint.
  */
 class AuthSession
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -150,8 +153,8 @@ private constructor(
     fun credentialId(): String? = credentialId.getNullable("credentialId")
 
     /**
-     * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
-     * must not be used to sign further requests.
+     * Timestamp after which the session is no longer valid and the session signing key must not be
+     * used to sign further requests.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -159,21 +162,21 @@ private constructor(
     fun expiresAt(): OffsetDateTime = expiresAt.getRequired("expiresAt")
 
     /**
-     * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
-     * verification or refresh request. Encoded as a base58check string: the decoded payload is a
-     * 33-byte compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext. The
-     * client decrypts this key with its private key and uses it to sign subsequent Embedded Wallet
-     * requests until `expiresAt`.
+     * Deprecated; present only for the legacy flow, selected by sending an uncompressed
+     * `clientPublicKey` on the verification or refresh request. Grid seals the session signing key
+     * to that public key and returns it here as a base58check string (a 33-byte compressed P-256
+     * encapsulated public key followed by AES-256-GCM ciphertext) for the client to decrypt with
+     * its private key.
      *
-     * Returned only by session-issuing responses for `OAUTH` and `PASSKEY` credentials. `EMAIL_OTP`
-     * and `SMS_OTP` sessions omit this field — the client generates a TEK keypair before
-     * verification and retains the private key throughout, so the server has nothing to deliver.
-     * Always omitted from list responses (`GET /auth/sessions`) since Grid does not retain the
-     * plaintext key after the client has decrypted it.
+     * The recommended client-held-key flow sends a compressed `clientPublicKey` instead: the client
+     * generates and retains the session signing key itself, so this field is omitted — the same way
+     * `EMAIL_OTP` and `SMS_OTP` sessions have always worked. See the "Client keys & signing" guide.
+     * Always omitted from list responses (`GET /auth/sessions`).
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
+    @Deprecated("deprecated")
     fun encryptedSessionSigningKey(): String? =
         encryptedSessionSigningKey.getNullable("encryptedSessionSigningKey")
 
@@ -247,6 +250,7 @@ private constructor(
      * Unlike [encryptedSessionSigningKey], this method doesn't throw if the JSON field has an
      * unexpected type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("encryptedSessionSigningKey")
     @ExcludeMissing
     fun _encryptedSessionSigningKey(): JsonField<String> = encryptedSessionSigningKey
@@ -411,8 +415,8 @@ private constructor(
         }
 
         /**
-         * Timestamp after which the session is no longer valid and the `encryptedSessionSigningKey`
-         * must not be used to sign further requests.
+         * Timestamp after which the session is no longer valid and the session signing key must not
+         * be used to sign further requests.
          */
         fun expiresAt(expiresAt: OffsetDateTime) = expiresAt(JsonField.of(expiresAt))
 
@@ -426,18 +430,18 @@ private constructor(
         fun expiresAt(expiresAt: JsonField<OffsetDateTime>) = apply { this.expiresAt = expiresAt }
 
         /**
-         * HPKE-encrypted session signing key, sealed to the `clientPublicKey` supplied on the
-         * verification or refresh request. Encoded as a base58check string: the decoded payload is
-         * a 33-byte compressed P-256 encapsulated public key followed by AES-256-GCM ciphertext.
-         * The client decrypts this key with its private key and uses it to sign subsequent Embedded
-         * Wallet requests until `expiresAt`.
+         * Deprecated; present only for the legacy flow, selected by sending an uncompressed
+         * `clientPublicKey` on the verification or refresh request. Grid seals the session signing
+         * key to that public key and returns it here as a base58check string (a 33-byte compressed
+         * P-256 encapsulated public key followed by AES-256-GCM ciphertext) for the client to
+         * decrypt with its private key.
          *
-         * Returned only by session-issuing responses for `OAUTH` and `PASSKEY` credentials.
-         * `EMAIL_OTP` and `SMS_OTP` sessions omit this field — the client generates a TEK keypair
-         * before verification and retains the private key throughout, so the server has nothing to
-         * deliver. Always omitted from list responses (`GET /auth/sessions`) since Grid does not
-         * retain the plaintext key after the client has decrypted it.
+         * The recommended client-held-key flow sends a compressed `clientPublicKey` instead: the
+         * client generates and retains the session signing key itself, so this field is omitted —
+         * the same way `EMAIL_OTP` and `SMS_OTP` sessions have always worked. See the "Client keys
+         * & signing" guide. Always omitted from list responses (`GET /auth/sessions`).
          */
+        @Deprecated("deprecated")
         fun encryptedSessionSigningKey(encryptedSessionSigningKey: String) =
             encryptedSessionSigningKey(JsonField.of(encryptedSessionSigningKey))
 
@@ -448,6 +452,7 @@ private constructor(
          * value instead. This method is primarily for setting the field to an undocumented or not
          * yet supported value.
          */
+        @Deprecated("deprecated")
         fun encryptedSessionSigningKey(encryptedSessionSigningKey: JsonField<String>) = apply {
             this.encryptedSessionSigningKey = encryptedSessionSigningKey
         }

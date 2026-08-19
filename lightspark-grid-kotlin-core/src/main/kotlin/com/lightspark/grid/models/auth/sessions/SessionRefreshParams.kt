@@ -12,14 +12,17 @@ import java.util.Objects
 /**
  * Refresh an active Embedded Wallet auth session and create a new session signing key. Session
  * refresh is a two-step signed-retry flow:
- * 1. Call `POST /auth/sessions/{id}/refresh` with the request body `{ "clientPublicKey": "04..." }`
- *    and no signature headers. Grid builds a Grid session-refresh payload, binds the supplied
- *    `clientPublicKey` into that payload, persists it as a pending request, and returns `202` with
- *    `payloadToSign`, `requestId`, and `expiresAt`.
+ * 1. Call `POST /auth/sessions/{id}/refresh` with the request body `{ "clientPublicKey": "02..." }`
+ *    and no signature headers. Send a freshly generated client public key and retain its private
+ *    key. Grid binds the supplied `clientPublicKey` into the session-refresh payload, persists it
+ *    as a pending request, and returns `202` with `payloadToSign`, `requestId`, and `expiresAt`.
  * 2. Sign `payloadToSign` with the current session signing key, then retry the same request with
  *    the full API-key stamp as `Grid-Wallet-Signature`, the `requestId` echoed back as
  *    `Request-Id`, and the same `clientPublicKey` in the request body. On success, Grid returns a
- *    new `AuthSession` with an `encryptedSessionSigningKey` sealed to that client public key.
+ *    new `AuthSession`. Sending a compressed `clientPublicKey` selects the recommended
+ *    client-held-key model, where the client retains the new session signing key and no key
+ *    material is returned; sending an uncompressed key selects the deprecated legacy flow, where
+ *    the new key is sealed to it and returned as `encryptedSessionSigningKey`.
  *
  * The original session must still be active on both steps so it can authorize the refresh. If the
  * session has already expired, use the credential reauthentication flow instead.
@@ -42,10 +45,12 @@ private constructor(
 
     /**
      * Request body for refreshing an active authentication session. The `clientPublicKey` is
-     * required on both steps of the signed-retry flow. On the initial call, Grid binds this key
-     * into the session-creation payload returned as `payloadToSign`; on the signed retry, the
-     * client echoes the same key back and Grid uses it to encrypt the newly issued session signing
-     * key.
+     * required on both steps of the signed-retry flow and must match on both. Its SEC1 encoding
+     * selects how the refreshed session signing key is delivered: a compressed key gets the
+     * recommended client-held-key model, where the client retains the new signing key itself; an
+     * uncompressed key gets the deprecated legacy flow, where Grid returns the new key as
+     * `encryptedSessionSigningKey` sealed to it. On the initial call, Grid binds the supplied key
+     * into the session-creation payload returned as `payloadToSign`.
      */
     fun authSessionRefreshRequest(): AuthSessionRefreshRequest = authSessionRefreshRequest
 
@@ -102,10 +107,12 @@ private constructor(
 
         /**
          * Request body for refreshing an active authentication session. The `clientPublicKey` is
-         * required on both steps of the signed-retry flow. On the initial call, Grid binds this key
-         * into the session-creation payload returned as `payloadToSign`; on the signed retry, the
-         * client echoes the same key back and Grid uses it to encrypt the newly issued session
-         * signing key.
+         * required on both steps of the signed-retry flow and must match on both. Its SEC1 encoding
+         * selects how the refreshed session signing key is delivered: a compressed key gets the
+         * recommended client-held-key model, where the client retains the new signing key itself;
+         * an uncompressed key gets the deprecated legacy flow, where Grid returns the new key as
+         * `encryptedSessionSigningKey` sealed to it. On the initial call, Grid binds the supplied
+         * key into the session-creation payload returned as `payloadToSign`.
          */
         fun authSessionRefreshRequest(authSessionRefreshRequest: AuthSessionRefreshRequest) =
             apply {
