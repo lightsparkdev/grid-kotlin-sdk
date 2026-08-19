@@ -811,6 +811,11 @@ private constructor(
 
         fun zmwAccount(): ZmwExternalAccountCreateInfo? = zmwAccount
 
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
         fun swiftAccount(): SwiftExternalAccountCreateInfo? = swiftAccount
 
         fun isAedAccount(): Boolean = aedAccount != null
@@ -1006,6 +1011,11 @@ private constructor(
 
         fun asZmwAccount(): ZmwExternalAccountCreateInfo = zmwAccount.getOrThrow("zmwAccount")
 
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
         fun asSwiftAccount(): SwiftExternalAccountCreateInfo =
             swiftAccount.getOrThrow("swiftAccount")
 
@@ -1673,6 +1683,11 @@ private constructor(
             fun ofZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo) =
                 AccountInfo(zmwAccount = zmwAccount)
 
+            /**
+             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
+             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
+             * exposes both identifiers for the same account.
+             */
             fun ofSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo) =
                 AccountInfo(swiftAccount = swiftAccount)
         }
@@ -1800,6 +1815,11 @@ private constructor(
 
             fun visitZmwAccount(zmwAccount: ZmwExternalAccountCreateInfo): T
 
+            /**
+             * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g.
+             * BR, GB) use iban, other corridors use accountNumber, and both appear when the bank
+             * exposes both identifiers for the same account.
+             */
             fun visitSwiftAccount(swiftAccount: SwiftExternalAccountCreateInfo): T
 
             /**
