@@ -44,6 +44,8 @@ import com.lightspark.grid.services.blocking.TransferOutService
 import com.lightspark.grid.services.blocking.TransferOutServiceImpl
 import com.lightspark.grid.services.blocking.UmaProviderService
 import com.lightspark.grid.services.blocking.UmaProviderServiceImpl
+import com.lightspark.grid.services.blocking.VaspService
+import com.lightspark.grid.services.blocking.VaspServiceImpl
 import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.VerificationServiceImpl
 import com.lightspark.grid.services.blocking.WebhookService
@@ -105,6 +107,8 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     private val umaProviders: UmaProviderService by lazy {
         UmaProviderServiceImpl(clientOptionsWithUserAgent)
     }
+
+    private val vasps: VaspService by lazy { VaspServiceImpl(clientOptionsWithUserAgent) }
 
     private val tokens: TokenService by lazy { TokenServiceImpl(clientOptionsWithUserAgent) }
 
@@ -184,6 +188,12 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
     override fun sandbox(): SandboxService = sandbox
 
     override fun umaProviders(): UmaProviderService = umaProviders
+
+    /**
+     * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
+     * recognized for counterparty declarations.
+     */
+    override fun vasps(): VaspService = vasps
 
     /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenService = tokens
@@ -288,6 +298,10 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
             UmaProviderServiceImpl.WithRawResponseImpl(clientOptions)
         }
 
+        private val vasps: VaspService.WithRawResponse by lazy {
+            VaspServiceImpl.WithRawResponseImpl(clientOptions)
+        }
+
         private val tokens: TokenService.WithRawResponse by lazy {
             TokenServiceImpl.WithRawResponseImpl(clientOptions)
         }
@@ -378,6 +392,12 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
         override fun sandbox(): SandboxService.WithRawResponse = sandbox
 
         override fun umaProviders(): UmaProviderService.WithRawResponse = umaProviders
+
+        /**
+         * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
+         * recognized for counterparty declarations.
+         */
+        override fun vasps(): VaspService.WithRawResponse = vasps
 
         /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenService.WithRawResponse = tokens
