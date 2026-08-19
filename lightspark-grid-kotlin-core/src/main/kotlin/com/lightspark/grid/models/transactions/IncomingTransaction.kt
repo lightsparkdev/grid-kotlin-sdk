@@ -1507,6 +1507,8 @@ private constructor(
 
             val COMPLIANCE_REJECTED = of("COMPLIANCE_REJECTED")
 
+            val COLLECTION_FAILED = of("COLLECTION_FAILED")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -1521,6 +1523,7 @@ private constructor(
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
             COMPLIANCE_REJECTED,
+            COLLECTION_FAILED,
         }
 
         /**
@@ -1542,6 +1545,7 @@ private constructor(
             QUOTE_EXPIRED,
             QUOTE_EXECUTION_FAILED,
             COMPLIANCE_REJECTED,
+            COLLECTION_FAILED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -1567,6 +1571,7 @@ private constructor(
                 QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
                 COMPLIANCE_REJECTED -> Value.COMPLIANCE_REJECTED
+                COLLECTION_FAILED -> Value.COLLECTION_FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -1590,6 +1595,7 @@ private constructor(
                 QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
                 COMPLIANCE_REJECTED -> Known.COMPLIANCE_REJECTED
+                COLLECTION_FAILED -> Known.COLLECTION_FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 

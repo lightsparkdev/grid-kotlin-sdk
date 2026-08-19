@@ -52,6 +52,11 @@ private constructor(
      */
     fun slvAccount(): SlvAccount? = slvAccount
 
+    /**
+     * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR, GB)
+     * use iban, other corridors use accountNumber, and both appear when the bank exposes both
+     * identifiers for the same account.
+     */
     fun swiftAccount(): SwiftAccount? = swiftAccount
 
     /**
@@ -76,6 +81,11 @@ private constructor(
      */
     fun asSlvAccount(): SlvAccount = slvAccount.getOrThrow("slvAccount")
 
+    /**
+     * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR, GB)
+     * use iban, other corridors use accountNumber, and both appear when the bank exposes both
+     * identifiers for the same account.
+     */
     fun asSwiftAccount(): SwiftAccount = swiftAccount.getOrThrow("swiftAccount")
 
     /**
@@ -211,6 +221,11 @@ private constructor(
          */
         fun ofSlvAccount(slvAccount: SlvAccount) = ExternalAccountInfoOneOf(slvAccount = slvAccount)
 
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
         fun ofSwiftAccount(swiftAccount: SwiftAccount) =
             ExternalAccountInfoOneOf(swiftAccount = swiftAccount)
 
@@ -237,6 +252,11 @@ private constructor(
          */
         fun visitSlvAccount(slvAccount: SlvAccount): T
 
+        /**
+         * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR,
+         * GB) use iban, other corridors use accountNumber, and both appear when the bank exposes
+         * both identifiers for the same account.
+         */
         fun visitSwiftAccount(swiftAccount: SwiftAccount): T
 
         /**
@@ -1292,6 +1312,11 @@ private constructor(
             "SlvAccount{accountType=$accountType, beneficiary=$beneficiary, paymentRails=$paymentRails, accountNumber=$accountNumber, bankAccountType=$bankAccountType, bankName=$bankName, phoneNumber=$phoneNumber, additionalProperties=$additionalProperties}"
     }
 
+    /**
+     * At least one of accountNumber or iban is always present: IBAN-only corridors (e.g. BR, GB)
+     * use iban, other corridors use accountNumber, and both appear when the bank exposes both
+     * identifiers for the same account.
+     */
     class SwiftAccount
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
