@@ -20,11 +20,11 @@ import java.util.Objects
  * Adding a credential requires a signature from an existing verified credential on the same
  * account. Call this endpoint with the new credential's details to receive `202` with
  * `payloadToSign` and `requestId`. Use the session API keypair of an existing verified credential
- * (decrypted client-side from its `encryptedSessionSigningKey`) to build an API-key stamp over
- * `payloadToSign`, then retry the same request with that full stamp as the `Grid-Wallet-Signature`
- * header and the `requestId` echoed back as the `Request-Id` header. The signed retry returns `201`
- * with the created `AuthMethod`. For OTP credentials, the one-time password is triggered on the
- * signed retry, and the credential must then be activated via `POST /auth/credentials/{id}/verify`.
+ * (the session signing key the client holds for it) to build an API-key stamp over `payloadToSign`,
+ * then retry the same request with that full stamp as the `Grid-Wallet-Signature` header and the
+ * `requestId` echoed back as the `Request-Id` header. The signed retry returns `201` with the
+ * created `AuthMethod`. For OTP credentials, the one-time password is triggered on the signed
+ * retry, and the credential must then be activated via `POST /auth/credentials/{id}/verify`.
  */
 class CredentialCreateParams
 private constructor(
