@@ -2000,6 +2000,8 @@ private constructor(
 
             val QUOTE_EXPIRED = of("QUOTE_EXPIRED")
 
+            val QUOTE_RATE_UNAVAILABLE = of("QUOTE_RATE_UNAVAILABLE")
+
             val QUOTE_EXECUTION_FAILED = of("QUOTE_EXECUTION_FAILED")
 
             val FUNDING_AMOUNT_MISMATCH = of("FUNDING_AMOUNT_MISMATCH")
@@ -2026,6 +2028,7 @@ private constructor(
         /** An enum containing [FailureReason]'s known values. */
         enum class Known {
             QUOTE_EXPIRED,
+            QUOTE_RATE_UNAVAILABLE,
             QUOTE_EXECUTION_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             SCA_NOT_COMPLETED,
@@ -2049,6 +2052,7 @@ private constructor(
          */
         enum class Value {
             QUOTE_EXPIRED,
+            QUOTE_RATE_UNAVAILABLE,
             QUOTE_EXECUTION_FAILED,
             FUNDING_AMOUNT_MISMATCH,
             SCA_NOT_COMPLETED,
@@ -2076,6 +2080,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 QUOTE_EXPIRED -> Value.QUOTE_EXPIRED
+                QUOTE_RATE_UNAVAILABLE -> Value.QUOTE_RATE_UNAVAILABLE
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Value.FUNDING_AMOUNT_MISMATCH
                 SCA_NOT_COMPLETED -> Value.SCA_NOT_COMPLETED
@@ -2101,6 +2106,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 QUOTE_EXPIRED -> Known.QUOTE_EXPIRED
+                QUOTE_RATE_UNAVAILABLE -> Known.QUOTE_RATE_UNAVAILABLE
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
                 FUNDING_AMOUNT_MISMATCH -> Known.FUNDING_AMOUNT_MISMATCH
                 SCA_NOT_COMPLETED -> Known.SCA_NOT_COMPLETED
