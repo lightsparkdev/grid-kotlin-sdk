@@ -22,24 +22,16 @@ import java.util.Objects
 class Vasp
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val url: JsonField<String>,
     private val vaspName: JsonField<String>,
+    private val url: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
         @JsonProperty("vaspName") @ExcludeMissing vaspName: JsonField<String> = JsonMissing.of(),
-    ) : this(url, vaspName, mutableMapOf())
-
-    /**
-     * The VASP's website.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun url(): String = url.getRequired("url")
+        @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
+    ) : this(vaspName, url, mutableMapOf())
 
     /**
      * Name of this VASP. Pass this value as `vaspName` when declaring a VASP-hosted counterparty.
@@ -50,11 +42,12 @@ private constructor(
     fun vaspName(): String = vaspName.getRequired("vaspName")
 
     /**
-     * Returns the raw JSON value of [url].
+     * The VASP's website, when known.
      *
-     * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    @JsonProperty("url") @ExcludeMissing fun _url(): JsonField<String> = url
+    fun url(): String? = url.getNullable("url")
 
     /**
      * Returns the raw JSON value of [vaspName].
@@ -62,6 +55,13 @@ private constructor(
      * Unlike [vaspName], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("vaspName") @ExcludeMissing fun _vaspName(): JsonField<String> = vaspName
+
+    /**
+     * Returns the raw JSON value of [url].
+     *
+     * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("url") @ExcludeMissing fun _url(): JsonField<String> = url
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -82,7 +82,6 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .url()
          * .vaspName()
          * ```
          */
@@ -92,26 +91,15 @@ private constructor(
     /** A builder for [Vasp]. */
     class Builder internal constructor() {
 
-        private var url: JsonField<String>? = null
         private var vaspName: JsonField<String>? = null
+        private var url: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(vasp: Vasp) = apply {
-            url = vasp.url
             vaspName = vasp.vaspName
+            url = vasp.url
             additionalProperties = vasp.additionalProperties.toMutableMap()
         }
-
-        /** The VASP's website. */
-        fun url(url: String) = url(JsonField.of(url))
-
-        /**
-         * Sets [Builder.url] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.url] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun url(url: JsonField<String>) = apply { this.url = url }
 
         /**
          * Name of this VASP. Pass this value as `vaspName` when declaring a VASP-hosted
@@ -126,6 +114,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun vaspName(vaspName: JsonField<String>) = apply { this.vaspName = vaspName }
+
+        /** The VASP's website, when known. */
+        fun url(url: String) = url(JsonField.of(url))
+
+        /**
+         * Sets [Builder.url] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.url] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun url(url: JsonField<String>) = apply { this.url = url }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -153,18 +152,13 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .url()
          * .vaspName()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): Vasp =
-            Vasp(
-                checkRequired("url", url),
-                checkRequired("vaspName", vaspName),
-                additionalProperties.toMutableMap(),
-            )
+            Vasp(checkRequired("vaspName", vaspName), url, additionalProperties.toMutableMap())
     }
 
     private var validated: Boolean = false
@@ -182,8 +176,8 @@ private constructor(
             return@apply
         }
 
-        url()
         vaspName()
+        url()
         validated = true
     }
 
@@ -201,7 +195,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (url.asKnown() == null) 0 else 1) + (if (vaspName.asKnown() == null) 0 else 1)
+        (if (vaspName.asKnown() == null) 0 else 1) + (if (url.asKnown() == null) 0 else 1)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -209,15 +203,15 @@ private constructor(
         }
 
         return other is Vasp &&
-            url == other.url &&
             vaspName == other.vaspName &&
+            url == other.url &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(url, vaspName, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(vaspName, url, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Vasp{url=$url, vaspName=$vaspName, additionalProperties=$additionalProperties}"
+        "Vasp{vaspName=$vaspName, url=$url, additionalProperties=$additionalProperties}"
 }

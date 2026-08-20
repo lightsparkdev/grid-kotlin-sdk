@@ -11,16 +11,16 @@ internal class VaspTest {
 
     @Test
     fun create() {
-        val vasp = Vasp.builder().url("https://www.kraken.com").vaspName("Kraken").build()
+        val vasp = Vasp.builder().vaspName("Kraken").url("https://www.kraken.com").build()
 
-        assertThat(vasp.url()).isEqualTo("https://www.kraken.com")
         assertThat(vasp.vaspName()).isEqualTo("Kraken")
+        assertThat(vasp.url()).isEqualTo("https://www.kraken.com")
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val vasp = Vasp.builder().url("https://www.kraken.com").vaspName("Kraken").build()
+        val vasp = Vasp.builder().vaspName("Kraken").url("https://www.kraken.com").build()
 
         val roundtrippedVasp =
             jsonMapper.readValue(jsonMapper.writeValueAsString(vasp), jacksonTypeRef<Vasp>())

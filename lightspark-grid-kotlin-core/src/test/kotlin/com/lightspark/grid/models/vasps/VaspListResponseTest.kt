@@ -13,14 +13,14 @@ internal class VaspListResponseTest {
     fun create() {
         val vaspListResponse =
             VaspListResponse.builder()
-                .addData(Vasp.builder().url("https://www.kraken.com").vaspName("Kraken").build())
+                .addData(Vasp.builder().vaspName("Kraken").url("https://www.kraken.com").build())
                 .hasMore(true)
                 .nextCursor("nextCursor")
                 .build()
 
         assertThat(vaspListResponse.data())
             .containsExactly(
-                Vasp.builder().url("https://www.kraken.com").vaspName("Kraken").build()
+                Vasp.builder().vaspName("Kraken").url("https://www.kraken.com").build()
             )
         assertThat(vaspListResponse.hasMore()).isEqualTo(true)
         assertThat(vaspListResponse.nextCursor()).isEqualTo("nextCursor")
@@ -31,7 +31,7 @@ internal class VaspListResponseTest {
         val jsonMapper = jsonMapper()
         val vaspListResponse =
             VaspListResponse.builder()
-                .addData(Vasp.builder().url("https://www.kraken.com").vaspName("Kraken").build())
+                .addData(Vasp.builder().vaspName("Kraken").url("https://www.kraken.com").build())
                 .hasMore(true)
                 .nextCursor("nextCursor")
                 .build()
