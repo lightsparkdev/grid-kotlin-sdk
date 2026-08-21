@@ -31,6 +31,11 @@ import java.util.Objects
  * entry with the session private key of a verified authentication credential on the source Embedded
  * Wallet.
  *
+ * Requires a token with the `TRANSACT` permission; `VIEW` alone is not sufficient to release a
+ * transfer. On an `EMBEDDED_WALLET` source this is in addition to the `Grid-Wallet-Signature`
+ * header: the signature proves the wallet holder authorized the payment, while `TRANSACT` is what
+ * authorizes your integration to release it.
+ *
  * Once executed, the quote cannot be cancelled and the transfer will be processed.
  */
 class QuoteExecuteParams

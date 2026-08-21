@@ -47,6 +47,10 @@ interface QuoteServiceAsync {
      *
      * **Important:** If you are transferring funds in the same currency (no exchange required), use
      * the `/transfer-in` or `/transfer-out` endpoints instead.
+     *
+     * Requires a token with the `TRANSACT` permission; `VIEW` alone is not sufficient. A quote is
+     * the instrument a later execute draws on, and `immediatelyExecute` moves funds within this
+     * same request.
      */
     suspend fun create(
         params: QuoteCreateParams,
@@ -93,6 +97,11 @@ interface QuoteServiceAsync {
      * built over the `payloadToSign` value from the quote's
      * `paymentInstructions[].accountOrWalletInfo` entry with the session private key of a verified
      * authentication credential on the source Embedded Wallet.
+     *
+     * Requires a token with the `TRANSACT` permission; `VIEW` alone is not sufficient to release a
+     * transfer. On an `EMBEDDED_WALLET` source this is in addition to the `Grid-Wallet-Signature`
+     * header: the signature proves the wallet holder authorized the payment, while `TRANSACT` is
+     * what authorizes your integration to release it.
      *
      * Once executed, the quote cannot be cancelled and the transfer will be processed.
      */

@@ -29,6 +29,10 @@ import java.util.Objects
  *
  * **Important:** If you are transferring funds in the same currency (no exchange required), use the
  * `/transfer-in` or `/transfer-out` endpoints instead.
+ *
+ * Requires a token with the `TRANSACT` permission; `VIEW` alone is not sufficient. A quote is the
+ * instrument a later execute draws on, and `immediatelyExecute` moves funds within this same
+ * request.
  */
 class QuoteCreateParams
 private constructor(
