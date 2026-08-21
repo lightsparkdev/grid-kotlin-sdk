@@ -14,6 +14,11 @@ import java.util.Objects
  * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
  * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
  *
+ * An optional `maxSpendPerTransaction` value sets the largest amount a single card transaction may
+ * authorize. The limit is enforced by Grid for card programs where Grid makes the authorization
+ * decision, whether the card is funded by an Embedded Wallet account or custodial fiat. Omit it for
+ * no limit. The value is in the smallest unit of the card's currency.
+ *
  * If any funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
  * to sign Spark token transactions for that card funding source by completing the delegated-key
  * creation flow with `POST /auth/delegated-keys`. Until an active delegated key exists for that
