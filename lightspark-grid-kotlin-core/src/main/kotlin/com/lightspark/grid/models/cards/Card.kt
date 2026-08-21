@@ -27,6 +27,7 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
+    private val maxSpendPerTransaction: JsonField<Long>,
     private val state: JsonField<State>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val brand: JsonField<Brand>,
@@ -54,6 +55,9 @@ private constructor(
         @JsonProperty("fundingSources")
         @ExcludeMissing
         fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -79,6 +83,7 @@ private constructor(
         createdAt,
         form,
         fundingSources,
+        maxSpendPerTransaction,
         state,
         updatedAt,
         brand,
@@ -135,6 +140,17 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
+
+    /**
+     * Largest amount a single card transaction may authorize, in the smallest unit of the card's
+     * `currency`. Null means the card has no application-enforced per-transaction limit. A
+     * transaction for exactly this amount is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerTransaction(): Long? =
+        maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
 
     /**
      * Lifecycle state of a card.
@@ -282,6 +298,16 @@ private constructor(
     fun _fundingSources(): JsonField<List<String>> = fundingSources
 
     /**
+     * Returns the raw JSON value of [maxSpendPerTransaction].
+     *
+     * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("maxSpendPerTransaction")
+    @ExcludeMissing
+    fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
+
+    /**
      * Returns the raw JSON value of [state].
      *
      * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
@@ -390,6 +416,7 @@ private constructor(
          * .createdAt()
          * .form()
          * .fundingSources()
+         * .maxSpendPerTransaction()
          * .state()
          * .updatedAt()
          * ```
@@ -405,6 +432,7 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
+        private var maxSpendPerTransaction: JsonField<Long>? = null
         private var state: JsonField<State>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var brand: JsonField<Brand> = JsonMissing.of()
@@ -424,6 +452,7 @@ private constructor(
             createdAt = card.createdAt
             form = card.form
             fundingSources = card.fundingSources.map { it.toMutableList() }
+            maxSpendPerTransaction = card.maxSpendPerTransaction
             state = card.state
             updatedAt = card.updatedAt
             brand = card.brand
@@ -518,6 +547,33 @@ private constructor(
                 (fundingSources ?: JsonField.of(mutableListOf())).also {
                     checkKnown("fundingSources", it).add(fundingSource)
                 }
+        }
+
+        /**
+         * Largest amount a single card transaction may authorize, in the smallest unit of the
+         * card's `currency`. Null means the card has no application-enforced per-transaction limit.
+         * A transaction for exactly this amount is allowed.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
+            maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
+
+        /**
+         * Alias for [Builder.maxSpendPerTransaction].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+            maxSpendPerTransaction(maxSpendPerTransaction as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+            this.maxSpendPerTransaction = maxSpendPerTransaction
         }
 
         /**
@@ -713,6 +769,7 @@ private constructor(
          * .createdAt()
          * .form()
          * .fundingSources()
+         * .maxSpendPerTransaction()
          * .state()
          * .updatedAt()
          * ```
@@ -726,6 +783,7 @@ private constructor(
                 checkRequired("createdAt", createdAt),
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
+                checkRequired("maxSpendPerTransaction", maxSpendPerTransaction),
                 checkRequired("state", state),
                 checkRequired("updatedAt", updatedAt),
                 brand,
@@ -761,6 +819,7 @@ private constructor(
         createdAt()
         form().validate()
         fundingSources()
+        maxSpendPerTransaction()
         state().validate()
         updatedAt()
         brand()?.validate()
@@ -794,6 +853,7 @@ private constructor(
             (if (createdAt.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
+            (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (state.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (brand.asKnown()?.validity() ?: 0) +
@@ -1397,6 +1457,7 @@ private constructor(
             createdAt == other.createdAt &&
             form == other.form &&
             fundingSources == other.fundingSources &&
+            maxSpendPerTransaction == other.maxSpendPerTransaction &&
             state == other.state &&
             updatedAt == other.updatedAt &&
             brand == other.brand &&
@@ -1418,6 +1479,7 @@ private constructor(
             createdAt,
             form,
             fundingSources,
+            maxSpendPerTransaction,
             state,
             updatedAt,
             brand,
@@ -1436,5 +1498,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, maxSpendPerTransaction=$maxSpendPerTransaction, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
 }

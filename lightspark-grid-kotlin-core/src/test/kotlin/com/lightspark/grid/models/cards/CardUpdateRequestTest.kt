@@ -15,6 +15,7 @@ internal class CardUpdateRequestTest {
             CardUpdateRequest.builder()
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .maxSpendPerTransaction(10000L)
                 .state(CardUpdateRequest.State.FROZEN)
                 .build()
 
@@ -23,6 +24,7 @@ internal class CardUpdateRequestTest {
                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000002",
                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003",
             )
+        assertThat(cardUpdateRequest.maxSpendPerTransaction()).isEqualTo(10000L)
         assertThat(cardUpdateRequest.state()).isEqualTo(CardUpdateRequest.State.FROZEN)
     }
 
@@ -33,6 +35,7 @@ internal class CardUpdateRequestTest {
             CardUpdateRequest.builder()
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .maxSpendPerTransaction(10000L)
                 .state(CardUpdateRequest.State.FROZEN)
                 .build()
 

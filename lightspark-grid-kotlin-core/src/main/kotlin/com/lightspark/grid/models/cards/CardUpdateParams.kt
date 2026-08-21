@@ -10,14 +10,18 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Update a card's `state` and / or its bound `fundingSources`. At least one of the two fields must
- * be supplied.
+ * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`. At least one
+ * field must be supplied.
  * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`. `CLOSED`
  *   is terminal and irreversible. Any other transition returns `409 INVALID_STATE_TRANSITION`.
  * - `fundingSources`, when supplied, fully replaces the card's bound funding sources. Array order
  *   determines the priority Authorization Decisioning tries them in. Each id must belong to the
  *   cardholder and be denominated in the card's currency; the list must contain at least one
  *   source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
+ * - `maxSpendPerTransaction`, when supplied, replaces the card's application-enforced
+ *   per-transaction limit. Supply a positive integer in the smallest unit of the card's currency to
+ *   set it or null to clear it. Limits are supported only for card programs where Grid makes the
+ *   authorization decision. `maxSpendPerTransaction` cannot be supplied alongside `state: CLOSED`.
  *
  * This endpoint is authenticated by the platform credential alone and returns `200` directly. It
  * deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the session
@@ -55,12 +59,13 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Update request for `PATCH /cards/{id}`. At least one of `state` or `fundingSources` must be
-     * supplied. `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
-     * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal
-     * and irreversible and cannot be combined with `fundingSources`. `fundingSources`, when
-     * supplied, fully replaces the card's bound funding sources — the array order determines the
-     * priority Authorization Decisioning tries them in.
+     * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`, or
+     * `maxSpendPerTransaction` must be supplied. `state` transitions are limited to `ACTIVE ⇄
+     * FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition returns `409
+     * INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be combined with
+     * `fundingSources` or `maxSpendPerTransaction`. `fundingSources`, when supplied, fully replaces
+     * the card's bound funding sources — the array order determines the priority Authorization
+     * Decisioning tries them in.
      */
     fun cardUpdateRequest(): CardUpdateRequest = cardUpdateRequest
 
@@ -106,12 +111,13 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Update request for `PATCH /cards/{id}`. At least one of `state` or `fundingSources` must
-         * be supplied. `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
-         * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is
-         * terminal and irreversible and cannot be combined with `fundingSources`. `fundingSources`,
-         * when supplied, fully replaces the card's bound funding sources — the array order
-         * determines the priority Authorization Decisioning tries them in.
+         * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`, or
+         * `maxSpendPerTransaction` must be supplied. `state` transitions are limited to `ACTIVE ⇄
+         * FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition returns `409
+         * INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be combined
+         * with `fundingSources` or `maxSpendPerTransaction`. `fundingSources`, when supplied, fully
+         * replaces the card's bound funding sources — the array order determines the priority
+         * Authorization Decisioning tries them in.
          */
         fun cardUpdateRequest(cardUpdateRequest: CardUpdateRequest) = apply {
             this.cardUpdateRequest = cardUpdateRequest

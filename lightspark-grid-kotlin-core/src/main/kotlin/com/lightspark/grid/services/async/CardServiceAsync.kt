@@ -54,8 +54,8 @@ interface CardServiceAsync {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state` and / or its bound `fundingSources`. At least one of the two fields
-     * must be supplied.
+     * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`. At least
+     * one field must be supplied.
      * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
@@ -63,6 +63,11 @@ interface CardServiceAsync {
      *   order determines the priority Authorization Decisioning tries them in. Each id must belong
      *   to the cardholder and be denominated in the card's currency; the list must contain at least
      *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
+     * - `maxSpendPerTransaction`, when supplied, replaces the card's application-enforced
+     *   per-transaction limit. Supply a positive integer in the smallest unit of the card's
+     *   currency to set it or null to clear it. Limits are supported only for card programs where
+     *   Grid makes the authorization decision. `maxSpendPerTransaction` cannot be supplied
+     *   alongside `state: CLOSED`.
      *
      * This endpoint is authenticated by the platform credential alone and returns `200` directly.
      * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
@@ -122,6 +127,11 @@ interface CardServiceAsync {
      * Issue a new card for a cardholder. Every card must be bound to at least one funding source at
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
+     *
+     * An optional `maxSpendPerTransaction` value sets the largest amount a single card transaction
+     * may authorize. The limit is enforced by Grid for card programs where Grid makes the
+     * authorization decision, whether the card is funded by an Embedded Wallet account or custodial
+     * fiat. Omit it for no limit. The value is in the smallest unit of the card's currency.
      *
      * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
      * Grid to sign Spark token transactions for that card funding source by completing the
