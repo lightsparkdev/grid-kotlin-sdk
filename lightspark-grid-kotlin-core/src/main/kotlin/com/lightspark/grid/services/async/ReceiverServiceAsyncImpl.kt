@@ -21,7 +21,9 @@ import com.lightspark.grid.models.receiver.ReceiverLookupExternalAccountParams
 import com.lightspark.grid.models.receiver.ReceiverLookupUmaParams
 import com.lightspark.grid.models.receiver.UmaLookupResponse
 
-/** Endpoints for creating and confirming quotes for cross-currency transfers */
+/**
+ * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
+ */
 class ReceiverServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     ReceiverServiceAsync {
 

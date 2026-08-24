@@ -13,7 +13,6 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.transactions.IncomingTransaction
@@ -43,7 +42,6 @@ private constructor(
     private val quote: JsonField<Quote>,
     private val rejectionReason: JsonField<String>,
     private val transaction: JsonField<Transaction>,
-    private val transferDetails: JsonField<AgentTransferDetails>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -72,9 +70,6 @@ private constructor(
         @JsonProperty("transaction")
         @ExcludeMissing
         transaction: JsonField<Transaction> = JsonMissing.of(),
-        @JsonProperty("transferDetails")
-        @ExcludeMissing
-        transferDetails: JsonField<AgentTransferDetails> = JsonMissing.of(),
     ) : this(
         id,
         agentId,
@@ -87,7 +82,6 @@ private constructor(
         quote,
         rejectionReason,
         transaction,
-        transferDetails,
         mutableMapOf(),
     )
 
@@ -149,11 +143,9 @@ private constructor(
     /**
      * The type of action the agent is requesting.
      *
-     * | Type            | Description                                              |
-     * |-----------------|----------------------------------------------------------|
-     * | `EXECUTE_QUOTE` | Execute a cross-currency quote                           |
-     * | `TRANSFER_OUT`  | Transfer from an internal account to an external account |
-     * | `TRANSFER_IN`   | Transfer from an external account to an internal account |
+     * | Type            | Description     |
+     * |-----------------|-----------------|
+     * | `EXECUTE_QUOTE` | Execute a quote |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -169,9 +161,8 @@ private constructor(
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
 
     /**
-     * The quote being executed. Populated for `EXECUTE_QUOTE` actions; absent for transfer actions.
-     * Contains the full amount, currency, destination, and rate details needed to present an
-     * approval decision to the user.
+     * The quote being executed. Contains the full amount, currency, destination, and rate details
+     * needed to present an approval decision to the user.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -195,15 +186,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun transaction(): Transaction? = transaction.getNullable("transaction")
-
-    /**
-     * Details of the transfer being requested. Populated for `TRANSFER_OUT` and `TRANSFER_IN`
-     * actions; absent for `EXECUTE_QUOTE` actions.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun transferDetails(): AgentTransferDetails? = transferDetails.getNullable("transferDetails")
 
     /**
      * Returns the raw JSON value of [id].
@@ -293,15 +275,6 @@ private constructor(
     @ExcludeMissing
     fun _transaction(): JsonField<Transaction> = transaction
 
-    /**
-     * Returns the raw JSON value of [transferDetails].
-     *
-     * Unlike [transferDetails], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("transferDetails")
-    @ExcludeMissing
-    fun _transferDetails(): JsonField<AgentTransferDetails> = transferDetails
-
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -348,7 +321,6 @@ private constructor(
         private var quote: JsonField<Quote> = JsonMissing.of()
         private var rejectionReason: JsonField<String> = JsonMissing.of()
         private var transaction: JsonField<Transaction> = JsonMissing.of()
-        private var transferDetails: JsonField<AgentTransferDetails> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(agentAction: AgentAction) = apply {
@@ -363,7 +335,6 @@ private constructor(
             quote = agentAction.quote
             rejectionReason = agentAction.rejectionReason
             transaction = agentAction.transaction
-            transferDetails = agentAction.transferDetails
             additionalProperties = agentAction.additionalProperties.toMutableMap()
         }
 
@@ -451,11 +422,9 @@ private constructor(
         /**
          * The type of action the agent is requesting.
          *
-         * | Type            | Description                                              |
-         * |-----------------|----------------------------------------------------------|
-         * | `EXECUTE_QUOTE` | Execute a cross-currency quote                           |
-         * | `TRANSFER_OUT`  | Transfer from an internal account to an external account |
-         * | `TRANSFER_IN`   | Transfer from an external account to an internal account |
+         * | Type            | Description     |
+         * |-----------------|-----------------|
+         * | `EXECUTE_QUOTE` | Execute a quote |
          */
         fun type(type: Type) = type(JsonField.of(type))
 
@@ -480,9 +449,8 @@ private constructor(
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
         /**
-         * The quote being executed. Populated for `EXECUTE_QUOTE` actions; absent for transfer
-         * actions. Contains the full amount, currency, destination, and rate details needed to
-         * present an approval decision to the user.
+         * The quote being executed. Contains the full amount, currency, destination, and rate
+         * details needed to present an approval decision to the user.
          */
         fun quote(quote: Quote) = quote(JsonField.of(quote))
 
@@ -540,24 +508,6 @@ private constructor(
         /** Alias for calling [transaction] with `Transaction.ofCard(card)`. */
         fun transaction(card: CardTransaction) = transaction(Transaction.ofCard(card))
 
-        /**
-         * Details of the transfer being requested. Populated for `TRANSFER_OUT` and `TRANSFER_IN`
-         * actions; absent for `EXECUTE_QUOTE` actions.
-         */
-        fun transferDetails(transferDetails: AgentTransferDetails) =
-            transferDetails(JsonField.of(transferDetails))
-
-        /**
-         * Sets [Builder.transferDetails] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.transferDetails] with a well-typed
-         * [AgentTransferDetails] value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
-         */
-        fun transferDetails(transferDetails: JsonField<AgentTransferDetails>) = apply {
-            this.transferDetails = transferDetails
-        }
-
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -609,7 +559,6 @@ private constructor(
                 quote,
                 rejectionReason,
                 transaction,
-                transferDetails,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -640,7 +589,6 @@ private constructor(
         quote()?.validate()
         rejectionReason()
         transaction()?.validate()
-        transferDetails()?.validate()
         validated = true
     }
 
@@ -668,8 +616,7 @@ private constructor(
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (quote.asKnown()?.validity() ?: 0) +
             (if (rejectionReason.asKnown() == null) 0 else 1) +
-            (transaction.asKnown()?.validity() ?: 0) +
-            (transferDetails.asKnown()?.validity() ?: 0)
+            (transaction.asKnown()?.validity() ?: 0)
 
     /**
      * Status of an agent action.
@@ -830,11 +777,9 @@ private constructor(
     /**
      * The type of action the agent is requesting.
      *
-     * | Type            | Description                                              |
-     * |-----------------|----------------------------------------------------------|
-     * | `EXECUTE_QUOTE` | Execute a cross-currency quote                           |
-     * | `TRANSFER_OUT`  | Transfer from an internal account to an external account |
-     * | `TRANSFER_IN`   | Transfer from an external account to an internal account |
+     * | Type            | Description     |
+     * |-----------------|-----------------|
+     * | `EXECUTE_QUOTE` | Execute a quote |
      */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -852,18 +797,12 @@ private constructor(
 
             val EXECUTE_QUOTE = of("EXECUTE_QUOTE")
 
-            val TRANSFER_OUT = of("TRANSFER_OUT")
-
-            val TRANSFER_IN = of("TRANSFER_IN")
-
             fun of(value: String) = Type(JsonField.of(value))
         }
 
         /** An enum containing [Type]'s known values. */
         enum class Known {
-            EXECUTE_QUOTE,
-            TRANSFER_OUT,
-            TRANSFER_IN,
+            EXECUTE_QUOTE
         }
 
         /**
@@ -877,8 +816,6 @@ private constructor(
          */
         enum class Value {
             EXECUTE_QUOTE,
-            TRANSFER_OUT,
-            TRANSFER_IN,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -893,8 +830,6 @@ private constructor(
         fun value(): Value =
             when (this) {
                 EXECUTE_QUOTE -> Value.EXECUTE_QUOTE
-                TRANSFER_OUT -> Value.TRANSFER_OUT
-                TRANSFER_IN -> Value.TRANSFER_IN
                 else -> Value._UNKNOWN
             }
 
@@ -910,8 +845,6 @@ private constructor(
         fun known(): Known =
             when (this) {
                 EXECUTE_QUOTE -> Known.EXECUTE_QUOTE
-                TRANSFER_OUT -> Known.TRANSFER_OUT
-                TRANSFER_IN -> Known.TRANSFER_IN
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
@@ -993,7 +926,6 @@ private constructor(
             quote == other.quote &&
             rejectionReason == other.rejectionReason &&
             transaction == other.transaction &&
-            transferDetails == other.transferDetails &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1010,7 +942,6 @@ private constructor(
             quote,
             rejectionReason,
             transaction,
-            transferDetails,
             additionalProperties,
         )
     }
@@ -1018,5 +949,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "AgentAction{id=$id, agentId=$agentId, createdAt=$createdAt, customerId=$customerId, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, quote=$quote, rejectionReason=$rejectionReason, transaction=$transaction, transferDetails=$transferDetails, additionalProperties=$additionalProperties}"
+        "AgentAction{id=$id, agentId=$agentId, createdAt=$createdAt, customerId=$customerId, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, quote=$quote, rejectionReason=$rejectionReason, transaction=$transaction, additionalProperties=$additionalProperties}"
 }

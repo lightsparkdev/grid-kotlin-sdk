@@ -22,7 +22,9 @@ import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
-/** Endpoints for creating and confirming quotes for cross-currency transfers */
+/**
+ * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
+ */
 class QuoteServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     QuoteService {
 

@@ -13,13 +13,9 @@ import com.lightspark.grid.core.http.HttpRequest
 import com.lightspark.grid.core.http.HttpResponse
 import com.lightspark.grid.core.http.HttpResponse.Handler
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentAction
-import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
-import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPage
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
@@ -100,20 +96,6 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
     override fun retrieve(params: MeRetrieveParams, requestOptions: RequestOptions): Agent =
         // get /agents/me
         withRawResponse().retrieve(params, requestOptions).parse()
-
-    override fun createTransferIn(
-        params: MeCreateTransferInParams,
-        requestOptions: RequestOptions,
-    ): AgentAction =
-        // post /agents/me/transfer-in
-        withRawResponse().createTransferIn(params, requestOptions).parse()
-
-    override fun createTransferOut(
-        params: MeCreateTransferOutParams,
-        requestOptions: RequestOptions,
-    ): AgentAction =
-        // post /agents/me/transfer-out
-        withRawResponse().createTransferOut(params, requestOptions).parse()
 
     override fun listInternalAccounts(
         params: MeListInternalAccountsParams,
@@ -207,70 +189,6 @@ class MeServiceImpl internal constructor(private val clientOptions: ClientOption
             return errorHandler.handle(response).parseable {
                 response
                     .use { retrieveHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val createTransferInHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
-
-        override fun createTransferIn(
-            params: MeCreateTransferInParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", "me", "transfer-in")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().agentAuth(true).build(),
-                    )
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createTransferInHandler.handle(it) }
-                    .also {
-                        if (requestOptions.responseValidation!!) {
-                            it.validate()
-                        }
-                    }
-            }
-        }
-
-        private val createTransferOutHandler: Handler<AgentAction> =
-            jsonHandler<AgentAction>(clientOptions.jsonMapper)
-
-        override fun createTransferOut(
-            params: MeCreateTransferOutParams,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<AgentAction> {
-            val request =
-                HttpRequest.builder()
-                    .method(HttpMethod.POST)
-                    .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("agents", "me", "transfer-out")
-                    .body(json(clientOptions.jsonMapper, params._body()))
-                    .build()
-                    .prepare(
-                        clientOptions,
-                        params,
-                        SecurityOptions.builder().agentAuth(true).build(),
-                    )
-            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
-            val response = clientOptions.httpClient.execute(request, requestOptions)
-            return errorHandler.handle(response).parseable {
-                response
-                    .use { createTransferOutHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

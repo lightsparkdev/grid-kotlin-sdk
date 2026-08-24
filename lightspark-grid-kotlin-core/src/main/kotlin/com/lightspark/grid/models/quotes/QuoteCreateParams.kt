@@ -10,12 +10,13 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Generate a quote for a cross-currency transfer between any combination of accounts and UMA
- * addresses. This endpoint handles currency exchange and provides the necessary instructions to
- * execute the transfer.
+ * Generate a quote for a transfer between any combination of accounts and UMA addresses. This
+ * endpoint handles same-currency and cross-currency transfers alike, and provides the necessary
+ * instructions to execute the transfer.
  *
  * **Transfer Types Supported:**
- * - **Account to Account**: Transfer between internal/external accounts with currency exchange.
+ * - **Account to Account**: Transfer between internal/external accounts, with or without currency
+ *   exchange.
  * - **Account to UMA**: Transfer from an internal account to an UMA address.
  * - **UMA to Account or UMA to UMA**: This transfer type will only be funded by payment
  *   instructions, not from an internal account.
@@ -27,8 +28,9 @@ import java.util.Objects
  * - **Payment Instructions**: For UMA or customer ID sources, provides banking details needed for
  *   execution
  *
- * **Important:** If you are transferring funds in the same currency (no exchange required), use the
- * `/transfer-in` or `/transfer-out` endpoints instead.
+ * **Same-currency transfers:** Use this endpoint for same-currency transfers too. Set
+ * `immediatelyExecute: true` to create and execute in a single request. The older `/transfer-in`
+ * and `/transfer-out` endpoints are deprecated.
  *
  * Requires a token with the `TRANSACT` permission; `VIEW` alone is not sufficient. A quote is the
  * instrument a later execute draws on, and `immediatelyExecute` moves funds within this same

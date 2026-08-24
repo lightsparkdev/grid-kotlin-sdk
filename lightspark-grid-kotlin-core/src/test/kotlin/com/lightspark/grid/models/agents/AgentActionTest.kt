@@ -5,7 +5,6 @@ package com.lightspark.grid.models.agents
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
@@ -232,16 +231,6 @@ internal class AgentActionTest {
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
-                .transferDetails(
-                    AgentTransferDetails.builder()
-                        .amount(50000L)
-                        .currency("USD")
-                        .destinationAccountId(
-                            "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                        )
-                        .sourceAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                        .build()
-                )
                 .build()
 
         assertThat(agentAction.id()).isEqualTo("AgentAction:019542f5-b3e7-1d02-0000-000000000099")
@@ -453,15 +442,6 @@ internal class AgentActionTest {
                         .build()
                 )
             )
-        assertThat(agentAction.transferDetails())
-            .isEqualTo(
-                AgentTransferDetails.builder()
-                    .amount(50000L)
-                    .currency("USD")
-                    .destinationAccountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
-                    .sourceAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
-                    .build()
-            )
     }
 
     @Test
@@ -670,16 +650,6 @@ internal class AgentActionTest {
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .source(TransactionSourceOneOf.builder().build())
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                        .build()
-                )
-                .transferDetails(
-                    AgentTransferDetails.builder()
-                        .amount(50000L)
-                        .currency("USD")
-                        .destinationAccountId(
-                            "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                        )
-                        .sourceAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                         .build()
                 )
                 .build()
