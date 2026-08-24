@@ -29,7 +29,7 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authMethodResponse =
+        val credential =
             credentialService.create(
                 CredentialCreateParams.builder()
                     .gridWalletSignature(
@@ -45,7 +45,7 @@ internal class CredentialServiceTest {
                     .build()
             )
 
-        authMethodResponse.validate()
+        credential.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -78,7 +78,7 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authSignedRequestChallenge =
+        val credential =
             credentialService.delete(
                 CredentialDeleteParams.builder()
                     .id("id")
@@ -89,7 +89,7 @@ internal class CredentialServiceTest {
                     .build()
             )
 
-        authSignedRequestChallenge.validate()
+        credential.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -104,7 +104,7 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authCredentialResponseOneOf =
+        val response =
             credentialService.challenge(
                 CredentialChallengeParams.builder()
                     .id("id")
@@ -118,7 +118,7 @@ internal class CredentialServiceTest {
                     .build()
             )
 
-        authCredentialResponseOneOf.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -133,7 +133,7 @@ internal class CredentialServiceTest {
                 .build()
         val credentialService = client.auth().credentials()
 
-        val authSession =
+        val response =
             credentialService.verify(
                 CredentialVerifyParams.builder()
                     .id("id")
@@ -152,6 +152,6 @@ internal class CredentialServiceTest {
                     .build()
             )
 
-        authSession.validate()
+        response.validate()
     }
 }

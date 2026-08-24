@@ -6,12 +6,12 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
-import com.lightspark.grid.models.auth.credentials.AuthSession
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
+import com.lightspark.grid.models.auth.sessions.SessionDeleteResponse
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
 import com.lightspark.grid.models.auth.sessions.SessionRefreshParams
+import com.lightspark.grid.models.auth.sessions.SessionRefreshResponse
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -67,16 +67,16 @@ interface SessionService {
         id: String,
         params: SessionDeleteParams = SessionDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge = delete(params.toBuilder().id(id).build(), requestOptions)
+    ): SessionDeleteResponse = delete(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see delete */
     fun delete(
         params: SessionDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge
+    ): SessionDeleteResponse
 
     /** @see delete */
-    fun delete(id: String, requestOptions: RequestOptions): AuthSignedRequestChallenge =
+    fun delete(id: String, requestOptions: RequestOptions): SessionDeleteResponse =
         delete(id, SessionDeleteParams.none(), requestOptions)
 
     /**
@@ -102,13 +102,13 @@ interface SessionService {
         id: String,
         params: SessionRefreshParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession = refresh(params.toBuilder().id(id).build(), requestOptions)
+    ): SessionRefreshResponse = refresh(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see refresh */
     fun refresh(
         params: SessionRefreshParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession
+    ): SessionRefreshResponse
 
     /** A view of [SessionService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -139,7 +139,7 @@ interface SessionService {
             id: String,
             params: SessionDeleteParams = SessionDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<SessionDeleteResponse> =
             delete(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see delete */
@@ -147,14 +147,14 @@ interface SessionService {
         fun delete(
             params: SessionDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge>
+        ): HttpResponseFor<SessionDeleteResponse>
 
         /** @see delete */
         @MustBeClosed
         fun delete(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<SessionDeleteResponse> =
             delete(id, SessionDeleteParams.none(), requestOptions)
 
         /**
@@ -166,13 +166,14 @@ interface SessionService {
             id: String,
             params: SessionRefreshParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession> = refresh(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SessionRefreshResponse> =
+            refresh(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see refresh */
         @MustBeClosed
         fun refresh(
             params: SessionRefreshParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession>
+        ): HttpResponseFor<SessionRefreshResponse>
     }
 }
