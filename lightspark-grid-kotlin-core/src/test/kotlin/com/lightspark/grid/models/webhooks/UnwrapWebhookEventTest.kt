@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
-import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.BulkCustomerImportErrorEntry
 import com.lightspark.grid.models.IndividualCustomer
 import com.lightspark.grid.models.SlvBeneficiary
@@ -277,18 +276,6 @@ internal class UnwrapWebhookEventTest {
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .source(TransactionSourceOneOf.builder().build())
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .build()
-                        )
-                        .transferDetails(
-                            AgentTransferDetails.builder()
-                                .amount(50000L)
-                                .currency("USD")
-                                .destinationAccountId(
-                                    "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                )
-                                .sourceAccountId(
-                                    "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                )
                                 .build()
                         )
                         .build()
@@ -567,18 +554,6 @@ internal class UnwrapWebhookEventTest {
                                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                     .source(TransactionSourceOneOf.builder().build())
                                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                    .build()
-                            )
-                            .transferDetails(
-                                AgentTransferDetails.builder()
-                                    .amount(50000L)
-                                    .currency("USD")
-                                    .destinationAccountId(
-                                        "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                    )
-                                    .sourceAccountId(
-                                        "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                    )
                                     .build()
                             )
                             .build()
