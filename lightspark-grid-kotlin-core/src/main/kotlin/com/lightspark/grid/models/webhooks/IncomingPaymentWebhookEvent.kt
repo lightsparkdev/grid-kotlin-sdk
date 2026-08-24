@@ -1592,6 +1592,8 @@ private constructor(
 
             val INCOMING_PAYMENT_PENDING = of("INCOMING_PAYMENT.PENDING")
 
+            val INCOMING_PAYMENT_PROCESSING = of("INCOMING_PAYMENT.PROCESSING")
+
             val INCOMING_PAYMENT_COMPLETED = of("INCOMING_PAYMENT.COMPLETED")
 
             val INCOMING_PAYMENT_FAILED = of("INCOMING_PAYMENT.FAILED")
@@ -1608,6 +1610,7 @@ private constructor(
         /** An enum containing [Type]'s known values. */
         enum class Known {
             INCOMING_PAYMENT_PENDING,
+            INCOMING_PAYMENT_PROCESSING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
             INCOMING_PAYMENT_REFUND_PENDING,
@@ -1626,6 +1629,7 @@ private constructor(
          */
         enum class Value {
             INCOMING_PAYMENT_PENDING,
+            INCOMING_PAYMENT_PROCESSING,
             INCOMING_PAYMENT_COMPLETED,
             INCOMING_PAYMENT_FAILED,
             INCOMING_PAYMENT_REFUND_PENDING,
@@ -1645,6 +1649,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 INCOMING_PAYMENT_PENDING -> Value.INCOMING_PAYMENT_PENDING
+                INCOMING_PAYMENT_PROCESSING -> Value.INCOMING_PAYMENT_PROCESSING
                 INCOMING_PAYMENT_COMPLETED -> Value.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Value.INCOMING_PAYMENT_FAILED
                 INCOMING_PAYMENT_REFUND_PENDING -> Value.INCOMING_PAYMENT_REFUND_PENDING
@@ -1665,6 +1670,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 INCOMING_PAYMENT_PENDING -> Known.INCOMING_PAYMENT_PENDING
+                INCOMING_PAYMENT_PROCESSING -> Known.INCOMING_PAYMENT_PROCESSING
                 INCOMING_PAYMENT_COMPLETED -> Known.INCOMING_PAYMENT_COMPLETED
                 INCOMING_PAYMENT_FAILED -> Known.INCOMING_PAYMENT_FAILED
                 INCOMING_PAYMENT_REFUND_PENDING -> Known.INCOMING_PAYMENT_REFUND_PENDING
