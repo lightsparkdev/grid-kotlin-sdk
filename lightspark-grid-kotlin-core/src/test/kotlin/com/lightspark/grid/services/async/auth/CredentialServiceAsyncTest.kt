@@ -29,7 +29,7 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val authMethodResponse =
+        val credential =
             credentialServiceAsync.create(
                 CredentialCreateParams.builder()
                     .gridWalletSignature(
@@ -45,7 +45,7 @@ internal class CredentialServiceAsyncTest {
                     .build()
             )
 
-        authMethodResponse.validate()
+        credential.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -80,7 +80,7 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val authSignedRequestChallenge =
+        val credential =
             credentialServiceAsync.delete(
                 CredentialDeleteParams.builder()
                     .id("id")
@@ -91,7 +91,7 @@ internal class CredentialServiceAsyncTest {
                     .build()
             )
 
-        authSignedRequestChallenge.validate()
+        credential.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -106,7 +106,7 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val authCredentialResponseOneOf =
+        val response =
             credentialServiceAsync.challenge(
                 CredentialChallengeParams.builder()
                     .id("id")
@@ -120,7 +120,7 @@ internal class CredentialServiceAsyncTest {
                     .build()
             )
 
-        authCredentialResponseOneOf.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -135,7 +135,7 @@ internal class CredentialServiceAsyncTest {
                 .build()
         val credentialServiceAsync = client.auth().credentials()
 
-        val authSession =
+        val response =
             credentialServiceAsync.verify(
                 CredentialVerifyParams.builder()
                     .id("id")
@@ -154,6 +154,6 @@ internal class CredentialServiceAsyncTest {
                     .build()
             )
 
-        authSession.validate()
+        response.validate()
     }
 }

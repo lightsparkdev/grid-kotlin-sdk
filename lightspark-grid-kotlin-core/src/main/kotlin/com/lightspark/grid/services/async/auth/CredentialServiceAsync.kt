@@ -8,15 +8,15 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.auth.credentials.AuthCredentialCreateRequestOneOf
 import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
-import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
-import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
-import com.lightspark.grid.models.auth.credentials.AuthSession
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
+import com.lightspark.grid.models.auth.credentials.CredentialDeleteResponse
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
+import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.OAuthCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.PasskeyCredentialCreateRequest
@@ -61,13 +61,13 @@ interface CredentialServiceAsync {
     suspend fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse
+    ): CredentialCreateResponse
 
     /** @see create */
     suspend fun create(
         authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -79,7 +79,7 @@ interface CredentialServiceAsync {
     suspend fun create(
         emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                 emailOtpCredentialCreateRequest
@@ -92,7 +92,7 @@ interface CredentialServiceAsync {
         smsOtpCredentialCreateRequest:
             AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
                 smsOtpCredentialCreateRequest
@@ -104,7 +104,7 @@ interface CredentialServiceAsync {
     suspend fun create(
         oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
                 oauthCredentialCreateRequest
@@ -116,7 +116,7 @@ interface CredentialServiceAsync {
     suspend fun create(
         passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
                 passkeyCredentialCreateRequest
@@ -156,16 +156,16 @@ interface CredentialServiceAsync {
         id: String,
         params: CredentialDeleteParams = CredentialDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge = delete(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialDeleteResponse = delete(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see delete */
     suspend fun delete(
         params: CredentialDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge
+    ): CredentialDeleteResponse
 
     /** @see delete */
-    suspend fun delete(id: String, requestOptions: RequestOptions): AuthSignedRequestChallenge =
+    suspend fun delete(id: String, requestOptions: RequestOptions): CredentialDeleteResponse =
         delete(id, CredentialDeleteParams.none(), requestOptions)
 
     /**
@@ -198,16 +198,16 @@ interface CredentialServiceAsync {
         id: String,
         params: CredentialChallengeParams = CredentialChallengeParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthCredentialResponseOneOf = challenge(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialChallengeResponse = challenge(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see challenge */
     suspend fun challenge(
         params: CredentialChallengeParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthCredentialResponseOneOf
+    ): CredentialChallengeResponse
 
     /** @see challenge */
-    suspend fun challenge(id: String, requestOptions: RequestOptions): AuthCredentialResponseOneOf =
+    suspend fun challenge(id: String, requestOptions: RequestOptions): CredentialChallengeResponse =
         challenge(id, CredentialChallengeParams.none(), requestOptions)
 
     /**
@@ -251,13 +251,13 @@ interface CredentialServiceAsync {
         id: String,
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession = verify(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialVerifyResponse = verify(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see verify */
     suspend fun verify(
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession
+    ): CredentialVerifyResponse
 
     /**
      * A view of [CredentialServiceAsync] that provides access to raw HTTP responses for each
@@ -282,14 +282,14 @@ interface CredentialServiceAsync {
         suspend fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse>
+        ): HttpResponseFor<CredentialCreateResponse>
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
             authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 CredentialCreateParams.builder()
                     .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -302,7 +302,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                     emailOtpCredentialCreateRequest
@@ -316,7 +316,7 @@ interface CredentialServiceAsync {
             smsOtpCredentialCreateRequest:
                 AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
                     smsOtpCredentialCreateRequest
@@ -329,7 +329,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
                     oauthCredentialCreateRequest
@@ -342,7 +342,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
                     passkeyCredentialCreateRequest
@@ -369,7 +369,7 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialDeleteParams = CredentialDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<CredentialDeleteResponse> =
             delete(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see delete */
@@ -377,14 +377,14 @@ interface CredentialServiceAsync {
         suspend fun delete(
             params: CredentialDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge>
+        ): HttpResponseFor<CredentialDeleteResponse>
 
         /** @see delete */
         @MustBeClosed
         suspend fun delete(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<CredentialDeleteResponse> =
             delete(id, CredentialDeleteParams.none(), requestOptions)
 
         /**
@@ -396,7 +396,7 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialChallengeParams = CredentialChallengeParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+        ): HttpResponseFor<CredentialChallengeResponse> =
             challenge(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see challenge */
@@ -404,14 +404,14 @@ interface CredentialServiceAsync {
         suspend fun challenge(
             params: CredentialChallengeParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthCredentialResponseOneOf>
+        ): HttpResponseFor<CredentialChallengeResponse>
 
         /** @see challenge */
         @MustBeClosed
         suspend fun challenge(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+        ): HttpResponseFor<CredentialChallengeResponse> =
             challenge(id, CredentialChallengeParams.none(), requestOptions)
 
         /**
@@ -423,13 +423,14 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession> = verify(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<CredentialVerifyResponse> =
+            verify(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see verify */
         @MustBeClosed
         suspend fun verify(
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession>
+        ): HttpResponseFor<CredentialVerifyResponse>
     }
 }

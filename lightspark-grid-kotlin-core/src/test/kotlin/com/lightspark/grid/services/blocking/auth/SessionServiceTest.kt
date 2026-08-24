@@ -42,7 +42,7 @@ internal class SessionServiceTest {
                 .build()
         val sessionService = client.auth().sessions()
 
-        val authSignedRequestChallenge =
+        val session =
             sessionService.delete(
                 SessionDeleteParams.builder()
                     .id("id")
@@ -53,7 +53,7 @@ internal class SessionServiceTest {
                     .build()
             )
 
-        authSignedRequestChallenge.validate()
+        session.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -68,7 +68,7 @@ internal class SessionServiceTest {
                 .build()
         val sessionService = client.auth().sessions()
 
-        val authSession =
+        val response =
             sessionService.refresh(
                 SessionRefreshParams.builder()
                     .id("Session:019542f5-b3e7-1d02-0000-000000000003")
@@ -86,6 +86,6 @@ internal class SessionServiceTest {
                     .build()
             )
 
-        authSession.validate()
+        response.validate()
     }
 }

@@ -17,12 +17,12 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
-import com.lightspark.grid.models.auth.credentials.AuthSession
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.sessions.SessionDeleteParams
+import com.lightspark.grid.models.auth.sessions.SessionDeleteResponse
 import com.lightspark.grid.models.auth.sessions.SessionListParams
 import com.lightspark.grid.models.auth.sessions.SessionListResponse
 import com.lightspark.grid.models.auth.sessions.SessionRefreshParams
+import com.lightspark.grid.models.auth.sessions.SessionRefreshResponse
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -50,14 +50,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
     override fun delete(
         params: SessionDeleteParams,
         requestOptions: RequestOptions,
-    ): AuthSignedRequestChallenge =
+    ): SessionDeleteResponse =
         // delete /auth/sessions/{id}
         withRawResponse().delete(params, requestOptions).parse()
 
     override fun refresh(
         params: SessionRefreshParams,
         requestOptions: RequestOptions,
-    ): AuthSession =
+    ): SessionRefreshResponse =
         // post /auth/sessions/{id}/refresh
         withRawResponse().refresh(params, requestOptions).parse()
 
@@ -105,13 +105,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val deleteHandler: Handler<AuthSignedRequestChallenge> =
-            jsonHandler<AuthSignedRequestChallenge>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<SessionDeleteResponse> =
+            jsonHandler<SessionDeleteResponse>(clientOptions.jsonMapper)
 
         override fun delete(
             params: SessionDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> {
+        ): HttpResponseFor<SessionDeleteResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -140,13 +140,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val refreshHandler: Handler<AuthSession> =
-            jsonHandler<AuthSession>(clientOptions.jsonMapper)
+        private val refreshHandler: Handler<SessionRefreshResponse> =
+            jsonHandler<SessionRefreshResponse>(clientOptions.jsonMapper)
 
         override fun refresh(
             params: SessionRefreshParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSession> {
+        ): HttpResponseFor<SessionRefreshResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
