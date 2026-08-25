@@ -21,6 +21,7 @@ import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPageAsync
@@ -32,7 +33,6 @@ import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.EndUserTerms
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.customers.InternalAccountListResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
@@ -110,7 +110,7 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
     override suspend fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions,
-    ): InternalAccountExportResponse =
+    ): CustomerExportResponse =
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
 
@@ -374,13 +374,13 @@ class CustomerServiceAsyncImpl internal constructor(private val clientOptions: C
             }
         }
 
-        private val exportHandler: Handler<InternalAccountExportResponse> =
-            jsonHandler<InternalAccountExportResponse>(clientOptions.jsonMapper)
+        private val exportHandler: Handler<CustomerExportResponse> =
+            jsonHandler<CustomerExportResponse>(clientOptions.jsonMapper)
 
         override suspend fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<InternalAccountExportResponse> {
+        ): HttpResponseFor<CustomerExportResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
