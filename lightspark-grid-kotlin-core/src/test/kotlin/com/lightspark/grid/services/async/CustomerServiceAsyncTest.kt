@@ -286,7 +286,7 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val internalAccountExportResponse =
+        val response =
             customerServiceAsync.export(
                 CustomerExportParams.builder()
                     .id("id")
@@ -304,7 +304,7 @@ internal class CustomerServiceAsyncTest {
                     .build()
             )
 
-        internalAccountExportResponse.validate()
+        response.validate()
     }
 
     @Disabled("Mock server tests are disabled")

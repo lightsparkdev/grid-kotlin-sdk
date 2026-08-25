@@ -12,6 +12,7 @@ import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
@@ -23,7 +24,6 @@ import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
 import com.lightspark.grid.models.customers.EndUserTerms
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.blocking.customers.BulkService
@@ -228,6 +228,15 @@ interface CustomerService {
      *    `payloadToSign`. The signed retry returns `200` with `encryptedWalletCredentials`, which
      *    the client decrypts with the matching private key.
      *
+     * The export may not settle within that request: an approval- or consensus-gated
+     * wallet-provider activity answers `200` with `status: "PROCESSING"` instead. The credentials
+     * are never stored server-side, so collecting them is the client's job — re-send the
+     * byte-identical signed retry (same headers, same body) until it returns
+     * `encryptedWalletCredentials`. The `Request-Id` challenge stays usable until an attempt
+     * actually delivers them, so a `PROCESSING` response never burns it; a delivered export does,
+     * and a later re-send is then rejected with `401`. Subscribe to `wallet_operation.completed` to
+     * learn when re-sending will succeed rather than polling blind.
+     *
      * The `clientPublicKey` is ephemeral: generate a fresh P-256 keypair for this export and
      * discard the private key after decrypting. Do not reuse the keypair from any prior verify call
      * — that private key was already discarded after decrypting the session signing key it was
@@ -237,13 +246,13 @@ interface CustomerService {
         id: String,
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
+    ): CustomerExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see export */
     fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse
+    ): CustomerExportResponse
 
     /**
      * Retrieve a list of internal accounts with optional filtering parameters. Returns all internal
@@ -477,7 +486,7 @@ interface CustomerService {
             id: String,
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse> =
+        ): HttpResponseFor<CustomerExportResponse> =
             export(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see export */
@@ -485,7 +494,7 @@ interface CustomerService {
         fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse>
+        ): HttpResponseFor<CustomerExportResponse>
 
         /**
          * Returns a raw HTTP response for `get /customers/internal-accounts`, but is otherwise the
