@@ -301,6 +301,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -677,6 +678,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -952,6 +954,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1146,6 +1149,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1220,6 +1224,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1320,6 +1325,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1460,6 +1466,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1646,6 +1653,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1809,6 +1817,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -1930,6 +1939,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -2019,6 +2029,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -2115,6 +2126,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isEqualTo(cardFundingSourceChange)
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -2264,6 +2276,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
         assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isEqualTo(cardTransaction)
+        assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
@@ -2351,6 +2364,82 @@ internal class UnwrapWebhookEventTest {
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
                     .type(CardTransactionWebhookEvent.Type.CARD_TRANSACTION_AUTHORIZED)
+                    .build()
+            )
+
+        val roundtrippedUnwrapWebhookEvent =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(unwrapWebhookEvent),
+                jacksonTypeRef<UnwrapWebhookEvent>(),
+            )
+
+        assertThat(roundtrippedUnwrapWebhookEvent).isEqualTo(unwrapWebhookEvent)
+    }
+
+    @Test
+    fun ofWalletOperation() {
+        val walletOperation =
+            WalletOperationWebhookEvent.builder()
+                .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                .data(
+                    WalletOperationWebhookEvent.Data.Completed.builder()
+                        .operationId("Operation:019542f5-b3e7-1d02-0000-000000000099")
+                        .operationType(
+                            WalletOperationWebhookEvent.Data.Completed.OperationType.WALLET_EXPORT
+                        )
+                        .requestId("Request:9f7a2c10-5e88-4fb1-bd0e-1c3a8e7b2d45")
+                        .resourceId("InternalAccount:019542f5-b3e7-1d02-0000-000000000005")
+                        .resourceType(
+                            WalletOperationWebhookEvent.Data.Completed.ResourceType.INTERNAL_ACCOUNT
+                        )
+                        .build()
+                )
+                .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                .type(WalletOperationWebhookEvent.Type.WALLET_OPERATION_COMPLETED)
+                .build()
+
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofWalletOperation(walletOperation)
+
+        assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
+        assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.outgoingPayment()).isNull()
+        assertThat(unwrapWebhookEvent.test()).isNull()
+        assertThat(unwrapWebhookEvent.bulkUpload()).isNull()
+        assertThat(unwrapWebhookEvent.invitationClaimed()).isNull()
+        assertThat(unwrapWebhookEvent.customerUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
+        assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
+        assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
+        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardFundingSourceChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
+        assertThat(unwrapWebhookEvent.walletOperation()).isEqualTo(walletOperation)
+    }
+
+    @Test
+    fun ofWalletOperationRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val unwrapWebhookEvent =
+            UnwrapWebhookEvent.ofWalletOperation(
+                WalletOperationWebhookEvent.builder()
+                    .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
+                    .data(
+                        WalletOperationWebhookEvent.Data.Completed.builder()
+                            .operationId("Operation:019542f5-b3e7-1d02-0000-000000000099")
+                            .operationType(
+                                WalletOperationWebhookEvent.Data.Completed.OperationType
+                                    .WALLET_EXPORT
+                            )
+                            .requestId("Request:9f7a2c10-5e88-4fb1-bd0e-1c3a8e7b2d45")
+                            .resourceId("InternalAccount:019542f5-b3e7-1d02-0000-000000000005")
+                            .resourceType(
+                                WalletOperationWebhookEvent.Data.Completed.ResourceType
+                                    .INTERNAL_ACCOUNT
+                            )
+                            .build()
+                    )
+                    .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
+                    .type(WalletOperationWebhookEvent.Type.WALLET_OPERATION_COMPLETED)
                     .build()
             )
 

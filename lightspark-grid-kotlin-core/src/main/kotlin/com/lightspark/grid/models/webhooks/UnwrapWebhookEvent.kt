@@ -35,6 +35,7 @@ private constructor(
     private val cardStateChange: CardStateChangeWebhookEvent? = null,
     private val cardFundingSourceChange: CardFundingSourceChangeWebhookEvent? = null,
     private val cardTransaction: CardTransactionWebhookEvent? = null,
+    private val walletOperation: WalletOperationWebhookEvent? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -65,6 +66,8 @@ private constructor(
 
     fun cardTransaction(): CardTransactionWebhookEvent? = cardTransaction
 
+    fun walletOperation(): WalletOperationWebhookEvent? = walletOperation
+
     fun isAgentActionPendingApproval(): Boolean = agentActionPendingApproval != null
 
     fun isIncomingPayment(): Boolean = incomingPayment != null
@@ -90,6 +93,8 @@ private constructor(
     fun isCardFundingSourceChange(): Boolean = cardFundingSourceChange != null
 
     fun isCardTransaction(): Boolean = cardTransaction != null
+
+    fun isWalletOperation(): Boolean = walletOperation != null
 
     fun asAgentActionPendingApproval(): AgentActionWebhookEvent =
         agentActionPendingApproval.getOrThrow("agentActionPendingApproval")
@@ -126,6 +131,9 @@ private constructor(
 
     fun asCardTransaction(): CardTransactionWebhookEvent =
         cardTransaction.getOrThrow("cardTransaction")
+
+    fun asWalletOperation(): WalletOperationWebhookEvent =
+        walletOperation.getOrThrow("walletOperation")
 
     fun _json(): JsonValue? = _json
 
@@ -172,6 +180,7 @@ private constructor(
             cardFundingSourceChange != null ->
                 visitor.visitCardFundingSourceChange(cardFundingSourceChange)
             cardTransaction != null -> visitor.visitCardTransaction(cardTransaction)
+            walletOperation != null -> visitor.visitWalletOperation(walletOperation)
             else -> visitor.unknown(_json)
         }
 
@@ -255,6 +264,10 @@ private constructor(
                 override fun visitCardTransaction(cardTransaction: CardTransactionWebhookEvent) {
                     cardTransaction.validate()
                 }
+
+                override fun visitWalletOperation(walletOperation: WalletOperationWebhookEvent) {
+                    walletOperation.validate()
+                }
             }
         )
         validated = true
@@ -320,6 +333,9 @@ private constructor(
                 override fun visitCardTransaction(cardTransaction: CardTransactionWebhookEvent) =
                     cardTransaction.validity()
 
+                override fun visitWalletOperation(walletOperation: WalletOperationWebhookEvent) =
+                    walletOperation.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -342,7 +358,8 @@ private constructor(
             verificationUpdate == other.verificationUpdate &&
             cardStateChange == other.cardStateChange &&
             cardFundingSourceChange == other.cardFundingSourceChange &&
-            cardTransaction == other.cardTransaction
+            cardTransaction == other.cardTransaction &&
+            walletOperation == other.walletOperation
     }
 
     override fun hashCode(): Int =
@@ -360,6 +377,7 @@ private constructor(
             cardStateChange,
             cardFundingSourceChange,
             cardTransaction,
+            walletOperation,
         )
 
     override fun toString(): String =
@@ -382,6 +400,7 @@ private constructor(
             cardFundingSourceChange != null ->
                 "UnwrapWebhookEvent{cardFundingSourceChange=$cardFundingSourceChange}"
             cardTransaction != null -> "UnwrapWebhookEvent{cardTransaction=$cardTransaction}"
+            walletOperation != null -> "UnwrapWebhookEvent{walletOperation=$walletOperation}"
             _json != null -> "UnwrapWebhookEvent{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
         }
@@ -427,6 +446,9 @@ private constructor(
 
         fun ofCardTransaction(cardTransaction: CardTransactionWebhookEvent) =
             UnwrapWebhookEvent(cardTransaction = cardTransaction)
+
+        fun ofWalletOperation(walletOperation: WalletOperationWebhookEvent) =
+            UnwrapWebhookEvent(walletOperation = walletOperation)
     }
 
     /**
@@ -464,6 +486,8 @@ private constructor(
         ): T
 
         fun visitCardTransaction(cardTransaction: CardTransactionWebhookEvent): T
+
+        fun visitWalletOperation(walletOperation: WalletOperationWebhookEvent): T
 
         /**
          * Maps an unknown variant of [UnwrapWebhookEvent] to a value of type [T].
@@ -544,6 +568,9 @@ private constructor(
                         tryDeserialize(node, jacksonTypeRef<CardTransactionWebhookEvent>())?.let {
                             UnwrapWebhookEvent(cardTransaction = it, _json = json)
                         },
+                        tryDeserialize(node, jacksonTypeRef<WalletOperationWebhookEvent>())?.let {
+                            UnwrapWebhookEvent(walletOperation = it, _json = json)
+                        },
                     )
                     .filterNotNull()
                     .allMaxBy { it.validity() }
@@ -585,6 +612,7 @@ private constructor(
                 value.cardFundingSourceChange != null ->
                     generator.writeObject(value.cardFundingSourceChange)
                 value.cardTransaction != null -> generator.writeObject(value.cardTransaction)
+                value.walletOperation != null -> generator.writeObject(value.walletOperation)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid UnwrapWebhookEvent")
             }
