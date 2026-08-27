@@ -22,6 +22,7 @@ class LookupResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val lookupId: JsonField<String>,
+    private val sendingCurrency: JsonValue,
     private val supportedCurrencies: JsonField<List<SupportedCurrency>>,
     private val requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -30,13 +31,22 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("lookupId") @ExcludeMissing lookupId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("sendingCurrency")
+        @ExcludeMissing
+        sendingCurrency: JsonValue = JsonMissing.of(),
         @JsonProperty("supportedCurrencies")
         @ExcludeMissing
         supportedCurrencies: JsonField<List<SupportedCurrency>> = JsonMissing.of(),
         @JsonProperty("requiredPayerDataFields")
         @ExcludeMissing
         requiredPayerDataFields: JsonField<List<CounterpartyFieldDefinition>> = JsonMissing.of(),
-    ) : this(lookupId, supportedCurrencies, requiredPayerDataFields, mutableMapOf())
+    ) : this(
+        lookupId,
+        sendingCurrency,
+        supportedCurrencies,
+        requiredPayerDataFields,
+        mutableMapOf(),
+    )
 
     /**
      * Unique identifier for the lookup. Needed in the subsequent create quote request.
@@ -45,6 +55,21 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun lookupId(): String = lookupId.getRequired("lookupId")
+
+    /**
+     * The currency the payment is sent from — the sender's default, or the one named by the
+     * `sendingCurrency` query parameter. Every `estimatedExchangeRate` in `supportedCurrencies`
+     * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated in
+     * its smallest unit.
+     *
+     * This arbitrary value can be deserialized into a custom type using the `convert` method:
+     * ```kotlin
+     * val myObject: MyClass = lookupResponse.sendingCurrency().convert(MyClass::class.java)
+     * ```
+     */
+    @JsonProperty("sendingCurrency")
+    @ExcludeMissing
+    fun _sendingCurrency(): JsonValue = sendingCurrency
 
     /**
      * List of currencies supported by the receiving account
@@ -112,6 +137,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .lookupId()
+         * .sendingCurrency()
          * .supportedCurrencies()
          * ```
          */
@@ -122,6 +148,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var lookupId: JsonField<String>? = null
+        private var sendingCurrency: JsonValue? = null
         private var supportedCurrencies: JsonField<MutableList<SupportedCurrency>>? = null
         private var requiredPayerDataFields: JsonField<MutableList<CounterpartyFieldDefinition>>? =
             null
@@ -129,6 +156,7 @@ private constructor(
 
         internal fun from(lookupResponse: LookupResponse) = apply {
             lookupId = lookupResponse.lookupId
+            sendingCurrency = lookupResponse.sendingCurrency
             supportedCurrencies = lookupResponse.supportedCurrencies.map { it.toMutableList() }
             requiredPayerDataFields =
                 lookupResponse.requiredPayerDataFields.map { it.toMutableList() }
@@ -145,6 +173,16 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun lookupId(lookupId: JsonField<String>) = apply { this.lookupId = lookupId }
+
+        /**
+         * The currency the payment is sent from — the sender's default, or the one named by the
+         * `sendingCurrency` query parameter. Every `estimatedExchangeRate` in `supportedCurrencies`
+         * converts from this currency, and any `minSendingAmount`/`maxSendingAmount` is denominated
+         * in its smallest unit.
+         */
+        fun sendingCurrency(sendingCurrency: JsonValue) = apply {
+            this.sendingCurrency = sendingCurrency
+        }
 
         /** List of currencies supported by the receiving account */
         fun supportedCurrencies(supportedCurrencies: List<SupportedCurrency>) =
@@ -232,6 +270,7 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .lookupId()
+         * .sendingCurrency()
          * .supportedCurrencies()
          * ```
          *
@@ -240,6 +279,7 @@ private constructor(
         fun build(): LookupResponse =
             LookupResponse(
                 checkRequired("lookupId", lookupId),
+                checkRequired("sendingCurrency", sendingCurrency),
                 checkRequired("supportedCurrencies", supportedCurrencies).map { it.toImmutable() },
                 (requiredPayerDataFields ?: JsonMissing.of()).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
@@ -292,6 +332,8 @@ private constructor(
         private val estimatedExchangeRate: JsonField<Double>,
         private val max: JsonField<Long>,
         private val min: JsonField<Long>,
+        private val maxSendingAmount: JsonField<Long>,
+        private val minSendingAmount: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -305,7 +347,21 @@ private constructor(
             estimatedExchangeRate: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("max") @ExcludeMissing max: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("min") @ExcludeMissing min: JsonField<Long> = JsonMissing.of(),
-        ) : this(currency, estimatedExchangeRate, max, min, mutableMapOf())
+            @JsonProperty("maxSendingAmount")
+            @ExcludeMissing
+            maxSendingAmount: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("minSendingAmount")
+            @ExcludeMissing
+            minSendingAmount: JsonField<Long> = JsonMissing.of(),
+        ) : this(
+            currency,
+            estimatedExchangeRate,
+            max,
+            min,
+            maxSendingAmount,
+            minSendingAmount,
+            mutableMapOf(),
+        )
 
         /**
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -340,6 +396,30 @@ private constructor(
         fun min(): Long = min.getRequired("min")
 
         /**
+         * The maximum amount that can be sent for this currency, in the smallest unit of the
+         * sender's currency (e.g. cents for USD). Same semantics as `maxSendingAmount` on the
+         * exchange rates endpoint. This is an estimate based on the current exchange rate and is
+         * subject to change when calling the quotes endpoint. Omitted when the sending-side bound
+         * cannot be resolved.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun maxSendingAmount(): Long? = maxSendingAmount.getNullable("maxSendingAmount")
+
+        /**
+         * The minimum amount that can be sent for this currency, in the smallest unit of the
+         * sender's currency (e.g. cents for USD). Same semantics as `minSendingAmount` on the
+         * exchange rates endpoint. This is an estimate based on the current exchange rate and is
+         * subject to change when calling the quotes endpoint. Omitted when the sending-side bound
+         * cannot be resolved.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun minSendingAmount(): Long? = minSendingAmount.getNullable("minSendingAmount")
+
+        /**
          * Returns the raw JSON value of [currency].
          *
          * Unlike [currency], this method doesn't throw if the JSON field has an unexpected type.
@@ -369,6 +449,26 @@ private constructor(
          * Unlike [min], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("min") @ExcludeMissing fun _min(): JsonField<Long> = min
+
+        /**
+         * Returns the raw JSON value of [maxSendingAmount].
+         *
+         * Unlike [maxSendingAmount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("maxSendingAmount")
+        @ExcludeMissing
+        fun _maxSendingAmount(): JsonField<Long> = maxSendingAmount
+
+        /**
+         * Returns the raw JSON value of [minSendingAmount].
+         *
+         * Unlike [minSendingAmount], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("minSendingAmount")
+        @ExcludeMissing
+        fun _minSendingAmount(): JsonField<Long> = minSendingAmount
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -405,6 +505,8 @@ private constructor(
             private var estimatedExchangeRate: JsonField<Double>? = null
             private var max: JsonField<Long>? = null
             private var min: JsonField<Long>? = null
+            private var maxSendingAmount: JsonField<Long> = JsonMissing.of()
+            private var minSendingAmount: JsonField<Long> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(supportedCurrency: SupportedCurrency) = apply {
@@ -412,6 +514,8 @@ private constructor(
                 estimatedExchangeRate = supportedCurrency.estimatedExchangeRate
                 max = supportedCurrency.max
                 min = supportedCurrency.min
+                maxSendingAmount = supportedCurrency.maxSendingAmount
+                minSendingAmount = supportedCurrency.minSendingAmount
                 additionalProperties = supportedCurrency.additionalProperties.toMutableMap()
             }
 
@@ -468,6 +572,48 @@ private constructor(
              */
             fun min(min: JsonField<Long>) = apply { this.min = min }
 
+            /**
+             * The maximum amount that can be sent for this currency, in the smallest unit of the
+             * sender's currency (e.g. cents for USD). Same semantics as `maxSendingAmount` on the
+             * exchange rates endpoint. This is an estimate based on the current exchange rate and
+             * is subject to change when calling the quotes endpoint. Omitted when the sending-side
+             * bound cannot be resolved.
+             */
+            fun maxSendingAmount(maxSendingAmount: Long) =
+                maxSendingAmount(JsonField.of(maxSendingAmount))
+
+            /**
+             * Sets [Builder.maxSendingAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxSendingAmount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun maxSendingAmount(maxSendingAmount: JsonField<Long>) = apply {
+                this.maxSendingAmount = maxSendingAmount
+            }
+
+            /**
+             * The minimum amount that can be sent for this currency, in the smallest unit of the
+             * sender's currency (e.g. cents for USD). Same semantics as `minSendingAmount` on the
+             * exchange rates endpoint. This is an estimate based on the current exchange rate and
+             * is subject to change when calling the quotes endpoint. Omitted when the sending-side
+             * bound cannot be resolved.
+             */
+            fun minSendingAmount(minSendingAmount: Long) =
+                minSendingAmount(JsonField.of(minSendingAmount))
+
+            /**
+             * Sets [Builder.minSendingAmount] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.minSendingAmount] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun minSendingAmount(minSendingAmount: JsonField<Long>) = apply {
+                this.minSendingAmount = minSendingAmount
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -508,6 +654,8 @@ private constructor(
                     checkRequired("estimatedExchangeRate", estimatedExchangeRate),
                     checkRequired("max", max),
                     checkRequired("min", min),
+                    maxSendingAmount,
+                    minSendingAmount,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -532,6 +680,8 @@ private constructor(
             estimatedExchangeRate()
             max()
             min()
+            maxSendingAmount()
+            minSendingAmount()
             validated = true
         }
 
@@ -553,7 +703,9 @@ private constructor(
             (currency.asKnown()?.validity() ?: 0) +
                 (if (estimatedExchangeRate.asKnown() == null) 0 else 1) +
                 (if (max.asKnown() == null) 0 else 1) +
-                (if (min.asKnown() == null) 0 else 1)
+                (if (min.asKnown() == null) 0 else 1) +
+                (if (maxSendingAmount.asKnown() == null) 0 else 1) +
+                (if (minSendingAmount.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -565,17 +717,27 @@ private constructor(
                 estimatedExchangeRate == other.estimatedExchangeRate &&
                 max == other.max &&
                 min == other.min &&
+                maxSendingAmount == other.maxSendingAmount &&
+                minSendingAmount == other.minSendingAmount &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(currency, estimatedExchangeRate, max, min, additionalProperties)
+            Objects.hash(
+                currency,
+                estimatedExchangeRate,
+                max,
+                min,
+                maxSendingAmount,
+                minSendingAmount,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "SupportedCurrency{currency=$currency, estimatedExchangeRate=$estimatedExchangeRate, max=$max, min=$min, additionalProperties=$additionalProperties}"
+            "SupportedCurrency{currency=$currency, estimatedExchangeRate=$estimatedExchangeRate, max=$max, min=$min, maxSendingAmount=$maxSendingAmount, minSendingAmount=$minSendingAmount, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -585,17 +747,24 @@ private constructor(
 
         return other is LookupResponse &&
             lookupId == other.lookupId &&
+            sendingCurrency == other.sendingCurrency &&
             supportedCurrencies == other.supportedCurrencies &&
             requiredPayerDataFields == other.requiredPayerDataFields &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(lookupId, supportedCurrencies, requiredPayerDataFields, additionalProperties)
+        Objects.hash(
+            lookupId,
+            sendingCurrency,
+            supportedCurrencies,
+            requiredPayerDataFields,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "LookupResponse{lookupId=$lookupId, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, additionalProperties=$additionalProperties}"
+        "LookupResponse{lookupId=$lookupId, sendingCurrency=$sendingCurrency, supportedCurrencies=$supportedCurrencies, requiredPayerDataFields=$requiredPayerDataFields, additionalProperties=$additionalProperties}"
 }
