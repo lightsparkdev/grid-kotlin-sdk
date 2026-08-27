@@ -17,6 +17,7 @@ private constructor(
     private val accountId: String?,
     private val customerId: String?,
     private val senderUmaAddress: String?,
+    private val sendingCurrency: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -28,6 +29,14 @@ private constructor(
 
     /** UMA address of the sender (optional if customerId is provided) */
     fun senderUmaAddress(): String? = senderUmaAddress
+
+    /**
+     * Currency code the sender will send from (e.g., USD). Selects which of the sender's configured
+     * currencies the response is priced against: it is echoed back as the response's
+     * `sendingCurrency`, and the `minSendingAmount`/`maxSendingAmount` bounds are denominated in
+     * its smallest unit. Defaults to the sender's default currency.
+     */
+    fun sendingCurrency(): String? = sendingCurrency
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -54,6 +63,7 @@ private constructor(
         private var accountId: String? = null
         private var customerId: String? = null
         private var senderUmaAddress: String? = null
+        private var sendingCurrency: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -63,6 +73,7 @@ private constructor(
             accountId = receiverLookupExternalAccountParams.accountId
             customerId = receiverLookupExternalAccountParams.customerId
             senderUmaAddress = receiverLookupExternalAccountParams.senderUmaAddress
+            sendingCurrency = receiverLookupExternalAccountParams.sendingCurrency
             additionalHeaders = receiverLookupExternalAccountParams.additionalHeaders.toBuilder()
             additionalQueryParams =
                 receiverLookupExternalAccountParams.additionalQueryParams.toBuilder()
@@ -76,6 +87,16 @@ private constructor(
         /** UMA address of the sender (optional if customerId is provided) */
         fun senderUmaAddress(senderUmaAddress: String?) = apply {
             this.senderUmaAddress = senderUmaAddress
+        }
+
+        /**
+         * Currency code the sender will send from (e.g., USD). Selects which of the sender's
+         * configured currencies the response is priced against: it is echoed back as the response's
+         * `sendingCurrency`, and the `minSendingAmount`/`maxSendingAmount` bounds are denominated
+         * in its smallest unit. Defaults to the sender's default currency.
+         */
+        fun sendingCurrency(sendingCurrency: String?) = apply {
+            this.sendingCurrency = sendingCurrency
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -186,6 +207,7 @@ private constructor(
                 accountId,
                 customerId,
                 senderUmaAddress,
+                sendingCurrency,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -204,6 +226,7 @@ private constructor(
             .apply {
                 customerId?.let { put("customerId", it) }
                 senderUmaAddress?.let { put("senderUmaAddress", it) }
+                sendingCurrency?.let { put("sendingCurrency", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -217,6 +240,7 @@ private constructor(
             accountId == other.accountId &&
             customerId == other.customerId &&
             senderUmaAddress == other.senderUmaAddress &&
+            sendingCurrency == other.sendingCurrency &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -226,10 +250,11 @@ private constructor(
             accountId,
             customerId,
             senderUmaAddress,
+            sendingCurrency,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "ReceiverLookupExternalAccountParams{accountId=$accountId, customerId=$customerId, senderUmaAddress=$senderUmaAddress, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ReceiverLookupExternalAccountParams{accountId=$accountId, customerId=$customerId, senderUmaAddress=$senderUmaAddress, sendingCurrency=$sendingCurrency, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
