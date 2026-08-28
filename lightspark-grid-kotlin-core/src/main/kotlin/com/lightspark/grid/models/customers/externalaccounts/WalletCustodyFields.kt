@@ -27,9 +27,9 @@ private constructor(
     ) : this(vaspName, mutableMapOf())
 
     /**
-     * Name of the VASP that custodies this account, from the VASP directory (`GET /vasps`). Present
-     * when the wallet is held at an exchange or other custodial platform; omit it for self-custody
-     * wallets. Ownership verification applies only to self-custody wallets.
+     * Name of the VASP that custodies this account. Present when the wallet is held at an exchange
+     * or other custodial platform; omit it for self-custody wallets. Ownership verification applies
+     * only to self-custody wallets.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -73,9 +73,9 @@ private constructor(
         }
 
         /**
-         * Name of the VASP that custodies this account, from the VASP directory (`GET /vasps`).
-         * Present when the wallet is held at an exchange or other custodial platform; omit it for
-         * self-custody wallets. Ownership verification applies only to self-custody wallets.
+         * Name of the VASP that custodies this account. Present when the wallet is held at an
+         * exchange or other custodial platform; omit it for self-custody wallets. Ownership
+         * verification applies only to self-custody wallets.
          */
         fun vaspName(vaspName: String) = vaspName(JsonField.of(vaspName))
 

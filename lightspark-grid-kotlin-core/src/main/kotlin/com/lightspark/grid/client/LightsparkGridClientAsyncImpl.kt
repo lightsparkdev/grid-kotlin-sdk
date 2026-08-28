@@ -44,8 +44,6 @@ import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsyncImpl
 import com.lightspark.grid.services.async.UmaProviderServiceAsync
 import com.lightspark.grid.services.async.UmaProviderServiceAsyncImpl
-import com.lightspark.grid.services.async.VaspServiceAsync
-import com.lightspark.grid.services.async.VaspServiceAsyncImpl
 import com.lightspark.grid.services.async.VerificationServiceAsync
 import com.lightspark.grid.services.async.VerificationServiceAsyncImpl
 import com.lightspark.grid.services.async.WebhookServiceAsync
@@ -112,8 +110,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     private val umaProviders: UmaProviderServiceAsync by lazy {
         UmaProviderServiceAsyncImpl(clientOptionsWithUserAgent)
     }
-
-    private val vasps: VaspServiceAsync by lazy { VaspServiceAsyncImpl(clientOptionsWithUserAgent) }
 
     private val tokens: TokenServiceAsync by lazy {
         TokenServiceAsyncImpl(clientOptionsWithUserAgent)
@@ -209,12 +205,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun sandbox(): SandboxServiceAsync = sandbox
 
     override fun umaProviders(): UmaProviderServiceAsync = umaProviders
-
-    /**
-     * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
-     * recognized for counterparty declarations.
-     */
-    override fun vasps(): VaspServiceAsync = vasps
 
     /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenServiceAsync = tokens
@@ -322,10 +312,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
             UmaProviderServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val vasps: VaspServiceAsync.WithRawResponse by lazy {
-            VaspServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val tokens: TokenServiceAsync.WithRawResponse by lazy {
             TokenServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -424,12 +410,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         override fun sandbox(): SandboxServiceAsync.WithRawResponse = sandbox
 
         override fun umaProviders(): UmaProviderServiceAsync.WithRawResponse = umaProviders
-
-        /**
-         * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
-         * recognized for counterparty declarations.
-         */
-        override fun vasps(): VaspServiceAsync.WithRawResponse = vasps
 
         /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenServiceAsync.WithRawResponse = tokens
