@@ -74,7 +74,6 @@ internal class ProGuardCompatibilityTest {
         assertThat(client.invitations()).isNotNull()
         assertThat(client.sandbox()).isNotNull()
         assertThat(client.umaProviders()).isNotNull()
-        assertThat(client.vasps()).isNotNull()
         assertThat(client.tokens()).isNotNull()
         assertThat(client.exchangeRates()).isNotNull()
         assertThat(client.webhooks()).isNotNull()

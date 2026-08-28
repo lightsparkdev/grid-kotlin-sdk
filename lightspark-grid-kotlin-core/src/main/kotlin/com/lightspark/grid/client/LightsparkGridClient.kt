@@ -23,7 +23,6 @@ import com.lightspark.grid.services.blocking.TransactionService
 import com.lightspark.grid.services.blocking.TransferInService
 import com.lightspark.grid.services.blocking.TransferOutService
 import com.lightspark.grid.services.blocking.UmaProviderService
-import com.lightspark.grid.services.blocking.VaspService
 import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.WebhookService
 
@@ -110,12 +109,6 @@ interface LightsparkGridClient {
     fun sandbox(): SandboxService
 
     fun umaProviders(): UmaProviderService
-
-    /**
-     * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
-     * recognized for counterparty declarations.
-     */
-    fun vasps(): VaspService
 
     /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenService
@@ -248,12 +241,6 @@ interface LightsparkGridClient {
         fun sandbox(): SandboxService.WithRawResponse
 
         fun umaProviders(): UmaProviderService.WithRawResponse
-
-        /**
-         * Directory of Virtual Asset Service Providers (exchanges and other custodial platforms)
-         * recognized for counterparty declarations.
-         */
-        fun vasps(): VaspService.WithRawResponse
 
         /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenService.WithRawResponse
