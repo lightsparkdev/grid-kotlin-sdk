@@ -39,6 +39,7 @@ internal class PhpExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .rail("INSTAPAY")
                 .build()
 
         assertThat(phpExternalAccountCreateInfo.accountNumber()).isEqualTo("001234567890")
@@ -69,6 +70,7 @@ internal class PhpExternalAccountCreateInfoTest {
                         .build()
                 )
             )
+        assertThat(phpExternalAccountCreateInfo.rail()).isEqualTo("INSTAPAY")
     }
 
     @Test
@@ -100,6 +102,7 @@ internal class PhpExternalAccountCreateInfoTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
+                .rail("INSTAPAY")
                 .build()
 
         val roundtrippedPhpExternalAccountCreateInfo =

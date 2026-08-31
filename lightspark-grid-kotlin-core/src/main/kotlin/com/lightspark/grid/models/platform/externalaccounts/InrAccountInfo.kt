@@ -91,8 +91,8 @@ private constructor(
     fun ifsc(): String? = ifsc.getNullable("ifsc")
 
     /**
-     * The payment rail to route the payout over, for currencies that support more than one (e.g.
-     * NEFT or RTGS for INR).
+     * The payment rail to route the payout over: NEFT or RTGS. Omitted, the payout resolves it by
+     * amount.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -286,8 +286,8 @@ private constructor(
         fun ifsc(ifsc: JsonField<String>) = apply { this.ifsc = ifsc }
 
         /**
-         * The payment rail to route the payout over, for currencies that support more than one
-         * (e.g. NEFT or RTGS for INR).
+         * The payment rail to route the payout over: NEFT or RTGS. Omitted, the payout resolves it
+         * by amount.
          */
         fun rail(rail: String) = rail(JsonField.of(rail))
 

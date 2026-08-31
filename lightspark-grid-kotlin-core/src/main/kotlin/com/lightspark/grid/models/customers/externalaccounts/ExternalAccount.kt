@@ -360,6 +360,12 @@ private constructor(
         fun accountInfo(cnyAccount: ExternalAccountInfoOneOf.CnyAccount) =
             accountInfo(ExternalAccountInfoOneOf.ofCnyAccount(cnyAccount))
 
+        /**
+         * Alias for calling [accountInfo] with `ExternalAccountInfoOneOf.ofIlsAccount(ilsAccount)`.
+         */
+        fun accountInfo(ilsAccount: ExternalAccountInfoOneOf.IlsAccount) =
+            accountInfo(ExternalAccountInfoOneOf.ofIlsAccount(ilsAccount))
+
         /** The ISO 4217 currency code */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
