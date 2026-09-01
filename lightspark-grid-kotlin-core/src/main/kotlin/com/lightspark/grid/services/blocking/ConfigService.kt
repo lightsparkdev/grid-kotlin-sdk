@@ -39,7 +39,11 @@ interface ConfigService {
     fun retrieve(requestOptions: RequestOptions): PlatformConfig =
         retrieve(ConfigRetrieveParams.none(), requestOptions)
 
-    /** Update the platform configuration settings */
+    /**
+     * Update platform configuration settings. Setting `cardConfigs.maxSpendPerTransaction`
+     * establishes a platform-level card cap; Grid enforces the lower of that cap and each card's
+     * configured `maxSpendPerTransaction` without replacing the card-specific value.
+     */
     fun update(
         params: ConfigUpdateParams,
         requestOptions: RequestOptions = RequestOptions.none(),

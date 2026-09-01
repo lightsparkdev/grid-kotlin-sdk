@@ -23,6 +23,7 @@ class PlatformConfig
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
+    private val cardConfigs: JsonField<CardConfigs>,
     private val cardTokenization2faConfig: JsonField<CardTokenization2faConfig>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val embeddedWalletConfig: JsonField<EmbeddedWalletConfig>,
@@ -39,6 +40,9 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("cardConfigs")
+        @ExcludeMissing
+        cardConfigs: JsonField<CardConfigs> = JsonMissing.of(),
         @JsonProperty("cardTokenization2faConfig")
         @ExcludeMissing
         cardTokenization2faConfig: JsonField<CardTokenization2faConfig> = JsonMissing.of(),
@@ -69,6 +73,7 @@ private constructor(
         webhookEndpoint: JsonField<String> = JsonMissing.of(),
     ) : this(
         id,
+        cardConfigs,
         cardTokenization2faConfig,
         createdAt,
         embeddedWalletConfig,
@@ -89,6 +94,14 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun id(): String? = id.getNullable("id")
+
+    /**
+     * Platform-level settings for cards issued by this platform.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardConfigs(): CardConfigs? = cardConfigs.getNullable("cardConfigs")
 
     /**
      * Branding and sender configuration for card-tokenization authentication messages. This
@@ -186,6 +199,15 @@ private constructor(
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
+
+    /**
+     * Returns the raw JSON value of [cardConfigs].
+     *
+     * Unlike [cardConfigs], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("cardConfigs")
+    @ExcludeMissing
+    fun _cardConfigs(): JsonField<CardConfigs> = cardConfigs
 
     /**
      * Returns the raw JSON value of [cardTokenization2faConfig].
@@ -303,6 +325,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String> = JsonMissing.of()
+        private var cardConfigs: JsonField<CardConfigs> = JsonMissing.of()
         private var cardTokenization2faConfig: JsonField<CardTokenization2faConfig> =
             JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
@@ -318,6 +341,7 @@ private constructor(
 
         internal fun from(platformConfig: PlatformConfig) = apply {
             id = platformConfig.id
+            cardConfigs = platformConfig.cardConfigs
             cardTokenization2faConfig = platformConfig.cardTokenization2faConfig
             createdAt = platformConfig.createdAt
             embeddedWalletConfig = platformConfig.embeddedWalletConfig
@@ -341,6 +365,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /** Platform-level settings for cards issued by this platform. */
+        fun cardConfigs(cardConfigs: CardConfigs) = cardConfigs(JsonField.of(cardConfigs))
+
+        /**
+         * Sets [Builder.cardConfigs] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardConfigs] with a well-typed [CardConfigs] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun cardConfigs(cardConfigs: JsonField<CardConfigs>) = apply {
+            this.cardConfigs = cardConfigs
+        }
 
         /**
          * Branding and sender configuration for card-tokenization authentication messages. This
@@ -551,6 +589,7 @@ private constructor(
         fun build(): PlatformConfig =
             PlatformConfig(
                 id,
+                cardConfigs,
                 cardTokenization2faConfig,
                 createdAt,
                 embeddedWalletConfig,
@@ -581,6 +620,7 @@ private constructor(
         }
 
         id()
+        cardConfigs()?.validate()
         cardTokenization2faConfig()?.validate()
         createdAt()
         embeddedWalletConfig()?.validate()
@@ -609,6 +649,7 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
+            (cardConfigs.asKnown()?.validity() ?: 0) +
             (cardTokenization2faConfig.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (embeddedWalletConfig.asKnown()?.validity() ?: 0) +
@@ -619,6 +660,187 @@ private constructor(
             (if (umaDomain.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (webhookEndpoint.asKnown() == null) 0 else 1)
+
+    /** Platform-level settings for cards issued by this platform. */
+    class CardConfigs
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val maxSpendPerTransaction: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("maxSpendPerTransaction")
+            @ExcludeMissing
+            maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
+        ) : this(maxSpendPerTransaction, mutableMapOf())
+
+        /**
+         * Platform-level cap on a single transaction for every card whose authorization decisions
+         * are made by Grid. The value is interpreted in the smallest unit of each card's currency.
+         * Grid enforces the lower of this cap and the card's configured `maxSpendPerTransaction`;
+         * null means no platform-level cap. The cap applies to existing cards and to cards issued
+         * later. Provider-decided card programs are unaffected.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun maxSpendPerTransaction(): Long? =
+            maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+        /**
+         * Returns the raw JSON value of [maxSpendPerTransaction].
+         *
+         * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [CardConfigs]. */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CardConfigs]. */
+        class Builder internal constructor() {
+
+            private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(cardConfigs: CardConfigs) = apply {
+                maxSpendPerTransaction = cardConfigs.maxSpendPerTransaction
+                additionalProperties = cardConfigs.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Platform-level cap on a single transaction for every card whose authorization
+             * decisions are made by Grid. The value is interpreted in the smallest unit of each
+             * card's currency. Grid enforces the lower of this cap and the card's configured
+             * `maxSpendPerTransaction`; null means no platform-level cap. The cap applies to
+             * existing cards and to cards issued later. Provider-decided card programs are
+             * unaffected.
+             */
+            fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
+                maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
+
+            /**
+             * Alias for [Builder.maxSpendPerTransaction].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+                maxSpendPerTransaction(maxSpendPerTransaction as Long?)
+
+            /**
+             * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+                this.maxSpendPerTransaction = maxSpendPerTransaction
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CardConfigs].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): CardConfigs =
+                CardConfigs(maxSpendPerTransaction, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardConfigs = apply {
+            if (validated) {
+                return@apply
+            }
+
+            maxSpendPerTransaction()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = (if (maxSpendPerTransaction.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardConfigs &&
+                maxSpendPerTransaction == other.maxSpendPerTransaction &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(maxSpendPerTransaction, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CardConfigs{maxSpendPerTransaction=$maxSpendPerTransaction, additionalProperties=$additionalProperties}"
+    }
 
     /**
      * Branding and sender configuration for card-tokenization authentication messages. This
@@ -2142,6 +2364,7 @@ private constructor(
 
         return other is PlatformConfig &&
             id == other.id &&
+            cardConfigs == other.cardConfigs &&
             cardTokenization2faConfig == other.cardTokenization2faConfig &&
             createdAt == other.createdAt &&
             embeddedWalletConfig == other.embeddedWalletConfig &&
@@ -2158,6 +2381,7 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             id,
+            cardConfigs,
             cardTokenization2faConfig,
             createdAt,
             embeddedWalletConfig,
@@ -2175,5 +2399,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PlatformConfig{id=$id, cardTokenization2faConfig=$cardTokenization2faConfig, createdAt=$createdAt, embeddedWalletConfig=$embeddedWalletConfig, feeConfigs=$feeConfigs, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
+        "PlatformConfig{id=$id, cardConfigs=$cardConfigs, cardTokenization2faConfig=$cardTokenization2faConfig, createdAt=$createdAt, embeddedWalletConfig=$embeddedWalletConfig, feeConfigs=$feeConfigs, isRegulatedFinancialInstitution=$isRegulatedFinancialInstitution, proxyUmaSubdomain=$proxyUmaSubdomain, supportedCurrencies=$supportedCurrencies, umaDomain=$umaDomain, updatedAt=$updatedAt, webhookEndpoint=$webhookEndpoint, additionalProperties=$additionalProperties}"
 }

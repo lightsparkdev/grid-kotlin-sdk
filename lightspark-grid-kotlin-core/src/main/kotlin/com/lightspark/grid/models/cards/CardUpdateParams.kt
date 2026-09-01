@@ -18,9 +18,10 @@ import java.util.Objects
  *   determines the priority Authorization Decisioning tries them in. Each id must belong to the
  *   cardholder and be denominated in the card's currency; the list must contain at least one
  *   source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
- * - `maxSpendPerTransaction`, when supplied, replaces the card's application-enforced
- *   per-transaction limit. Supply a positive integer in the smallest unit of the card's currency to
- *   set it or null to clear it. Limits are supported only for card programs where Grid makes the
+ * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap. Supply
+ *   a positive integer in the smallest unit of the card's currency to set it or null to clear it.
+ *   If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of
+ *   the card and platform values. Limits are supported only for card programs where Grid makes the
  *   authorization decision. `maxSpendPerTransaction` cannot be supplied alongside `state: CLOSED`.
  *
  * This endpoint is authenticated by the platform credential alone and returns `200` directly. It

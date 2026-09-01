@@ -9,7 +9,11 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
-/** Update the platform configuration settings */
+/**
+ * Update platform configuration settings. Setting `cardConfigs.maxSpendPerTransaction` establishes
+ * a platform-level card cap; Grid enforces the lower of that cap and each card's configured
+ * `maxSpendPerTransaction` without replacing the card-specific value.
+ */
 class ConfigUpdateParams
 private constructor(
     private val platformConfigUpdateRequest: PlatformConfigUpdateRequest,

@@ -17,6 +17,9 @@ internal class PlatformConfigTest {
         val platformConfig =
             PlatformConfig.builder()
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+                .cardConfigs(
+                    PlatformConfig.CardConfigs.builder().maxSpendPerTransaction(10000L).build()
+                )
                 .cardTokenization2faConfig(
                     PlatformConfig.CardTokenization2faConfig.builder()
                         .displayName("Acme")
@@ -110,6 +113,8 @@ internal class PlatformConfigTest {
 
         assertThat(platformConfig.id())
             .isEqualTo("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+        assertThat(platformConfig.cardConfigs())
+            .isEqualTo(PlatformConfig.CardConfigs.builder().maxSpendPerTransaction(10000L).build())
         assertThat(platformConfig.cardTokenization2faConfig())
             .isEqualTo(
                 PlatformConfig.CardTokenization2faConfig.builder()
@@ -212,6 +217,9 @@ internal class PlatformConfigTest {
         val platformConfig =
             PlatformConfig.builder()
                 .id("PlatformConfig:019542f5-b3e7-1d02-0000-000000000003")
+                .cardConfigs(
+                    PlatformConfig.CardConfigs.builder().maxSpendPerTransaction(10000L).build()
+                )
                 .cardTokenization2faConfig(
                     PlatformConfig.CardTokenization2faConfig.builder()
                         .displayName("Acme")
