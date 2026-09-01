@@ -46,6 +46,11 @@ internal class ConfigServiceTest {
         val platformConfig =
             configService.update(
                 PlatformConfigUpdateRequest.builder()
+                    .cardConfigs(
+                        PlatformConfigUpdateRequest.CardConfigs.builder()
+                            .maxSpendPerTransaction(10000L)
+                            .build()
+                    )
                     .cardTokenization2faConfig(
                         PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                             .displayName("Acme")

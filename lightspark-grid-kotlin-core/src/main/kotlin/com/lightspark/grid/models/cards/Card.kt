@@ -142,9 +142,10 @@ private constructor(
     fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
 
     /**
-     * Largest amount a single card transaction may authorize, in the smallest unit of the card's
-     * `currency`. Null means the card has no application-enforced per-transaction limit. A
-     * transaction for exactly this amount is allowed.
+     * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
+     * Null means the card has no card-specific cap. When the platform config also supplies
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
+     * replacing this configured value. A transaction for exactly the effective limit is allowed.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -550,9 +551,11 @@ private constructor(
         }
 
         /**
-         * Largest amount a single card transaction may authorize, in the smallest unit of the
-         * card's `currency`. Null means the card has no application-enforced per-transaction limit.
-         * A transaction for exactly this amount is allowed.
+         * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
+         * Null means the card has no card-specific cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
+         * replacing this configured value. A transaction for exactly the effective limit is
+         * allowed.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
             maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))

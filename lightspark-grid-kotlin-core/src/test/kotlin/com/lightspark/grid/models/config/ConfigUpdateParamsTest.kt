@@ -14,6 +14,11 @@ internal class ConfigUpdateParamsTest {
         ConfigUpdateParams.builder()
             .platformConfigUpdateRequest(
                 PlatformConfigUpdateRequest.builder()
+                    .cardConfigs(
+                        PlatformConfigUpdateRequest.CardConfigs.builder()
+                            .maxSpendPerTransaction(10000L)
+                            .build()
+                    )
                     .cardTokenization2faConfig(
                         PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                             .displayName("Acme")
@@ -114,6 +119,11 @@ internal class ConfigUpdateParamsTest {
             ConfigUpdateParams.builder()
                 .platformConfigUpdateRequest(
                     PlatformConfigUpdateRequest.builder()
+                        .cardConfigs(
+                            PlatformConfigUpdateRequest.CardConfigs.builder()
+                                .maxSpendPerTransaction(10000L)
+                                .build()
+                        )
                         .cardTokenization2faConfig(
                             PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                                 .displayName("Acme")
@@ -213,6 +223,11 @@ internal class ConfigUpdateParamsTest {
         assertThat(body)
             .isEqualTo(
                 PlatformConfigUpdateRequest.builder()
+                    .cardConfigs(
+                        PlatformConfigUpdateRequest.CardConfigs.builder()
+                            .maxSpendPerTransaction(10000L)
+                            .build()
+                    )
                     .cardTokenization2faConfig(
                         PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                             .displayName("Acme")

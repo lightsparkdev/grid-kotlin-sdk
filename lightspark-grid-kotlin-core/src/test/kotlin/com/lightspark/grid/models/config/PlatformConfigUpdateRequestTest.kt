@@ -15,6 +15,11 @@ internal class PlatformConfigUpdateRequestTest {
     fun create() {
         val platformConfigUpdateRequest =
             PlatformConfigUpdateRequest.builder()
+                .cardConfigs(
+                    PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerTransaction(10000L)
+                        .build()
+                )
                 .cardTokenization2faConfig(
                     PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                         .displayName("Acme")
@@ -104,6 +109,12 @@ internal class PlatformConfigUpdateRequestTest {
                 .webhookEndpoint("https://api.mycompany.com/webhooks/uma")
                 .build()
 
+        assertThat(platformConfigUpdateRequest.cardConfigs())
+            .isEqualTo(
+                PlatformConfigUpdateRequest.CardConfigs.builder()
+                    .maxSpendPerTransaction(10000L)
+                    .build()
+            )
         assertThat(platformConfigUpdateRequest.cardTokenization2faConfig())
             .isEqualTo(
                 PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
@@ -201,6 +212,11 @@ internal class PlatformConfigUpdateRequestTest {
         val jsonMapper = jsonMapper()
         val platformConfigUpdateRequest =
             PlatformConfigUpdateRequest.builder()
+                .cardConfigs(
+                    PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerTransaction(10000L)
+                        .build()
+                )
                 .cardTokenization2faConfig(
                     PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
                         .displayName("Acme")

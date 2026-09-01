@@ -63,10 +63,11 @@ interface CardService {
      *   order determines the priority Authorization Decisioning tries them in. Each id must belong
      *   to the cardholder and be denominated in the card's currency; the list must contain at least
      *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
-     * - `maxSpendPerTransaction`, when supplied, replaces the card's application-enforced
-     *   per-transaction limit. Supply a positive integer in the smallest unit of the card's
-     *   currency to set it or null to clear it. Limits are supported only for card programs where
-     *   Grid makes the authorization decision. `maxSpendPerTransaction` cannot be supplied
+     * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap.
+     *   Supply a positive integer in the smallest unit of the card's currency to set it or null to
+     *   clear it. If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces
+     *   the lower of the card and platform values. Limits are supported only for card programs
+     *   where Grid makes the authorization decision. `maxSpendPerTransaction` cannot be supplied
      *   alongside `state: CLOSED`.
      *
      * This endpoint is authenticated by the platform credential alone and returns `200` directly.
@@ -128,10 +129,12 @@ interface CardService {
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
-     * An optional `maxSpendPerTransaction` value sets the largest amount a single card transaction
-     * may authorize. The limit is enforced by Grid for card programs where Grid makes the
+     * An optional `maxSpendPerTransaction` value sets the card-specific cap on a single
+     * transaction. The limit is enforced by Grid for card programs where Grid makes the
      * authorization decision, whether the card is funded by an Embedded Wallet account or custodial
-     * fiat. Omit it for no limit. The value is in the smallest unit of the card's currency.
+     * fiat. Omit it for no card-specific cap. If the platform config sets
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the card and platform
+     * values. Both values use the smallest unit of the card's currency.
      *
      * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
      * Grid to sign Spark token transactions for that card funding source by completing the

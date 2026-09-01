@@ -59,10 +59,12 @@ private constructor(
     fun fundingSources(): List<String>? = fundingSources.getNullable("fundingSources")
 
     /**
-     * Replacement per-transaction spending limit for the card, in the smallest unit of its
-     * currency. Omit this field to leave the current limit unchanged, supply null to clear it, or
-     * supply a positive integer to set it. Supported only for card programs whose authorization
-     * decisions are made by Grid. Cannot be supplied alongside `state: CLOSED`.
+     * Replacement card-specific per-transaction cap, in the smallest unit of the card's currency.
+     * Omit this field to leave the current cap unchanged, supply null to clear it, or supply a
+     * positive integer to set it. When the platform config also supplies
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Supported
+     * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
+     * alongside `state: CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -173,10 +175,12 @@ private constructor(
         }
 
         /**
-         * Replacement per-transaction spending limit for the card, in the smallest unit of its
-         * currency. Omit this field to leave the current limit unchanged, supply null to clear it,
-         * or supply a positive integer to set it. Supported only for card programs whose
-         * authorization decisions are made by Grid. Cannot be supplied alongside `state: CLOSED`.
+         * Replacement card-specific per-transaction cap, in the smallest unit of the card's
+         * currency. Omit this field to leave the current cap unchanged, supply null to clear it, or
+         * supply a positive integer to set it. When the platform config also supplies
+         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values.
+         * Supported only for card programs whose authorization decisions are made by Grid. Cannot
+         * be supplied alongside `state: CLOSED`.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
             maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
