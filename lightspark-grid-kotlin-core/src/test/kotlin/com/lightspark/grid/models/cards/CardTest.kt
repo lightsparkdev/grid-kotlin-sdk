@@ -20,6 +20,7 @@ internal class CardTest {
                 .form(Card.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .state(Card.State.PENDING_KYC)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
@@ -43,6 +44,7 @@ internal class CardTest {
                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000002",
                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003",
             )
+        assertThat(card.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(card.maxSpendPerTransaction()).isEqualTo(5000L)
         assertThat(card.state()).isEqualTo(Card.State.PENDING_KYC)
         assertThat(card.updatedAt()).isEqualTo(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
@@ -68,6 +70,7 @@ internal class CardTest {
                 .form(Card.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .state(Card.State.PENDING_KYC)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))

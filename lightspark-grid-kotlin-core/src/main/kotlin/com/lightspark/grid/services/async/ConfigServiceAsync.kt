@@ -40,9 +40,10 @@ interface ConfigServiceAsync {
         retrieve(ConfigRetrieveParams.none(), requestOptions)
 
     /**
-     * Update platform configuration settings. Setting `cardConfigs.maxSpendPerTransaction`
-     * establishes a platform-level card cap; Grid enforces the lower of that cap and each card's
-     * configured `maxSpendPerTransaction` without replacing the card-specific value.
+     * Update platform configuration settings. `cardConfigs` can establish platform-level
+     * per-transaction and UTC-calendar-day card caps. Grid enforces the lower of each platform cap
+     * and its corresponding card-specific value without replacing the card-specific value. Daily
+     * limits reset at 00:00 UTC.
      */
     suspend fun update(
         params: ConfigUpdateParams,

@@ -665,16 +665,34 @@ private constructor(
     class CardConfigs
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val maxSpendPerDay: JsonField<Long>,
         private val maxSpendPerTransaction: JsonField<Long>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("maxSpendPerDay")
+            @ExcludeMissing
+            maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
             @JsonProperty("maxSpendPerTransaction")
             @ExcludeMissing
-            maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
-        ) : this(maxSpendPerTransaction, mutableMapOf())
+            maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
+        ) : this(maxSpendPerDay, maxSpendPerTransaction, mutableMapOf())
+
+        /**
+         * Platform-level cap on cumulative new spend during one UTC calendar day for every card
+         * whose authorization decisions are made by Grid. The value is interpreted in the smallest
+         * unit of each card's currency. Grid enforces the lower of this cap and the card's
+         * configured `maxSpendPerDay`; null means no platform-level daily cap. The window resets at
+         * 00:00 UTC. Refunds, reversals, and authorization expiries do not restore capacity during
+         * the day. The cap applies to existing cards and cards issued later. Provider-decided card
+         * programs are unaffected.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
 
         /**
          * Platform-level cap on a single transaction for every card whose authorization decisions
@@ -688,6 +706,16 @@ private constructor(
          */
         fun maxSpendPerTransaction(): Long? =
             maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+        /**
+         * Returns the raw JSON value of [maxSpendPerDay].
+         *
+         * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
 
         /**
          * Returns the raw JSON value of [maxSpendPerTransaction].
@@ -720,12 +748,44 @@ private constructor(
         /** A builder for [CardConfigs]. */
         class Builder internal constructor() {
 
+            private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
             private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             internal fun from(cardConfigs: CardConfigs) = apply {
+                maxSpendPerDay = cardConfigs.maxSpendPerDay
                 maxSpendPerTransaction = cardConfigs.maxSpendPerTransaction
                 additionalProperties = cardConfigs.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Platform-level cap on cumulative new spend during one UTC calendar day for every card
+             * whose authorization decisions are made by Grid. The value is interpreted in the
+             * smallest unit of each card's currency. Grid enforces the lower of this cap and the
+             * card's configured `maxSpendPerDay`; null means no platform-level daily cap. The
+             * window resets at 00:00 UTC. Refunds, reversals, and authorization expiries do not
+             * restore capacity during the day. The cap applies to existing cards and cards issued
+             * later. Provider-decided card programs are unaffected.
+             */
+            fun maxSpendPerDay(maxSpendPerDay: Long?) =
+                maxSpendPerDay(JsonField.ofNullable(maxSpendPerDay))
+
+            /**
+             * Alias for [Builder.maxSpendPerDay].
+             *
+             * This unboxed primitive overload exists for backwards compatibility.
+             */
+            fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(maxSpendPerDay as Long?)
+
+            /**
+             * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+                this.maxSpendPerDay = maxSpendPerDay
             }
 
             /**
@@ -783,7 +843,11 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): CardConfigs =
-                CardConfigs(maxSpendPerTransaction, additionalProperties.toMutableMap())
+                CardConfigs(
+                    maxSpendPerDay,
+                    maxSpendPerTransaction,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -802,6 +866,7 @@ private constructor(
                 return@apply
             }
 
+            maxSpendPerDay()
             maxSpendPerTransaction()
             validated = true
         }
@@ -820,7 +885,9 @@ private constructor(
          *
          * Used for best match union deserialization.
          */
-        internal fun validity(): Int = (if (maxSpendPerTransaction.asKnown() == null) 0 else 1)
+        internal fun validity(): Int =
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
+                (if (maxSpendPerTransaction.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -828,18 +895,19 @@ private constructor(
             }
 
             return other is CardConfigs &&
+                maxSpendPerDay == other.maxSpendPerDay &&
                 maxSpendPerTransaction == other.maxSpendPerTransaction &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(maxSpendPerTransaction, additionalProperties)
+            Objects.hash(maxSpendPerDay, maxSpendPerTransaction, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "CardConfigs{maxSpendPerTransaction=$maxSpendPerTransaction, additionalProperties=$additionalProperties}"
+            "CardConfigs{maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, additionalProperties=$additionalProperties}"
     }
 
     /**
