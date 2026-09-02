@@ -48,6 +48,7 @@ internal class ConfigServiceTest {
                 PlatformConfigUpdateRequest.builder()
                     .cardConfigs(
                         PlatformConfigUpdateRequest.CardConfigs.builder()
+                            .maxSpendPerDay(50000L)
                             .maxSpendPerTransaction(10000L)
                             .build()
                     )

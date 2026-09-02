@@ -24,6 +24,7 @@ private constructor(
     private val cardholderId: JsonField<String>,
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
+    private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val platformCardId: JsonField<String>,
     private val threeDSecurePassword: JsonField<String>,
@@ -39,6 +40,9 @@ private constructor(
         @JsonProperty("fundingSources")
         @ExcludeMissing
         fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("maxSpendPerTransaction")
         @ExcludeMissing
         maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
@@ -52,6 +56,7 @@ private constructor(
         cardholderId,
         form,
         fundingSources,
+        maxSpendPerDay,
         maxSpendPerTransaction,
         platformCardId,
         threeDSecurePassword,
@@ -86,6 +91,20 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
+
+    /**
+     * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
+     * smallest unit of the card currency derived from its funding sources. Omit this field for no
+     * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
+     * Grid enforces the lower of the two values. The window resets at 00:00 UTC, and refunds,
+     * reversals, and authorization expiries do not restore capacity during the day. Supported only
+     * for card programs whose authorization decisions are made by Grid. Spend exactly equal to the
+     * effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
 
     /**
      * Optional card-specific cap on a single transaction, in the smallest unit of the card currency
@@ -145,6 +164,15 @@ private constructor(
     @JsonProperty("fundingSources")
     @ExcludeMissing
     fun _fundingSources(): JsonField<List<String>> = fundingSources
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerDay].
+     *
+     * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("maxSpendPerDay")
+    @ExcludeMissing
+    fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
 
     /**
      * Returns the raw JSON value of [maxSpendPerTransaction].
@@ -208,6 +236,7 @@ private constructor(
         private var cardholderId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
+        private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
         private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
         private var threeDSecurePassword: JsonField<String> = JsonMissing.of()
@@ -217,6 +246,7 @@ private constructor(
             cardholderId = cardCreateRequest.cardholderId
             form = cardCreateRequest.form
             fundingSources = cardCreateRequest.fundingSources.map { it.toMutableList() }
+            maxSpendPerDay = cardCreateRequest.maxSpendPerDay
             maxSpendPerTransaction = cardCreateRequest.maxSpendPerTransaction
             platformCardId = cardCreateRequest.platformCardId
             threeDSecurePassword = cardCreateRequest.threeDSecurePassword
@@ -285,6 +315,28 @@ private constructor(
                 (fundingSources ?: JsonField.of(mutableListOf())).also {
                     checkKnown("fundingSources", it).add(fundingSource)
                 }
+        }
+
+        /**
+         * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
+         * smallest unit of the card currency derived from its funding sources. Omit this field for
+         * no card-specific daily cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
+         * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
+         * capacity during the day. Supported only for card programs whose authorization decisions
+         * are made by Grid. Spend exactly equal to the effective limit is allowed.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(JsonField.of(maxSpendPerDay))
+
+        /**
+         * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+            this.maxSpendPerDay = maxSpendPerDay
         }
 
         /**
@@ -384,6 +436,7 @@ private constructor(
                 checkRequired("cardholderId", cardholderId),
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
+                maxSpendPerDay,
                 maxSpendPerTransaction,
                 platformCardId,
                 threeDSecurePassword,
@@ -409,6 +462,7 @@ private constructor(
         cardholderId()
         form().validate()
         fundingSources()
+        maxSpendPerDay()
         maxSpendPerTransaction()
         platformCardId()
         threeDSecurePassword()
@@ -432,6 +486,7 @@ private constructor(
         (if (cardholderId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
             (if (threeDSecurePassword.asKnown() == null) 0 else 1)
@@ -577,6 +632,7 @@ private constructor(
             cardholderId == other.cardholderId &&
             form == other.form &&
             fundingSources == other.fundingSources &&
+            maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             platformCardId == other.platformCardId &&
             threeDSecurePassword == other.threeDSecurePassword &&
@@ -588,6 +644,7 @@ private constructor(
             cardholderId,
             form,
             fundingSources,
+            maxSpendPerDay,
             maxSpendPerTransaction,
             platformCardId,
             threeDSecurePassword,
@@ -598,5 +655,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, maxSpendPerTransaction=$maxSpendPerTransaction, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
+        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }

@@ -52,6 +52,7 @@ internal class CardServiceTest {
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
+                            .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(10000L)
                             .state(CardUpdateRequest.State.FROZEN)
                             .build()
@@ -97,6 +98,7 @@ internal class CardServiceTest {
                     .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .maxSpendPerDay(25000L)
                     .maxSpendPerTransaction(5000L)
                     .platformCardId("card-emp-aary-001")
                     .threeDSecurePassword("AbCd1234EfGh5678")

@@ -17,6 +17,7 @@ internal class PlatformConfigUpdateRequestTest {
             PlatformConfigUpdateRequest.builder()
                 .cardConfigs(
                     PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerDay(50000L)
                         .maxSpendPerTransaction(10000L)
                         .build()
                 )
@@ -112,6 +113,7 @@ internal class PlatformConfigUpdateRequestTest {
         assertThat(platformConfigUpdateRequest.cardConfigs())
             .isEqualTo(
                 PlatformConfigUpdateRequest.CardConfigs.builder()
+                    .maxSpendPerDay(50000L)
                     .maxSpendPerTransaction(10000L)
                     .build()
             )
@@ -214,6 +216,7 @@ internal class PlatformConfigUpdateRequestTest {
             PlatformConfigUpdateRequest.builder()
                 .cardConfigs(
                     PlatformConfigUpdateRequest.CardConfigs.builder()
+                        .maxSpendPerDay(50000L)
                         .maxSpendPerTransaction(10000L)
                         .build()
                 )

@@ -1996,6 +1996,7 @@ internal class UnwrapWebhookEventTest {
                         .form(Card.Form.VIRTUAL)
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .maxSpendPerDay(25000L)
                         .maxSpendPerTransaction(5000L)
                         .state(Card.State.PENDING_KYC)
                         .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
@@ -2051,6 +2052,7 @@ internal class UnwrapWebhookEventTest {
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
+                            .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(5000L)
                             .state(Card.State.PENDING_KYC)
                             .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
@@ -2092,6 +2094,7 @@ internal class UnwrapWebhookEventTest {
                         .form(Card.Form.VIRTUAL)
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .maxSpendPerDay(25000L)
                         .maxSpendPerTransaction(5000L)
                         .state(Card.State.PENDING_KYC)
                         .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
@@ -2148,6 +2151,7 @@ internal class UnwrapWebhookEventTest {
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
+                            .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(5000L)
                             .state(Card.State.PENDING_KYC)
                             .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
