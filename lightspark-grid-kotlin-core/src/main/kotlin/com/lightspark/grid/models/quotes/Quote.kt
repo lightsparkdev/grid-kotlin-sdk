@@ -140,7 +140,9 @@ private constructor(
     fun destination(): QuoteDestinationOneOf = destination.getRequired("destination")
 
     /**
-     * Number of sending currency units per receiving currency unit.
+     * Number of sending currency units per receiving currency unit. The rate is fee-exclusive: Grid
+     * deducts `feesIncluded` from `totalSendingAmount` first, then converts the remainder at this
+     * rate to reach `totalReceivingAmount`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -558,7 +560,11 @@ private constructor(
             this.destination = destination
         }
 
-        /** Number of sending currency units per receiving currency unit. */
+        /**
+         * Number of sending currency units per receiving currency unit. The rate is fee-exclusive:
+         * Grid deducts `feesIncluded` from `totalSendingAmount` first, then converts the remainder
+         * at this rate to reach `totalReceivingAmount`.
+         */
         fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
         /**
