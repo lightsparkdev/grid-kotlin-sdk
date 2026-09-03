@@ -28,7 +28,6 @@ private constructor(
     private val destination: JsonValue,
     private val direction: JsonField<Direction>,
     private val platformCustomerId: JsonField<String>,
-    private val receivedAmount: JsonField<CurrencyAmount>,
     private val status: JsonField<TransactionStatus>,
     private val type: JsonField<Type>,
     private val agentId: JsonField<String>,
@@ -41,6 +40,7 @@ private constructor(
     private val pendingReason: JsonField<PendingReason>,
     private val quoteId: JsonField<String>,
     private val receiptDeliveryConfirmedAt: JsonField<OffsetDateTime>,
+    private val receivedAmount: JsonField<CurrencyAmount>,
     private val reconciliationInstructions: JsonField<ReconciliationInstructions>,
     private val refund: JsonField<Refund>,
     private val sentAmount: JsonField<CurrencyAmount>,
@@ -63,9 +63,6 @@ private constructor(
         @JsonProperty("platformCustomerId")
         @ExcludeMissing
         platformCustomerId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("receivedAmount")
-        @ExcludeMissing
-        receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
         @JsonProperty("status")
         @ExcludeMissing
         status: JsonField<TransactionStatus> = JsonMissing.of(),
@@ -94,6 +91,9 @@ private constructor(
         @JsonProperty("receiptDeliveryConfirmedAt")
         @ExcludeMissing
         receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("receivedAmount")
+        @ExcludeMissing
+        receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
         @JsonProperty("reconciliationInstructions")
         @ExcludeMissing
         reconciliationInstructions: JsonField<ReconciliationInstructions> = JsonMissing.of(),
@@ -116,7 +116,6 @@ private constructor(
         destination,
         direction,
         platformCustomerId,
-        receivedAmount,
         status,
         type,
         agentId,
@@ -129,6 +128,7 @@ private constructor(
         pendingReason,
         quoteId,
         receiptDeliveryConfirmedAt,
+        receivedAmount,
         reconciliationInstructions,
         refund,
         sentAmount,
@@ -177,14 +177,6 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
-
-    /**
-     * Amount received in the recipient's currency
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun receivedAmount(): CurrencyAmount = receivedAmount.getRequired("receivedAmount")
 
     /**
      * Status of a payment transaction.
@@ -300,6 +292,15 @@ private constructor(
         receiptDeliveryConfirmedAt.getNullable("receiptDeliveryConfirmedAt")
 
     /**
+     * Amount received in the recipient's currency. This is only absent for rule-based account
+     * sweeps if the sweep couldn't be quoted. It's always present otherwise.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun receivedAmount(): CurrencyAmount? = receivedAmount.getNullable("receivedAmount")
+
+    /**
      * Included for all transactions except those with "CREATED" status
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -376,15 +377,6 @@ private constructor(
     @JsonProperty("platformCustomerId")
     @ExcludeMissing
     fun _platformCustomerId(): JsonField<String> = platformCustomerId
-
-    /**
-     * Returns the raw JSON value of [receivedAmount].
-     *
-     * Unlike [receivedAmount], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("receivedAmount")
-    @ExcludeMissing
-    fun _receivedAmount(): JsonField<CurrencyAmount> = receivedAmount
 
     /**
      * Returns the raw JSON value of [status].
@@ -485,6 +477,15 @@ private constructor(
     fun _receiptDeliveryConfirmedAt(): JsonField<OffsetDateTime> = receiptDeliveryConfirmedAt
 
     /**
+     * Returns the raw JSON value of [receivedAmount].
+     *
+     * Unlike [receivedAmount], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("receivedAmount")
+    @ExcludeMissing
+    fun _receivedAmount(): JsonField<CurrencyAmount> = receivedAmount
+
+    /**
      * Returns the raw JSON value of [reconciliationInstructions].
      *
      * Unlike [reconciliationInstructions], this method doesn't throw if the JSON field has an
@@ -562,7 +563,6 @@ private constructor(
          * .destination()
          * .direction()
          * .platformCustomerId()
-         * .receivedAmount()
          * .status()
          * .type()
          * ```
@@ -578,7 +578,6 @@ private constructor(
         private var destination: JsonValue? = null
         private var direction: JsonField<Direction>? = null
         private var platformCustomerId: JsonField<String>? = null
-        private var receivedAmount: JsonField<CurrencyAmount>? = null
         private var status: JsonField<TransactionStatus>? = null
         private var type: JsonField<Type>? = null
         private var agentId: JsonField<String> = JsonMissing.of()
@@ -591,6 +590,7 @@ private constructor(
         private var pendingReason: JsonField<PendingReason> = JsonMissing.of()
         private var quoteId: JsonField<String> = JsonMissing.of()
         private var receiptDeliveryConfirmedAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var receivedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var reconciliationInstructions: JsonField<ReconciliationInstructions> =
             JsonMissing.of()
         private var refund: JsonField<Refund> = JsonMissing.of()
@@ -606,7 +606,6 @@ private constructor(
             destination = incomingTransaction.destination
             direction = incomingTransaction.direction
             platformCustomerId = incomingTransaction.platformCustomerId
-            receivedAmount = incomingTransaction.receivedAmount
             status = incomingTransaction.status
             type = incomingTransaction.type
             agentId = incomingTransaction.agentId
@@ -619,6 +618,7 @@ private constructor(
             pendingReason = incomingTransaction.pendingReason
             quoteId = incomingTransaction.quoteId
             receiptDeliveryConfirmedAt = incomingTransaction.receiptDeliveryConfirmedAt
+            receivedAmount = incomingTransaction.receivedAmount
             reconciliationInstructions = incomingTransaction.reconciliationInstructions
             refund = incomingTransaction.refund
             sentAmount = incomingTransaction.sentAmount
@@ -678,21 +678,6 @@ private constructor(
          */
         fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
             this.platformCustomerId = platformCustomerId
-        }
-
-        /** Amount received in the recipient's currency */
-        fun receivedAmount(receivedAmount: CurrencyAmount) =
-            receivedAmount(JsonField.of(receivedAmount))
-
-        /**
-         * Sets [Builder.receivedAmount] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.receivedAmount] with a well-typed [CurrencyAmount] value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
-         */
-        fun receivedAmount(receivedAmount: JsonField<CurrencyAmount>) = apply {
-            this.receivedAmount = receivedAmount
         }
 
         /**
@@ -872,6 +857,24 @@ private constructor(
                 this.receiptDeliveryConfirmedAt = receiptDeliveryConfirmedAt
             }
 
+        /**
+         * Amount received in the recipient's currency. This is only absent for rule-based account
+         * sweeps if the sweep couldn't be quoted. It's always present otherwise.
+         */
+        fun receivedAmount(receivedAmount: CurrencyAmount) =
+            receivedAmount(JsonField.of(receivedAmount))
+
+        /**
+         * Sets [Builder.receivedAmount] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.receivedAmount] with a well-typed [CurrencyAmount] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun receivedAmount(receivedAmount: JsonField<CurrencyAmount>) = apply {
+            this.receivedAmount = receivedAmount
+        }
+
         /** Included for all transactions except those with "CREATED" status */
         fun reconciliationInstructions(reconciliationInstructions: ReconciliationInstructions) =
             reconciliationInstructions(JsonField.of(reconciliationInstructions))
@@ -978,7 +981,6 @@ private constructor(
          * .destination()
          * .direction()
          * .platformCustomerId()
-         * .receivedAmount()
          * .status()
          * .type()
          * ```
@@ -992,7 +994,6 @@ private constructor(
                 checkRequired("destination", destination),
                 checkRequired("direction", direction),
                 checkRequired("platformCustomerId", platformCustomerId),
-                checkRequired("receivedAmount", receivedAmount),
                 checkRequired("status", status),
                 checkRequired("type", type),
                 agentId,
@@ -1005,6 +1006,7 @@ private constructor(
                 pendingReason,
                 quoteId,
                 receiptDeliveryConfirmedAt,
+                receivedAmount,
                 reconciliationInstructions,
                 refund,
                 sentAmount,
@@ -1034,7 +1036,6 @@ private constructor(
         customerId()
         direction().validate()
         platformCustomerId()
-        receivedAmount().validate()
         status().validate()
         type().validate()
         agentId()
@@ -1047,6 +1048,7 @@ private constructor(
         pendingReason()?.validate()
         quoteId()
         receiptDeliveryConfirmedAt()
+        receivedAmount()?.validate()
         reconciliationInstructions()?.validate()
         refund()?.validate()
         sentAmount()?.validate()
@@ -1073,7 +1075,6 @@ private constructor(
             (if (customerId.asKnown() == null) 0 else 1) +
             (direction.asKnown()?.validity() ?: 0) +
             (if (platformCustomerId.asKnown() == null) 0 else 1) +
-            (receivedAmount.asKnown()?.validity() ?: 0) +
             (status.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (agentId.asKnown() == null) 0 else 1) +
@@ -1086,6 +1087,7 @@ private constructor(
             (pendingReason.asKnown()?.validity() ?: 0) +
             (if (quoteId.asKnown() == null) 0 else 1) +
             (if (receiptDeliveryConfirmedAt.asKnown() == null) 0 else 1) +
+            (receivedAmount.asKnown()?.validity() ?: 0) +
             (reconciliationInstructions.asKnown()?.validity() ?: 0) +
             (refund.asKnown()?.validity() ?: 0) +
             (sentAmount.asKnown()?.validity() ?: 0) +
@@ -1509,6 +1511,10 @@ private constructor(
 
             val COLLECTION_FAILED = of("COLLECTION_FAILED")
 
+            val SWEEP_AMOUNT_OUT_OF_RANGE = of("SWEEP_AMOUNT_OUT_OF_RANGE")
+
+            val SWEEP_QUOTE_FAILED = of("SWEEP_QUOTE_FAILED")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -1524,6 +1530,8 @@ private constructor(
             QUOTE_EXECUTION_FAILED,
             COMPLIANCE_REJECTED,
             COLLECTION_FAILED,
+            SWEEP_AMOUNT_OUT_OF_RANGE,
+            SWEEP_QUOTE_FAILED,
         }
 
         /**
@@ -1546,6 +1554,8 @@ private constructor(
             QUOTE_EXECUTION_FAILED,
             COMPLIANCE_REJECTED,
             COLLECTION_FAILED,
+            SWEEP_AMOUNT_OUT_OF_RANGE,
+            SWEEP_QUOTE_FAILED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -1572,6 +1582,8 @@ private constructor(
                 QUOTE_EXECUTION_FAILED -> Value.QUOTE_EXECUTION_FAILED
                 COMPLIANCE_REJECTED -> Value.COMPLIANCE_REJECTED
                 COLLECTION_FAILED -> Value.COLLECTION_FAILED
+                SWEEP_AMOUNT_OUT_OF_RANGE -> Value.SWEEP_AMOUNT_OUT_OF_RANGE
+                SWEEP_QUOTE_FAILED -> Value.SWEEP_QUOTE_FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -1596,6 +1608,8 @@ private constructor(
                 QUOTE_EXECUTION_FAILED -> Known.QUOTE_EXECUTION_FAILED
                 COMPLIANCE_REJECTED -> Known.COMPLIANCE_REJECTED
                 COLLECTION_FAILED -> Known.COLLECTION_FAILED
+                SWEEP_AMOUNT_OUT_OF_RANGE -> Known.SWEEP_AMOUNT_OUT_OF_RANGE
+                SWEEP_QUOTE_FAILED -> Known.SWEEP_QUOTE_FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
@@ -1822,7 +1836,6 @@ private constructor(
             destination == other.destination &&
             direction == other.direction &&
             platformCustomerId == other.platformCustomerId &&
-            receivedAmount == other.receivedAmount &&
             status == other.status &&
             type == other.type &&
             agentId == other.agentId &&
@@ -1835,6 +1848,7 @@ private constructor(
             pendingReason == other.pendingReason &&
             quoteId == other.quoteId &&
             receiptDeliveryConfirmedAt == other.receiptDeliveryConfirmedAt &&
+            receivedAmount == other.receivedAmount &&
             reconciliationInstructions == other.reconciliationInstructions &&
             refund == other.refund &&
             sentAmount == other.sentAmount &&
@@ -1851,7 +1865,6 @@ private constructor(
             destination,
             direction,
             platformCustomerId,
-            receivedAmount,
             status,
             type,
             agentId,
@@ -1864,6 +1877,7 @@ private constructor(
             pendingReason,
             quoteId,
             receiptDeliveryConfirmedAt,
+            receivedAmount,
             reconciliationInstructions,
             refund,
             sentAmount,
@@ -1877,5 +1891,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, receivedAmount=$receivedAmount, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, pendingReason=$pendingReason, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "IncomingTransaction{id=$id, customerId=$customerId, destination=$destination, direction=$direction, platformCustomerId=$platformCustomerId, status=$status, type=$type, agentId=$agentId, counterpartyInformation=$counterpartyInformation, createdAt=$createdAt, description=$description, exchangeRate=$exchangeRate, failureReason=$failureReason, fees=$fees, pendingReason=$pendingReason, quoteId=$quoteId, receiptDeliveryConfirmedAt=$receiptDeliveryConfirmedAt, receivedAmount=$receivedAmount, reconciliationInstructions=$reconciliationInstructions, refund=$refund, sentAmount=$sentAmount, settledAt=$settledAt, source=$source, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

@@ -78,7 +78,64 @@ internal class InternalAccountListResponseTest {
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .label("invoice-4417")
                         .privateEnabled(true)
+                        .sweepRule(
+                            InternalAccount.SweepRule.builder()
+                                .destination(
+                                    InternalAccount.SweepRule.Destination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
+                                .description("Rent sweep")
+                                .maximumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .minimumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .platformFeeOverride(
+                                    InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            InternalAccount.SweepRule.PlatformFeeOverride
+                                                .PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
+                                .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                                .remittanceInformation("Unit 4B March")
+                                .build()
+                        )
                         .build()
                 )
                 .hasMore(true)
@@ -147,7 +204,64 @@ internal class InternalAccountListResponseTest {
                     .type(InternalAccount.Type.INTERNAL_FIAT)
                     .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .label("invoice-4417")
                     .privateEnabled(true)
+                    .sweepRule(
+                        InternalAccount.SweepRule.builder()
+                            .destination(
+                                InternalAccount.SweepRule.Destination.builder()
+                                    .accountId(
+                                        "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                    )
+                                    .paymentRail(
+                                        InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                    )
+                                    .build()
+                            )
+                            .description("Rent sweep")
+                            .maximumAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .minimumAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .platformFeeOverride(
+                                InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                    .platformFixedFee(
+                                        InternalAccount.SweepRule.PlatformFeeOverride
+                                            .PlatformFixedFee
+                                            .builder()
+                                            .amount(50L)
+                                            .currency("USD")
+                                            .build()
+                                    )
+                                    .platformVariableFeeBps(30L)
+                                    .build()
+                            )
+                            .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                            .remittanceInformation("Unit 4B March")
+                            .build()
+                    )
                     .build()
             )
         assertThat(internalAccountListResponse.hasMore()).isEqualTo(true)
@@ -220,7 +334,64 @@ internal class InternalAccountListResponseTest {
                         .type(InternalAccount.Type.INTERNAL_FIAT)
                         .updatedAt(OffsetDateTime.parse("2025-10-03T12:30:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .label("invoice-4417")
                         .privateEnabled(true)
+                        .sweepRule(
+                            InternalAccount.SweepRule.builder()
+                                .destination(
+                                    InternalAccount.SweepRule.Destination.builder()
+                                        .accountId(
+                                            "ExternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
+                                        )
+                                        .paymentRail(
+                                            InternalAccount.SweepRule.Destination.PaymentRail.ACH
+                                        )
+                                        .build()
+                                )
+                                .description("Rent sweep")
+                                .maximumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .minimumAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .platformFeeOverride(
+                                    InternalAccount.SweepRule.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            InternalAccount.SweepRule.PlatformFeeOverride
+                                                .PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
+                                .purposeOfPayment(InternalAccount.SweepRule.PurposeOfPayment.SELF)
+                                .remittanceInformation("Unit 4B March")
+                                .build()
+                        )
                         .build()
                 )
                 .hasMore(true)

@@ -177,19 +177,6 @@ internal class AgentActionListResponseTest {
                                 .destination(JsonValue.from(mapOf<String, Any>()))
                                 .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
-                                .receivedAmount(
-                                    CurrencyAmount.builder()
-                                        .amount(12550L)
-                                        .currency(
-                                            Currency.builder()
-                                                .code("USD")
-                                                .decimals(2L)
-                                                .name("United States Dollar")
-                                                .symbol("\$")
-                                                .build()
-                                        )
-                                        .build()
-                                )
                                 .status(TransactionStatus.CREATED)
                                 .type(IncomingTransaction.Type.INCOMING)
                                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -212,6 +199,19 @@ internal class AgentActionListResponseTest {
                                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .receiptDeliveryConfirmedAt(
                                     OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                )
+                                .receivedAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
                                 )
                                 .reconciliationInstructions(
                                     ReconciliationInstructions.builder()
@@ -393,19 +393,6 @@ internal class AgentActionListResponseTest {
                             .destination(JsonValue.from(mapOf<String, Any>()))
                             .direction(IncomingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
-                            .receivedAmount(
-                                CurrencyAmount.builder()
-                                    .amount(12550L)
-                                    .currency(
-                                        Currency.builder()
-                                            .code("USD")
-                                            .decimals(2L)
-                                            .name("United States Dollar")
-                                            .symbol("\$")
-                                            .build()
-                                    )
-                                    .build()
-                            )
                             .status(TransactionStatus.CREATED)
                             .type(IncomingTransaction.Type.INCOMING)
                             .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -427,6 +414,19 @@ internal class AgentActionListResponseTest {
                             .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                             .receiptDeliveryConfirmedAt(
                                 OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                            )
+                            .receivedAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
                             )
                             .reconciliationInstructions(
                                 ReconciliationInstructions.builder()
@@ -625,19 +625,6 @@ internal class AgentActionListResponseTest {
                                 .destination(JsonValue.from(mapOf<String, Any>()))
                                 .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
-                                .receivedAmount(
-                                    CurrencyAmount.builder()
-                                        .amount(12550L)
-                                        .currency(
-                                            Currency.builder()
-                                                .code("USD")
-                                                .decimals(2L)
-                                                .name("United States Dollar")
-                                                .symbol("\$")
-                                                .build()
-                                        )
-                                        .build()
-                                )
                                 .status(TransactionStatus.CREATED)
                                 .type(IncomingTransaction.Type.INCOMING)
                                 .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
@@ -660,6 +647,19 @@ internal class AgentActionListResponseTest {
                                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
                                 .receiptDeliveryConfirmedAt(
                                     OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                )
+                                .receivedAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
                                 )
                                 .reconciliationInstructions(
                                     ReconciliationInstructions.builder()
