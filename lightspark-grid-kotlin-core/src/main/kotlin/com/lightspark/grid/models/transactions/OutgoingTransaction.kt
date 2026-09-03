@@ -2022,6 +2022,10 @@ private constructor(
 
             val COUNTERPARTY_POST_TX_FAILED = of("COUNTERPARTY_POST_TX_FAILED")
 
+            val SWEEP_AMOUNT_OUT_OF_RANGE = of("SWEEP_AMOUNT_OUT_OF_RANGE")
+
+            val SWEEP_QUOTE_FAILED = of("SWEEP_QUOTE_FAILED")
+
             fun of(value: String) = FailureReason(JsonField.of(value))
         }
 
@@ -2039,6 +2043,8 @@ private constructor(
             COMPLIANCE_REJECTED,
             LIGHTNING_PAYMENT_FAILED,
             COUNTERPARTY_POST_TX_FAILED,
+            SWEEP_AMOUNT_OUT_OF_RANGE,
+            SWEEP_QUOTE_FAILED,
         }
 
         /**
@@ -2063,6 +2069,8 @@ private constructor(
             COMPLIANCE_REJECTED,
             LIGHTNING_PAYMENT_FAILED,
             COUNTERPARTY_POST_TX_FAILED,
+            SWEEP_AMOUNT_OUT_OF_RANGE,
+            SWEEP_QUOTE_FAILED,
             /**
              * An enum member indicating that [FailureReason] was instantiated with an unknown
              * value.
@@ -2091,6 +2099,8 @@ private constructor(
                 COMPLIANCE_REJECTED -> Value.COMPLIANCE_REJECTED
                 LIGHTNING_PAYMENT_FAILED -> Value.LIGHTNING_PAYMENT_FAILED
                 COUNTERPARTY_POST_TX_FAILED -> Value.COUNTERPARTY_POST_TX_FAILED
+                SWEEP_AMOUNT_OUT_OF_RANGE -> Value.SWEEP_AMOUNT_OUT_OF_RANGE
+                SWEEP_QUOTE_FAILED -> Value.SWEEP_QUOTE_FAILED
                 else -> Value._UNKNOWN
             }
 
@@ -2117,6 +2127,8 @@ private constructor(
                 COMPLIANCE_REJECTED -> Known.COMPLIANCE_REJECTED
                 LIGHTNING_PAYMENT_FAILED -> Known.LIGHTNING_PAYMENT_FAILED
                 COUNTERPARTY_POST_TX_FAILED -> Known.COUNTERPARTY_POST_TX_FAILED
+                SWEEP_AMOUNT_OUT_OF_RANGE -> Known.SWEEP_AMOUNT_OUT_OF_RANGE
+                SWEEP_QUOTE_FAILED -> Known.SWEEP_QUOTE_FAILED
                 else -> throw LightsparkGridInvalidDataException("Unknown FailureReason: $value")
             }
 
