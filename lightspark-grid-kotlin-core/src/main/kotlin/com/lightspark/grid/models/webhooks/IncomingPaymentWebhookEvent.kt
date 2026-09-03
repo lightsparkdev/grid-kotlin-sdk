@@ -537,7 +537,8 @@ private constructor(
         fun description(): String? = description.getNullable("description")
 
         /**
-         * Number of sending currency units per receiving currency unit.
+         * Number of sending currency units per receiving currency unit. The rate is fee-exclusive:
+         * Grid deducts fees from the sending amount before converting at this rate.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1125,7 +1126,11 @@ private constructor(
                 this.description = description
             }
 
-            /** Number of sending currency units per receiving currency unit. */
+            /**
+             * Number of sending currency units per receiving currency unit. The rate is
+             * fee-exclusive: Grid deducts fees from the sending amount before converting at this
+             * rate.
+             */
             fun exchangeRate(exchangeRate: Double) = exchangeRate(JsonField.of(exchangeRate))
 
             /**
