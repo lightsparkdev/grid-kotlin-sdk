@@ -44,10 +44,6 @@ internal class CardServiceAsyncTest {
             cardServiceAsync.update(
                 CardUpdateParams.builder()
                     .id("id")
-                    .gridWalletSignature(
-                        "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
-                    )
-                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .cardUpdateRequest(
                         CardUpdateRequest.builder()
                             .addFundingSource(
@@ -56,6 +52,8 @@ internal class CardServiceAsyncTest {
                             .addFundingSource(
                                 "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
                             )
+                            .maxSpendPerDay(25000L)
+                            .maxSpendPerTransaction(10000L)
                             .state(CardUpdateRequest.State.FROZEN)
                             .build()
                     )
@@ -100,7 +98,10 @@ internal class CardServiceAsyncTest {
                     .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .maxSpendPerDay(25000L)
+                    .maxSpendPerTransaction(5000L)
                     .platformCardId("card-emp-aary-001")
+                    .threeDSecurePassword("AbCd1234EfGh5678")
                     .build()
             )
 

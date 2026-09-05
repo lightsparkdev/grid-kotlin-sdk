@@ -32,7 +32,11 @@ interface CardService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CardService
 
-    /** Retrieve a card by its system-generated id. */
+    /**
+     * Retrieve a card by its system-generated id. To display the card's full PAN, CVV, and expiry
+     * to the cardholder, request a reveal with `POST /cards/{id}/reveal` — the card resource itself
+     * never carries the reveal URL.
+     */
     fun retrieve(
         id: String,
         params: CardRetrieveParams = CardRetrieveParams.none(),
@@ -50,8 +54,8 @@ interface CardService {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state` and / or its bound `fundingSources`. At least one of the two fields
-     * must be supplied.
+     * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`, or
+     * `maxSpendPerDay`. At least one field must be supplied.
      * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
@@ -59,16 +63,28 @@ interface CardService {
      *   order determines the priority Authorization Decisioning tries them in. Each id must belong
      *   to the cardholder and be denominated in the card's currency; the list must contain at least
      *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
+     * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap.
+     *   Supply a positive integer in the smallest unit of the card's currency to set it or null to
+     *   clear it. If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces
+     *   the lower of the card and platform values. Limits are supported only for card programs
+     *   where Grid makes the authorization decision. `maxSpendPerTransaction` cannot be supplied
+     *   alongside `state: CLOSED`.
+     * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend
+     *   during one UTC calendar day. Supply a positive integer in the smallest unit of the card's
+     *   currency to set it or null to clear it. If the platform config sets
+     *   `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the card and platform values.
+     *   Refunds, reversals, and authorization expiries do not restore capacity during the day.
+     *   `maxSpendPerDay` cannot be supplied alongside `state: CLOSED`.
      *
-     * Because both updates are sensitive state changes, this endpoint uses Grid's 202 →
-     * signed-retry pattern (same shape as `DELETE /auth/credentials/{id}` and `POST
-     * /internal-accounts/{id}/export`):
-     * 1. Call `PATCH /cards/{id}` with the target fields and no signing headers. The response is
-     *    `202` with a `payloadToSign`, `requestId`, and `expiresAt`.
-     * 2. Sign the `payloadToSign` with the session private key of a verified authentication
-     *    credential on the card's owning internal account and retry with the signature as the
-     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The signed retry returns `200` with the updated `Card`.
+     * This endpoint is authenticated by the platform credential alone and returns `200` directly.
+     * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
+     * session key of a credential on the owning internal account, so it models actions taken *by*
+     * the end user on their own credentials or funds. Freezing or closing a card is routinely an
+     * action taken *about* a user and without them present - fraud response, offboarding, an
+     * ops-driven freeze - and requiring the cardholder's signature would make exactly those cases
+     * impossible. Operations that expose sensitive card data (`POST /cards/{id}/reveal`, 3DS
+     * password retrieval) are SCA-railed instead, because there the cardholder is the party being
+     * served.
      *
      * Effects:
      * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
@@ -119,9 +135,22 @@ interface CardService {
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
-     * New cards start in `state: "PENDING_ISSUE"` while the card issuer provisions the card. The
-     * `card.state_change` webhook fires on the transition to `ACTIVE` (or to `CLOSED` with
-     * `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+     * Optional `maxSpendPerTransaction` and `maxSpendPerDay` values set the card-specific caps on
+     * one transaction and one UTC calendar day. The limits are enforced by Grid for card programs
+     * where Grid makes the authorization decision, whether the card is funded by an Embedded Wallet
+     * account or custodial fiat. If the platform config sets the corresponding `cardConfigs` value,
+     * Grid enforces the lower of the card and platform caps. All values use the smallest unit of
+     * the card's currency.
+     *
+     * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
+     * Grid to sign Spark token transactions for that card funding source by completing the
+     * delegated-key creation flow with `POST /auth/delegated-keys`. Until an active delegated key
+     * exists for that funding source, Authorization Decisioning cannot use it to fund card
+     * transactions.
+     *
+     * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
+     * `card.state_change` webhook fires on each state transition, including the transition to
+     * `ACTIVE` (or to `CLOSED` with `stateReason: "ISSUER_REJECTED"` if provisioning fails).
      */
     fun issue(params: CardIssueParams, requestOptions: RequestOptions = RequestOptions.none()): Card
 

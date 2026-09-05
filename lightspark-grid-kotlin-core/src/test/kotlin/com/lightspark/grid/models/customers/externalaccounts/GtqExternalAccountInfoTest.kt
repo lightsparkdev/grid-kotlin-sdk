@@ -17,6 +17,7 @@ internal class GtqExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("GTQ_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
     }
 
@@ -28,6 +29,7 @@ internal class GtqExternalAccountInfoTest {
                 .putAdditionalProperty("accountType", JsonValue.from("GTQ_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
+                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
 
         val roundtrippedGtqExternalAccountInfo =

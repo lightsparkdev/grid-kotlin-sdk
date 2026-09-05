@@ -45,6 +45,8 @@ internal class TransferOutServiceAsyncTest {
                                     .build()
                             )
                             .amount(12550L)
+                            .purposeOfPayment(TransferOutRequest.PurposeOfPayment.GIFT)
+                            .remittanceInformation("12345")
                             .build()
                     )
                     .build()

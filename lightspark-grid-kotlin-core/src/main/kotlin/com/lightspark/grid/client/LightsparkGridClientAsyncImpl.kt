@@ -170,21 +170,29 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
     override fun platform(): PlatformServiceAsync = platform
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     override fun transferIn(): TransferInServiceAsync = transferIn
 
     /**
-     * Endpoints for transferring funds between internal and external accounts with the same
-     * currency
+     * Deprecated endpoints for transferring funds between internal and external accounts with the
+     * same currency. Use the quote endpoints under Cross-Currency Transfers instead, which now
+     * serve same-currency transfers as well.
      */
     override fun transferOut(): TransferOutServiceAsync = transferOut
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun receiver(): ReceiverServiceAsync = receiver
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun quotes(): QuoteServiceAsync = quotes
 
     /** Endpoints for retrieving transaction information */
@@ -209,7 +217,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     override fun webhooks(): WebhookServiceAsync = webhooks
 
-    /** Endpoints for creating and confirming quotes for cross-currency transfers */
+    /**
+     * Endpoints for creating and confirming quotes for transfers, both same-currency and
+     * cross-currency
+     */
     override fun crypto(): CryptoServiceAsync = crypto
 
     /**
@@ -364,21 +375,29 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
         override fun platform(): PlatformServiceAsync.WithRawResponse = platform
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         override fun transferIn(): TransferInServiceAsync.WithRawResponse = transferIn
 
         /**
-         * Endpoints for transferring funds between internal and external accounts with the same
-         * currency
+         * Deprecated endpoints for transferring funds between internal and external accounts with
+         * the same currency. Use the quote endpoints under Cross-Currency Transfers instead, which
+         * now serve same-currency transfers as well.
          */
         override fun transferOut(): TransferOutServiceAsync.WithRawResponse = transferOut
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun receiver(): ReceiverServiceAsync.WithRawResponse = receiver
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun quotes(): QuoteServiceAsync.WithRawResponse = quotes
 
         /** Endpoints for retrieving transaction information */
@@ -403,7 +422,10 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         override fun webhooks(): WebhookServiceAsync.WithRawResponse = webhooks
 
-        /** Endpoints for creating and confirming quotes for cross-currency transfers */
+        /**
+         * Endpoints for creating and confirming quotes for transfers, both same-currency and
+         * cross-currency
+         */
         override fun crypto(): CryptoServiceAsync.WithRawResponse = crypto
 
         /**

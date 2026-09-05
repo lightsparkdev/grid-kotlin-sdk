@@ -8,6 +8,7 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -31,15 +32,54 @@ internal class CustomerCreateRequestOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .annualIncomeRange(
+                    IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
+                .expectedMonthlyTransactionCount(
+                    IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                        .VOLUME_100_K_TO_1_M
+                )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomerCreateRequest.IdType.SSN)
                 .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                 .nationality("US")
+                .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
+                .phoneNumber("+14155551234")
                 .platformCustomerId("9f84e0c2a72c4fa")
+                .purposeOfAccount(
+                    IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                )
+                .purposeOfAccountOtherDescription("Household budgeting between spouses")
                 .region("US")
+                .addSourceOfFundsCategory(
+                    IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                )
+                .sourceOfFundsOtherDescription("Contest winnings")
+                .addSourceOfWealthCategory(
+                    IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                )
+                .addSourceOfWealthCategory(
+                    IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                )
+                .sourceOfWealthOtherDescription("Royalty income from published works")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -66,15 +106,55 @@ internal class CustomerCreateRequestOneOfTest {
                             .state("CA")
                             .build()
                     )
+                    .annualIncomeRange(
+                        IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
+                    .purposeOfAccount(
+                        IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
                     .region("US")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -92,19 +172,9 @@ internal class CustomerCreateRequestOneOfTest {
     fun ofBusiness() {
         val business =
             BusinessCustomerCreateRequest.builder()
-                .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
-                .address(
-                    Address.builder()
-                        .country("US")
-                        .line1("123 Main Street")
-                        .postalCode("94105")
-                        .city("San Francisco")
-                        .line2("Apt 4B")
-                        .state("CA")
-                        .build()
-                )
                 .businessInfo(
                     BusinessCustomerCreateRequest.BusinessInfo.builder()
+                        .country("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
                         .taxId("47-1234567")
@@ -113,9 +183,9 @@ internal class CustomerCreateRequestOneOfTest {
                                 .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                         )
                         .addCountriesOfOperation("US")
-                        .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerCreateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -127,18 +197,44 @@ internal class CustomerCreateRequestOneOfTest {
                                 .VOLUME_100_K_TO_1_M
                         )
                         .addExpectedRecipientJurisdiction("US")
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                        .build()
+                )
+                .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                .address(
+                    Address.builder()
+                        .country("US")
+                        .line1("123 Main Street")
+                        .postalCode("94105")
+                        .city("San Francisco")
+                        .line2("Apt 4B")
+                        .state("CA")
                         .build()
                 )
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .region("US")
                 .umaAddress("\$john.doe@uma.domain.com")
@@ -156,19 +252,9 @@ internal class CustomerCreateRequestOneOfTest {
         val customerCreateRequestOneOf =
             CustomerCreateRequestOneOf.ofBusiness(
                 BusinessCustomerCreateRequest.builder()
-                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
-                    .address(
-                        Address.builder()
-                            .country("US")
-                            .line1("123 Main Street")
-                            .postalCode("94105")
-                            .city("San Francisco")
-                            .line2("Apt 4B")
-                            .state("CA")
-                            .build()
-                    )
                     .businessInfo(
                         BusinessCustomerCreateRequest.BusinessInfo.builder()
+                            .country("US")
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .legalName("Acme Corporation, Inc.")
                             .taxId("47-1234567")
@@ -177,9 +263,9 @@ internal class CustomerCreateRequestOneOfTest {
                                     .AGRICULTURE_FORESTRY_FISHING_AND_HUNTING
                             )
                             .addCountriesOfOperation("US")
-                            .country("US")
                             .doingBusinessAs("Acme")
                             .entityType(BusinessCustomerCreateRequest.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
                             .expectedMonthlyTransactionCount(
                                 BusinessCustomerCreateRequest.BusinessInfo
                                     .ExpectedMonthlyTransactionCount
@@ -191,20 +277,46 @@ internal class CustomerCreateRequestOneOfTest {
                                     .VOLUME_100_K_TO_1_M
                             )
                             .addExpectedRecipientJurisdiction("US")
+                            .naicsCode("541511")
+                            .primaryContactFirstName("Jane")
+                            .primaryContactLastName("Smith")
                             .purposeOfAccount(
                                 BusinessCustomerCreateRequest.BusinessInfo.PurposeOfAccount
                                     .CONTRACTOR_PAYOUTS
                             )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
+                            .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
+                            .build()
+                    )
+                    .customerType(BusinessCustomerCreateRequest.CustomerType.BUSINESS)
+                    .address(
+                        Address.builder()
+                            .country("US")
+                            .line1("123 Main Street")
+                            .postalCode("94105")
+                            .city("San Francisco")
+                            .line2("Apt 4B")
+                            .state("CA")
                             .build()
                     )
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .kybStatus(BusinessCustomerCreateRequest.KybStatus.APPROVED)
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .region("US")
                     .umaAddress("\$john.doe@uma.domain.com")

@@ -8,6 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.TransactionApproveParams
+import com.lightspark.grid.models.transactions.TransactionCancelParams
 import com.lightspark.grid.models.transactions.TransactionListPage
 import com.lightspark.grid.models.transactions.TransactionListParams
 import com.lightspark.grid.models.transactions.TransactionRejectParams
@@ -51,6 +52,11 @@ interface TransactionService {
      * Retrieve a paginated list of transactions with optional filtering. The transactions can be
      * filtered by customer ID, platform customer ID, UMA address, date range, status, and
      * transaction type.
+     *
+     * Card transactions are included and identified by `type: CARD`. In Sandbox this is how you
+     * discover a `CardTransaction` id after simulating an authorization — list the transactions,
+     * take the card transaction's `id`, and pass it as the `cardTransactionId` to the clearing and
+     * return simulate endpoints.
      */
     fun list(
         params: TransactionListParams = TransactionListParams.none(),
@@ -81,6 +87,31 @@ interface TransactionService {
     /** @see approve */
     fun approve(transactionId: String, requestOptions: RequestOptions): IncomingTransaction =
         approve(transactionId, TransactionApproveParams.none(), requestOptions)
+
+    /**
+     * Request cancellation of a pending bank transfer — an ACH transfer (push or pull) or a wire —
+     * before it has settled, for example a payment or collection initiated outside of the receiving
+     * bank's processing window. Whether a transfer can still be cancelled is determined by the
+     * banking partner that is settling it: the request is forwarded to the partner's own
+     * cancellation facility, and a transfer that the partner has already processed (or that is
+     * otherwise past its cancellation window) cannot be cancelled. Cancellation applies to
+     * bank-rail transfers; requests for transaction types that cannot be cancelled are rejected.
+     */
+    fun cancel(
+        transactionId: String,
+        params: TransactionCancelParams = TransactionCancelParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Transaction = cancel(params.toBuilder().transactionId(transactionId).build(), requestOptions)
+
+    /** @see cancel */
+    fun cancel(
+        params: TransactionCancelParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): Transaction
+
+    /** @see cancel */
+    fun cancel(transactionId: String, requestOptions: RequestOptions): Transaction =
+        cancel(transactionId, TransactionCancelParams.none(), requestOptions)
 
     /**
      * Reject a pending incoming payment that was previously acknowledged with a 202 response. This
@@ -185,6 +216,33 @@ interface TransactionService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<IncomingTransaction> =
             approve(transactionId, TransactionApproveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /transactions/{transactionId}/cancel`, but is
+         * otherwise the same as [TransactionService.cancel].
+         */
+        @MustBeClosed
+        fun cancel(
+            transactionId: String,
+            params: TransactionCancelParams = TransactionCancelParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Transaction> =
+            cancel(params.toBuilder().transactionId(transactionId).build(), requestOptions)
+
+        /** @see cancel */
+        @MustBeClosed
+        fun cancel(
+            params: TransactionCancelParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<Transaction>
+
+        /** @see cancel */
+        @MustBeClosed
+        fun cancel(
+            transactionId: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<Transaction> =
+            cancel(transactionId, TransactionCancelParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /transactions/{transactionId}/reject`, but is

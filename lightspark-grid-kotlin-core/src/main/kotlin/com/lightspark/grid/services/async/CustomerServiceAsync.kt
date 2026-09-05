@@ -12,16 +12,18 @@ import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
+import com.lightspark.grid.models.customers.CustomerExportResponse
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPageAsync
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPageAsync
 import com.lightspark.grid.models.customers.CustomerListParams
 import com.lightspark.grid.models.customers.CustomerOneOf
+import com.lightspark.grid.models.customers.CustomerRetrieveEndUserTermsParams
 import com.lightspark.grid.models.customers.CustomerRetrieveParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
+import com.lightspark.grid.models.customers.EndUserTerms
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
-import com.lightspark.grid.models.customers.InternalAccountExportResponse
 import com.lightspark.grid.models.customers.KycLinkResponse
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.services.async.customers.BulkServiceAsync
@@ -99,16 +101,21 @@ interface CustomerServiceAsync {
      *
      * Most customer updates complete synchronously and return `200` with the updated customer. If
      * the request changes `email` for a customer that has one or more tied Embedded Wallet internal
-     * accounts with `EMAIL_OTP` credentials, the email change uses the two-step signed-retry flow
-     * so the customer's wallet session authorizes the authentication credential update. On the
-     * signed retry, Grid updates the customer email and every tied `EMAIL_OTP` credential across
-     * all tied Embedded Wallets as one logical operation. If any tied credential cannot be updated,
-     * the customer email is not changed.
+     * accounts with `EMAIL_OTP` credentials, or changes `phoneNumber` for a customer that has one
+     * or more tied Embedded Wallet internal accounts with `SMS_OTP` credentials, the contact update
+     * uses the two-step signed-retry flow so the customer's wallet session authorizes the
+     * authentication credential update. On the signed retry, Grid updates the customer contact
+     * field and every tied matching OTP credential across all tied Embedded Wallets as one logical
+     * operation. If any tied credential cannot be updated, the customer contact field is not
+     * changed.
      *
-     * For an Embedded Wallet email update:
+     * Update `email` and `phoneNumber` in separate PATCH calls. A request that includes both fields
+     * is rejected.
+     *
+     * For an Embedded Wallet email or SMS auth phone update:
      * 1. Call `PATCH /customers/{customerId}` with the full update body and no signature headers.
      *    Grid returns `202` with `payloadToSign`, `requestId`, and `expiresAt`. The pending
-     *    challenge binds the submitted update fields and the set of tied Embedded Wallet email OTP
+     *    challenge binds the submitted update fields and the set of tied Embedded Wallet OTP
      *    credentials that must be updated.
      * 2. Use the session API keypair of a verified authentication credential on one of the
      *    customer's tied Embedded Wallets to build an API-key stamp over `payloadToSign`, then
@@ -165,8 +172,21 @@ interface CustomerServiceAsync {
      * via the provider's SDK.
      *
      * The customer must already exist — create them with `POST /customers` first. Calling this
-     * endpoint does not change the customer's `kycStatus`; the customer remains `PENDING` until
-     * they complete (or fail) the hosted flow.
+     * endpoint does not change the customer's verification status; the customer remains at their
+     * current status until they complete (or fail) the hosted flow.
+     *
+     * This endpoint generates the link for both customer types; `customerType` selects which flow
+     * the provider runs. `INDIVIDUAL` runs identity verification (KYC), tracked on `kycStatus`.
+     * `BUSINESS` runs business verification (KYB), tracked on `kybStatus` — the flow confirms the
+     * company details, collects formation, ownership, and proof-of-address documents, and gathers
+     * the control person and every beneficial owner holding 25% or more. Business information
+     * already supplied via `POST /customers` or `PATCH /customers/{customerId}` is prefilled, so
+     * send what you have before generating the link.
+     *
+     * The hosted link is one of two ways to verify a customer. To collect the data yourself
+     * instead, submit it through `POST /customers`, `POST /beneficial-owners` (business customers),
+     * and `POST /documents`, then call `POST /verifications`. Both paths produce the same status
+     * transitions and the same `CUSTOMER.KYC_*` / `CUSTOMER.KYB_*` webhooks.
      *
      * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
      * single-use and will expire on their own. For request-level retry safety, include an
@@ -208,6 +228,15 @@ interface CustomerServiceAsync {
      *    `payloadToSign`. The signed retry returns `200` with `encryptedWalletCredentials`, which
      *    the client decrypts with the matching private key.
      *
+     * The export may not settle within that request: an approval- or consensus-gated
+     * wallet-provider activity answers `200` with `status: "PROCESSING"` instead. The credentials
+     * are never stored server-side, so collecting them is the client's job — re-send the
+     * byte-identical signed retry (same headers, same body) until it returns
+     * `encryptedWalletCredentials`. The `Request-Id` challenge stays usable until an attempt
+     * actually delivers them, so a `PROCESSING` response never burns it; a delivered export does,
+     * and a later re-send is then rejected with `401`. Subscribe to `wallet_operation.completed` to
+     * learn when re-sending will succeed rather than polling blind.
+     *
      * The `clientPublicKey` is ephemeral: generate a fresh P-256 keypair for this export and
      * discard the private key after decrypting. Do not reuse the keypair from any prior verify call
      * — that private key was already discarded after decrypting the session signing key it was
@@ -217,13 +246,13 @@ interface CustomerServiceAsync {
         id: String,
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
+    ): CustomerExportResponse = export(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see export */
     suspend fun export(
         params: CustomerExportParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): InternalAccountExportResponse
+    ): CustomerExportResponse
 
     /**
      * Retrieve a list of internal accounts with optional filtering parameters. Returns all internal
@@ -243,6 +272,16 @@ interface CustomerServiceAsync {
         requestOptions: RequestOptions
     ): CustomerListInternalAccountsPageAsync =
         listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+    /** Retrieve the current version and Grid-hosted URL of the End User Terms. */
+    suspend fun retrieveEndUserTerms(
+        params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): EndUserTerms
+
+    /** @see retrieveEndUserTerms */
+    suspend fun retrieveEndUserTerms(requestOptions: RequestOptions): EndUserTerms =
+        retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)
 
     /**
      * Update mutable fields on an internal account. Today this supports updating the wallet privacy
@@ -453,7 +492,7 @@ interface CustomerServiceAsync {
             id: String,
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse> =
+        ): HttpResponseFor<CustomerExportResponse> =
             export(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see export */
@@ -461,7 +500,7 @@ interface CustomerServiceAsync {
         suspend fun export(
             params: CustomerExportParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<InternalAccountExportResponse>
+        ): HttpResponseFor<CustomerExportResponse>
 
         /**
          * Returns a raw HTTP response for `get /customers/internal-accounts`, but is otherwise the
@@ -479,6 +518,23 @@ interface CustomerServiceAsync {
             requestOptions: RequestOptions
         ): HttpResponseFor<CustomerListInternalAccountsPageAsync> =
             listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /customers/end-user-terms`, but is otherwise the
+         * same as [CustomerServiceAsync.retrieveEndUserTerms].
+         */
+        @MustBeClosed
+        suspend fun retrieveEndUserTerms(
+            params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<EndUserTerms>
+
+        /** @see retrieveEndUserTerms */
+        @MustBeClosed
+        suspend fun retrieveEndUserTerms(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<EndUserTerms> =
+            retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `patch /internal-accounts/{id}`, but is otherwise the

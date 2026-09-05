@@ -29,11 +29,26 @@ internal class CustomerOneOfTest {
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .isDeleted(false)
+                .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(
@@ -46,10 +61,29 @@ internal class CustomerOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
+                .expectedMonthlyTransactionCount(
+                    IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomer.IdType.SSN)
                 .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                 .nationality("US")
+                .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                .pepStatus(IndividualCustomer.PepStatus.NONE)
+                .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                .sourceOfFundsOtherDescription("Contest winnings")
+                .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.INVESTMENTS)
+                .sourceOfWealthOtherDescription("Royalty income from published works")
                 .build()
 
         val customerOneOf = CustomerOneOf.ofIndividualCustomer(individualCustomer)
@@ -68,11 +102,26 @@ internal class CustomerOneOfTest {
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .contactVerification(
+                        Customer.ContactVerification.builder()
+                            .email(Customer.ContactVerification.Email.VERIFIED)
+                            .phone(Customer.ContactVerification.Phone.VERIFIED)
+                            .build()
+                    )
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .isDeleted(false)
+                    .phoneNumber("+14155551234")
                     .region("US")
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .address(
@@ -85,10 +134,31 @@ internal class CustomerOneOfTest {
                             .state("CA")
                             .build()
                     )
+                    .annualIncomeRange(IndividualCustomer.AnnualIncomeRange.RANGE_100_K_250_K)
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomer.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomer.ExpectedMonthlyTransactionVolume.VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomer.IdType.SSN)
                     .kycStatus(IndividualCustomer.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomer.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomer.PepStatus.NONE)
+                    .purposeOfAccount(IndividualCustomer.PurposeOfAccount.CONTRACTOR_PAYOUTS)
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                    .addSourceOfFundsCategory(IndividualCustomer.SourceOfFundsCategory.SALARY)
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(IndividualCustomer.SourceOfWealthCategory.SALARY)
+                    .addSourceOfWealthCategory(
+                        IndividualCustomer.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .build()
             )
 
@@ -109,11 +179,26 @@ internal class CustomerOneOfTest {
                 .platformCustomerId("9f84e0c2a72c4fa")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .contactVerification(
+                    Customer.ContactVerification.builder()
+                        .email(Customer.ContactVerification.Email.VERIFIED)
+                        .phone(Customer.ContactVerification.Phone.VERIFIED)
+                        .build()
+                )
                 .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .addCurrency("USD")
                 .addCurrency("USDC")
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .isDeleted(false)
+                .phoneNumber("+14155551234")
                 .region("US")
                 .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                 .address(
@@ -173,6 +258,7 @@ internal class CustomerOneOfTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
                                 .COUNT_100_TO_500
@@ -183,11 +269,17 @@ internal class CustomerOneOfTest {
                         )
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
@@ -210,11 +302,26 @@ internal class CustomerOneOfTest {
                     .platformCustomerId("9f84e0c2a72c4fa")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .contactVerification(
+                        Customer.ContactVerification.builder()
+                            .email(Customer.ContactVerification.Email.VERIFIED)
+                            .phone(Customer.ContactVerification.Phone.VERIFIED)
+                            .build()
+                    )
                     .createdAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .isDeleted(false)
+                    .phoneNumber("+14155551234")
                     .region("US")
                     .updatedAt(OffsetDateTime.parse("2025-07-21T17:32:28Z"))
                     .address(
@@ -274,6 +381,7 @@ internal class CustomerOneOfTest {
                             .country("US")
                             .doingBusinessAs("Acme")
                             .entityType(BusinessCustomer.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
                             .expectedMonthlyTransactionCount(
                                 BusinessCustomer.BusinessInfo.ExpectedMonthlyTransactionCount
                                     .COUNT_100_TO_500
@@ -284,13 +392,19 @@ internal class CustomerOneOfTest {
                             )
                             .addExpectedRecipientJurisdiction("US")
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
+                            .naicsCode("541511")
+                            .primaryContactFirstName("Jane")
+                            .primaryContactLastName("Smith")
                             .purposeOfAccount(
                                 BusinessCustomer.BusinessInfo.PurposeOfAccount.CONTRACTOR_PAYOUTS
                             )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
+                            .addSourceOfFundsCategory(JsonValue.from("OPERATING_REVENUE"))
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                             .taxId("47-1234567")
                             .build()
                     )

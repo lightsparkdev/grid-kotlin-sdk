@@ -46,6 +46,38 @@ internal class ConfigServiceAsyncTest {
         val platformConfig =
             configServiceAsync.update(
                 PlatformConfigUpdateRequest.builder()
+                    .cardConfigs(
+                        PlatformConfigUpdateRequest.CardConfigs.builder()
+                            .maxSpendPerDay(50000L)
+                            .maxSpendPerTransaction(10000L)
+                            .build()
+                    )
+                    .cardTokenization2faConfig(
+                        PlatformConfigUpdateRequest.CardTokenization2faConfig.builder()
+                            .displayName("Acme")
+                            .email(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Email
+                                    .builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .fromAddress("cards@acme.com")
+                                    .fromName("Acme Cards")
+                                    .replyToAddress("support@acme.com")
+                                    .subject("Your Acme card verification code")
+                                    .build()
+                            )
+                            .logoUrl("https://acme.com/card-email-logo.png")
+                            .sms(
+                                PlatformConfigUpdateRequest.CardTokenization2faConfig.Sms.builder()
+                                    .bodyText(
+                                        "Use this code to finish adding your Acme card to your digital wallet."
+                                    )
+                                    .templateSid("HJaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                    .build()
+                            )
+                            .build()
+                    )
                     .embeddedWalletConfig(
                         EmbeddedWalletConfig.builder()
                             .alphanumeric(false)
@@ -56,6 +88,20 @@ internal class ConfigServiceAsyncTest {
                             .replyToEmailAddress("support@acme.com")
                             .sendFromEmailAddress("noreply@acme.com")
                             .sendFromEmailSenderName("Acme Notifications")
+                            .build()
+                    )
+                    .addFeeConfig(
+                        PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                            .fixedFee(
+                                PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction
+                                    .FixedFee
+                                    .builder()
+                                    .amount(100L)
+                                    .currency("USD")
+                                    .build()
+                            )
+                            .sourceCurrency("USD")
+                            .variableFeeBps(30L)
                             .build()
                     )
                     .addSupportedCurrency(

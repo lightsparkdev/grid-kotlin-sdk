@@ -22,7 +22,9 @@ import com.lightspark.grid.models.quotes.QuoteCreateParams
 import com.lightspark.grid.models.quotes.QuoteExecuteParams
 import com.lightspark.grid.models.quotes.QuoteRetrieveParams
 
-/** Endpoints for creating and confirming quotes for cross-currency transfers */
+/**
+ * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
+ */
 class QuoteServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     QuoteServiceAsync {
 
@@ -144,7 +146,7 @@ class QuoteServiceAsyncImpl internal constructor(private val clientOptions: Clie
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("quotes", params._pathParam(0), "execute")
-                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepareAsync(
                         clientOptions,

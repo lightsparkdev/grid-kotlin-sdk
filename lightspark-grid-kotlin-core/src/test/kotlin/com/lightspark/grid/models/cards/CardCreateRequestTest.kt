@@ -16,7 +16,10 @@ internal class CardCreateRequestTest {
                 .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .form(CardCreateRequest.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .maxSpendPerDay(25000L)
+                .maxSpendPerTransaction(5000L)
                 .platformCardId("card-emp-aary-001")
+                .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
         assertThat(cardCreateRequest.cardholderId())
@@ -24,7 +27,10 @@ internal class CardCreateRequestTest {
         assertThat(cardCreateRequest.form()).isEqualTo(CardCreateRequest.Form.VIRTUAL)
         assertThat(cardCreateRequest.fundingSources())
             .containsExactly("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+        assertThat(cardCreateRequest.maxSpendPerDay()).isEqualTo(25000L)
+        assertThat(cardCreateRequest.maxSpendPerTransaction()).isEqualTo(5000L)
         assertThat(cardCreateRequest.platformCardId()).isEqualTo("card-emp-aary-001")
+        assertThat(cardCreateRequest.threeDSecurePassword()).isEqualTo("AbCd1234EfGh5678")
     }
 
     @Test
@@ -35,7 +41,10 @@ internal class CardCreateRequestTest {
                 .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .form(CardCreateRequest.Form.VIRTUAL)
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .maxSpendPerDay(25000L)
+                .maxSpendPerTransaction(5000L)
                 .platformCardId("card-emp-aary-001")
+                .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
         val roundtrippedCardCreateRequest =

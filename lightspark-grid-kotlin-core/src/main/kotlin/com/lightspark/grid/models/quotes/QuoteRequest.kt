@@ -27,7 +27,10 @@ private constructor(
     private val description: JsonField<String>,
     private val immediatelyExecute: JsonField<Boolean>,
     private val lookupId: JsonField<String>,
+    private val platformFeeOverride: JsonField<PlatformFeeOverride>,
     private val purposeOfPayment: JsonField<PurposeOfPayment>,
+    private val remittanceInformation: JsonField<String>,
+    private val scaFactor: JsonField<ScaFactor>,
     private val senderCustomerInfo: JsonField<SenderCustomerInfo>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -53,9 +56,18 @@ private constructor(
         @ExcludeMissing
         immediatelyExecute: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("lookupId") @ExcludeMissing lookupId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("platformFeeOverride")
+        @ExcludeMissing
+        platformFeeOverride: JsonField<PlatformFeeOverride> = JsonMissing.of(),
         @JsonProperty("purposeOfPayment")
         @ExcludeMissing
         purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of(),
+        @JsonProperty("remittanceInformation")
+        @ExcludeMissing
+        remittanceInformation: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("scaFactor")
+        @ExcludeMissing
+        scaFactor: JsonField<ScaFactor> = JsonMissing.of(),
         @JsonProperty("senderCustomerInfo")
         @ExcludeMissing
         senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of(),
@@ -67,7 +79,10 @@ private constructor(
         description,
         immediatelyExecute,
         lookupId,
+        platformFeeOverride,
         purposeOfPayment,
+        remittanceInformation,
+        scaFactor,
         senderCustomerInfo,
         mutableMapOf(),
     )
@@ -143,6 +158,18 @@ private constructor(
     fun lookupId(): String? = lookupId.getNullable("lookupId")
 
     /**
+     * Overrides the platform-collected fee for this transaction. When present, it replaces any
+     * configured platform-collected fees that would otherwise apply to the transaction. Currently
+     * only supported when the quote's source currency is USD; the fixed fee must be denominated in
+     * the source currency.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun platformFeeOverride(): PlatformFeeOverride? =
+        platformFeeOverride.getNullable("platformFeeOverride")
+
+    /**
      * The purpose of the payment. This may be required when sending to certain geographies (e.g.
      * India).
      *
@@ -150,6 +177,30 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun purposeOfPayment(): PurposeOfPayment? = purposeOfPayment.getNullable("purposeOfPayment")
+
+    /**
+     * Free-form information about the payment that travels with it to the recipient. The field this
+     * populates depends on the payment rail: for ACH it populates the Addenda record, for FedNow
+     * and RTP it populates the remittanceInformation field, and for wires it populates the OBI
+     * (Originator to Beneficiary Information) / beneficiary information.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun remittanceInformation(): String? =
+        remittanceInformation.getNullable("remittanceInformation")
+
+    /**
+     * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+     * creation. Only relevant for a realtime-funding source in a region where SCA is required (e.g.
+     * EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP` cannot
+     * carry the required dynamic linking and is rejected. When the quote is returned in
+     * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun scaFactor(): ScaFactor? = scaFactor.getNullable("scaFactor")
 
     /**
      * Key-value pairs of additional information about the sender which was requested by the
@@ -227,6 +278,16 @@ private constructor(
     @JsonProperty("lookupId") @ExcludeMissing fun _lookupId(): JsonField<String> = lookupId
 
     /**
+     * Returns the raw JSON value of [platformFeeOverride].
+     *
+     * Unlike [platformFeeOverride], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("platformFeeOverride")
+    @ExcludeMissing
+    fun _platformFeeOverride(): JsonField<PlatformFeeOverride> = platformFeeOverride
+
+    /**
      * Returns the raw JSON value of [purposeOfPayment].
      *
      * Unlike [purposeOfPayment], this method doesn't throw if the JSON field has an unexpected
@@ -235,6 +296,23 @@ private constructor(
     @JsonProperty("purposeOfPayment")
     @ExcludeMissing
     fun _purposeOfPayment(): JsonField<PurposeOfPayment> = purposeOfPayment
+
+    /**
+     * Returns the raw JSON value of [remittanceInformation].
+     *
+     * Unlike [remittanceInformation], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("remittanceInformation")
+    @ExcludeMissing
+    fun _remittanceInformation(): JsonField<String> = remittanceInformation
+
+    /**
+     * Returns the raw JSON value of [scaFactor].
+     *
+     * Unlike [scaFactor], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("scaFactor") @ExcludeMissing fun _scaFactor(): JsonField<ScaFactor> = scaFactor
 
     /**
      * Returns the raw JSON value of [senderCustomerInfo].
@@ -284,7 +362,10 @@ private constructor(
         private var description: JsonField<String> = JsonMissing.of()
         private var immediatelyExecute: JsonField<Boolean> = JsonMissing.of()
         private var lookupId: JsonField<String> = JsonMissing.of()
+        private var platformFeeOverride: JsonField<PlatformFeeOverride> = JsonMissing.of()
         private var purposeOfPayment: JsonField<PurposeOfPayment> = JsonMissing.of()
+        private var remittanceInformation: JsonField<String> = JsonMissing.of()
+        private var scaFactor: JsonField<ScaFactor> = JsonMissing.of()
         private var senderCustomerInfo: JsonField<SenderCustomerInfo> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -296,7 +377,10 @@ private constructor(
             description = quoteRequest.description
             immediatelyExecute = quoteRequest.immediatelyExecute
             lookupId = quoteRequest.lookupId
+            platformFeeOverride = quoteRequest.platformFeeOverride
             purposeOfPayment = quoteRequest.purposeOfPayment
+            remittanceInformation = quoteRequest.remittanceInformation
+            scaFactor = quoteRequest.scaFactor
             senderCustomerInfo = quoteRequest.senderCustomerInfo
             additionalProperties = quoteRequest.additionalProperties.toMutableMap()
         }
@@ -420,6 +504,26 @@ private constructor(
         fun lookupId(lookupId: JsonField<String>) = apply { this.lookupId = lookupId }
 
         /**
+         * Overrides the platform-collected fee for this transaction. When present, it replaces any
+         * configured platform-collected fees that would otherwise apply to the transaction.
+         * Currently only supported when the quote's source currency is USD; the fixed fee must be
+         * denominated in the source currency.
+         */
+        fun platformFeeOverride(platformFeeOverride: PlatformFeeOverride) =
+            platformFeeOverride(JsonField.of(platformFeeOverride))
+
+        /**
+         * Sets [Builder.platformFeeOverride] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.platformFeeOverride] with a well-typed
+         * [PlatformFeeOverride] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun platformFeeOverride(platformFeeOverride: JsonField<PlatformFeeOverride>) = apply {
+            this.platformFeeOverride = platformFeeOverride
+        }
+
+        /**
          * The purpose of the payment. This may be required when sending to certain geographies
          * (e.g. India).
          */
@@ -436,6 +540,44 @@ private constructor(
         fun purposeOfPayment(purposeOfPayment: JsonField<PurposeOfPayment>) = apply {
             this.purposeOfPayment = purposeOfPayment
         }
+
+        /**
+         * Free-form information about the payment that travels with it to the recipient. The field
+         * this populates depends on the payment rail: for ACH it populates the Addenda record, for
+         * FedNow and RTP it populates the remittanceInformation field, and for wires it populates
+         * the OBI (Originator to Beneficiary Information) / beneficiary information.
+         */
+        fun remittanceInformation(remittanceInformation: String) =
+            remittanceInformation(JsonField.of(remittanceInformation))
+
+        /**
+         * Sets [Builder.remittanceInformation] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.remittanceInformation] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun remittanceInformation(remittanceInformation: JsonField<String>) = apply {
+            this.remittanceInformation = remittanceInformation
+        }
+
+        /**
+         * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+         * creation. Only relevant for a realtime-funding source in a region where SCA is required
+         * (e.g. EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP`
+         * cannot carry the required dynamic linking and is rejected. When the quote is returned in
+         * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+         */
+        fun scaFactor(scaFactor: ScaFactor) = scaFactor(JsonField.of(scaFactor))
+
+        /**
+         * Sets [Builder.scaFactor] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.scaFactor] with a well-typed [ScaFactor] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun scaFactor(scaFactor: JsonField<ScaFactor>) = apply { this.scaFactor = scaFactor }
 
         /**
          * Key-value pairs of additional information about the sender which was requested by the
@@ -503,7 +645,10 @@ private constructor(
                 description,
                 immediatelyExecute,
                 lookupId,
+                platformFeeOverride,
                 purposeOfPayment,
+                remittanceInformation,
+                scaFactor,
                 senderCustomerInfo,
                 additionalProperties.toMutableMap(),
             )
@@ -529,7 +674,10 @@ private constructor(
         description()
         immediatelyExecute()
         lookupId()
+        platformFeeOverride()?.validate()
         purposeOfPayment()?.validate()
+        remittanceInformation()
+        scaFactor()?.validate()
         senderCustomerInfo()?.validate()
         validated = true
     }
@@ -553,7 +701,10 @@ private constructor(
             (if (description.asKnown() == null) 0 else 1) +
             (if (immediatelyExecute.asKnown() == null) 0 else 1) +
             (if (lookupId.asKnown() == null) 0 else 1) +
+            (platformFeeOverride.asKnown()?.validity() ?: 0) +
             (purposeOfPayment.asKnown()?.validity() ?: 0) +
+            (if (remittanceInformation.asKnown() == null) 0 else 1) +
+            (scaFactor.asKnown()?.validity() ?: 0) +
             (senderCustomerInfo.asKnown()?.validity() ?: 0)
 
     /**
@@ -703,6 +854,473 @@ private constructor(
     }
 
     /**
+     * Overrides the platform-collected fee for this transaction. When present, it replaces any
+     * configured platform-collected fees that would otherwise apply to the transaction. Currently
+     * only supported when the quote's source currency is USD; the fixed fee must be denominated in
+     * the source currency.
+     */
+    class PlatformFeeOverride
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val platformFixedFee: JsonField<PlatformFixedFee>,
+        private val platformVariableFeeBps: JsonField<Long>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("platformFixedFee")
+            @ExcludeMissing
+            platformFixedFee: JsonField<PlatformFixedFee> = JsonMissing.of(),
+            @JsonProperty("platformVariableFeeBps")
+            @ExcludeMissing
+            platformVariableFeeBps: JsonField<Long> = JsonMissing.of(),
+        ) : this(platformFixedFee, platformVariableFeeBps, mutableMapOf())
+
+        /**
+         * Fixed fee charged for this transaction. Must be denominated in the quote's source
+         * currency (USD today).
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun platformFixedFee(): PlatformFixedFee = platformFixedFee.getRequired("platformFixedFee")
+
+        /**
+         * Variable fee in basis points (1 bps = 0.01%) to apply to the transaction's
+         * source-currency amount.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun platformVariableFeeBps(): Long =
+            platformVariableFeeBps.getRequired("platformVariableFeeBps")
+
+        /**
+         * Returns the raw JSON value of [platformFixedFee].
+         *
+         * Unlike [platformFixedFee], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("platformFixedFee")
+        @ExcludeMissing
+        fun _platformFixedFee(): JsonField<PlatformFixedFee> = platformFixedFee
+
+        /**
+         * Returns the raw JSON value of [platformVariableFeeBps].
+         *
+         * Unlike [platformVariableFeeBps], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("platformVariableFeeBps")
+        @ExcludeMissing
+        fun _platformVariableFeeBps(): JsonField<Long> = platformVariableFeeBps
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [PlatformFeeOverride].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .platformFixedFee()
+             * .platformVariableFeeBps()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [PlatformFeeOverride]. */
+        class Builder internal constructor() {
+
+            private var platformFixedFee: JsonField<PlatformFixedFee>? = null
+            private var platformVariableFeeBps: JsonField<Long>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(platformFeeOverride: PlatformFeeOverride) = apply {
+                platformFixedFee = platformFeeOverride.platformFixedFee
+                platformVariableFeeBps = platformFeeOverride.platformVariableFeeBps
+                additionalProperties = platformFeeOverride.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Fixed fee charged for this transaction. Must be denominated in the quote's source
+             * currency (USD today).
+             */
+            fun platformFixedFee(platformFixedFee: PlatformFixedFee) =
+                platformFixedFee(JsonField.of(platformFixedFee))
+
+            /**
+             * Sets [Builder.platformFixedFee] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.platformFixedFee] with a well-typed
+             * [PlatformFixedFee] value instead. This method is primarily for setting the field to
+             * an undocumented or not yet supported value.
+             */
+            fun platformFixedFee(platformFixedFee: JsonField<PlatformFixedFee>) = apply {
+                this.platformFixedFee = platformFixedFee
+            }
+
+            /**
+             * Variable fee in basis points (1 bps = 0.01%) to apply to the transaction's
+             * source-currency amount.
+             */
+            fun platformVariableFeeBps(platformVariableFeeBps: Long) =
+                platformVariableFeeBps(JsonField.of(platformVariableFeeBps))
+
+            /**
+             * Sets [Builder.platformVariableFeeBps] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.platformVariableFeeBps] with a well-typed [Long]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun platformVariableFeeBps(platformVariableFeeBps: JsonField<Long>) = apply {
+                this.platformVariableFeeBps = platformVariableFeeBps
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [PlatformFeeOverride].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .platformFixedFee()
+             * .platformVariableFeeBps()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): PlatformFeeOverride =
+                PlatformFeeOverride(
+                    checkRequired("platformFixedFee", platformFixedFee),
+                    checkRequired("platformVariableFeeBps", platformVariableFeeBps),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): PlatformFeeOverride = apply {
+            if (validated) {
+                return@apply
+            }
+
+            platformFixedFee().validate()
+            platformVariableFeeBps()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (platformFixedFee.asKnown()?.validity() ?: 0) +
+                (if (platformVariableFeeBps.asKnown() == null) 0 else 1)
+
+        /**
+         * Fixed fee charged for this transaction. Must be denominated in the quote's source
+         * currency (USD today).
+         */
+        class PlatformFixedFee
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val amount: JsonField<Long>,
+            private val currency: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
+                @JsonProperty("currency")
+                @ExcludeMissing
+                currency: JsonField<String> = JsonMissing.of(),
+            ) : this(amount, currency, mutableMapOf())
+
+            /**
+             * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for USD).
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun amount(): Long = amount.getRequired("amount")
+
+            /**
+             * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+             * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC" for
+             * USDC, etc.)
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun currency(): String = currency.getRequired("currency")
+
+            /**
+             * Returns the raw JSON value of [amount].
+             *
+             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+            /**
+             * Returns the raw JSON value of [currency].
+             *
+             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [PlatformFixedFee].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .amount()
+                 * .currency()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [PlatformFixedFee]. */
+            class Builder internal constructor() {
+
+                private var amount: JsonField<Long>? = null
+                private var currency: JsonField<String>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(platformFixedFee: PlatformFixedFee) = apply {
+                    amount = platformFixedFee.amount
+                    currency = platformFixedFee.currency
+                    additionalProperties = platformFixedFee.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for
+                 * USD).
+                 */
+                fun amount(amount: Long) = amount(JsonField.of(amount))
+
+                /**
+                 * Sets [Builder.amount] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.amount] with a well-typed [Long] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+
+                /**
+                 * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                 * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC"
+                 * for USDC, etc.)
+                 */
+                fun currency(currency: String) = currency(JsonField.of(currency))
+
+                /**
+                 * Sets [Builder.currency] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.currency] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [PlatformFixedFee].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .amount()
+                 * .currency()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): PlatformFixedFee =
+                    PlatformFixedFee(
+                        checkRequired("amount", amount),
+                        checkRequired("currency", currency),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): PlatformFixedFee = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                amount()
+                currency()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (if (amount.asKnown() == null) 0 else 1) +
+                    (if (currency.asKnown() == null) 0 else 1)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is PlatformFixedFee &&
+                    amount == other.amount &&
+                    currency == other.currency &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(amount, currency, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "PlatformFixedFee{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is PlatformFeeOverride &&
+                platformFixedFee == other.platformFixedFee &&
+                platformVariableFeeBps == other.platformVariableFeeBps &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(platformFixedFee, platformVariableFeeBps, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "PlatformFeeOverride{platformFixedFee=$platformFixedFee, platformVariableFeeBps=$platformVariableFeeBps, additionalProperties=$additionalProperties}"
+    }
+
+    /**
      * The purpose of the payment. This may be required when sending to certain geographies (e.g.
      * India).
      */
@@ -743,6 +1361,10 @@ private constructor(
 
             val TRAVEL = of("TRAVEL")
 
+            val FAMILY_SUPPORT = of("FAMILY_SUPPORT")
+
+            val SALARY_PAYMENT = of("SALARY_PAYMENT")
+
             val OTHER = of("OTHER")
 
             fun of(value: String) = PurposeOfPayment(JsonField.of(value))
@@ -761,6 +1383,8 @@ private constructor(
             UTILITY_BILL,
             DONATION,
             TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
             OTHER,
         }
 
@@ -785,6 +1409,8 @@ private constructor(
             UTILITY_BILL,
             DONATION,
             TRAVEL,
+            FAMILY_SUPPORT,
+            SALARY_PAYMENT,
             OTHER,
             /**
              * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
@@ -813,6 +1439,8 @@ private constructor(
                 UTILITY_BILL -> Value.UTILITY_BILL
                 DONATION -> Value.DONATION
                 TRAVEL -> Value.TRAVEL
+                FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Value.SALARY_PAYMENT
                 OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
             }
@@ -839,6 +1467,8 @@ private constructor(
                 UTILITY_BILL -> Known.UTILITY_BILL
                 DONATION -> Known.DONATION
                 TRAVEL -> Known.TRAVEL
+                FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
+                SALARY_PAYMENT -> Known.SALARY_PAYMENT
                 OTHER -> Known.OTHER
                 else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
             }
@@ -897,6 +1527,155 @@ private constructor(
             }
 
             return other is PurposeOfPayment && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Optional preferred factor for a Strong Customer Authentication challenge issued at quote
+     * creation. Only relevant for a realtime-funding source in a region where SCA is required (e.g.
+     * EU); ignored otherwise. Valid values are `SMS_OTP` (default) and `PASSKEY` — `TOTP` cannot
+     * carry the required dynamic linking and is rejected. When the quote is returned in
+     * `PENDING_AUTHORIZATION`, authorize it via `POST /quotes/{quoteId}/authorize`.
+     */
+    class ScaFactor @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val SMS_OTP = of("SMS_OTP")
+
+            val TOTP = of("TOTP")
+
+            val PASSKEY = of("PASSKEY")
+
+            fun of(value: String) = ScaFactor(JsonField.of(value))
+        }
+
+        /** An enum containing [ScaFactor]'s known values. */
+        enum class Known {
+            SMS_OTP,
+            TOTP,
+            PASSKEY,
+        }
+
+        /**
+         * An enum containing [ScaFactor]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [ScaFactor] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            SMS_OTP,
+            TOTP,
+            PASSKEY,
+            /**
+             * An enum member indicating that [ScaFactor] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                SMS_OTP -> Value.SMS_OTP
+                TOTP -> Value.TOTP
+                PASSKEY -> Value.PASSKEY
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                SMS_OTP -> Known.SMS_OTP
+                TOTP -> Known.TOTP
+                PASSKEY -> Known.PASSKEY
+                else -> throw LightsparkGridInvalidDataException("Unknown ScaFactor: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): ScaFactor = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ScaFactor && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -1032,7 +1811,10 @@ private constructor(
             description == other.description &&
             immediatelyExecute == other.immediatelyExecute &&
             lookupId == other.lookupId &&
+            platformFeeOverride == other.platformFeeOverride &&
             purposeOfPayment == other.purposeOfPayment &&
+            remittanceInformation == other.remittanceInformation &&
+            scaFactor == other.scaFactor &&
             senderCustomerInfo == other.senderCustomerInfo &&
             additionalProperties == other.additionalProperties
     }
@@ -1046,7 +1828,10 @@ private constructor(
             description,
             immediatelyExecute,
             lookupId,
+            platformFeeOverride,
             purposeOfPayment,
+            remittanceInformation,
+            scaFactor,
             senderCustomerInfo,
             additionalProperties,
         )
@@ -1055,5 +1840,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, purposeOfPayment=$purposeOfPayment, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
+        "QuoteRequest{destination=$destination, lockedCurrencyAmount=$lockedCurrencyAmount, lockedCurrencySide=$lockedCurrencySide, source=$source, description=$description, immediatelyExecute=$immediatelyExecute, lookupId=$lookupId, platformFeeOverride=$platformFeeOverride, purposeOfPayment=$purposeOfPayment, remittanceInformation=$remittanceInformation, scaFactor=$scaFactor, senderCustomerInfo=$senderCustomerInfo, additionalProperties=$additionalProperties}"
 }

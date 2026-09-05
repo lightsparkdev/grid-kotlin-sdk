@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
@@ -25,10 +26,13 @@ private constructor(
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
+    private val contactVerification: JsonField<ContactVerification>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
+    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
     private val isDeleted: JsonField<Boolean>,
+    private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -44,6 +48,9 @@ private constructor(
         @ExcludeMissing
         umaAddress: JsonField<String> = JsonMissing.of(),
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("contactVerification")
+        @ExcludeMissing
+        contactVerification: JsonField<ContactVerification> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -51,7 +58,13 @@ private constructor(
         @ExcludeMissing
         currencies: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("endUserTermsConsent")
+        @ExcludeMissing
+        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
         @JsonProperty("isDeleted") @ExcludeMissing isDeleted: JsonField<Boolean> = JsonMissing.of(),
+        @JsonProperty("phoneNumber")
+        @ExcludeMissing
+        phoneNumber: JsonField<String> = JsonMissing.of(),
         @JsonProperty("region") @ExcludeMissing region: JsonField<String> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -61,10 +74,13 @@ private constructor(
         platformCustomerId,
         umaAddress,
         id,
+        contactVerification,
         createdAt,
         currencies,
         email,
+        endUserTermsConsent,
         isDeleted,
+        phoneNumber,
         region,
         updatedAt,
         mutableMapOf(),
@@ -104,6 +120,16 @@ private constructor(
     fun id(): String? = id.getNullable("id")
 
     /**
+     * Email and phone verification state. **Only present when the customer's payment provider
+     * requires it** (e.g. EU customers); omitted otherwise.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun contactVerification(): ContactVerification? =
+        contactVerification.getNullable("contactVerification")
+
+    /**
      * Creation timestamp
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -128,12 +154,30 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
+     * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has been
+     * recorded.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+        endUserTermsConsent.getNullable("endUserTermsConsent")
+
+    /**
      * Whether the customer is marked as deleted
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
     fun isDeleted(): Boolean? = isDeleted.getNullable("isDeleted")
+
+    /**
+     * Phone number for the customer in strict E.164 format.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun phoneNumber(): String? = phoneNumber.getNullable("phoneNumber")
 
     /**
      * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
@@ -177,6 +221,16 @@ private constructor(
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
+     * Returns the raw JSON value of [contactVerification].
+     *
+     * Unlike [contactVerification], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("contactVerification")
+    @ExcludeMissing
+    fun _contactVerification(): JsonField<ContactVerification> = contactVerification
+
+    /**
      * Returns the raw JSON value of [createdAt].
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -202,11 +256,28 @@ private constructor(
     @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<String> = email
 
     /**
+     * Returns the raw JSON value of [endUserTermsConsent].
+     *
+     * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("endUserTermsConsent")
+    @ExcludeMissing
+    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+
+    /**
      * Returns the raw JSON value of [isDeleted].
      *
      * Unlike [isDeleted], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("isDeleted") @ExcludeMissing fun _isDeleted(): JsonField<Boolean> = isDeleted
+
+    /**
+     * Returns the raw JSON value of [phoneNumber].
+     *
+     * Unlike [phoneNumber], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("phoneNumber") @ExcludeMissing fun _phoneNumber(): JsonField<String> = phoneNumber
 
     /**
      * Returns the raw JSON value of [region].
@@ -258,10 +329,13 @@ private constructor(
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
+        private var contactVerification: JsonField<ContactVerification> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
         private var isDeleted: JsonField<Boolean> = JsonMissing.of()
+        private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
         private var updatedAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -271,10 +345,13 @@ private constructor(
             platformCustomerId = customer.platformCustomerId
             umaAddress = customer.umaAddress
             id = customer.id
+            contactVerification = customer.contactVerification
             createdAt = customer.createdAt
             currencies = customer.currencies.map { it.toMutableList() }
             email = customer.email
+            endUserTermsConsent = customer.endUserTermsConsent
             isDeleted = customer.isDeleted
+            phoneNumber = customer.phoneNumber
             region = customer.region
             updatedAt = customer.updatedAt
             additionalProperties = customer.additionalProperties.toMutableMap()
@@ -322,6 +399,24 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
+
+        /**
+         * Email and phone verification state. **Only present when the customer's payment provider
+         * requires it** (e.g. EU customers); omitted otherwise.
+         */
+        fun contactVerification(contactVerification: ContactVerification) =
+            contactVerification(JsonField.of(contactVerification))
+
+        /**
+         * Sets [Builder.contactVerification] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.contactVerification] with a well-typed
+         * [ContactVerification] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun contactVerification(contactVerification: JsonField<ContactVerification>) = apply {
+            this.contactVerification = contactVerification
+        }
 
         /** Creation timestamp */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
@@ -372,6 +467,25 @@ private constructor(
          */
         fun email(email: JsonField<String>) = apply { this.email = email }
 
+        /**
+         * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has
+         * been recorded.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+            endUserTermsConsent(JsonField.of(endUserTermsConsent))
+
+        /**
+         * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.endUserTermsConsent] with a well-typed
+         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
+            apply {
+                this.endUserTermsConsent = endUserTermsConsent
+            }
+
         /** Whether the customer is marked as deleted */
         fun isDeleted(isDeleted: Boolean) = isDeleted(JsonField.of(isDeleted))
 
@@ -383,6 +497,18 @@ private constructor(
          * value.
          */
         fun isDeleted(isDeleted: JsonField<Boolean>) = apply { this.isDeleted = isDeleted }
+
+        /** Phone number for the customer in strict E.164 format. */
+        fun phoneNumber(phoneNumber: String) = phoneNumber(JsonField.of(phoneNumber))
+
+        /**
+         * Sets [Builder.phoneNumber] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.phoneNumber] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun phoneNumber(phoneNumber: JsonField<String>) = apply { this.phoneNumber = phoneNumber }
 
         /**
          * Country code (ISO 3166-1 alpha-2) representing the customer's regional identity and
@@ -449,10 +575,13 @@ private constructor(
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
+                contactVerification,
                 createdAt,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
                 email,
+                endUserTermsConsent,
                 isDeleted,
+                phoneNumber,
                 region,
                 updatedAt,
                 additionalProperties.toMutableMap(),
@@ -477,10 +606,13 @@ private constructor(
         platformCustomerId()
         umaAddress()
         id()
+        contactVerification()?.validate()
         createdAt()
         currencies()
         email()
+        endUserTermsConsent()?.validate()
         isDeleted()
+        phoneNumber()
         region()
         updatedAt()
         validated = true
@@ -503,12 +635,495 @@ private constructor(
         (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1) +
             (if (id.asKnown() == null) 0 else 1) +
+            (contactVerification.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (currencies.asKnown()?.size ?: 0) +
             (if (email.asKnown() == null) 0 else 1) +
+            (endUserTermsConsent.asKnown()?.validity() ?: 0) +
             (if (isDeleted.asKnown() == null) 0 else 1) +
+            (if (phoneNumber.asKnown() == null) 0 else 1) +
             (if (region.asKnown() == null) 0 else 1) +
             (if (updatedAt.asKnown() == null) 0 else 1)
+
+    /**
+     * Email and phone verification state. **Only present when the customer's payment provider
+     * requires it** (e.g. EU customers); omitted otherwise.
+     */
+    class ContactVerification
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val email: JsonField<Email>,
+        private val phone: JsonField<Phone>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("email") @ExcludeMissing email: JsonField<Email> = JsonMissing.of(),
+            @JsonProperty("phone") @ExcludeMissing phone: JsonField<Phone> = JsonMissing.of(),
+        ) : this(email, phone, mutableMapOf())
+
+        /**
+         * Verification status of the customer's email address. Present only when the provider
+         * requires email verification.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun email(): Email? = email.getNullable("email")
+
+        /**
+         * Verification status of the customer's phone number. Present only when the provider
+         * requires phone verification.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
+         *   if the server responded with an unexpected value).
+         */
+        fun phone(): Phone? = phone.getNullable("phone")
+
+        /**
+         * Returns the raw JSON value of [email].
+         *
+         * Unlike [email], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("email") @ExcludeMissing fun _email(): JsonField<Email> = email
+
+        /**
+         * Returns the raw JSON value of [phone].
+         *
+         * Unlike [phone], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("phone") @ExcludeMissing fun _phone(): JsonField<Phone> = phone
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [ContactVerification]. */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [ContactVerification]. */
+        class Builder internal constructor() {
+
+            private var email: JsonField<Email> = JsonMissing.of()
+            private var phone: JsonField<Phone> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(contactVerification: ContactVerification) = apply {
+                email = contactVerification.email
+                phone = contactVerification.phone
+                additionalProperties = contactVerification.additionalProperties.toMutableMap()
+            }
+
+            /**
+             * Verification status of the customer's email address. Present only when the provider
+             * requires email verification.
+             */
+            fun email(email: Email) = email(JsonField.of(email))
+
+            /**
+             * Sets [Builder.email] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.email] with a well-typed [Email] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun email(email: JsonField<Email>) = apply { this.email = email }
+
+            /**
+             * Verification status of the customer's phone number. Present only when the provider
+             * requires phone verification.
+             */
+            fun phone(phone: Phone) = phone(JsonField.of(phone))
+
+            /**
+             * Sets [Builder.phone] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.phone] with a well-typed [Phone] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun phone(phone: JsonField<Phone>) = apply { this.phone = phone }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [ContactVerification].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): ContactVerification =
+                ContactVerification(email, phone, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): ContactVerification = apply {
+            if (validated) {
+                return@apply
+            }
+
+            email()?.validate()
+            phone()?.validate()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (email.asKnown()?.validity() ?: 0) + (phone.asKnown()?.validity() ?: 0)
+
+        /**
+         * Verification status of the customer's email address. Present only when the provider
+         * requires email verification.
+         */
+        class Email @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val PENDING = of("PENDING")
+
+                val VERIFIED = of("VERIFIED")
+
+                fun of(value: String) = Email(JsonField.of(value))
+            }
+
+            /** An enum containing [Email]'s known values. */
+            enum class Known {
+                PENDING,
+                VERIFIED,
+            }
+
+            /**
+             * An enum containing [Email]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Email] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                PENDING,
+                VERIFIED,
+                /**
+                 * An enum member indicating that [Email] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    PENDING -> Value.PENDING
+                    VERIFIED -> Value.VERIFIED
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    PENDING -> Known.PENDING
+                    VERIFIED -> Known.VERIFIED
+                    else -> throw LightsparkGridInvalidDataException("Unknown Email: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Email = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Email && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /**
+         * Verification status of the customer's phone number. Present only when the provider
+         * requires phone verification.
+         */
+        class Phone @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                val PENDING = of("PENDING")
+
+                val VERIFIED = of("VERIFIED")
+
+                fun of(value: String) = Phone(JsonField.of(value))
+            }
+
+            /** An enum containing [Phone]'s known values. */
+            enum class Known {
+                PENDING,
+                VERIFIED,
+            }
+
+            /**
+             * An enum containing [Phone]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Phone] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                PENDING,
+                VERIFIED,
+                /**
+                 * An enum member indicating that [Phone] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    PENDING -> Value.PENDING
+                    VERIFIED -> Value.VERIFIED
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+             *   known member.
+             */
+            fun known(): Known =
+                when (this) {
+                    PENDING -> Known.PENDING
+                    VERIFIED -> Known.VERIFIED
+                    else -> throw LightsparkGridInvalidDataException("Unknown Phone: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws LightsparkGridInvalidDataException if this class instance's value does not
+             *   have the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString()
+                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Phone = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Phone && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is ContactVerification &&
+                email == other.email &&
+                phone == other.phone &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(email, phone, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "ContactVerification{email=$email, phone=$phone, additionalProperties=$additionalProperties}"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -520,10 +1135,13 @@ private constructor(
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
+            contactVerification == other.contactVerification &&
             createdAt == other.createdAt &&
             currencies == other.currencies &&
             email == other.email &&
+            endUserTermsConsent == other.endUserTermsConsent &&
             isDeleted == other.isDeleted &&
+            phoneNumber == other.phoneNumber &&
             region == other.region &&
             updatedAt == other.updatedAt &&
             additionalProperties == other.additionalProperties
@@ -535,10 +1153,13 @@ private constructor(
             platformCustomerId,
             umaAddress,
             id,
+            contactVerification,
             createdAt,
             currencies,
             email,
+            endUserTermsConsent,
             isDeleted,
+            phoneNumber,
             region,
             updatedAt,
             additionalProperties,
@@ -548,5 +1169,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Customer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, createdAt=$createdAt, currencies=$currencies, email=$email, isDeleted=$isDeleted, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
+        "Customer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, additionalProperties=$additionalProperties}"
 }

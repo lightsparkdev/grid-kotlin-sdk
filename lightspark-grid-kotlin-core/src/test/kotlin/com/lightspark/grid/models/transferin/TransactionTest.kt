@@ -6,12 +6,16 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.quotes.OutgoingRateDetails
 import com.lightspark.grid.models.quotes.PaymentInstructions
+import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
+import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
+import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
+import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
-import com.lightspark.grid.models.transactions.IncomingRateDetails
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
@@ -33,7 +37,26 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(JsonValue.from(mapOf<String, Any>()))
+                .direction(IncomingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
+                .status(TransactionStatus.CREATED)
+                .type(IncomingTransaction.Type.INCOMING)
+                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                .counterpartyInformation(
+                    IncomingTransaction.CounterpartyInformation.builder()
+                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                        .build()
+                )
+                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                .description("Payment for invoice #1234")
+                .exchangeRate(1.08)
+                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                .fees(10L)
+                .pendingReason(IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
+                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .receivedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -47,34 +70,33 @@ internal class TransactionTest {
                         )
                         .build()
                 )
-                .status(TransactionStatus.CREATED)
-                .type(IncomingTransaction.Type.INCOMING)
-                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                .counterpartyInformation(
-                    IncomingTransaction.CounterpartyInformation.builder()
-                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                        .build()
-                )
-                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                .description("Payment for invoice #1234")
-                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                .fees(10L)
-                .rateDetails(
-                    IncomingRateDetails.builder()
-                        .gridApiFixedFee(10L)
-                        .gridApiMultiplier(0.925)
-                        .gridApiVariableFeeAmount(30L)
-                        .gridApiVariableFeeRate(0.003)
-                        .build()
-                )
-                .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                 .reconciliationInstructions(
                     ReconciliationInstructions.builder()
                         .reference("UMA-Q12345-REF")
                         .transactionHash(
                             "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                        )
+                        .build()
+                )
+                .refund(
+                    Refund.builder()
+                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .reference("UMA-Q12345-REFUND")
+                        .status(Refund.Status.COMPLETED)
+                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                        .build()
+                )
+                .sentAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
                         )
                         .build()
                 )
@@ -87,6 +109,7 @@ internal class TransactionTest {
 
         assertThat(transaction.incoming()).isEqualTo(incoming)
         assertThat(transaction.outgoing()).isNull()
+        assertThat(transaction.card()).isNull()
     }
 
     @Test
@@ -98,7 +121,28 @@ internal class TransactionTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(JsonValue.from(mapOf<String, Any>()))
+                    .direction(IncomingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
+                    .status(TransactionStatus.CREATED)
+                    .type(IncomingTransaction.Type.INCOMING)
+                    .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                    .counterpartyInformation(
+                        IncomingTransaction.CounterpartyInformation.builder()
+                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                            .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                    .description("Payment for invoice #1234")
+                    .exchangeRate(1.08)
+                    .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                    .fees(10L)
+                    .pendingReason(
+                        IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
+                    .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                    .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                     .receivedAmount(
                         CurrencyAmount.builder()
                             .amount(12550L)
@@ -112,34 +156,33 @@ internal class TransactionTest {
                             )
                             .build()
                     )
-                    .status(TransactionStatus.CREATED)
-                    .type(IncomingTransaction.Type.INCOMING)
-                    .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                    .counterpartyInformation(
-                        IncomingTransaction.CounterpartyInformation.builder()
-                            .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                            .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                            .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                            .build()
-                    )
-                    .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                    .description("Payment for invoice #1234")
-                    .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                    .fees(10L)
-                    .rateDetails(
-                        IncomingRateDetails.builder()
-                            .gridApiFixedFee(10L)
-                            .gridApiMultiplier(0.925)
-                            .gridApiVariableFeeAmount(30L)
-                            .gridApiVariableFeeRate(0.003)
-                            .build()
-                    )
-                    .receiptDeliveryConfirmedAt(OffsetDateTime.parse("2025-08-15T14:31:00Z"))
                     .reconciliationInstructions(
                         ReconciliationInstructions.builder()
                             .reference("UMA-Q12345-REF")
                             .transactionHash(
                                 "0x9f2c6b6f4b6c8f2a8d9e0b1c2d3e4f5061728394a5b6c7d8e9f00112233445566"
+                            )
+                            .build()
+                    )
+                    .refund(
+                        Refund.builder()
+                            .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                            .reference("UMA-Q12345-REFUND")
+                            .status(Refund.Status.COMPLETED)
+                            .reason(Refund.Reason.TRANSACTION_FAILED)
+                            .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                            .build()
+                    )
+                    .sentAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
                             )
                             .build()
                     )
@@ -165,6 +208,7 @@ internal class TransactionTest {
                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .destination(JsonValue.from(mapOf<String, Any>()))
+                .direction(OutgoingTransaction.Direction.CREDIT)
                 .platformCustomerId("18d3e5f7b4a9c2")
                 .sentAmount(
                     CurrencyAmount.builder()
@@ -193,6 +237,7 @@ internal class TransactionTest {
                 .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                 .description("Payment for invoice #1234")
                 .exchangeRate(1.08)
+                .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                 .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                 .fees(10L)
                 .addPaymentInstruction(
@@ -247,7 +292,11 @@ internal class TransactionTest {
                         .isPlatformAccount(true)
                         .build()
                 )
+                .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                .pendingReason(OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED)
+                .platformFees(5L)
                 .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                 .rateDetails(
                     OutgoingRateDetails.builder()
                         .counterpartyFixedFee(10L)
@@ -290,6 +339,7 @@ internal class TransactionTest {
                         .build()
                 )
                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                .settlementTimelineSeconds(0L)
                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                 .build()
 
@@ -297,6 +347,7 @@ internal class TransactionTest {
 
         assertThat(transaction.incoming()).isNull()
         assertThat(transaction.outgoing()).isEqualTo(outgoing)
+        assertThat(transaction.card()).isNull()
     }
 
     @Test
@@ -308,6 +359,7 @@ internal class TransactionTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(JsonValue.from(mapOf<String, Any>()))
+                    .direction(OutgoingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .sentAmount(
                         CurrencyAmount.builder()
@@ -336,6 +388,7 @@ internal class TransactionTest {
                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                     .description("Payment for invoice #1234")
                     .exchangeRate(1.08)
+                    .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                     .fees(10L)
                     .addPaymentInstruction(
@@ -393,7 +446,13 @@ internal class TransactionTest {
                             .isPlatformAccount(true)
                             .build()
                     )
+                    .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .pendingReason(
+                        OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
+                    .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                    .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                     .rateDetails(
                         OutgoingRateDetails.builder()
                             .counterpartyFixedFee(10L)
@@ -436,7 +495,175 @@ internal class TransactionTest {
                             .build()
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .settlementTimelineSeconds(0L)
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .build()
+            )
+
+        val roundtrippedTransaction =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(transaction),
+                jacksonTypeRef<Transaction>(),
+            )
+
+        assertThat(roundtrippedTransaction).isEqualTo(transaction)
+    }
+
+    @Test
+    fun ofCard() {
+        val card =
+            CardTransaction.builder()
+                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .authorizedAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .direction(CardTransaction.Direction.DEBIT)
+                .merchant(
+                    CardMerchant.builder()
+                        .descriptor("BLUE BOTTLE COFFEE SF")
+                        .country("US")
+                        .mcc("5814")
+                        .build()
+                )
+                .platformCustomerId("18d3e5f7b4a9c2")
+                .status(CardTransaction.Status.AUTHORIZED)
+                .type(CardTransaction.Type.CARD)
+                .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .issuerTransactionToken("lithic_txn_b81c2a4f")
+                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .pullSummary(
+                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
+                )
+                .refundedAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                .settledAmount(
+                    CurrencyAmount.builder()
+                        .amount(12550L)
+                        .currency(
+                            Currency.builder()
+                                .code("USD")
+                                .decimals(2L)
+                                .name("United States Dollar")
+                                .symbol("\$")
+                                .build()
+                        )
+                        .build()
+                )
+                .settlementSummary(
+                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                )
+                .build()
+
+        val transaction = Transaction.ofCard(card)
+
+        assertThat(transaction.incoming()).isNull()
+        assertThat(transaction.outgoing()).isNull()
+        assertThat(transaction.card()).isEqualTo(card)
+    }
+
+    @Test
+    fun ofCardRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val transaction =
+            Transaction.ofCard(
+                CardTransaction.builder()
+                    .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                    .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .authorizedAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                    .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .direction(CardTransaction.Direction.DEBIT)
+                    .merchant(
+                        CardMerchant.builder()
+                            .descriptor("BLUE BOTTLE COFFEE SF")
+                            .country("US")
+                            .mcc("5814")
+                            .build()
+                    )
+                    .platformCustomerId("18d3e5f7b4a9c2")
+                    .status(CardTransaction.Status.AUTHORIZED)
+                    .type(CardTransaction.Type.CARD)
+                    .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                    .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                    .issuerTransactionToken("lithic_txn_b81c2a4f")
+                    .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                    .pullSummary(
+                        CardPullSummary.builder()
+                            .count(2L)
+                            .totalAmount(1500L)
+                            .pendingCount(0L)
+                            .build()
+                    )
+                    .refundedAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
+                    .settledAmount(
+                        CurrencyAmount.builder()
+                            .amount(12550L)
+                            .currency(
+                                Currency.builder()
+                                    .code("USD")
+                                    .decimals(2L)
+                                    .name("United States Dollar")
+                                    .symbol("\$")
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .settlementSummary(
+                        CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
+                    )
                     .build()
             )
 

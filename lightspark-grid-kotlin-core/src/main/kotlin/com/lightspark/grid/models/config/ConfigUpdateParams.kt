@@ -9,7 +9,12 @@ import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
-/** Update the platform configuration settings */
+/**
+ * Update platform configuration settings. `cardConfigs` can establish platform-level
+ * per-transaction and UTC-calendar-day card caps. Grid enforces the lower of each platform cap and
+ * its corresponding card-specific value without replacing the card-specific value. Daily limits
+ * reset at 00:00 UTC.
+ */
 class ConfigUpdateParams
 private constructor(
     private val platformConfigUpdateRequest: PlatformConfigUpdateRequest,

@@ -17,6 +17,7 @@ internal class PhpAccountInfoTest {
                 .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
+                .rail("INSTAPAY")
                 .build()
 
         assertThat(phpAccountInfo.accountNumber()).isEqualTo("001234567890")
@@ -24,6 +25,7 @@ internal class PhpAccountInfoTest {
         assertThat(phpAccountInfo.bankName()).isEqualTo("BDO Unibank")
         assertThat(phpAccountInfo.paymentRails())
             .containsExactly(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
+        assertThat(phpAccountInfo.rail()).isEqualTo("INSTAPAY")
     }
 
     @Test
@@ -35,6 +37,7 @@ internal class PhpAccountInfoTest {
                 .accountType(PhpAccountInfo.AccountType.PHP_ACCOUNT)
                 .bankName("BDO Unibank")
                 .addPaymentRail(PhpAccountInfo.PaymentRail.BANK_TRANSFER)
+                .rail("INSTAPAY")
                 .build()
 
         val roundtrippedPhpAccountInfo =
