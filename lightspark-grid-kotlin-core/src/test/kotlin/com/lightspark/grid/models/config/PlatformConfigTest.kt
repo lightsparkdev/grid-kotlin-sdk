@@ -62,10 +62,9 @@ internal class PlatformConfigTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfig.FeeConfig.builder()
-                        .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
+                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
                         .fixedFee(
-                            PlatformConfig.FeeConfig.FixedFee.builder()
+                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()
@@ -166,17 +165,18 @@ internal class PlatformConfigTest {
             )
         assertThat(platformConfig.feeConfigs())
             .containsExactly(
-                PlatformConfig.FeeConfig.builder()
-                    .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
-                    .fixedFee(
-                        PlatformConfig.FeeConfig.FixedFee.builder()
-                            .amount(100L)
-                            .currency("USD")
-                            .build()
-                    )
-                    .sourceCurrency("USD")
-                    .variableFeeBps(30L)
-                    .build()
+                PlatformConfig.FeeConfig.ofCrossCurrencyTransaction(
+                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
+                        .fixedFee(
+                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
+                        .build()
+                )
             )
         assertThat(platformConfig.isRegulatedFinancialInstitution()).isEqualTo(false)
         assertThat(platformConfig.proxyUmaSubdomain()).isEqualTo("platform")
@@ -270,10 +270,9 @@ internal class PlatformConfigTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfig.FeeConfig.builder()
-                        .feeType(PlatformConfig.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION)
+                    PlatformConfig.FeeConfig.CrossCurrencyTransaction.builder()
                         .fixedFee(
-                            PlatformConfig.FeeConfig.FixedFee.builder()
+                            PlatformConfig.FeeConfig.CrossCurrencyTransaction.FixedFee.builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()
