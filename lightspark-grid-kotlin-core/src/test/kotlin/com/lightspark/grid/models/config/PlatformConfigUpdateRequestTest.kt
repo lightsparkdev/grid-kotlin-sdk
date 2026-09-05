@@ -59,12 +59,10 @@ internal class PlatformConfigUpdateRequestTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfigUpdateRequest.FeeConfig.builder()
-                        .feeType(
-                            PlatformConfigUpdateRequest.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION
-                        )
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
                         .fixedFee(
-                            PlatformConfigUpdateRequest.FeeConfig.FixedFee.builder()
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()
@@ -158,19 +156,19 @@ internal class PlatformConfigUpdateRequestTest {
             )
         assertThat(platformConfigUpdateRequest.feeConfigs())
             .containsExactly(
-                PlatformConfigUpdateRequest.FeeConfig.builder()
-                    .feeType(
-                        PlatformConfigUpdateRequest.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION
-                    )
-                    .fixedFee(
-                        PlatformConfigUpdateRequest.FeeConfig.FixedFee.builder()
-                            .amount(100L)
-                            .currency("USD")
-                            .build()
-                    )
-                    .sourceCurrency("USD")
-                    .variableFeeBps(30L)
-                    .build()
+                PlatformConfigUpdateRequest.FeeConfig.ofCrossCurrencyTransaction(
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
+                        .fixedFee(
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
+                                .amount(100L)
+                                .currency("USD")
+                                .build()
+                        )
+                        .sourceCurrency("USD")
+                        .variableFeeBps(30L)
+                        .build()
+                )
             )
         assertThat(platformConfigUpdateRequest.supportedCurrencies())
             .containsExactly(
@@ -258,12 +256,10 @@ internal class PlatformConfigUpdateRequestTest {
                         .build()
                 )
                 .addFeeConfig(
-                    PlatformConfigUpdateRequest.FeeConfig.builder()
-                        .feeType(
-                            PlatformConfigUpdateRequest.FeeConfig.FeeType.CROSS_CURRENCY_TRANSACTION
-                        )
+                    PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.builder()
                         .fixedFee(
-                            PlatformConfigUpdateRequest.FeeConfig.FixedFee.builder()
+                            PlatformConfigUpdateRequest.FeeConfig.CrossCurrencyTransaction.FixedFee
+                                .builder()
                                 .amount(100L)
                                 .currency("USD")
                                 .build()

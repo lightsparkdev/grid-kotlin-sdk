@@ -6,6 +6,15 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.BaseDeserializer
+import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
@@ -13,6 +22,7 @@ import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
@@ -95,9 +105,10 @@ private constructor(
         embeddedWalletConfig.getNullable("embeddedWalletConfig")
 
     /**
-     * Merge-by-key upsert of platform fee configs, keyed by `(feeType, sourceCurrency)`. Setting
-     * variable and fixed fees to 0 for an existing fee config deactivates it. Only `sourceCurrency:
-     * USD` is accepted today. Omit this field to leave fee configs unchanged.
+     * Merge-by-key upsert of platform fee configs. A cross-currency transaction fee config is keyed
+     * by `(feeType, sourceCurrency)` and a rail fee config by `(feeType, rail, direction,
+     * originator)`. Setting variable and fixed fees to 0 for an existing config deactivates it.
+     * Omit this field to leave fee configs unchanged.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -289,9 +300,10 @@ private constructor(
         }
 
         /**
-         * Merge-by-key upsert of platform fee configs, keyed by `(feeType, sourceCurrency)`.
-         * Setting variable and fixed fees to 0 for an existing fee config deactivates it. Only
-         * `sourceCurrency: USD` is accepted today. Omit this field to leave fee configs unchanged.
+         * Merge-by-key upsert of platform fee configs. A cross-currency transaction fee config is
+         * keyed by `(feeType, sourceCurrency)` and a rail fee config by `(feeType, rail, direction,
+         * originator)`. Setting variable and fixed fees to 0 for an existing config deactivates it.
+         * Omit this field to leave fee configs unchanged.
          */
         fun feeConfigs(feeConfigs: List<FeeConfig>) = feeConfigs(JsonField.of(feeConfigs))
 
@@ -317,6 +329,16 @@ private constructor(
                     checkKnown("feeConfigs", it).add(feeConfig)
                 }
         }
+
+        /**
+         * Alias for calling [addFeeConfig] with
+         * `FeeConfig.ofCrossCurrencyTransaction(crossCurrencyTransaction)`.
+         */
+        fun addFeeConfig(crossCurrencyTransaction: FeeConfig.CrossCurrencyTransaction) =
+            addFeeConfig(FeeConfig.ofCrossCurrencyTransaction(crossCurrencyTransaction))
+
+        /** Alias for calling [addFeeConfig] with `FeeConfig.ofRail(rail)`. */
+        fun addFeeConfig(rail: FeeConfig.Rail) = addFeeConfig(FeeConfig.ofRail(rail))
 
         fun supportedCurrencies(supportedCurrencies: List<PlatformCurrencyConfig>) =
             supportedCurrencies(JsonField.of(supportedCurrencies))
@@ -1542,255 +1564,85 @@ private constructor(
     }
 
     /**
-     * A platform-configured fee collected by Grid and settled to the platform internal account.
-     * There can be at most one fee config for a given fee type and source currency pair. The fee
-     * will apply to all transactions of the fee type that originate in the source currency.
+     * A fee charged for a cross-currency transaction. There can be at most one cross-currency
+     * transaction fee config for a given source currency. The fee will apply to all cross-currency
+     * transactions that originate in the source currency.
      */
+    @JsonDeserialize(using = FeeConfig.Deserializer::class)
+    @JsonSerialize(using = FeeConfig.Serializer::class)
     class FeeConfig
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val feeType: JsonField<FeeType>,
-        private val fixedFee: JsonField<FixedFee>,
-        private val sourceCurrency: JsonField<String>,
-        private val variableFeeBps: JsonField<Long>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
+        private val crossCurrencyTransaction: CrossCurrencyTransaction? = null,
+        private val rail: Rail? = null,
+        private val _json: JsonValue? = null,
     ) {
 
-        @JsonCreator
-        private constructor(
-            @JsonProperty("feeType") @ExcludeMissing feeType: JsonField<FeeType> = JsonMissing.of(),
-            @JsonProperty("fixedFee")
-            @ExcludeMissing
-            fixedFee: JsonField<FixedFee> = JsonMissing.of(),
-            @JsonProperty("sourceCurrency")
-            @ExcludeMissing
-            sourceCurrency: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("variableFeeBps")
-            @ExcludeMissing
-            variableFeeBps: JsonField<Long> = JsonMissing.of(),
-        ) : this(feeType, fixedFee, sourceCurrency, variableFeeBps, mutableMapOf())
+        /**
+         * A fee charged for a cross-currency transaction. There can be at most one cross-currency
+         * transaction fee config for a given source currency. The fee will apply to all
+         * cross-currency transactions that originate in the source currency.
+         */
+        fun crossCurrencyTransaction(): CrossCurrencyTransaction? = crossCurrencyTransaction
 
         /**
-         * The kind of activity this fee applies to.
-         * - `CROSS_CURRENCY_TRANSACTION` — fee charged on a cross-currency Grid transaction (source
-         *   currency differs from destination currency).
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * A fee charged when a transaction uses the specified rail. There can be at most one for a
+         * given rail, direction and originator. For example, a config with rail: ACH, direction:
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
          */
-        fun feeType(): FeeType = feeType.getRequired("feeType")
+        fun rail(): Rail? = rail
+
+        fun isCrossCurrencyTransaction(): Boolean = crossCurrencyTransaction != null
+
+        fun isRail(): Boolean = rail != null
 
         /**
-         * Fixed fee charged per transaction.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * A fee charged for a cross-currency transaction. There can be at most one cross-currency
+         * transaction fee config for a given source currency. The fee will apply to all
+         * cross-currency transactions that originate in the source currency.
          */
-        fun fixedFee(): FixedFee = fixedFee.getRequired("fixedFee")
+        fun asCrossCurrencyTransaction(): CrossCurrencyTransaction =
+            crossCurrencyTransaction.getOrThrow("crossCurrencyTransaction")
 
         /**
-         * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
-         * other currencies return a `NOT_IMPLEMENTED` error.
-         *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         * A fee charged when a transaction uses the specified rail. There can be at most one for a
+         * given rail, direction and originator. For example, a config with rail: ACH, direction:
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
          */
-        fun sourceCurrency(): String = sourceCurrency.getRequired("sourceCurrency")
+        fun asRail(): Rail = rail.getOrThrow("rail")
+
+        fun _json(): JsonValue? = _json
 
         /**
-         * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's source-currency
-         * amount.
+         * Maps this instance's current variant to a value of type [T] using the given [visitor].
          *
-         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-         */
-        fun variableFeeBps(): Long = variableFeeBps.getRequired("variableFeeBps")
-
-        /**
-         * Returns the raw JSON value of [feeType].
+         * Note that this method is _not_ forwards compatible with new variants from the API, unless
+         * [visitor] overrides [Visitor.unknown]. To handle variants not known to this version of
+         * the SDK gracefully, consider overriding [Visitor.unknown]:
+         * ```kotlin
+         * import com.lightspark.grid.core.JsonValue
          *
-         * Unlike [feeType], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("feeType") @ExcludeMissing fun _feeType(): JsonField<FeeType> = feeType
-
-        /**
-         * Returns the raw JSON value of [fixedFee].
+         * val result: String? = feeConfig.accept(object : FeeConfig.Visitor<String?> {
+         *     override fun visitCrossCurrencyTransaction(crossCurrencyTransaction: CrossCurrencyTransaction): String? = crossCurrencyTransaction.toString()
          *
-         * Unlike [fixedFee], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("fixedFee") @ExcludeMissing fun _fixedFee(): JsonField<FixedFee> = fixedFee
-
-        /**
-         * Returns the raw JSON value of [sourceCurrency].
+         *     // ...
          *
-         * Unlike [sourceCurrency], this method doesn't throw if the JSON field has an unexpected
-         * type.
-         */
-        @JsonProperty("sourceCurrency")
-        @ExcludeMissing
-        fun _sourceCurrency(): JsonField<String> = sourceCurrency
-
-        /**
-         * Returns the raw JSON value of [variableFeeBps].
+         *     override fun unknown(json: JsonValue?): String? {
+         *         // Or inspect the `json`.
+         *         return null
+         *     }
+         * })
+         * ```
          *
-         * Unlike [variableFeeBps], this method doesn't throw if the JSON field has an unexpected
-         * type.
+         * @throws LightsparkGridInvalidDataException if [Visitor.unknown] is not overridden in
+         *   [visitor] and the current variant is unknown.
          */
-        @JsonProperty("variableFeeBps")
-        @ExcludeMissing
-        fun _variableFeeBps(): JsonField<Long> = variableFeeBps
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of [FeeConfig].
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .feeType()
-             * .fixedFee()
-             * .sourceCurrency()
-             * .variableFeeBps()
-             * ```
-             */
-            fun builder() = Builder()
-        }
-
-        /** A builder for [FeeConfig]. */
-        class Builder internal constructor() {
-
-            private var feeType: JsonField<FeeType>? = null
-            private var fixedFee: JsonField<FixedFee>? = null
-            private var sourceCurrency: JsonField<String>? = null
-            private var variableFeeBps: JsonField<Long>? = null
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            internal fun from(feeConfig: FeeConfig) = apply {
-                feeType = feeConfig.feeType
-                fixedFee = feeConfig.fixedFee
-                sourceCurrency = feeConfig.sourceCurrency
-                variableFeeBps = feeConfig.variableFeeBps
-                additionalProperties = feeConfig.additionalProperties.toMutableMap()
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                crossCurrencyTransaction != null ->
+                    visitor.visitCrossCurrencyTransaction(crossCurrencyTransaction)
+                rail != null -> visitor.visitRail(rail)
+                else -> visitor.unknown(_json)
             }
-
-            /**
-             * The kind of activity this fee applies to.
-             * - `CROSS_CURRENCY_TRANSACTION` — fee charged on a cross-currency Grid transaction
-             *   (source currency differs from destination currency).
-             */
-            fun feeType(feeType: FeeType) = feeType(JsonField.of(feeType))
-
-            /**
-             * Sets [Builder.feeType] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.feeType] with a well-typed [FeeType] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun feeType(feeType: JsonField<FeeType>) = apply { this.feeType = feeType }
-
-            /** Fixed fee charged per transaction. */
-            fun fixedFee(fixedFee: FixedFee) = fixedFee(JsonField.of(fixedFee))
-
-            /**
-             * Sets [Builder.fixedFee] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.fixedFee] with a well-typed [FixedFee] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun fixedFee(fixedFee: JsonField<FixedFee>) = apply { this.fixedFee = fixedFee }
-
-            /**
-             * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
-             * other currencies return a `NOT_IMPLEMENTED` error.
-             */
-            fun sourceCurrency(sourceCurrency: String) =
-                sourceCurrency(JsonField.of(sourceCurrency))
-
-            /**
-             * Sets [Builder.sourceCurrency] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.sourceCurrency] with a well-typed [String] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun sourceCurrency(sourceCurrency: JsonField<String>) = apply {
-                this.sourceCurrency = sourceCurrency
-            }
-
-            /**
-             * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's
-             * source-currency amount.
-             */
-            fun variableFeeBps(variableFeeBps: Long) = variableFeeBps(JsonField.of(variableFeeBps))
-
-            /**
-             * Sets [Builder.variableFeeBps] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.variableFeeBps] with a well-typed [Long] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun variableFeeBps(variableFeeBps: JsonField<Long>) = apply {
-                this.variableFeeBps = variableFeeBps
-            }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [FeeConfig].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             *
-             * The following fields are required:
-             * ```kotlin
-             * .feeType()
-             * .fixedFee()
-             * .sourceCurrency()
-             * .variableFeeBps()
-             * ```
-             *
-             * @throws IllegalStateException if any required field is unset.
-             */
-            fun build(): FeeConfig =
-                FeeConfig(
-                    checkRequired("feeType", feeType),
-                    checkRequired("fixedFee", fixedFee),
-                    checkRequired("sourceCurrency", sourceCurrency),
-                    checkRequired("variableFeeBps", variableFeeBps),
-                    additionalProperties.toMutableMap(),
-                )
-        }
 
         private var validated: Boolean = false
 
@@ -1808,10 +1660,19 @@ private constructor(
                 return@apply
             }
 
-            feeType().validate()
-            fixedFee().validate()
-            sourceCurrency()
-            variableFeeBps()
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitCrossCurrencyTransaction(
+                        crossCurrencyTransaction: CrossCurrencyTransaction
+                    ) {
+                        crossCurrencyTransaction.validate()
+                    }
+
+                    override fun visitRail(rail: Rail) {
+                        rail.validate()
+                    }
+                }
+            )
             validated = true
         }
 
@@ -1830,200 +1691,234 @@ private constructor(
          * Used for best match union deserialization.
          */
         internal fun validity(): Int =
-            (feeType.asKnown()?.validity() ?: 0) +
-                (fixedFee.asKnown()?.validity() ?: 0) +
-                (if (sourceCurrency.asKnown() == null) 0 else 1) +
-                (if (variableFeeBps.asKnown() == null) 0 else 1)
+            accept(
+                object : Visitor<Int> {
+                    override fun visitCrossCurrencyTransaction(
+                        crossCurrencyTransaction: CrossCurrencyTransaction
+                    ) = crossCurrencyTransaction.validity()
 
-        /**
-         * The kind of activity this fee applies to.
-         * - `CROSS_CURRENCY_TRANSACTION` — fee charged on a cross-currency Grid transaction (source
-         *   currency differs from destination currency).
-         */
-        class FeeType @JsonCreator private constructor(private val value: JsonField<String>) :
-            Enum {
+                    override fun visitRail(rail: Rail) = rail.validity()
 
-            /**
-             * Returns this class instance's raw value.
-             *
-             * This is usually only useful if this instance was deserialized from data that doesn't
-             * match any known member, and you want to know that value. For example, if the SDK is
-             * on an older version than the API, then the API may respond with new members that the
-             * SDK is unaware of.
-             */
-            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
 
-            companion object {
-
-                val CROSS_CURRENCY_TRANSACTION = of("CROSS_CURRENCY_TRANSACTION")
-
-                fun of(value: String) = FeeType(JsonField.of(value))
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
             }
 
-            /** An enum containing [FeeType]'s known values. */
-            enum class Known {
-                CROSS_CURRENCY_TRANSACTION
-            }
-
-            /**
-             * An enum containing [FeeType]'s known values, as well as an [_UNKNOWN] member.
-             *
-             * An instance of [FeeType] can contain an unknown value in a couple of cases:
-             * - It was deserialized from data that doesn't match any known member. For example, if
-             *   the SDK is on an older version than the API, then the API may respond with new
-             *   members that the SDK is unaware of.
-             * - It was constructed with an arbitrary value using the [of] method.
-             */
-            enum class Value {
-                CROSS_CURRENCY_TRANSACTION,
-                /**
-                 * An enum member indicating that [FeeType] was instantiated with an unknown value.
-                 */
-                _UNKNOWN,
-            }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value, or
-             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
-             *
-             * Use the [known] method instead if you're certain the value is always known or if you
-             * want to throw for the unknown case.
-             */
-            fun value(): Value =
-                when (this) {
-                    CROSS_CURRENCY_TRANSACTION -> Value.CROSS_CURRENCY_TRANSACTION
-                    else -> Value._UNKNOWN
-                }
-
-            /**
-             * Returns an enum member corresponding to this class instance's value.
-             *
-             * Use the [value] method instead if you're uncertain the value is always known and
-             * don't want to throw for the unknown case.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
-             *   known member.
-             */
-            fun known(): Known =
-                when (this) {
-                    CROSS_CURRENCY_TRANSACTION -> Known.CROSS_CURRENCY_TRANSACTION
-                    else -> throw LightsparkGridInvalidDataException("Unknown FeeType: $value")
-                }
-
-            /**
-             * Returns this class instance's primitive wire representation.
-             *
-             * This differs from the [toString] method because that method is primarily for
-             * debugging and generally doesn't throw.
-             *
-             * @throws LightsparkGridInvalidDataException if this class instance's value does not
-             *   have the expected primitive type.
-             */
-            fun asString(): String =
-                _value().asString()
-                    ?: throw LightsparkGridInvalidDataException("Value is not a String")
-
-            private var validated: Boolean = false
-
-            /**
-             * Validates that the types of all values in this object match their expected types
-             * recursively.
-             *
-             * This method is _not_ forwards compatible with new types from the API for existing
-             * fields.
-             *
-             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
-             *   match its expected type.
-             */
-            fun validate(): FeeType = apply {
-                if (validated) {
-                    return@apply
-                }
-
-                known()
-                validated = true
-            }
-
-            fun isValid(): Boolean =
-                try {
-                    validate()
-                    true
-                } catch (e: LightsparkGridInvalidDataException) {
-                    false
-                }
-
-            /**
-             * Returns a score indicating how many valid values are contained in this object
-             * recursively.
-             *
-             * Used for best match union deserialization.
-             */
-            internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-            override fun equals(other: Any?): Boolean {
-                if (this === other) {
-                    return true
-                }
-
-                return other is FeeType && value == other.value
-            }
-
-            override fun hashCode() = value.hashCode()
-
-            override fun toString() = value.toString()
+            return other is FeeConfig &&
+                crossCurrencyTransaction == other.crossCurrencyTransaction &&
+                rail == other.rail
         }
 
-        /** Fixed fee charged per transaction. */
-        class FixedFee
+        override fun hashCode(): Int = Objects.hash(crossCurrencyTransaction, rail)
+
+        override fun toString(): String =
+            when {
+                crossCurrencyTransaction != null ->
+                    "FeeConfig{crossCurrencyTransaction=$crossCurrencyTransaction}"
+                rail != null -> "FeeConfig{rail=$rail}"
+                _json != null -> "FeeConfig{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid FeeConfig")
+            }
+
+        companion object {
+
+            /**
+             * A fee charged for a cross-currency transaction. There can be at most one
+             * cross-currency transaction fee config for a given source currency. The fee will apply
+             * to all cross-currency transactions that originate in the source currency.
+             */
+            fun ofCrossCurrencyTransaction(crossCurrencyTransaction: CrossCurrencyTransaction) =
+                FeeConfig(crossCurrencyTransaction = crossCurrencyTransaction)
+
+            /**
+             * A fee charged when a transaction uses the specified rail. There can be at most one
+             * for a given rail, direction and originator. For example, a config with rail: ACH,
+             * direction: OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+             */
+            fun ofRail(rail: Rail) = FeeConfig(rail = rail)
+        }
+
+        /**
+         * An interface that defines how to map each variant of [FeeConfig] to a value of type [T].
+         */
+        interface Visitor<out T> {
+
+            /**
+             * A fee charged for a cross-currency transaction. There can be at most one
+             * cross-currency transaction fee config for a given source currency. The fee will apply
+             * to all cross-currency transactions that originate in the source currency.
+             */
+            fun visitCrossCurrencyTransaction(crossCurrencyTransaction: CrossCurrencyTransaction): T
+
+            /**
+             * A fee charged when a transaction uses the specified rail. There can be at most one
+             * for a given rail, direction and originator. For example, a config with rail: ACH,
+             * direction: OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+             */
+            fun visitRail(rail: Rail): T
+
+            /**
+             * Maps an unknown variant of [FeeConfig] to a value of type [T].
+             *
+             * An instance of [FeeConfig] can contain an unknown variant if it was deserialized from
+             * data that doesn't match any known variant. For example, if the SDK is on an older
+             * version than the API, then the API may respond with new variants that the SDK is
+             * unaware of.
+             *
+             * @throws LightsparkGridInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw LightsparkGridInvalidDataException("Unknown FeeConfig: $json")
+            }
+        }
+
+        internal class Deserializer : BaseDeserializer<FeeConfig>(FeeConfig::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): FeeConfig {
+                val json = JsonValue.fromJsonNode(node)
+                val feeType = json.asObject()?.get("feeType")?.asString()
+
+                when (feeType) {
+                    "CROSS_CURRENCY_TRANSACTION" -> {
+                        return tryDeserialize(node, jacksonTypeRef<CrossCurrencyTransaction>())
+                            ?.let { FeeConfig(crossCurrencyTransaction = it, _json = json) }
+                            ?: FeeConfig(_json = json)
+                    }
+                    "RAIL" -> {
+                        return tryDeserialize(node, jacksonTypeRef<Rail>())?.let {
+                            FeeConfig(rail = it, _json = json)
+                        } ?: FeeConfig(_json = json)
+                    }
+                }
+
+                return FeeConfig(_json = json)
+            }
+        }
+
+        internal class Serializer : BaseSerializer<FeeConfig>(FeeConfig::class) {
+
+            override fun serialize(
+                value: FeeConfig,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.crossCurrencyTransaction != null ->
+                        generator.writeObject(value.crossCurrencyTransaction)
+                    value.rail != null -> generator.writeObject(value.rail)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid FeeConfig")
+                }
+            }
+        }
+
+        /**
+         * A fee charged for a cross-currency transaction. There can be at most one cross-currency
+         * transaction fee config for a given source currency. The fee will apply to all
+         * cross-currency transactions that originate in the source currency.
+         */
+        class CrossCurrencyTransaction
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
         private constructor(
-            private val amount: JsonField<Long>,
-            private val currency: JsonField<String>,
+            private val feeType: JsonValue,
+            private val fixedFee: JsonField<FixedFee>,
+            private val sourceCurrency: JsonField<String>,
+            private val variableFeeBps: JsonField<Long>,
             private val additionalProperties: MutableMap<String, JsonValue>,
         ) {
 
             @JsonCreator
             private constructor(
-                @JsonProperty("amount") @ExcludeMissing amount: JsonField<Long> = JsonMissing.of(),
-                @JsonProperty("currency")
+                @JsonProperty("feeType") @ExcludeMissing feeType: JsonValue = JsonMissing.of(),
+                @JsonProperty("fixedFee")
                 @ExcludeMissing
-                currency: JsonField<String> = JsonMissing.of(),
-            ) : this(amount, currency, mutableMapOf())
+                fixedFee: JsonField<FixedFee> = JsonMissing.of(),
+                @JsonProperty("sourceCurrency")
+                @ExcludeMissing
+                sourceCurrency: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("variableFeeBps")
+                @ExcludeMissing
+                variableFeeBps: JsonField<Long> = JsonMissing.of(),
+            ) : this(feeType, fixedFee, sourceCurrency, variableFeeBps, mutableMapOf())
 
             /**
-             * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for USD).
+             * The kind of activity this fee applies to.
+             * - `CROSS_CURRENCY_TRANSACTION` — a fee charged on transactions where the sending
+             *   currency differs from the receiving currency
+             * - `RAIL` — a fee charged on any transaction that uses the specified payment rail
+             *
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("CROSS_CURRENCY_TRANSACTION")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("feeType") @ExcludeMissing fun _feeType(): JsonValue = feeType
+
+            /**
+             * Fixed fee charged per transaction.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
              */
-            fun amount(): Long = amount.getRequired("amount")
+            fun fixedFee(): FixedFee = fixedFee.getRequired("fixedFee")
 
             /**
-             * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
-             * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC" for
-             * USDC, etc.)
+             * Currency code of the sending side this fee applies to. Only `USD` is accepted today;
+             * other currencies return a `NOT_IMPLEMENTED` error.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
              *   value).
              */
-            fun currency(): String = currency.getRequired("currency")
+            fun sourceCurrency(): String = sourceCurrency.getRequired("sourceCurrency")
 
             /**
-             * Returns the raw JSON value of [amount].
+             * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's
+             * source-currency amount.
              *
-             * Unlike [amount], this method doesn't throw if the JSON field has an unexpected type.
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
              */
-            @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+            fun variableFeeBps(): Long = variableFeeBps.getRequired("variableFeeBps")
 
             /**
-             * Returns the raw JSON value of [currency].
+             * Returns the raw JSON value of [fixedFee].
              *
-             * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+             * Unlike [fixedFee], this method doesn't throw if the JSON field has an unexpected
              * type.
              */
-            @JsonProperty("currency") @ExcludeMissing fun _currency(): JsonField<String> = currency
+            @JsonProperty("fixedFee")
+            @ExcludeMissing
+            fun _fixedFee(): JsonField<FixedFee> = fixedFee
+
+            /**
+             * Returns the raw JSON value of [sourceCurrency].
+             *
+             * Unlike [sourceCurrency], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("sourceCurrency")
+            @ExcludeMissing
+            fun _sourceCurrency(): JsonField<String> = sourceCurrency
+
+            /**
+             * Returns the raw JSON value of [variableFeeBps].
+             *
+             * Unlike [variableFeeBps], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("variableFeeBps")
+            @ExcludeMissing
+            fun _variableFeeBps(): JsonField<Long> = variableFeeBps
 
             @JsonAnySetter
             private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -2040,60 +1935,98 @@ private constructor(
             companion object {
 
                 /**
-                 * Returns a mutable builder for constructing an instance of [FixedFee].
+                 * Returns a mutable builder for constructing an instance of
+                 * [CrossCurrencyTransaction].
                  *
                  * The following fields are required:
                  * ```kotlin
-                 * .amount()
-                 * .currency()
+                 * .fixedFee()
+                 * .sourceCurrency()
+                 * .variableFeeBps()
                  * ```
                  */
                 fun builder() = Builder()
             }
 
-            /** A builder for [FixedFee]. */
+            /** A builder for [CrossCurrencyTransaction]. */
             class Builder internal constructor() {
 
-                private var amount: JsonField<Long>? = null
-                private var currency: JsonField<String>? = null
+                private var feeType: JsonValue = JsonValue.from("CROSS_CURRENCY_TRANSACTION")
+                private var fixedFee: JsonField<FixedFee>? = null
+                private var sourceCurrency: JsonField<String>? = null
+                private var variableFeeBps: JsonField<Long>? = null
                 private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-                internal fun from(fixedFee: FixedFee) = apply {
-                    amount = fixedFee.amount
-                    currency = fixedFee.currency
-                    additionalProperties = fixedFee.additionalProperties.toMutableMap()
+                internal fun from(crossCurrencyTransaction: CrossCurrencyTransaction) = apply {
+                    feeType = crossCurrencyTransaction.feeType
+                    fixedFee = crossCurrencyTransaction.fixedFee
+                    sourceCurrency = crossCurrencyTransaction.sourceCurrency
+                    variableFeeBps = crossCurrencyTransaction.variableFeeBps
+                    additionalProperties =
+                        crossCurrencyTransaction.additionalProperties.toMutableMap()
                 }
 
                 /**
-                 * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for
-                 * USD).
-                 */
-                fun amount(amount: Long) = amount(JsonField.of(amount))
-
-                /**
-                 * Sets [Builder.amount] to an arbitrary JSON value.
+                 * Sets the field to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.amount] with a well-typed [Long] value instead.
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("CROSS_CURRENCY_TRANSACTION")
+                 * ```
+                 *
                  * This method is primarily for setting the field to an undocumented or not yet
                  * supported value.
                  */
-                fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+                fun feeType(feeType: JsonValue) = apply { this.feeType = feeType }
+
+                /** Fixed fee charged per transaction. */
+                fun fixedFee(fixedFee: FixedFee) = fixedFee(JsonField.of(fixedFee))
 
                 /**
-                 * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
-                 * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC"
-                 * for USDC, etc.)
-                 */
-                fun currency(currency: String) = currency(JsonField.of(currency))
-
-                /**
-                 * Sets [Builder.currency] to an arbitrary JSON value.
+                 * Sets [Builder.fixedFee] to an arbitrary JSON value.
                  *
-                 * You should usually call [Builder.currency] with a well-typed [String] value
+                 * You should usually call [Builder.fixedFee] with a well-typed [FixedFee] value
                  * instead. This method is primarily for setting the field to an undocumented or not
                  * yet supported value.
                  */
-                fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+                fun fixedFee(fixedFee: JsonField<FixedFee>) = apply { this.fixedFee = fixedFee }
+
+                /**
+                 * Currency code of the sending side this fee applies to. Only `USD` is accepted
+                 * today; other currencies return a `NOT_IMPLEMENTED` error.
+                 */
+                fun sourceCurrency(sourceCurrency: String) =
+                    sourceCurrency(JsonField.of(sourceCurrency))
+
+                /**
+                 * Sets [Builder.sourceCurrency] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.sourceCurrency] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun sourceCurrency(sourceCurrency: JsonField<String>) = apply {
+                    this.sourceCurrency = sourceCurrency
+                }
+
+                /**
+                 * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's
+                 * source-currency amount.
+                 */
+                fun variableFeeBps(variableFeeBps: Long) =
+                    variableFeeBps(JsonField.of(variableFeeBps))
+
+                /**
+                 * Sets [Builder.variableFeeBps] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.variableFeeBps] with a well-typed [Long] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun variableFeeBps(variableFeeBps: JsonField<Long>) = apply {
+                    this.variableFeeBps = variableFeeBps
+                }
 
                 fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                     this.additionalProperties.clear()
@@ -2118,22 +2051,25 @@ private constructor(
                 }
 
                 /**
-                 * Returns an immutable instance of [FixedFee].
+                 * Returns an immutable instance of [CrossCurrencyTransaction].
                  *
                  * Further updates to this [Builder] will not mutate the returned instance.
                  *
                  * The following fields are required:
                  * ```kotlin
-                 * .amount()
-                 * .currency()
+                 * .fixedFee()
+                 * .sourceCurrency()
+                 * .variableFeeBps()
                  * ```
                  *
                  * @throws IllegalStateException if any required field is unset.
                  */
-                fun build(): FixedFee =
-                    FixedFee(
-                        checkRequired("amount", amount),
-                        checkRequired("currency", currency),
+                fun build(): CrossCurrencyTransaction =
+                    CrossCurrencyTransaction(
+                        feeType,
+                        checkRequired("fixedFee", fixedFee),
+                        checkRequired("sourceCurrency", sourceCurrency),
+                        checkRequired("variableFeeBps", variableFeeBps),
                         additionalProperties.toMutableMap(),
                     )
             }
@@ -2150,13 +2086,21 @@ private constructor(
              * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
              *   match its expected type.
              */
-            fun validate(): FixedFee = apply {
+            fun validate(): CrossCurrencyTransaction = apply {
                 if (validated) {
                     return@apply
                 }
 
-                amount()
-                currency()
+                _feeType().let {
+                    if (it != JsonValue.from("CROSS_CURRENCY_TRANSACTION")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'feeType' is invalid, received $it"
+                        )
+                    }
+                }
+                fixedFee().validate()
+                sourceCurrency()
+                variableFeeBps()
                 validated = true
             }
 
@@ -2175,51 +2119,1495 @@ private constructor(
              * Used for best match union deserialization.
              */
             internal fun validity(): Int =
-                (if (amount.asKnown() == null) 0 else 1) +
-                    (if (currency.asKnown() == null) 0 else 1)
+                feeType.let { if (it == JsonValue.from("CROSS_CURRENCY_TRANSACTION")) 1 else 0 } +
+                    (fixedFee.asKnown()?.validity() ?: 0) +
+                    (if (sourceCurrency.asKnown() == null) 0 else 1) +
+                    (if (variableFeeBps.asKnown() == null) 0 else 1)
+
+            /** Fixed fee charged per transaction. */
+            class FixedFee
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val amount: JsonField<Long>,
+                private val currency: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("amount")
+                    @ExcludeMissing
+                    amount: JsonField<Long> = JsonMissing.of(),
+                    @JsonProperty("currency")
+                    @ExcludeMissing
+                    currency: JsonField<String> = JsonMissing.of(),
+                ) : this(amount, currency, mutableMapOf())
+
+                /**
+                 * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for
+                 * USD).
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun amount(): Long = amount.getRequired("amount")
+
+                /**
+                 * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                 * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC"
+                 * for USDC, etc.)
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun currency(): String = currency.getRequired("currency")
+
+                /**
+                 * Returns the raw JSON value of [amount].
+                 *
+                 * Unlike [amount], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+                /**
+                 * Returns the raw JSON value of [currency].
+                 *
+                 * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("currency")
+                @ExcludeMissing
+                fun _currency(): JsonField<String> = currency
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [FixedFee].
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .amount()
+                     * .currency()
+                     * ```
+                     */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [FixedFee]. */
+                class Builder internal constructor() {
+
+                    private var amount: JsonField<Long>? = null
+                    private var currency: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(fixedFee: FixedFee) = apply {
+                        amount = fixedFee.amount
+                        currency = fixedFee.currency
+                        additionalProperties = fixedFee.additionalProperties.toMutableMap()
+                    }
+
+                    /**
+                     * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents
+                     * for USD).
+                     */
+                    fun amount(amount: Long) = amount(JsonField.of(amount))
+
+                    /**
+                     * Sets [Builder.amount] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.amount] with a well-typed [Long] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+
+                    /**
+                     * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                     * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin,
+                     * "USDC" for USDC, etc.)
+                     */
+                    fun currency(currency: String) = currency(JsonField.of(currency))
+
+                    /**
+                     * Sets [Builder.currency] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.currency] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [FixedFee].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .amount()
+                     * .currency()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): FixedFee =
+                        FixedFee(
+                            checkRequired("amount", amount),
+                            checkRequired("currency", currency),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): FixedFee = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    amount()
+                    currency()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    (if (amount.asKnown() == null) 0 else 1) +
+                        (if (currency.asKnown() == null) 0 else 1)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is FixedFee &&
+                        amount == other.amount &&
+                        currency == other.currency &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(amount, currency, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "FixedFee{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
+            }
 
             override fun equals(other: Any?): Boolean {
                 if (this === other) {
                     return true
                 }
 
-                return other is FixedFee &&
-                    amount == other.amount &&
-                    currency == other.currency &&
+                return other is CrossCurrencyTransaction &&
+                    feeType == other.feeType &&
+                    fixedFee == other.fixedFee &&
+                    sourceCurrency == other.sourceCurrency &&
+                    variableFeeBps == other.variableFeeBps &&
                     additionalProperties == other.additionalProperties
             }
 
             private val hashCode: Int by lazy {
-                Objects.hash(amount, currency, additionalProperties)
+                Objects.hash(
+                    feeType,
+                    fixedFee,
+                    sourceCurrency,
+                    variableFeeBps,
+                    additionalProperties,
+                )
             }
 
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "FixedFee{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
+                "CrossCurrencyTransaction{feeType=$feeType, fixedFee=$fixedFee, sourceCurrency=$sourceCurrency, variableFeeBps=$variableFeeBps, additionalProperties=$additionalProperties}"
         }
 
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
+        /**
+         * A fee charged when a transaction uses the specified rail. There can be at most one for a
+         * given rail, direction and originator. For example, a config with rail: ACH, direction:
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+         */
+        class Rail
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val direction: JsonField<Direction>,
+            private val feeType: JsonValue,
+            private val fixedFee: JsonField<FixedFee>,
+            private val originator: JsonField<Originator>,
+            private val rail: JsonField<InnerRail>,
+            private val variableFeeBps: JsonField<Long>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("direction")
+                @ExcludeMissing
+                direction: JsonField<Direction> = JsonMissing.of(),
+                @JsonProperty("feeType") @ExcludeMissing feeType: JsonValue = JsonMissing.of(),
+                @JsonProperty("fixedFee")
+                @ExcludeMissing
+                fixedFee: JsonField<FixedFee> = JsonMissing.of(),
+                @JsonProperty("originator")
+                @ExcludeMissing
+                originator: JsonField<Originator> = JsonMissing.of(),
+                @JsonProperty("rail") @ExcludeMissing rail: JsonField<InnerRail> = JsonMissing.of(),
+                @JsonProperty("variableFeeBps")
+                @ExcludeMissing
+                variableFeeBps: JsonField<Long> = JsonMissing.of(),
+            ) : this(direction, feeType, fixedFee, originator, rail, variableFeeBps, mutableMapOf())
+
+            /**
+             * Whether the money is coming in or going out, relative to Grid. Only `OUT` is accepted
+             * today.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun direction(): Direction = direction.getRequired("direction")
+
+            /**
+             * The kind of activity this fee applies to.
+             * - `CROSS_CURRENCY_TRANSACTION` — a fee charged on transactions where the sending
+             *   currency differs from the receiving currency
+             * - `RAIL` — a fee charged on any transaction that uses the specified payment rail
+             *
+             * Expected to always return the following:
+             * ```kotlin
+             * JsonValue.from("RAIL")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("feeType") @ExcludeMissing fun _feeType(): JsonValue = feeType
+
+            /**
+             * Fixed fee charged per transaction.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun fixedFee(): FixedFee = fixedFee.getRequired("fixedFee")
+
+            /**
+             * Who originated the movement over the rail. An ACH OUT where Grid is the originator
+             * means Grid is pushing out the funds, while an ACH OUT with an EXTERNAL originator
+             * indicates Grid received an ACH pull request from an external source.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun originator(): Originator = originator.getRequired("originator")
+
+            /**
+             * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
+             * today; other rails return a `NOT_IMPLEMENTED` error.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun rail(): InnerRail = rail.getRequired("rail")
+
+            /**
+             * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's
+             * source-currency amount.
+             *
+             * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
+             *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun variableFeeBps(): Long = variableFeeBps.getRequired("variableFeeBps")
+
+            /**
+             * Returns the raw JSON value of [direction].
+             *
+             * Unlike [direction], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("direction")
+            @ExcludeMissing
+            fun _direction(): JsonField<Direction> = direction
+
+            /**
+             * Returns the raw JSON value of [fixedFee].
+             *
+             * Unlike [fixedFee], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("fixedFee")
+            @ExcludeMissing
+            fun _fixedFee(): JsonField<FixedFee> = fixedFee
+
+            /**
+             * Returns the raw JSON value of [originator].
+             *
+             * Unlike [originator], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("originator")
+            @ExcludeMissing
+            fun _originator(): JsonField<Originator> = originator
+
+            /**
+             * Returns the raw JSON value of [rail].
+             *
+             * Unlike [rail], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("rail") @ExcludeMissing fun _rail(): JsonField<InnerRail> = rail
+
+            /**
+             * Returns the raw JSON value of [variableFeeBps].
+             *
+             * Unlike [variableFeeBps], this method doesn't throw if the JSON field has an
+             * unexpected type.
+             */
+            @JsonProperty("variableFeeBps")
+            @ExcludeMissing
+            fun _variableFeeBps(): JsonField<Long> = variableFeeBps
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
             }
 
-            return other is FeeConfig &&
-                feeType == other.feeType &&
-                fixedFee == other.fixedFee &&
-                sourceCurrency == other.sourceCurrency &&
-                variableFeeBps == other.variableFeeBps &&
-                additionalProperties == other.additionalProperties
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Rail].
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .direction()
+                 * .fixedFee()
+                 * .originator()
+                 * .rail()
+                 * .variableFeeBps()
+                 * ```
+                 */
+                fun builder() = Builder()
+            }
+
+            /** A builder for [Rail]. */
+            class Builder internal constructor() {
+
+                private var direction: JsonField<Direction>? = null
+                private var feeType: JsonValue = JsonValue.from("RAIL")
+                private var fixedFee: JsonField<FixedFee>? = null
+                private var originator: JsonField<Originator>? = null
+                private var rail: JsonField<InnerRail>? = null
+                private var variableFeeBps: JsonField<Long>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                internal fun from(rail: Rail) = apply {
+                    direction = rail.direction
+                    feeType = rail.feeType
+                    fixedFee = rail.fixedFee
+                    originator = rail.originator
+                    this.rail = rail.rail
+                    variableFeeBps = rail.variableFeeBps
+                    additionalProperties = rail.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * Whether the money is coming in or going out, relative to Grid. Only `OUT` is
+                 * accepted today.
+                 */
+                fun direction(direction: Direction) = direction(JsonField.of(direction))
+
+                /**
+                 * Sets [Builder.direction] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.direction] with a well-typed [Direction] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun direction(direction: JsonField<Direction>) = apply {
+                    this.direction = direction
+                }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```kotlin
+                 * JsonValue.from("RAIL")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun feeType(feeType: JsonValue) = apply { this.feeType = feeType }
+
+                /** Fixed fee charged per transaction. */
+                fun fixedFee(fixedFee: FixedFee) = fixedFee(JsonField.of(fixedFee))
+
+                /**
+                 * Sets [Builder.fixedFee] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.fixedFee] with a well-typed [FixedFee] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun fixedFee(fixedFee: JsonField<FixedFee>) = apply { this.fixedFee = fixedFee }
+
+                /**
+                 * Who originated the movement over the rail. An ACH OUT where Grid is the
+                 * originator means Grid is pushing out the funds, while an ACH OUT with an EXTERNAL
+                 * originator indicates Grid received an ACH pull request from an external source.
+                 */
+                fun originator(originator: Originator) = originator(JsonField.of(originator))
+
+                /**
+                 * Sets [Builder.originator] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.originator] with a well-typed [Originator] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun originator(originator: JsonField<Originator>) = apply {
+                    this.originator = originator
+                }
+
+                /**
+                 * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
+                 * today; other rails return a `NOT_IMPLEMENTED` error.
+                 */
+                fun rail(rail: InnerRail) = rail(JsonField.of(rail))
+
+                /**
+                 * Sets [Builder.rail] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.rail] with a well-typed [InnerRail] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun rail(rail: JsonField<InnerRail>) = apply { this.rail = rail }
+
+                /**
+                 * Variable fee in basis points (1 bps = 0.01%) to apply to a transaction's
+                 * source-currency amount.
+                 */
+                fun variableFeeBps(variableFeeBps: Long) =
+                    variableFeeBps(JsonField.of(variableFeeBps))
+
+                /**
+                 * Sets [Builder.variableFeeBps] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.variableFeeBps] with a well-typed [Long] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun variableFeeBps(variableFeeBps: JsonField<Long>) = apply {
+                    this.variableFeeBps = variableFeeBps
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Rail].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```kotlin
+                 * .direction()
+                 * .fixedFee()
+                 * .originator()
+                 * .rail()
+                 * .variableFeeBps()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Rail =
+                    Rail(
+                        checkRequired("direction", direction),
+                        feeType,
+                        checkRequired("fixedFee", fixedFee),
+                        checkRequired("originator", originator),
+                        checkRequired("rail", rail),
+                        checkRequired("variableFeeBps", variableFeeBps),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws LightsparkGridInvalidDataException if any value type in this object doesn't
+             *   match its expected type.
+             */
+            fun validate(): Rail = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                direction().validate()
+                _feeType().let {
+                    if (it != JsonValue.from("RAIL")) {
+                        throw LightsparkGridInvalidDataException(
+                            "'feeType' is invalid, received $it"
+                        )
+                    }
+                }
+                fixedFee().validate()
+                originator().validate()
+                rail().validate()
+                variableFeeBps()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: LightsparkGridInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            internal fun validity(): Int =
+                (direction.asKnown()?.validity() ?: 0) +
+                    feeType.let { if (it == JsonValue.from("RAIL")) 1 else 0 } +
+                    (fixedFee.asKnown()?.validity() ?: 0) +
+                    (originator.asKnown()?.validity() ?: 0) +
+                    (rail.asKnown()?.validity() ?: 0) +
+                    (if (variableFeeBps.asKnown() == null) 0 else 1)
+
+            /**
+             * Whether the money is coming in or going out, relative to Grid. Only `OUT` is accepted
+             * today.
+             */
+            class Direction @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val IN = of("IN")
+
+                    val OUT = of("OUT")
+
+                    fun of(value: String) = Direction(JsonField.of(value))
+                }
+
+                /** An enum containing [Direction]'s known values. */
+                enum class Known {
+                    IN,
+                    OUT,
+                }
+
+                /**
+                 * An enum containing [Direction]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Direction] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    IN,
+                    OUT,
+                    /**
+                     * An enum member indicating that [Direction] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        IN -> Value.IN
+                        OUT -> Value.OUT
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        IN -> Known.IN
+                        OUT -> Known.OUT
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown Direction: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Direction = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Direction && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            /** Fixed fee charged per transaction. */
+            class FixedFee
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val amount: JsonField<Long>,
+                private val currency: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("amount")
+                    @ExcludeMissing
+                    amount: JsonField<Long> = JsonMissing.of(),
+                    @JsonProperty("currency")
+                    @ExcludeMissing
+                    currency: JsonField<String> = JsonMissing.of(),
+                ) : this(amount, currency, mutableMapOf())
+
+                /**
+                 * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents for
+                 * USD).
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun amount(): Long = amount.getRequired("amount")
+
+                /**
+                 * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                 * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin, "USDC"
+                 * for USDC, etc.)
+                 *
+                 * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected
+                 *   type or is unexpectedly missing or null (e.g. if the server responded with an
+                 *   unexpected value).
+                 */
+                fun currency(): String = currency.getRequired("currency")
+
+                /**
+                 * Returns the raw JSON value of [amount].
+                 *
+                 * Unlike [amount], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("amount") @ExcludeMissing fun _amount(): JsonField<Long> = amount
+
+                /**
+                 * Returns the raw JSON value of [currency].
+                 *
+                 * Unlike [currency], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("currency")
+                @ExcludeMissing
+                fun _currency(): JsonField<String> = currency
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /**
+                     * Returns a mutable builder for constructing an instance of [FixedFee].
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .amount()
+                     * .currency()
+                     * ```
+                     */
+                    fun builder() = Builder()
+                }
+
+                /** A builder for [FixedFee]. */
+                class Builder internal constructor() {
+
+                    private var amount: JsonField<Long>? = null
+                    private var currency: JsonField<String>? = null
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    internal fun from(fixedFee: FixedFee) = apply {
+                        amount = fixedFee.amount
+                        currency = fixedFee.currency
+                        additionalProperties = fixedFee.additionalProperties.toMutableMap()
+                    }
+
+                    /**
+                     * Fee amount in the smallest unit of the fixed fee's `currency` (e.g., cents
+                     * for USD).
+                     */
+                    fun amount(amount: Long) = amount(JsonField.of(amount))
+
+                    /**
+                     * Sets [Builder.amount] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.amount] with a well-typed [Long] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun amount(amount: JsonField<Long>) = apply { this.amount = amount }
+
+                    /**
+                     * Three-letter currency code (ISO 4217) the fixed fee is denominated in. Some
+                     * cryptocurrencies may use their own ticker symbols (e.g. "BTC" for Bitcoin,
+                     * "USDC" for USDC, etc.)
+                     */
+                    fun currency(currency: String) = currency(JsonField.of(currency))
+
+                    /**
+                     * Sets [Builder.currency] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.currency] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun currency(currency: JsonField<String>) = apply { this.currency = currency }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [FixedFee].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     *
+                     * The following fields are required:
+                     * ```kotlin
+                     * .amount()
+                     * .currency()
+                     * ```
+                     *
+                     * @throws IllegalStateException if any required field is unset.
+                     */
+                    fun build(): FixedFee =
+                        FixedFee(
+                            checkRequired("amount", amount),
+                            checkRequired("currency", currency),
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): FixedFee = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    amount()
+                    currency()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int =
+                    (if (amount.asKnown() == null) 0 else 1) +
+                        (if (currency.asKnown() == null) 0 else 1)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is FixedFee &&
+                        amount == other.amount &&
+                        currency == other.currency &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(amount, currency, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "FixedFee{amount=$amount, currency=$currency, additionalProperties=$additionalProperties}"
+            }
+
+            /**
+             * Who originated the movement over the rail. An ACH OUT where Grid is the originator
+             * means Grid is pushing out the funds, while an ACH OUT with an EXTERNAL originator
+             * indicates Grid received an ACH pull request from an external source.
+             */
+            class Originator
+            @JsonCreator
+            private constructor(private val value: JsonField<String>) : Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val GRID = of("GRID")
+
+                    val EXTERNAL = of("EXTERNAL")
+
+                    fun of(value: String) = Originator(JsonField.of(value))
+                }
+
+                /** An enum containing [Originator]'s known values. */
+                enum class Known {
+                    GRID,
+                    EXTERNAL,
+                }
+
+                /**
+                 * An enum containing [Originator]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [Originator] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    GRID,
+                    EXTERNAL,
+                    /**
+                     * An enum member indicating that [Originator] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        GRID -> Value.GRID
+                        EXTERNAL -> Value.EXTERNAL
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        GRID -> Known.GRID
+                        EXTERNAL -> Known.EXTERNAL
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown Originator: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): Originator = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Originator && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            /**
+             * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
+             * today; other rails return a `NOT_IMPLEMENTED` error.
+             */
+            class InnerRail @JsonCreator private constructor(private val value: JsonField<String>) :
+                Enum {
+
+                /**
+                 * Returns this class instance's raw value.
+                 *
+                 * This is usually only useful if this instance was deserialized from data that
+                 * doesn't match any known member, and you want to know that value. For example, if
+                 * the SDK is on an older version than the API, then the API may respond with new
+                 * members that the SDK is unaware of.
+                 */
+                @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+                companion object {
+
+                    val ACH = of("ACH")
+
+                    val ACH_COLOMBIA = of("ACH_COLOMBIA")
+
+                    val BANK_TRANSFER = of("BANK_TRANSFER")
+
+                    val BRE_B = of("BRE_B")
+
+                    val CIPS = of("CIPS")
+
+                    val FAST = of("FAST")
+
+                    val FASTER_PAYMENTS = of("FASTER_PAYMENTS")
+
+                    val FEDNOW = of("FEDNOW")
+
+                    val INSTAPAY = of("INSTAPAY")
+
+                    val MOBILE_MONEY = of("MOBILE_MONEY")
+
+                    val NEFT = of("NEFT")
+
+                    val PAYNOW = of("PAYNOW")
+
+                    val PESONET = of("PESONET")
+
+                    val PIX = of("PIX")
+
+                    val RTGS = of("RTGS")
+
+                    val RTP = of("RTP")
+
+                    val SEPA = of("SEPA")
+
+                    val SEPA_INSTANT = of("SEPA_INSTANT")
+
+                    val SPEI = of("SPEI")
+
+                    val SWIFT = of("SWIFT")
+
+                    val UNIONPAY = of("UNIONPAY")
+
+                    val UPI = of("UPI")
+
+                    val WIRE = of("WIRE")
+
+                    fun of(value: String) = InnerRail(JsonField.of(value))
+                }
+
+                /** An enum containing [InnerRail]'s known values. */
+                enum class Known {
+                    ACH,
+                    ACH_COLOMBIA,
+                    BANK_TRANSFER,
+                    BRE_B,
+                    CIPS,
+                    FAST,
+                    FASTER_PAYMENTS,
+                    FEDNOW,
+                    INSTAPAY,
+                    MOBILE_MONEY,
+                    NEFT,
+                    PAYNOW,
+                    PESONET,
+                    PIX,
+                    RTGS,
+                    RTP,
+                    SEPA,
+                    SEPA_INSTANT,
+                    SPEI,
+                    SWIFT,
+                    UNIONPAY,
+                    UPI,
+                    WIRE,
+                }
+
+                /**
+                 * An enum containing [InnerRail]'s known values, as well as an [_UNKNOWN] member.
+                 *
+                 * An instance of [InnerRail] can contain an unknown value in a couple of cases:
+                 * - It was deserialized from data that doesn't match any known member. For example,
+                 *   if the SDK is on an older version than the API, then the API may respond with
+                 *   new members that the SDK is unaware of.
+                 * - It was constructed with an arbitrary value using the [of] method.
+                 */
+                enum class Value {
+                    ACH,
+                    ACH_COLOMBIA,
+                    BANK_TRANSFER,
+                    BRE_B,
+                    CIPS,
+                    FAST,
+                    FASTER_PAYMENTS,
+                    FEDNOW,
+                    INSTAPAY,
+                    MOBILE_MONEY,
+                    NEFT,
+                    PAYNOW,
+                    PESONET,
+                    PIX,
+                    RTGS,
+                    RTP,
+                    SEPA,
+                    SEPA_INSTANT,
+                    SPEI,
+                    SWIFT,
+                    UNIONPAY,
+                    UPI,
+                    WIRE,
+                    /**
+                     * An enum member indicating that [InnerRail] was instantiated with an unknown
+                     * value.
+                     */
+                    _UNKNOWN,
+                }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value, or
+                 * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+                 *
+                 * Use the [known] method instead if you're certain the value is always known or if
+                 * you want to throw for the unknown case.
+                 */
+                fun value(): Value =
+                    when (this) {
+                        ACH -> Value.ACH
+                        ACH_COLOMBIA -> Value.ACH_COLOMBIA
+                        BANK_TRANSFER -> Value.BANK_TRANSFER
+                        BRE_B -> Value.BRE_B
+                        CIPS -> Value.CIPS
+                        FAST -> Value.FAST
+                        FASTER_PAYMENTS -> Value.FASTER_PAYMENTS
+                        FEDNOW -> Value.FEDNOW
+                        INSTAPAY -> Value.INSTAPAY
+                        MOBILE_MONEY -> Value.MOBILE_MONEY
+                        NEFT -> Value.NEFT
+                        PAYNOW -> Value.PAYNOW
+                        PESONET -> Value.PESONET
+                        PIX -> Value.PIX
+                        RTGS -> Value.RTGS
+                        RTP -> Value.RTP
+                        SEPA -> Value.SEPA
+                        SEPA_INSTANT -> Value.SEPA_INSTANT
+                        SPEI -> Value.SPEI
+                        SWIFT -> Value.SWIFT
+                        UNIONPAY -> Value.UNIONPAY
+                        UPI -> Value.UPI
+                        WIRE -> Value.WIRE
+                        else -> Value._UNKNOWN
+                    }
+
+                /**
+                 * Returns an enum member corresponding to this class instance's value.
+                 *
+                 * Use the [value] method instead if you're uncertain the value is always known and
+                 * don't want to throw for the unknown case.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value is a
+                 *   not a known member.
+                 */
+                fun known(): Known =
+                    when (this) {
+                        ACH -> Known.ACH
+                        ACH_COLOMBIA -> Known.ACH_COLOMBIA
+                        BANK_TRANSFER -> Known.BANK_TRANSFER
+                        BRE_B -> Known.BRE_B
+                        CIPS -> Known.CIPS
+                        FAST -> Known.FAST
+                        FASTER_PAYMENTS -> Known.FASTER_PAYMENTS
+                        FEDNOW -> Known.FEDNOW
+                        INSTAPAY -> Known.INSTAPAY
+                        MOBILE_MONEY -> Known.MOBILE_MONEY
+                        NEFT -> Known.NEFT
+                        PAYNOW -> Known.PAYNOW
+                        PESONET -> Known.PESONET
+                        PIX -> Known.PIX
+                        RTGS -> Known.RTGS
+                        RTP -> Known.RTP
+                        SEPA -> Known.SEPA
+                        SEPA_INSTANT -> Known.SEPA_INSTANT
+                        SPEI -> Known.SPEI
+                        SWIFT -> Known.SWIFT
+                        UNIONPAY -> Known.UNIONPAY
+                        UPI -> Known.UPI
+                        WIRE -> Known.WIRE
+                        else ->
+                            throw LightsparkGridInvalidDataException("Unknown InnerRail: $value")
+                    }
+
+                /**
+                 * Returns this class instance's primitive wire representation.
+                 *
+                 * This differs from the [toString] method because that method is primarily for
+                 * debugging and generally doesn't throw.
+                 *
+                 * @throws LightsparkGridInvalidDataException if this class instance's value does
+                 *   not have the expected primitive type.
+                 */
+                fun asString(): String =
+                    _value().asString()
+                        ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws LightsparkGridInvalidDataException if any value type in this object
+                 *   doesn't match its expected type.
+                 */
+                fun validate(): InnerRail = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    known()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: LightsparkGridInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is InnerRail && value == other.value
+                }
+
+                override fun hashCode() = value.hashCode()
+
+                override fun toString() = value.toString()
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Rail &&
+                    direction == other.direction &&
+                    feeType == other.feeType &&
+                    fixedFee == other.fixedFee &&
+                    originator == other.originator &&
+                    rail == other.rail &&
+                    variableFeeBps == other.variableFeeBps &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(
+                    direction,
+                    feeType,
+                    fixedFee,
+                    originator,
+                    rail,
+                    variableFeeBps,
+                    additionalProperties,
+                )
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Rail{direction=$direction, feeType=$feeType, fixedFee=$fixedFee, originator=$originator, rail=$rail, variableFeeBps=$variableFeeBps, additionalProperties=$additionalProperties}"
         }
-
-        private val hashCode: Int by lazy {
-            Objects.hash(feeType, fixedFee, sourceCurrency, variableFeeBps, additionalProperties)
-        }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "FeeConfig{feeType=$feeType, fixedFee=$fixedFee, sourceCurrency=$sourceCurrency, variableFeeBps=$variableFeeBps, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {
