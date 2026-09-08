@@ -1,38 +1,42 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.agents.me
+package com.lightspark.grid.models.customers.externalaccounts
 
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.models.transferin.TransferInRequest
 import java.util.Objects
 
 /**
- * Transfer funds from an external account to an internal account for the authenticated agent's
- * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS permission
- * in the agent's policy. If the agent's policy requires approval for this amount, the transaction
- * will be created in a pending state and must be approved by the platform via `POST
- * /agents/{agentId}/actions/{actionId}/approve`. This endpoint should only be used for external
- * account sources with pull functionality (e.g. ACH Pull). Otherwise, use the payment instructions
- * on the internal account to deposit funds.
+ * Complete a `WALLET_SIGNATURE` challenge by submitting the signature the wallet produced for the
+ * challenge's `messageToSign`. The message must be signed exactly as returned, and the signature
+ * must be submitted before the challenge's `expiresAt` — after expiry, start a new challenge.
+ *
+ * On success the account moves to `ACTIVE`; on an invalid signature it moves to `UNVERIFIED` (start
+ * a new challenge to retry). `LIVENESS` challenges complete asynchronously and never use this
+ * endpoint — their outcome is delivered via `EXTERNAL_ACCOUNT.STATUS_UPDATED` webhooks or by
+ * polling the account.
  */
-class MeCreateTransferInParams
+class ExternalAccountVerifyParams
 private constructor(
-    private val idempotencyKey: String?,
-    private val transferInRequest: TransferInRequest,
+    private val externalAccountId: String?,
+    private val ownershipVerifyRequest: OwnershipVerifyRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun idempotencyKey(): String? = idempotencyKey
+    fun externalAccountId(): String? = externalAccountId
 
-    fun transferInRequest(): TransferInRequest = transferInRequest
+    /**
+     * Completes a `WALLET_SIGNATURE` challenge by submitting the signature the wallet produced for
+     * the challenge's `messageToSign`.
+     */
+    fun ownershipVerifyRequest(): OwnershipVerifyRequest = ownershipVerifyRequest
 
     fun _additionalBodyProperties(): Map<String, JsonValue> =
-        transferInRequest._additionalProperties()
+        ownershipVerifyRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -45,35 +49,41 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [MeCreateTransferInParams].
+         * Returns a mutable builder for constructing an instance of [ExternalAccountVerifyParams].
          *
          * The following fields are required:
          * ```kotlin
-         * .transferInRequest()
+         * .ownershipVerifyRequest()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [MeCreateTransferInParams]. */
+    /** A builder for [ExternalAccountVerifyParams]. */
     class Builder internal constructor() {
 
-        private var idempotencyKey: String? = null
-        private var transferInRequest: TransferInRequest? = null
+        private var externalAccountId: String? = null
+        private var ownershipVerifyRequest: OwnershipVerifyRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(meCreateTransferInParams: MeCreateTransferInParams) = apply {
-            idempotencyKey = meCreateTransferInParams.idempotencyKey
-            transferInRequest = meCreateTransferInParams.transferInRequest
-            additionalHeaders = meCreateTransferInParams.additionalHeaders.toBuilder()
-            additionalQueryParams = meCreateTransferInParams.additionalQueryParams.toBuilder()
+        internal fun from(externalAccountVerifyParams: ExternalAccountVerifyParams) = apply {
+            externalAccountId = externalAccountVerifyParams.externalAccountId
+            ownershipVerifyRequest = externalAccountVerifyParams.ownershipVerifyRequest
+            additionalHeaders = externalAccountVerifyParams.additionalHeaders.toBuilder()
+            additionalQueryParams = externalAccountVerifyParams.additionalQueryParams.toBuilder()
         }
 
-        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
+        fun externalAccountId(externalAccountId: String?) = apply {
+            this.externalAccountId = externalAccountId
+        }
 
-        fun transferInRequest(transferInRequest: TransferInRequest) = apply {
-            this.transferInRequest = transferInRequest
+        /**
+         * Completes a `WALLET_SIGNATURE` challenge by submitting the signature the wallet produced
+         * for the challenge's `messageToSign`.
+         */
+        fun ownershipVerifyRequest(ownershipVerifyRequest: OwnershipVerifyRequest) = apply {
+            this.ownershipVerifyRequest = ownershipVerifyRequest
         }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
@@ -175,35 +185,35 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [MeCreateTransferInParams].
+         * Returns an immutable instance of [ExternalAccountVerifyParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
-         * .transferInRequest()
+         * .ownershipVerifyRequest()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): MeCreateTransferInParams =
-            MeCreateTransferInParams(
-                idempotencyKey,
-                checkRequired("transferInRequest", transferInRequest),
+        fun build(): ExternalAccountVerifyParams =
+            ExternalAccountVerifyParams(
+                externalAccountId,
+                checkRequired("ownershipVerifyRequest", ownershipVerifyRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): TransferInRequest = transferInRequest
+    fun _body(): OwnershipVerifyRequest = ownershipVerifyRequest
 
-    override fun _headers(): Headers =
-        Headers.builder()
-            .apply {
-                idempotencyKey?.let { put("Idempotency-Key", it) }
-                putAll(additionalHeaders)
-            }
-            .build()
+    fun _pathParam(index: Int): String =
+        when (index) {
+            0 -> externalAccountId ?: ""
+            else -> ""
+        }
+
+    override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -212,16 +222,21 @@ private constructor(
             return true
         }
 
-        return other is MeCreateTransferInParams &&
-            idempotencyKey == other.idempotencyKey &&
-            transferInRequest == other.transferInRequest &&
+        return other is ExternalAccountVerifyParams &&
+            externalAccountId == other.externalAccountId &&
+            ownershipVerifyRequest == other.ownershipVerifyRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(idempotencyKey, transferInRequest, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            externalAccountId,
+            ownershipVerifyRequest,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "MeCreateTransferInParams{idempotencyKey=$idempotencyKey, transferInRequest=$transferInRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ExternalAccountVerifyParams{externalAccountId=$externalAccountId, ownershipVerifyRequest=$ownershipVerifyRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

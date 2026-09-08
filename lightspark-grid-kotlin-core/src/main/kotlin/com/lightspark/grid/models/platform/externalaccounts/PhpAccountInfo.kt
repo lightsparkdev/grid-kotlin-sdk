@@ -25,6 +25,7 @@ private constructor(
     private val accountType: JsonField<AccountType>,
     private val bankName: JsonField<String>,
     private val paymentRails: JsonField<List<PaymentRail>>,
+    private val rail: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -40,7 +41,8 @@ private constructor(
         @JsonProperty("paymentRails")
         @ExcludeMissing
         paymentRails: JsonField<List<PaymentRail>> = JsonMissing.of(),
-    ) : this(accountNumber, accountType, bankName, paymentRails, mutableMapOf())
+        @JsonProperty("rail") @ExcludeMissing rail: JsonField<String> = JsonMissing.of(),
+    ) : this(accountNumber, accountType, bankName, paymentRails, rail, mutableMapOf())
 
     /**
      * Bank account number
@@ -69,6 +71,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun paymentRails(): List<PaymentRail> = paymentRails.getRequired("paymentRails")
+
+    /**
+     * The payment rail to route the payout over: INSTAPAY or PESONET. Omitted, the payout resolves
+     * it by amount.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun rail(): String? = rail.getNullable("rail")
 
     /**
      * Returns the raw JSON value of [accountNumber].
@@ -103,6 +114,13 @@ private constructor(
     @JsonProperty("paymentRails")
     @ExcludeMissing
     fun _paymentRails(): JsonField<List<PaymentRail>> = paymentRails
+
+    /**
+     * Returns the raw JSON value of [rail].
+     *
+     * Unlike [rail], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("rail") @ExcludeMissing fun _rail(): JsonField<String> = rail
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -139,6 +157,7 @@ private constructor(
         private var accountType: JsonField<AccountType>? = null
         private var bankName: JsonField<String>? = null
         private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
+        private var rail: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(phpAccountInfo: PhpAccountInfo) = apply {
@@ -146,6 +165,7 @@ private constructor(
             accountType = phpAccountInfo.accountType
             bankName = phpAccountInfo.bankName
             paymentRails = phpAccountInfo.paymentRails.map { it.toMutableList() }
+            rail = phpAccountInfo.rail
             additionalProperties = phpAccountInfo.additionalProperties.toMutableMap()
         }
 
@@ -212,6 +232,20 @@ private constructor(
                 }
         }
 
+        /**
+         * The payment rail to route the payout over: INSTAPAY or PESONET. Omitted, the payout
+         * resolves it by amount.
+         */
+        fun rail(rail: String) = rail(JsonField.of(rail))
+
+        /**
+         * Sets [Builder.rail] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.rail] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun rail(rail: JsonField<String>) = apply { this.rail = rail }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -252,6 +286,7 @@ private constructor(
                 checkRequired("accountType", accountType),
                 checkRequired("bankName", bankName),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
+                rail,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -275,6 +310,7 @@ private constructor(
         accountType().validate()
         bankName()
         paymentRails().forEach { it.validate() }
+        rail()
         validated = true
     }
 
@@ -295,7 +331,8 @@ private constructor(
         (if (accountNumber.asKnown() == null) 0 else 1) +
             (accountType.asKnown()?.validity() ?: 0) +
             (if (bankName.asKnown() == null) 0 else 1) +
-            (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
+            (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
+            (if (rail.asKnown() == null) 0 else 1)
 
     class AccountType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -569,15 +606,16 @@ private constructor(
             accountType == other.accountType &&
             bankName == other.bankName &&
             paymentRails == other.paymentRails &&
+            rail == other.rail &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(accountNumber, accountType, bankName, paymentRails, additionalProperties)
+        Objects.hash(accountNumber, accountType, bankName, paymentRails, rail, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "PhpAccountInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, additionalProperties=$additionalProperties}"
+        "PhpAccountInfo{accountNumber=$accountNumber, accountType=$accountType, bankName=$bankName, paymentRails=$paymentRails, rail=$rail, additionalProperties=$additionalProperties}"
 }

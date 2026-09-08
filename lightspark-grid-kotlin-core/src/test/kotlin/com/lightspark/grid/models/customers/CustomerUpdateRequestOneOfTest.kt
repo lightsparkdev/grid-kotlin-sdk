@@ -8,6 +8,7 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -31,12 +32,51 @@ internal class CustomerUpdateRequestOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .annualIncomeRange(
+                    IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                )
                 .birthDate(LocalDate.parse("1990-01-15"))
+                .countryOfIssuance("US")
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
+                .expectedMonthlyTransactionCount(
+                    IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount.COUNT_100_TO_500
+                )
+                .expectedMonthlyTransactionVolume(
+                    IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
+                        .VOLUME_100_K_TO_1_M
+                )
                 .fullName("John Michael Doe")
+                .identifier("123-45-6789")
+                .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                 .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                 .nationality("US")
+                .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
+                .pepStatus(IndividualCustomerUpdateRequest.PepStatus.NONE)
+                .phoneNumber("+14155551234")
+                .purposeOfAccount(
+                    IndividualCustomerUpdateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                )
+                .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                .addSourceOfFundsCategory(
+                    IndividualCustomerUpdateRequest.SourceOfFundsCategory.SALARY
+                )
+                .sourceOfFundsOtherDescription("Contest winnings")
+                .addSourceOfWealthCategory(
+                    IndividualCustomerUpdateRequest.SourceOfWealthCategory.SALARY
+                )
+                .addSourceOfWealthCategory(
+                    IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
+                )
+                .sourceOfWealthOtherDescription("Royalty income from published works")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -63,12 +103,52 @@ internal class CustomerUpdateRequestOneOfTest {
                             .state("CA")
                             .build()
                     )
+                    .annualIncomeRange(
+                        IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerUpdateRequest.PepStatus.NONE)
+                    .phoneNumber("+14155551234")
+                    .purposeOfAccount(
+                        IndividualCustomerUpdateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerUpdateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerUpdateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -107,6 +187,7 @@ internal class CustomerUpdateRequestOneOfTest {
                         .country("US")
                         .doingBusinessAs("Acme")
                         .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                        .addExpectedCounterpartyCountry("US")
                         .expectedMonthlyTransactionCount(
                             BusinessCustomerUpdateRequest.BusinessInfo
                                 .ExpectedMonthlyTransactionCount
@@ -120,18 +201,36 @@ internal class CustomerUpdateRequestOneOfTest {
                         .addExpectedRecipientJurisdiction("US")
                         .incorporatedOn(LocalDate.parse("2018-03-14"))
                         .legalName("Acme Corporation, Inc.")
+                        .naicsCode("541511")
+                        .primaryContactFirstName("Jane")
+                        .primaryContactLastName("Smith")
                         .purposeOfAccount(
                             BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                 .CONTRACTOR_PAYOUTS
                         )
+                        .purposeOfAccountOtherDescription("Escrow for equipment leases")
                         .registrationNumber("5523041")
                         .sourceOfFunds("Funds derived from customer payments for software services")
+                        .addSourceOfFundsCategory(
+                            BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                .OPERATING_REVENUE
+                        )
+                        .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                         .taxId("47-1234567")
                         .build()
                 )
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
+                .endUserTermsConsent(
+                    EndUserTermsConsentRequest.builder()
+                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("V1")
+                        .build()
+                )
                 .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                .phoneNumber("+14155551234")
                 .umaAddress("\$john.doe@uma.domain.com")
                 .build()
 
@@ -168,6 +267,7 @@ internal class CustomerUpdateRequestOneOfTest {
                             .country("US")
                             .doingBusinessAs("Acme")
                             .entityType(BusinessCustomerUpdateRequest.BusinessInfo.EntityType.LLC)
+                            .addExpectedCounterpartyCountry("US")
                             .expectedMonthlyTransactionCount(
                                 BusinessCustomerUpdateRequest.BusinessInfo
                                     .ExpectedMonthlyTransactionCount
@@ -181,20 +281,38 @@ internal class CustomerUpdateRequestOneOfTest {
                             .addExpectedRecipientJurisdiction("US")
                             .incorporatedOn(LocalDate.parse("2018-03-14"))
                             .legalName("Acme Corporation, Inc.")
+                            .naicsCode("541511")
+                            .primaryContactFirstName("Jane")
+                            .primaryContactLastName("Smith")
                             .purposeOfAccount(
                                 BusinessCustomerUpdateRequest.BusinessInfo.PurposeOfAccount
                                     .CONTRACTOR_PAYOUTS
                             )
+                            .purposeOfAccountOtherDescription("Escrow for equipment leases")
                             .registrationNumber("5523041")
                             .sourceOfFunds(
                                 "Funds derived from customer payments for software services"
                             )
+                            .addSourceOfFundsCategory(
+                                BusinessCustomerUpdateRequest.BusinessInfo.SourceOfFundsCategory
+                                    .OPERATING_REVENUE
+                            )
+                            .sourceOfFundsOtherDescription("Proceeds from a legal settlement")
                             .taxId("47-1234567")
                             .build()
                     )
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
                     .kybStatus(BusinessCustomerUpdateRequest.KybStatus.APPROVED)
+                    .phoneNumber("+14155551234")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )

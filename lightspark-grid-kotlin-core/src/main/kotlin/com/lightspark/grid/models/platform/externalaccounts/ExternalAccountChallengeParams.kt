@@ -1,36 +1,50 @@
 // File generated from our OpenAPI spec by Stainless.
 
-package com.lightspark.grid.models.agents.me
+package com.lightspark.grid.models.platform.externalaccounts
 
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.Params
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.http.Headers
 import com.lightspark.grid.core.http.QueryParams
-import com.lightspark.grid.models.transferout.TransferOutRequest
+import com.lightspark.grid.models.customers.externalaccounts.OwnershipChallengeRequest
 import java.util.Objects
 
 /**
- * Transfer funds from an internal account to an external account for the authenticated agent's
- * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS permission
- * in the agent's policy. If the agent's policy requires approval for this amount, the transaction
- * will be created in a pending state and must be approved by the platform via `POST
- * /agents/{agentId}/actions/{actionId}/approve`.
+ * Start (or restart) ownership verification for a `FIRST_PARTY` self-custody crypto wallet external
+ * account in `PENDING_OWNERSHIP_VERIFICATION` or `UNVERIFIED` status. The response carries the
+ * method-specific challenge material:
+ * - `WALLET_SIGNATURE` — a `messageToSign`; have the wallet sign it exactly and submit the result
+ *   to the verify endpoint to complete verification synchronously.
+ * - `LIVENESS` — a hosted `verificationLink` (and possibly an embed `token`); the user completes a
+ *   biometric flow and verification completes asynchronously. The outcome is delivered via
+ *   `EXTERNAL_ACCOUNT.STATUS_UPDATED` webhooks or by polling the account.
+ *
+ * Calling this endpoint again abandons any in-flight challenge and issues a new one with the
+ * requested method — use it to retry after a failed attempt, to replace an expired challenge, or to
+ * switch methods. An `UNVERIFIED` account returns to `PENDING_OWNERSHIP_VERIFICATION` when a new
+ * challenge is issued.
+ *
+ * Completing ownership verification moves the account to `ACTIVE`.
  */
-class MeCreateTransferOutParams
+class ExternalAccountChallengeParams
 private constructor(
-    private val idempotencyKey: String?,
-    private val transferOutRequest: TransferOutRequest,
+    private val externalAccountId: String?,
+    private val ownershipChallengeRequest: OwnershipChallengeRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun idempotencyKey(): String? = idempotencyKey
+    fun externalAccountId(): String? = externalAccountId
 
-    fun transferOutRequest(): TransferOutRequest = transferOutRequest
+    /**
+     * Starts (or restarts) an ownership verification challenge for a crypto wallet external
+     * account.
+     */
+    fun ownershipChallengeRequest(): OwnershipChallengeRequest = ownershipChallengeRequest
 
     fun _additionalBodyProperties(): Map<String, JsonValue> =
-        transferOutRequest._additionalProperties()
+        ownershipChallengeRequest._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -43,36 +57,44 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [MeCreateTransferOutParams].
+         * Returns a mutable builder for constructing an instance of
+         * [ExternalAccountChallengeParams].
          *
          * The following fields are required:
          * ```kotlin
-         * .transferOutRequest()
+         * .ownershipChallengeRequest()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [MeCreateTransferOutParams]. */
+    /** A builder for [ExternalAccountChallengeParams]. */
     class Builder internal constructor() {
 
-        private var idempotencyKey: String? = null
-        private var transferOutRequest: TransferOutRequest? = null
+        private var externalAccountId: String? = null
+        private var ownershipChallengeRequest: OwnershipChallengeRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(meCreateTransferOutParams: MeCreateTransferOutParams) = apply {
-            idempotencyKey = meCreateTransferOutParams.idempotencyKey
-            transferOutRequest = meCreateTransferOutParams.transferOutRequest
-            additionalHeaders = meCreateTransferOutParams.additionalHeaders.toBuilder()
-            additionalQueryParams = meCreateTransferOutParams.additionalQueryParams.toBuilder()
+        internal fun from(externalAccountChallengeParams: ExternalAccountChallengeParams) = apply {
+            externalAccountId = externalAccountChallengeParams.externalAccountId
+            ownershipChallengeRequest = externalAccountChallengeParams.ownershipChallengeRequest
+            additionalHeaders = externalAccountChallengeParams.additionalHeaders.toBuilder()
+            additionalQueryParams = externalAccountChallengeParams.additionalQueryParams.toBuilder()
         }
 
-        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
-
-        fun transferOutRequest(transferOutRequest: TransferOutRequest) = apply {
-            this.transferOutRequest = transferOutRequest
+        fun externalAccountId(externalAccountId: String?) = apply {
+            this.externalAccountId = externalAccountId
         }
+
+        /**
+         * Starts (or restarts) an ownership verification challenge for a crypto wallet external
+         * account.
+         */
+        fun ownershipChallengeRequest(ownershipChallengeRequest: OwnershipChallengeRequest) =
+            apply {
+                this.ownershipChallengeRequest = ownershipChallengeRequest
+            }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -173,35 +195,35 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [MeCreateTransferOutParams].
+         * Returns an immutable instance of [ExternalAccountChallengeParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
-         * .transferOutRequest()
+         * .ownershipChallengeRequest()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): MeCreateTransferOutParams =
-            MeCreateTransferOutParams(
-                idempotencyKey,
-                checkRequired("transferOutRequest", transferOutRequest),
+        fun build(): ExternalAccountChallengeParams =
+            ExternalAccountChallengeParams(
+                externalAccountId,
+                checkRequired("ownershipChallengeRequest", ownershipChallengeRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): TransferOutRequest = transferOutRequest
+    fun _body(): OwnershipChallengeRequest = ownershipChallengeRequest
 
-    override fun _headers(): Headers =
-        Headers.builder()
-            .apply {
-                idempotencyKey?.let { put("Idempotency-Key", it) }
-                putAll(additionalHeaders)
-            }
-            .build()
+    fun _pathParam(index: Int): String =
+        when (index) {
+            0 -> externalAccountId ?: ""
+            else -> ""
+        }
+
+    override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -210,16 +232,21 @@ private constructor(
             return true
         }
 
-        return other is MeCreateTransferOutParams &&
-            idempotencyKey == other.idempotencyKey &&
-            transferOutRequest == other.transferOutRequest &&
+        return other is ExternalAccountChallengeParams &&
+            externalAccountId == other.externalAccountId &&
+            ownershipChallengeRequest == other.ownershipChallengeRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(idempotencyKey, transferOutRequest, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            externalAccountId,
+            ownershipChallengeRequest,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "MeCreateTransferOutParams{idempotencyKey=$idempotencyKey, transferOutRequest=$transferOutRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ExternalAccountChallengeParams{externalAccountId=$externalAccountId, ownershipChallengeRequest=$ownershipChallengeRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

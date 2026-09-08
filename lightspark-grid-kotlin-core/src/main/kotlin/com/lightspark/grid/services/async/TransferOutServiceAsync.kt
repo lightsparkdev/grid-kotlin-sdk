@@ -11,7 +11,9 @@ import com.lightspark.grid.models.transferout.TransferOutCreateParams
 import com.lightspark.grid.models.transferout.TransferOutRequest
 
 /**
- * Endpoints for transferring funds between internal and external accounts with the same currency
+ * Deprecated endpoints for transferring funds between internal and external accounts with the same
+ * currency. Use the quote endpoints under Cross-Currency Transfers instead, which now serve
+ * same-currency transfers as well.
  */
 interface TransferOutServiceAsync {
 
@@ -27,13 +29,34 @@ interface TransferOutServiceAsync {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): TransferOutServiceAsync
 
-    /** Transfer funds from an internal account to an external account for a specific customer. */
+    /**
+     * **Deprecated. Use `POST /quotes` instead.**
+     *
+     * Same-currency transfers are now served by the quote endpoint. Create a quote with an internal
+     * account source and an external account destination and set `immediatelyExecute: true` to move
+     * the funds in a single request, exactly as this endpoint does. This endpoint continues to work
+     * and its request and response shapes are unchanged.
+     *
+     * To migrate a request to `POST /quotes`:
+     * - add `sourceType: ACCOUNT` to `source` and `destinationType: ACCOUNT` to `destination`; the
+     *   account IDs and `destination.paymentRail` are unchanged
+     * - rename `amount` to `lockedCurrencyAmount` and add `lockedCurrencySide: SENDING`
+     * - `remittanceInformation` and `purposeOfPayment` carry over unchanged
+     * - add `immediatelyExecute: true` to keep the single-request behavior
+     *
+     * The quote response is a `Quote` rather than a `Transaction`; read `transactionId` from it to
+     * track the resulting transaction.
+     *
+     * Transfer funds from an internal account to an external account for a specific customer.
+     */
+    @Deprecated("deprecated")
     suspend fun create(
         params: TransferOutCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Transaction
 
     /** @see create */
+    @Deprecated("deprecated")
     suspend fun create(
         transferOutRequest: TransferOutRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -62,6 +85,7 @@ interface TransferOutServiceAsync {
          * Returns a raw HTTP response for `post /transfer-out`, but is otherwise the same as
          * [TransferOutServiceAsync.create].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         suspend fun create(
             params: TransferOutCreateParams,
@@ -69,6 +93,7 @@ interface TransferOutServiceAsync {
         ): HttpResponseFor<Transaction>
 
         /** @see create */
+        @Deprecated("deprecated")
         @MustBeClosed
         suspend fun create(
             transferOutRequest: TransferOutRequest,

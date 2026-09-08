@@ -8,15 +8,15 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.auth.credentials.AuthCredentialCreateRequestOneOf
 import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
-import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
-import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
-import com.lightspark.grid.models.auth.credentials.AuthSession
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
+import com.lightspark.grid.models.auth.credentials.CredentialDeleteResponse
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
+import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 import com.lightspark.grid.models.auth.credentials.EmailOtpCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.OAuthCredentialCreateRequest
 import com.lightspark.grid.models.auth.credentials.PasskeyCredentialCreateRequest
@@ -43,31 +43,31 @@ interface CredentialServiceAsync {
      * Register an authentication credential for an Embedded Wallet customer.
      *
      * Embedded Wallet internal accounts are initialized with an `EMAIL_OTP` credential tied to the
-     * customer email on the account. Use this endpoint to add another credential (`OAUTH` or
-     * `PASSKEY`), or to add `EMAIL_OTP` back after it has been removed. Only one `EMAIL_OTP`
-     * credential is supported per internal account; multiple distinct `PASSKEY` credentials may be
-     * registered.
+     * customer email on the account. Use this endpoint to add another credential (`SMS_OTP`,
+     * `OAUTH`, or `PASSKEY`), or to add `EMAIL_OTP` / `SMS_OTP` back after it has been removed.
+     * Only one `EMAIL_OTP` and one `SMS_OTP` credential are supported per internal account;
+     * multiple distinct `PASSKEY` credentials may be registered.
      *
      * Adding a credential requires a signature from an existing verified credential on the same
      * account. Call this endpoint with the new credential's details to receive `202` with
      * `payloadToSign` and `requestId`. Use the session API keypair of an existing verified
-     * credential (decrypted client-side from its `encryptedSessionSigningKey`) to build an API-key
-     * stamp over `payloadToSign`, then retry the same request with that full stamp as the
+     * credential (the session signing key the client holds for it) to build an API-key stamp over
+     * `payloadToSign`, then retry the same request with that full stamp as the
      * `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     * The signed retry returns `201` with the created `AuthMethod`. For `EMAIL_OTP`, the OTP email
-     * is triggered on the signed retry, and the credential must then be activated via `POST
-     * /auth/credentials/{id}/verify`.
+     * The signed retry returns `201` with the created `AuthMethod`. For OTP credentials, the
+     * one-time password is triggered on the signed retry, and the credential must then be activated
+     * via `POST /auth/credentials/{id}/verify`.
      */
     suspend fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse
+    ): CredentialCreateResponse
 
     /** @see create */
     suspend fun create(
         authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             CredentialCreateParams.builder()
                 .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -79,7 +79,7 @@ interface CredentialServiceAsync {
     suspend fun create(
         emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                 emailOtpCredentialCreateRequest
@@ -89,9 +89,22 @@ interface CredentialServiceAsync {
 
     /** @see create */
     suspend fun create(
+        smsOtpCredentialCreateRequest:
+            AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CredentialCreateResponse =
+        create(
+            AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                smsOtpCredentialCreateRequest
+            ),
+            requestOptions,
+        )
+
+    /** @see create */
+    suspend fun create(
         oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
                 oauthCredentialCreateRequest
@@ -103,7 +116,7 @@ interface CredentialServiceAsync {
     suspend fun create(
         passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         create(
             AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
                 passkeyCredentialCreateRequest
@@ -143,76 +156,77 @@ interface CredentialServiceAsync {
         id: String,
         params: CredentialDeleteParams = CredentialDeleteParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge = delete(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialDeleteResponse = delete(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see delete */
     suspend fun delete(
         params: CredentialDeleteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSignedRequestChallenge
+    ): CredentialDeleteResponse
 
     /** @see delete */
-    suspend fun delete(id: String, requestOptions: RequestOptions): AuthSignedRequestChallenge =
+    suspend fun delete(id: String, requestOptions: RequestOptions): CredentialDeleteResponse =
         delete(id, CredentialDeleteParams.none(), requestOptions)
 
     /**
      * Re-issue the challenge for an existing authentication credential.
      *
-     * For `EMAIL_OTP` credentials, this triggers a new one-time password email to the address on
-     * file and returns a fresh `otpEncryptionTargetBundle` for the client to HPKE-encrypt the OTP
-     * attempt against. After the user receives the new OTP, build the `encryptedOtpBundle` under
-     * the new target bundle and call `POST /auth/credentials/{id}/verify` to begin the secure OTP
-     * login flow.
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, this triggers a new one-time password to the
+     * contact on file and returns a fresh `otpEncryptionTargetBundle` for the client to
+     * HPKE-encrypt the OTP attempt against. After the user receives the new OTP, build the
+     * `encryptedOtpBundle` under the new target bundle and call `POST
+     * /auth/credentials/{id}/verify` to begin the secure OTP login flow.
      *
      * `OAUTH` credentials do not have a challenge step. To authenticate or reauthenticate an OAuth
      * credential, call `POST /auth/credentials/{id}/verify` with a fresh OIDC token and a
      * `clientPublicKey`.
      *
      * For `PASSKEY` credentials, this issues a fresh Grid reauthentication challenge. The request
-     * body must carry the client's ephemeral `clientPublicKey` so Grid can bake it into the Turnkey
-     * session-creation payload the returned challenge is computed from — this seals the resulting
-     * session signing key to the client. The response is a `PasskeyAuthChallenge` — the passkey
-     * auth method fields plus the WebAuthn `credentialId`, new `challenge`, `requestId`, and
-     * `expiresAt`. The `challenge` value is the lowercase hex-encoded SHA-256 digest of the
-     * canonical Turnkey session-creation body, not a base64url string. The client base64url-decodes
-     * `credentialId` for `allowCredentials[].id` and UTF-8 encodes `challenge` (for example, `new
-     * TextEncoder().encode(challenge)`) as the WebAuthn challenge in `navigator.credentials.get()`,
-     * then submits the resulting assertion to `POST /auth/credentials/{id}/verify` with
-     * `Request-Id: <requestId>` to receive a session.
+     * body must carry the client's ephemeral `clientPublicKey` so Grid can bake it into the
+     * session-creation payload the returned challenge is computed from — send a compressed key for
+     * the recommended client-held-key model, where the client retains the matching private key as
+     * the resulting session signing key, or an uncompressed key for the deprecated legacy flow. The
+     * response is a `PasskeyAuthChallenge` — the passkey auth method fields plus the WebAuthn
+     * `credentialId`, new `challenge`, `requestId`, and `expiresAt`. The `challenge` value is the
+     * lowercase hex-encoded SHA-256 digest of the canonical session-creation body, not a base64url
+     * string. The client base64url-decodes `credentialId` for `allowCredentials[].id` and UTF-8
+     * encodes `challenge` (for example, `new TextEncoder().encode(challenge)`) as the WebAuthn
+     * challenge in `navigator.credentials.get()`, then submits the resulting assertion to `POST
+     * /auth/credentials/{id}/verify` with `Request-Id: <requestId>` to receive a session.
      */
     suspend fun challenge(
         id: String,
         params: CredentialChallengeParams = CredentialChallengeParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthCredentialResponseOneOf = challenge(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialChallengeResponse = challenge(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see challenge */
     suspend fun challenge(
         params: CredentialChallengeParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthCredentialResponseOneOf
+    ): CredentialChallengeResponse
 
     /** @see challenge */
-    suspend fun challenge(id: String, requestOptions: RequestOptions): AuthCredentialResponseOneOf =
+    suspend fun challenge(id: String, requestOptions: RequestOptions): CredentialChallengeResponse =
         challenge(id, CredentialChallengeParams.none(), requestOptions)
 
     /**
      * Complete the verification step for a previously created authentication credential and issue a
      * session.
      *
-     * For `EMAIL_OTP` credentials, submit the `encryptedOtpBundle` produced by HPKE-encrypting
-     * `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from registration
-     * when present, or from `POST /auth/credentials/{id}/challenge` when registration omitted it or
-     * the OTP must be reissued. The server is a pass-through and never sees the plaintext OTP code.
-     * On success the response is `202` with a `payloadToSign` carrying the `verificationToken`
-     * bound to the client's TEK public key — sign that token with the matching TEK private key,
-     * then retry the same request with the full stamp in `Grid-Wallet-Signature` and the
-     * `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued
+     * For `EMAIL_OTP` and `SMS_OTP` credentials, submit the `encryptedOtpBundle` produced by
+     * HPKE-encrypting `{otp_code, public_key}` under the `otpEncryptionTargetBundle` returned from
+     * registration when present, or from `POST /auth/credentials/{id}/challenge` when registration
+     * omitted it or the OTP must be reissued. The server is a pass-through and never sees the
+     * plaintext OTP code. On success the response is `202` with a `payloadToSign` carrying the
+     * `verificationToken` bound to the client's TEK public key — sign that token with the matching
+     * TEK private key, then retry the same request with the full stamp in `Grid-Wallet-Signature`
+     * and the `requestId` echoed in `Request-Id`. The signed retry returns `200` with the issued
      * `AuthSession`. The TEK public key becomes the session API key on successful completion. In
-     * sandbox mode, the EMAIL_OTP flow runs real HPKE end-to-end against a sandbox enclave keypair
-     * — clients build a real `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle`
-     * and sign a real `verificationToken` with their TEK keypair. The only sandbox shortcut is the
-     * magic OTP code (`"000000"`) the user "receives" instead of a real email delivery.
+     * sandbox mode, the OTP flow runs real HPKE end-to-end against a sandbox enclave keypair —
+     * clients build a real `encryptedOtpBundle` against the sandbox `otpEncryptionTargetBundle` and
+     * sign a real `verificationToken` with their TEK keypair. The only sandbox shortcut is the
+     * magic OTP code (`"000000"`) the user "receives" instead of a real email or SMS delivery.
      *
      * For `OAUTH` credentials, supply a fresh OIDC token (`iat` must be less than 60 seconds before
      * the request) along with the client-generated public key; this is also the reauthentication
@@ -224,23 +238,26 @@ interface CredentialServiceAsync {
      * `Request-Id` header. The `clientPublicKey` for `PASSKEY` credentials is supplied on the
      * challenge call, where it is bound into the pending session-creation request.
      *
-     * On success for `OAUTH` and `PASSKEY`, and on the signed retry for `EMAIL_OTP`, the response
-     * contains an `AuthSession`. For `OAUTH` and `PASSKEY` the session signing key is delivered as
-     * `encryptedSessionSigningKey` (HPKE-sealed to the supplied `clientPublicKey`); for `EMAIL_OTP`
-     * the client already holds the session signing key (the TEK private key it generated) and that
-     * field is omitted from the response. The `expiresAt` timestamp marks when the session expires.
+     * On success for `OAUTH` and `PASSKEY`, and on the signed retry for OTP credentials, the
+     * response contains an `AuthSession`. Sending a compressed `clientPublicKey` selects the
+     * recommended client-held-key model: the client already holds the session signing key — the
+     * private key it generated before authentication — so no key material is returned and the
+     * deprecated `encryptedSessionSigningKey` is omitted. Sending an uncompressed `clientPublicKey`
+     * selects the deprecated legacy flow, where the session signing key is HPKE-sealed to that key
+     * and returned as `encryptedSessionSigningKey` for the client to decrypt. The `expiresAt`
+     * timestamp marks when the session expires.
      */
     suspend fun verify(
         id: String,
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession = verify(params.toBuilder().id(id).build(), requestOptions)
+    ): CredentialVerifyResponse = verify(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see verify */
     suspend fun verify(
         params: CredentialVerifyParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): AuthSession
+    ): CredentialVerifyResponse
 
     /**
      * A view of [CredentialServiceAsync] that provides access to raw HTTP responses for each
@@ -265,14 +282,14 @@ interface CredentialServiceAsync {
         suspend fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse>
+        ): HttpResponseFor<CredentialCreateResponse>
 
         /** @see create */
         @MustBeClosed
         suspend fun create(
             authCredentialCreateRequest: AuthCredentialCreateRequestOneOf,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 CredentialCreateParams.builder()
                     .authCredentialCreateRequest(authCredentialCreateRequest)
@@ -285,7 +302,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             emailOtpCredentialCreateRequest: EmailOtpCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofEmailOtpCredentialCreateRequest(
                     emailOtpCredentialCreateRequest
@@ -296,9 +313,23 @@ interface CredentialServiceAsync {
         /** @see create */
         @MustBeClosed
         suspend fun create(
+            smsOtpCredentialCreateRequest:
+                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<CredentialCreateResponse> =
+            create(
+                AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                    smsOtpCredentialCreateRequest
+                ),
+                requestOptions,
+            )
+
+        /** @see create */
+        @MustBeClosed
+        suspend fun create(
             oauthCredentialCreateRequest: OAuthCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofOAuthCredentialCreateRequest(
                     oauthCredentialCreateRequest
@@ -311,7 +342,7 @@ interface CredentialServiceAsync {
         suspend fun create(
             passkeyCredentialCreateRequest: PasskeyCredentialCreateRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthMethodResponse> =
+        ): HttpResponseFor<CredentialCreateResponse> =
             create(
                 AuthCredentialCreateRequestOneOf.ofPasskeyCredentialCreateRequest(
                     passkeyCredentialCreateRequest
@@ -338,7 +369,7 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialDeleteParams = CredentialDeleteParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<CredentialDeleteResponse> =
             delete(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see delete */
@@ -346,14 +377,14 @@ interface CredentialServiceAsync {
         suspend fun delete(
             params: CredentialDeleteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSignedRequestChallenge>
+        ): HttpResponseFor<CredentialDeleteResponse>
 
         /** @see delete */
         @MustBeClosed
         suspend fun delete(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> =
+        ): HttpResponseFor<CredentialDeleteResponse> =
             delete(id, CredentialDeleteParams.none(), requestOptions)
 
         /**
@@ -365,7 +396,7 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialChallengeParams = CredentialChallengeParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+        ): HttpResponseFor<CredentialChallengeResponse> =
             challenge(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see challenge */
@@ -373,14 +404,14 @@ interface CredentialServiceAsync {
         suspend fun challenge(
             params: CredentialChallengeParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthCredentialResponseOneOf>
+        ): HttpResponseFor<CredentialChallengeResponse>
 
         /** @see challenge */
         @MustBeClosed
         suspend fun challenge(
             id: String,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthCredentialResponseOneOf> =
+        ): HttpResponseFor<CredentialChallengeResponse> =
             challenge(id, CredentialChallengeParams.none(), requestOptions)
 
         /**
@@ -392,13 +423,14 @@ interface CredentialServiceAsync {
             id: String,
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession> = verify(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<CredentialVerifyResponse> =
+            verify(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see verify */
         @MustBeClosed
         suspend fun verify(
             params: CredentialVerifyParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AuthSession>
+        ): HttpResponseFor<CredentialVerifyResponse>
     }
 }

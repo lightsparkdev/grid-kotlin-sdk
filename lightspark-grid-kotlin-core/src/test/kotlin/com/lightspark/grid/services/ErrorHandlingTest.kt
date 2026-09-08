@@ -88,7 +88,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -130,7 +144,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -172,7 +200,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -214,7 +256,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -256,7 +312,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -298,7 +368,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -340,7 +424,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -382,7 +480,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -424,7 +536,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -466,7 +592,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -508,7 +648,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -550,7 +704,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -592,7 +760,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -634,7 +816,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -676,7 +872,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -718,7 +928,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
@@ -758,7 +982,21 @@ internal class ErrorHandlingTest {
                                 .description("Invoice #1234 payment")
                                 .immediatelyExecute(false)
                                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                                .platformFeeOverride(
+                                    QuoteRequest.PlatformFeeOverride.builder()
+                                        .platformFixedFee(
+                                            QuoteRequest.PlatformFeeOverride.PlatformFixedFee
+                                                .builder()
+                                                .amount(50L)
+                                                .currency("USD")
+                                                .build()
+                                        )
+                                        .platformVariableFeeBps(30L)
+                                        .build()
+                                )
                                 .purposeOfPayment(QuoteRequest.PurposeOfPayment.GIFT)
+                                .remittanceInformation("12345")
+                                .scaFactor(QuoteRequest.ScaFactor.SMS_OTP)
                                 .senderCustomerInfo(
                                     QuoteRequest.SenderCustomerInfo.builder()
                                         .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))

@@ -17,6 +17,11 @@ import java.util.Objects
  * Retrieve a paginated list of transactions with optional filtering. The transactions can be
  * filtered by customer ID, platform customer ID, UMA address, date range, status, and transaction
  * type.
+ *
+ * Card transactions are included and identified by `type: CARD`. In Sandbox this is how you
+ * discover a `CardTransaction` id after simulating an authorization — list the transactions, take
+ * the card transaction's `id`, and pass it as the `cardTransactionId` to the clearing and return
+ * simulate endpoints.
  */
 class TransactionListParams
 private constructor(
@@ -76,16 +81,17 @@ private constructor(
     /**
      * Status of a payment transaction.
      *
-     * |Status      |Description                                                                                       |
-     * |------------|--------------------------------------------------------------------------------------------------|
-     * |`CREATED`   |Initial lookup has been created                                                                   |
-     * |`PENDING`   |Quote has been created                                                                            |
-     * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-     * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-     * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-     * |`FAILED`    |An error occurred during payment                                                                  |
-     * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-     * |`EXPIRED`   |Quote has expired                                                                                 |
+     * |Status                 |Description                                                                                                                                                                                                                                                                                                            |
+     * |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`CREATED`              |Initial lookup has been created                                                                                                                                                                                                                                                                                        |
+     * |`PENDING`              |Quote has been created                                                                                                                                                                                                                                                                                                 |
+     * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU). The challenge is carried by the quote, not the transaction — fetch `GET /quotes/{quoteId}` using the transaction's `quoteId`, then authorize its `scaChallenge` via `POST /quotes/{quoteId}/authorize`.|
+     * |`PROCESSING`           |Funding has been received and payment initiated                                                                                                                                                                                                                                                                        |
+     * |`COMPLETED`            |Cross border payment has been received, converted and payment has been sent to the offramp network                                                                                                                                                                                                                     |
+     * |`REJECTED`             |Receiving institution or wallet rejected payment, payment has been refunded                                                                                                                                                                                                                                            |
+     * |`FAILED`               |An error occurred during payment                                                                                                                                                                                                                                                                                       |
+     * |`REFUNDED`             |Payment was unable to complete and refunded                                                                                                                                                                                                                                                                            |
+     * |`EXPIRED`              |Quote has expired                                                                                                                                                                                                                                                                                                      |
      */
     fun status(): TransactionStatus? = status
 
@@ -199,16 +205,17 @@ private constructor(
         /**
          * Status of a payment transaction.
          *
-         * |Status      |Description                                                                                       |
-         * |------------|--------------------------------------------------------------------------------------------------|
-         * |`CREATED`   |Initial lookup has been created                                                                   |
-         * |`PENDING`   |Quote has been created                                                                            |
-         * |`PROCESSING`|Funding has been received and payment initiated                                                   |
-         * |`COMPLETED` |Cross border payment has been received, converted and payment has been sent to the offramp network|
-         * |`REJECTED`  |Receiving institution or wallet rejected payment, payment has been refunded                       |
-         * |`FAILED`    |An error occurred during payment                                                                  |
-         * |`REFUNDED`  |Payment was unable to complete and refunded                                                       |
-         * |`EXPIRED`   |Quote has expired                                                                                 |
+         * |Status                 |Description                                                                                                                                                                                                                                                                                                            |
+         * |-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`CREATED`              |Initial lookup has been created                                                                                                                                                                                                                                                                                        |
+         * |`PENDING`              |Quote has been created                                                                                                                                                                                                                                                                                                 |
+         * |`PENDING_AUTHORIZATION`|Awaiting Strong Customer Authentication. Only occurs for customers in a region where SCA is required (e.g. EU). The challenge is carried by the quote, not the transaction — fetch `GET /quotes/{quoteId}` using the transaction's `quoteId`, then authorize its `scaChallenge` via `POST /quotes/{quoteId}/authorize`.|
+         * |`PROCESSING`           |Funding has been received and payment initiated                                                                                                                                                                                                                                                                        |
+         * |`COMPLETED`            |Cross border payment has been received, converted and payment has been sent to the offramp network                                                                                                                                                                                                                     |
+         * |`REJECTED`             |Receiving institution or wallet rejected payment, payment has been refunded                                                                                                                                                                                                                                            |
+         * |`FAILED`               |An error occurred during payment                                                                                                                                                                                                                                                                                       |
+         * |`REFUNDED`             |Payment was unable to complete and refunded                                                                                                                                                                                                                                                                            |
+         * |`EXPIRED`              |Quote has expired                                                                                                                                                                                                                                                                                                      |
          */
         fun status(status: TransactionStatus?) = apply { this.status = status }
 

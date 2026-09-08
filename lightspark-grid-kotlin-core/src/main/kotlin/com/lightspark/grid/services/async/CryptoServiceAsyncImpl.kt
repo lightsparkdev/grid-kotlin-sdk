@@ -19,7 +19,9 @@ import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeParams
 import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeResponse
 
-/** Endpoints for creating and confirming quotes for cross-currency transfers */
+/**
+ * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
+ */
 class CryptoServiceAsyncImpl internal constructor(private val clientOptions: ClientOptions) :
     CryptoServiceAsync {
 

@@ -29,6 +29,7 @@ internal class AuthCredentialCreateRequestOneOfTest {
 
         assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest())
             .isEqualTo(emailOtpCredentialCreateRequest)
+        assertThat(authCredentialCreateRequestOneOf.smsOtpCredentialCreateRequest()).isNull()
         assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest()).isNull()
         assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest()).isNull()
     }
@@ -41,6 +42,47 @@ internal class AuthCredentialCreateRequestOneOfTest {
                 EmailOtpCredentialCreateRequest.builder()
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .type(JsonValue.from("EMAIL_OTP"))
+                    .build()
+            )
+
+        val roundtrippedAuthCredentialCreateRequestOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(authCredentialCreateRequestOneOf),
+                jacksonTypeRef<AuthCredentialCreateRequestOneOf>(),
+            )
+
+        assertThat(roundtrippedAuthCredentialCreateRequestOneOf)
+            .isEqualTo(authCredentialCreateRequestOneOf)
+    }
+
+    @Test
+    fun ofSmsOtpCredentialCreateRequest() {
+        val smsOtpCredentialCreateRequest =
+            AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest.builder()
+                .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                .type(JsonValue.from("SMS_OTP"))
+                .build()
+
+        val authCredentialCreateRequestOneOf =
+            AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                smsOtpCredentialCreateRequest
+            )
+
+        assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.smsOtpCredentialCreateRequest())
+            .isEqualTo(smsOtpCredentialCreateRequest)
+        assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest()).isNull()
+    }
+
+    @Test
+    fun ofSmsOtpCredentialCreateRequestRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val authCredentialCreateRequestOneOf =
+            AuthCredentialCreateRequestOneOf.ofSmsOtpCredentialCreateRequest(
+                AuthCredentialCreateRequestOneOf.SmsOtpCredentialCreateRequest.builder()
+                    .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                    .type(JsonValue.from("SMS_OTP"))
                     .build()
             )
 
@@ -71,6 +113,7 @@ internal class AuthCredentialCreateRequestOneOfTest {
             )
 
         assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.smsOtpCredentialCreateRequest()).isNull()
         assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest())
             .isEqualTo(oauthCredentialCreateRequest)
         assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest()).isNull()
@@ -131,6 +174,7 @@ internal class AuthCredentialCreateRequestOneOfTest {
             )
 
         assertThat(authCredentialCreateRequestOneOf.emailOtpCredentialCreateRequest()).isNull()
+        assertThat(authCredentialCreateRequestOneOf.smsOtpCredentialCreateRequest()).isNull()
         assertThat(authCredentialCreateRequestOneOf.oauthCredentialCreateRequest()).isNull()
         assertThat(authCredentialCreateRequestOneOf.passkeyCredentialCreateRequest())
             .isEqualTo(passkeyCredentialCreateRequest)

@@ -15,6 +15,7 @@ internal class PhpExternalAccountInfoTest {
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PHP_ACCOUNT"))
+                .putAdditionalProperty("rail", JsonValue.from("INSTAPAY"))
                 .putAdditionalProperty("bankName", JsonValue.from("BDO Unibank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("001234567890"))
                 .build()
@@ -26,6 +27,7 @@ internal class PhpExternalAccountInfoTest {
         val phpExternalAccountInfo =
             PhpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PHP_ACCOUNT"))
+                .putAdditionalProperty("rail", JsonValue.from("INSTAPAY"))
                 .putAdditionalProperty("bankName", JsonValue.from("BDO Unibank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("001234567890"))
                 .build()

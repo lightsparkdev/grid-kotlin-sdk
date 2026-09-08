@@ -8,10 +8,12 @@ import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
+import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import org.assertj.core.api.Assertions.assertThat
@@ -117,15 +119,55 @@ internal class ProGuardCompatibilityTest {
                             .state("CA")
                             .build()
                     )
+                    .annualIncomeRange(
+                        IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        EndUserTermsConsentRequest.builder()
+                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
+                    .purposeOfAccount(
+                        IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
                     .region("US")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )

@@ -18,15 +18,14 @@ import java.util.Objects
 
 /**
  * Strict wrapper around `AuthMethod`. Used directly as the registration response on `POST
- * /auth/credentials` (all three credential types) and inside `AuthCredentialResponseOneOf` for the
- * `EMAIL_OTP` branch of `POST /auth/credentials/{id}/challenge`. The only difference from
- * `AuthMethod` is `unevaluatedProperties: false`, which disambiguates the oneOf against
- * `PasskeyAuthChallenge` — without the strictness, an `AuthMethod` with extra fields would
- * ambiguously match both branches.
+ * /auth/credentials` and inside `AuthCredentialResponseOneOf` for the `EMAIL_OTP` / `SMS_OTP`
+ * branches of `POST /auth/credentials/{id}/challenge`. The only difference from `AuthMethod` is
+ * `unevaluatedProperties: false`, which disambiguates the oneOf against `PasskeyAuthChallenge` —
+ * without the strictness, an `AuthMethod` with extra fields would ambiguously match both branches.
  *
- * For `EMAIL_OTP` credentials, responses that initiate or reissue an OTP challenge carry
- * `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent `POST
- * /auth/credentials/{id}/verify` call without the plaintext code ever transiting the server.
+ * For `EMAIL_OTP` and `SMS_OTP` credentials, responses that initiate or reissue an OTP challenge
+ * carry `otpEncryptionTargetBundle` so the client can HPKE-encrypt the OTP code in the subsequent
+ * `POST /auth/credentials/{id}/verify` call without the plaintext code ever transiting the server.
  * First-time EMAIL_OTP wallet bootstrap registration can omit it; call `POST
  * /auth/credentials/{id}/challenge` if it is absent.
  */
@@ -111,8 +110,9 @@ private constructor(
 
     /**
      * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the email
-     * address; for OAUTH credentials it is typically the email claim from the OIDC token; for
-     * PASSKEY credentials it is the validated nickname provided at registration time.
+     * address; for SMS_OTP credentials this is the E.164 phone number; for OAUTH credentials it is
+     * typically the email claim from the OIDC token; for PASSKEY credentials it is the validated
+     * nickname provided at registration time.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -124,6 +124,7 @@ private constructor(
      * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
      *   Apple.
      * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+     * - `SMS_OTP`: A one-time password delivered to the user's phone number.
      * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -151,9 +152,9 @@ private constructor(
 
     /**
      * HPKE encryption target bundle for a freshly initiated OTP challenge. Returned only on
-     * `EMAIL_OTP` responses that initiate or reissue an OTP challenge, such as `POST
-     * /auth/credentials/{id}/challenge` and the add-EMAIL_OTP signed-retry response. It is omitted
-     * from first-time EMAIL_OTP wallet bootstrap registration; call `POST
+     * `EMAIL_OTP` and `SMS_OTP` responses that initiate or reissue an OTP challenge, such as `POST
+     * /auth/credentials/{id}/challenge` and signed-retry add responses. It is omitted from
+     * first-time EMAIL_OTP wallet bootstrap registration; call `POST
      * /auth/credentials/{id}/challenge` for the new credential if it is absent. The client
      * generates an ephemeral P-256 keypair (the Target Encryption Key, or TEK) and uses this bundle
      * as the recipient when HPKE-encrypting `{otp_code, public_key}`; the encrypted payload is
@@ -326,8 +327,9 @@ private constructor(
 
         /**
          * Human-readable identifier for this credential. For EMAIL_OTP credentials this is the
-         * email address; for OAUTH credentials it is typically the email claim from the OIDC token;
-         * for PASSKEY credentials it is the validated nickname provided at registration time.
+         * email address; for SMS_OTP credentials this is the E.164 phone number; for OAUTH
+         * credentials it is typically the email claim from the OIDC token; for PASSKEY credentials
+         * it is the validated nickname provided at registration time.
          */
         fun nickname(nickname: String) = nickname(JsonField.of(nickname))
 
@@ -344,6 +346,7 @@ private constructor(
          * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or
          *   Apple.
          * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+         * - `SMS_OTP`: A one-time password delivered to the user's phone number.
          * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
          */
         fun type(type: AuthMethodType) = type(JsonField.of(type))
@@ -390,9 +393,9 @@ private constructor(
 
         /**
          * HPKE encryption target bundle for a freshly initiated OTP challenge. Returned only on
-         * `EMAIL_OTP` responses that initiate or reissue an OTP challenge, such as `POST
-         * /auth/credentials/{id}/challenge` and the add-EMAIL_OTP signed-retry response. It is
-         * omitted from first-time EMAIL_OTP wallet bootstrap registration; call `POST
+         * `EMAIL_OTP` and `SMS_OTP` responses that initiate or reissue an OTP challenge, such as
+         * `POST /auth/credentials/{id}/challenge` and signed-retry add responses. It is omitted
+         * from first-time EMAIL_OTP wallet bootstrap registration; call `POST
          * /auth/credentials/{id}/challenge` for the new credential if it is absent. The client
          * generates an ephemeral P-256 keypair (the Target Encryption Key, or TEK) and uses this
          * bundle as the recipient when HPKE-encrypting `{otp_code, public_key}`; the encrypted

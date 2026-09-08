@@ -14,9 +14,21 @@ import java.util.Objects
  * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
  * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
  *
- * New cards start in `state: "PENDING_ISSUE"` while the card issuer provisions the card. The
- * `card.state_change` webhook fires on the transition to `ACTIVE` (or to `CLOSED` with
- * `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+ * Optional `maxSpendPerTransaction` and `maxSpendPerDay` values set the card-specific caps on one
+ * transaction and one UTC calendar day. The limits are enforced by Grid for card programs where
+ * Grid makes the authorization decision, whether the card is funded by an Embedded Wallet account
+ * or custodial fiat. If the platform config sets the corresponding `cardConfigs` value, Grid
+ * enforces the lower of the card and platform caps. All values use the smallest unit of the card's
+ * currency.
+ *
+ * If any funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
+ * to sign Spark token transactions for that card funding source by completing the delegated-key
+ * creation flow with `POST /auth/delegated-keys`. Until an active delegated key exists for that
+ * funding source, Authorization Decisioning cannot use it to fund card transactions.
+ *
+ * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
+ * `card.state_change` webhook fires on each state transition, including the transition to `ACTIVE`
+ * (or to `CLOSED` with `stateReason: "ISSUER_REJECTED"` if provisioning fails).
  */
 class CardIssueParams
 private constructor(

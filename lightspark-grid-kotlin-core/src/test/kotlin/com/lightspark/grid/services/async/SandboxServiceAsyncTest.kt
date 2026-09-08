@@ -21,7 +21,7 @@ internal class SandboxServiceAsyncTest {
                 .build()
         val sandboxServiceAsync = client.sandbox()
 
-        val outgoingTransaction =
+        val transaction =
             sandboxServiceAsync.sendFunds(
                 SendRequest.builder()
                     .currencyCode("USD")
@@ -30,6 +30,6 @@ internal class SandboxServiceAsyncTest {
                     .build()
             )
 
-        outgoingTransaction.validate()
+        transaction.validate()
     }
 }

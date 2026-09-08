@@ -537,10 +537,9 @@ private constructor(
 
     /**
      * Permission granted to an agent that determines what actions it can perform.
-     * VIEW_TRANSACTIONS: Can list and retrieve transactions and account balances. CREATE_TRANSFERS:
-     * Can initiate same-currency transfers. CREATE_QUOTES: Can create cross-currency quotes.
-     * EXECUTE_QUOTES: Can execute cross-currency quotes. MANAGE_EXTERNAL_ACCOUNTS: Can create and
-     * manage external accounts.
+     * VIEW_TRANSACTIONS: Can list and retrieve transactions and account balances. CREATE_QUOTES:
+     * Can create quotes. EXECUTE_QUOTES: Can execute quotes. MANAGE_EXTERNAL_ACCOUNTS: Can create
+     * and manage external accounts.
      */
     class Permission @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -558,8 +557,6 @@ private constructor(
 
             val VIEW_TRANSACTIONS = of("VIEW_TRANSACTIONS")
 
-            val CREATE_TRANSFERS = of("CREATE_TRANSFERS")
-
             val CREATE_QUOTES = of("CREATE_QUOTES")
 
             val EXECUTE_QUOTES = of("EXECUTE_QUOTES")
@@ -572,7 +569,6 @@ private constructor(
         /** An enum containing [Permission]'s known values. */
         enum class Known {
             VIEW_TRANSACTIONS,
-            CREATE_TRANSFERS,
             CREATE_QUOTES,
             EXECUTE_QUOTES,
             MANAGE_EXTERNAL_ACCOUNTS,
@@ -589,7 +585,6 @@ private constructor(
          */
         enum class Value {
             VIEW_TRANSACTIONS,
-            CREATE_TRANSFERS,
             CREATE_QUOTES,
             EXECUTE_QUOTES,
             MANAGE_EXTERNAL_ACCOUNTS,
@@ -609,7 +604,6 @@ private constructor(
         fun value(): Value =
             when (this) {
                 VIEW_TRANSACTIONS -> Value.VIEW_TRANSACTIONS
-                CREATE_TRANSFERS -> Value.CREATE_TRANSFERS
                 CREATE_QUOTES -> Value.CREATE_QUOTES
                 EXECUTE_QUOTES -> Value.EXECUTE_QUOTES
                 MANAGE_EXTERNAL_ACCOUNTS -> Value.MANAGE_EXTERNAL_ACCOUNTS
@@ -628,7 +622,6 @@ private constructor(
         fun known(): Known =
             when (this) {
                 VIEW_TRANSACTIONS -> Known.VIEW_TRANSACTIONS
-                CREATE_TRANSFERS -> Known.CREATE_TRANSFERS
                 CREATE_QUOTES -> Known.CREATE_QUOTES
                 EXECUTE_QUOTES -> Known.EXECUTE_QUOTES
                 MANAGE_EXTERNAL_ACCOUNTS -> Known.MANAGE_EXTERNAL_ACCOUNTS

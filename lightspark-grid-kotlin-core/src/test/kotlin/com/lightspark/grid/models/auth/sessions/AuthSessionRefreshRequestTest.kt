@@ -14,14 +14,12 @@ internal class AuthSessionRefreshRequestTest {
         val authSessionRefreshRequest =
             AuthSessionRefreshRequest.builder()
                 .clientPublicKey(
-                    "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    "02f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31"
                 )
                 .build()
 
         assertThat(authSessionRefreshRequest.clientPublicKey())
-            .isEqualTo(
-                "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
-            )
+            .isEqualTo("02f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31")
     }
 
     @Test
@@ -30,7 +28,7 @@ internal class AuthSessionRefreshRequestTest {
         val authSessionRefreshRequest =
             AuthSessionRefreshRequest.builder()
                 .clientPublicKey(
-                    "04f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31d4245acfb88c2ebd42b47628d63ecabf345484f0a9f665b63c54c897d5578be2"
+                    "02f45f2a22c908b9ce09a7150e514afd24627c401c38a4afc164e1ea783adaaa31"
                 )
                 .build()
 

@@ -18,17 +18,20 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Update request for `PATCH /cards/{id}`. At least one of `state` or `fundingSources` must be
- * supplied. `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`;
- * any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
- * irreversible and cannot be combined with `fundingSources`. `fundingSources`, when supplied, fully
- * replaces the card's bound funding sources — the array order determines the priority Authorization
- * Decisioning tries them in.
+ * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`,
+ * `maxSpendPerTransaction`, or `maxSpendPerDay` must be supplied. `state` transitions are limited
+ * to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition returns `409
+ * INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be combined with
+ * `fundingSources`, `maxSpendPerTransaction`, or `maxSpendPerDay`. `fundingSources`, when supplied,
+ * fully replaces the card's bound funding sources — the array order determines the priority
+ * Authorization Decisioning tries them in.
  */
 class CardUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val fundingSources: JsonField<List<String>>,
+    private val maxSpendPerDay: JsonField<Long>,
+    private val maxSpendPerTransaction: JsonField<Long>,
     private val state: JsonField<State>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -38,8 +41,14 @@ private constructor(
         @JsonProperty("fundingSources")
         @ExcludeMissing
         fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
-    ) : this(fundingSources, state, mutableMapOf())
+    ) : this(fundingSources, maxSpendPerDay, maxSpendPerTransaction, state, mutableMapOf())
 
     /**
      * New ordered list of internal account ids to bind as funding sources. Fully replaces the
@@ -52,6 +61,34 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun fundingSources(): List<String>? = fundingSources.getNullable("fundingSources")
+
+    /**
+     * Replacement card-specific UTC-calendar-day cap, in the smallest unit of the card's currency.
+     * Omit this field to leave the current cap unchanged, supply null to clear it, or supply a
+     * positive integer to set it. When the platform config also supplies
+     * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds, reversals,
+     * and authorization expiries do not restore capacity during the day. Supported only for card
+     * programs whose authorization decisions are made by Grid. Cannot be supplied alongside `state:
+     * CLOSED`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
+
+    /**
+     * Replacement card-specific per-transaction cap, in the smallest unit of the card's currency.
+     * Omit this field to leave the current cap unchanged, supply null to clear it, or supply a
+     * positive integer to set it. When the platform config also supplies
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Supported
+     * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
+     * alongside `state: CLOSED`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerTransaction(): Long? =
+        maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
 
     /**
      * Target state for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
@@ -71,6 +108,25 @@ private constructor(
     @JsonProperty("fundingSources")
     @ExcludeMissing
     fun _fundingSources(): JsonField<List<String>> = fundingSources
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerDay].
+     *
+     * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("maxSpendPerDay")
+    @ExcludeMissing
+    fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerTransaction].
+     *
+     * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("maxSpendPerTransaction")
+    @ExcludeMissing
+    fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
 
     /**
      * Returns the raw JSON value of [state].
@@ -101,11 +157,15 @@ private constructor(
     class Builder internal constructor() {
 
         private var fundingSources: JsonField<MutableList<String>>? = null
+        private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
+        private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var state: JsonField<State> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardUpdateRequest: CardUpdateRequest) = apply {
             fundingSources = cardUpdateRequest.fundingSources.map { it.toMutableList() }
+            maxSpendPerDay = cardUpdateRequest.maxSpendPerDay
+            maxSpendPerTransaction = cardUpdateRequest.maxSpendPerTransaction
             state = cardUpdateRequest.state
             additionalProperties = cardUpdateRequest.additionalProperties.toMutableMap()
         }
@@ -141,6 +201,66 @@ private constructor(
                 (fundingSources ?: JsonField.of(mutableListOf())).also {
                     checkKnown("fundingSources", it).add(fundingSource)
                 }
+        }
+
+        /**
+         * Replacement card-specific UTC-calendar-day cap, in the smallest unit of the card's
+         * currency. Omit this field to leave the current cap unchanged, supply null to clear it, or
+         * supply a positive integer to set it. When the platform config also supplies
+         * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds,
+         * reversals, and authorization expiries do not restore capacity during the day. Supported
+         * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
+         * alongside `state: CLOSED`.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long?) =
+            maxSpendPerDay(JsonField.ofNullable(maxSpendPerDay))
+
+        /**
+         * Alias for [Builder.maxSpendPerDay].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(maxSpendPerDay as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+            this.maxSpendPerDay = maxSpendPerDay
+        }
+
+        /**
+         * Replacement card-specific per-transaction cap, in the smallest unit of the card's
+         * currency. Omit this field to leave the current cap unchanged, supply null to clear it, or
+         * supply a positive integer to set it. When the platform config also supplies
+         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values.
+         * Supported only for card programs whose authorization decisions are made by Grid. Cannot
+         * be supplied alongside `state: CLOSED`.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
+            maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
+
+        /**
+         * Alias for [Builder.maxSpendPerTransaction].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+            maxSpendPerTransaction(maxSpendPerTransaction as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+            this.maxSpendPerTransaction = maxSpendPerTransaction
         }
 
         /**
@@ -185,6 +305,8 @@ private constructor(
         fun build(): CardUpdateRequest =
             CardUpdateRequest(
                 (fundingSources ?: JsonMissing.of()).map { it.toImmutable() },
+                maxSpendPerDay,
+                maxSpendPerTransaction,
                 state,
                 additionalProperties.toMutableMap(),
             )
@@ -206,6 +328,8 @@ private constructor(
         }
 
         fundingSources()
+        maxSpendPerDay()
+        maxSpendPerTransaction()
         state()?.validate()
         validated = true
     }
@@ -224,7 +348,10 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (fundingSources.asKnown()?.size ?: 0) + (state.asKnown()?.validity() ?: 0)
+        (fundingSources.asKnown()?.size ?: 0) +
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
+            (state.asKnown()?.validity() ?: 0)
 
     /**
      * Target state for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
@@ -378,14 +505,24 @@ private constructor(
 
         return other is CardUpdateRequest &&
             fundingSources == other.fundingSources &&
+            maxSpendPerDay == other.maxSpendPerDay &&
+            maxSpendPerTransaction == other.maxSpendPerTransaction &&
             state == other.state &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(fundingSources, state, additionalProperties) }
+    private val hashCode: Int by lazy {
+        Objects.hash(
+            fundingSources,
+            maxSpendPerDay,
+            maxSpendPerTransaction,
+            state,
+            additionalProperties,
+        )
+    }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardUpdateRequest{fundingSources=$fundingSources, state=$state, additionalProperties=$additionalProperties}"
+        "CardUpdateRequest{fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, state=$state, additionalProperties=$additionalProperties}"
 }

@@ -3,6 +3,7 @@
 package com.lightspark.grid.models.receiver
 
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.config.CustomerInfoFieldName
 import com.lightspark.grid.models.quotes.Currency
@@ -16,6 +17,7 @@ internal class ExternalAccountLookupResponseTest {
         val externalAccountLookupResponse =
             ExternalAccountLookupResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -29,6 +31,8 @@ internal class ExternalAccountLookupResponseTest {
                         .estimatedExchangeRate(1.08)
                         .max(1000000L)
                         .min(1L)
+                        .maxSendingAmount(500000L)
+                        .minSendingAmount(100L)
                         .build()
                 )
                 .addRequiredPayerDataField(
@@ -42,6 +46,8 @@ internal class ExternalAccountLookupResponseTest {
 
         assertThat(externalAccountLookupResponse.lookupId())
             .isEqualTo("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+        assertThat(externalAccountLookupResponse._sendingCurrency())
+            .isEqualTo(JsonValue.from(mapOf<String, Any>()))
         assertThat(externalAccountLookupResponse.supportedCurrencies())
             .containsExactly(
                 LookupResponse.SupportedCurrency.builder()
@@ -56,6 +62,8 @@ internal class ExternalAccountLookupResponseTest {
                     .estimatedExchangeRate(1.08)
                     .max(1000000L)
                     .min(1L)
+                    .maxSendingAmount(500000L)
+                    .minSendingAmount(100L)
                     .build()
             )
         assertThat(externalAccountLookupResponse.requiredPayerDataFields())
@@ -75,6 +83,7 @@ internal class ExternalAccountLookupResponseTest {
         val externalAccountLookupResponse =
             ExternalAccountLookupResponse.builder()
                 .lookupId("Lookup:019542f5-b3e7-1d02-0000-000000000009")
+                .sendingCurrency(JsonValue.from(mapOf<String, Any>()))
                 .addSupportedCurrency(
                     LookupResponse.SupportedCurrency.builder()
                         .currency(
@@ -88,6 +97,8 @@ internal class ExternalAccountLookupResponseTest {
                         .estimatedExchangeRate(1.08)
                         .max(1000000L)
                         .min(1L)
+                        .maxSendingAmount(500000L)
+                        .minSendingAmount(100L)
                         .build()
                 )
                 .addRequiredPayerDataField(

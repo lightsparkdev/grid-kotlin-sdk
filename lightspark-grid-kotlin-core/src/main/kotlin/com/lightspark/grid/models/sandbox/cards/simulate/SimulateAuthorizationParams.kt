@@ -36,10 +36,13 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives the
-     * same internal authorization + reconcile paths that the issuer would call in production. The
-     * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see
-     * the endpoint documentation for the suffix table.
+     * Sandbox-only request body shared by the card authorization-family simulate endpoints:
+     * `simulate/authorization`, `simulate/credit_authorization`,
+     * `simulate/financial_authorization`, `simulate/financial_credit_authorization`, and
+     * `simulate/credit_authorization_advice`. Drives the same internal authorization + reconcile
+     * paths that the issuer would call in production. The decisioning outcome is controlled by the
+     * last three characters of `merchant.descriptor` — see the `simulate/authorization`
+     * documentation for the suffix table.
      */
     fun authorizationRequest(): AuthorizationRequest = authorizationRequest
 
@@ -85,10 +88,13 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives
-         * the same internal authorization + reconcile paths that the issuer would call in
-         * production. The decisioning outcome is controlled by the last three characters of
-         * `merchant.descriptor` — see the endpoint documentation for the suffix table.
+         * Sandbox-only request body shared by the card authorization-family simulate endpoints:
+         * `simulate/authorization`, `simulate/credit_authorization`,
+         * `simulate/financial_authorization`, `simulate/financial_credit_authorization`, and
+         * `simulate/credit_authorization_advice`. Drives the same internal authorization +
+         * reconcile paths that the issuer would call in production. The decisioning outcome is
+         * controlled by the last three characters of `merchant.descriptor` — see the
+         * `simulate/authorization` documentation for the suffix table.
          */
         fun authorizationRequest(authorizationRequest: AuthorizationRequest) = apply {
             this.authorizationRequest = authorizationRequest

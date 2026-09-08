@@ -14,6 +14,7 @@ internal class ReceiverLookupExternalAccountParamsTest {
             .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
             .customerId("customerId")
             .senderUmaAddress("senderUmaAddress")
+            .sendingCurrency("sendingCurrency")
             .build()
     }
 
@@ -37,6 +38,7 @@ internal class ReceiverLookupExternalAccountParamsTest {
                 .accountId("ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965")
                 .customerId("customerId")
                 .senderUmaAddress("senderUmaAddress")
+                .sendingCurrency("sendingCurrency")
                 .build()
 
         val queryParams = params._queryParams()
@@ -46,6 +48,7 @@ internal class ReceiverLookupExternalAccountParamsTest {
                 QueryParams.builder()
                     .put("customerId", "customerId")
                     .put("senderUmaAddress", "senderUmaAddress")
+                    .put("sendingCurrency", "sendingCurrency")
                     .build()
             )
     }

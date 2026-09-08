@@ -25,8 +25,32 @@ import kotlin.io.path.inputStream
 import kotlin.io.path.name
 
 /**
- * Replace an existing document with a new file and/or updated metadata. This is useful when a
- * document was rejected and needs to be re-uploaded. The request must use multipart/form-data.
+ * Replace an existing document with a new file and/or updated metadata. The request must use
+ * multipart/form-data.
+ *
+ * Use this when a stored document was rejected during review, which arrives as an entry in the
+ * verification's `errors` array rather than as an error on upload. Replacing marks the previously
+ * submitted file inactive, which a second `POST /documents` would not do: that leaves the rejected
+ * file active alongside the new one, and the rejection can carry. Call `POST /verifications`
+ * afterwards to start a new review, since existing errors persist until a new review produces a new
+ * verdict.
+ *
+ * A file rejected on upload with `422 DOCUMENT_REJECTED` never creates a document, so there is
+ * nothing to replace. Retry those with `POST /documents`.
+ *
+ * Supported file types: `application/pdf`, `image/jpeg`, and `image/png`. Grid matches on the
+ * `Content-Type` of the multipart part, not the file extension. Any other type, and any file over
+ * 10 MB, returns `400 INVALID_INPUT`.
+ *
+ * Grid forwards the file to its verification provider, which screens it as the request is handled
+ * and can reject it with `422 DOCUMENT_REJECTED`. To pass that screen, a photo or scan of a
+ * document must:
+ * - show the whole document, with all four corners inside the frame and nothing overlapping an edge
+ * - be in focus and free of glare, so every field and the machine-readable zone can be read
+ * - be in color, not a black-and-white copy
+ * - be a photo or scan of the physical document, not a screen capture, and not retouched in an
+ *   image editor
+ * - be unexpired
  */
 class DocumentReplaceParams
 private constructor(
@@ -62,7 +86,10 @@ private constructor(
     fun documentType(): DocumentType = documentReplaceRequest.documentType()
 
     /**
-     * The document file (PDF, JPEG, or PNG, max 10 MB)
+     * The document file. Grid accepts three formats, matched on the `Content-Type` of the multipart
+     * part rather than the file extension: `application/pdf`, `image/jpeg`, and `image/png`. Any
+     * other type, including `image/heic`, `image/webp`, and `image/tiff`, returns `400
+     * INVALID_INPUT`. The file must be 10 MB or smaller.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -236,7 +263,12 @@ private constructor(
             documentReplaceRequest.documentType(documentType)
         }
 
-        /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+        /**
+         * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+         * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+         * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+         * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+         */
         fun file(file: InputStream) = apply { documentReplaceRequest.file(file) }
 
         /**
@@ -248,10 +280,20 @@ private constructor(
          */
         fun file(file: MultipartField<InputStream>) = apply { documentReplaceRequest.file(file) }
 
-        /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+        /**
+         * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+         * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+         * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+         * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+         */
         fun file(file: ByteArray) = apply { documentReplaceRequest.file(file) }
 
-        /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+        /**
+         * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+         * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+         * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+         * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+         */
         fun file(path: Path) = apply { documentReplaceRequest.file(path) }
 
         /** Document identification number (e.g., passport number) */
@@ -495,7 +537,10 @@ private constructor(
         fun documentType(): DocumentType = documentType.value.getRequired("documentType")
 
         /**
-         * The document file (PDF, JPEG, or PNG, max 10 MB)
+         * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+         * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+         * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+         * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -662,7 +707,12 @@ private constructor(
                 this.documentType = documentType
             }
 
-            /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+            /**
+             * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+             * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+             * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+             * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+             */
             fun file(file: InputStream) = file(MultipartField.of(file))
 
             /**
@@ -674,10 +724,20 @@ private constructor(
              */
             fun file(file: MultipartField<InputStream>) = apply { this.file = file }
 
-            /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+            /**
+             * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+             * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+             * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+             * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+             */
             fun file(file: ByteArray) = file(file.inputStream())
 
-            /** The document file (PDF, JPEG, or PNG, max 10 MB) */
+            /**
+             * The document file. Grid accepts three formats, matched on the `Content-Type` of the
+             * multipart part rather than the file extension: `application/pdf`, `image/jpeg`, and
+             * `image/png`. Any other type, including `image/heic`, `image/webp`, and `image/tiff`,
+             * returns `400 INVALID_INPUT`. The file must be 10 MB or smaller.
+             */
             fun file(path: Path) =
                 file(
                     MultipartField.builder<InputStream>()

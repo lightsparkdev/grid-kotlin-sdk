@@ -14,16 +14,24 @@ import com.lightspark.grid.core.BaseSerializer
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.getOrThrow
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.OutgoingTransaction
 import java.util.Objects
 
+/**
+ * Parent transaction row for a card authorization and all of the pulls / settlements / refunds that
+ * reconcile against it. Child events are rolled up into the `pullSummary`, `refundSummary`, and
+ * `settlementSummary` aggregates. Delivered as the payload of the generic transaction webhook
+ * stream (extends the Transaction model with a card destination type) on every transition.
+ */
 @JsonDeserialize(using = Transaction.Deserializer::class)
 @JsonSerialize(using = Transaction.Serializer::class)
 class Transaction
 private constructor(
     private val incoming: IncomingTransaction? = null,
     private val outgoing: OutgoingTransaction? = null,
+    private val card: CardTransaction? = null,
     private val _json: JsonValue? = null,
 ) {
 
@@ -31,13 +39,33 @@ private constructor(
 
     fun outgoing(): OutgoingTransaction? = outgoing
 
+    /**
+     * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
+     * that reconcile against it. Child events are rolled up into the `pullSummary`,
+     * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the generic
+     * transaction webhook stream (extends the Transaction model with a card destination type) on
+     * every transition.
+     */
+    fun card(): CardTransaction? = card
+
     fun isIncoming(): Boolean = incoming != null
 
     fun isOutgoing(): Boolean = outgoing != null
 
+    fun isCard(): Boolean = card != null
+
     fun asIncoming(): IncomingTransaction = incoming.getOrThrow("incoming")
 
     fun asOutgoing(): OutgoingTransaction = outgoing.getOrThrow("outgoing")
+
+    /**
+     * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
+     * that reconcile against it. Child events are rolled up into the `pullSummary`,
+     * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the generic
+     * transaction webhook stream (extends the Transaction model with a card destination type) on
+     * every transition.
+     */
+    fun asCard(): CardTransaction = card.getOrThrow("card")
 
     fun _json(): JsonValue? = _json
 
@@ -69,6 +97,7 @@ private constructor(
         when {
             incoming != null -> visitor.visitIncoming(incoming)
             outgoing != null -> visitor.visitOutgoing(outgoing)
+            card != null -> visitor.visitCard(card)
             else -> visitor.unknown(_json)
         }
 
@@ -96,6 +125,10 @@ private constructor(
                 override fun visitOutgoing(outgoing: OutgoingTransaction) {
                     outgoing.validate()
                 }
+
+                override fun visitCard(card: CardTransaction) {
+                    card.validate()
+                }
             }
         )
         validated = true
@@ -121,6 +154,8 @@ private constructor(
 
                 override fun visitOutgoing(outgoing: OutgoingTransaction) = outgoing.validity()
 
+                override fun visitCard(card: CardTransaction) = card.validity()
+
                 override fun unknown(json: JsonValue?) = 0
             }
         )
@@ -130,15 +165,19 @@ private constructor(
             return true
         }
 
-        return other is Transaction && incoming == other.incoming && outgoing == other.outgoing
+        return other is Transaction &&
+            incoming == other.incoming &&
+            outgoing == other.outgoing &&
+            card == other.card
     }
 
-    override fun hashCode(): Int = Objects.hash(incoming, outgoing)
+    override fun hashCode(): Int = Objects.hash(incoming, outgoing, card)
 
     override fun toString(): String =
         when {
             incoming != null -> "Transaction{incoming=$incoming}"
             outgoing != null -> "Transaction{outgoing=$outgoing}"
+            card != null -> "Transaction{card=$card}"
             _json != null -> "Transaction{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid Transaction")
         }
@@ -148,6 +187,15 @@ private constructor(
         fun ofIncoming(incoming: IncomingTransaction) = Transaction(incoming = incoming)
 
         fun ofOutgoing(outgoing: OutgoingTransaction) = Transaction(outgoing = outgoing)
+
+        /**
+         * Parent transaction row for a card authorization and all of the pulls / settlements /
+         * refunds that reconcile against it. Child events are rolled up into the `pullSummary`,
+         * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the
+         * generic transaction webhook stream (extends the Transaction model with a card destination
+         * type) on every transition.
+         */
+        fun ofCard(card: CardTransaction) = Transaction(card = card)
     }
 
     /**
@@ -158,6 +206,15 @@ private constructor(
         fun visitIncoming(incoming: IncomingTransaction): T
 
         fun visitOutgoing(outgoing: OutgoingTransaction): T
+
+        /**
+         * Parent transaction row for a card authorization and all of the pulls / settlements /
+         * refunds that reconcile against it. Child events are rolled up into the `pullSummary`,
+         * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the
+         * generic transaction webhook stream (extends the Transaction model with a card destination
+         * type) on every transition.
+         */
+        fun visitCard(card: CardTransaction): T
 
         /**
          * Maps an unknown variant of [Transaction] to a value of type [T].
@@ -190,6 +247,11 @@ private constructor(
                         Transaction(outgoing = it, _json = json)
                     } ?: Transaction(_json = json)
                 }
+                "CARD" -> {
+                    return tryDeserialize(node, jacksonTypeRef<CardTransaction>())?.let {
+                        Transaction(card = it, _json = json)
+                    } ?: Transaction(_json = json)
+                }
             }
 
             return Transaction(_json = json)
@@ -206,6 +268,7 @@ private constructor(
             when {
                 value.incoming != null -> generator.writeObject(value.incoming)
                 value.outgoing != null -> generator.writeObject(value.outgoing)
+                value.card != null -> generator.writeObject(value.card)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid Transaction")
             }

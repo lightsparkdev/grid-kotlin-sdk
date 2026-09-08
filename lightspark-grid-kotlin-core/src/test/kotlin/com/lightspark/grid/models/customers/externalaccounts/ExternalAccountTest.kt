@@ -59,6 +59,7 @@ internal class ExternalAccountTest {
                 )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
+                .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
                 .platformAccountId("acc_123456789")
                 .build()
 
@@ -110,6 +111,8 @@ internal class ExternalAccountTest {
         assertThat(externalAccount.customerId())
             .isEqualTo("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
         assertThat(externalAccount.defaultUmaDepositAccount()).isEqualTo(false)
+        assertThat(externalAccount.ownershipType())
+            .isEqualTo(ExternalAccount.OwnershipType.FIRST_PARTY)
         assertThat(externalAccount.platformAccountId()).isEqualTo("acc_123456789")
     }
 
@@ -163,6 +166,7 @@ internal class ExternalAccountTest {
                 )
                 .customerId("Customer:da459a29-1fb7-41ce-a4cb-eb3a3c9fd7a7")
                 .defaultUmaDepositAccount(false)
+                .ownershipType(ExternalAccount.OwnershipType.FIRST_PARTY)
                 .platformAccountId("acc_123456789")
                 .build()
 

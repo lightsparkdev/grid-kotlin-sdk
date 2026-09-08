@@ -20,7 +20,9 @@ import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.models.transferin.TransferInCreateParams
 
 /**
- * Endpoints for transferring funds between internal and external accounts with the same currency
+ * Deprecated endpoints for transferring funds between internal and external accounts with the same
+ * currency. Use the quote endpoints under Cross-Currency Transfers instead, which now serve
+ * same-currency transfers as well.
  */
 class TransferInServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     TransferInService {
@@ -34,6 +36,7 @@ class TransferInServiceImpl internal constructor(private val clientOptions: Clie
     override fun withOptions(modifier: (ClientOptions.Builder) -> Unit): TransferInService =
         TransferInServiceImpl(clientOptions.toBuilder().apply(modifier).build())
 
+    @Deprecated("deprecated")
     override fun create(
         params: TransferInCreateParams,
         requestOptions: RequestOptions,
@@ -57,6 +60,7 @@ class TransferInServiceImpl internal constructor(private val clientOptions: Clie
         private val createHandler: Handler<Transaction> =
             jsonHandler<Transaction>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun create(
             params: TransferInCreateParams,
             requestOptions: RequestOptions,

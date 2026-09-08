@@ -44,6 +44,7 @@ internal class ExternalAccountCreateParamsTest {
                             .build()
                     )
                     .currency("USD")
+                    .ownershipType(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
                     .platformAccountId("ext_acc_123456")
                     .build()
             )
@@ -85,6 +86,9 @@ internal class ExternalAccountCreateParamsTest {
                                 .build()
                         )
                         .currency("USD")
+                        .ownershipType(
+                            PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY
+                        )
                         .platformAccountId("ext_acc_123456")
                         .build()
                 )
@@ -124,6 +128,7 @@ internal class ExternalAccountCreateParamsTest {
                             .build()
                     )
                     .currency("USD")
+                    .ownershipType(PlatformExternalAccountCreateRequest.OwnershipType.FIRST_PARTY)
                     .platformAccountId("ext_acc_123456")
                     .build()
             )

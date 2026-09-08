@@ -27,6 +27,8 @@ private constructor(
     private val createdAt: JsonField<OffsetDateTime>,
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
+    private val maxSpendPerDay: JsonField<Long>,
+    private val maxSpendPerTransaction: JsonField<Long>,
     private val state: JsonField<State>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val brand: JsonField<Brand>,
@@ -35,8 +37,8 @@ private constructor(
     private val expYear: JsonField<Long>,
     private val issuerRef: JsonField<String>,
     private val last4: JsonField<String>,
-    private val panEmbedUrl: JsonField<String>,
     private val platformCardId: JsonField<String>,
+    private val processorRef: JsonField<String>,
     private val stateReason: JsonField<StateReason>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -54,6 +56,12 @@ private constructor(
         @JsonProperty("fundingSources")
         @ExcludeMissing
         fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -64,12 +72,12 @@ private constructor(
         @JsonProperty("expYear") @ExcludeMissing expYear: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("issuerRef") @ExcludeMissing issuerRef: JsonField<String> = JsonMissing.of(),
         @JsonProperty("last4") @ExcludeMissing last4: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("panEmbedUrl")
-        @ExcludeMissing
-        panEmbedUrl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("platformCardId")
         @ExcludeMissing
         platformCardId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("processorRef")
+        @ExcludeMissing
+        processorRef: JsonField<String> = JsonMissing.of(),
         @JsonProperty("stateReason")
         @ExcludeMissing
         stateReason: JsonField<StateReason> = JsonMissing.of(),
@@ -79,6 +87,8 @@ private constructor(
         createdAt,
         form,
         fundingSources,
+        maxSpendPerDay,
+        maxSpendPerTransaction,
         state,
         updatedAt,
         brand,
@@ -87,8 +97,8 @@ private constructor(
         expYear,
         issuerRef,
         last4,
-        panEmbedUrl,
         platformCardId,
+        processorRef,
         stateReason,
         mutableMapOf(),
     )
@@ -137,15 +147,40 @@ private constructor(
     fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
 
     /**
+     * Card-specific cap on cumulative new spend during one UTC calendar day, in the smallest unit
+     * of the card's `currency`. The window resets at 00:00 UTC. Null means the card has no
+     * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
+     * Grid enforces the lower of the two values without replacing this configured value. Refunds,
+     * reversals, and authorization expiries do not restore capacity during the day. Spend exactly
+     * equal to the effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
+
+    /**
+     * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
+     * Null means the card has no card-specific cap. When the platform config also supplies
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
+     * replacing this configured value. A transaction for exactly the effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerTransaction(): Long? =
+        maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+    /**
      * Lifecycle state of a card.
      *
-     * |State          |Description                                                                                                                                                  |
-     * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-     * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * |State        |Description                                                                                                                                                  |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -196,8 +231,9 @@ private constructor(
     fun expYear(): Long? = expYear.getNullable("expYear")
 
     /**
-     * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-     * issuer dashboards; not used for any Grid request routing.
+     * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+     * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid request
+     * routing.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -213,16 +249,6 @@ private constructor(
     fun last4(): String? = last4.getNullable("last4")
 
     /**
-     * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
-     * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an iframe in
-     * your client to reveal card details.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun panEmbedUrl(): String? = panEmbedUrl.getNullable("panEmbedUrl")
-
-    /**
      * Platform-specific card identifier. Optional on create — system-generated if omitted,
      * mirroring `platformCustomerId` semantics.
      *
@@ -230,6 +256,15 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
+
+    /**
+     * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+     * cross-referencing in the processor's dashboards; not used for any Grid request routing.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun processorRef(): String? = processorRef.getNullable("processorRef")
 
     /**
      * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
@@ -280,6 +315,25 @@ private constructor(
     @JsonProperty("fundingSources")
     @ExcludeMissing
     fun _fundingSources(): JsonField<List<String>> = fundingSources
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerDay].
+     *
+     * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("maxSpendPerDay")
+    @ExcludeMissing
+    fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerTransaction].
+     *
+     * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("maxSpendPerTransaction")
+    @ExcludeMissing
+    fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
 
     /**
      * Returns the raw JSON value of [state].
@@ -340,13 +394,6 @@ private constructor(
     @JsonProperty("last4") @ExcludeMissing fun _last4(): JsonField<String> = last4
 
     /**
-     * Returns the raw JSON value of [panEmbedUrl].
-     *
-     * Unlike [panEmbedUrl], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("panEmbedUrl") @ExcludeMissing fun _panEmbedUrl(): JsonField<String> = panEmbedUrl
-
-    /**
      * Returns the raw JSON value of [platformCardId].
      *
      * Unlike [platformCardId], this method doesn't throw if the JSON field has an unexpected type.
@@ -354,6 +401,15 @@ private constructor(
     @JsonProperty("platformCardId")
     @ExcludeMissing
     fun _platformCardId(): JsonField<String> = platformCardId
+
+    /**
+     * Returns the raw JSON value of [processorRef].
+     *
+     * Unlike [processorRef], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("processorRef")
+    @ExcludeMissing
+    fun _processorRef(): JsonField<String> = processorRef
 
     /**
      * Returns the raw JSON value of [stateReason].
@@ -388,6 +444,8 @@ private constructor(
          * .createdAt()
          * .form()
          * .fundingSources()
+         * .maxSpendPerDay()
+         * .maxSpendPerTransaction()
          * .state()
          * .updatedAt()
          * ```
@@ -403,6 +461,8 @@ private constructor(
         private var createdAt: JsonField<OffsetDateTime>? = null
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
+        private var maxSpendPerDay: JsonField<Long>? = null
+        private var maxSpendPerTransaction: JsonField<Long>? = null
         private var state: JsonField<State>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var brand: JsonField<Brand> = JsonMissing.of()
@@ -411,8 +471,8 @@ private constructor(
         private var expYear: JsonField<Long> = JsonMissing.of()
         private var issuerRef: JsonField<String> = JsonMissing.of()
         private var last4: JsonField<String> = JsonMissing.of()
-        private var panEmbedUrl: JsonField<String> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
+        private var processorRef: JsonField<String> = JsonMissing.of()
         private var stateReason: JsonField<StateReason> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -422,6 +482,8 @@ private constructor(
             createdAt = card.createdAt
             form = card.form
             fundingSources = card.fundingSources.map { it.toMutableList() }
+            maxSpendPerDay = card.maxSpendPerDay
+            maxSpendPerTransaction = card.maxSpendPerTransaction
             state = card.state
             updatedAt = card.updatedAt
             brand = card.brand
@@ -430,8 +492,8 @@ private constructor(
             expYear = card.expYear
             issuerRef = card.issuerRef
             last4 = card.last4
-            panEmbedUrl = card.panEmbedUrl
             platformCardId = card.platformCardId
+            processorRef = card.processorRef
             stateReason = card.stateReason
             additionalProperties = card.additionalProperties.toMutableMap()
         }
@@ -519,15 +581,73 @@ private constructor(
         }
 
         /**
+         * Card-specific cap on cumulative new spend during one UTC calendar day, in the smallest
+         * unit of the card's `currency`. The window resets at 00:00 UTC. Null means the card has no
+         * card-specific daily cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values without replacing
+         * this configured value. Refunds, reversals, and authorization expiries do not restore
+         * capacity during the day. Spend exactly equal to the effective limit is allowed.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long?) =
+            maxSpendPerDay(JsonField.ofNullable(maxSpendPerDay))
+
+        /**
+         * Alias for [Builder.maxSpendPerDay].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(maxSpendPerDay as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+            this.maxSpendPerDay = maxSpendPerDay
+        }
+
+        /**
+         * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
+         * Null means the card has no card-specific cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
+         * replacing this configured value. A transaction for exactly the effective limit is
+         * allowed.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
+            maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
+
+        /**
+         * Alias for [Builder.maxSpendPerTransaction].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+            maxSpendPerTransaction(maxSpendPerTransaction as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+            this.maxSpendPerTransaction = maxSpendPerTransaction
+        }
+
+        /**
          * Lifecycle state of a card.
          *
-         * |State          |Description                                                                                                                                                  |
-         * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-         * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-         * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-         * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-         * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-         * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+         * |State        |Description                                                                                                                                                  |
+         * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+         * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+         * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+         * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
          */
         fun state(state: State) = state(JsonField.of(state))
 
@@ -603,8 +723,9 @@ private constructor(
         fun expYear(expYear: JsonField<Long>) = apply { this.expYear = expYear }
 
         /**
-         * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-         * issuer dashboards; not used for any Grid request routing.
+         * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+         * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid
+         * request routing.
          */
         fun issuerRef(issuerRef: String) = issuerRef(JsonField.of(issuerRef))
 
@@ -629,22 +750,6 @@ private constructor(
         fun last4(last4: JsonField<String>) = apply { this.last4 = last4 }
 
         /**
-         * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
-         * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an
-         * iframe in your client to reveal card details.
-         */
-        fun panEmbedUrl(panEmbedUrl: String) = panEmbedUrl(JsonField.of(panEmbedUrl))
-
-        /**
-         * Sets [Builder.panEmbedUrl] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.panEmbedUrl] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun panEmbedUrl(panEmbedUrl: JsonField<String>) = apply { this.panEmbedUrl = panEmbedUrl }
-
-        /**
          * Platform-specific card identifier. Optional on create — system-generated if omitted,
          * mirroring `platformCustomerId` semantics.
          */
@@ -659,6 +764,23 @@ private constructor(
          */
         fun platformCardId(platformCardId: JsonField<String>) = apply {
             this.platformCardId = platformCardId
+        }
+
+        /**
+         * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+         * cross-referencing in the processor's dashboards; not used for any Grid request routing.
+         */
+        fun processorRef(processorRef: String) = processorRef(JsonField.of(processorRef))
+
+        /**
+         * Sets [Builder.processorRef] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.processorRef] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun processorRef(processorRef: JsonField<String>) = apply {
+            this.processorRef = processorRef
         }
 
         /**
@@ -709,6 +831,8 @@ private constructor(
          * .createdAt()
          * .form()
          * .fundingSources()
+         * .maxSpendPerDay()
+         * .maxSpendPerTransaction()
          * .state()
          * .updatedAt()
          * ```
@@ -722,6 +846,8 @@ private constructor(
                 checkRequired("createdAt", createdAt),
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
+                checkRequired("maxSpendPerDay", maxSpendPerDay),
+                checkRequired("maxSpendPerTransaction", maxSpendPerTransaction),
                 checkRequired("state", state),
                 checkRequired("updatedAt", updatedAt),
                 brand,
@@ -730,8 +856,8 @@ private constructor(
                 expYear,
                 issuerRef,
                 last4,
-                panEmbedUrl,
                 platformCardId,
+                processorRef,
                 stateReason,
                 additionalProperties.toMutableMap(),
             )
@@ -757,6 +883,8 @@ private constructor(
         createdAt()
         form().validate()
         fundingSources()
+        maxSpendPerDay()
+        maxSpendPerTransaction()
         state().validate()
         updatedAt()
         brand()?.validate()
@@ -765,8 +893,8 @@ private constructor(
         expYear()
         issuerRef()
         last4()
-        panEmbedUrl()
         platformCardId()
+        processorRef()
         stateReason()?.validate()
         validated = true
     }
@@ -790,6 +918,8 @@ private constructor(
             (if (createdAt.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (state.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (brand.asKnown()?.validity() ?: 0) +
@@ -798,8 +928,8 @@ private constructor(
             (if (expYear.asKnown() == null) 0 else 1) +
             (if (issuerRef.asKnown() == null) 0 else 1) +
             (if (last4.asKnown() == null) 0 else 1) +
-            (if (panEmbedUrl.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
+            (if (processorRef.asKnown() == null) 0 else 1) +
             (stateReason.asKnown()?.validity() ?: 0)
 
     /**
@@ -937,13 +1067,13 @@ private constructor(
     /**
      * Lifecycle state of a card.
      *
-     * |State          |Description                                                                                                                                                  |
-     * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-     * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * |State        |Description                                                                                                                                                  |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
      */
     class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -961,7 +1091,7 @@ private constructor(
 
             val PENDING_KYC = of("PENDING_KYC")
 
-            val PENDING_ISSUE = of("PENDING_ISSUE")
+            val PROCESSING = of("PROCESSING")
 
             val ACTIVE = of("ACTIVE")
 
@@ -975,7 +1105,7 @@ private constructor(
         /** An enum containing [State]'s known values. */
         enum class Known {
             PENDING_KYC,
-            PENDING_ISSUE,
+            PROCESSING,
             ACTIVE,
             FROZEN,
             CLOSED,
@@ -992,7 +1122,7 @@ private constructor(
          */
         enum class Value {
             PENDING_KYC,
-            PENDING_ISSUE,
+            PROCESSING,
             ACTIVE,
             FROZEN,
             CLOSED,
@@ -1010,7 +1140,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING_KYC -> Value.PENDING_KYC
-                PENDING_ISSUE -> Value.PENDING_ISSUE
+                PROCESSING -> Value.PROCESSING
                 ACTIVE -> Value.ACTIVE
                 FROZEN -> Value.FROZEN
                 CLOSED -> Value.CLOSED
@@ -1029,7 +1159,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING_KYC -> Known.PENDING_KYC
-                PENDING_ISSUE -> Known.PENDING_ISSUE
+                PROCESSING -> Known.PROCESSING
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
                 CLOSED -> Known.CLOSED
@@ -1393,6 +1523,8 @@ private constructor(
             createdAt == other.createdAt &&
             form == other.form &&
             fundingSources == other.fundingSources &&
+            maxSpendPerDay == other.maxSpendPerDay &&
+            maxSpendPerTransaction == other.maxSpendPerTransaction &&
             state == other.state &&
             updatedAt == other.updatedAt &&
             brand == other.brand &&
@@ -1401,8 +1533,8 @@ private constructor(
             expYear == other.expYear &&
             issuerRef == other.issuerRef &&
             last4 == other.last4 &&
-            panEmbedUrl == other.panEmbedUrl &&
             platformCardId == other.platformCardId &&
+            processorRef == other.processorRef &&
             stateReason == other.stateReason &&
             additionalProperties == other.additionalProperties
     }
@@ -1414,6 +1546,8 @@ private constructor(
             createdAt,
             form,
             fundingSources,
+            maxSpendPerDay,
+            maxSpendPerTransaction,
             state,
             updatedAt,
             brand,
@@ -1422,8 +1556,8 @@ private constructor(
             expYear,
             issuerRef,
             last4,
-            panEmbedUrl,
             platformCardId,
+            processorRef,
             stateReason,
             additionalProperties,
         )
@@ -1432,5 +1566,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
 }

@@ -11,6 +11,7 @@ import com.lightspark.grid.errors.LightsparkGridInvalidDataException
  * The type of authentication credential.
  * - `OAUTH`: OpenID Connect (OIDC) token issued by an identity provider such as Google or Apple.
  * - `EMAIL_OTP`: A one-time password delivered to the user's email address.
+ * - `SMS_OTP`: A one-time password delivered to the user's phone number.
  * - `PASSKEY`: A WebAuthn passkey bound to the user's device.
  */
 class AuthMethodType @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -30,6 +31,8 @@ class AuthMethodType @JsonCreator private constructor(private val value: JsonFie
 
         val EMAIL_OTP = of("EMAIL_OTP")
 
+        val SMS_OTP = of("SMS_OTP")
+
         val PASSKEY = of("PASSKEY")
 
         fun of(value: String) = AuthMethodType(JsonField.of(value))
@@ -39,6 +42,7 @@ class AuthMethodType @JsonCreator private constructor(private val value: JsonFie
     enum class Known {
         OAUTH,
         EMAIL_OTP,
+        SMS_OTP,
         PASSKEY,
     }
 
@@ -54,6 +58,7 @@ class AuthMethodType @JsonCreator private constructor(private val value: JsonFie
     enum class Value {
         OAUTH,
         EMAIL_OTP,
+        SMS_OTP,
         PASSKEY,
         /**
          * An enum member indicating that [AuthMethodType] was instantiated with an unknown value.
@@ -72,6 +77,7 @@ class AuthMethodType @JsonCreator private constructor(private val value: JsonFie
         when (this) {
             OAUTH -> Value.OAUTH
             EMAIL_OTP -> Value.EMAIL_OTP
+            SMS_OTP -> Value.SMS_OTP
             PASSKEY -> Value.PASSKEY
             else -> Value._UNKNOWN
         }
@@ -89,6 +95,7 @@ class AuthMethodType @JsonCreator private constructor(private val value: JsonFie
         when (this) {
             OAUTH -> Known.OAUTH
             EMAIL_OTP -> Known.EMAIL_OTP
+            SMS_OTP -> Known.SMS_OTP
             PASSKEY -> Known.PASSKEY
             else -> throw LightsparkGridInvalidDataException("Unknown AuthMethodType: $value")
         }

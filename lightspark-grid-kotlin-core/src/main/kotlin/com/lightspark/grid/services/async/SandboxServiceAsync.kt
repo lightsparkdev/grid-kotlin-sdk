@@ -8,7 +8,7 @@ import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.sandbox.SandboxSendFundsParams
 import com.lightspark.grid.models.sandbox.SendRequest
-import com.lightspark.grid.models.transactions.OutgoingTransaction
+import com.lightspark.grid.models.transferin.Transaction
 import com.lightspark.grid.services.async.sandbox.CardServiceAsync
 import com.lightspark.grid.services.async.sandbox.InternalAccountServiceAsync
 import com.lightspark.grid.services.async.sandbox.UmaServiceAsync
@@ -47,13 +47,13 @@ interface SandboxServiceAsync {
     suspend fun sendFunds(
         params: SandboxSendFundsParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OutgoingTransaction
+    ): Transaction
 
     /** @see sendFunds */
     suspend fun sendFunds(
         sendRequest: SendRequest,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): OutgoingTransaction =
+    ): Transaction =
         sendFunds(SandboxSendFundsParams.builder().sendRequest(sendRequest).build(), requestOptions)
 
     /**
@@ -89,14 +89,14 @@ interface SandboxServiceAsync {
         suspend fun sendFunds(
             params: SandboxSendFundsParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OutgoingTransaction>
+        ): HttpResponseFor<Transaction>
 
         /** @see sendFunds */
         @MustBeClosed
         suspend fun sendFunds(
             sendRequest: SendRequest,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<OutgoingTransaction> =
+        ): HttpResponseFor<Transaction> =
             sendFunds(
                 SandboxSendFundsParams.builder().sendRequest(sendRequest).build(),
                 requestOptions,

@@ -17,10 +17,12 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/authorization`. Drives the same
- * internal authorization + reconcile paths that the issuer would call in production. The
+ * Sandbox-only request body shared by the card authorization-family simulate endpoints:
+ * `simulate/authorization`, `simulate/credit_authorization`, `simulate/financial_authorization`,
+ * `simulate/financial_credit_authorization`, and `simulate/credit_authorization_advice`. Drives the
+ * same internal authorization + reconcile paths that the issuer would call in production. The
  * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see the
- * endpoint documentation for the suffix table.
+ * `simulate/authorization` documentation for the suffix table.
  */
 class AuthorizationRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

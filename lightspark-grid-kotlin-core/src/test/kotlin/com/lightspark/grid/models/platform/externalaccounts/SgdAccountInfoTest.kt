@@ -15,16 +15,16 @@ internal class SgdAccountInfoTest {
             SgdAccountInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
-                .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
                 .swiftCode("DBSSSGSG")
+                .bankName("DBS Bank Ltd")
                 .build()
 
         assertThat(sgdAccountInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(sgdAccountInfo.accountType()).isEqualTo(SgdAccountInfo.AccountType.SGD_ACCOUNT)
-        assertThat(sgdAccountInfo.bankName()).isEqualTo("DBS Bank Ltd")
         assertThat(sgdAccountInfo.paymentRails()).containsExactly(SgdAccountInfo.PaymentRail.PAYNOW)
         assertThat(sgdAccountInfo.swiftCode()).isEqualTo("DBSSSGSG")
+        assertThat(sgdAccountInfo.bankName()).isEqualTo("DBS Bank Ltd")
     }
 
     @Test
@@ -34,9 +34,9 @@ internal class SgdAccountInfoTest {
             SgdAccountInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(SgdAccountInfo.AccountType.SGD_ACCOUNT)
-                .bankName("DBS Bank Ltd")
                 .addPaymentRail(SgdAccountInfo.PaymentRail.PAYNOW)
                 .swiftCode("DBSSSGSG")
+                .bankName("DBS Bank Ltd")
                 .build()
 
         val roundtrippedSgdAccountInfo =

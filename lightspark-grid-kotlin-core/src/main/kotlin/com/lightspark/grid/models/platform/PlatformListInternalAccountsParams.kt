@@ -32,8 +32,9 @@ private constructor(
 
     /**
      * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
-     * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
-     * holding accounts.
+     * provisioned for a customer, `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
+     * holding accounts, or `RULE_BASED` for the additional account numbers issued with a sweep
+     * rule.
      */
     fun type(): Type? = type
 
@@ -78,8 +79,9 @@ private constructor(
 
         /**
          * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
-         * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the
-         * platform-managed holding accounts.
+         * provisioned for a customer, `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
+         * holding accounts, or `RULE_BASED` for the additional account numbers issued with a sweep
+         * rule.
          */
         fun type(type: Type?) = apply { this.type = type }
 
@@ -208,8 +210,9 @@ private constructor(
 
     /**
      * Filter by internal account type. Use `EMBEDDED_WALLET` to find the self-custodial wallet
-     * provisioned for a customer, or `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
-     * holding accounts.
+     * provisioned for a customer, `INTERNAL_FIAT` / `INTERNAL_CRYPTO` for the platform-managed
+     * holding accounts, or `RULE_BASED` for the additional account numbers issued with a sweep
+     * rule.
      */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -231,6 +234,8 @@ private constructor(
 
             val EMBEDDED_WALLET = of("EMBEDDED_WALLET")
 
+            val RULE_BASED = of("RULE_BASED")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -239,6 +244,7 @@ private constructor(
             INTERNAL_FIAT,
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
+            RULE_BASED,
         }
 
         /**
@@ -254,6 +260,7 @@ private constructor(
             INTERNAL_FIAT,
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
+            RULE_BASED,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -270,6 +277,7 @@ private constructor(
                 INTERNAL_FIAT -> Value.INTERNAL_FIAT
                 INTERNAL_CRYPTO -> Value.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Value.EMBEDDED_WALLET
+                RULE_BASED -> Value.RULE_BASED
                 else -> Value._UNKNOWN
             }
 
@@ -287,6 +295,7 @@ private constructor(
                 INTERNAL_FIAT -> Known.INTERNAL_FIAT
                 INTERNAL_CRYPTO -> Known.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Known.EMBEDDED_WALLET
+                RULE_BASED -> Known.RULE_BASED
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 

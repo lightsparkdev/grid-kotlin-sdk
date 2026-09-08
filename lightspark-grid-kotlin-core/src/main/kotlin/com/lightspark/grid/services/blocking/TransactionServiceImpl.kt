@@ -19,6 +19,7 @@ import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.TransactionApproveParams
+import com.lightspark.grid.models.transactions.TransactionCancelParams
 import com.lightspark.grid.models.transactions.TransactionListPage
 import com.lightspark.grid.models.transactions.TransactionListParams
 import com.lightspark.grid.models.transactions.TransactionListResponse
@@ -59,6 +60,13 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
     ): IncomingTransaction =
         // post /transactions/{transactionId}/approve
         withRawResponse().approve(params, requestOptions).parse()
+
+    override fun cancel(
+        params: TransactionCancelParams,
+        requestOptions: RequestOptions,
+    ): Transaction =
+        // post /transactions/{transactionId}/cancel
+        withRawResponse().cancel(params, requestOptions).parse()
 
     override fun reject(
         params: TransactionRejectParams,
@@ -179,6 +187,41 @@ class TransactionServiceImpl internal constructor(private val clientOptions: Cli
             return errorHandler.handle(response).parseable {
                 response
                     .use { approveHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val cancelHandler: Handler<Transaction> =
+            jsonHandler<Transaction>(clientOptions.jsonMapper)
+
+        override fun cancel(
+            params: TransactionCancelParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<Transaction> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("transactionId", params.transactionId())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("transactions", params._pathParam(0), "cancel")
+                    .apply { params._body()?.let { body(json(clientOptions.jsonMapper, it)) } }
+                    .build()
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { cancelHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()

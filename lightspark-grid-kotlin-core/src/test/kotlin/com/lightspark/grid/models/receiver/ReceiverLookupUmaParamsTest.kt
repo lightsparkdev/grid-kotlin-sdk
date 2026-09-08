@@ -14,6 +14,7 @@ internal class ReceiverLookupUmaParamsTest {
             .receiverUmaAddress("receiverUmaAddress")
             .customerId("customerId")
             .senderUmaAddress("senderUmaAddress")
+            .sendingCurrency("sendingCurrency")
             .build()
     }
 
@@ -34,6 +35,7 @@ internal class ReceiverLookupUmaParamsTest {
                 .receiverUmaAddress("receiverUmaAddress")
                 .customerId("customerId")
                 .senderUmaAddress("senderUmaAddress")
+                .sendingCurrency("sendingCurrency")
                 .build()
 
         val queryParams = params._queryParams()
@@ -43,6 +45,7 @@ internal class ReceiverLookupUmaParamsTest {
                 QueryParams.builder()
                     .put("customerId", "customerId")
                     .put("senderUmaAddress", "senderUmaAddress")
+                    .put("sendingCurrency", "sendingCurrency")
                     .build()
             )
     }

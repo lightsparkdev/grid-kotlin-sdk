@@ -19,6 +19,13 @@ import com.lightspark.grid.models.BusinessCustomer
 import com.lightspark.grid.models.IndividualCustomer
 import java.util.Objects
 
+/**
+ * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an individual
+ * customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear as top-level
+ * optional fields on the customer resource itself; there is no separate EDD resource. The specific
+ * set required for a given customer is driven by the KYC provider's per-jurisdiction / per-flow /
+ * per-volume-tier rules (surfaced through `MISSING_FIELD` errors on `POST /verifications`).
+ */
 @JsonDeserialize(using = CustomerOneOf.Deserializer::class)
 @JsonSerialize(using = CustomerOneOf.Serializer::class)
 class CustomerOneOf
@@ -28,6 +35,14 @@ private constructor(
     private val _json: JsonValue? = null,
 ) {
 
+    /**
+     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
+     * as top-level optional fields on the customer resource itself; there is no separate EDD
+     * resource. The specific set required for a given customer is driven by the KYC provider's
+     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
+     * on `POST /verifications`).
+     */
     fun individualCustomer(): IndividualCustomer? = individualCustomer
 
     fun businessCustomer(): BusinessCustomer? = businessCustomer
@@ -36,6 +51,14 @@ private constructor(
 
     fun isBusinessCustomer(): Boolean = businessCustomer != null
 
+    /**
+     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
+     * as top-level optional fields on the customer resource itself; there is no separate EDD
+     * resource. The specific set required for a given customer is driven by the KYC provider's
+     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
+     * on `POST /verifications`).
+     */
     fun asIndividualCustomer(): IndividualCustomer =
         individualCustomer.getOrThrow("individualCustomer")
 
@@ -151,6 +174,14 @@ private constructor(
 
     companion object {
 
+        /**
+         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
+         * appear as top-level optional fields on the customer resource itself; there is no separate
+         * EDD resource. The specific set required for a given customer is driven by the KYC
+         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
+         * `MISSING_FIELD` errors on `POST /verifications`).
+         */
         fun ofIndividualCustomer(individualCustomer: IndividualCustomer) =
             CustomerOneOf(individualCustomer = individualCustomer)
 
@@ -163,6 +194,14 @@ private constructor(
      */
     interface Visitor<out T> {
 
+        /**
+         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
+         * appear as top-level optional fields on the customer resource itself; there is no separate
+         * EDD resource. The specific set required for a given customer is driven by the KYC
+         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
+         * `MISSING_FIELD` errors on `POST /verifications`).
+         */
         fun visitIndividualCustomer(individualCustomer: IndividualCustomer): T
 
         fun visitBusinessCustomer(businessCustomer: BusinessCustomer): T
