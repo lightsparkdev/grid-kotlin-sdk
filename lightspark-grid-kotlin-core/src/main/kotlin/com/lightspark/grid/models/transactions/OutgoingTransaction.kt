@@ -371,7 +371,7 @@ private constructor(
 
     /**
      * How the rail was chosen — MANUAL when the platform specified a paymentRail on the
-     * destination, AUTO when Lightspark selects it. Null when no rail is resolved.
+     * destination, AUTO when Lightspark selects it.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -1129,10 +1129,10 @@ private constructor(
 
         /**
          * How the rail was chosen — MANUAL when the platform specified a paymentRail on the
-         * destination, AUTO when Lightspark selects it. Null when no rail is resolved.
+         * destination, AUTO when Lightspark selects it.
          */
-        fun railSelectionMode(railSelectionMode: RailSelectionMode?) =
-            railSelectionMode(JsonField.ofNullable(railSelectionMode))
+        fun railSelectionMode(railSelectionMode: RailSelectionMode) =
+            railSelectionMode(JsonField.of(railSelectionMode))
 
         /**
          * Sets [Builder.railSelectionMode] to an arbitrary JSON value.
@@ -2619,7 +2619,7 @@ private constructor(
 
     /**
      * How the rail was chosen — MANUAL when the platform specified a paymentRail on the
-     * destination, AUTO when Lightspark selects it. Null when no rail is resolved.
+     * destination, AUTO when Lightspark selects it.
      */
     class RailSelectionMode @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
