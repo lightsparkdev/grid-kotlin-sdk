@@ -285,8 +285,8 @@ private constructor(
     fun processorRef(): String? = processorRef.getNullable("processorRef")
 
     /**
-     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-     * provisioning was rejected; otherwise null.
+     * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+     * provisioning was rejected; absent otherwise.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -840,10 +840,10 @@ private constructor(
         }
 
         /**
-         * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-         * provisioning was rejected; otherwise null.
+         * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+         * provisioning was rejected; absent otherwise.
          */
-        fun stateReason(stateReason: StateReason?) = stateReason(JsonField.ofNullable(stateReason))
+        fun stateReason(stateReason: StateReason) = stateReason(JsonField.of(stateReason))
 
         /**
          * Sets [Builder.stateReason] to an arbitrary JSON value.
@@ -1426,8 +1426,8 @@ private constructor(
     }
 
     /**
-     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-     * provisioning was rejected; otherwise null.
+     * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+     * provisioning was rejected; absent otherwise.
      */
     class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
