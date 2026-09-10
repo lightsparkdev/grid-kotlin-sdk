@@ -84,9 +84,8 @@ interface SimulateServiceAsync {
 
     /**
      * Simulate a merchant-initiated `RETURN` against an existing settled card transaction in the
-     * sandbox environment. Creates a `CardRefund` on the parent and either flips the parent to
-     * `REFUNDED` (full refund) or keeps it `SETTLED` with a non-zero `refundedAmount` (partial
-     * refund).
+     * sandbox environment. Creates a `CardRefund` on the parent and keeps the parent `SETTLED` with
+     * the returned value in `refundedAmount`, whether the return is full or partial.
      *
      * Production returns `404` on this path.
      */

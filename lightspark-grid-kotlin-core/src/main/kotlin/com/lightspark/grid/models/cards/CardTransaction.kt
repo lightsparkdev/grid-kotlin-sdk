@@ -178,7 +178,8 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
-     * Card transactions debit the customer's account.
+     * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against is a
+     * `CREDIT`, with the credited value in `settledAmount`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -200,14 +201,14 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Lifecycle status of a card transaction.
+     * Lifecycle status of a card transaction. The status tracks settlement only — a return is
+     * reported through `direction` and `refundedAmount`, not through a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-     * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -620,7 +621,10 @@ private constructor(
          */
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
-        /** Card transactions debit the customer's account. */
+        /**
+         * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against
+         * is a `CREDIT`, with the credited value in `settledAmount`.
+         */
         fun direction(direction: Direction) = direction(JsonField.of(direction))
 
         /**
@@ -659,14 +663,14 @@ private constructor(
         }
 
         /**
-         * Lifecycle status of a card transaction.
+         * Lifecycle status of a card transaction. The status tracks settlement only — a return is
+         * reported through `direction` and `refundedAmount`, not through a status of its own.
          *
          * |Status             |Description                                                                                                                                                                                                                                    |
          * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
          * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
          * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-         * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
          * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
          */
         fun status(status: Status) = status(JsonField.of(status))
@@ -961,7 +965,10 @@ private constructor(
             (settledAmount.asKnown()?.validity() ?: 0) +
             (settlementSummary.asKnown()?.validity() ?: 0)
 
-    /** Card transactions debit the customer's account. */
+    /**
+     * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against is a
+     * `CREDIT`, with the credited value in `settledAmount`.
+     */
     class Direction @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
@@ -1099,14 +1106,14 @@ private constructor(
     }
 
     /**
-     * Lifecycle status of a card transaction.
+     * Lifecycle status of a card transaction. The status tracks settlement only — a return is
+     * reported through `direction` and `refundedAmount`, not through a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-     * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1129,8 +1136,6 @@ private constructor(
 
             val SETTLED = of("SETTLED")
 
-            val REFUNDED = of("REFUNDED")
-
             val EXCEPTION = of("EXCEPTION")
 
             fun of(value: String) = Status(JsonField.of(value))
@@ -1141,7 +1146,6 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
-            REFUNDED,
             EXCEPTION,
         }
 
@@ -1158,7 +1162,6 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
-            REFUNDED,
             EXCEPTION,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -1176,7 +1179,6 @@ private constructor(
                 AUTHORIZED -> Value.AUTHORIZED
                 PARTIALLY_SETTLED -> Value.PARTIALLY_SETTLED
                 SETTLED -> Value.SETTLED
-                REFUNDED -> Value.REFUNDED
                 EXCEPTION -> Value.EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -1195,7 +1197,6 @@ private constructor(
                 AUTHORIZED -> Known.AUTHORIZED
                 PARTIALLY_SETTLED -> Known.PARTIALLY_SETTLED
                 SETTLED -> Known.SETTLED
-                REFUNDED -> Known.REFUNDED
                 EXCEPTION -> Known.EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
