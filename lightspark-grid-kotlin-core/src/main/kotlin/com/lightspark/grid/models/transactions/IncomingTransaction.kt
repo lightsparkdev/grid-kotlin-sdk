@@ -199,7 +199,7 @@ private constructor(
     fun status(): TransactionStatus = status.getRequired("status")
 
     /**
-     * Type of transaction (incoming payment or outgoing payment)
+     * Type of transaction
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -707,7 +707,7 @@ private constructor(
          */
         fun status(status: JsonField<TransactionStatus>) = apply { this.status = status }
 
-        /** Type of transaction (incoming payment or outgoing payment) */
+        /** Type of transaction */
         fun type(type: Type) = type(JsonField.of(type))
 
         /**
@@ -1235,7 +1235,7 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /** Type of transaction (incoming payment or outgoing payment) */
+    /** Type of transaction */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**

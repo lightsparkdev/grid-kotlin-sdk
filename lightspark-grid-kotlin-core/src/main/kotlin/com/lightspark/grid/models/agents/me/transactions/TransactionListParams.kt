@@ -81,7 +81,7 @@ private constructor(
      */
     fun status(): TransactionStatus? = status
 
-    /** Type of transaction (incoming payment or outgoing payment) */
+    /** Type of transaction */
     fun type(): TransactionType? = type
 
     /** Additional headers to send with the request. */
@@ -190,7 +190,7 @@ private constructor(
          */
         fun status(status: TransactionStatus?) = apply { this.status = status }
 
-        /** Type of transaction (incoming payment or outgoing payment) */
+        /** Type of transaction */
         fun type(type: TransactionType?) = apply { this.type = type }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
