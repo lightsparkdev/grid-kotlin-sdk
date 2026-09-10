@@ -2194,7 +2194,7 @@ internal class UnwrapWebhookEventTest {
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     CardTransaction.builder()
-                        .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                        .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                         .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .authorizedAmount(
                             CurrencyAmount.builder()
@@ -2298,7 +2298,7 @@ internal class UnwrapWebhookEventTest {
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         CardTransaction.builder()
-                            .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                            .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                             .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                             .authorizedAmount(
                                 CurrencyAmount.builder()

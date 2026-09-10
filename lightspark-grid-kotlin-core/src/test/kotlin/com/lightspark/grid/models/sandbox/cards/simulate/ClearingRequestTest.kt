@@ -14,12 +14,12 @@ internal class ClearingRequestTest {
         val clearingRequest =
             ClearingRequest.builder()
                 .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .build()
 
         assertThat(clearingRequest.amount()).isEqualTo(1500L)
         assertThat(clearingRequest.cardTransactionId())
-            .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000100")
     }
 
     @Test
@@ -28,7 +28,7 @@ internal class ClearingRequestTest {
         val clearingRequest =
             ClearingRequest.builder()
                 .amount(1500L)
-                .cardTransactionId("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .build()
 
         val roundtrippedClearingRequest =
