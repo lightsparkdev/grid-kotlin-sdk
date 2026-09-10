@@ -7,7 +7,6 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.cards.Card
-import com.lightspark.grid.models.cards.CardCreateRequest
 import com.lightspark.grid.models.cards.CardIssueParams
 import com.lightspark.grid.models.cards.CardListPageAsync
 import com.lightspark.grid.models.cards.CardListParams
@@ -138,6 +137,9 @@ interface CardServiceAsync {
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
+     * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is
+     * required. Retries must carry the same key.
+     *
      * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set
      * the card-specific caps on one transaction, on spend during one UTC calendar day, and on the
      * number of transactions during one UTC calendar day. The limits are enforced by Grid for card
@@ -164,16 +166,6 @@ interface CardServiceAsync {
         params: CardIssueParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): Card
-
-    /** @see issue */
-    suspend fun issue(
-        cardCreateRequest: CardCreateRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Card =
-        issue(
-            CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
-            requestOptions,
-        )
 
     /** A view of [CardServiceAsync] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -250,16 +242,5 @@ interface CardServiceAsync {
             params: CardIssueParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Card>
-
-        /** @see issue */
-        @MustBeClosed
-        suspend fun issue(
-            cardCreateRequest: CardCreateRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Card> =
-            issue(
-                CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
-                requestOptions,
-            )
     }
 }
