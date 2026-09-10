@@ -23,8 +23,8 @@ class Card
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val cardholderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val customerId: JsonField<String>,
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
     private val maxSpendPerDay: JsonField<Long>,
@@ -47,12 +47,12 @@ private constructor(
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("cardholderId")
-        @ExcludeMissing
-        cardholderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("customerId")
+        @ExcludeMissing
+        customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
         @JsonProperty("fundingSources")
         @ExcludeMissing
@@ -87,8 +87,8 @@ private constructor(
         stateReason: JsonField<StateReason> = JsonMissing.of(),
     ) : this(
         id,
-        cardholderId,
         createdAt,
+        customerId,
         form,
         fundingSources,
         maxSpendPerDay,
@@ -117,20 +117,20 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * The id of the `Customer` who holds this card.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun cardholderId(): String = cardholderId.getRequired("cardholderId")
-
-    /**
      * Creation timestamp
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+    /**
+     * The id of the `Customer` who holds this card.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerId(): String = customerId.getRequired("customerId")
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -301,15 +301,6 @@ private constructor(
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
-     * Returns the raw JSON value of [cardholderId].
-     *
-     * Unlike [cardholderId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cardholderId")
-    @ExcludeMissing
-    fun _cardholderId(): JsonField<String> = cardholderId
-
-    /**
      * Returns the raw JSON value of [createdAt].
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -317,6 +308,13 @@ private constructor(
     @JsonProperty("createdAt")
     @ExcludeMissing
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
+
+    /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
 
     /**
      * Returns the raw JSON value of [form].
@@ -468,8 +466,8 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
-         * .cardholderId()
          * .createdAt()
+         * .customerId()
          * .form()
          * .fundingSources()
          * .maxSpendPerDay()
@@ -486,8 +484,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var cardholderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var customerId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
         private var maxSpendPerDay: JsonField<Long>? = null
@@ -508,8 +506,8 @@ private constructor(
 
         internal fun from(card: Card) = apply {
             id = card.id
-            cardholderId = card.cardholderId
             createdAt = card.createdAt
+            customerId = card.customerId
             form = card.form
             fundingSources = card.fundingSources.map { it.toMutableList() }
             maxSpendPerDay = card.maxSpendPerDay
@@ -540,20 +538,6 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** The id of the `Customer` who holds this card. */
-        fun cardholderId(cardholderId: String) = cardholderId(JsonField.of(cardholderId))
-
-        /**
-         * Sets [Builder.cardholderId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cardholderId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun cardholderId(cardholderId: JsonField<String>) = apply {
-            this.cardholderId = cardholderId
-        }
-
         /** Creation timestamp */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
@@ -565,6 +549,18 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+
+        /** The id of the `Customer` who holds this card. */
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+        /**
+         * Sets [Builder.customerId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /**
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
@@ -887,8 +883,8 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
-         * .cardholderId()
          * .createdAt()
+         * .customerId()
          * .form()
          * .fundingSources()
          * .maxSpendPerDay()
@@ -903,8 +899,8 @@ private constructor(
         fun build(): Card =
             Card(
                 checkRequired("id", id),
-                checkRequired("cardholderId", cardholderId),
                 checkRequired("createdAt", createdAt),
+                checkRequired("customerId", customerId),
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
                 checkRequired("maxSpendPerDay", maxSpendPerDay),
@@ -941,8 +937,8 @@ private constructor(
         }
 
         id()
-        cardholderId()
         createdAt()
+        customerId()
         form().validate()
         fundingSources()
         maxSpendPerDay()
@@ -977,8 +973,8 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
-            (if (cardholderId.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (if (customerId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
@@ -1583,8 +1579,8 @@ private constructor(
 
         return other is Card &&
             id == other.id &&
-            cardholderId == other.cardholderId &&
             createdAt == other.createdAt &&
+            customerId == other.customerId &&
             form == other.form &&
             fundingSources == other.fundingSources &&
             maxSpendPerDay == other.maxSpendPerDay &&
@@ -1607,8 +1603,8 @@ private constructor(
     private val hashCode: Int by lazy {
         Objects.hash(
             id,
-            cardholderId,
             createdAt,
+            customerId,
             form,
             fundingSources,
             maxSpendPerDay,
@@ -1632,5 +1628,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, createdAt=$createdAt, customerId=$customerId, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
 }

@@ -96,7 +96,7 @@ internal class CardServiceTest {
         val card =
             cardService.issue(
                 CardCreateRequest.builder()
-                    .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .form(CardCreateRequest.Form.VIRTUAL)
                     .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .maxSpendPerDay(25000L)
