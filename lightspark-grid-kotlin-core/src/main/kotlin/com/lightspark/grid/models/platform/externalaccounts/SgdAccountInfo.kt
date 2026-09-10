@@ -74,7 +74,7 @@ private constructor(
 
     /**
      * Name of the beneficiary's bank. When omitted, resolved from swiftCode via the payout partner
-     * bank directory at account creation.
+     * bank directory at account creation. Not checked against `GET /discoveries`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -235,7 +235,7 @@ private constructor(
 
         /**
          * Name of the beneficiary's bank. When omitted, resolved from swiftCode via the payout
-         * partner bank directory at account creation.
+         * partner bank directory at account creation. Not checked against `GET /discoveries`.
          */
         fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 

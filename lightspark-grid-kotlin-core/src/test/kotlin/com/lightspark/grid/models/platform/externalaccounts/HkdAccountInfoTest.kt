@@ -15,17 +15,17 @@ internal class HkdAccountInfoTest {
             HkdAccountInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("HSBCHKHHHKH")
+                .bankName("HSBC Hong Kong")
                 .build()
 
         assertThat(hkdAccountInfo.accountNumber()).isEqualTo("123456789012")
         assertThat(hkdAccountInfo.accountType()).isEqualTo(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-        assertThat(hkdAccountInfo.bankName()).isEqualTo("Example Bank")
         assertThat(hkdAccountInfo.paymentRails())
             .containsExactly(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
         assertThat(hkdAccountInfo.swiftCode()).isEqualTo("HSBCHKHHHKH")
+        assertThat(hkdAccountInfo.bankName()).isEqualTo("HSBC Hong Kong")
     }
 
     @Test
@@ -35,9 +35,9 @@ internal class HkdAccountInfoTest {
             HkdAccountInfo.builder()
                 .accountNumber("123456789012")
                 .accountType(HkdAccountInfo.AccountType.HKD_ACCOUNT)
-                .bankName("Example Bank")
                 .addPaymentRail(HkdAccountInfo.PaymentRail.BANK_TRANSFER)
                 .swiftCode("HSBCHKHHHKH")
+                .bankName("HSBC Hong Kong")
                 .build()
 
         val roundtrippedHkdAccountInfo =

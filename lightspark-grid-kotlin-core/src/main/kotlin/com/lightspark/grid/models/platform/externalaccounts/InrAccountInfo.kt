@@ -30,7 +30,6 @@ private constructor(
     private val accountType: JsonField<AccountType>,
     private val paymentRails: JsonField<List<PaymentRail>>,
     private val accountNumber: JsonField<String>,
-    private val bankName: JsonField<String>,
     private val ifsc: JsonField<String>,
     private val rail: JsonField<String>,
     private val vpa: JsonField<String>,
@@ -48,11 +47,10 @@ private constructor(
         @JsonProperty("accountNumber")
         @ExcludeMissing
         accountNumber: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("bankName") @ExcludeMissing bankName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("ifsc") @ExcludeMissing ifsc: JsonField<String> = JsonMissing.of(),
         @JsonProperty("rail") @ExcludeMissing rail: JsonField<String> = JsonMissing.of(),
         @JsonProperty("vpa") @ExcludeMissing vpa: JsonField<String> = JsonMissing.of(),
-    ) : this(accountType, paymentRails, accountNumber, bankName, ifsc, rail, vpa, mutableMapOf())
+    ) : this(accountType, paymentRails, accountNumber, ifsc, rail, vpa, mutableMapOf())
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -73,14 +71,6 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun accountNumber(): String? = accountNumber.getNullable("accountNumber")
-
-    /**
-     * The name of the bank
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun bankName(): String? = bankName.getNullable("bankName")
 
     /**
      * The Indian Financial System Code (IFSC) of the beneficiary's bank branch (NEFT/RTGS)
@@ -135,13 +125,6 @@ private constructor(
     fun _accountNumber(): JsonField<String> = accountNumber
 
     /**
-     * Returns the raw JSON value of [bankName].
-     *
-     * Unlike [bankName], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("bankName") @ExcludeMissing fun _bankName(): JsonField<String> = bankName
-
-    /**
      * Returns the raw JSON value of [ifsc].
      *
      * Unlike [ifsc], this method doesn't throw if the JSON field has an unexpected type.
@@ -194,7 +177,6 @@ private constructor(
         private var accountType: JsonField<AccountType>? = null
         private var paymentRails: JsonField<MutableList<PaymentRail>>? = null
         private var accountNumber: JsonField<String> = JsonMissing.of()
-        private var bankName: JsonField<String> = JsonMissing.of()
         private var ifsc: JsonField<String> = JsonMissing.of()
         private var rail: JsonField<String> = JsonMissing.of()
         private var vpa: JsonField<String> = JsonMissing.of()
@@ -204,7 +186,6 @@ private constructor(
             accountType = inrAccountInfo.accountType
             paymentRails = inrAccountInfo.paymentRails.map { it.toMutableList() }
             accountNumber = inrAccountInfo.accountNumber
-            bankName = inrAccountInfo.bankName
             ifsc = inrAccountInfo.ifsc
             rail = inrAccountInfo.rail
             vpa = inrAccountInfo.vpa
@@ -262,17 +243,6 @@ private constructor(
         fun accountNumber(accountNumber: JsonField<String>) = apply {
             this.accountNumber = accountNumber
         }
-
-        /** The name of the bank */
-        fun bankName(bankName: String) = bankName(JsonField.of(bankName))
-
-        /**
-         * Sets [Builder.bankName] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.bankName] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun bankName(bankName: JsonField<String>) = apply { this.bankName = bankName }
 
         /** The Indian Financial System Code (IFSC) of the beneficiary's bank branch (NEFT/RTGS) */
         fun ifsc(ifsc: String) = ifsc(JsonField.of(ifsc))
@@ -347,7 +317,6 @@ private constructor(
                 checkRequired("accountType", accountType),
                 checkRequired("paymentRails", paymentRails).map { it.toImmutable() },
                 accountNumber,
-                bankName,
                 ifsc,
                 rail,
                 vpa,
@@ -373,7 +342,6 @@ private constructor(
         accountType().validate()
         paymentRails().forEach { it.validate() }
         accountNumber()
-        bankName()
         ifsc()
         rail()
         vpa()
@@ -397,7 +365,6 @@ private constructor(
         (accountType.asKnown()?.validity() ?: 0) +
             (paymentRails.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (accountNumber.asKnown() == null) 0 else 1) +
-            (if (bankName.asKnown() == null) 0 else 1) +
             (if (ifsc.asKnown() == null) 0 else 1) +
             (if (rail.asKnown() == null) 0 else 1) +
             (if (vpa.asKnown() == null) 0 else 1)
@@ -685,7 +652,6 @@ private constructor(
             accountType == other.accountType &&
             paymentRails == other.paymentRails &&
             accountNumber == other.accountNumber &&
-            bankName == other.bankName &&
             ifsc == other.ifsc &&
             rail == other.rail &&
             vpa == other.vpa &&
@@ -697,7 +663,6 @@ private constructor(
             accountType,
             paymentRails,
             accountNumber,
-            bankName,
             ifsc,
             rail,
             vpa,
@@ -708,5 +673,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InrAccountInfo{accountType=$accountType, paymentRails=$paymentRails, accountNumber=$accountNumber, bankName=$bankName, ifsc=$ifsc, rail=$rail, vpa=$vpa, additionalProperties=$additionalProperties}"
+        "InrAccountInfo{accountType=$accountType, paymentRails=$paymentRails, accountNumber=$accountNumber, ifsc=$ifsc, rail=$rail, vpa=$vpa, additionalProperties=$additionalProperties}"
 }

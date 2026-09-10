@@ -190,7 +190,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofCnyAccount() {
         val cnyAccount =
             ExternalAccountInfoOneOf.CnyAccount.builder()
-                .bankName("Example Bank")
+                .bankName("China Construction Bank")
                 .beneficiary(
                     ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -230,7 +230,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofCnyAccount(
                 ExternalAccountInfoOneOf.CnyAccount.builder()
-                    .bankName("Example Bank")
+                    .bankName("China Construction Bank")
                     .beneficiary(
                         ExternalAccountInfoOneOf.CnyAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")
@@ -270,7 +270,7 @@ internal class ExternalAccountInfoOneOfTest {
     fun ofIlsAccount() {
         val ilsAccount =
             ExternalAccountInfoOneOf.IlsAccount.builder()
-                .bankName("Example Bank")
+                .bankName("Bank Leumi Le-Israel B.M")
                 .beneficiary(
                     ExternalAccountInfoOneOf.IlsAccount.Beneficiary.Individual.builder()
                         .fullName("fullName")
@@ -309,7 +309,7 @@ internal class ExternalAccountInfoOneOfTest {
         val externalAccountInfoOneOf =
             ExternalAccountInfoOneOf.ofIlsAccount(
                 ExternalAccountInfoOneOf.IlsAccount.builder()
-                    .bankName("Example Bank")
+                    .bankName("Bank Leumi Le-Israel B.M")
                     .beneficiary(
                         ExternalAccountInfoOneOf.IlsAccount.Beneficiary.Individual.builder()
                             .fullName("fullName")

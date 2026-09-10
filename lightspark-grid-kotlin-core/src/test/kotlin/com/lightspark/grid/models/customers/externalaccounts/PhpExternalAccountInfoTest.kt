@@ -16,7 +16,10 @@ internal class PhpExternalAccountInfoTest {
             PhpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PHP_ACCOUNT"))
                 .putAdditionalProperty("rail", JsonValue.from("INSTAPAY"))
-                .putAdditionalProperty("bankName", JsonValue.from("BDO Unibank"))
+                .putAdditionalProperty(
+                    "bankName",
+                    JsonValue.from("Bank of the Philippine Islands (BPI)"),
+                )
                 .putAdditionalProperty("accountNumber", JsonValue.from("001234567890"))
                 .build()
     }
@@ -28,7 +31,10 @@ internal class PhpExternalAccountInfoTest {
             PhpExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("PHP_ACCOUNT"))
                 .putAdditionalProperty("rail", JsonValue.from("INSTAPAY"))
-                .putAdditionalProperty("bankName", JsonValue.from("BDO Unibank"))
+                .putAdditionalProperty(
+                    "bankName",
+                    JsonValue.from("Bank of the Philippine Islands (BPI)"),
+                )
                 .putAdditionalProperty("accountNumber", JsonValue.from("001234567890"))
                 .build()
 

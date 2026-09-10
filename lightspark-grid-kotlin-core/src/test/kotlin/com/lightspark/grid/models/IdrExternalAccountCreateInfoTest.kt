@@ -17,7 +17,7 @@ internal class IdrExternalAccountCreateInfoTest {
             IdrExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(IdrExternalAccountCreateInfo.AccountType.IDR_ACCOUNT)
-                .bankName("Bank Central Asia")
+                .bankName("Bank Central Asia (BCA)")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -46,7 +46,7 @@ internal class IdrExternalAccountCreateInfoTest {
         assertThat(idrExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(idrExternalAccountCreateInfo.accountType())
             .isEqualTo(IdrExternalAccountCreateInfo.AccountType.IDR_ACCOUNT)
-        assertThat(idrExternalAccountCreateInfo.bankName()).isEqualTo("Bank Central Asia")
+        assertThat(idrExternalAccountCreateInfo.bankName()).isEqualTo("Bank Central Asia (BCA)")
         assertThat(idrExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 IdrExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -82,7 +82,7 @@ internal class IdrExternalAccountCreateInfoTest {
             IdrExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(IdrExternalAccountCreateInfo.AccountType.IDR_ACCOUNT)
-                .bankName("Bank Central Asia")
+                .bankName("Bank Central Asia (BCA)")
                 .beneficiary(
                     IdrBeneficiary.builder()
                         .beneficiaryType(IdrBeneficiary.BeneficiaryType.INDIVIDUAL)

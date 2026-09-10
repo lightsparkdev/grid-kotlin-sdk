@@ -2569,7 +2569,9 @@ private constructor(
             @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
 
             /**
-             * The name of the bank
+             * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns
+             * for this country and currency. Send it exactly as returned; any other name is
+             * rejected.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2719,7 +2721,11 @@ private constructor(
                  */
                 fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
 
-                /** The name of the bank */
+                /**
+                 * The name of the bank. Must be one of the `bankName` values `GET /discoveries`
+                 * returns for this country and currency. Send it exactly as returned; any other
+                 * name is rejected.
+                 */
                 fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
                 /**
@@ -3118,7 +3124,9 @@ private constructor(
             @JsonProperty("accountType") @ExcludeMissing fun _accountType(): JsonValue = accountType
 
             /**
-             * The name of the bank
+             * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns
+             * for this country and currency. Send it exactly as returned; any other name is
+             * rejected.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -3247,7 +3255,11 @@ private constructor(
                  */
                 fun accountType(accountType: JsonValue) = apply { this.accountType = accountType }
 
-                /** The name of the bank */
+                /**
+                 * The name of the bank. Must be one of the `bankName` values `GET /discoveries`
+                 * returns for this country and currency. Send it exactly as returned; any other
+                 * name is rejected.
+                 */
                 fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
                 /**
