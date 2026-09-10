@@ -16,7 +16,7 @@ internal class ZarExternalAccountCreateInfoTest {
             ZarExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ZarExternalAccountCreateInfo.AccountType.ZAR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Standard Bank (South Africa)")
                 .beneficiary(
                     ZarBeneficiary.builder()
                         .beneficiaryType(ZarBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -43,7 +43,8 @@ internal class ZarExternalAccountCreateInfoTest {
         assertThat(zarExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(zarExternalAccountCreateInfo.accountType())
             .isEqualTo(ZarExternalAccountCreateInfo.AccountType.ZAR_ACCOUNT)
-        assertThat(zarExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(zarExternalAccountCreateInfo.bankName())
+            .isEqualTo("Standard Bank (South Africa)")
         assertThat(zarExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 ZarExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -77,7 +78,7 @@ internal class ZarExternalAccountCreateInfoTest {
             ZarExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(ZarExternalAccountCreateInfo.AccountType.ZAR_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("Standard Bank (South Africa)")
                 .beneficiary(
                     ZarBeneficiary.builder()
                         .beneficiaryType(ZarBeneficiary.BeneficiaryType.INDIVIDUAL)

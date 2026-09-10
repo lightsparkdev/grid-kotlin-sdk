@@ -15,7 +15,7 @@ internal class MyrExternalAccountInfoTest {
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("MYR_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Maybank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("MABORUMMYYY"))
                 .build()
@@ -27,7 +27,7 @@ internal class MyrExternalAccountInfoTest {
         val myrExternalAccountInfo =
             MyrExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("MYR_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Maybank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("MABORUMMYYY"))
                 .build()

@@ -81,7 +81,8 @@ private constructor(
     fun bankAccountType(): BankAccountType = bankAccountType.getRequired("bankAccountType")
 
     /**
-     * The name of the bank
+     * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns for
+     * this country and currency. Send it exactly as returned; any other name is rejected.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -245,7 +246,10 @@ private constructor(
             this.bankAccountType = bankAccountType
         }
 
-        /** The name of the bank */
+        /**
+         * The name of the bank. Must be one of the `bankName` values `GET /discoveries` returns for
+         * this country and currency. Send it exactly as returned; any other name is rejected.
+         */
         fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 
         /**

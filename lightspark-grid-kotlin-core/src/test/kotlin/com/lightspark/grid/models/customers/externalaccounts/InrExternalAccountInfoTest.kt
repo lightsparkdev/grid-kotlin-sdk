@@ -19,7 +19,6 @@ internal class InrExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("000111222333"))
                 .putAdditionalProperty("ifsc", JsonValue.from("HDFC0001234"))
                 .putAdditionalProperty("rail", JsonValue.from("NEFT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
     }
 
@@ -33,7 +32,6 @@ internal class InrExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("000111222333"))
                 .putAdditionalProperty("ifsc", JsonValue.from("HDFC0001234"))
                 .putAdditionalProperty("rail", JsonValue.from("NEFT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
                 .build()
 
         val roundtrippedInrExternalAccountInfo =

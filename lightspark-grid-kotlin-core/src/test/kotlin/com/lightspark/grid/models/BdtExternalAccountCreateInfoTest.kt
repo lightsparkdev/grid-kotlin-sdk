@@ -15,7 +15,7 @@ internal class BdtExternalAccountCreateInfoTest {
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("BRAC Bank")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -45,7 +45,7 @@ internal class BdtExternalAccountCreateInfoTest {
 
         assertThat(bdtExternalAccountCreateInfo.accountType())
             .isEqualTo(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-        assertThat(bdtExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(bdtExternalAccountCreateInfo.bankName()).isEqualTo("BRAC Bank")
         assertThat(bdtExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 BdtExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -82,7 +82,7 @@ internal class BdtExternalAccountCreateInfoTest {
         val bdtExternalAccountCreateInfo =
             BdtExternalAccountCreateInfo.builder()
                 .accountType(BdtExternalAccountCreateInfo.AccountType.BDT_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("BRAC Bank")
                 .beneficiary(
                     BdtBeneficiary.builder()
                         .beneficiaryType(BdtBeneficiary.BeneficiaryType.INDIVIDUAL)

@@ -15,7 +15,7 @@ internal class VndExternalAccountInfoTest {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("VND_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Vietcombank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("BFTVVNVX"))
                 .build()
@@ -27,7 +27,7 @@ internal class VndExternalAccountInfoTest {
         val vndExternalAccountInfo =
             VndExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("VND_ACCOUNT"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Vietcombank"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("swiftCode", JsonValue.from("BFTVVNVX"))
                 .build()

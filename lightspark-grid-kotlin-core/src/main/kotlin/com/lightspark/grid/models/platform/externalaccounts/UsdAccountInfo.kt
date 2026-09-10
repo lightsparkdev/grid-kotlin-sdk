@@ -113,7 +113,7 @@ private constructor(
     /**
      * The name of the financial institution holding the account. Optional on every rail, and
      * recommended for wires, where it identifies the beneficiary's institution on the payment
-     * message.
+     * message. Not checked against `GET /discoveries`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -372,7 +372,7 @@ private constructor(
         /**
          * The name of the financial institution holding the account. Optional on every rail, and
          * recommended for wires, where it identifies the beneficiary's institution on the payment
-         * message.
+         * message. Not checked against `GET /discoveries`.
          */
         fun bankName(bankName: String) = bankName(JsonField.of(bankName))
 

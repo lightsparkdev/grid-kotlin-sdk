@@ -16,7 +16,7 @@ internal class ZarExternalAccountInfoTest {
             ZarExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("ZAR_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Standard Bank (South Africa)"))
                 .build()
     }
 
@@ -27,7 +27,7 @@ internal class ZarExternalAccountInfoTest {
             ZarExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("ZAR_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Standard Bank (South Africa)"))
                 .build()
 
         val roundtrippedZarExternalAccountInfo =
