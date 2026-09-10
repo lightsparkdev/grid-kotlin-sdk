@@ -21,7 +21,7 @@ import java.util.Objects
 class CardCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val cardholderId: JsonField<String>,
+    private val customerId: JsonField<String>,
     private val form: JsonField<Form>,
     private val fundingSources: JsonField<List<String>>,
     private val maxSpendPerDay: JsonField<Long>,
@@ -34,9 +34,9 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("cardholderId")
+        @JsonProperty("customerId")
         @ExcludeMissing
-        cardholderId: JsonField<String> = JsonMissing.of(),
+        customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
         @JsonProperty("fundingSources")
         @ExcludeMissing
@@ -57,7 +57,7 @@ private constructor(
         @ExcludeMissing
         threeDSecurePassword: JsonField<String> = JsonMissing.of(),
     ) : this(
-        cardholderId,
+        customerId,
         form,
         fundingSources,
         maxSpendPerDay,
@@ -75,7 +75,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun cardholderId(): String = cardholderId.getRequired("cardholderId")
+    fun customerId(): String = customerId.getRequired("customerId")
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -159,13 +159,11 @@ private constructor(
     fun threeDSecurePassword(): String? = threeDSecurePassword.getNullable("threeDSecurePassword")
 
     /**
-     * Returns the raw JSON value of [cardholderId].
+     * Returns the raw JSON value of [customerId].
      *
-     * Unlike [cardholderId], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("cardholderId")
-    @ExcludeMissing
-    fun _cardholderId(): JsonField<String> = cardholderId
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
 
     /**
      * Returns the raw JSON value of [form].
@@ -250,7 +248,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .cardholderId()
+         * .customerId()
          * .form()
          * .fundingSources()
          * ```
@@ -261,7 +259,7 @@ private constructor(
     /** A builder for [CardCreateRequest]. */
     class Builder internal constructor() {
 
-        private var cardholderId: JsonField<String>? = null
+        private var customerId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
         private var fundingSources: JsonField<MutableList<String>>? = null
         private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
@@ -272,7 +270,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardCreateRequest: CardCreateRequest) = apply {
-            cardholderId = cardCreateRequest.cardholderId
+            customerId = cardCreateRequest.customerId
             form = cardCreateRequest.form
             fundingSources = cardCreateRequest.fundingSources.map { it.toMutableList() }
             maxSpendPerDay = cardCreateRequest.maxSpendPerDay
@@ -287,18 +285,16 @@ private constructor(
          * The id of the `Customer` to issue the card to. The customer must have KYC status
          * `APPROVED`; otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
          */
-        fun cardholderId(cardholderId: String) = cardholderId(JsonField.of(cardholderId))
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
 
         /**
-         * Sets [Builder.cardholderId] to an arbitrary JSON value.
+         * Sets [Builder.customerId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.cardholderId] with a well-typed [String] value instead.
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun cardholderId(cardholderId: JsonField<String>) = apply {
-            this.cardholderId = cardholderId
-        }
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /**
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
@@ -477,7 +473,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .cardholderId()
+         * .customerId()
          * .form()
          * .fundingSources()
          * ```
@@ -486,7 +482,7 @@ private constructor(
          */
         fun build(): CardCreateRequest =
             CardCreateRequest(
-                checkRequired("cardholderId", cardholderId),
+                checkRequired("customerId", customerId),
                 checkRequired("form", form),
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
                 maxSpendPerDay,
@@ -513,7 +509,7 @@ private constructor(
             return@apply
         }
 
-        cardholderId()
+        customerId()
         form().validate()
         fundingSources()
         maxSpendPerDay()
@@ -538,7 +534,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (cardholderId.asKnown() == null) 0 else 1) +
+        (if (customerId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
             (fundingSources.asKnown()?.size ?: 0) +
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
@@ -685,7 +681,7 @@ private constructor(
         }
 
         return other is CardCreateRequest &&
-            cardholderId == other.cardholderId &&
+            customerId == other.customerId &&
             form == other.form &&
             fundingSources == other.fundingSources &&
             maxSpendPerDay == other.maxSpendPerDay &&
@@ -698,7 +694,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            cardholderId,
+            customerId,
             form,
             fundingSources,
             maxSpendPerDay,
@@ -713,5 +709,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
+        "CardCreateRequest{customerId=$customerId, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }

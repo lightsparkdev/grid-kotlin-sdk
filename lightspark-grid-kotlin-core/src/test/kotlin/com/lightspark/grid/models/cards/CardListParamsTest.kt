@@ -12,8 +12,8 @@ internal class CardListParamsTest {
     fun create() {
         CardListParams.builder()
             .accountId("accountId")
-            .cardholderId("cardholderId")
             .cursor("cursor")
+            .customerId("customerId")
             .limit(1L)
             .platformCardId("platformCardId")
             .sortOrder(CardListParams.SortOrder.ASC)
@@ -26,8 +26,8 @@ internal class CardListParamsTest {
         val params =
             CardListParams.builder()
                 .accountId("accountId")
-                .cardholderId("cardholderId")
                 .cursor("cursor")
+                .customerId("customerId")
                 .limit(1L)
                 .platformCardId("platformCardId")
                 .sortOrder(CardListParams.SortOrder.ASC)
@@ -40,8 +40,8 @@ internal class CardListParamsTest {
             .isEqualTo(
                 QueryParams.builder()
                     .put("accountId", "accountId")
-                    .put("cardholderId", "cardholderId")
                     .put("cursor", "cursor")
+                    .put("customerId", "customerId")
                     .put("limit", "1")
                     .put("platformCardId", "platformCardId")
                     .put("sortOrder", "asc")

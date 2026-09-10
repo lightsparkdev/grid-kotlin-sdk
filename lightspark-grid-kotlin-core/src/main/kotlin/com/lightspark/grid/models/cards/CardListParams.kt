@@ -19,8 +19,8 @@ import java.util.Objects
 class CardListParams
 private constructor(
     private val accountId: String?,
-    private val cardholderId: String?,
     private val cursor: String?,
+    private val customerId: String?,
     private val limit: Long?,
     private val platformCardId: String?,
     private val sortOrder: SortOrder?,
@@ -35,11 +35,11 @@ private constructor(
      */
     fun accountId(): String? = accountId
 
-    /** Filter by cardholder (customer) id. */
-    fun cardholderId(): String? = cardholderId
-
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
+
+    /** Filter by customer id. */
+    fun customerId(): String? = customerId
 
     /** Maximum number of results to return (default 20, max 100) */
     fun limit(): Long? = limit
@@ -73,8 +73,8 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountId: String? = null
-        private var cardholderId: String? = null
         private var cursor: String? = null
+        private var customerId: String? = null
         private var limit: Long? = null
         private var platformCardId: String? = null
         private var sortOrder: SortOrder? = null
@@ -84,8 +84,8 @@ private constructor(
 
         internal fun from(cardListParams: CardListParams) = apply {
             accountId = cardListParams.accountId
-            cardholderId = cardListParams.cardholderId
             cursor = cardListParams.cursor
+            customerId = cardListParams.customerId
             limit = cardListParams.limit
             platformCardId = cardListParams.platformCardId
             sortOrder = cardListParams.sortOrder
@@ -100,11 +100,11 @@ private constructor(
          */
         fun accountId(accountId: String?) = apply { this.accountId = accountId }
 
-        /** Filter by cardholder (customer) id. */
-        fun cardholderId(cardholderId: String?) = apply { this.cardholderId = cardholderId }
-
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
+
+        /** Filter by customer id. */
+        fun customerId(customerId: String?) = apply { this.customerId = customerId }
 
         /** Maximum number of results to return (default 20, max 100) */
         fun limit(limit: Long?) = apply { this.limit = limit }
@@ -231,8 +231,8 @@ private constructor(
         fun build(): CardListParams =
             CardListParams(
                 accountId,
-                cardholderId,
                 cursor,
+                customerId,
                 limit,
                 platformCardId,
                 sortOrder,
@@ -248,8 +248,8 @@ private constructor(
         QueryParams.builder()
             .apply {
                 accountId?.let { put("accountId", it) }
-                cardholderId?.let { put("cardholderId", it) }
                 cursor?.let { put("cursor", it) }
+                customerId?.let { put("customerId", it) }
                 limit?.let { put("limit", it.toString()) }
                 platformCardId?.let { put("platformCardId", it) }
                 sortOrder?.let { put("sortOrder", it.toString()) }
@@ -555,8 +555,8 @@ private constructor(
 
         return other is CardListParams &&
             accountId == other.accountId &&
-            cardholderId == other.cardholderId &&
             cursor == other.cursor &&
+            customerId == other.customerId &&
             limit == other.limit &&
             platformCardId == other.platformCardId &&
             sortOrder == other.sortOrder &&
@@ -568,8 +568,8 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             accountId,
-            cardholderId,
             cursor,
+            customerId,
             limit,
             platformCardId,
             sortOrder,
@@ -579,5 +579,5 @@ private constructor(
         )
 
     override fun toString() =
-        "CardListParams{accountId=$accountId, cardholderId=$cardholderId, cursor=$cursor, limit=$limit, platformCardId=$platformCardId, sortOrder=$sortOrder, state=$state, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CardListParams{accountId=$accountId, cursor=$cursor, customerId=$customerId, limit=$limit, platformCardId=$platformCardId, sortOrder=$sortOrder, state=$state, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
