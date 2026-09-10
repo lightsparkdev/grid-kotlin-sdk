@@ -40,10 +40,11 @@ interface ConfigService {
         retrieve(ConfigRetrieveParams.none(), requestOptions)
 
     /**
-     * Update platform configuration settings. `cardConfigs` can establish platform-level
-     * per-transaction and UTC-calendar-day card caps. Grid enforces the lower of each platform cap
-     * and its corresponding card-specific value without replacing the card-specific value. Daily
-     * limits reset at 00:00 UTC.
+     * Update platform configuration settings. `cardConfigs` can establish platform-level caps on a
+     * single card transaction, on spend during one UTC calendar day, and on the number of
+     * transactions during one UTC calendar day. Grid enforces the lower of each platform cap and
+     * its corresponding card-specific value without replacing the card-specific value. Daily limits
+     * reset at 00:00 UTC.
      */
     fun update(
         params: ConfigUpdateParams,

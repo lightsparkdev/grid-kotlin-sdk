@@ -17,6 +17,7 @@ internal class CardUpdateRequestTest {
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
+                .maxTransactionsPerDay(20)
                 .state(CardUpdateRequest.State.FROZEN)
                 .build()
 
@@ -27,6 +28,7 @@ internal class CardUpdateRequestTest {
             )
         assertThat(cardUpdateRequest.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(cardUpdateRequest.maxSpendPerTransaction()).isEqualTo(10000L)
+        assertThat(cardUpdateRequest.maxTransactionsPerDay()).isEqualTo(20)
         assertThat(cardUpdateRequest.state()).isEqualTo(CardUpdateRequest.State.FROZEN)
     }
 
@@ -39,6 +41,7 @@ internal class CardUpdateRequestTest {
                 .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
+                .maxTransactionsPerDay(20)
                 .state(CardUpdateRequest.State.FROZEN)
                 .build()
 
