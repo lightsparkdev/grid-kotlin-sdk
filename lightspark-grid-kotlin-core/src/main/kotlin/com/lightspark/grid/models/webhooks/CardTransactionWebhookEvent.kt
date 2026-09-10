@@ -303,8 +303,6 @@ private constructor(
 
             val CARD_TRANSACTION_SETTLED = of("CARD_TRANSACTION.SETTLED")
 
-            val CARD_TRANSACTION_REFUNDED = of("CARD_TRANSACTION.REFUNDED")
-
             val CARD_TRANSACTION_EXCEPTION = of("CARD_TRANSACTION.EXCEPTION")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -315,7 +313,6 @@ private constructor(
             CARD_TRANSACTION_AUTHORIZED,
             CARD_TRANSACTION_PARTIALLY_SETTLED,
             CARD_TRANSACTION_SETTLED,
-            CARD_TRANSACTION_REFUNDED,
             CARD_TRANSACTION_EXCEPTION,
         }
 
@@ -332,7 +329,6 @@ private constructor(
             CARD_TRANSACTION_AUTHORIZED,
             CARD_TRANSACTION_PARTIALLY_SETTLED,
             CARD_TRANSACTION_SETTLED,
-            CARD_TRANSACTION_REFUNDED,
             CARD_TRANSACTION_EXCEPTION,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -350,7 +346,6 @@ private constructor(
                 CARD_TRANSACTION_AUTHORIZED -> Value.CARD_TRANSACTION_AUTHORIZED
                 CARD_TRANSACTION_PARTIALLY_SETTLED -> Value.CARD_TRANSACTION_PARTIALLY_SETTLED
                 CARD_TRANSACTION_SETTLED -> Value.CARD_TRANSACTION_SETTLED
-                CARD_TRANSACTION_REFUNDED -> Value.CARD_TRANSACTION_REFUNDED
                 CARD_TRANSACTION_EXCEPTION -> Value.CARD_TRANSACTION_EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -369,7 +364,6 @@ private constructor(
                 CARD_TRANSACTION_AUTHORIZED -> Known.CARD_TRANSACTION_AUTHORIZED
                 CARD_TRANSACTION_PARTIALLY_SETTLED -> Known.CARD_TRANSACTION_PARTIALLY_SETTLED
                 CARD_TRANSACTION_SETTLED -> Known.CARD_TRANSACTION_SETTLED
-                CARD_TRANSACTION_REFUNDED -> Known.CARD_TRANSACTION_REFUNDED
                 CARD_TRANSACTION_EXCEPTION -> Known.CARD_TRANSACTION_EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
