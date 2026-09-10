@@ -16,7 +16,6 @@ internal class EurExternalAccountInfoTest {
             EurExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EUR_ACCOUNT"))
                 .putAdditionalProperty("iban", JsonValue.from("DE89370400440532013000"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DEUTDEFF"))
                 .build()
     }
 
@@ -27,7 +26,6 @@ internal class EurExternalAccountInfoTest {
             EurExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("EUR_ACCOUNT"))
                 .putAdditionalProperty("iban", JsonValue.from("DE89370400440532013000"))
-                .putAdditionalProperty("swiftCode", JsonValue.from("DEUTDEFF"))
                 .build()
 
         val roundtrippedEurExternalAccountInfo =
