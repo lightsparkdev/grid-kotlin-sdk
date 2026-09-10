@@ -54,8 +54,8 @@ interface CardServiceAsync {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`, or
-     * `maxSpendPerDay`. At least one field must be supplied.
+     * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`,
+     * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
      * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
@@ -75,6 +75,12 @@ interface CardServiceAsync {
      *   `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the card and platform values.
      *   Refunds, reversals, and authorization expiries do not restore capacity during the day.
      *   `maxSpendPerDay` cannot be supplied alongside `state: CLOSED`.
+     * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
+     *   transactions the card may authorize during one UTC calendar day. Supply a positive integer
+     *   to set it or null to clear it. If the platform config sets
+     *   `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the card and platform
+     *   values. Refunds, reversals, and authorization expiries do not restore capacity during the
+     *   day. `maxTransactionsPerDay` cannot be supplied alongside `state: CLOSED`.
      *
      * This endpoint is authenticated by the platform credential alone and returns `200` directly.
      * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
@@ -132,12 +138,13 @@ interface CardServiceAsync {
      * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
      * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
-     * Optional `maxSpendPerTransaction` and `maxSpendPerDay` values set the card-specific caps on
-     * one transaction and one UTC calendar day. The limits are enforced by Grid for card programs
-     * where Grid makes the authorization decision, whether the card is funded by an Embedded Wallet
-     * account or custodial fiat. If the platform config sets the corresponding `cardConfigs` value,
-     * Grid enforces the lower of the card and platform caps. All values use the smallest unit of
-     * the card's currency.
+     * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set
+     * the card-specific caps on one transaction, on spend during one UTC calendar day, and on the
+     * number of transactions during one UTC calendar day. The limits are enforced by Grid for card
+     * programs where Grid makes the authorization decision, whether the card is funded by an
+     * Embedded Wallet account or custodial fiat. If the platform config sets the corresponding
+     * `cardConfigs` value, Grid enforces the lower of the card and platform caps. Amounts use the
+     * smallest unit of the card's currency.
      *
      * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
      * Grid to sign Spark token transactions for that card funding source by completing the

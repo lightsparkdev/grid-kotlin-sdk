@@ -18,6 +18,7 @@ internal class ConfigUpdateParamsTest {
                         PlatformConfigUpdateRequest.CardConfigs.builder()
                             .maxSpendPerDay(50000L)
                             .maxSpendPerTransaction(10000L)
+                            .maxTransactionsPerDay(50)
                             .build()
                     )
                     .cardTokenization2faConfig(
@@ -122,6 +123,7 @@ internal class ConfigUpdateParamsTest {
                             PlatformConfigUpdateRequest.CardConfigs.builder()
                                 .maxSpendPerDay(50000L)
                                 .maxSpendPerTransaction(10000L)
+                                .maxTransactionsPerDay(50)
                                 .build()
                         )
                         .cardTokenization2faConfig(
@@ -225,6 +227,7 @@ internal class ConfigUpdateParamsTest {
                         PlatformConfigUpdateRequest.CardConfigs.builder()
                             .maxSpendPerDay(50000L)
                             .maxSpendPerTransaction(10000L)
+                            .maxTransactionsPerDay(50)
                             .build()
                     )
                     .cardTokenization2faConfig(

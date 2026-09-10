@@ -29,6 +29,7 @@ private constructor(
     private val fundingSources: JsonField<List<String>>,
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
+    private val maxTransactionsPerDay: JsonField<Int>,
     private val state: JsonField<State>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val brand: JsonField<Brand>,
@@ -62,6 +63,9 @@ private constructor(
         @JsonProperty("maxSpendPerTransaction")
         @ExcludeMissing
         maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxTransactionsPerDay")
+        @ExcludeMissing
+        maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
@@ -89,6 +93,7 @@ private constructor(
         fundingSources,
         maxSpendPerDay,
         maxSpendPerTransaction,
+        maxTransactionsPerDay,
         state,
         updatedAt,
         brand,
@@ -170,6 +175,20 @@ private constructor(
      */
     fun maxSpendPerTransaction(): Long? =
         maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+    /**
+     * Card-specific cap on the number of transactions the card may authorize during one UTC
+     * calendar day. The window resets at 00:00 UTC. Null means the card has no card-specific daily
+     * transaction cap. When the platform config also supplies `cardConfigs.maxTransactionsPerDay`,
+     * Grid enforces the lower of the two values without replacing this configured value. Each
+     * approved authorization counts once for the day it was authorized; refunds, reversals, and
+     * authorization expiries do not restore capacity during the day. A transaction that brings the
+     * day's count exactly to the effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
 
     /**
      * Lifecycle state of a card.
@@ -335,6 +354,16 @@ private constructor(
     fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
 
     /**
+     * Returns the raw JSON value of [maxTransactionsPerDay].
+     *
+     * Unlike [maxTransactionsPerDay], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("maxTransactionsPerDay")
+    @ExcludeMissing
+    fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
+
+    /**
      * Returns the raw JSON value of [state].
      *
      * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
@@ -445,6 +474,7 @@ private constructor(
          * .fundingSources()
          * .maxSpendPerDay()
          * .maxSpendPerTransaction()
+         * .maxTransactionsPerDay()
          * .state()
          * .updatedAt()
          * ```
@@ -462,6 +492,7 @@ private constructor(
         private var fundingSources: JsonField<MutableList<String>>? = null
         private var maxSpendPerDay: JsonField<Long>? = null
         private var maxSpendPerTransaction: JsonField<Long>? = null
+        private var maxTransactionsPerDay: JsonField<Int>? = null
         private var state: JsonField<State>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var brand: JsonField<Brand> = JsonMissing.of()
@@ -483,6 +514,7 @@ private constructor(
             fundingSources = card.fundingSources.map { it.toMutableList() }
             maxSpendPerDay = card.maxSpendPerDay
             maxSpendPerTransaction = card.maxSpendPerTransaction
+            maxTransactionsPerDay = card.maxTransactionsPerDay
             state = card.state
             updatedAt = card.updatedAt
             brand = card.brand
@@ -635,6 +667,38 @@ private constructor(
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
             this.maxSpendPerTransaction = maxSpendPerTransaction
+        }
+
+        /**
+         * Card-specific cap on the number of transactions the card may authorize during one UTC
+         * calendar day. The window resets at 00:00 UTC. Null means the card has no card-specific
+         * daily transaction cap. When the platform config also supplies
+         * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values without
+         * replacing this configured value. Each approved authorization counts once for the day it
+         * was authorized; refunds, reversals, and authorization expiries do not restore capacity
+         * during the day. A transaction that brings the day's count exactly to the effective limit
+         * is allowed.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: Int?) =
+            maxTransactionsPerDay(JsonField.ofNullable(maxTransactionsPerDay))
+
+        /**
+         * Alias for [Builder.maxTransactionsPerDay].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: Int) =
+            maxTransactionsPerDay(maxTransactionsPerDay as Int?)
+
+        /**
+         * Sets [Builder.maxTransactionsPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxTransactionsPerDay] with a well-typed [Int] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: JsonField<Int>) = apply {
+            this.maxTransactionsPerDay = maxTransactionsPerDay
         }
 
         /**
@@ -829,6 +893,7 @@ private constructor(
          * .fundingSources()
          * .maxSpendPerDay()
          * .maxSpendPerTransaction()
+         * .maxTransactionsPerDay()
          * .state()
          * .updatedAt()
          * ```
@@ -844,6 +909,7 @@ private constructor(
                 checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
                 checkRequired("maxSpendPerDay", maxSpendPerDay),
                 checkRequired("maxSpendPerTransaction", maxSpendPerTransaction),
+                checkRequired("maxTransactionsPerDay", maxTransactionsPerDay),
                 checkRequired("state", state),
                 checkRequired("updatedAt", updatedAt),
                 brand,
@@ -881,6 +947,7 @@ private constructor(
         fundingSources()
         maxSpendPerDay()
         maxSpendPerTransaction()
+        maxTransactionsPerDay()
         state().validate()
         updatedAt()
         brand()?.validate()
@@ -916,6 +983,7 @@ private constructor(
             (fundingSources.asKnown()?.size ?: 0) +
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
+            (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
             (state.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (brand.asKnown()?.validity() ?: 0) +
@@ -1521,6 +1589,7 @@ private constructor(
             fundingSources == other.fundingSources &&
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
+            maxTransactionsPerDay == other.maxTransactionsPerDay &&
             state == other.state &&
             updatedAt == other.updatedAt &&
             brand == other.brand &&
@@ -1544,6 +1613,7 @@ private constructor(
             fundingSources,
             maxSpendPerDay,
             maxSpendPerTransaction,
+            maxTransactionsPerDay,
             state,
             updatedAt,
             brand,
@@ -1562,5 +1632,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
 }
