@@ -70,7 +70,8 @@ private constructor(
     fun iban(): String = iban.getRequired("iban")
 
     /**
-     * The SWIFT/BIC code of the bank
+     * The SWIFT/BIC code of the bank. When omitted, Grid derives it from the IBAN when possible.
+     * Provide it when automatic derivation is unavailable.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -198,7 +199,10 @@ private constructor(
          */
         fun iban(iban: JsonField<String>) = apply { this.iban = iban }
 
-        /** The SWIFT/BIC code of the bank */
+        /**
+         * The SWIFT/BIC code of the bank. When omitted, Grid derives it from the IBAN when
+         * possible. Provide it when automatic derivation is unavailable.
+         */
         fun swiftCode(swiftCode: String) = swiftCode(JsonField.of(swiftCode))
 
         /**
