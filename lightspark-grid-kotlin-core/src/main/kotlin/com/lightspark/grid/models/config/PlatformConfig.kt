@@ -955,7 +955,8 @@ private constructor(
         ) : this(displayName, email, logoUrl, sms, mutableMapOf())
 
         /**
-         * Platform name displayed in authentication messages.
+         * Name shown in authentication messages and used to build the default subject, body, and
+         * sender name. Defaults to the platform's name.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -1056,7 +1057,10 @@ private constructor(
                 additionalProperties = cardTokenization2faConfig.additionalProperties.toMutableMap()
             }
 
-            /** Platform name displayed in authentication messages. */
+            /**
+             * Name shown in authentication messages and used to build the default subject, body,
+             * and sender name. Defaults to the platform's name.
+             */
             fun displayName(displayName: String) = displayName(JsonField.of(displayName))
 
             /**
@@ -1226,7 +1230,8 @@ private constructor(
             /**
              * Plain-text message content. Lightspark inserts the authentication code into a
              * controlled text and HTML template; arbitrary HTML and template variables are not
-             * supported.
+             * supported. Defaults to "Use this code to finish adding your {displayName} card to
+             * your wallet."
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1242,7 +1247,7 @@ private constructor(
             fun fromAddress(): String? = fromAddress.getNullable("fromAddress")
 
             /**
-             * Sender display name.
+             * Sender display name. Defaults to `displayName`.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1258,7 +1263,8 @@ private constructor(
             fun replyToAddress(): String? = replyToAddress.getNullable("replyToAddress")
 
             /**
-             * Subject for the authentication email.
+             * Subject for the authentication email. Defaults to "Your {displayName} verification
+             * code".
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1348,7 +1354,8 @@ private constructor(
                 /**
                  * Plain-text message content. Lightspark inserts the authentication code into a
                  * controlled text and HTML template; arbitrary HTML and template variables are not
-                 * supported.
+                 * supported. Defaults to "Use this code to finish adding your {displayName} card to
+                 * your wallet."
                  */
                 fun bodyText(bodyText: String) = bodyText(JsonField.of(bodyText))
 
@@ -1375,7 +1382,7 @@ private constructor(
                     this.fromAddress = fromAddress
                 }
 
-                /** Sender display name. */
+                /** Sender display name. Defaults to `displayName`. */
                 fun fromName(fromName: String) = fromName(JsonField.of(fromName))
 
                 /**
@@ -1402,7 +1409,10 @@ private constructor(
                     this.replyToAddress = replyToAddress
                 }
 
-                /** Subject for the authentication email. */
+                /**
+                 * Subject for the authentication email. Defaults to "Your {displayName}
+                 * verification code".
+                 */
                 fun subject(subject: String) = subject(JsonField.of(subject))
 
                 /**
@@ -1553,7 +1563,8 @@ private constructor(
 
             /**
              * Plain-text fallback message used when Twilio Verify is unavailable for the
-             * authentication code. Lightspark appends the code to this text.
+             * authentication code. Lightspark appends the code to this text. Defaults to "Your
+             * {displayName} verification code is:".
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   (e.g. if the server responded with an unexpected value).
@@ -1620,7 +1631,8 @@ private constructor(
 
                 /**
                  * Plain-text fallback message used when Twilio Verify is unavailable for the
-                 * authentication code. Lightspark appends the code to this text.
+                 * authentication code. Lightspark appends the code to this text. Defaults to "Your
+                 * {displayName} verification code is:".
                  */
                 fun bodyText(bodyText: String) = bodyText(JsonField.of(bodyText))
 
