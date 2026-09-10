@@ -14,6 +14,9 @@ import java.util.Objects
  * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
  * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
  *
+ * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is required.
+ * Retries must carry the same key.
+ *
  * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set the
  * card-specific caps on one transaction, on spend during one UTC calendar day, and on the number of
  * transactions during one UTC calendar day. The limits are enforced by Grid for card programs where
@@ -37,10 +40,13 @@ import java.util.Objects
  */
 class CardIssueParams
 private constructor(
+    private val idempotencyKey: String,
     private val cardCreateRequest: CardCreateRequest,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
+
+    fun idempotencyKey(): String = idempotencyKey
 
     fun cardCreateRequest(): CardCreateRequest = cardCreateRequest
 
@@ -62,6 +68,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .idempotencyKey()
          * .cardCreateRequest()
          * ```
          */
@@ -71,15 +78,19 @@ private constructor(
     /** A builder for [CardIssueParams]. */
     class Builder internal constructor() {
 
+        private var idempotencyKey: String? = null
         private var cardCreateRequest: CardCreateRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(cardIssueParams: CardIssueParams) = apply {
+            idempotencyKey = cardIssueParams.idempotencyKey
             cardCreateRequest = cardIssueParams.cardCreateRequest
             additionalHeaders = cardIssueParams.additionalHeaders.toBuilder()
             additionalQueryParams = cardIssueParams.additionalQueryParams.toBuilder()
         }
+
+        fun idempotencyKey(idempotencyKey: String) = apply { this.idempotencyKey = idempotencyKey }
 
         fun cardCreateRequest(cardCreateRequest: CardCreateRequest) = apply {
             this.cardCreateRequest = cardCreateRequest
@@ -190,6 +201,7 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
+         * .idempotencyKey()
          * .cardCreateRequest()
          * ```
          *
@@ -197,6 +209,7 @@ private constructor(
          */
         fun build(): CardIssueParams =
             CardIssueParams(
+                checkRequired("idempotencyKey", idempotencyKey),
                 checkRequired("cardCreateRequest", cardCreateRequest),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -205,7 +218,13 @@ private constructor(
 
     fun _body(): CardCreateRequest = cardCreateRequest
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                put("Idempotency-Key", idempotencyKey)
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -215,14 +234,15 @@ private constructor(
         }
 
         return other is CardIssueParams &&
+            idempotencyKey == other.idempotencyKey &&
             cardCreateRequest == other.cardCreateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(cardCreateRequest, additionalHeaders, additionalQueryParams)
+        Objects.hash(idempotencyKey, cardCreateRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CardIssueParams{cardCreateRequest=$cardCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CardIssueParams{idempotencyKey=$idempotencyKey, cardCreateRequest=$cardCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

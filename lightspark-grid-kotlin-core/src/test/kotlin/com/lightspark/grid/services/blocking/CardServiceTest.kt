@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.cards.CardCreateRequest
+import com.lightspark.grid.models.cards.CardIssueParams
 import com.lightspark.grid.models.cards.CardUpdateParams
 import com.lightspark.grid.models.cards.CardUpdateRequest
 import org.junit.jupiter.api.Disabled
@@ -95,15 +96,22 @@ internal class CardServiceTest {
 
         val card =
             cardService.issue(
-                CardCreateRequest.builder()
-                    .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .form(CardCreateRequest.Form.VIRTUAL)
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .maxSpendPerDay(25000L)
-                    .maxSpendPerTransaction(5000L)
-                    .maxTransactionsPerDay(20)
-                    .platformCardId("card-emp-aary-001")
-                    .threeDSecurePassword("AbCd1234EfGh5678")
+                CardIssueParams.builder()
+                    .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
+                    .cardCreateRequest(
+                        CardCreateRequest.builder()
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .form(CardCreateRequest.Form.VIRTUAL)
+                            .addFundingSource(
+                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
+                            )
+                            .maxSpendPerDay(25000L)
+                            .maxSpendPerTransaction(5000L)
+                            .maxTransactionsPerDay(20)
+                            .platformCardId("card-emp-aary-001")
+                            .threeDSecurePassword("AbCd1234EfGh5678")
+                            .build()
+                    )
                     .build()
             )
 

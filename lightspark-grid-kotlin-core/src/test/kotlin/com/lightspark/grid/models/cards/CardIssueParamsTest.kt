@@ -2,6 +2,7 @@
 
 package com.lightspark.grid.models.cards
 
+import com.lightspark.grid.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -10,6 +11,7 @@ internal class CardIssueParamsTest {
     @Test
     fun create() {
         CardIssueParams.builder()
+            .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
             .cardCreateRequest(
                 CardCreateRequest.builder()
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -26,9 +28,63 @@ internal class CardIssueParamsTest {
     }
 
     @Test
+    fun headers() {
+        val params =
+            CardIssueParams.builder()
+                .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
+                .cardCreateRequest(
+                    CardCreateRequest.builder()
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .form(CardCreateRequest.Form.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .maxSpendPerDay(25000L)
+                        .maxSpendPerTransaction(5000L)
+                        .maxTransactionsPerDay(20)
+                        .platformCardId("card-emp-aary-001")
+                        .threeDSecurePassword("AbCd1234EfGh5678")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("Idempotency-Key", "550e8400-e29b-41d4-a716-446655440000")
+                    .build()
+            )
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params =
+            CardIssueParams.builder()
+                .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
+                .cardCreateRequest(
+                    CardCreateRequest.builder()
+                        .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .form(CardCreateRequest.Form.VIRTUAL)
+                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                        .build()
+                )
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("Idempotency-Key", "550e8400-e29b-41d4-a716-446655440000")
+                    .build()
+            )
+    }
+
+    @Test
     fun body() {
         val params =
             CardIssueParams.builder()
+                .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                 .cardCreateRequest(
                     CardCreateRequest.builder()
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
@@ -64,6 +120,7 @@ internal class CardIssueParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             CardIssueParams.builder()
+                .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
                 .cardCreateRequest(
                     CardCreateRequest.builder()
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
