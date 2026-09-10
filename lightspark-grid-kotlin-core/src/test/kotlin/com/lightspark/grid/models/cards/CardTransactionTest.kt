@@ -20,7 +20,7 @@ internal class CardTransactionTest {
     fun create() {
         val cardTransaction =
             CardTransaction.builder()
-                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
                     CurrencyAmount.builder()
@@ -89,7 +89,7 @@ internal class CardTransactionTest {
                 .build()
 
         assertThat(cardTransaction.id())
-            .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000100")
         assertThat(cardTransaction.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(cardTransaction.authorizedAmount())
@@ -173,7 +173,7 @@ internal class CardTransactionTest {
         val jsonMapper = jsonMapper()
         val cardTransaction =
             CardTransaction.builder()
-                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
                     CurrencyAmount.builder()

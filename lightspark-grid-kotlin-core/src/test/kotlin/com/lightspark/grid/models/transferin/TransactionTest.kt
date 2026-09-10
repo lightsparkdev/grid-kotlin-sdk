@@ -513,7 +513,7 @@ internal class TransactionTest {
     fun ofCard() {
         val card =
             CardTransaction.builder()
-                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
                     CurrencyAmount.builder()
@@ -594,7 +594,7 @@ internal class TransactionTest {
         val transaction =
             Transaction.ofCard(
                 CardTransaction.builder()
-                    .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                    .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                     .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .authorizedAmount(
                         CurrencyAmount.builder()

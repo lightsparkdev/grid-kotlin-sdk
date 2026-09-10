@@ -77,9 +77,7 @@ internal class SimulateServiceAsyncTest {
                     .clearingRequest(
                         ClearingRequest.builder()
                             .amount(1500L)
-                            .cardTransactionId(
-                                "CardTransaction:019542f5-b3e7-1d02-0000-000000000100"
-                            )
+                            .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                             .build()
                     )
                     .build()
@@ -107,9 +105,7 @@ internal class SimulateServiceAsyncTest {
                     .refundRequest(
                         RefundRequest.builder()
                             .amount(1500L)
-                            .cardTransactionId(
-                                "CardTransaction:019542f5-b3e7-1d02-0000-000000000100"
-                            )
+                            .cardTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                             .build()
                     )
                     .build()
