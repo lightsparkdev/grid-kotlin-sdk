@@ -87,10 +87,11 @@ private constructor(
     fun form(): Form = form.getRequired("form")
 
     /**
-     * Internal account ids to bind as funding sources, in priority order. The first entry is tried
-     * first by Authorization Decisioning. Every card must be bound to at least one source, and
-     * every source must belong to the cardholder and be denominated in a card-eligible currency;
-     * otherwise the request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
+     * Internal account ids to bind as funding sources, in priority order. The first entry selects
+     * the card issuer and therefore the card's capabilities. The first entry is tried first by
+     * Authorization Decisioning. Every card must be bound to at least one source, and every source
+     * must belong to the cardholder and be denominated in a card-eligible currency; otherwise the
+     * request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -102,9 +103,9 @@ private constructor(
      * smallest unit of the card currency derived from its funding sources. Omit this field for no
      * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
      * Grid enforces the lower of the two values. The window resets at 00:00 UTC, and refunds,
-     * reversals, and authorization expiries do not restore capacity during the day. Supported only
-     * for card programs whose authorization decisions are made by Grid. Spend exactly equal to the
-     * effective limit is allowed.
+     * reversals, and authorization expiries do not restore capacity during the day. Accepted only
+     * when the funding-source internal account's `cardCapabilities.supportsSpendLimits` is true.
+     * Spend exactly equal to the effective limit is allowed.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -115,8 +116,9 @@ private constructor(
      * Optional card-specific cap on a single transaction, in the smallest unit of the card currency
      * derived from its funding sources. Omit this field for no card-specific cap. When the platform
      * config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two
-     * values. Supported only for card programs whose authorization decisions are made by Grid. A
-     * transaction for exactly the effective limit is allowed.
+     * values. Accepted only when the funding-source internal account's
+     * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective limit
+     * is allowed.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -130,7 +132,8 @@ private constructor(
      * platform config also supplies `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of
      * the two values. The window resets at 00:00 UTC. Each approved authorization counts once;
      * refunds, reversals, and authorization expiries do not restore capacity during the day.
-     * Supported only for card programs whose authorization decisions are made by Grid.
+     * Accepted only when the funding-source internal account's
+     * `cardCapabilities.supportsTransactionCountLimit` is true.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -147,11 +150,13 @@ private constructor(
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
     /**
-     * Optional static password used as the card's 3-D Secure factor. Only accepted for card
-     * programs whose issuer supports a static-password factor (EU cards today); supplying it for a
-     * program that does not is rejected with `INVALID_INPUT`. When omitted, one is generated on the
-     * cardholder's behalf. Grid does not retain the value: it is forwarded to the issuer and
-     * discarded, so it cannot be read back afterwards.
+     * Static password used as the card's 3-D Secure factor. Required when the first funding-source
+     * internal account's `cardCapabilities.supports3dSecurePassword` is true; omitting it or
+     * supplying an empty or whitespace-only string is rejected with `INVALID_INPUT`. When the
+     * capability is false, supplying this field is rejected with `INVALID_INPUT` because cards in
+     * that program have no static-password factor. Grid does not retain the value: it is forwarded
+     * to the issuer and discarded, so it cannot be read back afterwards; a cardholder who forgets
+     * it must set a new one through `PATCH /cards/{id}`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -311,11 +316,11 @@ private constructor(
         fun form(form: JsonField<Form>) = apply { this.form = form }
 
         /**
-         * Internal account ids to bind as funding sources, in priority order. The first entry is
-         * tried first by Authorization Decisioning. Every card must be bound to at least one
-         * source, and every source must belong to the cardholder and be denominated in a
-         * card-eligible currency; otherwise the request is rejected with
-         * `FUNDING_SOURCE_INELIGIBLE`.
+         * Internal account ids to bind as funding sources, in priority order. The first entry
+         * selects the card issuer and therefore the card's capabilities. The first entry is tried
+         * first by Authorization Decisioning. Every card must be bound to at least one source, and
+         * every source must belong to the cardholder and be denominated in a card-eligible
+         * currency; otherwise the request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
          */
         fun fundingSources(fundingSources: List<String>) =
             fundingSources(JsonField.of(fundingSources))
@@ -349,8 +354,9 @@ private constructor(
          * no card-specific daily cap. When the platform config also supplies
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
          * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
-         * capacity during the day. Supported only for card programs whose authorization decisions
-         * are made by Grid. Spend exactly equal to the effective limit is allowed.
+         * capacity during the day. Accepted only when the funding-source internal account's
+         * `cardCapabilities.supportsSpendLimits` is true. Spend exactly equal to the effective
+         * limit is allowed.
          */
         fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(JsonField.of(maxSpendPerDay))
 
@@ -369,8 +375,9 @@ private constructor(
          * Optional card-specific cap on a single transaction, in the smallest unit of the card
          * currency derived from its funding sources. Omit this field for no card-specific cap. When
          * the platform config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the
-         * lower of the two values. Supported only for card programs whose authorization decisions
-         * are made by Grid. A transaction for exactly the effective limit is allowed.
+         * lower of the two values. Accepted only when the funding-source internal account's
+         * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective
+         * limit is allowed.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
             maxSpendPerTransaction(JsonField.of(maxSpendPerTransaction))
@@ -392,8 +399,8 @@ private constructor(
          * the platform config also supplies `cardConfigs.maxTransactionsPerDay`, Grid enforces the
          * lower of the two values. The window resets at 00:00 UTC. Each approved authorization
          * counts once; refunds, reversals, and authorization expiries do not restore capacity
-         * during the day. Supported only for card programs whose authorization decisions are made
-         * by Grid.
+         * during the day. Accepted only when the funding-source internal account's
+         * `cardCapabilities.supportsTransactionCountLimit` is true.
          */
         fun maxTransactionsPerDay(maxTransactionsPerDay: Int) =
             maxTransactionsPerDay(JsonField.of(maxTransactionsPerDay))
@@ -427,11 +434,14 @@ private constructor(
         }
 
         /**
-         * Optional static password used as the card's 3-D Secure factor. Only accepted for card
-         * programs whose issuer supports a static-password factor (EU cards today); supplying it
-         * for a program that does not is rejected with `INVALID_INPUT`. When omitted, one is
-         * generated on the cardholder's behalf. Grid does not retain the value: it is forwarded to
-         * the issuer and discarded, so it cannot be read back afterwards.
+         * Static password used as the card's 3-D Secure factor. Required when the first
+         * funding-source internal account's `cardCapabilities.supports3dSecurePassword` is true;
+         * omitting it or supplying an empty or whitespace-only string is rejected with
+         * `INVALID_INPUT`. When the capability is false, supplying this field is rejected with
+         * `INVALID_INPUT` because cards in that program have no static-password factor. Grid does
+         * not retain the value: it is forwarded to the issuer and discarded, so it cannot be read
+         * back afterwards; a cardholder who forgets it must set a new one through `PATCH
+         * /cards/{id}`.
          */
         fun threeDSecurePassword(threeDSecurePassword: String) =
             threeDSecurePassword(JsonField.of(threeDSecurePassword))

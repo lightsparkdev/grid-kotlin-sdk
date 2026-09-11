@@ -24,20 +24,22 @@ import java.util.Objects
  * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap. Supply
  *   a positive integer in the smallest unit of the card's currency to set it or null to clear it.
  *   If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of
- *   the card and platform values. Limits are supported only for card programs where Grid makes the
- *   authorization decision. `maxSpendPerTransaction` cannot be supplied alongside `state: CLOSED`.
+ *   the card and platform values. The card's `cardCapabilities.supportsSpendLimits` must be true.
+ *   `maxSpendPerTransaction` cannot be supplied alongside `state: CLOSED`.
  * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend during
  *   one UTC calendar day. Supply a positive integer in the smallest unit of the card's currency to
  *   set it or null to clear it. If the platform config sets `cardConfigs.maxSpendPerDay`, Grid
  *   enforces the lower of the card and platform values. Refunds, reversals, and authorization
- *   expiries do not restore capacity during the day. `maxSpendPerDay` cannot be supplied alongside
- *   `state: CLOSED`.
+ *   expiries do not restore capacity during the day. The card's
+ *   `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerDay` cannot be supplied
+ *   alongside `state: CLOSED`.
  * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
  *   transactions the card may authorize during one UTC calendar day. Supply a positive integer to
  *   set it or null to clear it. If the platform config sets `cardConfigs.maxTransactionsPerDay`,
  *   Grid enforces the lower of the card and platform values. Refunds, reversals, and authorization
- *   expiries do not restore capacity during the day. `maxTransactionsPerDay` cannot be supplied
- *   alongside `state: CLOSED`.
+ *   expiries do not restore capacity during the day. `maxTransactionsPerDay` requires the card's
+ *   `cardCapabilities.supportsTransactionCountLimit` to be true and cannot be supplied alongside
+ *   `state: CLOSED`.
  *
  * This endpoint is authenticated by the platform credential alone and returns `200` directly. It
  * deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the session

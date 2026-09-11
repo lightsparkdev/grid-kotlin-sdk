@@ -69,21 +69,24 @@ interface CardService {
      * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap.
      *   Supply a positive integer in the smallest unit of the card's currency to set it or null to
      *   clear it. If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces
-     *   the lower of the card and platform values. Limits are supported only for card programs
-     *   where Grid makes the authorization decision. `maxSpendPerTransaction` cannot be supplied
-     *   alongside `state: CLOSED`.
+     *   the lower of the card and platform values. The card's
+     *   `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerTransaction` cannot be
+     *   supplied alongside `state: CLOSED`.
      * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend
      *   during one UTC calendar day. Supply a positive integer in the smallest unit of the card's
      *   currency to set it or null to clear it. If the platform config sets
      *   `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the card and platform values.
-     *   Refunds, reversals, and authorization expiries do not restore capacity during the day.
-     *   `maxSpendPerDay` cannot be supplied alongside `state: CLOSED`.
+     *   Refunds, reversals, and authorization expiries do not restore capacity during the day. The
+     *   card's `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerDay` cannot be
+     *   supplied alongside `state: CLOSED`.
      * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
      *   transactions the card may authorize during one UTC calendar day. Supply a positive integer
      *   to set it or null to clear it. If the platform config sets
      *   `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the card and platform
      *   values. Refunds, reversals, and authorization expiries do not restore capacity during the
-     *   day. `maxTransactionsPerDay` cannot be supplied alongside `state: CLOSED`.
+     *   day. `maxTransactionsPerDay` requires the card's
+     *   `cardCapabilities.supportsTransactionCountLimit` to be true and cannot be supplied
+     *   alongside `state: CLOSED`.
      *
      * This endpoint is authenticated by the platform credential alone and returns `200` directly.
      * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
@@ -146,11 +149,11 @@ interface CardService {
      *
      * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set
      * the card-specific caps on one transaction, on spend during one UTC calendar day, and on the
-     * number of transactions during one UTC calendar day. The limits are enforced by Grid for card
-     * programs where Grid makes the authorization decision, whether the card is funded by an
-     * Embedded Wallet account or custodial fiat. If the platform config sets the corresponding
-     * `cardConfigs` value, Grid enforces the lower of the card and platform caps. Amounts use the
-     * smallest unit of the card's currency.
+     * number of transactions during one UTC calendar day. Check the funding-source internal
+     * account's `cardCapabilities.supportsSpendLimits` before supplying either spend limit, and
+     * `cardCapabilities.supportsTransactionCountLimit` before supplying the transaction count
+     * limit. If the platform config sets the corresponding `cardConfigs` value, Grid enforces the
+     * lower of the card and platform caps. Amounts use the smallest unit of the card's currency.
      *
      * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
      * Grid to sign Spark token transactions for that card funding source by completing the
