@@ -7,9 +7,6 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
-import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -52,10 +49,6 @@ internal class CardTransactionTest {
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
-                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-                .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-                )
                 .refundedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -69,7 +62,6 @@ internal class CardTransactionTest {
                         )
                         .build()
                 )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
                 .settledAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -82,9 +74,6 @@ internal class CardTransactionTest {
                                 .build()
                         )
                         .build()
-                )
-                .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                 )
                 .build()
 
@@ -128,12 +117,6 @@ internal class CardTransactionTest {
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
         assertThat(cardTransaction.cardId()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
         assertThat(cardTransaction.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
-        assertThat(cardTransaction.lastEventAt())
-            .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-        assertThat(cardTransaction.pullSummary())
-            .isEqualTo(
-                CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-            )
         assertThat(cardTransaction.refundedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
@@ -148,8 +131,6 @@ internal class CardTransactionTest {
                     )
                     .build()
             )
-        assertThat(cardTransaction.refundSummary())
-            .isEqualTo(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
         assertThat(cardTransaction.settledAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
@@ -164,8 +145,6 @@ internal class CardTransactionTest {
                     )
                     .build()
             )
-        assertThat(cardTransaction.settlementSummary())
-            .isEqualTo(CardSettlementSummary.builder().count(1L).totalAmount(1500L).build())
     }
 
     @Test
@@ -205,10 +184,6 @@ internal class CardTransactionTest {
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
-                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-                .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-                )
                 .refundedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -222,7 +197,6 @@ internal class CardTransactionTest {
                         )
                         .build()
                 )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
                 .settledAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -235,9 +209,6 @@ internal class CardTransactionTest {
                                 .build()
                         )
                         .build()
-                )
-                .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                 )
                 .build()
 

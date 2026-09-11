@@ -21,9 +21,9 @@ import java.util.Objects
 
 /**
  * Parent transaction row for a card authorization and all of the pulls / settlements / refunds that
- * reconcile against it. Child events are rolled up into the `pullSummary`, `refundSummary`, and
- * `settlementSummary` aggregates. Delivered as the payload of the generic transaction webhook
- * stream (extends the Transaction model with a card destination type) on every transition.
+ * reconcile against it. Child events are rolled up into the `settledAmount` and `refundedAmount`
+ * totals. Delivered as the payload of the generic transaction webhook stream (extends the
+ * Transaction model with a card destination type) on every transition.
  */
 @JsonDeserialize(using = Transaction.Deserializer::class)
 @JsonSerialize(using = Transaction.Serializer::class)
@@ -41,10 +41,9 @@ private constructor(
 
     /**
      * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `pullSummary`,
-     * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the generic
-     * transaction webhook stream (extends the Transaction model with a card destination type) on
-     * every transition.
+     * that reconcile against it. Child events are rolled up into the `settledAmount` and
+     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
+     * (extends the Transaction model with a card destination type) on every transition.
      */
     fun card(): CardTransaction? = card
 
@@ -60,10 +59,9 @@ private constructor(
 
     /**
      * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `pullSummary`,
-     * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the generic
-     * transaction webhook stream (extends the Transaction model with a card destination type) on
-     * every transition.
+     * that reconcile against it. Child events are rolled up into the `settledAmount` and
+     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
+     * (extends the Transaction model with a card destination type) on every transition.
      */
     fun asCard(): CardTransaction = card.getOrThrow("card")
 
@@ -190,10 +188,9 @@ private constructor(
 
         /**
          * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `pullSummary`,
-         * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the
-         * generic transaction webhook stream (extends the Transaction model with a card destination
-         * type) on every transition.
+         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
+         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
+         * stream (extends the Transaction model with a card destination type) on every transition.
          */
         fun ofCard(card: CardTransaction) = Transaction(card = card)
     }
@@ -209,10 +206,9 @@ private constructor(
 
         /**
          * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `pullSummary`,
-         * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the
-         * generic transaction webhook stream (extends the Transaction model with a card destination
-         * type) on every transition.
+         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
+         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
+         * stream (extends the Transaction model with a card destination type) on every transition.
          */
         fun visitCard(card: CardTransaction): T
 

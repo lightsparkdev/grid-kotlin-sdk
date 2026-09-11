@@ -30,9 +30,6 @@ import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
 import com.lightspark.grid.models.receiver.CounterpartyFieldDefinition
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
-import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.sandbox.internalaccounts.InternalAccount
 import com.lightspark.grid.models.sandbox.webhooks.TestWebhookRequest
@@ -2260,14 +2257,6 @@ internal class UnwrapWebhookEventTest {
                         .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                         .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                         .issuerTransactionToken("lithic_txn_b81c2a4f")
-                        .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-                        .pullSummary(
-                            CardPullSummary.builder()
-                                .count(2L)
-                                .totalAmount(1500L)
-                                .pendingCount(0L)
-                                .build()
-                        )
                         .refundedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -2281,9 +2270,6 @@ internal class UnwrapWebhookEventTest {
                                 )
                                 .build()
                         )
-                        .refundSummary(
-                            CardRefundSummary.builder().count(0L).totalAmount(0L).build()
-                        )
                         .settledAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -2296,9 +2282,6 @@ internal class UnwrapWebhookEventTest {
                                         .build()
                                 )
                                 .build()
-                        )
-                        .settlementSummary(
-                            CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                         )
                         .build()
                 )
@@ -2364,14 +2347,6 @@ internal class UnwrapWebhookEventTest {
                             .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                             .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                             .issuerTransactionToken("lithic_txn_b81c2a4f")
-                            .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
-                            .pullSummary(
-                                CardPullSummary.builder()
-                                    .count(2L)
-                                    .totalAmount(1500L)
-                                    .pendingCount(0L)
-                                    .build()
-                            )
                             .refundedAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -2385,9 +2360,6 @@ internal class UnwrapWebhookEventTest {
                                     )
                                     .build()
                             )
-                            .refundSummary(
-                                CardRefundSummary.builder().count(0L).totalAmount(0L).build()
-                            )
                             .settledAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -2400,9 +2372,6 @@ internal class UnwrapWebhookEventTest {
                                             .build()
                                     )
                                     .build()
-                            )
-                            .settlementSummary(
-                                CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
                             )
                             .build()
                     )

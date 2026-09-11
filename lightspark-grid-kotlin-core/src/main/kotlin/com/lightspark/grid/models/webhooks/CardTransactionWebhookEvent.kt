@@ -48,10 +48,9 @@ private constructor(
 
     /**
      * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `pullSummary`,
-     * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the generic
-     * transaction webhook stream (extends the Transaction model with a card destination type) on
-     * every transition.
+     * that reconcile against it. Child events are rolled up into the `settledAmount` and
+     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
+     * (extends the Transaction model with a card destination type) on every transition.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -160,10 +159,9 @@ private constructor(
 
         /**
          * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `pullSummary`,
-         * `refundSummary`, and `settlementSummary` aggregates. Delivered as the payload of the
-         * generic transaction webhook stream (extends the Transaction model with a card destination
-         * type) on every transition.
+         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
+         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
+         * stream (extends the Transaction model with a card destination type) on every transition.
          */
         fun data(data: CardTransaction) = data(JsonField.of(data))
 
