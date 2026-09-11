@@ -108,7 +108,7 @@ internal class CardServiceTest {
                             .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(5000L)
                             .maxTransactionsPerDay(20)
-                            .platformCardId("card-emp-aary-001")
+                            .platformCardId("card-emp-001")
                             .threeDSecurePassword("AbCd1234EfGh5678")
                             .build()
                     )

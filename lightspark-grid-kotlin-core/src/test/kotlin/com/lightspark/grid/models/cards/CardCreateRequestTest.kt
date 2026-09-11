@@ -19,7 +19,7 @@ internal class CardCreateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)
-                .platformCardId("card-emp-aary-001")
+                .platformCardId("card-emp-001")
                 .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
@@ -31,7 +31,7 @@ internal class CardCreateRequestTest {
         assertThat(cardCreateRequest.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(cardCreateRequest.maxSpendPerTransaction()).isEqualTo(5000L)
         assertThat(cardCreateRequest.maxTransactionsPerDay()).isEqualTo(20)
-        assertThat(cardCreateRequest.platformCardId()).isEqualTo("card-emp-aary-001")
+        assertThat(cardCreateRequest.platformCardId()).isEqualTo("card-emp-001")
         assertThat(cardCreateRequest.threeDSecurePassword()).isEqualTo("AbCd1234EfGh5678")
     }
 
@@ -46,7 +46,7 @@ internal class CardCreateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)
-                .platformCardId("card-emp-aary-001")
+                .platformCardId("card-emp-001")
                 .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
