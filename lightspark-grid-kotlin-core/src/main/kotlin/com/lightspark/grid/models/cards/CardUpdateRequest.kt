@@ -78,8 +78,8 @@ private constructor(
      * Omit this field to leave the current cap unchanged, supply null to clear it, or supply a
      * positive integer to set it. When the platform config also supplies
      * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds, reversals,
-     * and authorization expiries do not restore capacity during the day. Supported only for card
-     * programs whose authorization decisions are made by Grid. Cannot be supplied alongside `state:
+     * and authorization expiries do not restore capacity during the day. Accepted only when the
+     * card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied alongside `state:
      * CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -91,8 +91,8 @@ private constructor(
      * Replacement card-specific per-transaction cap, in the smallest unit of the card's currency.
      * Omit this field to leave the current cap unchanged, supply null to clear it, or supply a
      * positive integer to set it. When the platform config also supplies
-     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Supported
-     * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
+     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Accepted
+     * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
      * alongside `state: CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -106,8 +106,8 @@ private constructor(
      * UTC calendar day. Omit this field to leave the current cap unchanged, supply null to clear
      * it, or supply a positive integer to set it. When the platform config also supplies
      * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values. Refunds,
-     * reversals, and authorization expiries do not restore capacity during the day. Supported only
-     * for card programs whose authorization decisions are made by Grid. Cannot be supplied
+     * reversals, and authorization expiries do not restore capacity during the day. Accepted only
+     * when the card's `cardCapabilities.supportsTransactionCountLimit` is true. Cannot be supplied
      * alongside `state: CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -245,8 +245,8 @@ private constructor(
          * currency. Omit this field to leave the current cap unchanged, supply null to clear it, or
          * supply a positive integer to set it. When the platform config also supplies
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds,
-         * reversals, and authorization expiries do not restore capacity during the day. Supported
-         * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
+         * reversals, and authorization expiries do not restore capacity during the day. Accepted
+         * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
          * alongside `state: CLOSED`.
          */
         fun maxSpendPerDay(maxSpendPerDay: Long?) =
@@ -274,9 +274,9 @@ private constructor(
          * Replacement card-specific per-transaction cap, in the smallest unit of the card's
          * currency. Omit this field to leave the current cap unchanged, supply null to clear it, or
          * supply a positive integer to set it. When the platform config also supplies
-         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values.
-         * Supported only for card programs whose authorization decisions are made by Grid. Cannot
-         * be supplied alongside `state: CLOSED`.
+         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Accepted
+         * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
+         * alongside `state: CLOSED`.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
             maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
@@ -305,9 +305,9 @@ private constructor(
          * one UTC calendar day. Omit this field to leave the current cap unchanged, supply null to
          * clear it, or supply a positive integer to set it. When the platform config also supplies
          * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values. Refunds,
-         * reversals, and authorization expiries do not restore capacity during the day. Supported
-         * only for card programs whose authorization decisions are made by Grid. Cannot be supplied
-         * alongside `state: CLOSED`.
+         * reversals, and authorization expiries do not restore capacity during the day. Accepted
+         * only when the card's `cardCapabilities.supportsTransactionCountLimit` is true. Cannot be
+         * supplied alongside `state: CLOSED`.
          */
         fun maxTransactionsPerDay(maxTransactionsPerDay: Int?) =
             maxTransactionsPerDay(JsonField.ofNullable(maxTransactionsPerDay))

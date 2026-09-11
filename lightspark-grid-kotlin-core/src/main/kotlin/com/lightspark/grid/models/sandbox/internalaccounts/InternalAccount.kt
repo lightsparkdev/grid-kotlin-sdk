@@ -32,6 +32,7 @@ private constructor(
     private val totalBalance: JsonField<CurrencyAmount>,
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val cardCapabilities: JsonField<CardCapabilities>,
     private val customerId: JsonField<String>,
     private val label: JsonField<String>,
     private val privateEnabled: JsonField<Boolean>,
@@ -59,6 +60,9 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("cardCapabilities")
+        @ExcludeMissing
+        cardCapabilities: JsonField<CardCapabilities> = JsonMissing.of(),
         @JsonProperty("customerId")
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
@@ -78,6 +82,7 @@ private constructor(
         totalBalance,
         type,
         updatedAt,
+        cardCapabilities,
         customerId,
         label,
         privateEnabled,
@@ -170,6 +175,18 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * Actions supported for a card issued now with this account as the first funding source. They
+     * can change if the platform's card routing changes and do not describe cards already issued
+     * using the account. When a create request supplies several funding sources, the first entry
+     * selects the issuer and therefore the resulting card's capabilities; read this field from that
+     * account. Absent when this account cannot fund a card.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardCapabilities(): CardCapabilities? = cardCapabilities.getNullable("cardCapabilities")
 
     /**
      * The ID of the customer associated with the internal account. If this field is empty, the
@@ -274,6 +291,16 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [cardCapabilities].
+     *
+     * Unlike [cardCapabilities], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("cardCapabilities")
+    @ExcludeMissing
+    fun _cardCapabilities(): JsonField<CardCapabilities> = cardCapabilities
+
+    /**
      * Returns the raw JSON value of [customerId].
      *
      * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
@@ -346,6 +373,7 @@ private constructor(
         private var totalBalance: JsonField<CurrencyAmount>? = null
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var cardCapabilities: JsonField<CardCapabilities> = JsonMissing.of()
         private var customerId: JsonField<String> = JsonMissing.of()
         private var label: JsonField<String> = JsonMissing.of()
         private var privateEnabled: JsonField<Boolean> = JsonMissing.of()
@@ -362,6 +390,7 @@ private constructor(
             totalBalance = internalAccount.totalBalance
             type = internalAccount.type
             updatedAt = internalAccount.updatedAt
+            cardCapabilities = internalAccount.cardCapabilities
             customerId = internalAccount.customerId
             label = internalAccount.label
             privateEnabled = internalAccount.privateEnabled
@@ -507,6 +536,27 @@ private constructor(
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
         /**
+         * Actions supported for a card issued now with this account as the first funding source.
+         * They can change if the platform's card routing changes and do not describe cards already
+         * issued using the account. When a create request supplies several funding sources, the
+         * first entry selects the issuer and therefore the resulting card's capabilities; read this
+         * field from that account. Absent when this account cannot fund a card.
+         */
+        fun cardCapabilities(cardCapabilities: CardCapabilities) =
+            cardCapabilities(JsonField.of(cardCapabilities))
+
+        /**
+         * Sets [Builder.cardCapabilities] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardCapabilities] with a well-typed [CardCapabilities]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun cardCapabilities(cardCapabilities: JsonField<CardCapabilities>) = apply {
+            this.cardCapabilities = cardCapabilities
+        }
+
+        /**
          * The ID of the customer associated with the internal account. If this field is empty, the
          * internal account belongs to the platform.
          */
@@ -617,6 +667,7 @@ private constructor(
                 checkRequired("totalBalance", totalBalance),
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
+                cardCapabilities,
                 customerId,
                 label,
                 privateEnabled,
@@ -648,6 +699,7 @@ private constructor(
         totalBalance().validate()
         type().validate()
         updatedAt()
+        cardCapabilities()?.validate()
         customerId()
         label()
         privateEnabled()
@@ -677,6 +729,7 @@ private constructor(
             (totalBalance.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (cardCapabilities.asKnown()?.validity() ?: 0) +
             (if (customerId.asKnown() == null) 0 else 1) +
             (if (label.asKnown() == null) 0 else 1) +
             (if (privateEnabled.asKnown() == null) 0 else 1) +
@@ -1005,6 +1058,343 @@ private constructor(
         override fun hashCode() = value.hashCode()
 
         override fun toString() = value.toString()
+    }
+
+    /**
+     * Actions supported for a card issued now with this account as the first funding source. They
+     * can change if the platform's card routing changes and do not describe cards already issued
+     * using the account. When a create request supplies several funding sources, the first entry
+     * selects the issuer and therefore the resulting card's capabilities; read this field from that
+     * account. Absent when this account cannot fund a card.
+     */
+    class CardCapabilities
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val supports3dSecurePassword: JsonField<Boolean>,
+        private val supportsPanReveal: JsonField<Boolean>,
+        private val supportsSpendLimits: JsonField<Boolean>,
+        private val supportsTransactionCountLimit: JsonField<Boolean>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("supports3dSecurePassword")
+            @ExcludeMissing
+            supports3dSecurePassword: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsPanReveal")
+            @ExcludeMissing
+            supportsPanReveal: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsSpendLimits")
+            @ExcludeMissing
+            supportsSpendLimits: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsTransactionCountLimit")
+            @ExcludeMissing
+            supportsTransactionCountLimit: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(
+            supports3dSecurePassword,
+            supportsPanReveal,
+            supportsSpendLimits,
+            supportsTransactionCountLimit,
+            mutableMapOf(),
+        )
+
+        /**
+         * Whether cards in this program accept a caller-supplied `threeDSecurePassword`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supports3dSecurePassword(): Boolean =
+            supports3dSecurePassword.getRequired("supports3dSecurePassword")
+
+        /**
+         * Whether cards in this program can be revealed through `POST /cards/{id}/reveal`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsPanReveal(): Boolean = supportsPanReveal.getRequired("supportsPanReveal")
+
+        /**
+         * Whether cards in this program accept `maxSpendPerTransaction` and `maxSpendPerDay`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsSpendLimits(): Boolean = supportsSpendLimits.getRequired("supportsSpendLimits")
+
+        /**
+         * Whether cards in this program accept `maxTransactionsPerDay`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsTransactionCountLimit(): Boolean =
+            supportsTransactionCountLimit.getRequired("supportsTransactionCountLimit")
+
+        /**
+         * Returns the raw JSON value of [supports3dSecurePassword].
+         *
+         * Unlike [supports3dSecurePassword], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("supports3dSecurePassword")
+        @ExcludeMissing
+        fun _supports3dSecurePassword(): JsonField<Boolean> = supports3dSecurePassword
+
+        /**
+         * Returns the raw JSON value of [supportsPanReveal].
+         *
+         * Unlike [supportsPanReveal], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("supportsPanReveal")
+        @ExcludeMissing
+        fun _supportsPanReveal(): JsonField<Boolean> = supportsPanReveal
+
+        /**
+         * Returns the raw JSON value of [supportsSpendLimits].
+         *
+         * Unlike [supportsSpendLimits], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("supportsSpendLimits")
+        @ExcludeMissing
+        fun _supportsSpendLimits(): JsonField<Boolean> = supportsSpendLimits
+
+        /**
+         * Returns the raw JSON value of [supportsTransactionCountLimit].
+         *
+         * Unlike [supportsTransactionCountLimit], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("supportsTransactionCountLimit")
+        @ExcludeMissing
+        fun _supportsTransactionCountLimit(): JsonField<Boolean> = supportsTransactionCountLimit
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [CardCapabilities].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .supports3dSecurePassword()
+             * .supportsPanReveal()
+             * .supportsSpendLimits()
+             * .supportsTransactionCountLimit()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CardCapabilities]. */
+        class Builder internal constructor() {
+
+            private var supports3dSecurePassword: JsonField<Boolean>? = null
+            private var supportsPanReveal: JsonField<Boolean>? = null
+            private var supportsSpendLimits: JsonField<Boolean>? = null
+            private var supportsTransactionCountLimit: JsonField<Boolean>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(cardCapabilities: CardCapabilities) = apply {
+                supports3dSecurePassword = cardCapabilities.supports3dSecurePassword
+                supportsPanReveal = cardCapabilities.supportsPanReveal
+                supportsSpendLimits = cardCapabilities.supportsSpendLimits
+                supportsTransactionCountLimit = cardCapabilities.supportsTransactionCountLimit
+                additionalProperties = cardCapabilities.additionalProperties.toMutableMap()
+            }
+
+            /** Whether cards in this program accept a caller-supplied `threeDSecurePassword`. */
+            fun supports3dSecurePassword(supports3dSecurePassword: Boolean) =
+                supports3dSecurePassword(JsonField.of(supports3dSecurePassword))
+
+            /**
+             * Sets [Builder.supports3dSecurePassword] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supports3dSecurePassword] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supports3dSecurePassword(supports3dSecurePassword: JsonField<Boolean>) = apply {
+                this.supports3dSecurePassword = supports3dSecurePassword
+            }
+
+            /** Whether cards in this program can be revealed through `POST /cards/{id}/reveal`. */
+            fun supportsPanReveal(supportsPanReveal: Boolean) =
+                supportsPanReveal(JsonField.of(supportsPanReveal))
+
+            /**
+             * Sets [Builder.supportsPanReveal] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsPanReveal] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun supportsPanReveal(supportsPanReveal: JsonField<Boolean>) = apply {
+                this.supportsPanReveal = supportsPanReveal
+            }
+
+            /**
+             * Whether cards in this program accept `maxSpendPerTransaction` and `maxSpendPerDay`.
+             */
+            fun supportsSpendLimits(supportsSpendLimits: Boolean) =
+                supportsSpendLimits(JsonField.of(supportsSpendLimits))
+
+            /**
+             * Sets [Builder.supportsSpendLimits] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsSpendLimits] with a well-typed [Boolean]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun supportsSpendLimits(supportsSpendLimits: JsonField<Boolean>) = apply {
+                this.supportsSpendLimits = supportsSpendLimits
+            }
+
+            /** Whether cards in this program accept `maxTransactionsPerDay`. */
+            fun supportsTransactionCountLimit(supportsTransactionCountLimit: Boolean) =
+                supportsTransactionCountLimit(JsonField.of(supportsTransactionCountLimit))
+
+            /**
+             * Sets [Builder.supportsTransactionCountLimit] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsTransactionCountLimit] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsTransactionCountLimit(supportsTransactionCountLimit: JsonField<Boolean>) =
+                apply {
+                    this.supportsTransactionCountLimit = supportsTransactionCountLimit
+                }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CardCapabilities].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .supports3dSecurePassword()
+             * .supportsPanReveal()
+             * .supportsSpendLimits()
+             * .supportsTransactionCountLimit()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): CardCapabilities =
+                CardCapabilities(
+                    checkRequired("supports3dSecurePassword", supports3dSecurePassword),
+                    checkRequired("supportsPanReveal", supportsPanReveal),
+                    checkRequired("supportsSpendLimits", supportsSpendLimits),
+                    checkRequired("supportsTransactionCountLimit", supportsTransactionCountLimit),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardCapabilities = apply {
+            if (validated) {
+                return@apply
+            }
+
+            supports3dSecurePassword()
+            supportsPanReveal()
+            supportsSpendLimits()
+            supportsTransactionCountLimit()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (supports3dSecurePassword.asKnown() == null) 0 else 1) +
+                (if (supportsPanReveal.asKnown() == null) 0 else 1) +
+                (if (supportsSpendLimits.asKnown() == null) 0 else 1) +
+                (if (supportsTransactionCountLimit.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardCapabilities &&
+                supports3dSecurePassword == other.supports3dSecurePassword &&
+                supportsPanReveal == other.supportsPanReveal &&
+                supportsSpendLimits == other.supportsSpendLimits &&
+                supportsTransactionCountLimit == other.supportsTransactionCountLimit &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                supports3dSecurePassword,
+                supportsPanReveal,
+                supportsSpendLimits,
+                supportsTransactionCountLimit,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
     }
 
     /**
@@ -2690,6 +3080,7 @@ private constructor(
             totalBalance == other.totalBalance &&
             type == other.type &&
             updatedAt == other.updatedAt &&
+            cardCapabilities == other.cardCapabilities &&
             customerId == other.customerId &&
             label == other.label &&
             privateEnabled == other.privateEnabled &&
@@ -2707,6 +3098,7 @@ private constructor(
             totalBalance,
             type,
             updatedAt,
+            cardCapabilities,
             customerId,
             label,
             privateEnabled,
@@ -2718,5 +3110,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, status=$status, totalBalance=$totalBalance, type=$type, updatedAt=$updatedAt, customerId=$customerId, label=$label, privateEnabled=$privateEnabled, sweepRule=$sweepRule, additionalProperties=$additionalProperties}"
+        "InternalAccount{id=$id, balance=$balance, createdAt=$createdAt, fundingPaymentInstructions=$fundingPaymentInstructions, status=$status, totalBalance=$totalBalance, type=$type, updatedAt=$updatedAt, cardCapabilities=$cardCapabilities, customerId=$customerId, label=$label, privateEnabled=$privateEnabled, sweepRule=$sweepRule, additionalProperties=$additionalProperties}"
 }

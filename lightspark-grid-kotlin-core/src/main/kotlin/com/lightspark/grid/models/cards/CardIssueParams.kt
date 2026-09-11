@@ -19,11 +19,11 @@ import java.util.Objects
  *
  * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set the
  * card-specific caps on one transaction, on spend during one UTC calendar day, and on the number of
- * transactions during one UTC calendar day. The limits are enforced by Grid for card programs where
- * Grid makes the authorization decision, whether the card is funded by an Embedded Wallet account
- * or custodial fiat. If the platform config sets the corresponding `cardConfigs` value, Grid
- * enforces the lower of the card and platform caps. Amounts use the smallest unit of the card's
- * currency.
+ * transactions during one UTC calendar day. Check the funding-source internal account's
+ * `cardCapabilities.supportsSpendLimits` before supplying either spend limit, and
+ * `cardCapabilities.supportsTransactionCountLimit` before supplying the transaction count limit. If
+ * the platform config sets the corresponding `cardConfigs` value, Grid enforces the lower of the
+ * card and platform caps. Amounts use the smallest unit of the card's currency.
  *
  * If any funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
  * to sign Spark token transactions for that card funding source by completing the delegated-key
