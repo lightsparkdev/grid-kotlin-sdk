@@ -17,7 +17,7 @@ internal class CardListParamsTest {
             .limit(1L)
             .platformCardId("platformCardId")
             .sortOrder(CardListParams.SortOrder.ASC)
-            .state(CardListParams.State.PENDING_KYC)
+            .status(CardListParams.Status.PENDING_KYC)
             .build()
     }
 
@@ -31,7 +31,7 @@ internal class CardListParamsTest {
                 .limit(1L)
                 .platformCardId("platformCardId")
                 .sortOrder(CardListParams.SortOrder.ASC)
-                .state(CardListParams.State.PENDING_KYC)
+                .status(CardListParams.Status.PENDING_KYC)
                 .build()
 
         val queryParams = params._queryParams()
@@ -45,7 +45,7 @@ internal class CardListParamsTest {
                     .put("limit", "1")
                     .put("platformCardId", "platformCardId")
                     .put("sortOrder", "asc")
-                    .put("state", "PENDING_KYC")
+                    .put("status", "PENDING_KYC")
                     .build()
             )
     }

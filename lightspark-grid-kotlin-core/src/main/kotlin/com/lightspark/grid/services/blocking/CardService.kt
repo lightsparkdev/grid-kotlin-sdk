@@ -53,30 +53,30 @@ interface CardService {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
+     * Update a card's `status`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
      * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
-     * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
+     * - `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
      * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong
      *   to the customer and be denominated in the card's currency. `fundingSource` cannot be
-     *   supplied alongside `state: CLOSED`. On card programs where the card issuer makes
-     *   authorization decisions, `fundingSource` cannot be combined with any `state` change, so
+     *   supplied alongside `status: CLOSED`. On card programs where the card issuer makes
+     *   authorization decisions, `fundingSource` cannot be combined with any `status` change, so
      *   send the changes as separate requests. On card programs where Grid makes the authorization
-     *   decision, the combination remains valid for `state` changes other than `CLOSED`.
+     *   decision, the combination remains valid for `status` changes other than `CLOSED`.
      * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap.
      *   Supply a positive integer in the smallest unit of the card's currency to set it or null to
      *   clear it. If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces
      *   the lower of the card and platform values. The card's
      *   `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerTransaction` cannot be
-     *   supplied alongside `state: CLOSED`.
+     *   supplied alongside `status: CLOSED`.
      * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend
      *   during one UTC calendar day. Supply a positive integer in the smallest unit of the card's
      *   currency to set it or null to clear it. If the platform config sets
      *   `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the card and platform values.
      *   Refunds, reversals, and authorization expiries do not restore capacity during the day. The
      *   card's `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerDay` cannot be
-     *   supplied alongside `state: CLOSED`.
+     *   supplied alongside `status: CLOSED`.
      * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
      *   transactions the card may authorize during one UTC calendar day. Supply a positive integer
      *   to set it or null to clear it. If the platform config sets
@@ -84,7 +84,7 @@ interface CardService {
      *   values. Refunds, reversals, and authorization expiries do not restore capacity during the
      *   day. `maxTransactionsPerDay` requires the card's
      *   `cardCapabilities.supportsTransactionCountLimit` to be true and cannot be supplied
-     *   alongside `state: CLOSED`.
+     *   alongside `status: CLOSED`.
      *
      * This endpoint is authenticated by the platform credential alone and returns `200` directly.
      * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
@@ -97,12 +97,12 @@ interface CardService {
      * served.
      *
      * Effects:
-     * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
+     * - `status: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
      *   pulls and in-flight reconciliation continue — freezing does not pause the lifecycle of
      *   authorizations that already passed.
-     * - `state: ACTIVE`: normal authorization behavior resumes.
-     * - `state: CLOSED`: terminal close. The card transitions to `state: "CLOSED"` with
-     *   `stateReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.
+     * - `status: ACTIVE`: normal authorization behavior resumes.
+     * - `status: CLOSED`: terminal close. The card transitions to `status: "CLOSED"` with
+     *   `statusReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.
      *   All pending auths reconcile to a terminal state via the existing reconcile primitive.
      *   Inbound clearings received after close follow the standard force-post / late-presentment
      *   path — Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails. The
@@ -110,7 +110,7 @@ interface CardService {
      *   holds the card-reserve keys.
      * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
      *
-     * The `card.state_change` webhook fires on every successful `state` transition.
+     * The `card.state_change` webhook fires on every successful `status` transition.
      */
     fun update(
         id: String,
@@ -126,7 +126,7 @@ interface CardService {
 
     /**
      * Retrieve a paginated list of cards. Cards can be filtered by cardholder, bound funding-source
-     * internal account, state, and platform-specific card identifier. If no filters are provided,
+     * internal account, status, and platform-specific card identifier. If no filters are provided,
      * returns all cards visible to the caller.
      */
     fun list(
@@ -162,11 +162,11 @@ interface CardService {
      *
      * A platform may be limited to a maximum number of live cards. Once that limit is reached,
      * further issuance is rejected with `CARD_LIMIT_REACHED` until a card is closed or Lightspark
-     * raises the limit. Cards in `CLOSED` state do not count toward the limit.
+     * raises the limit. Cards in `CLOSED` status do not count toward the limit.
      *
-     * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
-     * `card.state_change` webhook fires on each state transition, including the transition to
-     * `ACTIVE` (or to `CLOSED` with `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+     * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
+     * `card.state_change` webhook fires on each status transition, including the transition to
+     * `ACTIVE` (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
      */
     fun issue(params: CardIssueParams, requestOptions: RequestOptions = RequestOptions.none()): Card
 

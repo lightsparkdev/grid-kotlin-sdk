@@ -22,7 +22,7 @@ internal class CardTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)
-                .state(Card.State.PENDING_KYC)
+                .status(Card.Status.PENDING_KYC)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
                 .brand(Card.Brand.VISA)
                 .cardCapabilities(
@@ -40,7 +40,7 @@ internal class CardTest {
                 .last4("4242")
                 .platformCardId("card-emp-001")
                 .processorRef("card_b81c2a4f")
-                .stateReason(Card.StateReason.ISSUER_REJECTED)
+                .statusReason(Card.StatusReason.ISSUER_REJECTED)
                 .build()
 
         assertThat(card.id()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -52,7 +52,7 @@ internal class CardTest {
         assertThat(card.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(card.maxSpendPerTransaction()).isEqualTo(5000L)
         assertThat(card.maxTransactionsPerDay()).isEqualTo(20)
-        assertThat(card.state()).isEqualTo(Card.State.PENDING_KYC)
+        assertThat(card.status()).isEqualTo(Card.Status.PENDING_KYC)
         assertThat(card.updatedAt()).isEqualTo(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
         assertThat(card.brand()).isEqualTo(Card.Brand.VISA)
         assertThat(card.cardCapabilities())
@@ -71,7 +71,7 @@ internal class CardTest {
         assertThat(card.last4()).isEqualTo("4242")
         assertThat(card.platformCardId()).isEqualTo("card-emp-001")
         assertThat(card.processorRef()).isEqualTo("card_b81c2a4f")
-        assertThat(card.stateReason()).isEqualTo(Card.StateReason.ISSUER_REJECTED)
+        assertThat(card.statusReason()).isEqualTo(Card.StatusReason.ISSUER_REJECTED)
     }
 
     @Test
@@ -87,7 +87,7 @@ internal class CardTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)
-                .state(Card.State.PENDING_KYC)
+                .status(Card.Status.PENDING_KYC)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T14:11:00Z"))
                 .brand(Card.Brand.VISA)
                 .cardCapabilities(
@@ -105,7 +105,7 @@ internal class CardTest {
                 .last4("4242")
                 .platformCardId("card-emp-001")
                 .processorRef("card_b81c2a4f")
-                .stateReason(Card.StateReason.ISSUER_REJECTED)
+                .statusReason(Card.StatusReason.ISSUER_REJECTED)
                 .build()
 
         val roundtrippedCard =

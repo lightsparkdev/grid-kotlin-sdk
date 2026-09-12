@@ -13,7 +13,7 @@ import java.util.Objects
 
 /**
  * Retrieve a paginated list of cards. Cards can be filtered by cardholder, bound funding-source
- * internal account, state, and platform-specific card identifier. If no filters are provided,
+ * internal account, status, and platform-specific card identifier. If no filters are provided,
  * returns all cards visible to the caller.
  */
 class CardListParams
@@ -24,7 +24,7 @@ private constructor(
     private val limit: Long?,
     private val platformCardId: String?,
     private val sortOrder: SortOrder?,
-    private val state: State?,
+    private val status: Status?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -50,8 +50,8 @@ private constructor(
     /** Order to sort results in */
     fun sortOrder(): SortOrder? = sortOrder
 
-    /** Filter by card state. */
-    fun state(): State? = state
+    /** Filter by card status. */
+    fun status(): Status? = status
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -78,7 +78,7 @@ private constructor(
         private var limit: Long? = null
         private var platformCardId: String? = null
         private var sortOrder: SortOrder? = null
-        private var state: State? = null
+        private var status: Status? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -89,7 +89,7 @@ private constructor(
             limit = cardListParams.limit
             platformCardId = cardListParams.platformCardId
             sortOrder = cardListParams.sortOrder
-            state = cardListParams.state
+            status = cardListParams.status
             additionalHeaders = cardListParams.additionalHeaders.toBuilder()
             additionalQueryParams = cardListParams.additionalQueryParams.toBuilder()
         }
@@ -122,8 +122,8 @@ private constructor(
         /** Order to sort results in */
         fun sortOrder(sortOrder: SortOrder?) = apply { this.sortOrder = sortOrder }
 
-        /** Filter by card state. */
-        fun state(state: State?) = apply { this.state = state }
+        /** Filter by card status. */
+        fun status(status: Status?) = apply { this.status = status }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -236,7 +236,7 @@ private constructor(
                 limit,
                 platformCardId,
                 sortOrder,
-                state,
+                status,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -253,7 +253,7 @@ private constructor(
                 limit?.let { put("limit", it.toString()) }
                 platformCardId?.let { put("platformCardId", it) }
                 sortOrder?.let { put("sortOrder", it.toString()) }
-                state?.let { put("state", it.toString()) }
+                status?.let { put("status", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -395,8 +395,8 @@ private constructor(
         override fun toString() = value.toString()
     }
 
-    /** Filter by card state. */
-    class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    /** Filter by card status. */
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -420,10 +420,10 @@ private constructor(
 
             val CLOSED = of("CLOSED")
 
-            fun of(value: String) = State(JsonField.of(value))
+            fun of(value: String) = Status(JsonField.of(value))
         }
 
-        /** An enum containing [State]'s known values. */
+        /** An enum containing [Status]'s known values. */
         enum class Known {
             PENDING_KYC,
             PROCESSING,
@@ -433,9 +433,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [State]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [State] can contain an unknown value in a couple of cases:
+         * An instance of [Status] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -447,7 +447,7 @@ private constructor(
             ACTIVE,
             FROZEN,
             CLOSED,
-            /** An enum member indicating that [State] was instantiated with an unknown value. */
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
 
@@ -484,7 +484,7 @@ private constructor(
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
                 CLOSED -> Known.CLOSED
-                else -> throw LightsparkGridInvalidDataException("Unknown State: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
 
         /**
@@ -510,7 +510,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): State = apply {
+        fun validate(): Status = apply {
             if (validated) {
                 return@apply
             }
@@ -540,7 +540,7 @@ private constructor(
                 return true
             }
 
-            return other is State && value == other.value
+            return other is Status && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -560,7 +560,7 @@ private constructor(
             limit == other.limit &&
             platformCardId == other.platformCardId &&
             sortOrder == other.sortOrder &&
-            state == other.state &&
+            status == other.status &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -573,11 +573,11 @@ private constructor(
             limit,
             platformCardId,
             sortOrder,
-            state,
+            status,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "CardListParams{accountId=$accountId, cursor=$cursor, customerId=$customerId, limit=$limit, platformCardId=$platformCardId, sortOrder=$sortOrder, state=$state, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CardListParams{accountId=$accountId, cursor=$cursor, customerId=$customerId, limit=$limit, platformCardId=$platformCardId, sortOrder=$sortOrder, status=$status, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

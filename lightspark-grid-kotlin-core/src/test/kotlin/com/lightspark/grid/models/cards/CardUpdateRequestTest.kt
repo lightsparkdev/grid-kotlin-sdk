@@ -17,7 +17,7 @@ internal class CardUpdateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)
-                .state(CardUpdateRequest.State.FROZEN)
+                .status(CardUpdateRequest.Status.FROZEN)
                 .build()
 
         assertThat(cardUpdateRequest.fundingSource())
@@ -25,7 +25,7 @@ internal class CardUpdateRequestTest {
         assertThat(cardUpdateRequest.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(cardUpdateRequest.maxSpendPerTransaction()).isEqualTo(10000L)
         assertThat(cardUpdateRequest.maxTransactionsPerDay()).isEqualTo(20)
-        assertThat(cardUpdateRequest.state()).isEqualTo(CardUpdateRequest.State.FROZEN)
+        assertThat(cardUpdateRequest.status()).isEqualTo(CardUpdateRequest.Status.FROZEN)
     }
 
     @Test
@@ -37,7 +37,7 @@ internal class CardUpdateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)
-                .state(CardUpdateRequest.State.FROZEN)
+                .status(CardUpdateRequest.Status.FROZEN)
                 .build()
 
         val roundtrippedCardUpdateRequest =

@@ -28,7 +28,7 @@ private constructor(
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val maxTransactionsPerDay: JsonField<Int>,
-    private val state: JsonField<State>,
+    private val status: JsonField<Status>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val brand: JsonField<Brand>,
     private val cardCapabilities: JsonField<CardCapabilities>,
@@ -39,7 +39,7 @@ private constructor(
     private val last4: JsonField<String>,
     private val platformCardId: JsonField<String>,
     private val processorRef: JsonField<String>,
-    private val stateReason: JsonField<StateReason>,
+    private val statusReason: JsonField<StatusReason>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -65,7 +65,7 @@ private constructor(
         @JsonProperty("maxTransactionsPerDay")
         @ExcludeMissing
         maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
@@ -84,9 +84,9 @@ private constructor(
         @JsonProperty("processorRef")
         @ExcludeMissing
         processorRef: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("stateReason")
+        @JsonProperty("statusReason")
         @ExcludeMissing
-        stateReason: JsonField<StateReason> = JsonMissing.of(),
+        statusReason: JsonField<StatusReason> = JsonMissing.of(),
     ) : this(
         id,
         createdAt,
@@ -96,7 +96,7 @@ private constructor(
         maxSpendPerDay,
         maxSpendPerTransaction,
         maxTransactionsPerDay,
-        state,
+        status,
         updatedAt,
         brand,
         cardCapabilities,
@@ -107,7 +107,7 @@ private constructor(
         last4,
         platformCardId,
         processorRef,
-        stateReason,
+        statusReason,
         mutableMapOf(),
     )
 
@@ -192,20 +192,20 @@ private constructor(
     fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
 
     /**
-     * Lifecycle state of a card.
+     * Lifecycle status of a card.
      *
-     * |State        |Description                                                                                                                                                  |
+     * |Status       |Description                                                                                                                                                  |
      * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
      * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
      * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
      * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun state(): State = state.getRequired("state")
+    fun status(): Status = status.getRequired("status")
 
     /**
      * Last update timestamp
@@ -295,13 +295,13 @@ private constructor(
     fun processorRef(): String? = processorRef.getNullable("processorRef")
 
     /**
-     * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+     * Reason associated with the current `status`. Present when the card is `CLOSED` or when
      * provisioning was rejected; absent otherwise.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun stateReason(): StateReason? = stateReason.getNullable("stateReason")
+    fun statusReason(): StatusReason? = statusReason.getNullable("statusReason")
 
     /**
      * Returns the raw JSON value of [id].
@@ -372,11 +372,11 @@ private constructor(
     fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
 
     /**
-     * Returns the raw JSON value of [state].
+     * Returns the raw JSON value of [status].
      *
-     * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<State> = state
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -458,13 +458,13 @@ private constructor(
     fun _processorRef(): JsonField<String> = processorRef
 
     /**
-     * Returns the raw JSON value of [stateReason].
+     * Returns the raw JSON value of [statusReason].
      *
-     * Unlike [stateReason], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [statusReason], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("stateReason")
+    @JsonProperty("statusReason")
     @ExcludeMissing
-    fun _stateReason(): JsonField<StateReason> = stateReason
+    fun _statusReason(): JsonField<StatusReason> = statusReason
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -493,7 +493,7 @@ private constructor(
          * .maxSpendPerDay()
          * .maxSpendPerTransaction()
          * .maxTransactionsPerDay()
-         * .state()
+         * .status()
          * .updatedAt()
          * ```
          */
@@ -511,7 +511,7 @@ private constructor(
         private var maxSpendPerDay: JsonField<Long>? = null
         private var maxSpendPerTransaction: JsonField<Long>? = null
         private var maxTransactionsPerDay: JsonField<Int>? = null
-        private var state: JsonField<State>? = null
+        private var status: JsonField<Status>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var brand: JsonField<Brand> = JsonMissing.of()
         private var cardCapabilities: JsonField<CardCapabilities> = JsonMissing.of()
@@ -522,7 +522,7 @@ private constructor(
         private var last4: JsonField<String> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
         private var processorRef: JsonField<String> = JsonMissing.of()
-        private var stateReason: JsonField<StateReason> = JsonMissing.of()
+        private var statusReason: JsonField<StatusReason> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(card: Card) = apply {
@@ -534,7 +534,7 @@ private constructor(
             maxSpendPerDay = card.maxSpendPerDay
             maxSpendPerTransaction = card.maxSpendPerTransaction
             maxTransactionsPerDay = card.maxTransactionsPerDay
-            state = card.state
+            status = card.status
             updatedAt = card.updatedAt
             brand = card.brand
             cardCapabilities = card.cardCapabilities
@@ -545,7 +545,7 @@ private constructor(
             last4 = card.last4
             platformCardId = card.platformCardId
             processorRef = card.processorRef
-            stateReason = card.stateReason
+            statusReason = card.statusReason
             additionalProperties = card.additionalProperties.toMutableMap()
         }
 
@@ -703,25 +703,25 @@ private constructor(
         }
 
         /**
-         * Lifecycle state of a card.
+         * Lifecycle status of a card.
          *
-         * |State        |Description                                                                                                                                                  |
+         * |Status       |Description                                                                                                                                                  |
          * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
          * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
          * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
          * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
          */
-        fun state(state: State) = state(JsonField.of(state))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
-         * Sets [Builder.state] to an arbitrary JSON value.
+         * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.state] with a well-typed [State] value instead. This
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun state(state: JsonField<State>) = apply { this.state = state }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /** Last update timestamp */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -863,20 +863,20 @@ private constructor(
         }
 
         /**
-         * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+         * Reason associated with the current `status`. Present when the card is `CLOSED` or when
          * provisioning was rejected; absent otherwise.
          */
-        fun stateReason(stateReason: StateReason) = stateReason(JsonField.of(stateReason))
+        fun statusReason(statusReason: StatusReason) = statusReason(JsonField.of(statusReason))
 
         /**
-         * Sets [Builder.stateReason] to an arbitrary JSON value.
+         * Sets [Builder.statusReason] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.stateReason] with a well-typed [StateReason] value
+         * You should usually call [Builder.statusReason] with a well-typed [StatusReason] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun stateReason(stateReason: JsonField<StateReason>) = apply {
-            this.stateReason = stateReason
+        fun statusReason(statusReason: JsonField<StatusReason>) = apply {
+            this.statusReason = statusReason
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -913,7 +913,7 @@ private constructor(
          * .maxSpendPerDay()
          * .maxSpendPerTransaction()
          * .maxTransactionsPerDay()
-         * .state()
+         * .status()
          * .updatedAt()
          * ```
          *
@@ -929,7 +929,7 @@ private constructor(
                 checkRequired("maxSpendPerDay", maxSpendPerDay),
                 checkRequired("maxSpendPerTransaction", maxSpendPerTransaction),
                 checkRequired("maxTransactionsPerDay", maxTransactionsPerDay),
-                checkRequired("state", state),
+                checkRequired("status", status),
                 checkRequired("updatedAt", updatedAt),
                 brand,
                 cardCapabilities,
@@ -940,7 +940,7 @@ private constructor(
                 last4,
                 platformCardId,
                 processorRef,
-                stateReason,
+                statusReason,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -968,7 +968,7 @@ private constructor(
         maxSpendPerDay()
         maxSpendPerTransaction()
         maxTransactionsPerDay()
-        state().validate()
+        status().validate()
         updatedAt()
         brand()?.validate()
         cardCapabilities()?.validate()
@@ -979,7 +979,7 @@ private constructor(
         last4()
         platformCardId()
         processorRef()
-        stateReason()?.validate()
+        statusReason()?.validate()
         validated = true
     }
 
@@ -1005,7 +1005,7 @@ private constructor(
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
-            (state.asKnown()?.validity() ?: 0) +
+            (status.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (brand.asKnown()?.validity() ?: 0) +
             (cardCapabilities.asKnown()?.validity() ?: 0) +
@@ -1016,7 +1016,7 @@ private constructor(
             (if (last4.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
             (if (processorRef.asKnown() == null) 0 else 1) +
-            (stateReason.asKnown()?.validity() ?: 0)
+            (statusReason.asKnown()?.validity() ?: 0)
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -1151,17 +1151,17 @@ private constructor(
     }
 
     /**
-     * Lifecycle state of a card.
+     * Lifecycle status of a card.
      *
-     * |State        |Description                                                                                                                                                  |
+     * |Status       |Description                                                                                                                                                  |
      * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
      * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
      * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
      * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
      */
-    class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -1185,10 +1185,10 @@ private constructor(
 
             val CLOSED = of("CLOSED")
 
-            fun of(value: String) = State(JsonField.of(value))
+            fun of(value: String) = Status(JsonField.of(value))
         }
 
-        /** An enum containing [State]'s known values. */
+        /** An enum containing [Status]'s known values. */
         enum class Known {
             PENDING_KYC,
             PROCESSING,
@@ -1198,9 +1198,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [State]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [State] can contain an unknown value in a couple of cases:
+         * An instance of [Status] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -1212,7 +1212,7 @@ private constructor(
             ACTIVE,
             FROZEN,
             CLOSED,
-            /** An enum member indicating that [State] was instantiated with an unknown value. */
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
 
@@ -1249,7 +1249,7 @@ private constructor(
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
                 CLOSED -> Known.CLOSED
-                else -> throw LightsparkGridInvalidDataException("Unknown State: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
 
         /**
@@ -1275,7 +1275,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): State = apply {
+        fun validate(): Status = apply {
             if (validated) {
                 return@apply
             }
@@ -1305,7 +1305,7 @@ private constructor(
                 return true
             }
 
-            return other is State && value == other.value
+            return other is Status && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -1787,10 +1787,10 @@ private constructor(
     }
 
     /**
-     * Reason associated with the current `state`. Present when the card is `CLOSED` or when
+     * Reason associated with the current `status`. Present when the card is `CLOSED` or when
      * provisioning was rejected; absent otherwise.
      */
-    class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
+    class StatusReason @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
         /**
@@ -1811,10 +1811,10 @@ private constructor(
 
             val CLOSED_BY_GRID = of("CLOSED_BY_GRID")
 
-            fun of(value: String) = StateReason(JsonField.of(value))
+            fun of(value: String) = StatusReason(JsonField.of(value))
         }
 
-        /** An enum containing [StateReason]'s known values. */
+        /** An enum containing [StatusReason]'s known values. */
         enum class Known {
             ISSUER_REJECTED,
             CLOSED_BY_PLATFORM,
@@ -1822,9 +1822,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [StateReason]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [StatusReason]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [StateReason] can contain an unknown value in a couple of cases:
+         * An instance of [StatusReason] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -1835,7 +1835,7 @@ private constructor(
             CLOSED_BY_PLATFORM,
             CLOSED_BY_GRID,
             /**
-             * An enum member indicating that [StateReason] was instantiated with an unknown value.
+             * An enum member indicating that [StatusReason] was instantiated with an unknown value.
              */
             _UNKNOWN,
         }
@@ -1869,7 +1869,7 @@ private constructor(
                 ISSUER_REJECTED -> Known.ISSUER_REJECTED
                 CLOSED_BY_PLATFORM -> Known.CLOSED_BY_PLATFORM
                 CLOSED_BY_GRID -> Known.CLOSED_BY_GRID
-                else -> throw LightsparkGridInvalidDataException("Unknown StateReason: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown StatusReason: $value")
             }
 
         /**
@@ -1895,7 +1895,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): StateReason = apply {
+        fun validate(): StatusReason = apply {
             if (validated) {
                 return@apply
             }
@@ -1925,7 +1925,7 @@ private constructor(
                 return true
             }
 
-            return other is StateReason && value == other.value
+            return other is StatusReason && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -1947,7 +1947,7 @@ private constructor(
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             maxTransactionsPerDay == other.maxTransactionsPerDay &&
-            state == other.state &&
+            status == other.status &&
             updatedAt == other.updatedAt &&
             brand == other.brand &&
             cardCapabilities == other.cardCapabilities &&
@@ -1958,7 +1958,7 @@ private constructor(
             last4 == other.last4 &&
             platformCardId == other.platformCardId &&
             processorRef == other.processorRef &&
-            stateReason == other.stateReason &&
+            statusReason == other.statusReason &&
             additionalProperties == other.additionalProperties
     }
 
@@ -1972,7 +1972,7 @@ private constructor(
             maxSpendPerDay,
             maxSpendPerTransaction,
             maxTransactionsPerDay,
-            state,
+            status,
             updatedAt,
             brand,
             cardCapabilities,
@@ -1983,7 +1983,7 @@ private constructor(
             last4,
             platformCardId,
             processorRef,
-            stateReason,
+            statusReason,
             additionalProperties,
         )
     }
@@ -1991,5 +1991,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, createdAt=$createdAt, customerId=$customerId, form=$form, fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, updatedAt=$updatedAt, brand=$brand, cardCapabilities=$cardCapabilities, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, createdAt=$createdAt, customerId=$customerId, form=$form, fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, status=$status, updatedAt=$updatedAt, brand=$brand, cardCapabilities=$cardCapabilities, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, statusReason=$statusReason, additionalProperties=$additionalProperties}"
 }

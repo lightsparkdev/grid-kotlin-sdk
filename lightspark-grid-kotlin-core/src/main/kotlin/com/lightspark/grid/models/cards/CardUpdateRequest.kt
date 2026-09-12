@@ -16,8 +16,8 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
- * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied. `state`
+ * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
+ * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied. `status`
  * transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition
  * returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be
  * combined with `fundingSource`, `maxSpendPerTransaction`, `maxSpendPerDay`, or
@@ -30,7 +30,7 @@ private constructor(
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val maxTransactionsPerDay: JsonField<Int>,
-    private val state: JsonField<State>,
+    private val status: JsonField<Status>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -48,20 +48,20 @@ private constructor(
         @JsonProperty("maxTransactionsPerDay")
         @ExcludeMissing
         maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
-        @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
     ) : this(
         fundingSource,
         maxSpendPerDay,
         maxSpendPerTransaction,
         maxTransactionsPerDay,
-        state,
+        status,
         mutableMapOf(),
     )
 
     /**
      * Replaces the card's funding source. Must belong to the customer and be denominated in the
-     * card's currency. Cannot be supplied alongside `state: CLOSED`. To stop a card from spending,
-     * set `state: FROZEN` instead.
+     * card's currency. Cannot be supplied alongside `status: CLOSED`. To stop a card from spending,
+     * set `status: FROZEN` instead.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -74,7 +74,7 @@ private constructor(
      * positive integer to set it. When the platform config also supplies
      * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds, reversals,
      * and authorization expiries do not restore capacity during the day. Accepted only when the
-     * card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied alongside `state:
+     * card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied alongside `status:
      * CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -88,7 +88,7 @@ private constructor(
      * positive integer to set it. When the platform config also supplies
      * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Accepted
      * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
-     * alongside `state: CLOSED`.
+     * alongside `status: CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -103,7 +103,7 @@ private constructor(
      * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values. Refunds,
      * reversals, and authorization expiries do not restore capacity during the day. Accepted only
      * when the card's `cardCapabilities.supportsTransactionCountLimit` is true. Cannot be supplied
-     * alongside `state: CLOSED`.
+     * alongside `status: CLOSED`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -111,14 +111,14 @@ private constructor(
     fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
 
     /**
-     * Target state for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
-     * CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in the system for
-     * audit and reconciliation but cannot transact again.
+     * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN
+     * → CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in the system
+     * for audit and reconciliation but cannot transact again.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun state(): State? = state.getNullable("state")
+    fun status(): Status? = status.getNullable("status")
 
     /**
      * Returns the raw JSON value of [fundingSource].
@@ -159,11 +159,11 @@ private constructor(
     fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
 
     /**
-     * Returns the raw JSON value of [state].
+     * Returns the raw JSON value of [status].
      *
-     * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<State> = state
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -190,7 +190,7 @@ private constructor(
         private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
         private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
-        private var state: JsonField<State> = JsonMissing.of()
+        private var status: JsonField<Status> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardUpdateRequest: CardUpdateRequest) = apply {
@@ -198,14 +198,14 @@ private constructor(
             maxSpendPerDay = cardUpdateRequest.maxSpendPerDay
             maxSpendPerTransaction = cardUpdateRequest.maxSpendPerTransaction
             maxTransactionsPerDay = cardUpdateRequest.maxTransactionsPerDay
-            state = cardUpdateRequest.state
+            status = cardUpdateRequest.status
             additionalProperties = cardUpdateRequest.additionalProperties.toMutableMap()
         }
 
         /**
          * Replaces the card's funding source. Must belong to the customer and be denominated in the
-         * card's currency. Cannot be supplied alongside `state: CLOSED`. To stop a card from
-         * spending, set `state: FROZEN` instead.
+         * card's currency. Cannot be supplied alongside `status: CLOSED`. To stop a card from
+         * spending, set `status: FROZEN` instead.
          */
         fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
@@ -227,7 +227,7 @@ private constructor(
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. Refunds,
          * reversals, and authorization expiries do not restore capacity during the day. Accepted
          * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
-         * alongside `state: CLOSED`.
+         * alongside `status: CLOSED`.
          */
         fun maxSpendPerDay(maxSpendPerDay: Long?) =
             maxSpendPerDay(JsonField.ofNullable(maxSpendPerDay))
@@ -256,7 +256,7 @@ private constructor(
          * supply a positive integer to set it. When the platform config also supplies
          * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values. Accepted
          * only when the card's `cardCapabilities.supportsSpendLimits` is true. Cannot be supplied
-         * alongside `state: CLOSED`.
+         * alongside `status: CLOSED`.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
             maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
@@ -287,7 +287,7 @@ private constructor(
          * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values. Refunds,
          * reversals, and authorization expiries do not restore capacity during the day. Accepted
          * only when the card's `cardCapabilities.supportsTransactionCountLimit` is true. Cannot be
-         * supplied alongside `state: CLOSED`.
+         * supplied alongside `status: CLOSED`.
          */
         fun maxTransactionsPerDay(maxTransactionsPerDay: Int?) =
             maxTransactionsPerDay(JsonField.ofNullable(maxTransactionsPerDay))
@@ -312,19 +312,19 @@ private constructor(
         }
 
         /**
-         * Target state for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE |
+         * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE |
          * FROZEN → CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in
          * the system for audit and reconciliation but cannot transact again.
          */
-        fun state(state: State) = state(JsonField.of(state))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
-         * Sets [Builder.state] to an arbitrary JSON value.
+         * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.state] with a well-typed [State] value instead. This
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun state(state: JsonField<State>) = apply { this.state = state }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -356,7 +356,7 @@ private constructor(
                 maxSpendPerDay,
                 maxSpendPerTransaction,
                 maxTransactionsPerDay,
-                state,
+                status,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -380,7 +380,7 @@ private constructor(
         maxSpendPerDay()
         maxSpendPerTransaction()
         maxTransactionsPerDay()
-        state()?.validate()
+        status()?.validate()
         validated = true
     }
 
@@ -402,14 +402,14 @@ private constructor(
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
-            (state.asKnown()?.validity() ?: 0)
+            (status.asKnown()?.validity() ?: 0)
 
     /**
-     * Target state for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
-     * CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in the system for
-     * audit and reconciliation but cannot transact again.
+     * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN
+     * → CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in the system
+     * for audit and reconciliation but cannot transact again.
      */
-    class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -429,10 +429,10 @@ private constructor(
 
             val CLOSED = of("CLOSED")
 
-            fun of(value: String) = State(JsonField.of(value))
+            fun of(value: String) = Status(JsonField.of(value))
         }
 
-        /** An enum containing [State]'s known values. */
+        /** An enum containing [Status]'s known values. */
         enum class Known {
             ACTIVE,
             FROZEN,
@@ -440,9 +440,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [State]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [State] can contain an unknown value in a couple of cases:
+         * An instance of [Status] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -452,7 +452,7 @@ private constructor(
             ACTIVE,
             FROZEN,
             CLOSED,
-            /** An enum member indicating that [State] was instantiated with an unknown value. */
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
 
@@ -485,7 +485,7 @@ private constructor(
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
                 CLOSED -> Known.CLOSED
-                else -> throw LightsparkGridInvalidDataException("Unknown State: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
 
         /**
@@ -511,7 +511,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): State = apply {
+        fun validate(): Status = apply {
             if (validated) {
                 return@apply
             }
@@ -541,7 +541,7 @@ private constructor(
                 return true
             }
 
-            return other is State && value == other.value
+            return other is Status && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -559,7 +559,7 @@ private constructor(
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             maxTransactionsPerDay == other.maxTransactionsPerDay &&
-            state == other.state &&
+            status == other.status &&
             additionalProperties == other.additionalProperties
     }
 
@@ -569,7 +569,7 @@ private constructor(
             maxSpendPerDay,
             maxSpendPerTransaction,
             maxTransactionsPerDay,
-            state,
+            status,
             additionalProperties,
         )
     }
@@ -577,5 +577,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, additionalProperties=$additionalProperties}"
+        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, status=$status, additionalProperties=$additionalProperties}"
 }
