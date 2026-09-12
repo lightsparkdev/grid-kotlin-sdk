@@ -177,11 +177,11 @@ private constructor(
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
 
     /**
-     * Actions supported for a card issued now with this account as the first funding source. They
-     * can change if the platform's card routing changes and do not describe cards already issued
-     * using the account. When a create request supplies several funding sources, the first entry
-     * selects the issuer and therefore the resulting card's capabilities; read this field from that
-     * account. Absent when this account cannot fund a card.
+     * Actions supported for a card issued now with this account as its funding source. They can
+     * change if the platform's card routing changes and do not describe cards already issued using
+     * the account. The funding source a create request supplies selects the issuer and therefore
+     * the resulting card's capabilities; read this field from that account. Absent when this
+     * account cannot fund a card.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -536,11 +536,11 @@ private constructor(
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
 
         /**
-         * Actions supported for a card issued now with this account as the first funding source.
-         * They can change if the platform's card routing changes and do not describe cards already
-         * issued using the account. When a create request supplies several funding sources, the
-         * first entry selects the issuer and therefore the resulting card's capabilities; read this
-         * field from that account. Absent when this account cannot fund a card.
+         * Actions supported for a card issued now with this account as its funding source. They can
+         * change if the platform's card routing changes and do not describe cards already issued
+         * using the account. The funding source a create request supplies selects the issuer and
+         * therefore the resulting card's capabilities; read this field from that account. Absent
+         * when this account cannot fund a card.
          */
         fun cardCapabilities(cardCapabilities: CardCapabilities) =
             cardCapabilities(JsonField.of(cardCapabilities))
@@ -1061,11 +1061,11 @@ private constructor(
     }
 
     /**
-     * Actions supported for a card issued now with this account as the first funding source. They
-     * can change if the platform's card routing changes and do not describe cards already issued
-     * using the account. When a create request supplies several funding sources, the first entry
-     * selects the issuer and therefore the resulting card's capabilities; read this field from that
-     * account. Absent when this account cannot fund a card.
+     * Actions supported for a card issued now with this account as its funding source. They can
+     * change if the platform's card routing changes and do not describe cards already issued using
+     * the account. The funding source a create request supplies selects the issuer and therefore
+     * the resulting card's capabilities; read this field from that account. Absent when this
+     * account cannot fund a card.
      */
     class CardCapabilities
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)

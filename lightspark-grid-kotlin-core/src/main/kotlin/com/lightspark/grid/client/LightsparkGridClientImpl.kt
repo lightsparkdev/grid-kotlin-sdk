@@ -246,7 +246,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
     /**
      * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
-     * close, manage card funding sources, and list card transactions.
+     * close, manage a card's funding source, and list card transactions.
      */
     override fun cards(): CardService = cards
 
@@ -451,7 +451,7 @@ class LightsparkGridClientImpl(private val clientOptions: ClientOptions) : Light
 
         /**
          * Card management endpoints. Issue debit cards against an internal account, freeze /
-         * unfreeze, close, manage card funding sources, and list card transactions.
+         * unfreeze, close, manage a card's funding source, and list card transactions.
          */
         override fun cards(): CardService.WithRawResponse = cards
     }

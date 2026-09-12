@@ -18,8 +18,7 @@ internal class CardTest {
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .form(Card.Form.VIRTUAL)
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)
@@ -48,11 +47,8 @@ internal class CardTest {
         assertThat(card.createdAt()).isEqualTo(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
         assertThat(card.customerId()).isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
         assertThat(card.form()).isEqualTo(Card.Form.VIRTUAL)
-        assertThat(card.fundingSources())
-            .containsExactly(
-                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002",
-                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003",
-            )
+        assertThat(card.fundingSource())
+            .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(card.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(card.maxSpendPerTransaction()).isEqualTo(5000L)
         assertThat(card.maxTransactionsPerDay()).isEqualTo(20)
@@ -87,8 +83,7 @@ internal class CardTest {
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                 .form(Card.Form.VIRTUAL)
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(5000L)
                 .maxTransactionsPerDay(20)

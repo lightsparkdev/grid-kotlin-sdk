@@ -163,7 +163,7 @@ interface LightsparkGridClient {
 
     /**
      * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
-     * close, manage card funding sources, and list card transactions.
+     * close, manage a card's funding source, and list card transactions.
      */
     fun cards(): CardService
 
@@ -295,7 +295,7 @@ interface LightsparkGridClient {
 
         /**
          * Card management endpoints. Issue debit cards against an internal account, freeze /
-         * unfreeze, close, manage card funding sources, and list card transactions.
+         * unfreeze, close, manage a card's funding source, and list card transactions.
          */
         fun cards(): CardService.WithRawResponse
     }

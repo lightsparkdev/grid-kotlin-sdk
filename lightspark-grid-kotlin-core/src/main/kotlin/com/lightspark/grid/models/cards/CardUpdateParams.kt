@@ -10,17 +10,16 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`,
+ * Update a card's `state`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
  * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
  * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`. `CLOSED`
  *   is terminal and irreversible. Any other transition returns `409 INVALID_STATE_TRANSITION`.
- * - `fundingSources`, when supplied, fully replaces the card's bound funding sources. Array order
- *   determines the priority Authorization Decisioning tries them in. Each id must belong to the
- *   cardholder and be denominated in the card's currency; the list must contain at least one
- *   source. `fundingSources` cannot be supplied alongside `state: CLOSED`. On card programs where
- *   the card issuer makes authorization decisions, `fundingSources` cannot be combined with any
- *   `state` change, so send the changes as separate requests. On card programs where Grid makes the
- *   authorization decision, the combination remains valid for `state` changes other than `CLOSED`.
+ * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong to
+ *   the customer and be denominated in the card's currency. `fundingSource` cannot be supplied
+ *   alongside `state: CLOSED`. On card programs where the card issuer makes authorization
+ *   decisions, `fundingSource` cannot be combined with any `state` change, so send the changes as
+ *   separate requests. On card programs where Grid makes the authorization decision, the
+ *   combination remains valid for `state` changes other than `CLOSED`.
  * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap. Supply
  *   a positive integer in the smallest unit of the card's currency to set it or null to clear it.
  *   If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of
@@ -59,8 +58,9 @@ import java.util.Objects
  *   "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation. All pending auths
  *   reconcile to a terminal state via the existing reconcile primitive. Inbound clearings received
  *   after close follow the standard force-post / late-presentment path — Lightspark absorbs the
- *   loss if a post-hoc pull on the now-unbound source fails. Funding-source bindings are detached.
+ *   loss if a post-hoc pull on the now-unbound source fails. The funding source is detached.
  *   Refunds already in flight still complete because Lightspark holds the card-reserve keys.
+ * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
  *
  * The `card.state_change` webhook fires on every successful `state` transition.
  */
@@ -75,14 +75,12 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`,
+     * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
      * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
      * `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
      * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
-     * irreversible and cannot be combined with `fundingSources`, `maxSpendPerTransaction`,
-     * `maxSpendPerDay`, or `maxTransactionsPerDay`. `fundingSources`, when supplied, fully replaces
-     * the card's bound funding sources — the array order determines the priority Authorization
-     * Decisioning tries them in.
+     * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
+     * `maxSpendPerDay`, or `maxTransactionsPerDay`.
      */
     fun cardUpdateRequest(): CardUpdateRequest = cardUpdateRequest
 
@@ -128,14 +126,12 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`,
+         * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
          * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
          * `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
          * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
-         * irreversible and cannot be combined with `fundingSources`, `maxSpendPerTransaction`,
-         * `maxSpendPerDay`, or `maxTransactionsPerDay`. `fundingSources`, when supplied, fully
-         * replaces the card's bound funding sources — the array order determines the priority
-         * Authorization Decisioning tries them in.
+         * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
+         * `maxSpendPerDay`, or `maxTransactionsPerDay`.
          */
         fun cardUpdateRequest(cardUpdateRequest: CardUpdateRequest) = apply {
             this.cardUpdateRequest = cardUpdateRequest
