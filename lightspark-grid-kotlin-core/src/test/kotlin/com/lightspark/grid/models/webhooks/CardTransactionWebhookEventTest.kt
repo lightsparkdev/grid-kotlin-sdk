@@ -43,8 +43,10 @@ internal class CardTransactionWebhookEventTest {
                         .merchant(
                             CardMerchant.builder()
                                 .descriptor("BLUE BOTTLE COFFEE SF")
+                                .city("San Francisco")
                                 .country("US")
                                 .mcc("5814")
+                                .state("CA")
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
@@ -53,6 +55,7 @@ internal class CardTransactionWebhookEventTest {
                         .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                         .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                         .issuerTransactionToken("lithic_txn_b81c2a4f")
+                        .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                         .refundedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)
@@ -112,8 +115,10 @@ internal class CardTransactionWebhookEventTest {
                     .merchant(
                         CardMerchant.builder()
                             .descriptor("BLUE BOTTLE COFFEE SF")
+                            .city("San Francisco")
                             .country("US")
                             .mcc("5814")
+                            .state("CA")
                             .build()
                     )
                     .platformCustomerId("18d3e5f7b4a9c2")
@@ -122,6 +127,7 @@ internal class CardTransactionWebhookEventTest {
                     .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                     .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                     .issuerTransactionToken("lithic_txn_b81c2a4f")
+                    .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                     .refundedAmount(
                         CurrencyAmount.builder()
                             .amount(12550L)
@@ -186,8 +192,10 @@ internal class CardTransactionWebhookEventTest {
                         .merchant(
                             CardMerchant.builder()
                                 .descriptor("BLUE BOTTLE COFFEE SF")
+                                .city("San Francisco")
                                 .country("US")
                                 .mcc("5814")
+                                .state("CA")
                                 .build()
                         )
                         .platformCustomerId("18d3e5f7b4a9c2")
@@ -196,6 +204,7 @@ internal class CardTransactionWebhookEventTest {
                         .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                         .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                         .issuerTransactionToken("lithic_txn_b81c2a4f")
+                        .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                         .refundedAmount(
                             CurrencyAmount.builder()
                                 .amount(12550L)

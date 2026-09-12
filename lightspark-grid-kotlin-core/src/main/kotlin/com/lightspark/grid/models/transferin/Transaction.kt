@@ -20,10 +20,11 @@ import com.lightspark.grid.models.transactions.OutgoingTransaction
 import java.util.Objects
 
 /**
- * Parent transaction row for a card authorization and all of the pulls / settlements / refunds that
- * reconcile against it. Child events are rolled up into the `settledAmount` and `refundedAmount`
- * totals. Delivered as the payload of the generic transaction webhook stream (extends the
- * Transaction model with a card destination type) on every transition.
+ * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+ * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase via
+ * `originalTransactionId` rather than a rollup on the parent, so statements can list purchases and
+ * refunds as separate dated lines. Delivered as the payload of the generic transaction webhook
+ * stream (extends the Transaction model with a card destination type) on every transition.
  */
 @JsonDeserialize(using = Transaction.Deserializer::class)
 @JsonSerialize(using = Transaction.Serializer::class)
@@ -40,10 +41,12 @@ private constructor(
     fun outgoing(): OutgoingTransaction? = outgoing
 
     /**
-     * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `settledAmount` and
-     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
-     * (extends the Transaction model with a card destination type) on every transition.
+     * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+     * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase
+     * via `originalTransactionId` rather than a rollup on the parent, so statements can list
+     * purchases and refunds as separate dated lines. Delivered as the payload of the generic
+     * transaction webhook stream (extends the Transaction model with a card destination type) on
+     * every transition.
      */
     fun card(): CardTransaction? = card
 
@@ -58,10 +61,12 @@ private constructor(
     fun asOutgoing(): OutgoingTransaction = outgoing.getOrThrow("outgoing")
 
     /**
-     * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `settledAmount` and
-     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
-     * (extends the Transaction model with a card destination type) on every transition.
+     * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+     * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase
+     * via `originalTransactionId` rather than a rollup on the parent, so statements can list
+     * purchases and refunds as separate dated lines. Delivered as the payload of the generic
+     * transaction webhook stream (extends the Transaction model with a card destination type) on
+     * every transition.
      */
     fun asCard(): CardTransaction = card.getOrThrow("card")
 
@@ -187,10 +192,12 @@ private constructor(
         fun ofOutgoing(outgoing: OutgoingTransaction) = Transaction(outgoing = outgoing)
 
         /**
-         * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
-         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
-         * stream (extends the Transaction model with a card destination type) on every transition.
+         * One row per cardholder-visible card transaction. A purchase row rolls its clearings up
+         * into `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the
+         * purchase via `originalTransactionId` rather than a rollup on the parent, so statements
+         * can list purchases and refunds as separate dated lines. Delivered as the payload of the
+         * generic transaction webhook stream (extends the Transaction model with a card destination
+         * type) on every transition.
          */
         fun ofCard(card: CardTransaction) = Transaction(card = card)
     }
@@ -205,10 +212,12 @@ private constructor(
         fun visitOutgoing(outgoing: OutgoingTransaction): T
 
         /**
-         * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
-         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
-         * stream (extends the Transaction model with a card destination type) on every transition.
+         * One row per cardholder-visible card transaction. A purchase row rolls its clearings up
+         * into `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the
+         * purchase via `originalTransactionId` rather than a rollup on the parent, so statements
+         * can list purchases and refunds as separate dated lines. Delivered as the payload of the
+         * generic transaction webhook stream (extends the Transaction model with a card destination
+         * type) on every transition.
          */
         fun visitCard(card: CardTransaction): T
 

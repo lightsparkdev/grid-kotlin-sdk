@@ -14,13 +14,17 @@ internal class CardMerchantTest {
         val cardMerchant =
             CardMerchant.builder()
                 .descriptor("BLUE BOTTLE COFFEE SF")
+                .city("San Francisco")
                 .country("US")
                 .mcc("5814")
+                .state("CA")
                 .build()
 
         assertThat(cardMerchant.descriptor()).isEqualTo("BLUE BOTTLE COFFEE SF")
+        assertThat(cardMerchant.city()).isEqualTo("San Francisco")
         assertThat(cardMerchant.country()).isEqualTo("US")
         assertThat(cardMerchant.mcc()).isEqualTo("5814")
+        assertThat(cardMerchant.state()).isEqualTo("CA")
     }
 
     @Test
@@ -29,8 +33,10 @@ internal class CardMerchantTest {
         val cardMerchant =
             CardMerchant.builder()
                 .descriptor("BLUE BOTTLE COFFEE SF")
+                .city("San Francisco")
                 .country("US")
                 .mcc("5814")
+                .state("CA")
                 .build()
 
         val roundtrippedCardMerchant =

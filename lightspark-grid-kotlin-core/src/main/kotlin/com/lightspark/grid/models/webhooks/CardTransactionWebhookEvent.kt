@@ -47,10 +47,12 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * Parent transaction row for a card authorization and all of the pulls / settlements / refunds
-     * that reconcile against it. Child events are rolled up into the `settledAmount` and
-     * `refundedAmount` totals. Delivered as the payload of the generic transaction webhook stream
-     * (extends the Transaction model with a card destination type) on every transition.
+     * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+     * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase
+     * via `originalTransactionId` rather than a rollup on the parent, so statements can list
+     * purchases and refunds as separate dated lines. Delivered as the payload of the generic
+     * transaction webhook stream (extends the Transaction model with a card destination type) on
+     * every transition.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -158,10 +160,12 @@ private constructor(
         fun id(id: JsonField<String>) = apply { this.id = id }
 
         /**
-         * Parent transaction row for a card authorization and all of the pulls / settlements /
-         * refunds that reconcile against it. Child events are rolled up into the `settledAmount`
-         * and `refundedAmount` totals. Delivered as the payload of the generic transaction webhook
-         * stream (extends the Transaction model with a card destination type) on every transition.
+         * One row per cardholder-visible card transaction. A purchase row rolls its clearings up
+         * into `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the
+         * purchase via `originalTransactionId` rather than a rollup on the parent, so statements
+         * can list purchases and refunds as separate dated lines. Delivered as the payload of the
+         * generic transaction webhook stream (extends the Transaction model with a card destination
+         * type) on every transition.
          */
         fun data(data: CardTransaction) = data(JsonField.of(data))
 
@@ -301,6 +305,8 @@ private constructor(
 
             val CARD_TRANSACTION_SETTLED = of("CARD_TRANSACTION.SETTLED")
 
+            val CARD_TRANSACTION_DECLINED = of("CARD_TRANSACTION.DECLINED")
+
             val CARD_TRANSACTION_EXCEPTION = of("CARD_TRANSACTION.EXCEPTION")
 
             fun of(value: String) = Type(JsonField.of(value))
@@ -311,6 +317,7 @@ private constructor(
             CARD_TRANSACTION_AUTHORIZED,
             CARD_TRANSACTION_PARTIALLY_SETTLED,
             CARD_TRANSACTION_SETTLED,
+            CARD_TRANSACTION_DECLINED,
             CARD_TRANSACTION_EXCEPTION,
         }
 
@@ -327,6 +334,7 @@ private constructor(
             CARD_TRANSACTION_AUTHORIZED,
             CARD_TRANSACTION_PARTIALLY_SETTLED,
             CARD_TRANSACTION_SETTLED,
+            CARD_TRANSACTION_DECLINED,
             CARD_TRANSACTION_EXCEPTION,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -344,6 +352,7 @@ private constructor(
                 CARD_TRANSACTION_AUTHORIZED -> Value.CARD_TRANSACTION_AUTHORIZED
                 CARD_TRANSACTION_PARTIALLY_SETTLED -> Value.CARD_TRANSACTION_PARTIALLY_SETTLED
                 CARD_TRANSACTION_SETTLED -> Value.CARD_TRANSACTION_SETTLED
+                CARD_TRANSACTION_DECLINED -> Value.CARD_TRANSACTION_DECLINED
                 CARD_TRANSACTION_EXCEPTION -> Value.CARD_TRANSACTION_EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -362,6 +371,7 @@ private constructor(
                 CARD_TRANSACTION_AUTHORIZED -> Known.CARD_TRANSACTION_AUTHORIZED
                 CARD_TRANSACTION_PARTIALLY_SETTLED -> Known.CARD_TRANSACTION_PARTIALLY_SETTLED
                 CARD_TRANSACTION_SETTLED -> Known.CARD_TRANSACTION_SETTLED
+                CARD_TRANSACTION_DECLINED -> Known.CARD_TRANSACTION_DECLINED
                 CARD_TRANSACTION_EXCEPTION -> Known.CARD_TRANSACTION_EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
