@@ -17,8 +17,8 @@ import java.util.Objects
 
 /**
  * Sandbox-only request body for `POST /sandbox/cards/{id}/simulate/return`. Drives a `RETURN` event
- * against an existing settled `CardTransaction`, which creates a `CardRefund` and leaves the parent
- * transaction `SETTLED` with the returned value in `refundedAmount`.
+ * against an existing settled `CardTransaction`, which creates a `CardRefund` and posts the return
+ * as its own dated `CREDIT` `CardTransaction` linked to the purchase via `originalTransactionId`.
  */
 class RefundRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

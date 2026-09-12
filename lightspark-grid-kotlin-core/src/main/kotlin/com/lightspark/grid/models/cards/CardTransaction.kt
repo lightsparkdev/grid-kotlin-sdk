@@ -20,10 +20,11 @@ import java.util.Collections
 import java.util.Objects
 
 /**
- * Parent transaction row for a card authorization and all of the pulls / settlements / refunds that
- * reconcile against it. Child events are rolled up into the `settledAmount` and `refundedAmount`
- * totals. Delivered as the payload of the generic transaction webhook stream (extends the
- * Transaction model with a card destination type) on every transition.
+ * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+ * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase via
+ * `originalTransactionId` rather than a rollup on the parent, so statements can list purchases and
+ * refunds as separate dated lines. Delivered as the payload of the generic transaction webhook
+ * stream (extends the Transaction model with a card destination type) on every transition.
  */
 class CardTransaction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -42,6 +43,7 @@ private constructor(
     private val updatedAt: JsonField<OffsetDateTime>,
     private val cardId: JsonField<String>,
     private val issuerTransactionToken: JsonField<String>,
+    private val originalTransactionId: JsonField<String>,
     private val refundedAmount: JsonField<CurrencyAmount>,
     private val settledAmount: JsonField<CurrencyAmount>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -81,6 +83,9 @@ private constructor(
         @JsonProperty("issuerTransactionToken")
         @ExcludeMissing
         issuerTransactionToken: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("originalTransactionId")
+        @ExcludeMissing
+        originalTransactionId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("refundedAmount")
         @ExcludeMissing
         refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
@@ -102,6 +107,7 @@ private constructor(
         updatedAt,
         cardId,
         issuerTransactionToken,
+        originalTransactionId,
         refundedAmount,
         settledAmount,
         mutableMapOf(),
@@ -155,8 +161,9 @@ private constructor(
     fun customerId(): String = customerId.getRequired("customerId")
 
     /**
-     * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against is a
-     * `CREDIT`, with the credited value in `settledAmount`.
+     * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+     * `settledAmount`; when the refund returns against a known purchase, `originalTransactionId`
+     * identifies it.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -178,14 +185,16 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Lifecycle status of a card transaction. The status tracks settlement only — a return is
-     * reported through `direction` and `refundedAmount`, not through a status of its own.
+     * Lifecycle status of a card transaction. The status tracks settlement only — a return against
+     * a purchase is its own dated `CREDIT` row linked to the purchase via `originalTransactionId`,
+     * not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+     * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -226,6 +235,16 @@ private constructor(
      */
     fun issuerTransactionToken(): String? =
         issuerTransactionToken.getNullable("issuerTransactionToken")
+
+    /**
+     * On a refund row (`direction: CREDIT`), the id of the purchase this return credits back
+     * against. Absent on purchases and on standalone credits with no matching purchase.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun originalTransactionId(): String? =
+        originalTransactionId.getNullable("originalTransactionId")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -353,6 +372,16 @@ private constructor(
     fun _issuerTransactionToken(): JsonField<String> = issuerTransactionToken
 
     /**
+     * Returns the raw JSON value of [originalTransactionId].
+     *
+     * Unlike [originalTransactionId], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("originalTransactionId")
+    @ExcludeMissing
+    fun _originalTransactionId(): JsonField<String> = originalTransactionId
+
+    /**
      * Returns the raw JSON value of [refundedAmount].
      *
      * Unlike [refundedAmount], this method doesn't throw if the JSON field has an unexpected type.
@@ -423,6 +452,7 @@ private constructor(
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var cardId: JsonField<String> = JsonMissing.of()
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
+        private var originalTransactionId: JsonField<String> = JsonMissing.of()
         private var refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var settledAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -442,6 +472,7 @@ private constructor(
             updatedAt = cardTransaction.updatedAt
             cardId = cardTransaction.cardId
             issuerTransactionToken = cardTransaction.issuerTransactionToken
+            originalTransactionId = cardTransaction.originalTransactionId
             refundedAmount = cardTransaction.refundedAmount
             settledAmount = cardTransaction.settledAmount
             additionalProperties = cardTransaction.additionalProperties.toMutableMap()
@@ -526,8 +557,9 @@ private constructor(
         fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /**
-         * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against
-         * is a `CREDIT`, with the credited value in `settledAmount`.
+         * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+         * `settledAmount`; when the refund returns against a known purchase,
+         * `originalTransactionId` identifies it.
          */
         fun direction(direction: Direction) = direction(JsonField.of(direction))
 
@@ -567,14 +599,16 @@ private constructor(
         }
 
         /**
-         * Lifecycle status of a card transaction. The status tracks settlement only — a return is
-         * reported through `direction` and `refundedAmount`, not through a status of its own.
+         * Lifecycle status of a card transaction. The status tracks settlement only — a return
+         * against a purchase is its own dated `CREDIT` row linked to the purchase via
+         * `originalTransactionId`, not a status of its own.
          *
          * |Status             |Description                                                                                                                                                                                                                                    |
          * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
          * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
          * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
+         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+         * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
          * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
          */
         fun status(status: Status) = status(JsonField.of(status))
@@ -640,6 +674,24 @@ private constructor(
          */
         fun issuerTransactionToken(issuerTransactionToken: JsonField<String>) = apply {
             this.issuerTransactionToken = issuerTransactionToken
+        }
+
+        /**
+         * On a refund row (`direction: CREDIT`), the id of the purchase this return credits back
+         * against. Absent on purchases and on standalone credits with no matching purchase.
+         */
+        fun originalTransactionId(originalTransactionId: String) =
+            originalTransactionId(JsonField.of(originalTransactionId))
+
+        /**
+         * Sets [Builder.originalTransactionId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.originalTransactionId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun originalTransactionId(originalTransactionId: JsonField<String>) = apply {
+            this.originalTransactionId = originalTransactionId
         }
 
         fun refundedAmount(refundedAmount: CurrencyAmount) =
@@ -728,6 +780,7 @@ private constructor(
                 checkRequired("updatedAt", updatedAt),
                 cardId,
                 issuerTransactionToken,
+                originalTransactionId,
                 refundedAmount,
                 settledAmount,
                 additionalProperties.toMutableMap(),
@@ -763,6 +816,7 @@ private constructor(
         updatedAt()
         cardId()
         issuerTransactionToken()
+        originalTransactionId()
         refundedAmount()?.validate()
         settledAmount()?.validate()
         validated = true
@@ -796,12 +850,14 @@ private constructor(
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (cardId.asKnown() == null) 0 else 1) +
             (if (issuerTransactionToken.asKnown() == null) 0 else 1) +
+            (if (originalTransactionId.asKnown() == null) 0 else 1) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
             (settledAmount.asKnown()?.validity() ?: 0)
 
     /**
-     * A purchase is a `DEBIT`. A standalone merchant refund with no purchase to return against is a
-     * `CREDIT`, with the credited value in `settledAmount`.
+     * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+     * `settledAmount`; when the refund returns against a known purchase, `originalTransactionId`
+     * identifies it.
      */
     class Direction @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -940,14 +996,16 @@ private constructor(
     }
 
     /**
-     * Lifecycle status of a card transaction. The status tracks settlement only — a return is
-     * reported through `direction` and `refundedAmount`, not through a status of its own.
+     * Lifecycle status of a card transaction. The status tracks settlement only — a return against
+     * a purchase is its own dated `CREDIT` row linked to the purchase via `originalTransactionId`,
+     * not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the transaction `SETTLED` and reports the returned value in `refundedAmount`.                            |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+     * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -970,6 +1028,8 @@ private constructor(
 
             val SETTLED = of("SETTLED")
 
+            val DECLINED = of("DECLINED")
+
             val EXCEPTION = of("EXCEPTION")
 
             fun of(value: String) = Status(JsonField.of(value))
@@ -980,6 +1040,7 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
+            DECLINED,
             EXCEPTION,
         }
 
@@ -996,6 +1057,7 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
+            DECLINED,
             EXCEPTION,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -1013,6 +1075,7 @@ private constructor(
                 AUTHORIZED -> Value.AUTHORIZED
                 PARTIALLY_SETTLED -> Value.PARTIALLY_SETTLED
                 SETTLED -> Value.SETTLED
+                DECLINED -> Value.DECLINED
                 EXCEPTION -> Value.EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -1031,6 +1094,7 @@ private constructor(
                 AUTHORIZED -> Known.AUTHORIZED
                 PARTIALLY_SETTLED -> Known.PARTIALLY_SETTLED
                 SETTLED -> Known.SETTLED
+                DECLINED -> Known.DECLINED
                 EXCEPTION -> Known.EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
@@ -1247,6 +1311,7 @@ private constructor(
             updatedAt == other.updatedAt &&
             cardId == other.cardId &&
             issuerTransactionToken == other.issuerTransactionToken &&
+            originalTransactionId == other.originalTransactionId &&
             refundedAmount == other.refundedAmount &&
             settledAmount == other.settledAmount &&
             additionalProperties == other.additionalProperties
@@ -1268,6 +1333,7 @@ private constructor(
             updatedAt,
             cardId,
             issuerTransactionToken,
+            originalTransactionId,
             refundedAmount,
             settledAmount,
             additionalProperties,
@@ -1277,5 +1343,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, issuerTransactionToken=$issuerTransactionToken, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
 }

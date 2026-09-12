@@ -26,6 +26,7 @@ import java.util.Objects
 class TransactionListParams
 private constructor(
     private val accountIdentifier: String?,
+    private val cardId: String?,
     private val cursor: String?,
     private val customerId: String?,
     private val endDate: OffsetDateTime?,
@@ -44,6 +45,13 @@ private constructor(
 
     /** Filter by account identifier (matches either sender or receiver) */
     fun accountIdentifier(): String? = accountIdentifier
+
+    /**
+     * Filter to card transactions made on a single card. Accepts a `Card:` LSID or a bare UUID.
+     * Only card transactions match, so this implies `type=CARD` and can be combined with
+     * `customerId` to list one card of a multi-card cardholder.
+     */
+    fun cardId(): String? = cardId
 
     /** Cursor for pagination (returned from previous request) */
     fun cursor(): String? = cursor
@@ -118,6 +126,7 @@ private constructor(
     class Builder internal constructor() {
 
         private var accountIdentifier: String? = null
+        private var cardId: String? = null
         private var cursor: String? = null
         private var customerId: String? = null
         private var endDate: OffsetDateTime? = null
@@ -135,6 +144,7 @@ private constructor(
 
         internal fun from(transactionListParams: TransactionListParams) = apply {
             accountIdentifier = transactionListParams.accountIdentifier
+            cardId = transactionListParams.cardId
             cursor = transactionListParams.cursor
             customerId = transactionListParams.customerId
             endDate = transactionListParams.endDate
@@ -155,6 +165,13 @@ private constructor(
         fun accountIdentifier(accountIdentifier: String?) = apply {
             this.accountIdentifier = accountIdentifier
         }
+
+        /**
+         * Filter to card transactions made on a single card. Accepts a `Card:` LSID or a bare UUID.
+         * Only card transactions match, so this implies `type=CARD` and can be combined with
+         * `customerId` to list one card of a multi-card cardholder.
+         */
+        fun cardId(cardId: String?) = apply { this.cardId = cardId }
 
         /** Cursor for pagination (returned from previous request) */
         fun cursor(cursor: String?) = apply { this.cursor = cursor }
@@ -328,6 +345,7 @@ private constructor(
         fun build(): TransactionListParams =
             TransactionListParams(
                 accountIdentifier,
+                cardId,
                 cursor,
                 customerId,
                 endDate,
@@ -351,6 +369,7 @@ private constructor(
         QueryParams.builder()
             .apply {
                 accountIdentifier?.let { put("accountIdentifier", it) }
+                cardId?.let { put("cardId", it) }
                 cursor?.let { put("cursor", it) }
                 customerId?.let { put("customerId", it) }
                 endDate?.let { put("endDate", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
@@ -513,6 +532,7 @@ private constructor(
 
         return other is TransactionListParams &&
             accountIdentifier == other.accountIdentifier &&
+            cardId == other.cardId &&
             cursor == other.cursor &&
             customerId == other.customerId &&
             endDate == other.endDate &&
@@ -532,6 +552,7 @@ private constructor(
     override fun hashCode(): Int =
         Objects.hash(
             accountIdentifier,
+            cardId,
             cursor,
             customerId,
             endDate,
@@ -549,5 +570,5 @@ private constructor(
         )
 
     override fun toString() =
-        "TransactionListParams{accountIdentifier=$accountIdentifier, cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "TransactionListParams{accountIdentifier=$accountIdentifier, cardId=$cardId, cursor=$cursor, customerId=$customerId, endDate=$endDate, limit=$limit, platformCustomerId=$platformCustomerId, receiverAccountIdentifier=$receiverAccountIdentifier, reference=$reference, senderAccountIdentifier=$senderAccountIdentifier, sortOrder=$sortOrder, startDate=$startDate, status=$status, type=$type, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
