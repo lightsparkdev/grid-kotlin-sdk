@@ -295,7 +295,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -671,7 +671,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -946,7 +946,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1140,7 +1140,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1214,7 +1214,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1314,7 +1314,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1454,7 +1454,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1705,7 +1705,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isEqualTo(internalAccountStatus)
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -1936,7 +1936,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated())
             .isEqualTo(externalAccountStatusUpdated)
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -2057,7 +2057,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isEqualTo(verificationUpdate)
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -2104,9 +2104,9 @@ internal class UnwrapWebhookEventTest {
     }
 
     @Test
-    fun ofCardStateChange() {
-        val cardStateChange =
-            CardStateChangeWebhookEvent.builder()
+    fun ofCardStatusChange() {
+        val cardStatusChange =
+            CardStatusChangeWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     Card.builder()
@@ -2140,10 +2140,10 @@ internal class UnwrapWebhookEventTest {
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                 .build()
 
-        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStateChange(cardStateChange)
+        val unwrapWebhookEvent = UnwrapWebhookEvent.ofCardStatusChange(cardStatusChange)
 
         assertThat(unwrapWebhookEvent.agentActionPendingApproval()).isNull()
         assertThat(unwrapWebhookEvent.incomingPayment()).isNull()
@@ -2155,17 +2155,17 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isEqualTo(cardStateChange)
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isEqualTo(cardStatusChange)
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
 
     @Test
-    fun ofCardStateChangeRoundtrip() {
+    fun ofCardStatusChangeRoundtrip() {
         val jsonMapper = jsonMapper()
         val unwrapWebhookEvent =
-            UnwrapWebhookEvent.ofCardStateChange(
-                CardStateChangeWebhookEvent.builder()
+            UnwrapWebhookEvent.ofCardStatusChange(
+                CardStatusChangeWebhookEvent.builder()
                     .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                     .data(
                         Card.builder()
@@ -2199,7 +2199,7 @@ internal class UnwrapWebhookEventTest {
                             .build()
                     )
                     .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                    .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                    .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                     .build()
             )
 
@@ -2298,7 +2298,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isEqualTo(cardTransaction)
         assertThat(unwrapWebhookEvent.walletOperation()).isNull()
     }
@@ -2425,7 +2425,7 @@ internal class UnwrapWebhookEventTest {
         assertThat(unwrapWebhookEvent.internalAccountStatus()).isNull()
         assertThat(unwrapWebhookEvent.externalAccountStatusUpdated()).isNull()
         assertThat(unwrapWebhookEvent.verificationUpdate()).isNull()
-        assertThat(unwrapWebhookEvent.cardStateChange()).isNull()
+        assertThat(unwrapWebhookEvent.cardStatusChange()).isNull()
         assertThat(unwrapWebhookEvent.cardTransaction()).isNull()
         assertThat(unwrapWebhookEvent.walletOperation()).isEqualTo(walletOperation)
     }

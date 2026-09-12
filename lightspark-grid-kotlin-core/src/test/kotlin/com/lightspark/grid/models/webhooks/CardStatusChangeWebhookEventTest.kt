@@ -9,12 +9,12 @@ import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class CardStateChangeWebhookEventTest {
+internal class CardStatusChangeWebhookEventTest {
 
     @Test
     fun create() {
-        val cardStateChangeWebhookEvent =
-            CardStateChangeWebhookEvent.builder()
+        val cardStatusChangeWebhookEvent =
+            CardStatusChangeWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     Card.builder()
@@ -48,12 +48,12 @@ internal class CardStateChangeWebhookEventTest {
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                 .build()
 
-        assertThat(cardStateChangeWebhookEvent.id())
+        assertThat(cardStatusChangeWebhookEvent.id())
             .isEqualTo("Webhook:019542f5-b3e7-1d02-0000-000000000007")
-        assertThat(cardStateChangeWebhookEvent.data())
+        assertThat(cardStatusChangeWebhookEvent.data())
             .isEqualTo(
                 Card.builder()
                     .id("Card:019542f5-b3e7-1d02-0000-000000000010")
@@ -85,17 +85,17 @@ internal class CardStateChangeWebhookEventTest {
                     .statusReason(Card.StatusReason.ISSUER_REJECTED)
                     .build()
             )
-        assertThat(cardStateChangeWebhookEvent.timestamp())
+        assertThat(cardStatusChangeWebhookEvent.timestamp())
             .isEqualTo(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-        assertThat(cardStateChangeWebhookEvent.type())
-            .isEqualTo(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+        assertThat(cardStatusChangeWebhookEvent.type())
+            .isEqualTo(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val cardStateChangeWebhookEvent =
-            CardStateChangeWebhookEvent.builder()
+        val cardStatusChangeWebhookEvent =
+            CardStatusChangeWebhookEvent.builder()
                 .id("Webhook:019542f5-b3e7-1d02-0000-000000000007")
                 .data(
                     Card.builder()
@@ -129,15 +129,15 @@ internal class CardStateChangeWebhookEventTest {
                         .build()
                 )
                 .timestamp(OffsetDateTime.parse("2025-08-15T14:32:00Z"))
-                .type(CardStateChangeWebhookEvent.Type.CARD_STATE_CHANGE)
+                .type(CardStatusChangeWebhookEvent.Type.CARD_STATUS_CHANGE)
                 .build()
 
-        val roundtrippedCardStateChangeWebhookEvent =
+        val roundtrippedCardStatusChangeWebhookEvent =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(cardStateChangeWebhookEvent),
-                jacksonTypeRef<CardStateChangeWebhookEvent>(),
+                jsonMapper.writeValueAsString(cardStatusChangeWebhookEvent),
+                jacksonTypeRef<CardStatusChangeWebhookEvent>(),
             )
 
-        assertThat(roundtrippedCardStateChangeWebhookEvent).isEqualTo(cardStateChangeWebhookEvent)
+        assertThat(roundtrippedCardStatusChangeWebhookEvent).isEqualTo(cardStatusChangeWebhookEvent)
     }
 }

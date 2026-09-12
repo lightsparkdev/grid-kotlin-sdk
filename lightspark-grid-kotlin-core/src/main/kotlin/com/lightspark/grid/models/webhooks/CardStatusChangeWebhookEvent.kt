@@ -18,7 +18,7 @@ import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
-class CardStateChangeWebhookEvent
+class CardStatusChangeWebhookEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
@@ -111,7 +111,7 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [CardStateChangeWebhookEvent].
+         * Returns a mutable builder for constructing an instance of [CardStatusChangeWebhookEvent].
          *
          * The following fields are required:
          * ```kotlin
@@ -124,7 +124,7 @@ private constructor(
         fun builder() = Builder()
     }
 
-    /** A builder for [CardStateChangeWebhookEvent]. */
+    /** A builder for [CardStatusChangeWebhookEvent]. */
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
@@ -133,12 +133,12 @@ private constructor(
         private var type: JsonField<Type>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(cardStateChangeWebhookEvent: CardStateChangeWebhookEvent) = apply {
-            id = cardStateChangeWebhookEvent.id
-            data = cardStateChangeWebhookEvent.data
-            timestamp = cardStateChangeWebhookEvent.timestamp
-            type = cardStateChangeWebhookEvent.type
-            additionalProperties = cardStateChangeWebhookEvent.additionalProperties.toMutableMap()
+        internal fun from(cardStatusChangeWebhookEvent: CardStatusChangeWebhookEvent) = apply {
+            id = cardStatusChangeWebhookEvent.id
+            data = cardStatusChangeWebhookEvent.data
+            timestamp = cardStatusChangeWebhookEvent.timestamp
+            type = cardStatusChangeWebhookEvent.type
+            additionalProperties = cardStatusChangeWebhookEvent.additionalProperties.toMutableMap()
         }
 
         /** Unique identifier for this webhook delivery (can be used for idempotency) */
@@ -204,7 +204,7 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [CardStateChangeWebhookEvent].
+         * Returns an immutable instance of [CardStatusChangeWebhookEvent].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
@@ -218,8 +218,8 @@ private constructor(
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): CardStateChangeWebhookEvent =
-            CardStateChangeWebhookEvent(
+        fun build(): CardStatusChangeWebhookEvent =
+            CardStatusChangeWebhookEvent(
                 checkRequired("id", id),
                 checkRequired("data", data),
                 checkRequired("timestamp", timestamp),
@@ -238,7 +238,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): CardStateChangeWebhookEvent = apply {
+    fun validate(): CardStatusChangeWebhookEvent = apply {
         if (validated) {
             return@apply
         }
@@ -283,14 +283,14 @@ private constructor(
 
         companion object {
 
-            val CARD_STATE_CHANGE = of("CARD.STATE_CHANGE")
+            val CARD_STATUS_CHANGE = of("CARD.STATUS_CHANGE")
 
             fun of(value: String) = Type(JsonField.of(value))
         }
 
         /** An enum containing [Type]'s known values. */
         enum class Known {
-            CARD_STATE_CHANGE
+            CARD_STATUS_CHANGE
         }
 
         /**
@@ -303,7 +303,7 @@ private constructor(
          * - It was constructed with an arbitrary value using the [of] method.
          */
         enum class Value {
-            CARD_STATE_CHANGE,
+            CARD_STATUS_CHANGE,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -317,7 +317,7 @@ private constructor(
          */
         fun value(): Value =
             when (this) {
-                CARD_STATE_CHANGE -> Value.CARD_STATE_CHANGE
+                CARD_STATUS_CHANGE -> Value.CARD_STATUS_CHANGE
                 else -> Value._UNKNOWN
             }
 
@@ -332,7 +332,7 @@ private constructor(
          */
         fun known(): Known =
             when (this) {
-                CARD_STATE_CHANGE -> Known.CARD_STATE_CHANGE
+                CARD_STATUS_CHANGE -> Known.CARD_STATUS_CHANGE
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
@@ -402,7 +402,7 @@ private constructor(
             return true
         }
 
-        return other is CardStateChangeWebhookEvent &&
+        return other is CardStatusChangeWebhookEvent &&
             id == other.id &&
             data == other.data &&
             timestamp == other.timestamp &&
@@ -417,5 +417,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardStateChangeWebhookEvent{id=$id, data=$data, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
+        "CardStatusChangeWebhookEvent{id=$id, data=$data, timestamp=$timestamp, type=$type, additionalProperties=$additionalProperties}"
 }
