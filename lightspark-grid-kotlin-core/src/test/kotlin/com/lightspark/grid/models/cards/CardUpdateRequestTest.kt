@@ -13,19 +13,15 @@ internal class CardUpdateRequestTest {
     fun create() {
         val cardUpdateRequest =
             CardUpdateRequest.builder()
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)
                 .state(CardUpdateRequest.State.FROZEN)
                 .build()
 
-        assertThat(cardUpdateRequest.fundingSources())
-            .containsExactly(
-                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002",
-                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003",
-            )
+        assertThat(cardUpdateRequest.fundingSource())
+            .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(cardUpdateRequest.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(cardUpdateRequest.maxSpendPerTransaction()).isEqualTo(10000L)
         assertThat(cardUpdateRequest.maxTransactionsPerDay()).isEqualTo(20)
@@ -37,8 +33,7 @@ internal class CardUpdateRequestTest {
         val jsonMapper = jsonMapper()
         val cardUpdateRequest =
             CardUpdateRequest.builder()
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)

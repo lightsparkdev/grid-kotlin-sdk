@@ -13,8 +13,7 @@ internal class CardUpdateParamsTest {
             .id("id")
             .cardUpdateRequest(
                 CardUpdateRequest.builder()
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                    .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .maxSpendPerDay(25000L)
                     .maxSpendPerTransaction(10000L)
                     .maxTransactionsPerDay(20)
@@ -44,8 +43,7 @@ internal class CardUpdateParamsTest {
                 .id("id")
                 .cardUpdateRequest(
                     CardUpdateRequest.builder()
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .maxSpendPerDay(25000L)
                         .maxSpendPerTransaction(10000L)
                         .maxTransactionsPerDay(20)
@@ -59,8 +57,7 @@ internal class CardUpdateParamsTest {
         assertThat(body)
             .isEqualTo(
                 CardUpdateRequest.builder()
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                    .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                     .maxSpendPerDay(25000L)
                     .maxSpendPerTransaction(10000L)
                     .maxTransactionsPerDay(20)

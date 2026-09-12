@@ -10,8 +10,8 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Issue a new card for a cardholder. Every card must be bound to at least one funding source at
- * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
+ * Issue a new card for a cardholder. Every card is bound to one internal account, `fundingSource`,
+ * at create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
  * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
  *
  * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is required.
@@ -25,7 +25,7 @@ import java.util.Objects
  * the platform config sets the corresponding `cardConfigs` value, Grid enforces the lower of the
  * card and platform caps. Amounts use the smallest unit of the card's currency.
  *
- * If any funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
+ * If the funding source is an Embedded Wallet internal account, the cardholder must authorize Grid
  * to sign Spark token transactions for that card funding source by completing the delegated-key
  * creation flow with `POST /auth/delegated-keys`. Until an active delegated key exists for that
  * funding source, Authorization Decisioning cannot use it to fund card transactions.

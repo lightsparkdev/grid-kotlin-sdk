@@ -15,7 +15,7 @@ import com.lightspark.grid.models.cards.CardUpdateParams
 
 /**
  * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
- * close, manage card funding sources, and list card transactions.
+ * close, manage a card's funding source, and list card transactions.
  */
 interface CardServiceAsync {
 
@@ -53,19 +53,17 @@ interface CardServiceAsync {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state`, bound `fundingSources`, and / or `maxSpendPerTransaction`,
+     * Update a card's `state`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
      * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
      * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
-     * - `fundingSources`, when supplied, fully replaces the card's bound funding sources. Array
-     *   order determines the priority Authorization Decisioning tries them in. Each id must belong
-     *   to the cardholder and be denominated in the card's currency; the list must contain at least
-     *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`. On card programs
-     *   where the card issuer makes authorization decisions, `fundingSources` cannot be combined
-     *   with any `state` change, so send the changes as separate requests. On card programs where
-     *   Grid makes the authorization decision, the combination remains valid for `state` changes
-     *   other than `CLOSED`.
+     * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong
+     *   to the customer and be denominated in the card's currency. `fundingSource` cannot be
+     *   supplied alongside `state: CLOSED`. On card programs where the card issuer makes
+     *   authorization decisions, `fundingSource` cannot be combined with any `state` change, so
+     *   send the changes as separate requests. On card programs where Grid makes the authorization
+     *   decision, the combination remains valid for `state` changes other than `CLOSED`.
      * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap.
      *   Supply a positive integer in the smallest unit of the card's currency to set it or null to
      *   clear it. If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces
@@ -107,9 +105,10 @@ interface CardServiceAsync {
      *   `stateReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.
      *   All pending auths reconcile to a terminal state via the existing reconcile primitive.
      *   Inbound clearings received after close follow the standard force-post / late-presentment
-     *   path — Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails.
-     *   Funding-source bindings are detached. Refunds already in flight still complete because
-     *   Lightspark holds the card-reserve keys.
+     *   path — Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails. The
+     *   funding source is detached. Refunds already in flight still complete because Lightspark
+     *   holds the card-reserve keys.
+     * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
      *
      * The `card.state_change` webhook fires on every successful `state` transition.
      */
@@ -140,9 +139,9 @@ interface CardServiceAsync {
         list(CardListParams.none(), requestOptions)
 
     /**
-     * Issue a new card for a cardholder. Every card must be bound to at least one funding source at
-     * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
-     * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
+     * Issue a new card for a cardholder. Every card is bound to one internal account,
+     * `fundingSource`, at create time. The cardholder must have KYC status `APPROVED` before a card
+     * can be issued; otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
      * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is
      * required. Retries must carry the same key.
@@ -155,7 +154,7 @@ interface CardServiceAsync {
      * limit. If the platform config sets the corresponding `cardConfigs` value, Grid enforces the
      * lower of the card and platform caps. Amounts use the smallest unit of the card's currency.
      *
-     * If any funding source is an Embedded Wallet internal account, the cardholder must authorize
+     * If the funding source is an Embedded Wallet internal account, the cardholder must authorize
      * Grid to sign Spark token transactions for that card funding source by completing the
      * delegated-key creation flow with `POST /auth/delegated-keys`. Until an active delegated key
      * exists for that funding source, Authorization Decisioning cannot use it to fund card

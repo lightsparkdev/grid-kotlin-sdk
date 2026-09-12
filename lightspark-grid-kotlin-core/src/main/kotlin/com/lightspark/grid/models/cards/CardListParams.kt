@@ -30,8 +30,8 @@ private constructor(
 ) : Params {
 
     /**
-     * Filter by internal account id. Returns cards whose `fundingSources` array contains the given
-     * internal account id.
+     * Filter by internal account id. Returns cards whose `fundingSource` is the given internal
+     * account id.
      */
     fun accountId(): String? = accountId
 
@@ -95,8 +95,8 @@ private constructor(
         }
 
         /**
-         * Filter by internal account id. Returns cards whose `fundingSources` array contains the
-         * given internal account id.
+         * Filter by internal account id. Returns cards whose `fundingSource` is the given internal
+         * account id.
          */
         fun accountId(accountId: String?) = apply { this.accountId = accountId }
 

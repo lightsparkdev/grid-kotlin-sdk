@@ -11,25 +11,22 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
 /**
- * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSources`,
+ * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
  * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied. `state`
  * transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition
  * returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be
- * combined with `fundingSources`, `maxSpendPerTransaction`, `maxSpendPerDay`, or
- * `maxTransactionsPerDay`. `fundingSources`, when supplied, fully replaces the card's bound funding
- * sources — the array order determines the priority Authorization Decisioning tries them in.
+ * combined with `fundingSource`, `maxSpendPerTransaction`, `maxSpendPerDay`, or
+ * `maxTransactionsPerDay`.
  */
 class CardUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val fundingSources: JsonField<List<String>>,
+    private val fundingSource: JsonField<String>,
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val maxTransactionsPerDay: JsonField<Int>,
@@ -39,9 +36,9 @@ private constructor(
 
     @JsonCreator
     private constructor(
-        @JsonProperty("fundingSources")
+        @JsonProperty("fundingSource")
         @ExcludeMissing
-        fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        fundingSource: JsonField<String> = JsonMissing.of(),
         @JsonProperty("maxSpendPerDay")
         @ExcludeMissing
         maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
@@ -53,7 +50,7 @@ private constructor(
         maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
     ) : this(
-        fundingSources,
+        fundingSource,
         maxSpendPerDay,
         maxSpendPerTransaction,
         maxTransactionsPerDay,
@@ -62,16 +59,14 @@ private constructor(
     )
 
     /**
-     * New ordered list of internal account ids to bind as funding sources. Fully replaces the
-     * previous binding. Each id must belong to the cardholder and be denominated in the card's
-     * currency. The list must contain at least one source — to stop a card from spending without
-     * removing all sources, transition it to `FROZEN` instead. Cannot be supplied alongside `state:
-     * CLOSED`.
+     * Replaces the card's funding source. Must belong to the customer and be denominated in the
+     * card's currency. Cannot be supplied alongside `state: CLOSED`. To stop a card from spending,
+     * set `state: FROZEN` instead.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun fundingSources(): List<String>? = fundingSources.getNullable("fundingSources")
+    fun fundingSource(): String? = fundingSource.getNullable("fundingSource")
 
     /**
      * Replacement card-specific UTC-calendar-day cap, in the smallest unit of the card's currency.
@@ -126,13 +121,13 @@ private constructor(
     fun state(): State? = state.getNullable("state")
 
     /**
-     * Returns the raw JSON value of [fundingSources].
+     * Returns the raw JSON value of [fundingSource].
      *
-     * Unlike [fundingSources], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [fundingSource], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fundingSources")
+    @JsonProperty("fundingSource")
     @ExcludeMissing
-    fun _fundingSources(): JsonField<List<String>> = fundingSources
+    fun _fundingSource(): JsonField<String> = fundingSource
 
     /**
      * Returns the raw JSON value of [maxSpendPerDay].
@@ -191,7 +186,7 @@ private constructor(
     /** A builder for [CardUpdateRequest]. */
     class Builder internal constructor() {
 
-        private var fundingSources: JsonField<MutableList<String>>? = null
+        private var fundingSource: JsonField<String> = JsonMissing.of()
         private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
         private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
@@ -199,7 +194,7 @@ private constructor(
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardUpdateRequest: CardUpdateRequest) = apply {
-            fundingSources = cardUpdateRequest.fundingSources.map { it.toMutableList() }
+            fundingSource = cardUpdateRequest.fundingSource
             maxSpendPerDay = cardUpdateRequest.maxSpendPerDay
             maxSpendPerTransaction = cardUpdateRequest.maxSpendPerTransaction
             maxTransactionsPerDay = cardUpdateRequest.maxTransactionsPerDay
@@ -208,36 +203,21 @@ private constructor(
         }
 
         /**
-         * New ordered list of internal account ids to bind as funding sources. Fully replaces the
-         * previous binding. Each id must belong to the cardholder and be denominated in the card's
-         * currency. The list must contain at least one source — to stop a card from spending
-         * without removing all sources, transition it to `FROZEN` instead. Cannot be supplied
-         * alongside `state: CLOSED`.
+         * Replaces the card's funding source. Must belong to the customer and be denominated in the
+         * card's currency. Cannot be supplied alongside `state: CLOSED`. To stop a card from
+         * spending, set `state: FROZEN` instead.
          */
-        fun fundingSources(fundingSources: List<String>) =
-            fundingSources(JsonField.of(fundingSources))
+        fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
         /**
-         * Sets [Builder.fundingSources] to an arbitrary JSON value.
+         * Sets [Builder.fundingSource] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fundingSources] with a well-typed `List<String>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.fundingSource] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun fundingSources(fundingSources: JsonField<List<String>>) = apply {
-            this.fundingSources = fundingSources.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [String] to [fundingSources].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addFundingSource(fundingSource: String) = apply {
-            fundingSources =
-                (fundingSources ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("fundingSources", it).add(fundingSource)
-                }
+        fun fundingSource(fundingSource: JsonField<String>) = apply {
+            this.fundingSource = fundingSource
         }
 
         /**
@@ -372,7 +352,7 @@ private constructor(
          */
         fun build(): CardUpdateRequest =
             CardUpdateRequest(
-                (fundingSources ?: JsonMissing.of()).map { it.toImmutable() },
+                fundingSource,
                 maxSpendPerDay,
                 maxSpendPerTransaction,
                 maxTransactionsPerDay,
@@ -396,7 +376,7 @@ private constructor(
             return@apply
         }
 
-        fundingSources()
+        fundingSource()
         maxSpendPerDay()
         maxSpendPerTransaction()
         maxTransactionsPerDay()
@@ -418,7 +398,7 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (fundingSources.asKnown()?.size ?: 0) +
+        (if (fundingSource.asKnown() == null) 0 else 1) +
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
@@ -575,7 +555,7 @@ private constructor(
         }
 
         return other is CardUpdateRequest &&
-            fundingSources == other.fundingSources &&
+            fundingSource == other.fundingSource &&
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             maxTransactionsPerDay == other.maxTransactionsPerDay &&
@@ -585,7 +565,7 @@ private constructor(
 
     private val hashCode: Int by lazy {
         Objects.hash(
-            fundingSources,
+            fundingSource,
             maxSpendPerDay,
             maxSpendPerTransaction,
             maxTransactionsPerDay,
@@ -597,5 +577,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardUpdateRequest{fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, additionalProperties=$additionalProperties}"
+        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, state=$state, additionalProperties=$additionalProperties}"
 }

@@ -11,9 +11,7 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -23,7 +21,7 @@ class CardCreateRequest
 private constructor(
     private val customerId: JsonField<String>,
     private val form: JsonField<Form>,
-    private val fundingSources: JsonField<List<String>>,
+    private val fundingSource: JsonField<String>,
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val maxTransactionsPerDay: JsonField<Int>,
@@ -38,9 +36,9 @@ private constructor(
         @ExcludeMissing
         customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
-        @JsonProperty("fundingSources")
+        @JsonProperty("fundingSource")
         @ExcludeMissing
-        fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        fundingSource: JsonField<String> = JsonMissing.of(),
         @JsonProperty("maxSpendPerDay")
         @ExcludeMissing
         maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
@@ -59,7 +57,7 @@ private constructor(
     ) : this(
         customerId,
         form,
-        fundingSources,
+        fundingSource,
         maxSpendPerDay,
         maxSpendPerTransaction,
         maxTransactionsPerDay,
@@ -87,20 +85,18 @@ private constructor(
     fun form(): Form = form.getRequired("form")
 
     /**
-     * Internal account ids to bind as funding sources, in priority order. The first entry selects
-     * the card issuer and therefore the card's capabilities. The first entry is tried first by
-     * Authorization Decisioning. Every card must be bound to at least one source, and every source
-     * must belong to the cardholder and be denominated in a card-eligible currency; otherwise the
-     * request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
+     * Internal account id that funds this card. The account must belong to the customer and be
+     * denominated in a card-eligible currency; otherwise the request is rejected with
+     * `FUNDING_SOURCE_INELIGIBLE`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
+    fun fundingSource(): String = fundingSource.getRequired("fundingSource")
 
     /**
      * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
-     * smallest unit of the card currency derived from its funding sources. Omit this field for no
+     * smallest unit of the card currency derived from its funding source. Omit this field for no
      * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
      * Grid enforces the lower of the two values. The window resets at 00:00 UTC, and refunds,
      * reversals, and authorization expiries do not restore capacity during the day. Accepted only
@@ -114,7 +110,7 @@ private constructor(
 
     /**
      * Optional card-specific cap on a single transaction, in the smallest unit of the card currency
-     * derived from its funding sources. Omit this field for no card-specific cap. When the platform
+     * derived from its funding source. Omit this field for no card-specific cap. When the platform
      * config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two
      * values. Accepted only when the funding-source internal account's
      * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective limit
@@ -178,13 +174,13 @@ private constructor(
     @JsonProperty("form") @ExcludeMissing fun _form(): JsonField<Form> = form
 
     /**
-     * Returns the raw JSON value of [fundingSources].
+     * Returns the raw JSON value of [fundingSource].
      *
-     * Unlike [fundingSources], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [fundingSource], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fundingSources")
+    @JsonProperty("fundingSource")
     @ExcludeMissing
-    fun _fundingSources(): JsonField<List<String>> = fundingSources
+    fun _fundingSource(): JsonField<String> = fundingSource
 
     /**
      * Returns the raw JSON value of [maxSpendPerDay].
@@ -255,7 +251,7 @@ private constructor(
          * ```kotlin
          * .customerId()
          * .form()
-         * .fundingSources()
+         * .fundingSource()
          * ```
          */
         fun builder() = Builder()
@@ -266,7 +262,7 @@ private constructor(
 
         private var customerId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
-        private var fundingSources: JsonField<MutableList<String>>? = null
+        private var fundingSource: JsonField<String>? = null
         private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
         private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
@@ -277,7 +273,7 @@ private constructor(
         internal fun from(cardCreateRequest: CardCreateRequest) = apply {
             customerId = cardCreateRequest.customerId
             form = cardCreateRequest.form
-            fundingSources = cardCreateRequest.fundingSources.map { it.toMutableList() }
+            fundingSource = cardCreateRequest.fundingSource
             maxSpendPerDay = cardCreateRequest.maxSpendPerDay
             maxSpendPerTransaction = cardCreateRequest.maxSpendPerTransaction
             maxTransactionsPerDay = cardCreateRequest.maxTransactionsPerDay
@@ -316,41 +312,26 @@ private constructor(
         fun form(form: JsonField<Form>) = apply { this.form = form }
 
         /**
-         * Internal account ids to bind as funding sources, in priority order. The first entry
-         * selects the card issuer and therefore the card's capabilities. The first entry is tried
-         * first by Authorization Decisioning. Every card must be bound to at least one source, and
-         * every source must belong to the cardholder and be denominated in a card-eligible
-         * currency; otherwise the request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
+         * Internal account id that funds this card. The account must belong to the customer and be
+         * denominated in a card-eligible currency; otherwise the request is rejected with
+         * `FUNDING_SOURCE_INELIGIBLE`.
          */
-        fun fundingSources(fundingSources: List<String>) =
-            fundingSources(JsonField.of(fundingSources))
+        fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
         /**
-         * Sets [Builder.fundingSources] to an arbitrary JSON value.
+         * Sets [Builder.fundingSource] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fundingSources] with a well-typed `List<String>` value
-         * instead. This method is primarily for setting the field to an undocumented or not yet
-         * supported value.
+         * You should usually call [Builder.fundingSource] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
          */
-        fun fundingSources(fundingSources: JsonField<List<String>>) = apply {
-            this.fundingSources = fundingSources.map { it.toMutableList() }
-        }
-
-        /**
-         * Adds a single [String] to [fundingSources].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
-         */
-        fun addFundingSource(fundingSource: String) = apply {
-            fundingSources =
-                (fundingSources ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("fundingSources", it).add(fundingSource)
-                }
+        fun fundingSource(fundingSource: JsonField<String>) = apply {
+            this.fundingSource = fundingSource
         }
 
         /**
          * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
-         * smallest unit of the card currency derived from its funding sources. Omit this field for
+         * smallest unit of the card currency derived from its funding source. Omit this field for
          * no card-specific daily cap. When the platform config also supplies
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
          * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
@@ -373,7 +354,7 @@ private constructor(
 
         /**
          * Optional card-specific cap on a single transaction, in the smallest unit of the card
-         * currency derived from its funding sources. Omit this field for no card-specific cap. When
+         * currency derived from its funding source. Omit this field for no card-specific cap. When
          * the platform config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the
          * lower of the two values. Accepted only when the funding-source internal account's
          * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective
@@ -485,7 +466,7 @@ private constructor(
          * ```kotlin
          * .customerId()
          * .form()
-         * .fundingSources()
+         * .fundingSource()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -494,7 +475,7 @@ private constructor(
             CardCreateRequest(
                 checkRequired("customerId", customerId),
                 checkRequired("form", form),
-                checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
+                checkRequired("fundingSource", fundingSource),
                 maxSpendPerDay,
                 maxSpendPerTransaction,
                 maxTransactionsPerDay,
@@ -521,7 +502,7 @@ private constructor(
 
         customerId()
         form().validate()
-        fundingSources()
+        fundingSource()
         maxSpendPerDay()
         maxSpendPerTransaction()
         maxTransactionsPerDay()
@@ -546,7 +527,7 @@ private constructor(
     internal fun validity(): Int =
         (if (customerId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
-            (fundingSources.asKnown()?.size ?: 0) +
+            (if (fundingSource.asKnown() == null) 0 else 1) +
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
@@ -693,7 +674,7 @@ private constructor(
         return other is CardCreateRequest &&
             customerId == other.customerId &&
             form == other.form &&
-            fundingSources == other.fundingSources &&
+            fundingSource == other.fundingSource &&
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             maxTransactionsPerDay == other.maxTransactionsPerDay &&
@@ -706,7 +687,7 @@ private constructor(
         Objects.hash(
             customerId,
             form,
-            fundingSources,
+            fundingSource,
             maxSpendPerDay,
             maxSpendPerTransaction,
             maxTransactionsPerDay,
@@ -719,5 +700,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardCreateRequest{customerId=$customerId, form=$form, fundingSources=$fundingSources, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
+        "CardCreateRequest{customerId=$customerId, form=$form, fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }

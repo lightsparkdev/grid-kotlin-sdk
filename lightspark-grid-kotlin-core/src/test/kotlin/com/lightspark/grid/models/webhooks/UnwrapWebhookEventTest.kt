@@ -2114,8 +2114,7 @@ internal class UnwrapWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .form(Card.Form.VIRTUAL)
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                        .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000003")
+                        .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                         .maxSpendPerDay(25000L)
                         .maxSpendPerTransaction(5000L)
                         .maxTransactionsPerDay(20)
@@ -2174,12 +2173,7 @@ internal class UnwrapWebhookEventTest {
                             .createdAt(OffsetDateTime.parse("2026-05-08T14:10:00Z"))
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .form(Card.Form.VIRTUAL)
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
-                            )
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
-                            )
+                            .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                             .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(5000L)
                             .maxTransactionsPerDay(20)
