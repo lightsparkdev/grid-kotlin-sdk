@@ -23,8 +23,9 @@ import java.util.Objects
  * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
  * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase via
  * `originalTransactionId` rather than a rollup on the parent, so statements can list purchases and
- * refunds as separate dated lines. Delivered as the payload of the generic transaction webhook
- * stream (extends the Transaction model with a card destination type) on every transition.
+ * refunds as separate dated lines. Delivered whole as the `data` payload of every
+ * `CARD_TRANSACTION.*` webhook, and returned as the `CARD` variant of `Transaction` from `GET
+ * /transactions`.
  */
 class CardTransaction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

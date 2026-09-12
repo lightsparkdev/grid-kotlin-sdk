@@ -50,9 +50,9 @@ private constructor(
      * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
      * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase
      * via `originalTransactionId` rather than a rollup on the parent, so statements can list
-     * purchases and refunds as separate dated lines. Delivered as the payload of the generic
-     * transaction webhook stream (extends the Transaction model with a card destination type) on
-     * every transition.
+     * purchases and refunds as separate dated lines. Delivered whole as the `data` payload of every
+     * `CARD_TRANSACTION.*` webhook, and returned as the `CARD` variant of `Transaction` from `GET
+     * /transactions`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -163,9 +163,9 @@ private constructor(
          * One row per cardholder-visible card transaction. A purchase row rolls its clearings up
          * into `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the
          * purchase via `originalTransactionId` rather than a rollup on the parent, so statements
-         * can list purchases and refunds as separate dated lines. Delivered as the payload of the
-         * generic transaction webhook stream (extends the Transaction model with a card destination
-         * type) on every transition.
+         * can list purchases and refunds as separate dated lines. Delivered whole as the `data`
+         * payload of every `CARD_TRANSACTION.*` webhook, and returned as the `CARD` variant of
+         * `Transaction` from `GET /transactions`.
          */
         fun data(data: CardTransaction) = data(JsonField.of(data))
 
