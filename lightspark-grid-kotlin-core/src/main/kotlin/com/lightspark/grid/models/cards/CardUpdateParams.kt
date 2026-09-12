@@ -10,35 +10,35 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Update a card's `state`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
+ * Update a card's `status`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
  * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
- * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`. `CLOSED`
+ * - `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`. `CLOSED`
  *   is terminal and irreversible. Any other transition returns `409 INVALID_STATE_TRANSITION`.
  * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong to
  *   the customer and be denominated in the card's currency. `fundingSource` cannot be supplied
- *   alongside `state: CLOSED`. On card programs where the card issuer makes authorization
- *   decisions, `fundingSource` cannot be combined with any `state` change, so send the changes as
+ *   alongside `status: CLOSED`. On card programs where the card issuer makes authorization
+ *   decisions, `fundingSource` cannot be combined with any `status` change, so send the changes as
  *   separate requests. On card programs where Grid makes the authorization decision, the
- *   combination remains valid for `state` changes other than `CLOSED`.
+ *   combination remains valid for `status` changes other than `CLOSED`.
  * - `maxSpendPerTransaction`, when supplied, replaces the card-specific per-transaction cap. Supply
  *   a positive integer in the smallest unit of the card's currency to set it or null to clear it.
  *   If the platform config sets `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of
  *   the card and platform values. The card's `cardCapabilities.supportsSpendLimits` must be true.
- *   `maxSpendPerTransaction` cannot be supplied alongside `state: CLOSED`.
+ *   `maxSpendPerTransaction` cannot be supplied alongside `status: CLOSED`.
  * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend during
  *   one UTC calendar day. Supply a positive integer in the smallest unit of the card's currency to
  *   set it or null to clear it. If the platform config sets `cardConfigs.maxSpendPerDay`, Grid
  *   enforces the lower of the card and platform values. Refunds, reversals, and authorization
  *   expiries do not restore capacity during the day. The card's
  *   `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerDay` cannot be supplied
- *   alongside `state: CLOSED`.
+ *   alongside `status: CLOSED`.
  * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
  *   transactions the card may authorize during one UTC calendar day. Supply a positive integer to
  *   set it or null to clear it. If the platform config sets `cardConfigs.maxTransactionsPerDay`,
  *   Grid enforces the lower of the card and platform values. Refunds, reversals, and authorization
  *   expiries do not restore capacity during the day. `maxTransactionsPerDay` requires the card's
  *   `cardCapabilities.supportsTransactionCountLimit` to be true and cannot be supplied alongside
- *   `state: CLOSED`.
+ *   `status: CLOSED`.
  *
  * This endpoint is authenticated by the platform credential alone and returns `200` directly. It
  * deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the session
@@ -50,19 +50,20 @@ import java.util.Objects
  * instead, because there the cardholder is the party being served.
  *
  * Effects:
- * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
+ * - `status: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
  *   pulls and in-flight reconciliation continue — freezing does not pause the lifecycle of
  *   authorizations that already passed.
- * - `state: ACTIVE`: normal authorization behavior resumes.
- * - `state: CLOSED`: terminal close. The card transitions to `state: "CLOSED"` with `stateReason:
- *   "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation. All pending auths
- *   reconcile to a terminal state via the existing reconcile primitive. Inbound clearings received
- *   after close follow the standard force-post / late-presentment path — Lightspark absorbs the
- *   loss if a post-hoc pull on the now-unbound source fails. The funding source is detached.
- *   Refunds already in flight still complete because Lightspark holds the card-reserve keys.
+ * - `status: ACTIVE`: normal authorization behavior resumes.
+ * - `status: CLOSED`: terminal close. The card transitions to `status: "CLOSED"` with
+ *   `statusReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation. All
+ *   pending auths reconcile to a terminal state via the existing reconcile primitive. Inbound
+ *   clearings received after close follow the standard force-post / late-presentment path —
+ *   Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails. The funding
+ *   source is detached. Refunds already in flight still complete because Lightspark holds the
+ *   card-reserve keys.
  * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
  *
- * The `card.state_change` webhook fires on every successful `state` transition.
+ * The `card.state_change` webhook fires on every successful `status` transition.
  */
 class CardUpdateParams
 private constructor(
@@ -75,9 +76,9 @@ private constructor(
     fun id(): String? = id
 
     /**
-     * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
+     * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
      * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-     * `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
+     * `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
      * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
      * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
      * `maxSpendPerDay`, or `maxTransactionsPerDay`.
@@ -126,9 +127,9 @@ private constructor(
         fun id(id: String?) = apply { this.id = id }
 
         /**
-         * Update request for `PATCH /cards/{id}`. At least one of `state`, `fundingSource`,
+         * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
          * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-         * `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
+         * `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
          * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
          * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
          * `maxSpendPerDay`, or `maxTransactionsPerDay`.

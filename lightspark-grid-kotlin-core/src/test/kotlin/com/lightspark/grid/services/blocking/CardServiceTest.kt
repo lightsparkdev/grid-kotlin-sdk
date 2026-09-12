@@ -51,7 +51,7 @@ internal class CardServiceTest {
                             .maxSpendPerDay(25000L)
                             .maxSpendPerTransaction(10000L)
                             .maxTransactionsPerDay(20)
-                            .state(CardUpdateRequest.State.FROZEN)
+                            .status(CardUpdateRequest.Status.FROZEN)
                             .build()
                     )
                     .build()

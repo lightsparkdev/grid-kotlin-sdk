@@ -32,11 +32,11 @@ import java.util.Objects
  *
  * A platform may be limited to a maximum number of live cards. Once that limit is reached, further
  * issuance is rejected with `CARD_LIMIT_REACHED` until a card is closed or Lightspark raises the
- * limit. Cards in `CLOSED` state do not count toward the limit.
+ * limit. Cards in `CLOSED` status do not count toward the limit.
  *
- * New cards start in `state: "PROCESSING"` while the card issuer provisions the card. The
- * `card.state_change` webhook fires on each state transition, including the transition to `ACTIVE`
- * (or to `CLOSED` with `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+ * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
+ * `card.state_change` webhook fires on each status transition, including the transition to `ACTIVE`
+ * (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
  */
 class CardIssueParams
 private constructor(
