@@ -42,6 +42,7 @@ private constructor(
     private val status: JsonField<Status>,
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val cardDeclinedReason: JsonField<CardDeclinedReason>,
     private val cardId: JsonField<String>,
     private val description: JsonField<String>,
     private val issuerTransactionToken: JsonField<String>,
@@ -81,6 +82,9 @@ private constructor(
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("cardDeclinedReason")
+        @ExcludeMissing
+        cardDeclinedReason: JsonField<CardDeclinedReason> = JsonMissing.of(),
         @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("description")
         @ExcludeMissing
@@ -110,6 +114,7 @@ private constructor(
         status,
         type,
         updatedAt,
+        cardDeclinedReason,
         cardId,
         description,
         issuerTransactionToken,
@@ -143,7 +148,7 @@ private constructor(
     fun authorizedAmount(): CurrencyAmount = authorizedAmount.getRequired("authorizedAmount")
 
     /**
-     * When the auth was approved.
+     * When the authorization was approved or declined.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -223,6 +228,15 @@ private constructor(
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * Present only when `status` is `DECLINED`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardDeclinedReason(): CardDeclinedReason? =
+        cardDeclinedReason.getNullable("cardDeclinedReason")
 
     /**
      * The id of the `Card` this transaction was made on.
@@ -371,6 +385,16 @@ private constructor(
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
 
     /**
+     * Returns the raw JSON value of [cardDeclinedReason].
+     *
+     * Unlike [cardDeclinedReason], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("cardDeclinedReason")
+    @ExcludeMissing
+    fun _cardDeclinedReason(): JsonField<CardDeclinedReason> = cardDeclinedReason
+
+    /**
      * Returns the raw JSON value of [cardId].
      *
      * Unlike [cardId], this method doesn't throw if the JSON field has an unexpected type.
@@ -473,6 +497,7 @@ private constructor(
         private var status: JsonField<Status>? = null
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var cardDeclinedReason: JsonField<CardDeclinedReason> = JsonMissing.of()
         private var cardId: JsonField<String> = JsonMissing.of()
         private var description: JsonField<String> = JsonMissing.of()
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
@@ -494,6 +519,7 @@ private constructor(
             status = cardTransaction.status
             type = cardTransaction.type
             updatedAt = cardTransaction.updatedAt
+            cardDeclinedReason = cardTransaction.cardDeclinedReason
             cardId = cardTransaction.cardId
             description = cardTransaction.description
             issuerTransactionToken = cardTransaction.issuerTransactionToken
@@ -543,7 +569,7 @@ private constructor(
             this.authorizedAmount = authorizedAmount
         }
 
-        /** When the auth was approved. */
+        /** When the authorization was approved or declined. */
         fun authorizedAt(authorizedAt: OffsetDateTime) = authorizedAt(JsonField.of(authorizedAt))
 
         /**
@@ -671,6 +697,21 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        /** Present only when `status` is `DECLINED`. */
+        fun cardDeclinedReason(cardDeclinedReason: CardDeclinedReason) =
+            cardDeclinedReason(JsonField.of(cardDeclinedReason))
+
+        /**
+         * Sets [Builder.cardDeclinedReason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardDeclinedReason] with a well-typed
+         * [CardDeclinedReason] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun cardDeclinedReason(cardDeclinedReason: JsonField<CardDeclinedReason>) = apply {
+            this.cardDeclinedReason = cardDeclinedReason
+        }
 
         /** The id of the `Card` this transaction was made on. */
         fun cardId(cardId: String) = cardId(JsonField.of(cardId))
@@ -819,6 +860,7 @@ private constructor(
                 checkRequired("status", status),
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
+                cardDeclinedReason,
                 cardId,
                 description,
                 issuerTransactionToken,
@@ -856,6 +898,7 @@ private constructor(
         status().validate()
         type().validate()
         updatedAt()
+        cardDeclinedReason()?.validate()
         cardId()
         description()
         issuerTransactionToken()
@@ -891,6 +934,7 @@ private constructor(
             (status.asKnown()?.validity() ?: 0) +
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (cardDeclinedReason.asKnown()?.validity() ?: 0) +
             (if (cardId.asKnown() == null) 0 else 1) +
             (if (description.asKnown() == null) 0 else 1) +
             (if (issuerTransactionToken.asKnown() == null) 0 else 1) +
@@ -1335,6 +1379,177 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /** Present only when `status` is `DECLINED`. */
+    class CardDeclinedReason
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CARD_NOT_ACTIVE = of("CARD_NOT_ACTIVE")
+
+            val SPEND_LIMIT_EXCEEDED = of("SPEND_LIMIT_EXCEEDED")
+
+            val INSUFFICIENT_FUNDS = of("INSUFFICIENT_FUNDS")
+
+            val NO_ELIGIBLE_FUNDING_SOURCE = of("NO_ELIGIBLE_FUNDING_SOURCE")
+
+            val BLOCKED = of("BLOCKED")
+
+            val UNSUPPORTED_NETWORK = of("UNSUPPORTED_NETWORK")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = CardDeclinedReason(JsonField.of(value))
+        }
+
+        /** An enum containing [CardDeclinedReason]'s known values. */
+        enum class Known {
+            CARD_NOT_ACTIVE,
+            SPEND_LIMIT_EXCEEDED,
+            INSUFFICIENT_FUNDS,
+            NO_ELIGIBLE_FUNDING_SOURCE,
+            BLOCKED,
+            UNSUPPORTED_NETWORK,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [CardDeclinedReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [CardDeclinedReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CARD_NOT_ACTIVE,
+            SPEND_LIMIT_EXCEEDED,
+            INSUFFICIENT_FUNDS,
+            NO_ELIGIBLE_FUNDING_SOURCE,
+            BLOCKED,
+            UNSUPPORTED_NETWORK,
+            OTHER,
+            /**
+             * An enum member indicating that [CardDeclinedReason] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CARD_NOT_ACTIVE -> Value.CARD_NOT_ACTIVE
+                SPEND_LIMIT_EXCEEDED -> Value.SPEND_LIMIT_EXCEEDED
+                INSUFFICIENT_FUNDS -> Value.INSUFFICIENT_FUNDS
+                NO_ELIGIBLE_FUNDING_SOURCE -> Value.NO_ELIGIBLE_FUNDING_SOURCE
+                BLOCKED -> Value.BLOCKED
+                UNSUPPORTED_NETWORK -> Value.UNSUPPORTED_NETWORK
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CARD_NOT_ACTIVE -> Known.CARD_NOT_ACTIVE
+                SPEND_LIMIT_EXCEEDED -> Known.SPEND_LIMIT_EXCEEDED
+                INSUFFICIENT_FUNDS -> Known.INSUFFICIENT_FUNDS
+                NO_ELIGIBLE_FUNDING_SOURCE -> Known.NO_ELIGIBLE_FUNDING_SOURCE
+                BLOCKED -> Known.BLOCKED
+                UNSUPPORTED_NETWORK -> Known.UNSUPPORTED_NETWORK
+                OTHER -> Known.OTHER
+                else ->
+                    throw LightsparkGridInvalidDataException("Unknown CardDeclinedReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardDeclinedReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardDeclinedReason && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -1353,6 +1568,7 @@ private constructor(
             status == other.status &&
             type == other.type &&
             updatedAt == other.updatedAt &&
+            cardDeclinedReason == other.cardDeclinedReason &&
             cardId == other.cardId &&
             description == other.description &&
             issuerTransactionToken == other.issuerTransactionToken &&
@@ -1376,6 +1592,7 @@ private constructor(
             status,
             type,
             updatedAt,
+            cardDeclinedReason,
             cardId,
             description,
             issuerTransactionToken,
@@ -1389,5 +1606,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, description=$description, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardDeclinedReason=$cardDeclinedReason, cardId=$cardId, description=$description, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
 }
