@@ -109,12 +109,13 @@ private constructor(
     fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
 
     /**
-     * Optional card-specific cap on a single transaction, in the smallest unit of the card currency
-     * derived from its funding source. Omit this field for no card-specific cap. When the platform
-     * config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two
-     * values. Accepted only when the funding-source internal account's
-     * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective limit
-     * is allowed.
+     * The largest amount this card can authorize on a single transaction, in the smallest unit of
+     * its currency (cents for USD). An authorization for exactly the limit is allowed. A later
+     * clearing can still settle above it — a restaurant tip, for example — so this caps the
+     * authorization, not the final settled amount. Omit the field to set no limit. If your platform
+     * config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two applies. You can
+     * only send this when the funding-source internal account's
+     * `cardCapabilities.supportsSpendLimits` is true.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -353,12 +354,13 @@ private constructor(
         }
 
         /**
-         * Optional card-specific cap on a single transaction, in the smallest unit of the card
-         * currency derived from its funding source. Omit this field for no card-specific cap. When
-         * the platform config also supplies `cardConfigs.maxSpendPerTransaction`, Grid enforces the
-         * lower of the two values. Accepted only when the funding-source internal account's
-         * `cardCapabilities.supportsSpendLimits` is true. A transaction for exactly the effective
-         * limit is allowed.
+         * The largest amount this card can authorize on a single transaction, in the smallest unit
+         * of its currency (cents for USD). An authorization for exactly the limit is allowed. A
+         * later clearing can still settle above it — a restaurant tip, for example — so this caps
+         * the authorization, not the final settled amount. Omit the field to set no limit. If your
+         * platform config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two
+         * applies. You can only send this when the funding-source internal account's
+         * `cardCapabilities.supportsSpendLimits` is true.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
             maxSpendPerTransaction(JsonField.of(maxSpendPerTransaction))

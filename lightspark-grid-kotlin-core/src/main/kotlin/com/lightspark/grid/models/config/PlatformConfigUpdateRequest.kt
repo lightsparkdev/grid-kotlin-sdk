@@ -518,11 +518,14 @@ private constructor(
         fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
 
         /**
-         * Platform-level cap on a single transaction for every card whose authorization decisions
-         * are made by Grid. The value is interpreted in the smallest unit of each card's currency.
-         * Grid enforces the lower of this cap and the card's configured `maxSpendPerTransaction`;
-         * null means no platform-level cap. The cap applies to existing cards and to cards issued
-         * later. Provider-decided card programs are unaffected.
+         * The largest amount any of your cards can authorize on a single transaction, in the
+         * smallest unit of each card's currency (cents for USD). An authorization for exactly the
+         * limit is allowed. A later clearing can still settle above it — a restaurant tip, for
+         * example — so this caps the authorization, not the final settled amount. It covers every
+         * card Grid makes authorization decisions for, both those you have already issued and any
+         * you issue later, and does not apply to cards whose issuer makes the decisions. Where a
+         * card sets its own `maxSpendPerTransaction`, the lower of the two applies. `null` means no
+         * platform-wide limit.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g.
          *   if the server responded with an unexpected value).
@@ -639,12 +642,14 @@ private constructor(
             }
 
             /**
-             * Platform-level cap on a single transaction for every card whose authorization
-             * decisions are made by Grid. The value is interpreted in the smallest unit of each
-             * card's currency. Grid enforces the lower of this cap and the card's configured
-             * `maxSpendPerTransaction`; null means no platform-level cap. The cap applies to
-             * existing cards and to cards issued later. Provider-decided card programs are
-             * unaffected.
+             * The largest amount any of your cards can authorize on a single transaction, in the
+             * smallest unit of each card's currency (cents for USD). An authorization for exactly
+             * the limit is allowed. A later clearing can still settle above it — a restaurant tip,
+             * for example — so this caps the authorization, not the final settled amount. It covers
+             * every card Grid makes authorization decisions for, both those you have already issued
+             * and any you issue later, and does not apply to cards whose issuer makes the
+             * decisions. Where a card sets its own `maxSpendPerTransaction`, the lower of the two
+             * applies. `null` means no platform-wide limit.
              */
             fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
                 maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
