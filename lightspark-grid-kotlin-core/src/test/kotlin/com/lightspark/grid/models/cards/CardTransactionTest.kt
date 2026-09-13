@@ -50,6 +50,7 @@ internal class CardTransactionTest {
                 .type(CardTransaction.Type.CARD)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .description("BLUE BOTTLE COFFEE SF")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                 .refundedAmount(
@@ -121,6 +122,7 @@ internal class CardTransactionTest {
         assertThat(cardTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
         assertThat(cardTransaction.cardId()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
+        assertThat(cardTransaction.description()).isEqualTo("BLUE BOTTLE COFFEE SF")
         assertThat(cardTransaction.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
         assertThat(cardTransaction.originalTransactionId())
             .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000099")
@@ -192,6 +194,7 @@ internal class CardTransactionTest {
                 .type(CardTransaction.Type.CARD)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
                 .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .description("BLUE BOTTLE COFFEE SF")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
                 .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                 .refundedAmount(

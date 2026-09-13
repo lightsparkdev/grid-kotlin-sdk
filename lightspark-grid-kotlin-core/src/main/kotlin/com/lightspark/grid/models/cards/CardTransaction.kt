@@ -43,6 +43,7 @@ private constructor(
     private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val cardId: JsonField<String>,
+    private val description: JsonField<String>,
     private val issuerTransactionToken: JsonField<String>,
     private val originalTransactionId: JsonField<String>,
     private val refundedAmount: JsonField<CurrencyAmount>,
@@ -81,6 +82,9 @@ private constructor(
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("description")
+        @ExcludeMissing
+        description: JsonField<String> = JsonMissing.of(),
         @JsonProperty("issuerTransactionToken")
         @ExcludeMissing
         issuerTransactionToken: JsonField<String> = JsonMissing.of(),
@@ -107,6 +111,7 @@ private constructor(
         type,
         updatedAt,
         cardId,
+        description,
         issuerTransactionToken,
         originalTransactionId,
         refundedAmount,
@@ -226,6 +231,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun cardId(): String? = cardId.getNullable("cardId")
+
+    /**
+     * The merchant descriptor, repeated from `merchant.descriptor` so a transaction list reads
+     * without expanding each card row. Unlike `description` on other transaction types, this is set
+     * by Grid from the card network's descriptor, not supplied by the platform.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun description(): String? = description.getNullable("description")
 
     /**
      * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference Grid
@@ -363,6 +378,13 @@ private constructor(
     @JsonProperty("cardId") @ExcludeMissing fun _cardId(): JsonField<String> = cardId
 
     /**
+     * Returns the raw JSON value of [description].
+     *
+     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
+
+    /**
      * Returns the raw JSON value of [issuerTransactionToken].
      *
      * Unlike [issuerTransactionToken], this method doesn't throw if the JSON field has an
@@ -452,6 +474,7 @@ private constructor(
         private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var cardId: JsonField<String> = JsonMissing.of()
+        private var description: JsonField<String> = JsonMissing.of()
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
         private var originalTransactionId: JsonField<String> = JsonMissing.of()
         private var refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
@@ -472,6 +495,7 @@ private constructor(
             type = cardTransaction.type
             updatedAt = cardTransaction.updatedAt
             cardId = cardTransaction.cardId
+            description = cardTransaction.description
             issuerTransactionToken = cardTransaction.issuerTransactionToken
             originalTransactionId = cardTransaction.originalTransactionId
             refundedAmount = cardTransaction.refundedAmount
@@ -660,6 +684,22 @@ private constructor(
         fun cardId(cardId: JsonField<String>) = apply { this.cardId = cardId }
 
         /**
+         * The merchant descriptor, repeated from `merchant.descriptor` so a transaction list reads
+         * without expanding each card row. Unlike `description` on other transaction types, this is
+         * set by Grid from the card network's descriptor, not supplied by the platform.
+         */
+        fun description(description: String) = description(JsonField.of(description))
+
+        /**
+         * Sets [Builder.description] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun description(description: JsonField<String>) = apply { this.description = description }
+
+        /**
          * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference
          * Grid records against issuer dashboards and webhooks.
          */
@@ -780,6 +820,7 @@ private constructor(
                 checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
                 cardId,
+                description,
                 issuerTransactionToken,
                 originalTransactionId,
                 refundedAmount,
@@ -816,6 +857,7 @@ private constructor(
         type().validate()
         updatedAt()
         cardId()
+        description()
         issuerTransactionToken()
         originalTransactionId()
         refundedAmount()?.validate()
@@ -850,6 +892,7 @@ private constructor(
             (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (if (cardId.asKnown() == null) 0 else 1) +
+            (if (description.asKnown() == null) 0 else 1) +
             (if (issuerTransactionToken.asKnown() == null) 0 else 1) +
             (if (originalTransactionId.asKnown() == null) 0 else 1) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
@@ -1311,6 +1354,7 @@ private constructor(
             type == other.type &&
             updatedAt == other.updatedAt &&
             cardId == other.cardId &&
+            description == other.description &&
             issuerTransactionToken == other.issuerTransactionToken &&
             originalTransactionId == other.originalTransactionId &&
             refundedAmount == other.refundedAmount &&
@@ -1333,6 +1377,7 @@ private constructor(
             type,
             updatedAt,
             cardId,
+            description,
             issuerTransactionToken,
             originalTransactionId,
             refundedAmount,
@@ -1344,5 +1389,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardId=$cardId, description=$description, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
 }
