@@ -99,9 +99,9 @@ interface CardServiceAsync {
      * served.
      *
      * Effects:
-     * - `status: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
-     *   pulls and in-flight reconciliation continue — freezing does not pause the lifecycle of
-     *   authorizations that already passed.
+     * - `status: FROZEN`: Authorization Decisioning declines new auths with `cardDeclinedReason:
+     *   CARD_NOT_ACTIVE`. Existing pulls and in-flight reconciliation continue — freezing does not
+     *   pause the lifecycle of authorizations that already passed.
      * - `status: ACTIVE`: normal authorization behavior resumes.
      * - `status: CLOSED`: terminal close. The card transitions to `status: "CLOSED"` with
      *   `statusReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.

@@ -196,13 +196,13 @@ private constructor(
     /**
      * Lifecycle status of a card.
      *
-     * |Status       |Description                                                                                                                                                  |
-     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
-     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
+     * |Status       |Description                                                                                                                                                                          |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -708,13 +708,13 @@ private constructor(
         /**
          * Lifecycle status of a card.
          *
-         * |Status       |Description                                                                                                                                                  |
-         * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
-         * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
-         * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
-         * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
+         * |Status       |Description                                                                                                                                                                          |
+         * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+         * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+         * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+         * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
          */
         fun status(status: Status) = status(JsonField.of(status))
 
@@ -1156,13 +1156,13 @@ private constructor(
     /**
      * Lifecycle status of a card.
      *
-     * |Status       |Description                                                                                                                                                  |
-     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                              |
-     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                               |
+     * |Status       |Description                                                                                                                                                                          |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
