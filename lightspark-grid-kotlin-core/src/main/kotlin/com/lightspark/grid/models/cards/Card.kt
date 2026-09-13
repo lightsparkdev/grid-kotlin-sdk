@@ -166,10 +166,12 @@ private constructor(
     fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
 
     /**
-     * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
-     * Null means the card has no card-specific cap. When the platform config also supplies
-     * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
-     * replacing this configured value. A transaction for exactly the effective limit is allowed.
+     * The largest amount this card can authorize on a single transaction, in the smallest unit of
+     * its `currency` (cents for USD). An authorization for exactly the limit is allowed. A later
+     * clearing can still settle above it — a restaurant tip, for example — so this caps the
+     * authorization, not the final settled amount. `null` means the card sets no limit of its own.
+     * If your platform config also sets `cardConfigs.maxSpendPerTransaction` (the platform-level
+     * limit), the lower of the two applies and this value stays as you set it.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -642,11 +644,12 @@ private constructor(
         }
 
         /**
-         * Card-specific cap on a single transaction, in the smallest unit of the card's `currency`.
-         * Null means the card has no card-specific cap. When the platform config also supplies
-         * `cardConfigs.maxSpendPerTransaction`, Grid enforces the lower of the two values without
-         * replacing this configured value. A transaction for exactly the effective limit is
-         * allowed.
+         * The largest amount this card can authorize on a single transaction, in the smallest unit
+         * of its `currency` (cents for USD). An authorization for exactly the limit is allowed. A
+         * later clearing can still settle above it — a restaurant tip, for example — so this caps
+         * the authorization, not the final settled amount. `null` means the card sets no limit of
+         * its own. If your platform config also sets `cardConfigs.maxSpendPerTransaction` (the
+         * platform-level limit), the lower of the two applies and this value stays as you set it.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
             maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
