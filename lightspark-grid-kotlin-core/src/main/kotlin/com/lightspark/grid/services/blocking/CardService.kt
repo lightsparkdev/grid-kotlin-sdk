@@ -112,7 +112,7 @@ interface CardService {
      *   holds the card-reserve keys.
      * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
      *
-     * The `card.state_change` webhook fires on every successful `status` transition.
+     * The `card.status_change` webhook fires on every successful `status` transition.
      */
     fun update(
         id: String,
@@ -167,7 +167,7 @@ interface CardService {
      * raises the limit. Cards in `CLOSED` status do not count toward the limit.
      *
      * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
-     * `card.state_change` webhook fires on each status transition, including the transition to
+     * `card.status_change` webhook fires on each status transition, including the transition to
      * `ACTIVE` (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
      */
     fun issue(params: CardIssueParams, requestOptions: RequestOptions = RequestOptions.none()): Card
