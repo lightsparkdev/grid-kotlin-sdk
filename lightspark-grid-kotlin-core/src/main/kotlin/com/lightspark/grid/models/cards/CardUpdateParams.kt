@@ -66,7 +66,7 @@ import java.util.Objects
  *   card-reserve keys.
  * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
  *
- * The `card.state_change` webhook fires on every successful `status` transition.
+ * The `card.status_change` webhook fires on every successful `status` transition.
  */
 class CardUpdateParams
 private constructor(

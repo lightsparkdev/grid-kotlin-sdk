@@ -35,8 +35,8 @@ import java.util.Objects
  * limit. Cards in `CLOSED` status do not count toward the limit.
  *
  * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
- * `card.state_change` webhook fires on each status transition, including the transition to `ACTIVE`
- * (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
+ * `card.status_change` webhook fires on each status transition, including the transition to
+ * `ACTIVE` (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
  */
 class CardIssueParams
 private constructor(
