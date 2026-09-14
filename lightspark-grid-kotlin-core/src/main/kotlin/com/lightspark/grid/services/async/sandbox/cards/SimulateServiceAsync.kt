@@ -44,6 +44,9 @@ interface SimulateServiceAsync {
      * the confirmation event reports `FAILED` — exercises the high-urgency `EXCEPTION` alert | |
      * any other | Approved |
      *
+     * `merchant.descriptor` must be 1–25 characters — the width of the card network's acceptor-name
+     * field. A longer one is rejected with `400` `INVALID_INPUT`.
+     *
      * Production returns `404` on this path.
      */
     suspend fun authorization(

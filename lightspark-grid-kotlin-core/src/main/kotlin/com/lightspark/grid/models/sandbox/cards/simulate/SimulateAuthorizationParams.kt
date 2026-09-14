@@ -25,6 +25,9 @@ import java.util.Objects
  * confirmation event reports `FAILED` — exercises the high-urgency `EXCEPTION` alert | | any other
  * | Approved |
  *
+ * `merchant.descriptor` must be 1–25 characters — the width of the card network's acceptor-name
+ * field. A longer one is rejected with `400` `INVALID_INPUT`.
+ *
  * Production returns `404` on this path.
  */
 class SimulateAuthorizationParams
@@ -44,7 +47,7 @@ private constructor(
      * `simulate/credit_authorization_advice`. Drives the same internal authorization + reconcile
      * paths that the issuer would call in production. The decisioning outcome is controlled by the
      * last three characters of `merchant.descriptor` — see the `simulate/authorization`
-     * documentation for the suffix table.
+     * documentation for the suffix table. `merchant.descriptor` must be 1–25 characters.
      */
     fun authorizationRequest(): AuthorizationRequest = authorizationRequest
 
@@ -96,7 +99,8 @@ private constructor(
          * `simulate/credit_authorization_advice`. Drives the same internal authorization +
          * reconcile paths that the issuer would call in production. The decisioning outcome is
          * controlled by the last three characters of `merchant.descriptor` — see the
-         * `simulate/authorization` documentation for the suffix table.
+         * `simulate/authorization` documentation for the suffix table. `merchant.descriptor` must
+         * be 1–25 characters.
          */
         fun authorizationRequest(authorizationRequest: AuthorizationRequest) = apply {
             this.authorizationRequest = authorizationRequest

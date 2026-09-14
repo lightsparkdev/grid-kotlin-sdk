@@ -22,7 +22,8 @@ import java.util.Objects
  * `simulate/financial_credit_authorization`, and `simulate/credit_authorization_advice`. Drives the
  * same internal authorization + reconcile paths that the issuer would call in production. The
  * decisioning outcome is controlled by the last three characters of `merchant.descriptor` — see the
- * `simulate/authorization` documentation for the suffix table.
+ * `simulate/authorization` documentation for the suffix table. `merchant.descriptor` must be 1–25
+ * characters.
  */
 class AuthorizationRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
