@@ -196,9 +196,9 @@ private constructor(
     fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * Lifecycle status of a card transaction. The status tracks settlement only — a return against
-     * a purchase is its own dated `CREDIT` row linked to the purchase via `originalTransactionId`,
-     * not a status of its own.
+     * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+     * settlement — a return against a purchase is its own dated `CREDIT` row linked to the purchase
+     * via `originalTransactionId`, not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -206,6 +206,7 @@ private constructor(
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
      * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
      * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+     * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -650,9 +651,9 @@ private constructor(
         }
 
         /**
-         * Lifecycle status of a card transaction. The status tracks settlement only — a return
-         * against a purchase is its own dated `CREDIT` row linked to the purchase via
-         * `originalTransactionId`, not a status of its own.
+         * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+         * settlement — a return against a purchase is its own dated `CREDIT` row linked to the
+         * purchase via `originalTransactionId`, not a status of its own.
          *
          * |Status             |Description                                                                                                                                                                                                                                    |
          * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -660,6 +661,7 @@ private constructor(
          * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
          * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
          * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+         * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
          * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
          */
         fun status(status: Status) = status(JsonField.of(status))
@@ -1084,9 +1086,9 @@ private constructor(
     }
 
     /**
-     * Lifecycle status of a card transaction. The status tracks settlement only — a return against
-     * a purchase is its own dated `CREDIT` row linked to the purchase via `originalTransactionId`,
-     * not a status of its own.
+     * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+     * settlement — a return against a purchase is its own dated `CREDIT` row linked to the purchase
+     * via `originalTransactionId`, not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -1094,6 +1096,7 @@ private constructor(
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
      * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
      * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+     * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1118,6 +1121,8 @@ private constructor(
 
             val DECLINED = of("DECLINED")
 
+            val VOIDED = of("VOIDED")
+
             val EXCEPTION = of("EXCEPTION")
 
             fun of(value: String) = Status(JsonField.of(value))
@@ -1129,6 +1134,7 @@ private constructor(
             PARTIALLY_SETTLED,
             SETTLED,
             DECLINED,
+            VOIDED,
             EXCEPTION,
         }
 
@@ -1146,6 +1152,7 @@ private constructor(
             PARTIALLY_SETTLED,
             SETTLED,
             DECLINED,
+            VOIDED,
             EXCEPTION,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -1164,6 +1171,7 @@ private constructor(
                 PARTIALLY_SETTLED -> Value.PARTIALLY_SETTLED
                 SETTLED -> Value.SETTLED
                 DECLINED -> Value.DECLINED
+                VOIDED -> Value.VOIDED
                 EXCEPTION -> Value.EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -1183,6 +1191,7 @@ private constructor(
                 PARTIALLY_SETTLED -> Known.PARTIALLY_SETTLED
                 SETTLED -> Known.SETTLED
                 DECLINED -> Known.DECLINED
+                VOIDED -> Known.VOIDED
                 EXCEPTION -> Known.EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
