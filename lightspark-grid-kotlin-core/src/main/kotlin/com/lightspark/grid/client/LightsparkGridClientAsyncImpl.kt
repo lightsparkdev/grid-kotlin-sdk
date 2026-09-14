@@ -42,8 +42,6 @@ import com.lightspark.grid.services.async.TransferInServiceAsync
 import com.lightspark.grid.services.async.TransferInServiceAsyncImpl
 import com.lightspark.grid.services.async.TransferOutServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsyncImpl
-import com.lightspark.grid.services.async.UmaProviderServiceAsync
-import com.lightspark.grid.services.async.UmaProviderServiceAsyncImpl
 import com.lightspark.grid.services.async.VerificationServiceAsync
 import com.lightspark.grid.services.async.VerificationServiceAsyncImpl
 import com.lightspark.grid.services.async.WebhookServiceAsync
@@ -105,10 +103,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     private val sandbox: SandboxServiceAsync by lazy {
         SandboxServiceAsyncImpl(clientOptionsWithUserAgent)
-    }
-
-    private val umaProviders: UmaProviderServiceAsync by lazy {
-        UmaProviderServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
     private val tokens: TokenServiceAsync by lazy {
@@ -203,8 +197,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
     /** Endpoints to trigger test cases in sandbox */
     override fun sandbox(): SandboxServiceAsync = sandbox
-
-    override fun umaProviders(): UmaProviderServiceAsync = umaProviders
 
     /** Endpoints to programmatically manage API tokens */
     override fun tokens(): TokenServiceAsync = tokens
@@ -308,10 +300,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
             SandboxServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
 
-        private val umaProviders: UmaProviderServiceAsync.WithRawResponse by lazy {
-            UmaProviderServiceAsyncImpl.WithRawResponseImpl(clientOptions)
-        }
-
         private val tokens: TokenServiceAsync.WithRawResponse by lazy {
             TokenServiceAsyncImpl.WithRawResponseImpl(clientOptions)
         }
@@ -408,8 +396,6 @@ class LightsparkGridClientAsyncImpl(private val clientOptions: ClientOptions) :
 
         /** Endpoints to trigger test cases in sandbox */
         override fun sandbox(): SandboxServiceAsync.WithRawResponse = sandbox
-
-        override fun umaProviders(): UmaProviderServiceAsync.WithRawResponse = umaProviders
 
         /** Endpoints to programmatically manage API tokens */
         override fun tokens(): TokenServiceAsync.WithRawResponse = tokens

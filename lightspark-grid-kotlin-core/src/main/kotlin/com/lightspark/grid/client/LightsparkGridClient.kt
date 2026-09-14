@@ -22,7 +22,6 @@ import com.lightspark.grid.services.blocking.TokenService
 import com.lightspark.grid.services.blocking.TransactionService
 import com.lightspark.grid.services.blocking.TransferInService
 import com.lightspark.grid.services.blocking.TransferOutService
-import com.lightspark.grid.services.blocking.UmaProviderService
 import com.lightspark.grid.services.blocking.VerificationService
 import com.lightspark.grid.services.blocking.WebhookService
 
@@ -107,8 +106,6 @@ interface LightsparkGridClient {
 
     /** Endpoints to trigger test cases in sandbox */
     fun sandbox(): SandboxService
-
-    fun umaProviders(): UmaProviderService
 
     /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenService
@@ -239,8 +236,6 @@ interface LightsparkGridClient {
 
         /** Endpoints to trigger test cases in sandbox */
         fun sandbox(): SandboxService.WithRawResponse
-
-        fun umaProviders(): UmaProviderService.WithRawResponse
 
         /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenService.WithRawResponse
