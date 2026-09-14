@@ -38,7 +38,9 @@ private constructor(
     ) : this(descriptor, city, country, mcc, state, mutableMapOf())
 
     /**
-     * Merchant descriptor string captured from the card network at authorization time.
+     * Merchant descriptor string captured from the card network at authorization time. On the
+     * sandbox simulate endpoints, where this is supplied rather than reported, it must be 1–25
+     * characters — the width of the card network's acceptor-name field.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -156,7 +158,11 @@ private constructor(
             additionalProperties = cardMerchant.additionalProperties.toMutableMap()
         }
 
-        /** Merchant descriptor string captured from the card network at authorization time. */
+        /**
+         * Merchant descriptor string captured from the card network at authorization time. On the
+         * sandbox simulate endpoints, where this is supplied rather than reported, it must be 1–25
+         * characters — the width of the card network's acceptor-name field.
+         */
         fun descriptor(descriptor: String) = descriptor(JsonField.of(descriptor))
 
         /**
