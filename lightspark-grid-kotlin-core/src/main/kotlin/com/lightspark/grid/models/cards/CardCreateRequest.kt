@@ -100,8 +100,8 @@ private constructor(
      * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
      * Grid enforces the lower of the two values. The window resets at 00:00 UTC, and refunds,
      * reversals, and authorization expiries do not restore capacity during the day. Accepted only
-     * when the funding-source internal account's `cardCapabilities.supportsSpendLimits` is true.
-     * Spend exactly equal to the effective limit is allowed.
+     * when the funding-source internal account's `cardCapabilities.supportsSpendLimitsAtIssuance`
+     * is true. Spend exactly equal to the effective limit is allowed.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -115,7 +115,7 @@ private constructor(
      * authorization, not the final settled amount. Omit the field to set no limit. If your platform
      * config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two applies. You can
      * only send this when the funding-source internal account's
-     * `cardCapabilities.supportsSpendLimits` is true.
+     * `cardCapabilities.supportsSpendLimitsAtIssuance` is true.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -337,8 +337,8 @@ private constructor(
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
          * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
          * capacity during the day. Accepted only when the funding-source internal account's
-         * `cardCapabilities.supportsSpendLimits` is true. Spend exactly equal to the effective
-         * limit is allowed.
+         * `cardCapabilities.supportsSpendLimitsAtIssuance` is true. Spend exactly equal to the
+         * effective limit is allowed.
          */
         fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(JsonField.of(maxSpendPerDay))
 
@@ -360,7 +360,7 @@ private constructor(
          * the authorization, not the final settled amount. Omit the field to set no limit. If your
          * platform config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two
          * applies. You can only send this when the funding-source internal account's
-         * `cardCapabilities.supportsSpendLimits` is true.
+         * `cardCapabilities.supportsSpendLimitsAtIssuance` is true.
          */
         fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
             maxSpendPerTransaction(JsonField.of(maxSpendPerTransaction))
