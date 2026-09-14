@@ -22,7 +22,6 @@ import com.lightspark.grid.services.async.TokenServiceAsync
 import com.lightspark.grid.services.async.TransactionServiceAsync
 import com.lightspark.grid.services.async.TransferInServiceAsync
 import com.lightspark.grid.services.async.TransferOutServiceAsync
-import com.lightspark.grid.services.async.UmaProviderServiceAsync
 import com.lightspark.grid.services.async.VerificationServiceAsync
 import com.lightspark.grid.services.async.WebhookServiceAsync
 
@@ -107,8 +106,6 @@ interface LightsparkGridClientAsync {
 
     /** Endpoints to trigger test cases in sandbox */
     fun sandbox(): SandboxServiceAsync
-
-    fun umaProviders(): UmaProviderServiceAsync
 
     /** Endpoints to programmatically manage API tokens */
     fun tokens(): TokenServiceAsync
@@ -240,8 +237,6 @@ interface LightsparkGridClientAsync {
 
         /** Endpoints to trigger test cases in sandbox */
         fun sandbox(): SandboxServiceAsync.WithRawResponse
-
-        fun umaProviders(): UmaProviderServiceAsync.WithRawResponse
 
         /** Endpoints to programmatically manage API tokens */
         fun tokens(): TokenServiceAsync.WithRawResponse
