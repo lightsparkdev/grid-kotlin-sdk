@@ -1465,6 +1465,7 @@ private constructor(
         private val supports3dSecurePassword: JsonField<Boolean>,
         private val supportsPanReveal: JsonField<Boolean>,
         private val supportsSpendLimits: JsonField<Boolean>,
+        private val supportsSpendLimitsAtIssuance: JsonField<Boolean>,
         private val supportsTransactionCountLimit: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -1480,6 +1481,9 @@ private constructor(
             @JsonProperty("supportsSpendLimits")
             @ExcludeMissing
             supportsSpendLimits: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsSpendLimitsAtIssuance")
+            @ExcludeMissing
+            supportsSpendLimitsAtIssuance: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("supportsTransactionCountLimit")
             @ExcludeMissing
             supportsTransactionCountLimit: JsonField<Boolean> = JsonMissing.of(),
@@ -1487,6 +1491,7 @@ private constructor(
             supports3dSecurePassword,
             supportsPanReveal,
             supportsSpendLimits,
+            supportsSpendLimitsAtIssuance,
             supportsTransactionCountLimit,
             mutableMapOf(),
         )
@@ -1509,12 +1514,27 @@ private constructor(
         fun supportsPanReveal(): Boolean = supportsPanReveal.getRequired("supportsPanReveal")
 
         /**
-         * Whether cards in this program accept `maxSpendPerTransaction` and `maxSpendPerDay`.
+         * Whether a card in this program can have `maxSpendPerTransaction` and `maxSpendPerDay` at
+         * all. On card programs where the card issuer makes authorization decisions, these limits
+         * can only be set after issuance through `PATCH /cards/{id}`. Check
+         * `supportsSpendLimitsAtIssuance` to determine whether you can supply them when issuing a
+         * card.
          *
          * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun supportsSpendLimits(): Boolean = supportsSpendLimits.getRequired("supportsSpendLimits")
+
+        /**
+         * Whether `maxSpendPerTransaction` and `maxSpendPerDay` may be supplied on `POST /cards`.
+         * This is true for card programs where Grid makes the authorization decision and false for
+         * card programs where the card issuer makes authorization decisions.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsSpendLimitsAtIssuance(): Boolean =
+            supportsSpendLimitsAtIssuance.getRequired("supportsSpendLimitsAtIssuance")
 
         /**
          * Whether cards in this program accept `maxTransactionsPerDay`.
@@ -1556,6 +1576,16 @@ private constructor(
         fun _supportsSpendLimits(): JsonField<Boolean> = supportsSpendLimits
 
         /**
+         * Returns the raw JSON value of [supportsSpendLimitsAtIssuance].
+         *
+         * Unlike [supportsSpendLimitsAtIssuance], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("supportsSpendLimitsAtIssuance")
+        @ExcludeMissing
+        fun _supportsSpendLimitsAtIssuance(): JsonField<Boolean> = supportsSpendLimitsAtIssuance
+
+        /**
          * Returns the raw JSON value of [supportsTransactionCountLimit].
          *
          * Unlike [supportsTransactionCountLimit], this method doesn't throw if the JSON field has
@@ -1587,6 +1617,7 @@ private constructor(
              * .supports3dSecurePassword()
              * .supportsPanReveal()
              * .supportsSpendLimits()
+             * .supportsSpendLimitsAtIssuance()
              * .supportsTransactionCountLimit()
              * ```
              */
@@ -1599,6 +1630,7 @@ private constructor(
             private var supports3dSecurePassword: JsonField<Boolean>? = null
             private var supportsPanReveal: JsonField<Boolean>? = null
             private var supportsSpendLimits: JsonField<Boolean>? = null
+            private var supportsSpendLimitsAtIssuance: JsonField<Boolean>? = null
             private var supportsTransactionCountLimit: JsonField<Boolean>? = null
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -1606,6 +1638,7 @@ private constructor(
                 supports3dSecurePassword = cardCapabilities.supports3dSecurePassword
                 supportsPanReveal = cardCapabilities.supportsPanReveal
                 supportsSpendLimits = cardCapabilities.supportsSpendLimits
+                supportsSpendLimitsAtIssuance = cardCapabilities.supportsSpendLimitsAtIssuance
                 supportsTransactionCountLimit = cardCapabilities.supportsTransactionCountLimit
                 additionalProperties = cardCapabilities.additionalProperties.toMutableMap()
             }
@@ -1641,7 +1674,11 @@ private constructor(
             }
 
             /**
-             * Whether cards in this program accept `maxSpendPerTransaction` and `maxSpendPerDay`.
+             * Whether a card in this program can have `maxSpendPerTransaction` and `maxSpendPerDay`
+             * at all. On card programs where the card issuer makes authorization decisions, these
+             * limits can only be set after issuance through `PATCH /cards/{id}`. Check
+             * `supportsSpendLimitsAtIssuance` to determine whether you can supply them when issuing
+             * a card.
              */
             fun supportsSpendLimits(supportsSpendLimits: Boolean) =
                 supportsSpendLimits(JsonField.of(supportsSpendLimits))
@@ -1656,6 +1693,26 @@ private constructor(
             fun supportsSpendLimits(supportsSpendLimits: JsonField<Boolean>) = apply {
                 this.supportsSpendLimits = supportsSpendLimits
             }
+
+            /**
+             * Whether `maxSpendPerTransaction` and `maxSpendPerDay` may be supplied on `POST
+             * /cards`. This is true for card programs where Grid makes the authorization decision
+             * and false for card programs where the card issuer makes authorization decisions.
+             */
+            fun supportsSpendLimitsAtIssuance(supportsSpendLimitsAtIssuance: Boolean) =
+                supportsSpendLimitsAtIssuance(JsonField.of(supportsSpendLimitsAtIssuance))
+
+            /**
+             * Sets [Builder.supportsSpendLimitsAtIssuance] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsSpendLimitsAtIssuance] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsSpendLimitsAtIssuance(supportsSpendLimitsAtIssuance: JsonField<Boolean>) =
+                apply {
+                    this.supportsSpendLimitsAtIssuance = supportsSpendLimitsAtIssuance
+                }
 
             /** Whether cards in this program accept `maxTransactionsPerDay`. */
             fun supportsTransactionCountLimit(supportsTransactionCountLimit: Boolean) =
@@ -1702,6 +1759,7 @@ private constructor(
              * .supports3dSecurePassword()
              * .supportsPanReveal()
              * .supportsSpendLimits()
+             * .supportsSpendLimitsAtIssuance()
              * .supportsTransactionCountLimit()
              * ```
              *
@@ -1712,6 +1770,7 @@ private constructor(
                     checkRequired("supports3dSecurePassword", supports3dSecurePassword),
                     checkRequired("supportsPanReveal", supportsPanReveal),
                     checkRequired("supportsSpendLimits", supportsSpendLimits),
+                    checkRequired("supportsSpendLimitsAtIssuance", supportsSpendLimitsAtIssuance),
                     checkRequired("supportsTransactionCountLimit", supportsTransactionCountLimit),
                     additionalProperties.toMutableMap(),
                 )
@@ -1736,6 +1795,7 @@ private constructor(
             supports3dSecurePassword()
             supportsPanReveal()
             supportsSpendLimits()
+            supportsSpendLimitsAtIssuance()
             supportsTransactionCountLimit()
             validated = true
         }
@@ -1758,6 +1818,7 @@ private constructor(
             (if (supports3dSecurePassword.asKnown() == null) 0 else 1) +
                 (if (supportsPanReveal.asKnown() == null) 0 else 1) +
                 (if (supportsSpendLimits.asKnown() == null) 0 else 1) +
+                (if (supportsSpendLimitsAtIssuance.asKnown() == null) 0 else 1) +
                 (if (supportsTransactionCountLimit.asKnown() == null) 0 else 1)
 
         override fun equals(other: Any?): Boolean {
@@ -1769,6 +1830,7 @@ private constructor(
                 supports3dSecurePassword == other.supports3dSecurePassword &&
                 supportsPanReveal == other.supportsPanReveal &&
                 supportsSpendLimits == other.supportsSpendLimits &&
+                supportsSpendLimitsAtIssuance == other.supportsSpendLimitsAtIssuance &&
                 supportsTransactionCountLimit == other.supportsTransactionCountLimit &&
                 additionalProperties == other.additionalProperties
         }
@@ -1778,6 +1840,7 @@ private constructor(
                 supports3dSecurePassword,
                 supportsPanReveal,
                 supportsSpendLimits,
+                supportsSpendLimitsAtIssuance,
                 supportsTransactionCountLimit,
                 additionalProperties,
             )
@@ -1786,7 +1849,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
+            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsSpendLimitsAtIssuance=$supportsSpendLimitsAtIssuance, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
     }
 
     /**
