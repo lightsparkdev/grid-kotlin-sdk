@@ -6,9 +6,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.IndividualCustomer
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsent
+import com.lightspark.grid.models.customers.AgreementType
 import com.lightspark.grid.models.customers.Customer
 import com.lightspark.grid.models.customers.CustomerOneOf
-import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -28,6 +30,15 @@ internal class CustomerUpdateWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
                         .contactVerification(
                             Customer.ContactVerification.builder()
                                 .email(Customer.ContactVerification.Email.VERIFIED)
@@ -39,10 +50,8 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .endUserTermsConsent(
-                            EndUserTermsConsentRequest.builder()
-                                .acceptanceMethod(
-                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                )
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                 .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .ipAddress("198.51.100.24")
                                 .termsVersion("V1")
@@ -103,6 +112,15 @@ internal class CustomerUpdateWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
                         .contactVerification(
                             Customer.ContactVerification.builder()
                                 .email(Customer.ContactVerification.Email.VERIFIED)
@@ -114,10 +132,8 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .endUserTermsConsent(
-                            EndUserTermsConsentRequest.builder()
-                                .acceptanceMethod(
-                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                )
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                 .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .ipAddress("198.51.100.24")
                                 .termsVersion("V1")
@@ -183,6 +199,15 @@ internal class CustomerUpdateWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
                         .contactVerification(
                             Customer.ContactVerification.builder()
                                 .email(Customer.ContactVerification.Email.VERIFIED)
@@ -194,10 +219,8 @@ internal class CustomerUpdateWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .endUserTermsConsent(
-                            EndUserTermsConsentRequest.builder()
-                                .acceptanceMethod(
-                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                )
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                 .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .ipAddress("198.51.100.24")
                                 .termsVersion("V1")

@@ -32,6 +32,15 @@ internal class CustomerUpdateRequestOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .annualIncomeRange(
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
@@ -40,8 +49,8 @@ internal class CustomerUpdateRequestOneOfTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
-                    EndUserTermsConsentRequest.builder()
-                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                         .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .ipAddress("198.51.100.24")
                         .termsVersion("V1")
@@ -103,6 +112,15 @@ internal class CustomerUpdateRequestOneOfTest {
                             .state("CA")
                             .build()
                     )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
                     .annualIncomeRange(
                         IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
@@ -111,8 +129,8 @@ internal class CustomerUpdateRequestOneOfTest {
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
                     .endUserTermsConsent(
-                        EndUserTermsConsentRequest.builder()
-                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                             .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .ipAddress("198.51.100.24")
                             .termsVersion("V1")
@@ -177,6 +195,15 @@ internal class CustomerUpdateRequestOneOfTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .businessInfo(
                     BusinessCustomerUpdateRequest.BusinessInfo.builder()
                         .businessType(
@@ -222,8 +249,8 @@ internal class CustomerUpdateRequestOneOfTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
-                    EndUserTermsConsentRequest.builder()
-                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    BusinessCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                         .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .ipAddress("198.51.100.24")
                         .termsVersion("V1")
@@ -255,6 +282,15 @@ internal class CustomerUpdateRequestOneOfTest {
                             .city("San Francisco")
                             .line2("Apt 4B")
                             .state("CA")
+                            .build()
+                    )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
                             .build()
                     )
                     .businessInfo(
@@ -304,8 +340,8 @@ internal class CustomerUpdateRequestOneOfTest {
                     .currencies(listOf("USD", "EUR", "USDC"))
                     .email("john.doe@example.com")
                     .endUserTermsConsent(
-                        EndUserTermsConsentRequest.builder()
-                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        BusinessCustomerUpdateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                             .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .ipAddress("198.51.100.24")
                             .termsVersion("V1")

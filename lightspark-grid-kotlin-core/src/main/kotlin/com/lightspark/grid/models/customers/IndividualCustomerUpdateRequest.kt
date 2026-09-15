@@ -17,6 +17,7 @@ import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
@@ -32,12 +33,13 @@ class IndividualCustomerUpdateRequest
 private constructor(
     private val customerType: JsonField<CustomerType>,
     private val address: JsonField<Address>,
+    private val agreementConsents: JsonField<List<AgreementConsentRequest>>,
     private val annualIncomeRange: JsonField<AnnualIncomeRange>,
     private val birthDate: JsonField<LocalDate>,
     private val countryOfIssuance: JsonField<String>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
-    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
+    private val endUserTermsConsent: JsonField<EndUserTermsConsent>,
     private val expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount>,
     private val expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume>,
     private val fullName: JsonField<String>,
@@ -64,6 +66,9 @@ private constructor(
         @ExcludeMissing
         customerType: JsonField<CustomerType> = JsonMissing.of(),
         @JsonProperty("address") @ExcludeMissing address: JsonField<Address> = JsonMissing.of(),
+        @JsonProperty("agreementConsents")
+        @ExcludeMissing
+        agreementConsents: JsonField<List<AgreementConsentRequest>> = JsonMissing.of(),
         @JsonProperty("annualIncomeRange")
         @ExcludeMissing
         annualIncomeRange: JsonField<AnnualIncomeRange> = JsonMissing.of(),
@@ -79,7 +84,7 @@ private constructor(
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("endUserTermsConsent")
         @ExcludeMissing
-        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
+        endUserTermsConsent: JsonField<EndUserTermsConsent> = JsonMissing.of(),
         @JsonProperty("expectedMonthlyTransactionCount")
         @ExcludeMissing
         expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
@@ -130,6 +135,7 @@ private constructor(
     ) : this(
         customerType,
         address,
+        agreementConsents,
         annualIncomeRange,
         birthDate,
         countryOfIssuance,
@@ -167,6 +173,17 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun address(): Address? = address.getNullable("address")
+
+    /**
+     * Evidence that the customer accepted Grid agreements, at most one entry per type. Supplying
+     * this records additional acceptances; it never withdraws or replaces evidence already recorded
+     * for other types. Omitting the field leaves recorded consents unchanged.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun agreementConsents(): List<AgreementConsentRequest>? =
+        agreementConsents.getNullable("agreementConsents")
 
     /**
      * Bucketed annual income (USD equivalent). Used for enhanced due diligence on higher-risk
@@ -217,14 +234,15 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
-     * provide this before initiating customer-scoped transactions; those transactions fail until
-     * consent is recorded.
+     * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
+     * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
+     * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+    @Deprecated("deprecated")
+    fun endUserTermsConsent(): EndUserTermsConsent? =
         endUserTermsConsent.getNullable("endUserTermsConsent")
 
     /**
@@ -399,6 +417,16 @@ private constructor(
     @JsonProperty("address") @ExcludeMissing fun _address(): JsonField<Address> = address
 
     /**
+     * Returns the raw JSON value of [agreementConsents].
+     *
+     * Unlike [agreementConsents], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("agreementConsents")
+    @ExcludeMissing
+    fun _agreementConsents(): JsonField<List<AgreementConsentRequest>> = agreementConsents
+
+    /**
      * Returns the raw JSON value of [annualIncomeRange].
      *
      * Unlike [annualIncomeRange], this method doesn't throw if the JSON field has an unexpected
@@ -447,9 +475,10 @@ private constructor(
      * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("endUserTermsConsent")
     @ExcludeMissing
-    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+    fun _endUserTermsConsent(): JsonField<EndUserTermsConsent> = endUserTermsConsent
 
     /**
      * Returns the raw JSON value of [expectedMonthlyTransactionCount].
@@ -630,12 +659,13 @@ private constructor(
 
         private var customerType: JsonField<CustomerType>? = null
         private var address: JsonField<Address> = JsonMissing.of()
+        private var agreementConsents: JsonField<MutableList<AgreementConsentRequest>>? = null
         private var annualIncomeRange: JsonField<AnnualIncomeRange> = JsonMissing.of()
         private var birthDate: JsonField<LocalDate> = JsonMissing.of()
         private var countryOfIssuance: JsonField<String> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
-        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<EndUserTermsConsent> = JsonMissing.of()
         private var expectedMonthlyTransactionCount: JsonField<ExpectedMonthlyTransactionCount> =
             JsonMissing.of()
         private var expectedMonthlyTransactionVolume: JsonField<ExpectedMonthlyTransactionVolume> =
@@ -661,6 +691,8 @@ private constructor(
             apply {
                 customerType = individualCustomerUpdateRequest.customerType
                 address = individualCustomerUpdateRequest.address
+                agreementConsents =
+                    individualCustomerUpdateRequest.agreementConsents.map { it.toMutableList() }
                 annualIncomeRange = individualCustomerUpdateRequest.annualIncomeRange
                 birthDate = individualCustomerUpdateRequest.birthDate
                 countryOfIssuance = individualCustomerUpdateRequest.countryOfIssuance
@@ -721,6 +753,37 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun address(address: JsonField<Address>) = apply { this.address = address }
+
+        /**
+         * Evidence that the customer accepted Grid agreements, at most one entry per type.
+         * Supplying this records additional acceptances; it never withdraws or replaces evidence
+         * already recorded for other types. Omitting the field leaves recorded consents unchanged.
+         */
+        fun agreementConsents(agreementConsents: List<AgreementConsentRequest>) =
+            agreementConsents(JsonField.of(agreementConsents))
+
+        /**
+         * Sets [Builder.agreementConsents] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.agreementConsents] with a well-typed
+         * `List<AgreementConsentRequest>` value instead. This method is primarily for setting the
+         * field to an undocumented or not yet supported value.
+         */
+        fun agreementConsents(agreementConsents: JsonField<List<AgreementConsentRequest>>) = apply {
+            this.agreementConsents = agreementConsents.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [AgreementConsentRequest] to [agreementConsents].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addAgreementConsent(agreementConsent: AgreementConsentRequest) = apply {
+            agreementConsents =
+                (agreementConsents ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("agreementConsents", it).add(agreementConsent)
+                }
+        }
 
         /**
          * Bucketed annual income (USD equivalent). Used for enhanced due diligence on higher-risk
@@ -818,24 +881,25 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * Evidence that the customer accepted the Grid End User Terms. Unregulated platforms must
-         * provide this before initiating customer-scoped transactions; those transactions fail
-         * until consent is recorded.
+         * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
+         * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
+         * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
          */
-        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+        @Deprecated("deprecated")
+        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsent) =
             endUserTermsConsent(JsonField.of(endUserTermsConsent))
 
         /**
          * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
          *
          * You should usually call [Builder.endUserTermsConsent] with a well-typed
-         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
-         * field to an undocumented or not yet supported value.
+         * [EndUserTermsConsent] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
          */
-        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
-            apply {
-                this.endUserTermsConsent = endUserTermsConsent
-            }
+        @Deprecated("deprecated")
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsent>) = apply {
+            this.endUserTermsConsent = endUserTermsConsent
+        }
 
         /** Expected number of transactions per month */
         fun expectedMonthlyTransactionCount(
@@ -1164,6 +1228,7 @@ private constructor(
             IndividualCustomerUpdateRequest(
                 checkRequired("customerType", customerType),
                 address,
+                (agreementConsents ?: JsonMissing.of()).map { it.toImmutable() },
                 annualIncomeRange,
                 birthDate,
                 countryOfIssuance,
@@ -1208,6 +1273,7 @@ private constructor(
 
         customerType().validate()
         address()?.validate()
+        agreementConsents()?.forEach { it.validate() }
         annualIncomeRange()?.validate()
         birthDate()
         countryOfIssuance()
@@ -1250,6 +1316,7 @@ private constructor(
     internal fun validity(): Int =
         (customerType.asKnown()?.validity() ?: 0) +
             (address.asKnown()?.validity() ?: 0) +
+            (agreementConsents.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (annualIncomeRange.asKnown()?.validity() ?: 0) +
             (if (birthDate.asKnown() == null) 0 else 1) +
             (if (countryOfIssuance.asKnown() == null) 0 else 1) +
@@ -1564,6 +1631,323 @@ private constructor(
         override fun hashCode() = value.hashCode()
 
         override fun toString() = value.toString()
+    }
+
+    /**
+     * Deprecated; send `agreementConsents` instead. Supplying this records acceptance of the
+     * Lightspark End User Terms, equivalent to a single `agreementConsents` entry of type
+     * `LIGHTSPARK_END_USER_TERMS`. Supplying both fields in one request is rejected.
+     */
+    @Deprecated("deprecated")
+    class EndUserTermsConsent
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val acceptanceMethod: JsonField<AgreementAcceptanceMethod>,
+        private val acceptedAt: JsonField<OffsetDateTime>,
+        private val ipAddress: JsonField<String>,
+        private val termsVersion: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("acceptanceMethod")
+            @ExcludeMissing
+            acceptanceMethod: JsonField<AgreementAcceptanceMethod> = JsonMissing.of(),
+            @JsonProperty("acceptedAt")
+            @ExcludeMissing
+            acceptedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+            @JsonProperty("ipAddress")
+            @ExcludeMissing
+            ipAddress: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("termsVersion")
+            @ExcludeMissing
+            termsVersion: JsonField<String> = JsonMissing.of(),
+        ) : this(acceptanceMethod, acceptedAt, ipAddress, termsVersion, mutableMapOf())
+
+        /**
+         * Method the customer used to affirmatively accept an agreement.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun acceptanceMethod(): AgreementAcceptanceMethod =
+            acceptanceMethod.getRequired("acceptanceMethod")
+
+        /**
+         * Date and time when the customer accepted the End User Terms.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun acceptedAt(): OffsetDateTime = acceptedAt.getRequired("acceptedAt")
+
+        /**
+         * IP address of the device the customer used when accepting the terms.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun ipAddress(): String = ipAddress.getRequired("ipAddress")
+
+        /**
+         * Version identifier of the accepted Grid End User Terms.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun termsVersion(): String = termsVersion.getRequired("termsVersion")
+
+        /**
+         * Returns the raw JSON value of [acceptanceMethod].
+         *
+         * Unlike [acceptanceMethod], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("acceptanceMethod")
+        @ExcludeMissing
+        fun _acceptanceMethod(): JsonField<AgreementAcceptanceMethod> = acceptanceMethod
+
+        /**
+         * Returns the raw JSON value of [acceptedAt].
+         *
+         * Unlike [acceptedAt], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("acceptedAt")
+        @ExcludeMissing
+        fun _acceptedAt(): JsonField<OffsetDateTime> = acceptedAt
+
+        /**
+         * Returns the raw JSON value of [ipAddress].
+         *
+         * Unlike [ipAddress], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("ipAddress") @ExcludeMissing fun _ipAddress(): JsonField<String> = ipAddress
+
+        /**
+         * Returns the raw JSON value of [termsVersion].
+         *
+         * Unlike [termsVersion], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("termsVersion")
+        @ExcludeMissing
+        fun _termsVersion(): JsonField<String> = termsVersion
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [EndUserTermsConsent].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .acceptanceMethod()
+             * .acceptedAt()
+             * .ipAddress()
+             * .termsVersion()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [EndUserTermsConsent]. */
+        class Builder internal constructor() {
+
+            private var acceptanceMethod: JsonField<AgreementAcceptanceMethod>? = null
+            private var acceptedAt: JsonField<OffsetDateTime>? = null
+            private var ipAddress: JsonField<String>? = null
+            private var termsVersion: JsonField<String>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(endUserTermsConsent: EndUserTermsConsent) = apply {
+                acceptanceMethod = endUserTermsConsent.acceptanceMethod
+                acceptedAt = endUserTermsConsent.acceptedAt
+                ipAddress = endUserTermsConsent.ipAddress
+                termsVersion = endUserTermsConsent.termsVersion
+                additionalProperties = endUserTermsConsent.additionalProperties.toMutableMap()
+            }
+
+            /** Method the customer used to affirmatively accept an agreement. */
+            fun acceptanceMethod(acceptanceMethod: AgreementAcceptanceMethod) =
+                acceptanceMethod(JsonField.of(acceptanceMethod))
+
+            /**
+             * Sets [Builder.acceptanceMethod] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.acceptanceMethod] with a well-typed
+             * [AgreementAcceptanceMethod] value instead. This method is primarily for setting the
+             * field to an undocumented or not yet supported value.
+             */
+            fun acceptanceMethod(acceptanceMethod: JsonField<AgreementAcceptanceMethod>) = apply {
+                this.acceptanceMethod = acceptanceMethod
+            }
+
+            /** Date and time when the customer accepted the End User Terms. */
+            fun acceptedAt(acceptedAt: OffsetDateTime) = acceptedAt(JsonField.of(acceptedAt))
+
+            /**
+             * Sets [Builder.acceptedAt] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.acceptedAt] with a well-typed [OffsetDateTime] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun acceptedAt(acceptedAt: JsonField<OffsetDateTime>) = apply {
+                this.acceptedAt = acceptedAt
+            }
+
+            /** IP address of the device the customer used when accepting the terms. */
+            fun ipAddress(ipAddress: String) = ipAddress(JsonField.of(ipAddress))
+
+            /**
+             * Sets [Builder.ipAddress] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ipAddress] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun ipAddress(ipAddress: JsonField<String>) = apply { this.ipAddress = ipAddress }
+
+            /** Version identifier of the accepted Grid End User Terms. */
+            fun termsVersion(termsVersion: String) = termsVersion(JsonField.of(termsVersion))
+
+            /**
+             * Sets [Builder.termsVersion] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.termsVersion] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun termsVersion(termsVersion: JsonField<String>) = apply {
+                this.termsVersion = termsVersion
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [EndUserTermsConsent].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .acceptanceMethod()
+             * .acceptedAt()
+             * .ipAddress()
+             * .termsVersion()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): EndUserTermsConsent =
+                EndUserTermsConsent(
+                    checkRequired("acceptanceMethod", acceptanceMethod),
+                    checkRequired("acceptedAt", acceptedAt),
+                    checkRequired("ipAddress", ipAddress),
+                    checkRequired("termsVersion", termsVersion),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): EndUserTermsConsent = apply {
+            if (validated) {
+                return@apply
+            }
+
+            acceptanceMethod().validate()
+            acceptedAt()
+            ipAddress()
+            termsVersion()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (acceptanceMethod.asKnown()?.validity() ?: 0) +
+                (if (acceptedAt.asKnown() == null) 0 else 1) +
+                (if (ipAddress.asKnown() == null) 0 else 1) +
+                (if (termsVersion.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is EndUserTermsConsent &&
+                acceptanceMethod == other.acceptanceMethod &&
+                acceptedAt == other.acceptedAt &&
+                ipAddress == other.ipAddress &&
+                termsVersion == other.termsVersion &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                acceptanceMethod,
+                acceptedAt,
+                ipAddress,
+                termsVersion,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "EndUserTermsConsent{acceptanceMethod=$acceptanceMethod, acceptedAt=$acceptedAt, ipAddress=$ipAddress, termsVersion=$termsVersion, additionalProperties=$additionalProperties}"
     }
 
     /** Expected number of transactions per month */
@@ -3126,6 +3510,7 @@ private constructor(
         return other is IndividualCustomerUpdateRequest &&
             customerType == other.customerType &&
             address == other.address &&
+            agreementConsents == other.agreementConsents &&
             annualIncomeRange == other.annualIncomeRange &&
             birthDate == other.birthDate &&
             countryOfIssuance == other.countryOfIssuance &&
@@ -3156,6 +3541,7 @@ private constructor(
         Objects.hash(
             customerType,
             address,
+            agreementConsents,
             annualIncomeRange,
             birthDate,
             countryOfIssuance,
@@ -3186,5 +3572,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomerUpdateRequest{customerType=$customerType, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, phoneNumber=$phoneNumber, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
+        "IndividualCustomerUpdateRequest{customerType=$customerType, address=$address, agreementConsents=$agreementConsents, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, phoneNumber=$phoneNumber, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, umaAddress=$umaAddress, additionalProperties=$additionalProperties}"
 }

@@ -14,8 +14,10 @@ import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.cards.Card
 import com.lightspark.grid.models.cards.CardTransaction
 import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsent
+import com.lightspark.grid.models.customers.AgreementType
 import com.lightspark.grid.models.customers.Customer
-import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.customers.externalaccounts.BeneficiaryVerifiedData
 import com.lightspark.grid.models.customers.externalaccounts.ExternalAccount
@@ -1377,6 +1379,15 @@ internal class UnwrapWebhookEventTest {
                         .platformCustomerId("9f84e0c2a72c4fa")
                         .umaAddress("\$john.doe@uma.domain.com")
                         .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                        .addAgreementConsent(
+                            AgreementConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                .ipAddress("198.51.100.24")
+                                .termsVersion("2025-10-13")
+                                .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                .build()
+                        )
                         .contactVerification(
                             Customer.ContactVerification.builder()
                                 .email(Customer.ContactVerification.Email.VERIFIED)
@@ -1388,10 +1399,8 @@ internal class UnwrapWebhookEventTest {
                         .addCurrency("USDC")
                         .email("john.doe@example.com")
                         .endUserTermsConsent(
-                            EndUserTermsConsentRequest.builder()
-                                .acceptanceMethod(
-                                    EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                )
+                            Customer.EndUserTermsConsent.builder()
+                                .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                 .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                 .ipAddress("198.51.100.24")
                                 .termsVersion("V1")
@@ -1472,6 +1481,15 @@ internal class UnwrapWebhookEventTest {
                             .platformCustomerId("9f84e0c2a72c4fa")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .id("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .addAgreementConsent(
+                                AgreementConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("2025-10-13")
+                                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                    .build()
+                            )
                             .contactVerification(
                                 Customer.ContactVerification.builder()
                                     .email(Customer.ContactVerification.Email.VERIFIED)
@@ -1483,10 +1501,8 @@ internal class UnwrapWebhookEventTest {
                             .addCurrency("USDC")
                             .email("john.doe@example.com")
                             .endUserTermsConsent(
-                                EndUserTermsConsentRequest.builder()
-                                    .acceptanceMethod(
-                                        EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                    )
+                                Customer.EndUserTermsConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                     .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                     .ipAddress("198.51.100.24")
                                     .termsVersion("V1")

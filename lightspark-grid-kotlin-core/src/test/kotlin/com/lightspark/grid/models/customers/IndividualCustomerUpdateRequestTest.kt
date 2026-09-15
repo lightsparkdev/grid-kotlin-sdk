@@ -27,6 +27,15 @@ internal class IndividualCustomerUpdateRequestTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .annualIncomeRange(
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
@@ -35,8 +44,8 @@ internal class IndividualCustomerUpdateRequestTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
-                    EndUserTermsConsentRequest.builder()
-                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                         .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .ipAddress("198.51.100.24")
                         .termsVersion("V1")
@@ -88,6 +97,16 @@ internal class IndividualCustomerUpdateRequestTest {
                     .state("CA")
                     .build()
             )
+        assertThat(individualCustomerUpdateRequest.agreementConsents())
+            .containsExactly(
+                AgreementConsentRequest.builder()
+                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                    .ipAddress("198.51.100.24")
+                    .termsVersion("2025-10-13")
+                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                    .build()
+            )
         assertThat(individualCustomerUpdateRequest.annualIncomeRange())
             .isEqualTo(IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K)
         assertThat(individualCustomerUpdateRequest.birthDate())
@@ -98,8 +117,8 @@ internal class IndividualCustomerUpdateRequestTest {
         assertThat(individualCustomerUpdateRequest.email()).isEqualTo("john.doe@example.com")
         assertThat(individualCustomerUpdateRequest.endUserTermsConsent())
             .isEqualTo(
-                EndUserTermsConsentRequest.builder()
-                    .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                     .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .ipAddress("198.51.100.24")
                     .termsVersion("V1")
@@ -160,6 +179,15 @@ internal class IndividualCustomerUpdateRequestTest {
                         .state("CA")
                         .build()
                 )
+                .addAgreementConsent(
+                    AgreementConsentRequest.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                        .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                        .ipAddress("198.51.100.24")
+                        .termsVersion("2025-10-13")
+                        .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                        .build()
+                )
                 .annualIncomeRange(
                     IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                 )
@@ -168,8 +196,8 @@ internal class IndividualCustomerUpdateRequestTest {
                 .currencies(listOf("USD", "EUR", "USDC"))
                 .email("john.doe@example.com")
                 .endUserTermsConsent(
-                    EndUserTermsConsentRequest.builder()
-                        .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                    IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                        .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                         .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .ipAddress("198.51.100.24")
                         .termsVersion("V1")
