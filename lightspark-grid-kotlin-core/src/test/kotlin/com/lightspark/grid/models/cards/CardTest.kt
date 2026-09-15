@@ -28,6 +28,7 @@ internal class CardTest {
                 .cardCapabilities(
                     Card.CardCapabilities.builder()
                         .supports3dSecurePassword(false)
+                        .supportsDigitalWalletTokenization(true)
                         .supportsPanReveal(true)
                         .supportsSpendLimits(true)
                         .supportsSpendLimitsAtIssuance(true)
@@ -60,6 +61,7 @@ internal class CardTest {
             .isEqualTo(
                 Card.CardCapabilities.builder()
                     .supports3dSecurePassword(false)
+                    .supportsDigitalWalletTokenization(true)
                     .supportsPanReveal(true)
                     .supportsSpendLimits(true)
                     .supportsSpendLimitsAtIssuance(true)
@@ -95,6 +97,7 @@ internal class CardTest {
                 .cardCapabilities(
                     Card.CardCapabilities.builder()
                         .supports3dSecurePassword(false)
+                        .supportsDigitalWalletTokenization(true)
                         .supportsPanReveal(true)
                         .supportsSpendLimits(true)
                         .supportsSpendLimitsAtIssuance(true)

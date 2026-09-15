@@ -80,6 +80,7 @@ internal class InternalAccountListResponseTest {
                         .cardCapabilities(
                             InternalAccount.CardCapabilities.builder()
                                 .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
                                 .supportsPanReveal(true)
                                 .supportsSpendLimits(true)
                                 .supportsSpendLimitsAtIssuance(true)
@@ -215,6 +216,7 @@ internal class InternalAccountListResponseTest {
                     .cardCapabilities(
                         InternalAccount.CardCapabilities.builder()
                             .supports3dSecurePassword(false)
+                            .supportsDigitalWalletTokenization(true)
                             .supportsPanReveal(true)
                             .supportsSpendLimits(true)
                             .supportsSpendLimitsAtIssuance(true)
@@ -354,6 +356,7 @@ internal class InternalAccountListResponseTest {
                         .cardCapabilities(
                             InternalAccount.CardCapabilities.builder()
                                 .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
                                 .supportsPanReveal(true)
                                 .supportsSpendLimits(true)
                                 .supportsSpendLimitsAtIssuance(true)
