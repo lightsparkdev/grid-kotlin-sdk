@@ -6,9 +6,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.config.CustomerInfoFieldName
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsentRequest
+import com.lightspark.grid.models.customers.AgreementType
 import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
-import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import com.lightspark.grid.models.quotes.BaseDestination
@@ -118,6 +119,15 @@ internal class ProGuardCompatibilityTest {
                             .state("CA")
                             .build()
                     )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
                     .annualIncomeRange(
                         IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
@@ -127,8 +137,8 @@ internal class ProGuardCompatibilityTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .endUserTermsConsent(
-                        EndUserTermsConsentRequest.builder()
-                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                             .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .ipAddress("198.51.100.24")
                             .termsVersion("V1")
@@ -181,16 +191,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun customerInfoFieldNameRoundtrip() {
+    fun agreementAcceptanceMethodRoundtrip() {
         val jsonMapper = jsonMapper()
-        val customerInfoFieldName = CustomerInfoFieldName.FULL_NAME
+        val agreementAcceptanceMethod = AgreementAcceptanceMethod.CHECKBOX
 
-        val roundtrippedCustomerInfoFieldName =
+        val roundtrippedAgreementAcceptanceMethod =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(customerInfoFieldName),
-                jacksonTypeRef<CustomerInfoFieldName>(),
+                jsonMapper.writeValueAsString(agreementAcceptanceMethod),
+                jacksonTypeRef<AgreementAcceptanceMethod>(),
             )
 
-        assertThat(roundtrippedCustomerInfoFieldName).isEqualTo(customerInfoFieldName)
+        assertThat(roundtrippedAgreementAcceptanceMethod).isEqualTo(agreementAcceptanceMethod)
     }
 }

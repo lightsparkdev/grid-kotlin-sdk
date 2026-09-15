@@ -15,8 +15,8 @@ import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
+import com.lightspark.grid.models.customers.AgreementConsent
 import com.lightspark.grid.models.customers.Customer
-import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
 import java.time.OffsetDateTime
@@ -37,11 +37,12 @@ private constructor(
     private val platformCustomerId: JsonField<String>,
     private val umaAddress: JsonField<String>,
     private val id: JsonField<String>,
+    private val agreementConsents: JsonField<List<AgreementConsent>>,
     private val contactVerification: JsonField<Customer.ContactVerification>,
     private val createdAt: JsonField<OffsetDateTime>,
     private val currencies: JsonField<List<String>>,
     private val email: JsonField<String>,
-    private val endUserTermsConsent: JsonField<EndUserTermsConsentRequest>,
+    private val endUserTermsConsent: JsonField<Customer.EndUserTermsConsent>,
     private val isDeleted: JsonField<Boolean>,
     private val phoneNumber: JsonField<String>,
     private val region: JsonField<String>,
@@ -78,6 +79,9 @@ private constructor(
         @ExcludeMissing
         umaAddress: JsonField<String> = JsonMissing.of(),
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("agreementConsents")
+        @ExcludeMissing
+        agreementConsents: JsonField<List<AgreementConsent>> = JsonMissing.of(),
         @JsonProperty("contactVerification")
         @ExcludeMissing
         contactVerification: JsonField<Customer.ContactVerification> = JsonMissing.of(),
@@ -90,7 +94,7 @@ private constructor(
         @JsonProperty("email") @ExcludeMissing email: JsonField<String> = JsonMissing.of(),
         @JsonProperty("endUserTermsConsent")
         @ExcludeMissing
-        endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of(),
+        endUserTermsConsent: JsonField<Customer.EndUserTermsConsent> = JsonMissing.of(),
         @JsonProperty("isDeleted") @ExcludeMissing isDeleted: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("phoneNumber")
         @ExcludeMissing
@@ -157,6 +161,7 @@ private constructor(
         platformCustomerId,
         umaAddress,
         id,
+        agreementConsents,
         contactVerification,
         createdAt,
         currencies,
@@ -194,6 +199,7 @@ private constructor(
             .platformCustomerId(platformCustomerId)
             .umaAddress(umaAddress)
             .id(id)
+            .agreementConsents(agreementConsents)
             .contactVerification(contactVerification)
             .createdAt(createdAt)
             .currencies(currencies)
@@ -239,6 +245,16 @@ private constructor(
     fun id(): String? = id.getNullable("id")
 
     /**
+     * The customer's recorded agreement acceptances, one entry per accepted type holding that
+     * type's most recent acceptance. Omitted when the customer has not accepted any agreement yet.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun agreementConsents(): List<AgreementConsent>? =
+        agreementConsents.getNullable("agreementConsents")
+
+    /**
      * Email and phone verification state. **Only present when the customer's payment provider
      * requires it** (e.g. EU customers); omitted otherwise.
      *
@@ -273,13 +289,14 @@ private constructor(
     fun email(): String? = email.getNullable("email")
 
     /**
-     * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has been
-     * recorded.
+     * Deprecated; read `agreementConsents` instead. Mirrors the customer's
+     * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun endUserTermsConsent(): EndUserTermsConsentRequest? =
+    @Deprecated("deprecated")
+    fun endUserTermsConsent(): Customer.EndUserTermsConsent? =
         endUserTermsConsent.getNullable("endUserTermsConsent")
 
     /**
@@ -509,6 +526,16 @@ private constructor(
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
 
     /**
+     * Returns the raw JSON value of [agreementConsents].
+     *
+     * Unlike [agreementConsents], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("agreementConsents")
+    @ExcludeMissing
+    fun _agreementConsents(): JsonField<List<AgreementConsent>> = agreementConsents
+
+    /**
      * Returns the raw JSON value of [contactVerification].
      *
      * Unlike [contactVerification], this method doesn't throw if the JSON field has an unexpected
@@ -549,9 +576,10 @@ private constructor(
      * Unlike [endUserTermsConsent], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
+    @Deprecated("deprecated")
     @JsonProperty("endUserTermsConsent")
     @ExcludeMissing
-    fun _endUserTermsConsent(): JsonField<EndUserTermsConsentRequest> = endUserTermsConsent
+    fun _endUserTermsConsent(): JsonField<Customer.EndUserTermsConsent> = endUserTermsConsent
 
     /**
      * Returns the raw JSON value of [isDeleted].
@@ -785,11 +813,12 @@ private constructor(
         private var platformCustomerId: JsonField<String>? = null
         private var umaAddress: JsonField<String>? = null
         private var id: JsonField<String> = JsonMissing.of()
+        private var agreementConsents: JsonField<MutableList<AgreementConsent>>? = null
         private var contactVerification: JsonField<Customer.ContactVerification> = JsonMissing.of()
         private var createdAt: JsonField<OffsetDateTime> = JsonMissing.of()
         private var currencies: JsonField<MutableList<String>>? = null
         private var email: JsonField<String> = JsonMissing.of()
-        private var endUserTermsConsent: JsonField<EndUserTermsConsentRequest> = JsonMissing.of()
+        private var endUserTermsConsent: JsonField<Customer.EndUserTermsConsent> = JsonMissing.of()
         private var isDeleted: JsonField<Boolean> = JsonMissing.of()
         private var phoneNumber: JsonField<String> = JsonMissing.of()
         private var region: JsonField<String> = JsonMissing.of()
@@ -822,6 +851,7 @@ private constructor(
             platformCustomerId = individualCustomer.platformCustomerId
             umaAddress = individualCustomer.umaAddress
             id = individualCustomer.id
+            agreementConsents = individualCustomer.agreementConsents.map { it.toMutableList() }
             contactVerification = individualCustomer.contactVerification
             createdAt = individualCustomer.createdAt
             currencies = individualCustomer.currencies.map { it.toMutableList() }
@@ -899,6 +929,37 @@ private constructor(
         fun id(id: JsonField<String>) = apply { this.id = id }
 
         /**
+         * The customer's recorded agreement acceptances, one entry per accepted type holding that
+         * type's most recent acceptance. Omitted when the customer has not accepted any agreement
+         * yet.
+         */
+        fun agreementConsents(agreementConsents: List<AgreementConsent>) =
+            agreementConsents(JsonField.of(agreementConsents))
+
+        /**
+         * Sets [Builder.agreementConsents] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.agreementConsents] with a well-typed
+         * `List<AgreementConsent>` value instead. This method is primarily for setting the field to
+         * an undocumented or not yet supported value.
+         */
+        fun agreementConsents(agreementConsents: JsonField<List<AgreementConsent>>) = apply {
+            this.agreementConsents = agreementConsents.map { it.toMutableList() }
+        }
+
+        /**
+         * Adds a single [AgreementConsent] to [agreementConsents].
+         *
+         * @throws IllegalStateException if the field was previously set to a non-list.
+         */
+        fun addAgreementConsent(agreementConsent: AgreementConsent) = apply {
+            agreementConsents =
+                (agreementConsents ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("agreementConsents", it).add(agreementConsent)
+                }
+        }
+
+        /**
          * Email and phone verification state. **Only present when the customer's payment provider
          * requires it** (e.g. EU customers); omitted otherwise.
          */
@@ -967,20 +1028,22 @@ private constructor(
         fun email(email: JsonField<String>) = apply { this.email = email }
 
         /**
-         * The customer's recorded acceptance of the End User Terms. Omitted until acceptance has
-         * been recorded.
+         * Deprecated; read `agreementConsents` instead. Mirrors the customer's
+         * `LIGHTSPARK_END_USER_TERMS` acceptance when one is on file, and is omitted otherwise.
          */
-        fun endUserTermsConsent(endUserTermsConsent: EndUserTermsConsentRequest) =
+        @Deprecated("deprecated")
+        fun endUserTermsConsent(endUserTermsConsent: Customer.EndUserTermsConsent) =
             endUserTermsConsent(JsonField.of(endUserTermsConsent))
 
         /**
          * Sets [Builder.endUserTermsConsent] to an arbitrary JSON value.
          *
          * You should usually call [Builder.endUserTermsConsent] with a well-typed
-         * [EndUserTermsConsentRequest] value instead. This method is primarily for setting the
+         * [Customer.EndUserTermsConsent] value instead. This method is primarily for setting the
          * field to an undocumented or not yet supported value.
          */
-        fun endUserTermsConsent(endUserTermsConsent: JsonField<EndUserTermsConsentRequest>) =
+        @Deprecated("deprecated")
+        fun endUserTermsConsent(endUserTermsConsent: JsonField<Customer.EndUserTermsConsent>) =
             apply {
                 this.endUserTermsConsent = endUserTermsConsent
             }
@@ -1393,6 +1456,7 @@ private constructor(
                 checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("umaAddress", umaAddress),
                 id,
+                (agreementConsents ?: JsonMissing.of()).map { it.toImmutable() },
                 contactVerification,
                 createdAt,
                 (currencies ?: JsonMissing.of()).map { it.toImmutable() },
@@ -1443,6 +1507,7 @@ private constructor(
         platformCustomerId()
         umaAddress()
         id()
+        agreementConsents()?.forEach { it.validate() }
         contactVerification()?.validate()
         createdAt()
         currencies()
@@ -1491,6 +1556,7 @@ private constructor(
         (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (if (umaAddress.asKnown() == null) 0 else 1) +
             (if (id.asKnown() == null) 0 else 1) +
+            (agreementConsents.asKnown()?.sumOf { it.validity().toInt() } ?: 0) +
             (contactVerification.asKnown()?.validity() ?: 0) +
             (if (createdAt.asKnown() == null) 0 else 1) +
             (currencies.asKnown()?.size ?: 0) +
@@ -3374,6 +3440,7 @@ private constructor(
             platformCustomerId == other.platformCustomerId &&
             umaAddress == other.umaAddress &&
             id == other.id &&
+            agreementConsents == other.agreementConsents &&
             contactVerification == other.contactVerification &&
             createdAt == other.createdAt &&
             currencies == other.currencies &&
@@ -3411,6 +3478,7 @@ private constructor(
             platformCustomerId,
             umaAddress,
             id,
+            agreementConsents,
             contactVerification,
             createdAt,
             currencies,
@@ -3446,5 +3514,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, additionalProperties=$additionalProperties}"
+        "IndividualCustomer{customerType=$customerType, platformCustomerId=$platformCustomerId, umaAddress=$umaAddress, id=$id, agreementConsents=$agreementConsents, contactVerification=$contactVerification, createdAt=$createdAt, currencies=$currencies, email=$email, endUserTermsConsent=$endUserTermsConsent, isDeleted=$isDeleted, phoneNumber=$phoneNumber, region=$region, updatedAt=$updatedAt, address=$address, annualIncomeRange=$annualIncomeRange, birthDate=$birthDate, countryOfIssuance=$countryOfIssuance, expectedMonthlyTransactionCount=$expectedMonthlyTransactionCount, expectedMonthlyTransactionVolume=$expectedMonthlyTransactionVolume, fullName=$fullName, identifier=$identifier, idType=$idType, kycStatus=$kycStatus, nationality=$nationality, netWorthRange=$netWorthRange, pepStatus=$pepStatus, purposeOfAccount=$purposeOfAccount, purposeOfAccountOtherDescription=$purposeOfAccountOtherDescription, sourceOfFundsCategories=$sourceOfFundsCategories, sourceOfFundsOtherDescription=$sourceOfFundsOtherDescription, sourceOfWealthCategories=$sourceOfWealthCategories, sourceOfWealthOtherDescription=$sourceOfWealthOtherDescription, additionalProperties=$additionalProperties}"
 }

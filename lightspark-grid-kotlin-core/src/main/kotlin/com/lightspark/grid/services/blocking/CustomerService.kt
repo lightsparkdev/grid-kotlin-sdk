@@ -6,6 +6,7 @@ import com.google.errorprone.annotations.MustBeClosed
 import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
+import com.lightspark.grid.models.customers.AgreementDocumentListResponse
 import com.lightspark.grid.models.customers.BusinessCustomerCreateRequest
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
@@ -13,6 +14,7 @@ import com.lightspark.grid.models.customers.CustomerCreateRequestOneOf
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerExportResponse
+import com.lightspark.grid.models.customers.CustomerListAgreementsParams
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
@@ -255,6 +257,21 @@ interface CustomerService {
     ): CustomerExportResponse
 
     /**
+     * Retrieve the current version and Grid-hosted URL of every agreement Grid supports. Supply an
+     * entry's `version` as `termsVersion` when recording a customer's acceptance of that agreement.
+     * The list is a catalog of available agreements, not a list of the agreements a given customer
+     * is required to accept.
+     */
+    fun listAgreements(
+        params: CustomerListAgreementsParams = CustomerListAgreementsParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AgreementDocumentListResponse
+
+    /** @see listAgreements */
+    fun listAgreements(requestOptions: RequestOptions): AgreementDocumentListResponse =
+        listAgreements(CustomerListAgreementsParams.none(), requestOptions)
+
+    /**
      * Retrieve a list of internal accounts with optional filtering parameters. Returns all internal
      * accounts that match the specified filters. If no filters are provided, returns all internal
      * accounts (paginated).
@@ -271,13 +288,19 @@ interface CustomerService {
     fun listInternalAccounts(requestOptions: RequestOptions): CustomerListInternalAccountsPage =
         listInternalAccounts(CustomerListInternalAccountsParams.none(), requestOptions)
 
-    /** Retrieve the current version and Grid-hosted URL of the End User Terms. */
+    /**
+     * Deprecated; use `GET /customers/agreements`, which lists every agreement Grid supports rather
+     * than the End User Terms alone. This operation keeps its original single-document response, so
+     * existing integrations continue to work unchanged.
+     */
+    @Deprecated("deprecated")
     fun retrieveEndUserTerms(
         params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): EndUserTerms
 
     /** @see retrieveEndUserTerms */
+    @Deprecated("deprecated")
     fun retrieveEndUserTerms(requestOptions: RequestOptions): EndUserTerms =
         retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)
 
@@ -497,6 +520,23 @@ interface CustomerService {
         ): HttpResponseFor<CustomerExportResponse>
 
         /**
+         * Returns a raw HTTP response for `get /customers/agreements`, but is otherwise the same as
+         * [CustomerService.listAgreements].
+         */
+        @MustBeClosed
+        fun listAgreements(
+            params: CustomerListAgreementsParams = CustomerListAgreementsParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<AgreementDocumentListResponse>
+
+        /** @see listAgreements */
+        @MustBeClosed
+        fun listAgreements(
+            requestOptions: RequestOptions
+        ): HttpResponseFor<AgreementDocumentListResponse> =
+            listAgreements(CustomerListAgreementsParams.none(), requestOptions)
+
+        /**
          * Returns a raw HTTP response for `get /customers/internal-accounts`, but is otherwise the
          * same as [CustomerService.listInternalAccounts].
          */
@@ -517,6 +557,7 @@ interface CustomerService {
          * Returns a raw HTTP response for `get /customers/end-user-terms`, but is otherwise the
          * same as [CustomerService.retrieveEndUserTerms].
          */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieveEndUserTerms(
             params: CustomerRetrieveEndUserTermsParams = CustomerRetrieveEndUserTermsParams.none(),
@@ -524,6 +565,7 @@ interface CustomerService {
         ): HttpResponseFor<EndUserTerms>
 
         /** @see retrieveEndUserTerms */
+        @Deprecated("deprecated")
         @MustBeClosed
         fun retrieveEndUserTerms(requestOptions: RequestOptions): HttpResponseFor<EndUserTerms> =
             retrieveEndUserTerms(CustomerRetrieveEndUserTermsParams.none(), requestOptions)

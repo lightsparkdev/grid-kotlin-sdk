@@ -8,12 +8,12 @@ import com.lightspark.grid.core.http.QueryParams
 import java.util.Objects
 
 /**
- * Deprecated; use `GET /customers/agreements`, which lists every agreement Grid supports rather
- * than the End User Terms alone. This operation keeps its original single-document response, so
- * existing integrations continue to work unchanged.
+ * Retrieve the current version and Grid-hosted URL of every agreement Grid supports. Supply an
+ * entry's `version` as `termsVersion` when recording a customer's acceptance of that agreement. The
+ * list is a catalog of available agreements, not a list of the agreements a given customer is
+ * required to accept.
  */
-@Deprecated("deprecated")
-class CustomerRetrieveEndUserTermsParams
+class CustomerListAgreementsParams
 private constructor(
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
@@ -29,27 +29,24 @@ private constructor(
 
     companion object {
 
-        fun none(): CustomerRetrieveEndUserTermsParams = builder().build()
+        fun none(): CustomerListAgreementsParams = builder().build()
 
         /**
-         * Returns a mutable builder for constructing an instance of
-         * [CustomerRetrieveEndUserTermsParams].
+         * Returns a mutable builder for constructing an instance of [CustomerListAgreementsParams].
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [CustomerRetrieveEndUserTermsParams]. */
+    /** A builder for [CustomerListAgreementsParams]. */
     class Builder internal constructor() {
 
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
-        internal fun from(customerRetrieveEndUserTermsParams: CustomerRetrieveEndUserTermsParams) =
-            apply {
-                additionalHeaders = customerRetrieveEndUserTermsParams.additionalHeaders.toBuilder()
-                additionalQueryParams =
-                    customerRetrieveEndUserTermsParams.additionalQueryParams.toBuilder()
-            }
+        internal fun from(customerListAgreementsParams: CustomerListAgreementsParams) = apply {
+            additionalHeaders = customerListAgreementsParams.additionalHeaders.toBuilder()
+            additionalQueryParams = customerListAgreementsParams.additionalQueryParams.toBuilder()
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -150,15 +147,12 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [CustomerRetrieveEndUserTermsParams].
+         * Returns an immutable instance of [CustomerListAgreementsParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          */
-        fun build(): CustomerRetrieveEndUserTermsParams =
-            CustomerRetrieveEndUserTermsParams(
-                additionalHeaders.build(),
-                additionalQueryParams.build(),
-            )
+        fun build(): CustomerListAgreementsParams =
+            CustomerListAgreementsParams(additionalHeaders.build(), additionalQueryParams.build())
     }
 
     override fun _headers(): Headers = additionalHeaders
@@ -170,7 +164,7 @@ private constructor(
             return true
         }
 
-        return other is CustomerRetrieveEndUserTermsParams &&
+        return other is CustomerListAgreementsParams &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -178,5 +172,5 @@ private constructor(
     override fun hashCode(): Int = Objects.hash(additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CustomerRetrieveEndUserTermsParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerListAgreementsParams{additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -17,11 +17,13 @@ import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepare
+import com.lightspark.grid.models.customers.AgreementDocumentListResponse
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerCreateParams
 import com.lightspark.grid.models.customers.CustomerDeleteParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerExportResponse
+import com.lightspark.grid.models.customers.CustomerListAgreementsParams
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsPage
 import com.lightspark.grid.models.customers.CustomerListInternalAccountsParams
 import com.lightspark.grid.models.customers.CustomerListPage
@@ -114,6 +116,13 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         // post /internal-accounts/{id}/export
         withRawResponse().export(params, requestOptions).parse()
 
+    override fun listAgreements(
+        params: CustomerListAgreementsParams,
+        requestOptions: RequestOptions,
+    ): AgreementDocumentListResponse =
+        // get /customers/agreements
+        withRawResponse().listAgreements(params, requestOptions).parse()
+
     override fun listInternalAccounts(
         params: CustomerListInternalAccountsParams,
         requestOptions: RequestOptions,
@@ -121,6 +130,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         // get /customers/internal-accounts
         withRawResponse().listInternalAccounts(params, requestOptions).parse()
 
+    @Deprecated("deprecated")
     override fun retrieveEndUserTerms(
         params: CustomerRetrieveEndUserTermsParams,
         requestOptions: RequestOptions,
@@ -408,6 +418,37 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
             }
         }
 
+        private val listAgreementsHandler: Handler<AgreementDocumentListResponse> =
+            jsonHandler<AgreementDocumentListResponse>(clientOptions.jsonMapper)
+
+        override fun listAgreements(
+            params: CustomerListAgreementsParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<AgreementDocumentListResponse> {
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("customers", "agreements")
+                    .build()
+                    .prepare(
+                        clientOptions,
+                        params,
+                        SecurityOptions.builder().basicAuth(true).build(),
+                    )
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { listAgreementsHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
+                        }
+                    }
+            }
+        }
+
         private val listInternalAccountsHandler: Handler<InternalAccountListResponse> =
             jsonHandler<InternalAccountListResponse>(clientOptions.jsonMapper)
 
@@ -449,6 +490,7 @@ class CustomerServiceImpl internal constructor(private val clientOptions: Client
         private val retrieveEndUserTermsHandler: Handler<EndUserTerms> =
             jsonHandler<EndUserTerms>(clientOptions.jsonMapper)
 
+        @Deprecated("deprecated")
         override fun retrieveEndUserTerms(
             params: CustomerRetrieveEndUserTermsParams,
             requestOptions: RequestOptions,

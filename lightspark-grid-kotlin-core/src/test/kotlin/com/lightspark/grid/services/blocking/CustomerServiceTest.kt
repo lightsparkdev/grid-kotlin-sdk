@@ -3,11 +3,13 @@
 package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsentRequest
+import com.lightspark.grid.models.customers.AgreementType
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
 import com.lightspark.grid.models.customers.CustomerUpdateParams
-import com.lightspark.grid.models.customers.EndUserTermsConsentRequest
 import com.lightspark.grid.models.customers.IndividualCustomerCreateRequest
 import com.lightspark.grid.models.customers.IndividualCustomerUpdateRequest
 import com.lightspark.grid.models.customers.InternalAccountExportRequest
@@ -47,6 +49,15 @@ internal class CustomerServiceTest {
                             .state("CA")
                             .build()
                     )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
                     .annualIncomeRange(
                         IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                     )
@@ -56,8 +67,8 @@ internal class CustomerServiceTest {
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
                     .endUserTermsConsent(
-                        EndUserTermsConsentRequest.builder()
-                            .acceptanceMethod(EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX)
+                        IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                             .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                             .ipAddress("198.51.100.24")
                             .termsVersion("V1")
@@ -153,6 +164,15 @@ internal class CustomerServiceTest {
                                     .state("CA")
                                     .build()
                             )
+                            .addAgreementConsent(
+                                AgreementConsentRequest.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("2025-10-13")
+                                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                    .build()
+                            )
                             .annualIncomeRange(
                                 IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
                             )
@@ -161,10 +181,8 @@ internal class CustomerServiceTest {
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
                             .endUserTermsConsent(
-                                EndUserTermsConsentRequest.builder()
-                                    .acceptanceMethod(
-                                        EndUserTermsConsentRequest.AcceptanceMethod.CHECKBOX
-                                    )
+                                IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
                                     .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                                     .ipAddress("198.51.100.24")
                                     .termsVersion("V1")
@@ -305,6 +323,23 @@ internal class CustomerServiceTest {
             )
 
         response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    fun listAgreements() {
+        val client =
+            LightsparkGridOkHttpClient.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerService = client.customers()
+
+        val agreementDocumentListResponse = customerService.listAgreements()
+
+        agreementDocumentListResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")

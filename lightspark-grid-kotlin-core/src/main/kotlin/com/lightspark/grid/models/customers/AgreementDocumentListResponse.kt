@@ -10,59 +10,42 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
+import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
+import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
 
-/**
- * Deprecated; read the agreement documents list instead, which reports every agreement Grid
- * supports rather than the End User Terms alone.
- */
-@Deprecated("deprecated")
-class EndUserTerms
+class AgreementDocumentListResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val url: JsonField<String>,
-    private val version: JsonField<String>,
+    private val data: JsonField<List<AgreementDocument>>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("version") @ExcludeMissing version: JsonField<String> = JsonMissing.of(),
-    ) : this(url, version, mutableMapOf())
+        @JsonProperty("data")
+        @ExcludeMissing
+        data: JsonField<List<AgreementDocument>> = JsonMissing.of()
+    ) : this(data, mutableMapOf())
 
     /**
-     * URL where Grid hosts this version of the End User Terms.
+     * Every agreement Grid supports, one entry per type. The list is a catalog of available
+     * agreements, not a list of the agreements a given customer is required to accept.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun url(): String = url.getRequired("url")
+    fun data(): List<AgreementDocument> = data.getRequired("data")
 
     /**
-     * Current version identifier of the Grid End User Terms.
+     * Returns the raw JSON value of [data].
      *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun version(): String = version.getRequired("version")
-
-    /**
-     * Returns the raw JSON value of [url].
-     *
-     * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("url") @ExcludeMissing fun _url(): JsonField<String> = url
-
-    /**
-     * Returns the raw JSON value of [version].
-     *
-     * Unlike [version], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("version") @ExcludeMissing fun _version(): JsonField<String> = version
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<List<AgreementDocument>> = data
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -79,51 +62,56 @@ private constructor(
     companion object {
 
         /**
-         * Returns a mutable builder for constructing an instance of [EndUserTerms].
+         * Returns a mutable builder for constructing an instance of
+         * [AgreementDocumentListResponse].
          *
          * The following fields are required:
          * ```kotlin
-         * .url()
-         * .version()
+         * .data()
          * ```
          */
         fun builder() = Builder()
     }
 
-    /** A builder for [EndUserTerms]. */
+    /** A builder for [AgreementDocumentListResponse]. */
     class Builder internal constructor() {
 
-        private var url: JsonField<String>? = null
-        private var version: JsonField<String>? = null
+        private var data: JsonField<MutableList<AgreementDocument>>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
-        internal fun from(endUserTerms: EndUserTerms) = apply {
-            url = endUserTerms.url
-            version = endUserTerms.version
-            additionalProperties = endUserTerms.additionalProperties.toMutableMap()
+        internal fun from(agreementDocumentListResponse: AgreementDocumentListResponse) = apply {
+            data = agreementDocumentListResponse.data.map { it.toMutableList() }
+            additionalProperties = agreementDocumentListResponse.additionalProperties.toMutableMap()
         }
 
-        /** URL where Grid hosts this version of the End User Terms. */
-        fun url(url: String) = url(JsonField.of(url))
+        /**
+         * Every agreement Grid supports, one entry per type. The list is a catalog of available
+         * agreements, not a list of the agreements a given customer is required to accept.
+         */
+        fun data(data: List<AgreementDocument>) = data(JsonField.of(data))
 
         /**
-         * Sets [Builder.url] to an arbitrary JSON value.
+         * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.url] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.data] with a well-typed `List<AgreementDocument>` value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun url(url: JsonField<String>) = apply { this.url = url }
-
-        /** Current version identifier of the Grid End User Terms. */
-        fun version(version: String) = version(JsonField.of(version))
+        fun data(data: JsonField<List<AgreementDocument>>) = apply {
+            this.data = data.map { it.toMutableList() }
+        }
 
         /**
-         * Sets [Builder.version] to an arbitrary JSON value.
+         * Adds a single [AgreementDocument] to [Builder.data].
          *
-         * You should usually call [Builder.version] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * @throws IllegalStateException if the field was previously set to a non-list.
          */
-        fun version(version: JsonField<String>) = apply { this.version = version }
+        fun addData(data: AgreementDocument) = apply {
+            this.data =
+                (this.data ?: JsonField.of(mutableListOf())).also {
+                    checkKnown("data", it).add(data)
+                }
+        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -145,22 +133,20 @@ private constructor(
         }
 
         /**
-         * Returns an immutable instance of [EndUserTerms].
+         * Returns an immutable instance of [AgreementDocumentListResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
          *
          * The following fields are required:
          * ```kotlin
-         * .url()
-         * .version()
+         * .data()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
-        fun build(): EndUserTerms =
-            EndUserTerms(
-                checkRequired("url", url),
-                checkRequired("version", version),
+        fun build(): AgreementDocumentListResponse =
+            AgreementDocumentListResponse(
+                checkRequired("data", data).map { it.toImmutable() },
                 additionalProperties.toMutableMap(),
             )
     }
@@ -175,13 +161,12 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match its
      *   expected type.
      */
-    fun validate(): EndUserTerms = apply {
+    fun validate(): AgreementDocumentListResponse = apply {
         if (validated) {
             return@apply
         }
 
-        url()
-        version()
+        data().forEach { it.validate() }
         validated = true
     }
 
@@ -198,24 +183,22 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    internal fun validity(): Int =
-        (if (url.asKnown() == null) 0 else 1) + (if (version.asKnown() == null) 0 else 1)
+    internal fun validity(): Int = (data.asKnown()?.sumOf { it.validity().toInt() } ?: 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
         }
 
-        return other is EndUserTerms &&
-            url == other.url &&
-            version == other.version &&
+        return other is AgreementDocumentListResponse &&
+            data == other.data &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(url, version, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(data, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "EndUserTerms{url=$url, version=$version, additionalProperties=$additionalProperties}"
+        "AgreementDocumentListResponse{data=$data, additionalProperties=$additionalProperties}"
 }
