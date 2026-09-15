@@ -1463,6 +1463,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val supports3dSecurePassword: JsonField<Boolean>,
+        private val supportsDigitalWalletTokenization: JsonField<Boolean>,
         private val supportsPanReveal: JsonField<Boolean>,
         private val supportsSpendLimits: JsonField<Boolean>,
         private val supportsSpendLimitsAtIssuance: JsonField<Boolean>,
@@ -1475,6 +1476,9 @@ private constructor(
             @JsonProperty("supports3dSecurePassword")
             @ExcludeMissing
             supports3dSecurePassword: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsDigitalWalletTokenization")
+            @ExcludeMissing
+            supportsDigitalWalletTokenization: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("supportsPanReveal")
             @ExcludeMissing
             supportsPanReveal: JsonField<Boolean> = JsonMissing.of(),
@@ -1489,6 +1493,7 @@ private constructor(
             supportsTransactionCountLimit: JsonField<Boolean> = JsonMissing.of(),
         ) : this(
             supports3dSecurePassword,
+            supportsDigitalWalletTokenization,
             supportsPanReveal,
             supportsSpendLimits,
             supportsSpendLimitsAtIssuance,
@@ -1504,6 +1509,17 @@ private constructor(
          */
         fun supports3dSecurePassword(): Boolean =
             supports3dSecurePassword.getRequired("supports3dSecurePassword")
+
+        /**
+         * Whether cards in this program can be added to Apple Pay, Google Pay, or Samsung Pay from
+         * your app through `POST /cards/{id}/tokenize`. Manual entry into a wallet works regardless
+         * of this flag.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsDigitalWalletTokenization(): Boolean =
+            supportsDigitalWalletTokenization.getRequired("supportsDigitalWalletTokenization")
 
         /**
          * Whether cards in this program can be revealed through `POST /cards/{id}/reveal`.
@@ -1554,6 +1570,17 @@ private constructor(
         @JsonProperty("supports3dSecurePassword")
         @ExcludeMissing
         fun _supports3dSecurePassword(): JsonField<Boolean> = supports3dSecurePassword
+
+        /**
+         * Returns the raw JSON value of [supportsDigitalWalletTokenization].
+         *
+         * Unlike [supportsDigitalWalletTokenization], this method doesn't throw if the JSON field
+         * has an unexpected type.
+         */
+        @JsonProperty("supportsDigitalWalletTokenization")
+        @ExcludeMissing
+        fun _supportsDigitalWalletTokenization(): JsonField<Boolean> =
+            supportsDigitalWalletTokenization
 
         /**
          * Returns the raw JSON value of [supportsPanReveal].
@@ -1615,6 +1642,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .supports3dSecurePassword()
+             * .supportsDigitalWalletTokenization()
              * .supportsPanReveal()
              * .supportsSpendLimits()
              * .supportsSpendLimitsAtIssuance()
@@ -1628,6 +1656,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var supports3dSecurePassword: JsonField<Boolean>? = null
+            private var supportsDigitalWalletTokenization: JsonField<Boolean>? = null
             private var supportsPanReveal: JsonField<Boolean>? = null
             private var supportsSpendLimits: JsonField<Boolean>? = null
             private var supportsSpendLimitsAtIssuance: JsonField<Boolean>? = null
@@ -1636,6 +1665,8 @@ private constructor(
 
             internal fun from(cardCapabilities: CardCapabilities) = apply {
                 supports3dSecurePassword = cardCapabilities.supports3dSecurePassword
+                supportsDigitalWalletTokenization =
+                    cardCapabilities.supportsDigitalWalletTokenization
                 supportsPanReveal = cardCapabilities.supportsPanReveal
                 supportsSpendLimits = cardCapabilities.supportsSpendLimits
                 supportsSpendLimitsAtIssuance = cardCapabilities.supportsSpendLimitsAtIssuance
@@ -1657,6 +1688,25 @@ private constructor(
             fun supports3dSecurePassword(supports3dSecurePassword: JsonField<Boolean>) = apply {
                 this.supports3dSecurePassword = supports3dSecurePassword
             }
+
+            /**
+             * Whether cards in this program can be added to Apple Pay, Google Pay, or Samsung Pay
+             * from your app through `POST /cards/{id}/tokenize`. Manual entry into a wallet works
+             * regardless of this flag.
+             */
+            fun supportsDigitalWalletTokenization(supportsDigitalWalletTokenization: Boolean) =
+                supportsDigitalWalletTokenization(JsonField.of(supportsDigitalWalletTokenization))
+
+            /**
+             * Sets [Builder.supportsDigitalWalletTokenization] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsDigitalWalletTokenization] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsDigitalWalletTokenization(
+                supportsDigitalWalletTokenization: JsonField<Boolean>
+            ) = apply { this.supportsDigitalWalletTokenization = supportsDigitalWalletTokenization }
 
             /** Whether cards in this program can be revealed through `POST /cards/{id}/reveal`. */
             fun supportsPanReveal(supportsPanReveal: Boolean) =
@@ -1757,6 +1807,7 @@ private constructor(
              * The following fields are required:
              * ```kotlin
              * .supports3dSecurePassword()
+             * .supportsDigitalWalletTokenization()
              * .supportsPanReveal()
              * .supportsSpendLimits()
              * .supportsSpendLimitsAtIssuance()
@@ -1768,6 +1819,10 @@ private constructor(
             fun build(): CardCapabilities =
                 CardCapabilities(
                     checkRequired("supports3dSecurePassword", supports3dSecurePassword),
+                    checkRequired(
+                        "supportsDigitalWalletTokenization",
+                        supportsDigitalWalletTokenization,
+                    ),
                     checkRequired("supportsPanReveal", supportsPanReveal),
                     checkRequired("supportsSpendLimits", supportsSpendLimits),
                     checkRequired("supportsSpendLimitsAtIssuance", supportsSpendLimitsAtIssuance),
@@ -1793,6 +1848,7 @@ private constructor(
             }
 
             supports3dSecurePassword()
+            supportsDigitalWalletTokenization()
             supportsPanReveal()
             supportsSpendLimits()
             supportsSpendLimitsAtIssuance()
@@ -1816,6 +1872,7 @@ private constructor(
          */
         internal fun validity(): Int =
             (if (supports3dSecurePassword.asKnown() == null) 0 else 1) +
+                (if (supportsDigitalWalletTokenization.asKnown() == null) 0 else 1) +
                 (if (supportsPanReveal.asKnown() == null) 0 else 1) +
                 (if (supportsSpendLimits.asKnown() == null) 0 else 1) +
                 (if (supportsSpendLimitsAtIssuance.asKnown() == null) 0 else 1) +
@@ -1828,6 +1885,7 @@ private constructor(
 
             return other is CardCapabilities &&
                 supports3dSecurePassword == other.supports3dSecurePassword &&
+                supportsDigitalWalletTokenization == other.supportsDigitalWalletTokenization &&
                 supportsPanReveal == other.supportsPanReveal &&
                 supportsSpendLimits == other.supportsSpendLimits &&
                 supportsSpendLimitsAtIssuance == other.supportsSpendLimitsAtIssuance &&
@@ -1838,6 +1896,7 @@ private constructor(
         private val hashCode: Int by lazy {
             Objects.hash(
                 supports3dSecurePassword,
+                supportsDigitalWalletTokenization,
                 supportsPanReveal,
                 supportsSpendLimits,
                 supportsSpendLimitsAtIssuance,
@@ -1849,7 +1908,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsSpendLimitsAtIssuance=$supportsSpendLimitsAtIssuance, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
+            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsDigitalWalletTokenization=$supportsDigitalWalletTokenization, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsSpendLimitsAtIssuance=$supportsSpendLimitsAtIssuance, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
     }
 
     /**

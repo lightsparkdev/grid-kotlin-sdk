@@ -30,6 +30,7 @@ internal class CardListResponseTest {
                         .cardCapabilities(
                             Card.CardCapabilities.builder()
                                 .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
                                 .supportsPanReveal(true)
                                 .supportsSpendLimits(true)
                                 .supportsSpendLimitsAtIssuance(true)
@@ -68,6 +69,7 @@ internal class CardListResponseTest {
                     .cardCapabilities(
                         Card.CardCapabilities.builder()
                             .supports3dSecurePassword(false)
+                            .supportsDigitalWalletTokenization(true)
                             .supportsPanReveal(true)
                             .supportsSpendLimits(true)
                             .supportsSpendLimitsAtIssuance(true)
@@ -110,6 +112,7 @@ internal class CardListResponseTest {
                         .cardCapabilities(
                             Card.CardCapabilities.builder()
                                 .supports3dSecurePassword(false)
+                                .supportsDigitalWalletTokenization(true)
                                 .supportsPanReveal(true)
                                 .supportsSpendLimits(true)
                                 .supportsSpendLimitsAtIssuance(true)
