@@ -157,12 +157,13 @@ private constructor(
      * first-time EMAIL_OTP wallet bootstrap registration; call `POST
      * /auth/credentials/{id}/challenge` for the new credential if it is absent. The client
      * generates an ephemeral P-256 keypair (the Target Encryption Key, or TEK) and uses this bundle
-     * as the recipient when HPKE-encrypting `{otp_code, public_key}`; the encrypted payload is
-     * submitted as `encryptedOtpBundle` on `POST /auth/credentials/{id}/verify`. The bundle is
-     * one-time-use per OTP issuance — re-issue via `POST /auth/credentials/{id}/challenge` to
-     * obtain a fresh bundle. The matching TEK private key must remain on the client and is used to
-     * sign the `verificationToken` returned on the subsequent signed-retry. Treat the bundle as
-     * opaque and pass it to your HPKE library; the Global Accounts client-keys guide shows how.
+     * as the recipient when HPKE-encrypting `{otp_code, public_key}`, where `public_key` is the
+     * compressed TEK public key; the encrypted payload is submitted as `encryptedOtpBundle` on
+     * `POST /auth/credentials/{id}/verify`. The bundle is one-time-use per OTP issuance — re-issue
+     * via `POST /auth/credentials/{id}/challenge` to obtain a fresh bundle. The matching TEK
+     * private key must remain on the client and is used to sign the `verificationToken` returned on
+     * the subsequent signed-retry. Treat the bundle as opaque and pass it to your HPKE library; the
+     * Global Accounts client-keys guide shows how.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -398,13 +399,13 @@ private constructor(
          * from first-time EMAIL_OTP wallet bootstrap registration; call `POST
          * /auth/credentials/{id}/challenge` for the new credential if it is absent. The client
          * generates an ephemeral P-256 keypair (the Target Encryption Key, or TEK) and uses this
-         * bundle as the recipient when HPKE-encrypting `{otp_code, public_key}`; the encrypted
-         * payload is submitted as `encryptedOtpBundle` on `POST /auth/credentials/{id}/verify`. The
-         * bundle is one-time-use per OTP issuance — re-issue via `POST
-         * /auth/credentials/{id}/challenge` to obtain a fresh bundle. The matching TEK private key
-         * must remain on the client and is used to sign the `verificationToken` returned on the
-         * subsequent signed-retry. Treat the bundle as opaque and pass it to your HPKE library; the
-         * Global Accounts client-keys guide shows how.
+         * bundle as the recipient when HPKE-encrypting `{otp_code, public_key}`, where `public_key`
+         * is the compressed TEK public key; the encrypted payload is submitted as
+         * `encryptedOtpBundle` on `POST /auth/credentials/{id}/verify`. The bundle is one-time-use
+         * per OTP issuance — re-issue via `POST /auth/credentials/{id}/challenge` to obtain a fresh
+         * bundle. The matching TEK private key must remain on the client and is used to sign the
+         * `verificationToken` returned on the subsequent signed-retry. Treat the bundle as opaque
+         * and pass it to your HPKE library; the Global Accounts client-keys guide shows how.
          */
         fun otpEncryptionTargetBundle(otpEncryptionTargetBundle: String) =
             otpEncryptionTargetBundle(JsonField.of(otpEncryptionTargetBundle))
