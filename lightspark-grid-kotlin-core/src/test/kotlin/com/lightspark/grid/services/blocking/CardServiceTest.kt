@@ -4,6 +4,7 @@ package com.lightspark.grid.services.blocking
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClient
 import com.lightspark.grid.models.cards.CardCreateRequest
+import com.lightspark.grid.models.cards.CardIssueParams
 import com.lightspark.grid.models.cards.CardUpdateParams
 import com.lightspark.grid.models.cards.CardUpdateRequest
 import org.junit.jupiter.api.Disabled
@@ -44,19 +45,13 @@ internal class CardServiceTest {
             cardService.update(
                 CardUpdateParams.builder()
                     .id("id")
-                    .gridWalletSignature(
-                        "MEUCIQDx7k2N0aK4p8f3vR9J6yT5wL1mB0sXnG2hQ4vJ8zYkCgIgZ4rP9dT7eWfU3oM6KjR1qSpNvBwL0tXyA2iG8fH5dE="
-                    )
-                    .requestId("7c4a8d09-ca37-4e3e-9e0d-8c2b3e9a1f21")
                     .cardUpdateRequest(
                         CardUpdateRequest.builder()
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000002"
-                            )
-                            .addFundingSource(
-                                "InternalAccount:019542f5-b3e7-1d02-0000-000000000003"
-                            )
-                            .state(CardUpdateRequest.State.FROZEN)
+                            .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                            .maxSpendPerDay(25000L)
+                            .maxSpendPerTransaction(10000L)
+                            .maxTransactionsPerDay(20)
+                            .status(CardUpdateRequest.Status.FROZEN)
                             .build()
                     )
                     .build()
@@ -96,11 +91,20 @@ internal class CardServiceTest {
 
         val card =
             cardService.issue(
-                CardCreateRequest.builder()
-                    .cardholderId("Customer:019542f5-b3e7-1d02-0000-000000000001")
-                    .form(CardCreateRequest.Form.VIRTUAL)
-                    .addFundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
-                    .platformCardId("card-emp-aary-001")
+                CardIssueParams.builder()
+                    .idempotencyKey("550e8400-e29b-41d4-a716-446655440000")
+                    .cardCreateRequest(
+                        CardCreateRequest.builder()
+                            .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                            .form(CardCreateRequest.Form.VIRTUAL)
+                            .fundingSource("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
+                            .maxSpendPerDay(25000L)
+                            .maxSpendPerTransaction(5000L)
+                            .maxTransactionsPerDay(20)
+                            .platformCardId("card-emp-001")
+                            .threeDSecurePassword("AbCd1234EfGh5678")
+                            .build()
+                    )
                     .build()
             )
 

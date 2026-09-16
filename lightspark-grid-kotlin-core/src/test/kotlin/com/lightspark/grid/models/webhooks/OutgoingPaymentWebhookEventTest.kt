@@ -29,6 +29,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -57,6 +58,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
+                        .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
@@ -114,7 +116,13 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -157,6 +165,7 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .settlementTimelineSeconds(0L)
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )
@@ -172,6 +181,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                     .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                     .destination(JsonValue.from(mapOf<String, Any>()))
+                    .direction(OutgoingTransaction.Direction.CREDIT)
                     .platformCustomerId("18d3e5f7b4a9c2")
                     .sentAmount(
                         CurrencyAmount.builder()
@@ -200,6 +210,7 @@ internal class OutgoingPaymentWebhookEventTest {
                     .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                     .description("Payment for invoice #1234")
                     .exchangeRate(1.08)
+                    .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                     .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                     .fees(10L)
                     .addPaymentInstruction(
@@ -257,7 +268,13 @@ internal class OutgoingPaymentWebhookEventTest {
                             .isPlatformAccount(true)
                             .build()
                     )
+                    .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                    .pendingReason(
+                        OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                    )
+                    .platformFees(5L)
                     .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                    .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                     .rateDetails(
                         OutgoingRateDetails.builder()
                             .counterpartyFixedFee(10L)
@@ -300,6 +317,7 @@ internal class OutgoingPaymentWebhookEventTest {
                             .build()
                     )
                     .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                    .settlementTimelineSeconds(0L)
                     .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                     .build()
             )
@@ -320,6 +338,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                         .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                         .destination(JsonValue.from(mapOf<String, Any>()))
+                        .direction(OutgoingTransaction.Direction.CREDIT)
                         .platformCustomerId("18d3e5f7b4a9c2")
                         .sentAmount(
                             CurrencyAmount.builder()
@@ -348,6 +367,7 @@ internal class OutgoingPaymentWebhookEventTest {
                         .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
                         .description("Payment for invoice #1234")
                         .exchangeRate(1.08)
+                        .expectedSettlementAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
                         .failureReason(OutgoingTransaction.FailureReason.QUOTE_EXPIRED)
                         .fees(10L)
                         .addPaymentInstruction(
@@ -405,7 +425,13 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .isPlatformAccount(true)
                                 .build()
                         )
+                        .paymentRail(OutgoingTransaction.PaymentRail.ACH)
+                        .pendingReason(
+                            OutgoingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                        )
+                        .platformFees(5L)
                         .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                        .railSelectionMode(OutgoingTransaction.RailSelectionMode.AUTO)
                         .rateDetails(
                             OutgoingRateDetails.builder()
                                 .counterpartyFixedFee(10L)
@@ -448,6 +474,7 @@ internal class OutgoingPaymentWebhookEventTest {
                                 .build()
                         )
                         .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                        .settlementTimelineSeconds(0L)
                         .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                         .build()
                 )

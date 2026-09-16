@@ -5,7 +5,6 @@ package com.lightspark.grid.models.webhooks
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightspark.grid.core.JsonValue
 import com.lightspark.grid.core.jsonMapper
-import com.lightspark.grid.models.AgentTransferDetails
 import com.lightspark.grid.models.agents.AgentAction
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
@@ -14,7 +13,7 @@ import com.lightspark.grid.models.quotes.PaymentInstructions
 import com.lightspark.grid.models.quotes.Quote
 import com.lightspark.grid.models.quotes.QuoteDestinationOneOf
 import com.lightspark.grid.models.quotes.QuoteSourceOneOf
-import com.lightspark.grid.models.transactions.IncomingRateDetails
+import com.lightspark.grid.models.sandbox.cards.simulate.Refund
 import com.lightspark.grid.models.transactions.IncomingTransaction
 import com.lightspark.grid.models.transactions.ReconciliationInstructions
 import com.lightspark.grid.models.transactions.TransactionSourceOneOf
@@ -140,6 +139,7 @@ internal class AgentActionWebhookEventTest {
                                         .isPlatformAccount(true)
                                         .build()
                                 )
+                                .platformFeesIncluded(5L)
                                 .rateDetails(
                                     OutgoingRateDetails.builder()
                                         .counterpartyFixedFee(10L)
@@ -148,6 +148,23 @@ internal class AgentActionWebhookEventTest {
                                         .gridApiMultiplier(0.925)
                                         .gridApiVariableFeeAmount(30L)
                                         .gridApiVariableFeeRate(0.003)
+                                        .build()
+                                )
+                                .scaChallenge(
+                                    Quote.ScaChallenge.builder()
+                                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                                        .addAvailableFactor(
+                                            Quote.ScaChallenge.AvailableFactor.SMS_OTP
+                                        )
+                                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                                        .addPasskeyAllowedOrigin("https://app.example.com")
+                                        .passkeyAssertionOptions(
+                                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .purpose("PAYOUT")
                                         .build()
                                 )
                                 .build()
@@ -160,7 +177,31 @@ internal class AgentActionWebhookEventTest {
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .destination(JsonValue.from(mapOf<String, Any>()))
+                                .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
+                                .status(TransactionStatus.CREATED)
+                                .type(IncomingTransaction.Type.INCOMING)
+                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                                .counterpartyInformation(
+                                    IncomingTransaction.CounterpartyInformation.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                                .description("Payment for invoice #1234")
+                                .exchangeRate(1.08)
+                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                                .fees(10L)
+                                .pendingReason(
+                                    IncomingTransaction.PendingReason
+                                        .COUNTERPARTY_DECLARATION_REQUIRED
+                                )
+                                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                                .receiptDeliveryConfirmedAt(
+                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                )
                                 .receivedAmount(
                                     CurrencyAmount.builder()
                                         .amount(12550L)
@@ -174,31 +215,6 @@ internal class AgentActionWebhookEventTest {
                                         )
                                         .build()
                                 )
-                                .status(TransactionStatus.CREATED)
-                                .type(IncomingTransaction.Type.INCOMING)
-                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                                .counterpartyInformation(
-                                    IncomingTransaction.CounterpartyInformation.builder()
-                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                        .build()
-                                )
-                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                                .description("Payment for invoice #1234")
-                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                                .fees(10L)
-                                .rateDetails(
-                                    IncomingRateDetails.builder()
-                                        .gridApiFixedFee(10L)
-                                        .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
-                                        .gridApiVariableFeeRate(0.003)
-                                        .build()
-                                )
-                                .receiptDeliveryConfirmedAt(
-                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
-                                )
                                 .reconciliationInstructions(
                                     ReconciliationInstructions.builder()
                                         .reference("UMA-Q12345-REF")
@@ -207,21 +223,31 @@ internal class AgentActionWebhookEventTest {
                                         )
                                         .build()
                                 )
+                                .refund(
+                                    Refund.builder()
+                                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                        .reference("UMA-Q12345-REFUND")
+                                        .status(Refund.Status.COMPLETED)
+                                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                        .build()
+                                )
+                                .sentAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .source(TransactionSourceOneOf.builder().build())
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .build()
-                        )
-                        .transferDetails(
-                            AgentTransferDetails.builder()
-                                .amount(50000L)
-                                .currency("USD")
-                                .destinationAccountId(
-                                    "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                )
-                                .sourceAccountId(
-                                    "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                )
                                 .build()
                         )
                         .build()
@@ -334,6 +360,7 @@ internal class AgentActionWebhookEventTest {
                                     .isPlatformAccount(true)
                                     .build()
                             )
+                            .platformFeesIncluded(5L)
                             .rateDetails(
                                 OutgoingRateDetails.builder()
                                     .counterpartyFixedFee(10L)
@@ -344,6 +371,21 @@ internal class AgentActionWebhookEventTest {
                                     .gridApiVariableFeeRate(0.003)
                                     .build()
                             )
+                            .scaChallenge(
+                                Quote.ScaChallenge.builder()
+                                    .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                                    .addAvailableFactor(Quote.ScaChallenge.AvailableFactor.SMS_OTP)
+                                    .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                                    .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                                    .addPasskeyAllowedOrigin("https://app.example.com")
+                                    .passkeyAssertionOptions(
+                                        Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .purpose("PAYOUT")
+                                    .build()
+                            )
                             .build()
                     )
                     .rejectionReason("Transaction amount exceeds customer's current risk limit.")
@@ -352,7 +394,30 @@ internal class AgentActionWebhookEventTest {
                             .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                             .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                             .destination(JsonValue.from(mapOf<String, Any>()))
+                            .direction(IncomingTransaction.Direction.CREDIT)
                             .platformCustomerId("18d3e5f7b4a9c2")
+                            .status(TransactionStatus.CREATED)
+                            .type(IncomingTransaction.Type.INCOMING)
+                            .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                            .counterpartyInformation(
+                                IncomingTransaction.CounterpartyInformation.builder()
+                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                    .build()
+                            )
+                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                            .description("Payment for invoice #1234")
+                            .exchangeRate(1.08)
+                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                            .fees(10L)
+                            .pendingReason(
+                                IncomingTransaction.PendingReason.COUNTERPARTY_DECLARATION_REQUIRED
+                            )
+                            .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                            .receiptDeliveryConfirmedAt(
+                                OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                            )
                             .receivedAmount(
                                 CurrencyAmount.builder()
                                     .amount(12550L)
@@ -366,31 +431,6 @@ internal class AgentActionWebhookEventTest {
                                     )
                                     .build()
                             )
-                            .status(TransactionStatus.CREATED)
-                            .type(IncomingTransaction.Type.INCOMING)
-                            .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                            .counterpartyInformation(
-                                IncomingTransaction.CounterpartyInformation.builder()
-                                    .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                    .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                    .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                    .build()
-                            )
-                            .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                            .description("Payment for invoice #1234")
-                            .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                            .fees(10L)
-                            .rateDetails(
-                                IncomingRateDetails.builder()
-                                    .gridApiFixedFee(10L)
-                                    .gridApiMultiplier(0.925)
-                                    .gridApiVariableFeeAmount(30L)
-                                    .gridApiVariableFeeRate(0.003)
-                                    .build()
-                            )
-                            .receiptDeliveryConfirmedAt(
-                                OffsetDateTime.parse("2025-08-15T14:31:00Z")
-                            )
                             .reconciliationInstructions(
                                 ReconciliationInstructions.builder()
                                     .reference("UMA-Q12345-REF")
@@ -399,19 +439,31 @@ internal class AgentActionWebhookEventTest {
                                     )
                                     .build()
                             )
+                            .refund(
+                                Refund.builder()
+                                    .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                    .reference("UMA-Q12345-REFUND")
+                                    .status(Refund.Status.COMPLETED)
+                                    .reason(Refund.Reason.TRANSACTION_FAILED)
+                                    .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                    .build()
+                            )
+                            .sentAmount(
+                                CurrencyAmount.builder()
+                                    .amount(12550L)
+                                    .currency(
+                                        Currency.builder()
+                                            .code("USD")
+                                            .decimals(2L)
+                                            .name("United States Dollar")
+                                            .symbol("\$")
+                                            .build()
+                                    )
+                                    .build()
+                            )
                             .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                             .source(TransactionSourceOneOf.builder().build())
                             .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                            .build()
-                    )
-                    .transferDetails(
-                        AgentTransferDetails.builder()
-                            .amount(50000L)
-                            .currency("USD")
-                            .destinationAccountId(
-                                "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                            )
-                            .sourceAccountId("InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123")
                             .build()
                     )
                     .build()
@@ -538,6 +590,7 @@ internal class AgentActionWebhookEventTest {
                                         .isPlatformAccount(true)
                                         .build()
                                 )
+                                .platformFeesIncluded(5L)
                                 .rateDetails(
                                     OutgoingRateDetails.builder()
                                         .counterpartyFixedFee(10L)
@@ -546,6 +599,23 @@ internal class AgentActionWebhookEventTest {
                                         .gridApiMultiplier(0.925)
                                         .gridApiVariableFeeAmount(30L)
                                         .gridApiVariableFeeRate(0.003)
+                                        .build()
+                                )
+                                .scaChallenge(
+                                    Quote.ScaChallenge.builder()
+                                        .id("ScaChallenge:019542f5-b3e7-1d02-0000-000000000007")
+                                        .addAvailableFactor(
+                                            Quote.ScaChallenge.AvailableFactor.SMS_OTP
+                                        )
+                                        .expiresAt(OffsetDateTime.parse("2025-10-03T12:05:00Z"))
+                                        .factor(Quote.ScaChallenge.Factor.SMS_OTP)
+                                        .addPasskeyAllowedOrigin("https://app.example.com")
+                                        .passkeyAssertionOptions(
+                                            Quote.ScaChallenge.PasskeyAssertionOptions.builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .purpose("PAYOUT")
                                         .build()
                                 )
                                 .build()
@@ -558,7 +628,31 @@ internal class AgentActionWebhookEventTest {
                                 .id("Transaction:019542f5-b3e7-1d02-0000-000000000004")
                                 .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
                                 .destination(JsonValue.from(mapOf<String, Any>()))
+                                .direction(IncomingTransaction.Direction.CREDIT)
                                 .platformCustomerId("18d3e5f7b4a9c2")
+                                .status(TransactionStatus.CREATED)
+                                .type(IncomingTransaction.Type.INCOMING)
+                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
+                                .counterpartyInformation(
+                                    IncomingTransaction.CounterpartyInformation.builder()
+                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
+                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
+                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
+                                        .build()
+                                )
+                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
+                                .description("Payment for invoice #1234")
+                                .exchangeRate(1.08)
+                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
+                                .fees(10L)
+                                .pendingReason(
+                                    IncomingTransaction.PendingReason
+                                        .COUNTERPARTY_DECLARATION_REQUIRED
+                                )
+                                .quoteId("Quote:019542f5-b3e7-1d02-0000-000000000006")
+                                .receiptDeliveryConfirmedAt(
+                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
+                                )
                                 .receivedAmount(
                                     CurrencyAmount.builder()
                                         .amount(12550L)
@@ -572,31 +666,6 @@ internal class AgentActionWebhookEventTest {
                                         )
                                         .build()
                                 )
-                                .status(TransactionStatus.CREATED)
-                                .type(IncomingTransaction.Type.INCOMING)
-                                .agentId("Agent:019542f5-b3e7-1d02-0000-000000000042")
-                                .counterpartyInformation(
-                                    IncomingTransaction.CounterpartyInformation.builder()
-                                        .putAdditionalProperty("FULL_NAME", JsonValue.from("bar"))
-                                        .putAdditionalProperty("BIRTH_DATE", JsonValue.from("bar"))
-                                        .putAdditionalProperty("NATIONALITY", JsonValue.from("bar"))
-                                        .build()
-                                )
-                                .createdAt(OffsetDateTime.parse("2025-08-15T14:25:18Z"))
-                                .description("Payment for invoice #1234")
-                                .failureReason(IncomingTransaction.FailureReason.LNURLP_FAILED)
-                                .fees(10L)
-                                .rateDetails(
-                                    IncomingRateDetails.builder()
-                                        .gridApiFixedFee(10L)
-                                        .gridApiMultiplier(0.925)
-                                        .gridApiVariableFeeAmount(30L)
-                                        .gridApiVariableFeeRate(0.003)
-                                        .build()
-                                )
-                                .receiptDeliveryConfirmedAt(
-                                    OffsetDateTime.parse("2025-08-15T14:31:00Z")
-                                )
                                 .reconciliationInstructions(
                                     ReconciliationInstructions.builder()
                                         .reference("UMA-Q12345-REF")
@@ -605,21 +674,31 @@ internal class AgentActionWebhookEventTest {
                                         )
                                         .build()
                                 )
+                                .refund(
+                                    Refund.builder()
+                                        .initiatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
+                                        .reference("UMA-Q12345-REFUND")
+                                        .status(Refund.Status.COMPLETED)
+                                        .reason(Refund.Reason.TRANSACTION_FAILED)
+                                        .settledAt(OffsetDateTime.parse("2025-08-15T14:35:00Z"))
+                                        .build()
+                                )
+                                .sentAmount(
+                                    CurrencyAmount.builder()
+                                        .amount(12550L)
+                                        .currency(
+                                            Currency.builder()
+                                                .code("USD")
+                                                .decimals(2L)
+                                                .name("United States Dollar")
+                                                .symbol("\$")
+                                                .build()
+                                        )
+                                        .build()
+                                )
                                 .settledAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
                                 .source(TransactionSourceOneOf.builder().build())
                                 .updatedAt(OffsetDateTime.parse("2025-08-15T14:30:00Z"))
-                                .build()
-                        )
-                        .transferDetails(
-                            AgentTransferDetails.builder()
-                                .amount(50000L)
-                                .currency("USD")
-                                .destinationAccountId(
-                                    "ExternalAccount:e85dcbd6-dced-4ec4-b756-3c3a9ea3d965"
-                                )
-                                .sourceAccountId(
-                                    "InternalAccount:a12dcbd6-dced-4ec4-b756-3c3a9ea3d123"
-                                )
                                 .build()
                         )
                         .build()

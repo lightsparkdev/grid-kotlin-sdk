@@ -7,9 +7,6 @@ import com.lightspark.grid.core.jsonMapper
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.quotes.Currency
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
-import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -20,7 +17,7 @@ internal class CardTransactionTest {
     fun create() {
         val cardTransaction =
             CardTransaction.builder()
-                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
                     CurrencyAmount.builder()
@@ -36,26 +33,27 @@ internal class CardTransactionTest {
                         .build()
                 )
                 .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
-                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .direction(CardTransaction.Direction.DEBIT)
                 .merchant(
                     CardMerchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
+                        .city("San Francisco")
                         .country("US")
                         .mcc("5814")
+                        .state("CA")
                         .build()
                 )
-                .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-                )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
-                .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
-                )
+                .platformCustomerId("18d3e5f7b4a9c2")
                 .status(CardTransaction.Status.AUTHORIZED)
+                .type(CardTransaction.Type.CARD)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .cardDeclinedReason(CardTransaction.CardDeclinedReason.INSUFFICIENT_FUNDS)
+                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .description("BLUE BOTTLE COFFEE SF")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
-                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                 .refundedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)
@@ -85,7 +83,7 @@ internal class CardTransactionTest {
                 .build()
 
         assertThat(cardTransaction.id())
-            .isEqualTo("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000100")
         assertThat(cardTransaction.accountId())
             .isEqualTo("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
         assertThat(cardTransaction.authorizedAmount())
@@ -104,31 +102,33 @@ internal class CardTransactionTest {
             )
         assertThat(cardTransaction.authorizedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
-        assertThat(cardTransaction.cardId()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
         assertThat(cardTransaction.createdAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+        assertThat(cardTransaction.customerId())
+            .isEqualTo("Customer:019542f5-b3e7-1d02-0000-000000000001")
+        assertThat(cardTransaction.direction()).isEqualTo(CardTransaction.Direction.DEBIT)
         assertThat(cardTransaction.merchant())
             .isEqualTo(
                 CardMerchant.builder()
                     .descriptor("BLUE BOTTLE COFFEE SF")
+                    .city("San Francisco")
                     .country("US")
                     .mcc("5814")
+                    .state("CA")
                     .build()
             )
-        assertThat(cardTransaction.pullSummary())
-            .isEqualTo(
-                CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-            )
-        assertThat(cardTransaction.refundSummary())
-            .isEqualTo(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
-        assertThat(cardTransaction.settlementSummary())
-            .isEqualTo(CardSettlementSummary.builder().count(1L).totalAmount(1500L).build())
+        assertThat(cardTransaction.platformCustomerId()).isEqualTo("18d3e5f7b4a9c2")
         assertThat(cardTransaction.status()).isEqualTo(CardTransaction.Status.AUTHORIZED)
+        assertThat(cardTransaction.type()).isEqualTo(CardTransaction.Type.CARD)
         assertThat(cardTransaction.updatedAt())
             .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+        assertThat(cardTransaction.cardDeclinedReason())
+            .isEqualTo(CardTransaction.CardDeclinedReason.INSUFFICIENT_FUNDS)
+        assertThat(cardTransaction.cardId()).isEqualTo("Card:019542f5-b3e7-1d02-0000-000000000010")
+        assertThat(cardTransaction.description()).isEqualTo("BLUE BOTTLE COFFEE SF")
         assertThat(cardTransaction.issuerTransactionToken()).isEqualTo("lithic_txn_b81c2a4f")
-        assertThat(cardTransaction.lastEventAt())
-            .isEqualTo(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+        assertThat(cardTransaction.originalTransactionId())
+            .isEqualTo("Transaction:019542f5-b3e7-1d02-0000-000000000099")
         assertThat(cardTransaction.refundedAmount())
             .isEqualTo(
                 CurrencyAmount.builder()
@@ -164,7 +164,7 @@ internal class CardTransactionTest {
         val jsonMapper = jsonMapper()
         val cardTransaction =
             CardTransaction.builder()
-                .id("CardTransaction:019542f5-b3e7-1d02-0000-000000000100")
+                .id("Transaction:019542f5-b3e7-1d02-0000-000000000100")
                 .accountId("InternalAccount:019542f5-b3e7-1d02-0000-000000000002")
                 .authorizedAmount(
                     CurrencyAmount.builder()
@@ -180,26 +180,27 @@ internal class CardTransactionTest {
                         .build()
                 )
                 .authorizedAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
-                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
                 .createdAt(OffsetDateTime.parse("2026-05-08T14:30:00Z"))
+                .customerId("Customer:019542f5-b3e7-1d02-0000-000000000001")
+                .direction(CardTransaction.Direction.DEBIT)
                 .merchant(
                     CardMerchant.builder()
                         .descriptor("BLUE BOTTLE COFFEE SF")
+                        .city("San Francisco")
                         .country("US")
                         .mcc("5814")
+                        .state("CA")
                         .build()
                 )
-                .pullSummary(
-                    CardPullSummary.builder().count(2L).totalAmount(1500L).pendingCount(0L).build()
-                )
-                .refundSummary(CardRefundSummary.builder().count(0L).totalAmount(0L).build())
-                .settlementSummary(
-                    CardSettlementSummary.builder().count(1L).totalAmount(1500L).build()
-                )
+                .platformCustomerId("18d3e5f7b4a9c2")
                 .status(CardTransaction.Status.AUTHORIZED)
+                .type(CardTransaction.Type.CARD)
                 .updatedAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .cardDeclinedReason(CardTransaction.CardDeclinedReason.INSUFFICIENT_FUNDS)
+                .cardId("Card:019542f5-b3e7-1d02-0000-000000000010")
+                .description("BLUE BOTTLE COFFEE SF")
                 .issuerTransactionToken("lithic_txn_b81c2a4f")
-                .lastEventAt(OffsetDateTime.parse("2026-05-08T15:42:11Z"))
+                .originalTransactionId("Transaction:019542f5-b3e7-1d02-0000-000000000099")
                 .refundedAmount(
                     CurrencyAmount.builder()
                         .amount(12550L)

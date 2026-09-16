@@ -53,6 +53,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.slvAccount()).isEqualTo(slvAccount)
         assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ilsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tryAccount()).isNull()
     }
 
     @Test
@@ -137,6 +139,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
         assertThat(externalAccountInfoOneOf.swiftAccount()).isEqualTo(swiftAccount)
         assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ilsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tryAccount()).isNull()
     }
 
     @Test
@@ -209,7 +213,7 @@ internal class ExternalAccountInfoOneOfTest {
                         .phoneNumber("phoneNumber")
                         .build()
                 )
-                .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.BANK_TRANSFER)
                 .accountNumber("1234567890")
                 .phoneNumber("+1234567890")
                 .build()
@@ -219,6 +223,8 @@ internal class ExternalAccountInfoOneOfTest {
         assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
         assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
         assertThat(externalAccountInfoOneOf.cnyAccount()).isEqualTo(cnyAccount)
+        assertThat(externalAccountInfoOneOf.ilsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tryAccount()).isNull()
     }
 
     @Test
@@ -248,9 +254,167 @@ internal class ExternalAccountInfoOneOfTest {
                             .phoneNumber("phoneNumber")
                             .build()
                     )
-                    .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.MOBILE_MONEY)
+                    .addPaymentRail(ExternalAccountInfoOneOf.CnyAccount.PaymentRail.BANK_TRANSFER)
                     .accountNumber("1234567890")
                     .phoneNumber("+1234567890")
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofIlsAccount() {
+        val ilsAccount =
+            ExternalAccountInfoOneOf.IlsAccount.builder()
+                .bankName("Bank Leumi Le-Israel B.M")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.IlsAccount.Beneficiary.Individual.builder()
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .countryOfResidence("countryOfResidence")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .iban("IL620108000000099999999")
+                .addPaymentRail(ExternalAccountInfoOneOf.IlsAccount.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofIlsAccount(ilsAccount)
+
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ilsAccount()).isEqualTo(ilsAccount)
+        assertThat(externalAccountInfoOneOf.tryAccount()).isNull()
+    }
+
+    @Test
+    fun ofIlsAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofIlsAccount(
+                ExternalAccountInfoOneOf.IlsAccount.builder()
+                    .bankName("Bank Leumi Le-Israel B.M")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.IlsAccount.Beneficiary.Individual.builder()
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .countryOfResidence("countryOfResidence")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .iban("IL620108000000099999999")
+                    .addPaymentRail(ExternalAccountInfoOneOf.IlsAccount.PaymentRail.BANK_TRANSFER)
+                    .build()
+            )
+
+        val roundtrippedExternalAccountInfoOneOf =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(externalAccountInfoOneOf),
+                jacksonTypeRef<ExternalAccountInfoOneOf>(),
+            )
+
+        assertThat(roundtrippedExternalAccountInfoOneOf).isEqualTo(externalAccountInfoOneOf)
+    }
+
+    @Test
+    fun ofTryAccount() {
+        val tryAccount =
+            ExternalAccountInfoOneOf.TryAccount.builder()
+                .bankName("<bankName from GET /discoveries>")
+                .beneficiary(
+                    ExternalAccountInfoOneOf.TryAccount.Beneficiary.Individual.builder()
+                        .countryOfResidence("countryOfResidence")
+                        .fullName("fullName")
+                        .address(
+                            Address.builder()
+                                .country("US")
+                                .line1("123 Main Street")
+                                .postalCode("94105")
+                                .city("San Francisco")
+                                .line2("Apt 4B")
+                                .state("CA")
+                                .build()
+                        )
+                        .birthDate("birthDate")
+                        .email("email")
+                        .nationality("nationality")
+                        .phoneNumber("phoneNumber")
+                        .build()
+                )
+                .iban("TR330006100519786457841326")
+                .addPaymentRail(ExternalAccountInfoOneOf.TryAccount.PaymentRail.BANK_TRANSFER)
+                .build()
+
+        val externalAccountInfoOneOf = ExternalAccountInfoOneOf.ofTryAccount(tryAccount)
+
+        assertThat(externalAccountInfoOneOf.slvAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.swiftAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.cnyAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.ilsAccount()).isNull()
+        assertThat(externalAccountInfoOneOf.tryAccount()).isEqualTo(tryAccount)
+    }
+
+    @Test
+    fun ofTryAccountRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val externalAccountInfoOneOf =
+            ExternalAccountInfoOneOf.ofTryAccount(
+                ExternalAccountInfoOneOf.TryAccount.builder()
+                    .bankName("<bankName from GET /discoveries>")
+                    .beneficiary(
+                        ExternalAccountInfoOneOf.TryAccount.Beneficiary.Individual.builder()
+                            .countryOfResidence("countryOfResidence")
+                            .fullName("fullName")
+                            .address(
+                                Address.builder()
+                                    .country("US")
+                                    .line1("123 Main Street")
+                                    .postalCode("94105")
+                                    .city("San Francisco")
+                                    .line2("Apt 4B")
+                                    .state("CA")
+                                    .build()
+                            )
+                            .birthDate("birthDate")
+                            .email("email")
+                            .nationality("nationality")
+                            .phoneNumber("phoneNumber")
+                            .build()
+                    )
+                    .iban("TR330006100519786457841326")
+                    .addPaymentRail(ExternalAccountInfoOneOf.TryAccount.PaymentRail.BANK_TRANSFER)
                     .build()
             )
 

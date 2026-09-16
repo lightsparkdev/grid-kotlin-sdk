@@ -26,6 +26,8 @@ internal class TransferOutRequestTest {
                         .build()
                 )
                 .amount(12550L)
+                .purposeOfPayment(TransferOutRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
                 .build()
 
         assertThat(transferOutRequest.destination())
@@ -42,6 +44,9 @@ internal class TransferOutRequestTest {
                     .build()
             )
         assertThat(transferOutRequest.amount()).isEqualTo(12550L)
+        assertThat(transferOutRequest.purposeOfPayment())
+            .isEqualTo(TransferOutRequest.PurposeOfPayment.GIFT)
+        assertThat(transferOutRequest.remittanceInformation()).isEqualTo("12345")
     }
 
     @Test
@@ -61,6 +66,8 @@ internal class TransferOutRequestTest {
                         .build()
                 )
                 .amount(12550L)
+                .purposeOfPayment(TransferOutRequest.PurposeOfPayment.GIFT)
+                .remittanceInformation("12345")
                 .build()
 
         val roundtrippedTransferOutRequest =

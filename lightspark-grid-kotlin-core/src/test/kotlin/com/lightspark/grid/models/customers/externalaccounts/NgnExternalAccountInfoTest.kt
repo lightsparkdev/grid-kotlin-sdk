@@ -16,7 +16,7 @@ internal class NgnExternalAccountInfoTest {
             NgnExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("NGN_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("0123456789"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Access Bank"))
                 .build()
     }
 
@@ -27,7 +27,7 @@ internal class NgnExternalAccountInfoTest {
             NgnExternalAccountInfo.builder()
                 .putAdditionalProperty("accountType", JsonValue.from("NGN_ACCOUNT"))
                 .putAdditionalProperty("accountNumber", JsonValue.from("0123456789"))
-                .putAdditionalProperty("bankName", JsonValue.from("Example Bank"))
+                .putAdditionalProperty("bankName", JsonValue.from("Access Bank"))
                 .build()
 
         val roundtrippedNgnExternalAccountInfo =

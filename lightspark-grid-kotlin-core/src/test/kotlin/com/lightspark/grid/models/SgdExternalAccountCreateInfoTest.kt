@@ -17,7 +17,6 @@ internal class SgdExternalAccountCreateInfoTest {
             SgdExternalAccountCreateInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(SgdExternalAccountCreateInfo.AccountType.SGD_ACCOUNT)
-                .bankName("DBS Bank Ltd")
                 .beneficiary(
                     SgdBeneficiary.builder()
                         .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -40,12 +39,12 @@ internal class SgdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .swiftCode("DBSSSGSG")
+                .bankName("DBS Bank Ltd")
                 .build()
 
         assertThat(sgdExternalAccountCreateInfo.accountNumber()).isEqualTo("0123456789")
         assertThat(sgdExternalAccountCreateInfo.accountType())
             .isEqualTo(SgdExternalAccountCreateInfo.AccountType.SGD_ACCOUNT)
-        assertThat(sgdExternalAccountCreateInfo.bankName()).isEqualTo("DBS Bank Ltd")
         assertThat(sgdExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 SgdExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -71,6 +70,7 @@ internal class SgdExternalAccountCreateInfoTest {
                 )
             )
         assertThat(sgdExternalAccountCreateInfo.swiftCode()).isEqualTo("DBSSSGSG")
+        assertThat(sgdExternalAccountCreateInfo.bankName()).isEqualTo("DBS Bank Ltd")
     }
 
     @Test
@@ -80,7 +80,6 @@ internal class SgdExternalAccountCreateInfoTest {
             SgdExternalAccountCreateInfo.builder()
                 .accountNumber("0123456789")
                 .accountType(SgdExternalAccountCreateInfo.AccountType.SGD_ACCOUNT)
-                .bankName("DBS Bank Ltd")
                 .beneficiary(
                     SgdBeneficiary.builder()
                         .beneficiaryType(SgdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -103,6 +102,7 @@ internal class SgdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .swiftCode("DBSSSGSG")
+                .bankName("DBS Bank Ltd")
                 .build()
 
         val roundtrippedSgdExternalAccountCreateInfo =

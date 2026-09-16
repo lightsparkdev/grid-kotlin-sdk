@@ -11,9 +11,7 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.time.OffsetDateTime
 import java.util.Collections
@@ -23,73 +21,93 @@ class Card
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
     private val id: JsonField<String>,
-    private val cardholderId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val customerId: JsonField<String>,
     private val form: JsonField<Form>,
-    private val fundingSources: JsonField<List<String>>,
-    private val state: JsonField<State>,
+    private val fundingSource: JsonField<String>,
+    private val maxSpendPerDay: JsonField<Long>,
+    private val maxSpendPerTransaction: JsonField<Long>,
+    private val maxTransactionsPerDay: JsonField<Int>,
+    private val status: JsonField<Status>,
     private val updatedAt: JsonField<OffsetDateTime>,
     private val brand: JsonField<Brand>,
+    private val cardCapabilities: JsonField<CardCapabilities>,
     private val currency: JsonField<String>,
     private val expMonth: JsonField<Long>,
     private val expYear: JsonField<Long>,
     private val issuerRef: JsonField<String>,
     private val last4: JsonField<String>,
-    private val panEmbedUrl: JsonField<String>,
     private val platformCardId: JsonField<String>,
-    private val stateReason: JsonField<StateReason>,
+    private val processorRef: JsonField<String>,
+    private val statusReason: JsonField<StatusReason>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
         @JsonProperty("id") @ExcludeMissing id: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("cardholderId")
-        @ExcludeMissing
-        cardholderId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
-        @JsonProperty("fundingSources")
+        @JsonProperty("customerId")
         @ExcludeMissing
-        fundingSources: JsonField<List<String>> = JsonMissing.of(),
-        @JsonProperty("state") @ExcludeMissing state: JsonField<State> = JsonMissing.of(),
+        customerId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
+        @JsonProperty("fundingSource")
+        @ExcludeMissing
+        fundingSource: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxTransactionsPerDay")
+        @ExcludeMissing
+        maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
+        @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
         @JsonProperty("brand") @ExcludeMissing brand: JsonField<Brand> = JsonMissing.of(),
+        @JsonProperty("cardCapabilities")
+        @ExcludeMissing
+        cardCapabilities: JsonField<CardCapabilities> = JsonMissing.of(),
         @JsonProperty("currency") @ExcludeMissing currency: JsonField<String> = JsonMissing.of(),
         @JsonProperty("expMonth") @ExcludeMissing expMonth: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("expYear") @ExcludeMissing expYear: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("issuerRef") @ExcludeMissing issuerRef: JsonField<String> = JsonMissing.of(),
         @JsonProperty("last4") @ExcludeMissing last4: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("panEmbedUrl")
-        @ExcludeMissing
-        panEmbedUrl: JsonField<String> = JsonMissing.of(),
         @JsonProperty("platformCardId")
         @ExcludeMissing
         platformCardId: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("stateReason")
+        @JsonProperty("processorRef")
         @ExcludeMissing
-        stateReason: JsonField<StateReason> = JsonMissing.of(),
+        processorRef: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("statusReason")
+        @ExcludeMissing
+        statusReason: JsonField<StatusReason> = JsonMissing.of(),
     ) : this(
         id,
-        cardholderId,
         createdAt,
+        customerId,
         form,
-        fundingSources,
-        state,
+        fundingSource,
+        maxSpendPerDay,
+        maxSpendPerTransaction,
+        maxTransactionsPerDay,
+        status,
         updatedAt,
         brand,
+        cardCapabilities,
         currency,
         expMonth,
         expYear,
         issuerRef,
         last4,
-        panEmbedUrl,
         platformCardId,
-        stateReason,
+        processorRef,
+        statusReason,
         mutableMapOf(),
     )
 
@@ -102,20 +120,20 @@ private constructor(
     fun id(): String = id.getRequired("id")
 
     /**
-     * The id of the `Customer` who holds this card.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun cardholderId(): String = cardholderId.getRequired("cardholderId")
-
-    /**
      * Creation timestamp
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
+
+    /**
+     * The id of the `Customer` who holds this card.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerId(): String = customerId.getRequired("customerId")
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -127,30 +145,69 @@ private constructor(
     fun form(): Form = form.getRequired("form")
 
     /**
-     * Internal account ids bound to this card as funding sources, in priority order — the first
-     * entry is tried first by Authorization Decisioning. Every card has at least one funding
-     * source.
+     * Internal account id that funds this card.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
+    fun fundingSource(): String = fundingSource.getRequired("fundingSource")
 
     /**
-     * Lifecycle state of a card.
+     * Card-specific cap on cumulative new spend during one UTC calendar day, in the smallest unit
+     * of the card's `currency`. The window resets at 00:00 UTC. Null means the card has no
+     * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
+     * Grid enforces the lower of the two values without replacing this configured value. Refunds,
+     * reversals, and authorization expiries do not restore capacity during the day. Spend exactly
+     * equal to the effective limit is allowed.
      *
-     * |State          |Description                                                                                                                                                  |
-     * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-     * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
+
+    /**
+     * The largest amount this card can authorize on a single transaction, in the smallest unit of
+     * its `currency` (cents for USD). An authorization for exactly the limit is allowed. A later
+     * clearing can still settle above it — a restaurant tip, for example — so this caps the
+     * authorization, not the final settled amount. `null` means the card sets no limit of its own.
+     * If your platform config also sets `cardConfigs.maxSpendPerTransaction` (the platform-level
+     * limit), the lower of the two applies and this value stays as you set it.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerTransaction(): Long? =
+        maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+    /**
+     * Card-specific cap on the number of transactions the card may authorize during one UTC
+     * calendar day. The window resets at 00:00 UTC. Null means the card has no card-specific daily
+     * transaction cap. When the platform config also supplies `cardConfigs.maxTransactionsPerDay`,
+     * Grid enforces the lower of the two values without replacing this configured value. Each
+     * approved authorization counts once for the day it was authorized; refunds, reversals, and
+     * authorization expiries do not restore capacity during the day. A transaction that brings the
+     * day's count exactly to the effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
+
+    /**
+     * Lifecycle status of a card.
+     *
+     * |Status       |Description                                                                                                                                                                          |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun state(): State = state.getRequired("state")
+    fun status(): Status = status.getRequired("status")
 
     /**
      * Last update timestamp
@@ -170,9 +227,18 @@ private constructor(
     fun brand(): Brand? = brand.getNullable("brand")
 
     /**
+     * Actions supported for this card by the issuer selected at issuance. Present for cards whose
+     * program has been resolved; absent otherwise. These capabilities are fixed at issuance for the
+     * card's lifetime.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardCapabilities(): CardCapabilities? = cardCapabilities.getNullable("cardCapabilities")
+
+    /**
      * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
-     * funding sources at issue time — all funding sources bound to a card must be denominated in
-     * the same card-eligible currency.
+     * funding source at issue time.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -196,8 +262,9 @@ private constructor(
     fun expYear(): Long? = expYear.getNullable("expYear")
 
     /**
-     * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-     * issuer dashboards; not used for any Grid request routing.
+     * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+     * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid request
+     * routing.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -213,18 +280,7 @@ private constructor(
     fun last4(): String? = last4.getNullable("last4")
 
     /**
-     * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
-     * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an iframe in
-     * your client to reveal card details.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
-     *   the server responded with an unexpected value).
-     */
-    fun panEmbedUrl(): String? = panEmbedUrl.getNullable("panEmbedUrl")
-
-    /**
-     * Platform-specific card identifier. Optional on create — system-generated if omitted,
-     * mirroring `platformCustomerId` semantics.
+     * Platform-specific card identifier generated by the server.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -232,13 +288,22 @@ private constructor(
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
     /**
-     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-     * provisioning was rejected; otherwise null.
+     * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+     * cross-referencing in the processor's dashboards; not used for any Grid request routing.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun stateReason(): StateReason? = stateReason.getNullable("stateReason")
+    fun processorRef(): String? = processorRef.getNullable("processorRef")
+
+    /**
+     * Reason associated with the current `status`. Present when the card is `CLOSED` or when
+     * provisioning was rejected; absent otherwise.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun statusReason(): StatusReason? = statusReason.getNullable("statusReason")
 
     /**
      * Returns the raw JSON value of [id].
@@ -246,15 +311,6 @@ private constructor(
      * Unlike [id], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("id") @ExcludeMissing fun _id(): JsonField<String> = id
-
-    /**
-     * Returns the raw JSON value of [cardholderId].
-     *
-     * Unlike [cardholderId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cardholderId")
-    @ExcludeMissing
-    fun _cardholderId(): JsonField<String> = cardholderId
 
     /**
      * Returns the raw JSON value of [createdAt].
@@ -266,6 +322,13 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
+
+    /**
      * Returns the raw JSON value of [form].
      *
      * Unlike [form], this method doesn't throw if the JSON field has an unexpected type.
@@ -273,20 +336,49 @@ private constructor(
     @JsonProperty("form") @ExcludeMissing fun _form(): JsonField<Form> = form
 
     /**
-     * Returns the raw JSON value of [fundingSources].
+     * Returns the raw JSON value of [fundingSource].
      *
-     * Unlike [fundingSources], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [fundingSource], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fundingSources")
+    @JsonProperty("fundingSource")
     @ExcludeMissing
-    fun _fundingSources(): JsonField<List<String>> = fundingSources
+    fun _fundingSource(): JsonField<String> = fundingSource
 
     /**
-     * Returns the raw JSON value of [state].
+     * Returns the raw JSON value of [maxSpendPerDay].
      *
-     * Unlike [state], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("state") @ExcludeMissing fun _state(): JsonField<State> = state
+    @JsonProperty("maxSpendPerDay")
+    @ExcludeMissing
+    fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerTransaction].
+     *
+     * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("maxSpendPerTransaction")
+    @ExcludeMissing
+    fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
+
+    /**
+     * Returns the raw JSON value of [maxTransactionsPerDay].
+     *
+     * Unlike [maxTransactionsPerDay], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("maxTransactionsPerDay")
+    @ExcludeMissing
+    fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
+
+    /**
+     * Returns the raw JSON value of [status].
+     *
+     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
      * Returns the raw JSON value of [updatedAt].
@@ -303,6 +395,16 @@ private constructor(
      * Unlike [brand], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("brand") @ExcludeMissing fun _brand(): JsonField<Brand> = brand
+
+    /**
+     * Returns the raw JSON value of [cardCapabilities].
+     *
+     * Unlike [cardCapabilities], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("cardCapabilities")
+    @ExcludeMissing
+    fun _cardCapabilities(): JsonField<CardCapabilities> = cardCapabilities
 
     /**
      * Returns the raw JSON value of [currency].
@@ -340,13 +442,6 @@ private constructor(
     @JsonProperty("last4") @ExcludeMissing fun _last4(): JsonField<String> = last4
 
     /**
-     * Returns the raw JSON value of [panEmbedUrl].
-     *
-     * Unlike [panEmbedUrl], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("panEmbedUrl") @ExcludeMissing fun _panEmbedUrl(): JsonField<String> = panEmbedUrl
-
-    /**
      * Returns the raw JSON value of [platformCardId].
      *
      * Unlike [platformCardId], this method doesn't throw if the JSON field has an unexpected type.
@@ -356,13 +451,22 @@ private constructor(
     fun _platformCardId(): JsonField<String> = platformCardId
 
     /**
-     * Returns the raw JSON value of [stateReason].
+     * Returns the raw JSON value of [processorRef].
      *
-     * Unlike [stateReason], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [processorRef], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("stateReason")
+    @JsonProperty("processorRef")
     @ExcludeMissing
-    fun _stateReason(): JsonField<StateReason> = stateReason
+    fun _processorRef(): JsonField<String> = processorRef
+
+    /**
+     * Returns the raw JSON value of [statusReason].
+     *
+     * Unlike [statusReason], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("statusReason")
+    @ExcludeMissing
+    fun _statusReason(): JsonField<StatusReason> = statusReason
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -384,11 +488,14 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
-         * .cardholderId()
          * .createdAt()
+         * .customerId()
          * .form()
-         * .fundingSources()
-         * .state()
+         * .fundingSource()
+         * .maxSpendPerDay()
+         * .maxSpendPerTransaction()
+         * .maxTransactionsPerDay()
+         * .status()
          * .updatedAt()
          * ```
          */
@@ -399,40 +506,48 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: JsonField<String>? = null
-        private var cardholderId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var customerId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
-        private var fundingSources: JsonField<MutableList<String>>? = null
-        private var state: JsonField<State>? = null
+        private var fundingSource: JsonField<String>? = null
+        private var maxSpendPerDay: JsonField<Long>? = null
+        private var maxSpendPerTransaction: JsonField<Long>? = null
+        private var maxTransactionsPerDay: JsonField<Int>? = null
+        private var status: JsonField<Status>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
         private var brand: JsonField<Brand> = JsonMissing.of()
+        private var cardCapabilities: JsonField<CardCapabilities> = JsonMissing.of()
         private var currency: JsonField<String> = JsonMissing.of()
         private var expMonth: JsonField<Long> = JsonMissing.of()
         private var expYear: JsonField<Long> = JsonMissing.of()
         private var issuerRef: JsonField<String> = JsonMissing.of()
         private var last4: JsonField<String> = JsonMissing.of()
-        private var panEmbedUrl: JsonField<String> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
-        private var stateReason: JsonField<StateReason> = JsonMissing.of()
+        private var processorRef: JsonField<String> = JsonMissing.of()
+        private var statusReason: JsonField<StatusReason> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(card: Card) = apply {
             id = card.id
-            cardholderId = card.cardholderId
             createdAt = card.createdAt
+            customerId = card.customerId
             form = card.form
-            fundingSources = card.fundingSources.map { it.toMutableList() }
-            state = card.state
+            fundingSource = card.fundingSource
+            maxSpendPerDay = card.maxSpendPerDay
+            maxSpendPerTransaction = card.maxSpendPerTransaction
+            maxTransactionsPerDay = card.maxTransactionsPerDay
+            status = card.status
             updatedAt = card.updatedAt
             brand = card.brand
+            cardCapabilities = card.cardCapabilities
             currency = card.currency
             expMonth = card.expMonth
             expYear = card.expYear
             issuerRef = card.issuerRef
             last4 = card.last4
-            panEmbedUrl = card.panEmbedUrl
             platformCardId = card.platformCardId
-            stateReason = card.stateReason
+            processorRef = card.processorRef
+            statusReason = card.statusReason
             additionalProperties = card.additionalProperties.toMutableMap()
         }
 
@@ -447,20 +562,6 @@ private constructor(
          */
         fun id(id: JsonField<String>) = apply { this.id = id }
 
-        /** The id of the `Customer` who holds this card. */
-        fun cardholderId(cardholderId: String) = cardholderId(JsonField.of(cardholderId))
-
-        /**
-         * Sets [Builder.cardholderId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cardholderId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun cardholderId(cardholderId: JsonField<String>) = apply {
-            this.cardholderId = cardholderId
-        }
-
         /** Creation timestamp */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
@@ -472,6 +573,18 @@ private constructor(
          * supported value.
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
+
+        /** The id of the `Customer` who holds this card. */
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+        /**
+         * Sets [Builder.customerId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /**
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
@@ -487,57 +600,131 @@ private constructor(
          */
         fun form(form: JsonField<Form>) = apply { this.form = form }
 
-        /**
-         * Internal account ids bound to this card as funding sources, in priority order — the first
-         * entry is tried first by Authorization Decisioning. Every card has at least one funding
-         * source.
-         */
-        fun fundingSources(fundingSources: List<String>) =
-            fundingSources(JsonField.of(fundingSources))
+        /** Internal account id that funds this card. */
+        fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
         /**
-         * Sets [Builder.fundingSources] to an arbitrary JSON value.
+         * Sets [Builder.fundingSource] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fundingSources] with a well-typed `List<String>` value
+         * You should usually call [Builder.fundingSource] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun fundingSource(fundingSource: JsonField<String>) = apply {
+            this.fundingSource = fundingSource
+        }
+
+        /**
+         * Card-specific cap on cumulative new spend during one UTC calendar day, in the smallest
+         * unit of the card's `currency`. The window resets at 00:00 UTC. Null means the card has no
+         * card-specific daily cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values without replacing
+         * this configured value. Refunds, reversals, and authorization expiries do not restore
+         * capacity during the day. Spend exactly equal to the effective limit is allowed.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long?) =
+            maxSpendPerDay(JsonField.ofNullable(maxSpendPerDay))
+
+        /**
+         * Alias for [Builder.maxSpendPerDay].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(maxSpendPerDay as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+            this.maxSpendPerDay = maxSpendPerDay
+        }
+
+        /**
+         * The largest amount this card can authorize on a single transaction, in the smallest unit
+         * of its `currency` (cents for USD). An authorization for exactly the limit is allowed. A
+         * later clearing can still settle above it — a restaurant tip, for example — so this caps
+         * the authorization, not the final settled amount. `null` means the card sets no limit of
+         * its own. If your platform config also sets `cardConfigs.maxSpendPerTransaction` (the
+         * platform-level limit), the lower of the two applies and this value stays as you set it.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long?) =
+            maxSpendPerTransaction(JsonField.ofNullable(maxSpendPerTransaction))
+
+        /**
+         * Alias for [Builder.maxSpendPerTransaction].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+            maxSpendPerTransaction(maxSpendPerTransaction as Long?)
+
+        /**
+         * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun fundingSources(fundingSources: JsonField<List<String>>) = apply {
-            this.fundingSources = fundingSources.map { it.toMutableList() }
+        fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+            this.maxSpendPerTransaction = maxSpendPerTransaction
         }
 
         /**
-         * Adds a single [String] to [fundingSources].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
+         * Card-specific cap on the number of transactions the card may authorize during one UTC
+         * calendar day. The window resets at 00:00 UTC. Null means the card has no card-specific
+         * daily transaction cap. When the platform config also supplies
+         * `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the two values without
+         * replacing this configured value. Each approved authorization counts once for the day it
+         * was authorized; refunds, reversals, and authorization expiries do not restore capacity
+         * during the day. A transaction that brings the day's count exactly to the effective limit
+         * is allowed.
          */
-        fun addFundingSource(fundingSource: String) = apply {
-            fundingSources =
-                (fundingSources ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("fundingSources", it).add(fundingSource)
-                }
+        fun maxTransactionsPerDay(maxTransactionsPerDay: Int?) =
+            maxTransactionsPerDay(JsonField.ofNullable(maxTransactionsPerDay))
+
+        /**
+         * Alias for [Builder.maxTransactionsPerDay].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: Int) =
+            maxTransactionsPerDay(maxTransactionsPerDay as Int?)
+
+        /**
+         * Sets [Builder.maxTransactionsPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxTransactionsPerDay] with a well-typed [Int] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: JsonField<Int>) = apply {
+            this.maxTransactionsPerDay = maxTransactionsPerDay
         }
 
         /**
-         * Lifecycle state of a card.
+         * Lifecycle status of a card.
          *
-         * |State          |Description                                                                                                                                                  |
-         * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-         * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-         * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-         * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-         * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-         * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+         * |Status       |Description                                                                                                                                                                          |
+         * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+         * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+         * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+         * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+         * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+         * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
          */
-        fun state(state: State) = state(JsonField.of(state))
+        fun status(status: Status) = status(JsonField.of(status))
 
         /**
-         * Sets [Builder.state] to an arbitrary JSON value.
+         * Sets [Builder.status] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.state] with a well-typed [State] value instead. This
+         * You should usually call [Builder.status] with a well-typed [Status] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun state(state: JsonField<State>) = apply { this.state = state }
+        fun status(status: JsonField<Status>) = apply { this.status = status }
 
         /** Last update timestamp */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
@@ -566,9 +753,27 @@ private constructor(
         fun brand(brand: JsonField<Brand>) = apply { this.brand = brand }
 
         /**
+         * Actions supported for this card by the issuer selected at issuance. Present for cards
+         * whose program has been resolved; absent otherwise. These capabilities are fixed at
+         * issuance for the card's lifetime.
+         */
+        fun cardCapabilities(cardCapabilities: CardCapabilities) =
+            cardCapabilities(JsonField.of(cardCapabilities))
+
+        /**
+         * Sets [Builder.cardCapabilities] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardCapabilities] with a well-typed [CardCapabilities]
+         * value instead. This method is primarily for setting the field to an undocumented or not
+         * yet supported value.
+         */
+        fun cardCapabilities(cardCapabilities: JsonField<CardCapabilities>) = apply {
+            this.cardCapabilities = cardCapabilities
+        }
+
+        /**
          * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
-         * funding sources at issue time — all funding sources bound to a card must be denominated
-         * in the same card-eligible currency.
+         * funding source at issue time.
          */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
@@ -603,8 +808,9 @@ private constructor(
         fun expYear(expYear: JsonField<Long>) = apply { this.expYear = expYear }
 
         /**
-         * Opaque identifier for the card on the underlying issuer. Useful for cross-referencing in
-         * issuer dashboards; not used for any Grid request routing.
+         * Opaque identifier for the card on the issuer of record (e.g. the Lead Bank account/card
+         * identifier). Useful for cross-referencing in issuer dashboards; not used for any Grid
+         * request routing.
          */
         fun issuerRef(issuerRef: String) = issuerRef(JsonField.of(issuerRef))
 
@@ -628,26 +834,7 @@ private constructor(
          */
         fun last4(last4: JsonField<String>) = apply { this.last4 = last4 }
 
-        /**
-         * URL of the card issuer's iframe that securely displays the PAN, CVV, and expiry to the
-         * cardholder. The full PAN and CVV never cross Grid's servers — render this URL in an
-         * iframe in your client to reveal card details.
-         */
-        fun panEmbedUrl(panEmbedUrl: String) = panEmbedUrl(JsonField.of(panEmbedUrl))
-
-        /**
-         * Sets [Builder.panEmbedUrl] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.panEmbedUrl] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun panEmbedUrl(panEmbedUrl: JsonField<String>) = apply { this.panEmbedUrl = panEmbedUrl }
-
-        /**
-         * Platform-specific card identifier. Optional on create — system-generated if omitted,
-         * mirroring `platformCustomerId` semantics.
-         */
+        /** Platform-specific card identifier generated by the server. */
         fun platformCardId(platformCardId: String) = platformCardId(JsonField.of(platformCardId))
 
         /**
@@ -662,20 +849,37 @@ private constructor(
         }
 
         /**
-         * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-         * provisioning was rejected; otherwise null.
+         * Opaque processor-side reference for the card (e.g. the Lithic card token). Useful for
+         * cross-referencing in the processor's dashboards; not used for any Grid request routing.
          */
-        fun stateReason(stateReason: StateReason?) = stateReason(JsonField.ofNullable(stateReason))
+        fun processorRef(processorRef: String) = processorRef(JsonField.of(processorRef))
 
         /**
-         * Sets [Builder.stateReason] to an arbitrary JSON value.
+         * Sets [Builder.processorRef] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.stateReason] with a well-typed [StateReason] value
+         * You should usually call [Builder.processorRef] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun processorRef(processorRef: JsonField<String>) = apply {
+            this.processorRef = processorRef
+        }
+
+        /**
+         * Reason associated with the current `status`. Present when the card is `CLOSED` or when
+         * provisioning was rejected; absent otherwise.
+         */
+        fun statusReason(statusReason: StatusReason) = statusReason(JsonField.of(statusReason))
+
+        /**
+         * Sets [Builder.statusReason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.statusReason] with a well-typed [StatusReason] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun stateReason(stateReason: JsonField<StateReason>) = apply {
-            this.stateReason = stateReason
+        fun statusReason(statusReason: JsonField<StatusReason>) = apply {
+            this.statusReason = statusReason
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -705,11 +909,14 @@ private constructor(
          * The following fields are required:
          * ```kotlin
          * .id()
-         * .cardholderId()
          * .createdAt()
+         * .customerId()
          * .form()
-         * .fundingSources()
-         * .state()
+         * .fundingSource()
+         * .maxSpendPerDay()
+         * .maxSpendPerTransaction()
+         * .maxTransactionsPerDay()
+         * .status()
          * .updatedAt()
          * ```
          *
@@ -718,21 +925,25 @@ private constructor(
         fun build(): Card =
             Card(
                 checkRequired("id", id),
-                checkRequired("cardholderId", cardholderId),
                 checkRequired("createdAt", createdAt),
+                checkRequired("customerId", customerId),
                 checkRequired("form", form),
-                checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
-                checkRequired("state", state),
+                checkRequired("fundingSource", fundingSource),
+                checkRequired("maxSpendPerDay", maxSpendPerDay),
+                checkRequired("maxSpendPerTransaction", maxSpendPerTransaction),
+                checkRequired("maxTransactionsPerDay", maxTransactionsPerDay),
+                checkRequired("status", status),
                 checkRequired("updatedAt", updatedAt),
                 brand,
+                cardCapabilities,
                 currency,
                 expMonth,
                 expYear,
                 issuerRef,
                 last4,
-                panEmbedUrl,
                 platformCardId,
-                stateReason,
+                processorRef,
+                statusReason,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -753,21 +964,25 @@ private constructor(
         }
 
         id()
-        cardholderId()
         createdAt()
+        customerId()
         form().validate()
-        fundingSources()
-        state().validate()
+        fundingSource()
+        maxSpendPerDay()
+        maxSpendPerTransaction()
+        maxTransactionsPerDay()
+        status().validate()
         updatedAt()
         brand()?.validate()
+        cardCapabilities()?.validate()
         currency()
         expMonth()
         expYear()
         issuerRef()
         last4()
-        panEmbedUrl()
         platformCardId()
-        stateReason()?.validate()
+        processorRef()
+        statusReason()?.validate()
         validated = true
     }
 
@@ -786,21 +1001,25 @@ private constructor(
      */
     internal fun validity(): Int =
         (if (id.asKnown() == null) 0 else 1) +
-            (if (cardholderId.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (if (customerId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
-            (fundingSources.asKnown()?.size ?: 0) +
-            (state.asKnown()?.validity() ?: 0) +
+            (if (fundingSource.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
+            (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
+            (status.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
             (brand.asKnown()?.validity() ?: 0) +
+            (cardCapabilities.asKnown()?.validity() ?: 0) +
             (if (currency.asKnown() == null) 0 else 1) +
             (if (expMonth.asKnown() == null) 0 else 1) +
             (if (expYear.asKnown() == null) 0 else 1) +
             (if (issuerRef.asKnown() == null) 0 else 1) +
             (if (last4.asKnown() == null) 0 else 1) +
-            (if (panEmbedUrl.asKnown() == null) 0 else 1) +
             (if (platformCardId.asKnown() == null) 0 else 1) +
-            (stateReason.asKnown()?.validity() ?: 0)
+            (if (processorRef.asKnown() == null) 0 else 1) +
+            (statusReason.asKnown()?.validity() ?: 0)
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -935,17 +1154,17 @@ private constructor(
     }
 
     /**
-     * Lifecycle state of a card.
+     * Lifecycle status of a card.
      *
-     * |State          |Description                                                                                                                                                  |
-     * |---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-     * |`PENDING_KYC`  |The cardholder has not yet completed KYC. Cards in this state cannot transact.                                                                               |
-     * |`PENDING_ISSUE`|The card has been requested and is being provisioned with the issuer.                                                                                        |
-     * |`ACTIVE`       |The card is live and can authorize transactions.                                                                                                             |
-     * |`FROZEN`       |The card is temporarily disabled by the platform. New authorizations are declined with `CARD_PAUSED`. Existing settlements and refunds continue to reconcile.|
-     * |`CLOSED`       |The card is permanently closed. Terminal, irreversible state.                                                                                                |
+     * |Status       |Description                                                                                                                                                                          |
+     * |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+     * |`PENDING_KYC`|The cardholder has not yet completed KYC. Cards in this status cannot transact.                                                                                                      |
+     * |`PROCESSING` |The card has been requested and is being provisioned with the issuer.                                                                                                                |
+     * |`ACTIVE`     |The card is live and can authorize transactions.                                                                                                                                     |
+     * |`FROZEN`     |The card is temporarily disabled by the platform. New authorizations are declined with `cardDeclinedReason: CARD_NOT_ACTIVE`. Existing settlements and refunds continue to reconcile.|
+     * |`CLOSED`     |The card is permanently closed. Terminal, irreversible status.                                                                                                                       |
      */
-    class State @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -961,7 +1180,7 @@ private constructor(
 
             val PENDING_KYC = of("PENDING_KYC")
 
-            val PENDING_ISSUE = of("PENDING_ISSUE")
+            val PROCESSING = of("PROCESSING")
 
             val ACTIVE = of("ACTIVE")
 
@@ -969,22 +1188,22 @@ private constructor(
 
             val CLOSED = of("CLOSED")
 
-            fun of(value: String) = State(JsonField.of(value))
+            fun of(value: String) = Status(JsonField.of(value))
         }
 
-        /** An enum containing [State]'s known values. */
+        /** An enum containing [Status]'s known values. */
         enum class Known {
             PENDING_KYC,
-            PENDING_ISSUE,
+            PROCESSING,
             ACTIVE,
             FROZEN,
             CLOSED,
         }
 
         /**
-         * An enum containing [State]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [Status]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [State] can contain an unknown value in a couple of cases:
+         * An instance of [Status] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -992,11 +1211,11 @@ private constructor(
          */
         enum class Value {
             PENDING_KYC,
-            PENDING_ISSUE,
+            PROCESSING,
             ACTIVE,
             FROZEN,
             CLOSED,
-            /** An enum member indicating that [State] was instantiated with an unknown value. */
+            /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
         }
 
@@ -1010,7 +1229,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 PENDING_KYC -> Value.PENDING_KYC
-                PENDING_ISSUE -> Value.PENDING_ISSUE
+                PROCESSING -> Value.PROCESSING
                 ACTIVE -> Value.ACTIVE
                 FROZEN -> Value.FROZEN
                 CLOSED -> Value.CLOSED
@@ -1029,11 +1248,11 @@ private constructor(
         fun known(): Known =
             when (this) {
                 PENDING_KYC -> Known.PENDING_KYC
-                PENDING_ISSUE -> Known.PENDING_ISSUE
+                PROCESSING -> Known.PROCESSING
                 ACTIVE -> Known.ACTIVE
                 FROZEN -> Known.FROZEN
                 CLOSED -> Known.CLOSED
-                else -> throw LightsparkGridInvalidDataException("Unknown State: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
 
         /**
@@ -1059,7 +1278,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): State = apply {
+        fun validate(): Status = apply {
             if (validated) {
                 return@apply
             }
@@ -1089,7 +1308,7 @@ private constructor(
                 return true
             }
 
-            return other is State && value == other.value
+            return other is Status && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -1236,10 +1455,467 @@ private constructor(
     }
 
     /**
-     * Reason associated with the current `state`. Populated when the card is `CLOSED` or when
-     * provisioning was rejected; otherwise null.
+     * Actions supported for this card by the issuer selected at issuance. Present for cards whose
+     * program has been resolved; absent otherwise. These capabilities are fixed at issuance for the
+     * card's lifetime.
      */
-    class StateReason @JsonCreator private constructor(private val value: JsonField<String>) :
+    class CardCapabilities
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val supports3dSecurePassword: JsonField<Boolean>,
+        private val supportsDigitalWalletTokenization: JsonField<Boolean>,
+        private val supportsPanReveal: JsonField<Boolean>,
+        private val supportsSpendLimits: JsonField<Boolean>,
+        private val supportsSpendLimitsAtIssuance: JsonField<Boolean>,
+        private val supportsTransactionCountLimit: JsonField<Boolean>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("supports3dSecurePassword")
+            @ExcludeMissing
+            supports3dSecurePassword: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsDigitalWalletTokenization")
+            @ExcludeMissing
+            supportsDigitalWalletTokenization: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsPanReveal")
+            @ExcludeMissing
+            supportsPanReveal: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsSpendLimits")
+            @ExcludeMissing
+            supportsSpendLimits: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsSpendLimitsAtIssuance")
+            @ExcludeMissing
+            supportsSpendLimitsAtIssuance: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("supportsTransactionCountLimit")
+            @ExcludeMissing
+            supportsTransactionCountLimit: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(
+            supports3dSecurePassword,
+            supportsDigitalWalletTokenization,
+            supportsPanReveal,
+            supportsSpendLimits,
+            supportsSpendLimitsAtIssuance,
+            supportsTransactionCountLimit,
+            mutableMapOf(),
+        )
+
+        /**
+         * Whether cards in this program accept a caller-supplied `threeDSecurePassword`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supports3dSecurePassword(): Boolean =
+            supports3dSecurePassword.getRequired("supports3dSecurePassword")
+
+        /**
+         * Whether cards in this program can be added to Apple Pay, Google Pay, or Samsung Pay from
+         * your app through `POST /cards/{id}/tokenize`. Manual entry into a wallet works regardless
+         * of this flag.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsDigitalWalletTokenization(): Boolean =
+            supportsDigitalWalletTokenization.getRequired("supportsDigitalWalletTokenization")
+
+        /**
+         * Whether cards in this program can be revealed through `POST /cards/{id}/reveal`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsPanReveal(): Boolean = supportsPanReveal.getRequired("supportsPanReveal")
+
+        /**
+         * Whether a card in this program can have `maxSpendPerTransaction` and `maxSpendPerDay` at
+         * all. On card programs where the card issuer makes authorization decisions, these limits
+         * can only be set after issuance through `PATCH /cards/{id}`. Check
+         * `supportsSpendLimitsAtIssuance` to determine whether you can supply them when issuing a
+         * card.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsSpendLimits(): Boolean = supportsSpendLimits.getRequired("supportsSpendLimits")
+
+        /**
+         * Whether `maxSpendPerTransaction` and `maxSpendPerDay` may be supplied on `POST /cards`.
+         * This is true for card programs where Grid makes the authorization decision and false for
+         * card programs where the card issuer makes authorization decisions.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsSpendLimitsAtIssuance(): Boolean =
+            supportsSpendLimitsAtIssuance.getRequired("supportsSpendLimitsAtIssuance")
+
+        /**
+         * Whether cards in this program accept `maxTransactionsPerDay`.
+         *
+         * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun supportsTransactionCountLimit(): Boolean =
+            supportsTransactionCountLimit.getRequired("supportsTransactionCountLimit")
+
+        /**
+         * Returns the raw JSON value of [supports3dSecurePassword].
+         *
+         * Unlike [supports3dSecurePassword], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("supports3dSecurePassword")
+        @ExcludeMissing
+        fun _supports3dSecurePassword(): JsonField<Boolean> = supports3dSecurePassword
+
+        /**
+         * Returns the raw JSON value of [supportsDigitalWalletTokenization].
+         *
+         * Unlike [supportsDigitalWalletTokenization], this method doesn't throw if the JSON field
+         * has an unexpected type.
+         */
+        @JsonProperty("supportsDigitalWalletTokenization")
+        @ExcludeMissing
+        fun _supportsDigitalWalletTokenization(): JsonField<Boolean> =
+            supportsDigitalWalletTokenization
+
+        /**
+         * Returns the raw JSON value of [supportsPanReveal].
+         *
+         * Unlike [supportsPanReveal], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("supportsPanReveal")
+        @ExcludeMissing
+        fun _supportsPanReveal(): JsonField<Boolean> = supportsPanReveal
+
+        /**
+         * Returns the raw JSON value of [supportsSpendLimits].
+         *
+         * Unlike [supportsSpendLimits], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("supportsSpendLimits")
+        @ExcludeMissing
+        fun _supportsSpendLimits(): JsonField<Boolean> = supportsSpendLimits
+
+        /**
+         * Returns the raw JSON value of [supportsSpendLimitsAtIssuance].
+         *
+         * Unlike [supportsSpendLimitsAtIssuance], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("supportsSpendLimitsAtIssuance")
+        @ExcludeMissing
+        fun _supportsSpendLimitsAtIssuance(): JsonField<Boolean> = supportsSpendLimitsAtIssuance
+
+        /**
+         * Returns the raw JSON value of [supportsTransactionCountLimit].
+         *
+         * Unlike [supportsTransactionCountLimit], this method doesn't throw if the JSON field has
+         * an unexpected type.
+         */
+        @JsonProperty("supportsTransactionCountLimit")
+        @ExcludeMissing
+        fun _supportsTransactionCountLimit(): JsonField<Boolean> = supportsTransactionCountLimit
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [CardCapabilities].
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .supports3dSecurePassword()
+             * .supportsDigitalWalletTokenization()
+             * .supportsPanReveal()
+             * .supportsSpendLimits()
+             * .supportsSpendLimitsAtIssuance()
+             * .supportsTransactionCountLimit()
+             * ```
+             */
+            fun builder() = Builder()
+        }
+
+        /** A builder for [CardCapabilities]. */
+        class Builder internal constructor() {
+
+            private var supports3dSecurePassword: JsonField<Boolean>? = null
+            private var supportsDigitalWalletTokenization: JsonField<Boolean>? = null
+            private var supportsPanReveal: JsonField<Boolean>? = null
+            private var supportsSpendLimits: JsonField<Boolean>? = null
+            private var supportsSpendLimitsAtIssuance: JsonField<Boolean>? = null
+            private var supportsTransactionCountLimit: JsonField<Boolean>? = null
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            internal fun from(cardCapabilities: CardCapabilities) = apply {
+                supports3dSecurePassword = cardCapabilities.supports3dSecurePassword
+                supportsDigitalWalletTokenization =
+                    cardCapabilities.supportsDigitalWalletTokenization
+                supportsPanReveal = cardCapabilities.supportsPanReveal
+                supportsSpendLimits = cardCapabilities.supportsSpendLimits
+                supportsSpendLimitsAtIssuance = cardCapabilities.supportsSpendLimitsAtIssuance
+                supportsTransactionCountLimit = cardCapabilities.supportsTransactionCountLimit
+                additionalProperties = cardCapabilities.additionalProperties.toMutableMap()
+            }
+
+            /** Whether cards in this program accept a caller-supplied `threeDSecurePassword`. */
+            fun supports3dSecurePassword(supports3dSecurePassword: Boolean) =
+                supports3dSecurePassword(JsonField.of(supports3dSecurePassword))
+
+            /**
+             * Sets [Builder.supports3dSecurePassword] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supports3dSecurePassword] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supports3dSecurePassword(supports3dSecurePassword: JsonField<Boolean>) = apply {
+                this.supports3dSecurePassword = supports3dSecurePassword
+            }
+
+            /**
+             * Whether cards in this program can be added to Apple Pay, Google Pay, or Samsung Pay
+             * from your app through `POST /cards/{id}/tokenize`. Manual entry into a wallet works
+             * regardless of this flag.
+             */
+            fun supportsDigitalWalletTokenization(supportsDigitalWalletTokenization: Boolean) =
+                supportsDigitalWalletTokenization(JsonField.of(supportsDigitalWalletTokenization))
+
+            /**
+             * Sets [Builder.supportsDigitalWalletTokenization] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsDigitalWalletTokenization] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsDigitalWalletTokenization(
+                supportsDigitalWalletTokenization: JsonField<Boolean>
+            ) = apply { this.supportsDigitalWalletTokenization = supportsDigitalWalletTokenization }
+
+            /** Whether cards in this program can be revealed through `POST /cards/{id}/reveal`. */
+            fun supportsPanReveal(supportsPanReveal: Boolean) =
+                supportsPanReveal(JsonField.of(supportsPanReveal))
+
+            /**
+             * Sets [Builder.supportsPanReveal] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsPanReveal] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun supportsPanReveal(supportsPanReveal: JsonField<Boolean>) = apply {
+                this.supportsPanReveal = supportsPanReveal
+            }
+
+            /**
+             * Whether a card in this program can have `maxSpendPerTransaction` and `maxSpendPerDay`
+             * at all. On card programs where the card issuer makes authorization decisions, these
+             * limits can only be set after issuance through `PATCH /cards/{id}`. Check
+             * `supportsSpendLimitsAtIssuance` to determine whether you can supply them when issuing
+             * a card.
+             */
+            fun supportsSpendLimits(supportsSpendLimits: Boolean) =
+                supportsSpendLimits(JsonField.of(supportsSpendLimits))
+
+            /**
+             * Sets [Builder.supportsSpendLimits] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsSpendLimits] with a well-typed [Boolean]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun supportsSpendLimits(supportsSpendLimits: JsonField<Boolean>) = apply {
+                this.supportsSpendLimits = supportsSpendLimits
+            }
+
+            /**
+             * Whether `maxSpendPerTransaction` and `maxSpendPerDay` may be supplied on `POST
+             * /cards`. This is true for card programs where Grid makes the authorization decision
+             * and false for card programs where the card issuer makes authorization decisions.
+             */
+            fun supportsSpendLimitsAtIssuance(supportsSpendLimitsAtIssuance: Boolean) =
+                supportsSpendLimitsAtIssuance(JsonField.of(supportsSpendLimitsAtIssuance))
+
+            /**
+             * Sets [Builder.supportsSpendLimitsAtIssuance] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsSpendLimitsAtIssuance] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsSpendLimitsAtIssuance(supportsSpendLimitsAtIssuance: JsonField<Boolean>) =
+                apply {
+                    this.supportsSpendLimitsAtIssuance = supportsSpendLimitsAtIssuance
+                }
+
+            /** Whether cards in this program accept `maxTransactionsPerDay`. */
+            fun supportsTransactionCountLimit(supportsTransactionCountLimit: Boolean) =
+                supportsTransactionCountLimit(JsonField.of(supportsTransactionCountLimit))
+
+            /**
+             * Sets [Builder.supportsTransactionCountLimit] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.supportsTransactionCountLimit] with a well-typed
+             * [Boolean] value instead. This method is primarily for setting the field to an
+             * undocumented or not yet supported value.
+             */
+            fun supportsTransactionCountLimit(supportsTransactionCountLimit: JsonField<Boolean>) =
+                apply {
+                    this.supportsTransactionCountLimit = supportsTransactionCountLimit
+                }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [CardCapabilities].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```kotlin
+             * .supports3dSecurePassword()
+             * .supportsDigitalWalletTokenization()
+             * .supportsPanReveal()
+             * .supportsSpendLimits()
+             * .supportsSpendLimitsAtIssuance()
+             * .supportsTransactionCountLimit()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): CardCapabilities =
+                CardCapabilities(
+                    checkRequired("supports3dSecurePassword", supports3dSecurePassword),
+                    checkRequired(
+                        "supportsDigitalWalletTokenization",
+                        supportsDigitalWalletTokenization,
+                    ),
+                    checkRequired("supportsPanReveal", supportsPanReveal),
+                    checkRequired("supportsSpendLimits", supportsSpendLimits),
+                    checkRequired("supportsSpendLimitsAtIssuance", supportsSpendLimitsAtIssuance),
+                    checkRequired("supportsTransactionCountLimit", supportsTransactionCountLimit),
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardCapabilities = apply {
+            if (validated) {
+                return@apply
+            }
+
+            supports3dSecurePassword()
+            supportsDigitalWalletTokenization()
+            supportsPanReveal()
+            supportsSpendLimits()
+            supportsSpendLimitsAtIssuance()
+            supportsTransactionCountLimit()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int =
+            (if (supports3dSecurePassword.asKnown() == null) 0 else 1) +
+                (if (supportsDigitalWalletTokenization.asKnown() == null) 0 else 1) +
+                (if (supportsPanReveal.asKnown() == null) 0 else 1) +
+                (if (supportsSpendLimits.asKnown() == null) 0 else 1) +
+                (if (supportsSpendLimitsAtIssuance.asKnown() == null) 0 else 1) +
+                (if (supportsTransactionCountLimit.asKnown() == null) 0 else 1)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardCapabilities &&
+                supports3dSecurePassword == other.supports3dSecurePassword &&
+                supportsDigitalWalletTokenization == other.supportsDigitalWalletTokenization &&
+                supportsPanReveal == other.supportsPanReveal &&
+                supportsSpendLimits == other.supportsSpendLimits &&
+                supportsSpendLimitsAtIssuance == other.supportsSpendLimitsAtIssuance &&
+                supportsTransactionCountLimit == other.supportsTransactionCountLimit &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                supports3dSecurePassword,
+                supportsDigitalWalletTokenization,
+                supportsPanReveal,
+                supportsSpendLimits,
+                supportsSpendLimitsAtIssuance,
+                supportsTransactionCountLimit,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "CardCapabilities{supports3dSecurePassword=$supports3dSecurePassword, supportsDigitalWalletTokenization=$supportsDigitalWalletTokenization, supportsPanReveal=$supportsPanReveal, supportsSpendLimits=$supportsSpendLimits, supportsSpendLimitsAtIssuance=$supportsSpendLimitsAtIssuance, supportsTransactionCountLimit=$supportsTransactionCountLimit, additionalProperties=$additionalProperties}"
+    }
+
+    /**
+     * Reason associated with the current `status`. Present when the card is `CLOSED` or when
+     * provisioning was rejected; absent otherwise.
+     */
+    class StatusReason @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
         /**
@@ -1260,10 +1936,10 @@ private constructor(
 
             val CLOSED_BY_GRID = of("CLOSED_BY_GRID")
 
-            fun of(value: String) = StateReason(JsonField.of(value))
+            fun of(value: String) = StatusReason(JsonField.of(value))
         }
 
-        /** An enum containing [StateReason]'s known values. */
+        /** An enum containing [StatusReason]'s known values. */
         enum class Known {
             ISSUER_REJECTED,
             CLOSED_BY_PLATFORM,
@@ -1271,9 +1947,9 @@ private constructor(
         }
 
         /**
-         * An enum containing [StateReason]'s known values, as well as an [_UNKNOWN] member.
+         * An enum containing [StatusReason]'s known values, as well as an [_UNKNOWN] member.
          *
-         * An instance of [StateReason] can contain an unknown value in a couple of cases:
+         * An instance of [StatusReason] can contain an unknown value in a couple of cases:
          * - It was deserialized from data that doesn't match any known member. For example, if the
          *   SDK is on an older version than the API, then the API may respond with new members that
          *   the SDK is unaware of.
@@ -1284,7 +1960,7 @@ private constructor(
             CLOSED_BY_PLATFORM,
             CLOSED_BY_GRID,
             /**
-             * An enum member indicating that [StateReason] was instantiated with an unknown value.
+             * An enum member indicating that [StatusReason] was instantiated with an unknown value.
              */
             _UNKNOWN,
         }
@@ -1318,7 +1994,7 @@ private constructor(
                 ISSUER_REJECTED -> Known.ISSUER_REJECTED
                 CLOSED_BY_PLATFORM -> Known.CLOSED_BY_PLATFORM
                 CLOSED_BY_GRID -> Known.CLOSED_BY_GRID
-                else -> throw LightsparkGridInvalidDataException("Unknown StateReason: $value")
+                else -> throw LightsparkGridInvalidDataException("Unknown StatusReason: $value")
             }
 
         /**
@@ -1344,7 +2020,7 @@ private constructor(
          * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
          *   its expected type.
          */
-        fun validate(): StateReason = apply {
+        fun validate(): StatusReason = apply {
             if (validated) {
                 return@apply
             }
@@ -1374,7 +2050,7 @@ private constructor(
                 return true
             }
 
-            return other is StateReason && value == other.value
+            return other is StatusReason && value == other.value
         }
 
         override fun hashCode() = value.hashCode()
@@ -1389,42 +2065,50 @@ private constructor(
 
         return other is Card &&
             id == other.id &&
-            cardholderId == other.cardholderId &&
             createdAt == other.createdAt &&
+            customerId == other.customerId &&
             form == other.form &&
-            fundingSources == other.fundingSources &&
-            state == other.state &&
+            fundingSource == other.fundingSource &&
+            maxSpendPerDay == other.maxSpendPerDay &&
+            maxSpendPerTransaction == other.maxSpendPerTransaction &&
+            maxTransactionsPerDay == other.maxTransactionsPerDay &&
+            status == other.status &&
             updatedAt == other.updatedAt &&
             brand == other.brand &&
+            cardCapabilities == other.cardCapabilities &&
             currency == other.currency &&
             expMonth == other.expMonth &&
             expYear == other.expYear &&
             issuerRef == other.issuerRef &&
             last4 == other.last4 &&
-            panEmbedUrl == other.panEmbedUrl &&
             platformCardId == other.platformCardId &&
-            stateReason == other.stateReason &&
+            processorRef == other.processorRef &&
+            statusReason == other.statusReason &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
         Objects.hash(
             id,
-            cardholderId,
             createdAt,
+            customerId,
             form,
-            fundingSources,
-            state,
+            fundingSource,
+            maxSpendPerDay,
+            maxSpendPerTransaction,
+            maxTransactionsPerDay,
+            status,
             updatedAt,
             brand,
+            cardCapabilities,
             currency,
             expMonth,
             expYear,
             issuerRef,
             last4,
-            panEmbedUrl,
             platformCardId,
-            stateReason,
+            processorRef,
+            statusReason,
             additionalProperties,
         )
     }
@@ -1432,5 +2116,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Card{id=$id, cardholderId=$cardholderId, createdAt=$createdAt, form=$form, fundingSources=$fundingSources, state=$state, updatedAt=$updatedAt, brand=$brand, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, panEmbedUrl=$panEmbedUrl, platformCardId=$platformCardId, stateReason=$stateReason, additionalProperties=$additionalProperties}"
+        "Card{id=$id, createdAt=$createdAt, customerId=$customerId, form=$form, fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, status=$status, updatedAt=$updatedAt, brand=$brand, cardCapabilities=$cardCapabilities, currency=$currency, expMonth=$expMonth, expYear=$expYear, issuerRef=$issuerRef, last4=$last4, platformCardId=$platformCardId, processorRef=$processorRef, statusReason=$statusReason, additionalProperties=$additionalProperties}"
 }

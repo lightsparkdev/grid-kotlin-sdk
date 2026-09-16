@@ -15,18 +15,17 @@ import com.lightspark.grid.core.checkRequired
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import com.lightspark.grid.models.invitations.CurrencyAmount
 import com.lightspark.grid.models.sandbox.cards.simulate.CardMerchant
-import com.lightspark.grid.models.sandbox.cards.simulate.CardPullSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardRefundSummary
-import com.lightspark.grid.models.sandbox.cards.simulate.CardSettlementSummary
 import java.time.OffsetDateTime
 import java.util.Collections
 import java.util.Objects
 
 /**
- * Parent transaction row for a card authorization and all of the pulls / settlements / refunds that
- * reconcile against it. Child events are rolled up into the `pullSummary`, `refundSummary`, and
- * `settlementSummary` aggregates. Delivered as the payload of the generic transaction webhook
- * stream (extends the Transaction model with a card destination type) on every transition.
+ * One row per cardholder-visible card transaction. A purchase row rolls its clearings up into
+ * `settledAmount`; a merchant return is its own dated `CREDIT` row linked back to the purchase via
+ * `originalTransactionId` rather than a rollup on the parent, so statements can list purchases and
+ * refunds as separate dated lines. Delivered whole as the `data` payload of every
+ * `CARD_TRANSACTION.*` webhook, and returned as the `CARD` variant of `Transaction` from `GET
+ * /transactions`.
  */
 class CardTransaction
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -35,16 +34,19 @@ private constructor(
     private val accountId: JsonField<String>,
     private val authorizedAmount: JsonField<CurrencyAmount>,
     private val authorizedAt: JsonField<OffsetDateTime>,
-    private val cardId: JsonField<String>,
     private val createdAt: JsonField<OffsetDateTime>,
+    private val customerId: JsonField<String>,
+    private val direction: JsonField<Direction>,
     private val merchant: JsonField<CardMerchant>,
-    private val pullSummary: JsonField<CardPullSummary>,
-    private val refundSummary: JsonField<CardRefundSummary>,
-    private val settlementSummary: JsonField<CardSettlementSummary>,
+    private val platformCustomerId: JsonField<String>,
     private val status: JsonField<Status>,
+    private val type: JsonField<Type>,
     private val updatedAt: JsonField<OffsetDateTime>,
+    private val cardDeclinedReason: JsonField<CardDeclinedReason>,
+    private val cardId: JsonField<String>,
+    private val description: JsonField<String>,
     private val issuerTransactionToken: JsonField<String>,
-    private val lastEventAt: JsonField<OffsetDateTime>,
+    private val originalTransactionId: JsonField<String>,
     private val refundedAmount: JsonField<CurrencyAmount>,
     private val settledAmount: JsonField<CurrencyAmount>,
     private val additionalProperties: MutableMap<String, JsonValue>,
@@ -60,32 +62,39 @@ private constructor(
         @JsonProperty("authorizedAt")
         @ExcludeMissing
         authorizedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
-        @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("createdAt")
         @ExcludeMissing
         createdAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("customerId")
+        @ExcludeMissing
+        customerId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("direction")
+        @ExcludeMissing
+        direction: JsonField<Direction> = JsonMissing.of(),
         @JsonProperty("merchant")
         @ExcludeMissing
         merchant: JsonField<CardMerchant> = JsonMissing.of(),
-        @JsonProperty("pullSummary")
+        @JsonProperty("platformCustomerId")
         @ExcludeMissing
-        pullSummary: JsonField<CardPullSummary> = JsonMissing.of(),
-        @JsonProperty("refundSummary")
-        @ExcludeMissing
-        refundSummary: JsonField<CardRefundSummary> = JsonMissing.of(),
-        @JsonProperty("settlementSummary")
-        @ExcludeMissing
-        settlementSummary: JsonField<CardSettlementSummary> = JsonMissing.of(),
+        platformCustomerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("type") @ExcludeMissing type: JsonField<Type> = JsonMissing.of(),
         @JsonProperty("updatedAt")
         @ExcludeMissing
         updatedAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        @JsonProperty("cardDeclinedReason")
+        @ExcludeMissing
+        cardDeclinedReason: JsonField<CardDeclinedReason> = JsonMissing.of(),
+        @JsonProperty("cardId") @ExcludeMissing cardId: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("description")
+        @ExcludeMissing
+        description: JsonField<String> = JsonMissing.of(),
         @JsonProperty("issuerTransactionToken")
         @ExcludeMissing
         issuerTransactionToken: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("lastEventAt")
+        @JsonProperty("originalTransactionId")
         @ExcludeMissing
-        lastEventAt: JsonField<OffsetDateTime> = JsonMissing.of(),
+        originalTransactionId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("refundedAmount")
         @ExcludeMissing
         refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of(),
@@ -97,16 +106,19 @@ private constructor(
         accountId,
         authorizedAmount,
         authorizedAt,
-        cardId,
         createdAt,
+        customerId,
+        direction,
         merchant,
-        pullSummary,
-        refundSummary,
-        settlementSummary,
+        platformCustomerId,
         status,
+        type,
         updatedAt,
+        cardDeclinedReason,
+        cardId,
+        description,
         issuerTransactionToken,
-        lastEventAt,
+        originalTransactionId,
         refundedAmount,
         settledAmount,
         mutableMapOf(),
@@ -136,20 +148,12 @@ private constructor(
     fun authorizedAmount(): CurrencyAmount = authorizedAmount.getRequired("authorizedAmount")
 
     /**
-     * When the auth was approved.
+     * When the authorization was approved or declined.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun authorizedAt(): OffsetDateTime = authorizedAt.getRequired("authorizedAt")
-
-    /**
-     * The id of the `Card` this transaction was made on.
-     *
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun cardId(): String = cardId.getRequired("cardId")
 
     /**
      * Creation timestamp (same as `authorizedAt` for card transactions).
@@ -160,39 +164,49 @@ private constructor(
     fun createdAt(): OffsetDateTime = createdAt.getRequired("createdAt")
 
     /**
+     * System ID of the customer (cardholder) this transaction belongs to.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun customerId(): String = customerId.getRequired("customerId")
+
+    /**
+     * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+     * `settledAmount`; when the refund returns against a known purchase, `originalTransactionId`
+     * identifies it.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun direction(): Direction = direction.getRequired("direction")
+
+    /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun merchant(): CardMerchant = merchant.getRequired("merchant")
 
     /**
+     * Platform-specific ID of the customer (cardholder) this transaction belongs to.
+     *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun pullSummary(): CardPullSummary = pullSummary.getRequired("pullSummary")
+    fun platformCustomerId(): String = platformCustomerId.getRequired("platformCustomerId")
 
     /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun refundSummary(): CardRefundSummary = refundSummary.getRequired("refundSummary")
-
-    /**
-     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun settlementSummary(): CardSettlementSummary =
-        settlementSummary.getRequired("settlementSummary")
-
-    /**
-     * Lifecycle status of a card transaction.
+     * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+     * settlement — a return against a purchase is its own dated `CREDIT` row linked to the purchase
+     * via `originalTransactionId`, not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-     * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+     * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+     * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
@@ -201,12 +215,47 @@ private constructor(
     fun status(): Status = status.getRequired("status")
 
     /**
+     * Discriminator identifying this transaction as a card transaction in the `Transaction` list.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun type(): Type = type.getRequired("type")
+
+    /**
      * Last update timestamp.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
     fun updatedAt(): OffsetDateTime = updatedAt.getRequired("updatedAt")
+
+    /**
+     * Present only when `status` is `DECLINED`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardDeclinedReason(): CardDeclinedReason? =
+        cardDeclinedReason.getNullable("cardDeclinedReason")
+
+    /**
+     * The id of the `Card` this transaction was made on.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun cardId(): String? = cardId.getNullable("cardId")
+
+    /**
+     * The merchant descriptor, repeated from `merchant.descriptor` so a transaction list reads
+     * without expanding each card row. Unlike `description` on other transaction types, this is set
+     * by Grid from the card network's descriptor, not supplied by the platform.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun description(): String? = description.getNullable("description")
 
     /**
      * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference Grid
@@ -219,13 +268,14 @@ private constructor(
         issuerTransactionToken.getNullable("issuerTransactionToken")
 
     /**
-     * Timestamp of the most recent reconcile event (pull / clearing / refund) against this
-     * transaction.
+     * On a refund row (`direction: CREDIT`), the id of the purchase this return credits back
+     * against. Absent on purchases and on standalone credits with no matching purchase.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
      */
-    fun lastEventAt(): OffsetDateTime? = lastEventAt.getNullable("lastEventAt")
+    fun originalTransactionId(): String? =
+        originalTransactionId.getNullable("originalTransactionId")
 
     /**
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -273,13 +323,6 @@ private constructor(
     fun _authorizedAt(): JsonField<OffsetDateTime> = authorizedAt
 
     /**
-     * Returns the raw JSON value of [cardId].
-     *
-     * Unlike [cardId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("cardId") @ExcludeMissing fun _cardId(): JsonField<String> = cardId
-
-    /**
      * Returns the raw JSON value of [createdAt].
      *
      * Unlike [createdAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -289,6 +332,20 @@ private constructor(
     fun _createdAt(): JsonField<OffsetDateTime> = createdAt
 
     /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
+
+    /**
+     * Returns the raw JSON value of [direction].
+     *
+     * Unlike [direction], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("direction") @ExcludeMissing fun _direction(): JsonField<Direction> = direction
+
+    /**
      * Returns the raw JSON value of [merchant].
      *
      * Unlike [merchant], this method doesn't throw if the JSON field has an unexpected type.
@@ -296,32 +353,14 @@ private constructor(
     @JsonProperty("merchant") @ExcludeMissing fun _merchant(): JsonField<CardMerchant> = merchant
 
     /**
-     * Returns the raw JSON value of [pullSummary].
+     * Returns the raw JSON value of [platformCustomerId].
      *
-     * Unlike [pullSummary], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("pullSummary")
-    @ExcludeMissing
-    fun _pullSummary(): JsonField<CardPullSummary> = pullSummary
-
-    /**
-     * Returns the raw JSON value of [refundSummary].
-     *
-     * Unlike [refundSummary], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("refundSummary")
-    @ExcludeMissing
-    fun _refundSummary(): JsonField<CardRefundSummary> = refundSummary
-
-    /**
-     * Returns the raw JSON value of [settlementSummary].
-     *
-     * Unlike [settlementSummary], this method doesn't throw if the JSON field has an unexpected
+     * Unlike [platformCustomerId], this method doesn't throw if the JSON field has an unexpected
      * type.
      */
-    @JsonProperty("settlementSummary")
+    @JsonProperty("platformCustomerId")
     @ExcludeMissing
-    fun _settlementSummary(): JsonField<CardSettlementSummary> = settlementSummary
+    fun _platformCustomerId(): JsonField<String> = platformCustomerId
 
     /**
      * Returns the raw JSON value of [status].
@@ -331,6 +370,13 @@ private constructor(
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
 
     /**
+     * Returns the raw JSON value of [type].
+     *
+     * Unlike [type], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("type") @ExcludeMissing fun _type(): JsonField<Type> = type
+
+    /**
      * Returns the raw JSON value of [updatedAt].
      *
      * Unlike [updatedAt], this method doesn't throw if the JSON field has an unexpected type.
@@ -338,6 +384,30 @@ private constructor(
     @JsonProperty("updatedAt")
     @ExcludeMissing
     fun _updatedAt(): JsonField<OffsetDateTime> = updatedAt
+
+    /**
+     * Returns the raw JSON value of [cardDeclinedReason].
+     *
+     * Unlike [cardDeclinedReason], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("cardDeclinedReason")
+    @ExcludeMissing
+    fun _cardDeclinedReason(): JsonField<CardDeclinedReason> = cardDeclinedReason
+
+    /**
+     * Returns the raw JSON value of [cardId].
+     *
+     * Unlike [cardId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("cardId") @ExcludeMissing fun _cardId(): JsonField<String> = cardId
+
+    /**
+     * Returns the raw JSON value of [description].
+     *
+     * Unlike [description], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
 
     /**
      * Returns the raw JSON value of [issuerTransactionToken].
@@ -350,13 +420,14 @@ private constructor(
     fun _issuerTransactionToken(): JsonField<String> = issuerTransactionToken
 
     /**
-     * Returns the raw JSON value of [lastEventAt].
+     * Returns the raw JSON value of [originalTransactionId].
      *
-     * Unlike [lastEventAt], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [originalTransactionId], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    @JsonProperty("lastEventAt")
+    @JsonProperty("originalTransactionId")
     @ExcludeMissing
-    fun _lastEventAt(): JsonField<OffsetDateTime> = lastEventAt
+    fun _originalTransactionId(): JsonField<String> = originalTransactionId
 
     /**
      * Returns the raw JSON value of [refundedAmount].
@@ -399,13 +470,13 @@ private constructor(
          * .accountId()
          * .authorizedAmount()
          * .authorizedAt()
-         * .cardId()
          * .createdAt()
+         * .customerId()
+         * .direction()
          * .merchant()
-         * .pullSummary()
-         * .refundSummary()
-         * .settlementSummary()
+         * .platformCustomerId()
          * .status()
+         * .type()
          * .updatedAt()
          * ```
          */
@@ -419,16 +490,19 @@ private constructor(
         private var accountId: JsonField<String>? = null
         private var authorizedAmount: JsonField<CurrencyAmount>? = null
         private var authorizedAt: JsonField<OffsetDateTime>? = null
-        private var cardId: JsonField<String>? = null
         private var createdAt: JsonField<OffsetDateTime>? = null
+        private var customerId: JsonField<String>? = null
+        private var direction: JsonField<Direction>? = null
         private var merchant: JsonField<CardMerchant>? = null
-        private var pullSummary: JsonField<CardPullSummary>? = null
-        private var refundSummary: JsonField<CardRefundSummary>? = null
-        private var settlementSummary: JsonField<CardSettlementSummary>? = null
+        private var platformCustomerId: JsonField<String>? = null
         private var status: JsonField<Status>? = null
+        private var type: JsonField<Type>? = null
         private var updatedAt: JsonField<OffsetDateTime>? = null
+        private var cardDeclinedReason: JsonField<CardDeclinedReason> = JsonMissing.of()
+        private var cardId: JsonField<String> = JsonMissing.of()
+        private var description: JsonField<String> = JsonMissing.of()
         private var issuerTransactionToken: JsonField<String> = JsonMissing.of()
-        private var lastEventAt: JsonField<OffsetDateTime> = JsonMissing.of()
+        private var originalTransactionId: JsonField<String> = JsonMissing.of()
         private var refundedAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var settledAmount: JsonField<CurrencyAmount> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -438,16 +512,19 @@ private constructor(
             accountId = cardTransaction.accountId
             authorizedAmount = cardTransaction.authorizedAmount
             authorizedAt = cardTransaction.authorizedAt
-            cardId = cardTransaction.cardId
             createdAt = cardTransaction.createdAt
+            customerId = cardTransaction.customerId
+            direction = cardTransaction.direction
             merchant = cardTransaction.merchant
-            pullSummary = cardTransaction.pullSummary
-            refundSummary = cardTransaction.refundSummary
-            settlementSummary = cardTransaction.settlementSummary
+            platformCustomerId = cardTransaction.platformCustomerId
             status = cardTransaction.status
+            type = cardTransaction.type
             updatedAt = cardTransaction.updatedAt
+            cardDeclinedReason = cardTransaction.cardDeclinedReason
+            cardId = cardTransaction.cardId
+            description = cardTransaction.description
             issuerTransactionToken = cardTransaction.issuerTransactionToken
-            lastEventAt = cardTransaction.lastEventAt
+            originalTransactionId = cardTransaction.originalTransactionId
             refundedAmount = cardTransaction.refundedAmount
             settledAmount = cardTransaction.settledAmount
             additionalProperties = cardTransaction.additionalProperties.toMutableMap()
@@ -493,7 +570,7 @@ private constructor(
             this.authorizedAmount = authorizedAmount
         }
 
-        /** When the auth was approved. */
+        /** When the authorization was approved or declined. */
         fun authorizedAt(authorizedAt: OffsetDateTime) = authorizedAt(JsonField.of(authorizedAt))
 
         /**
@@ -507,17 +584,6 @@ private constructor(
             this.authorizedAt = authorizedAt
         }
 
-        /** The id of the `Card` this transaction was made on. */
-        fun cardId(cardId: String) = cardId(JsonField.of(cardId))
-
-        /**
-         * Sets [Builder.cardId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.cardId] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun cardId(cardId: JsonField<String>) = apply { this.cardId = cardId }
-
         /** Creation timestamp (same as `authorizedAt` for card transactions). */
         fun createdAt(createdAt: OffsetDateTime) = createdAt(JsonField.of(createdAt))
 
@@ -530,6 +596,34 @@ private constructor(
          */
         fun createdAt(createdAt: JsonField<OffsetDateTime>) = apply { this.createdAt = createdAt }
 
+        /** System ID of the customer (cardholder) this transaction belongs to. */
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
+
+        /**
+         * Sets [Builder.customerId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
+
+        /**
+         * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+         * `settledAmount`; when the refund returns against a known purchase,
+         * `originalTransactionId` identifies it.
+         */
+        fun direction(direction: Direction) = direction(JsonField.of(direction))
+
+        /**
+         * Sets [Builder.direction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.direction] with a well-typed [Direction] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun direction(direction: JsonField<Direction>) = apply { this.direction = direction }
+
         fun merchant(merchant: CardMerchant) = merchant(JsonField.of(merchant))
 
         /**
@@ -541,56 +635,33 @@ private constructor(
          */
         fun merchant(merchant: JsonField<CardMerchant>) = apply { this.merchant = merchant }
 
-        fun pullSummary(pullSummary: CardPullSummary) = pullSummary(JsonField.of(pullSummary))
+        /** Platform-specific ID of the customer (cardholder) this transaction belongs to. */
+        fun platformCustomerId(platformCustomerId: String) =
+            platformCustomerId(JsonField.of(platformCustomerId))
 
         /**
-         * Sets [Builder.pullSummary] to an arbitrary JSON value.
+         * Sets [Builder.platformCustomerId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.pullSummary] with a well-typed [CardPullSummary] value
+         * You should usually call [Builder.platformCustomerId] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun pullSummary(pullSummary: JsonField<CardPullSummary>) = apply {
-            this.pullSummary = pullSummary
-        }
-
-        fun refundSummary(refundSummary: CardRefundSummary) =
-            refundSummary(JsonField.of(refundSummary))
-
-        /**
-         * Sets [Builder.refundSummary] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.refundSummary] with a well-typed [CardRefundSummary]
-         * value instead. This method is primarily for setting the field to an undocumented or not
-         * yet supported value.
-         */
-        fun refundSummary(refundSummary: JsonField<CardRefundSummary>) = apply {
-            this.refundSummary = refundSummary
-        }
-
-        fun settlementSummary(settlementSummary: CardSettlementSummary) =
-            settlementSummary(JsonField.of(settlementSummary))
-
-        /**
-         * Sets [Builder.settlementSummary] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.settlementSummary] with a well-typed
-         * [CardSettlementSummary] value instead. This method is primarily for setting the field to
-         * an undocumented or not yet supported value.
-         */
-        fun settlementSummary(settlementSummary: JsonField<CardSettlementSummary>) = apply {
-            this.settlementSummary = settlementSummary
+        fun platformCustomerId(platformCustomerId: JsonField<String>) = apply {
+            this.platformCustomerId = platformCustomerId
         }
 
         /**
-         * Lifecycle status of a card transaction.
+         * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+         * settlement — a return against a purchase is its own dated `CREDIT` row linked to the
+         * purchase via `originalTransactionId`, not a status of its own.
          *
          * |Status             |Description                                                                                                                                                                                                                                    |
          * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
          * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
          * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-         * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+         * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+         * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+         * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
          * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
          */
         fun status(status: Status) = status(JsonField.of(status))
@@ -603,6 +674,20 @@ private constructor(
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
 
+        /**
+         * Discriminator identifying this transaction as a card transaction in the `Transaction`
+         * list.
+         */
+        fun type(type: Type) = type(JsonField.of(type))
+
+        /**
+         * Sets [Builder.type] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.type] with a well-typed [Type] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun type(type: JsonField<Type>) = apply { this.type = type }
+
         /** Last update timestamp. */
         fun updatedAt(updatedAt: OffsetDateTime) = updatedAt(JsonField.of(updatedAt))
 
@@ -614,6 +699,48 @@ private constructor(
          * supported value.
          */
         fun updatedAt(updatedAt: JsonField<OffsetDateTime>) = apply { this.updatedAt = updatedAt }
+
+        /** Present only when `status` is `DECLINED`. */
+        fun cardDeclinedReason(cardDeclinedReason: CardDeclinedReason) =
+            cardDeclinedReason(JsonField.of(cardDeclinedReason))
+
+        /**
+         * Sets [Builder.cardDeclinedReason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardDeclinedReason] with a well-typed
+         * [CardDeclinedReason] value instead. This method is primarily for setting the field to an
+         * undocumented or not yet supported value.
+         */
+        fun cardDeclinedReason(cardDeclinedReason: JsonField<CardDeclinedReason>) = apply {
+            this.cardDeclinedReason = cardDeclinedReason
+        }
+
+        /** The id of the `Card` this transaction was made on. */
+        fun cardId(cardId: String) = cardId(JsonField.of(cardId))
+
+        /**
+         * Sets [Builder.cardId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.cardId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun cardId(cardId: JsonField<String>) = apply { this.cardId = cardId }
+
+        /**
+         * The merchant descriptor, repeated from `merchant.descriptor` so a transaction list reads
+         * without expanding each card row. Unlike `description` on other transaction types, this is
+         * set by Grid from the card network's descriptor, not supplied by the platform.
+         */
+        fun description(description: String) = description(JsonField.of(description))
+
+        /**
+         * Sets [Builder.description] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun description(description: JsonField<String>) = apply { this.description = description }
 
         /**
          * Opaque identifier for the transaction on the underlying issuer. Used to cross-reference
@@ -634,20 +761,21 @@ private constructor(
         }
 
         /**
-         * Timestamp of the most recent reconcile event (pull / clearing / refund) against this
-         * transaction.
+         * On a refund row (`direction: CREDIT`), the id of the purchase this return credits back
+         * against. Absent on purchases and on standalone credits with no matching purchase.
          */
-        fun lastEventAt(lastEventAt: OffsetDateTime) = lastEventAt(JsonField.of(lastEventAt))
+        fun originalTransactionId(originalTransactionId: String) =
+            originalTransactionId(JsonField.of(originalTransactionId))
 
         /**
-         * Sets [Builder.lastEventAt] to an arbitrary JSON value.
+         * Sets [Builder.originalTransactionId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.lastEventAt] with a well-typed [OffsetDateTime] value
+         * You should usually call [Builder.originalTransactionId] with a well-typed [String] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun lastEventAt(lastEventAt: JsonField<OffsetDateTime>) = apply {
-            this.lastEventAt = lastEventAt
+        fun originalTransactionId(originalTransactionId: JsonField<String>) = apply {
+            this.originalTransactionId = originalTransactionId
         }
 
         fun refundedAmount(refundedAmount: CurrencyAmount) =
@@ -708,13 +836,13 @@ private constructor(
          * .accountId()
          * .authorizedAmount()
          * .authorizedAt()
-         * .cardId()
          * .createdAt()
+         * .customerId()
+         * .direction()
          * .merchant()
-         * .pullSummary()
-         * .refundSummary()
-         * .settlementSummary()
+         * .platformCustomerId()
          * .status()
+         * .type()
          * .updatedAt()
          * ```
          *
@@ -726,16 +854,19 @@ private constructor(
                 checkRequired("accountId", accountId),
                 checkRequired("authorizedAmount", authorizedAmount),
                 checkRequired("authorizedAt", authorizedAt),
-                checkRequired("cardId", cardId),
                 checkRequired("createdAt", createdAt),
+                checkRequired("customerId", customerId),
+                checkRequired("direction", direction),
                 checkRequired("merchant", merchant),
-                checkRequired("pullSummary", pullSummary),
-                checkRequired("refundSummary", refundSummary),
-                checkRequired("settlementSummary", settlementSummary),
+                checkRequired("platformCustomerId", platformCustomerId),
                 checkRequired("status", status),
+                checkRequired("type", type),
                 checkRequired("updatedAt", updatedAt),
+                cardDeclinedReason,
+                cardId,
+                description,
                 issuerTransactionToken,
-                lastEventAt,
+                originalTransactionId,
                 refundedAmount,
                 settledAmount,
                 additionalProperties.toMutableMap(),
@@ -761,16 +892,19 @@ private constructor(
         accountId()
         authorizedAmount().validate()
         authorizedAt()
-        cardId()
         createdAt()
+        customerId()
+        direction().validate()
         merchant().validate()
-        pullSummary().validate()
-        refundSummary().validate()
-        settlementSummary().validate()
+        platformCustomerId()
         status().validate()
+        type().validate()
         updatedAt()
+        cardDeclinedReason()?.validate()
+        cardId()
+        description()
         issuerTransactionToken()
-        lastEventAt()
+        originalTransactionId()
         refundedAmount()?.validate()
         settledAmount()?.validate()
         validated = true
@@ -794,28 +928,175 @@ private constructor(
             (if (accountId.asKnown() == null) 0 else 1) +
             (authorizedAmount.asKnown()?.validity() ?: 0) +
             (if (authorizedAt.asKnown() == null) 0 else 1) +
-            (if (cardId.asKnown() == null) 0 else 1) +
             (if (createdAt.asKnown() == null) 0 else 1) +
+            (if (customerId.asKnown() == null) 0 else 1) +
+            (direction.asKnown()?.validity() ?: 0) +
             (merchant.asKnown()?.validity() ?: 0) +
-            (pullSummary.asKnown()?.validity() ?: 0) +
-            (refundSummary.asKnown()?.validity() ?: 0) +
-            (settlementSummary.asKnown()?.validity() ?: 0) +
+            (if (platformCustomerId.asKnown() == null) 0 else 1) +
             (status.asKnown()?.validity() ?: 0) +
+            (type.asKnown()?.validity() ?: 0) +
             (if (updatedAt.asKnown() == null) 0 else 1) +
+            (cardDeclinedReason.asKnown()?.validity() ?: 0) +
+            (if (cardId.asKnown() == null) 0 else 1) +
+            (if (description.asKnown() == null) 0 else 1) +
             (if (issuerTransactionToken.asKnown() == null) 0 else 1) +
-            (if (lastEventAt.asKnown() == null) 0 else 1) +
+            (if (originalTransactionId.asKnown() == null) 0 else 1) +
             (refundedAmount.asKnown()?.validity() ?: 0) +
             (settledAmount.asKnown()?.validity() ?: 0)
 
     /**
-     * Lifecycle status of a card transaction.
+     * A purchase is a `DEBIT`. A merchant refund is a `CREDIT` with the credited value in
+     * `settledAmount`; when the refund returns against a known purchase, `originalTransactionId`
+     * identifies it.
+     */
+    class Direction @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CREDIT = of("CREDIT")
+
+            val DEBIT = of("DEBIT")
+
+            fun of(value: String) = Direction(JsonField.of(value))
+        }
+
+        /** An enum containing [Direction]'s known values. */
+        enum class Known {
+            CREDIT,
+            DEBIT,
+        }
+
+        /**
+         * An enum containing [Direction]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Direction] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CREDIT,
+            DEBIT,
+            /**
+             * An enum member indicating that [Direction] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CREDIT -> Value.CREDIT
+                DEBIT -> Value.DEBIT
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CREDIT -> Known.CREDIT
+                DEBIT -> Known.DEBIT
+                else -> throw LightsparkGridInvalidDataException("Unknown Direction: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Direction = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Direction && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /**
+     * Lifecycle status of a card transaction. The status tracks the authorization outcome and
+     * settlement — a return against a purchase is its own dated `CREDIT` row linked to the purchase
+     * via `originalTransactionId`, not a status of its own.
      *
      * |Status             |Description                                                                                                                                                                                                                                    |
      * |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
      * |`AUTHORIZED`       |The auth has been approved and a hold placed on the funding source; no clearing has arrived yet.                                                                                                                                               |
      * |`PARTIALLY_SETTLED`|At least one clearing has arrived and posted, but more clearings are still expected (split shipments, tips, multi-leg trips).                                                                                                                  |
-     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source.                                                                                                                                               |
-     * |`REFUNDED`         |A `RETURN` was received from the merchant; the net settled amount has been refunded in part or whole.                                                                                                                                          |
+     * |`SETTLED`          |All clearings for the auth have posted and the transaction is closed against the funding source. A `RETURN` received afterwards keeps the purchase `SETTLED`; the return appears as its own `CREDIT` transaction.                              |
+     * |`DECLINED`         |The authorization was declined before any money moved. Declines carry no settlement and must be excluded from cardholder statements.                                                                                                           |
+     * |`VOIDED`           |The authorization was fully reversed or expired before any clearing posted, so the hold closed without moving money. `authorizedAmount` reports what is still held, normally 0, and `settledAmount` is absent.                                 |
      * |`EXCEPTION`        |The transaction settled to the card network but the corresponding pull from the funding source failed (e.g. balance no longer covers the post-hoc clearing). Surfaces high-urgency alerts and is the dashboard query for stuck reconciliations.|
      */
     class Status @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -838,7 +1119,9 @@ private constructor(
 
             val SETTLED = of("SETTLED")
 
-            val REFUNDED = of("REFUNDED")
+            val DECLINED = of("DECLINED")
+
+            val VOIDED = of("VOIDED")
 
             val EXCEPTION = of("EXCEPTION")
 
@@ -850,7 +1133,8 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
-            REFUNDED,
+            DECLINED,
+            VOIDED,
             EXCEPTION,
         }
 
@@ -867,7 +1151,8 @@ private constructor(
             AUTHORIZED,
             PARTIALLY_SETTLED,
             SETTLED,
-            REFUNDED,
+            DECLINED,
+            VOIDED,
             EXCEPTION,
             /** An enum member indicating that [Status] was instantiated with an unknown value. */
             _UNKNOWN,
@@ -885,7 +1170,8 @@ private constructor(
                 AUTHORIZED -> Value.AUTHORIZED
                 PARTIALLY_SETTLED -> Value.PARTIALLY_SETTLED
                 SETTLED -> Value.SETTLED
-                REFUNDED -> Value.REFUNDED
+                DECLINED -> Value.DECLINED
+                VOIDED -> Value.VOIDED
                 EXCEPTION -> Value.EXCEPTION
                 else -> Value._UNKNOWN
             }
@@ -904,7 +1190,8 @@ private constructor(
                 AUTHORIZED -> Known.AUTHORIZED
                 PARTIALLY_SETTLED -> Known.PARTIALLY_SETTLED
                 SETTLED -> Known.SETTLED
-                REFUNDED -> Known.REFUNDED
+                DECLINED -> Known.DECLINED
+                VOIDED -> Known.VOIDED
                 EXCEPTION -> Known.EXCEPTION
                 else -> throw LightsparkGridInvalidDataException("Unknown Status: $value")
             }
@@ -970,6 +1257,308 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /**
+     * Discriminator identifying this transaction as a card transaction in the `Transaction` list.
+     */
+    class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CARD = of("CARD")
+
+            fun of(value: String) = Type(JsonField.of(value))
+        }
+
+        /** An enum containing [Type]'s known values. */
+        enum class Known {
+            CARD
+        }
+
+        /**
+         * An enum containing [Type]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Type] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CARD,
+            /** An enum member indicating that [Type] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CARD -> Value.CARD
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CARD -> Known.CARD
+                else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Type = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Type && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Present only when `status` is `DECLINED`. */
+    class CardDeclinedReason
+    @JsonCreator
+    private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val CARD_NOT_ACTIVE = of("CARD_NOT_ACTIVE")
+
+            val SPEND_LIMIT_EXCEEDED = of("SPEND_LIMIT_EXCEEDED")
+
+            val INSUFFICIENT_FUNDS = of("INSUFFICIENT_FUNDS")
+
+            val NO_ELIGIBLE_FUNDING_SOURCE = of("NO_ELIGIBLE_FUNDING_SOURCE")
+
+            val BLOCKED = of("BLOCKED")
+
+            val UNSUPPORTED_NETWORK = of("UNSUPPORTED_NETWORK")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = CardDeclinedReason(JsonField.of(value))
+        }
+
+        /** An enum containing [CardDeclinedReason]'s known values. */
+        enum class Known {
+            CARD_NOT_ACTIVE,
+            SPEND_LIMIT_EXCEEDED,
+            INSUFFICIENT_FUNDS,
+            NO_ELIGIBLE_FUNDING_SOURCE,
+            BLOCKED,
+            UNSUPPORTED_NETWORK,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [CardDeclinedReason]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [CardDeclinedReason] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            CARD_NOT_ACTIVE,
+            SPEND_LIMIT_EXCEEDED,
+            INSUFFICIENT_FUNDS,
+            NO_ELIGIBLE_FUNDING_SOURCE,
+            BLOCKED,
+            UNSUPPORTED_NETWORK,
+            OTHER,
+            /**
+             * An enum member indicating that [CardDeclinedReason] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                CARD_NOT_ACTIVE -> Value.CARD_NOT_ACTIVE
+                SPEND_LIMIT_EXCEEDED -> Value.SPEND_LIMIT_EXCEEDED
+                INSUFFICIENT_FUNDS -> Value.INSUFFICIENT_FUNDS
+                NO_ELIGIBLE_FUNDING_SOURCE -> Value.NO_ELIGIBLE_FUNDING_SOURCE
+                BLOCKED -> Value.BLOCKED
+                UNSUPPORTED_NETWORK -> Value.UNSUPPORTED_NETWORK
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                CARD_NOT_ACTIVE -> Known.CARD_NOT_ACTIVE
+                SPEND_LIMIT_EXCEEDED -> Known.SPEND_LIMIT_EXCEEDED
+                INSUFFICIENT_FUNDS -> Known.INSUFFICIENT_FUNDS
+                NO_ELIGIBLE_FUNDING_SOURCE -> Known.NO_ELIGIBLE_FUNDING_SOURCE
+                BLOCKED -> Known.BLOCKED
+                UNSUPPORTED_NETWORK -> Known.UNSUPPORTED_NETWORK
+                OTHER -> Known.OTHER
+                else ->
+                    throw LightsparkGridInvalidDataException("Unknown CardDeclinedReason: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): CardDeclinedReason = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is CardDeclinedReason && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -980,16 +1569,19 @@ private constructor(
             accountId == other.accountId &&
             authorizedAmount == other.authorizedAmount &&
             authorizedAt == other.authorizedAt &&
-            cardId == other.cardId &&
             createdAt == other.createdAt &&
+            customerId == other.customerId &&
+            direction == other.direction &&
             merchant == other.merchant &&
-            pullSummary == other.pullSummary &&
-            refundSummary == other.refundSummary &&
-            settlementSummary == other.settlementSummary &&
+            platformCustomerId == other.platformCustomerId &&
             status == other.status &&
+            type == other.type &&
             updatedAt == other.updatedAt &&
+            cardDeclinedReason == other.cardDeclinedReason &&
+            cardId == other.cardId &&
+            description == other.description &&
             issuerTransactionToken == other.issuerTransactionToken &&
-            lastEventAt == other.lastEventAt &&
+            originalTransactionId == other.originalTransactionId &&
             refundedAmount == other.refundedAmount &&
             settledAmount == other.settledAmount &&
             additionalProperties == other.additionalProperties
@@ -1001,16 +1593,19 @@ private constructor(
             accountId,
             authorizedAmount,
             authorizedAt,
-            cardId,
             createdAt,
+            customerId,
+            direction,
             merchant,
-            pullSummary,
-            refundSummary,
-            settlementSummary,
+            platformCustomerId,
             status,
+            type,
             updatedAt,
+            cardDeclinedReason,
+            cardId,
+            description,
             issuerTransactionToken,
-            lastEventAt,
+            originalTransactionId,
             refundedAmount,
             settledAmount,
             additionalProperties,
@@ -1020,5 +1615,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, cardId=$cardId, createdAt=$createdAt, merchant=$merchant, pullSummary=$pullSummary, refundSummary=$refundSummary, settlementSummary=$settlementSummary, status=$status, updatedAt=$updatedAt, issuerTransactionToken=$issuerTransactionToken, lastEventAt=$lastEventAt, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
+        "CardTransaction{id=$id, accountId=$accountId, authorizedAmount=$authorizedAmount, authorizedAt=$authorizedAt, createdAt=$createdAt, customerId=$customerId, direction=$direction, merchant=$merchant, platformCustomerId=$platformCustomerId, status=$status, type=$type, updatedAt=$updatedAt, cardDeclinedReason=$cardDeclinedReason, cardId=$cardId, description=$description, issuerTransactionToken=$issuerTransactionToken, originalTransactionId=$originalTransactionId, refundedAmount=$refundedAmount, settledAmount=$settledAmount, additionalProperties=$additionalProperties}"
 }

@@ -15,7 +15,7 @@ internal class EgpExternalAccountCreateInfoTest {
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("BANQUE MISR")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -43,7 +43,7 @@ internal class EgpExternalAccountCreateInfoTest {
 
         assertThat(egpExternalAccountCreateInfo.accountType())
             .isEqualTo(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("Example Bank")
+        assertThat(egpExternalAccountCreateInfo.bankName()).isEqualTo("BANQUE MISR")
         assertThat(egpExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 EgpExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -78,7 +78,7 @@ internal class EgpExternalAccountCreateInfoTest {
         val egpExternalAccountCreateInfo =
             EgpExternalAccountCreateInfo.builder()
                 .accountType(EgpExternalAccountCreateInfo.AccountType.EGP_ACCOUNT)
-                .bankName("Example Bank")
+                .bankName("BANQUE MISR")
                 .beneficiary(
                     EgpBeneficiary.builder()
                         .beneficiaryType(EgpBeneficiary.BeneficiaryType.INDIVIDUAL)
