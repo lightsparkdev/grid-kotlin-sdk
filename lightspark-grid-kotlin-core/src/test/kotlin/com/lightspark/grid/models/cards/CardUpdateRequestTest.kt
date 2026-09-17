@@ -17,7 +17,9 @@ internal class CardUpdateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)
+                .reason("Cardholder reported the card stolen.")
                 .status(CardUpdateRequest.Status.FROZEN)
+                .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
                 .build()
 
         assertThat(cardUpdateRequest.fundingSource())
@@ -25,7 +27,10 @@ internal class CardUpdateRequestTest {
         assertThat(cardUpdateRequest.maxSpendPerDay()).isEqualTo(25000L)
         assertThat(cardUpdateRequest.maxSpendPerTransaction()).isEqualTo(10000L)
         assertThat(cardUpdateRequest.maxTransactionsPerDay()).isEqualTo(20)
+        assertThat(cardUpdateRequest.reason()).isEqualTo("Cardholder reported the card stolen.")
         assertThat(cardUpdateRequest.status()).isEqualTo(CardUpdateRequest.Status.FROZEN)
+        assertThat(cardUpdateRequest.substatus())
+            .isEqualTo(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
     }
 
     @Test
@@ -37,7 +42,9 @@ internal class CardUpdateRequestTest {
                 .maxSpendPerDay(25000L)
                 .maxSpendPerTransaction(10000L)
                 .maxTransactionsPerDay(20)
+                .reason("Cardholder reported the card stolen.")
                 .status(CardUpdateRequest.Status.FROZEN)
+                .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
                 .build()
 
         val roundtrippedCardUpdateRequest =
