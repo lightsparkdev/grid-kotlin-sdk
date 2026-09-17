@@ -17,11 +17,12 @@ import java.util.Objects
 
 /**
  * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
- * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied. `status`
- * transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any other transition
- * returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and irreversible and cannot be
- * combined with `fundingSource`, `maxSpendPerTransaction`, `maxSpendPerDay`, or
- * `maxTransactionsPerDay`.
+ * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
+ * Supplying `status` also requires `substatus` and `reason`, so every card state change carries why
+ * it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
+ * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
+ * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
+ * `maxSpendPerDay`, or `maxTransactionsPerDay`.
  */
 class CardUpdateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -30,7 +31,9 @@ private constructor(
     private val maxSpendPerDay: JsonField<Long>,
     private val maxSpendPerTransaction: JsonField<Long>,
     private val maxTransactionsPerDay: JsonField<Int>,
+    private val reason: JsonField<String>,
     private val status: JsonField<Status>,
+    private val substatus: JsonField<Substatus>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -48,13 +51,19 @@ private constructor(
         @JsonProperty("maxTransactionsPerDay")
         @ExcludeMissing
         maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
+        @JsonProperty("reason") @ExcludeMissing reason: JsonField<String> = JsonMissing.of(),
         @JsonProperty("status") @ExcludeMissing status: JsonField<Status> = JsonMissing.of(),
+        @JsonProperty("substatus")
+        @ExcludeMissing
+        substatus: JsonField<Substatus> = JsonMissing.of(),
     ) : this(
         fundingSource,
         maxSpendPerDay,
         maxSpendPerTransaction,
         maxTransactionsPerDay,
+        reason,
         status,
+        substatus,
         mutableMapOf(),
     )
 
@@ -113,6 +122,15 @@ private constructor(
     fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
 
     /**
+     * A short sentence naming why the card is moving. Required whenever `status` is supplied, and
+     * recorded against the card so a later reader can tell why it changed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun reason(): String? = reason.getNullable("reason")
+
+    /**
      * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN
      * → CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in the system
      * for audit and reconciliation but cannot transact again.
@@ -121,6 +139,16 @@ private constructor(
      *   the server responded with an unexpected value).
      */
     fun status(): Status? = status.getNullable("status")
+
+    /**
+     * Why the card is moving, in the card issuer's vocabulary. Required whenever `status` is
+     * supplied, and forwarded to the issuer. Pick `OTHER` when none of the named values fit and say
+     * why in `reason`.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun substatus(): Substatus? = substatus.getNullable("substatus")
 
     /**
      * Returns the raw JSON value of [fundingSource].
@@ -161,11 +189,25 @@ private constructor(
     fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
 
     /**
+     * Returns the raw JSON value of [reason].
+     *
+     * Unlike [reason], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("reason") @ExcludeMissing fun _reason(): JsonField<String> = reason
+
+    /**
      * Returns the raw JSON value of [status].
      *
      * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Status> = status
+
+    /**
+     * Returns the raw JSON value of [substatus].
+     *
+     * Unlike [substatus], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("substatus") @ExcludeMissing fun _substatus(): JsonField<Substatus> = substatus
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -192,7 +234,9 @@ private constructor(
         private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
         private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
         private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
+        private var reason: JsonField<String> = JsonMissing.of()
         private var status: JsonField<Status> = JsonMissing.of()
+        private var substatus: JsonField<Substatus> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardUpdateRequest: CardUpdateRequest) = apply {
@@ -200,7 +244,9 @@ private constructor(
             maxSpendPerDay = cardUpdateRequest.maxSpendPerDay
             maxSpendPerTransaction = cardUpdateRequest.maxSpendPerTransaction
             maxTransactionsPerDay = cardUpdateRequest.maxTransactionsPerDay
+            reason = cardUpdateRequest.reason
             status = cardUpdateRequest.status
+            substatus = cardUpdateRequest.substatus
             additionalProperties = cardUpdateRequest.additionalProperties.toMutableMap()
         }
 
@@ -316,6 +362,20 @@ private constructor(
         }
 
         /**
+         * A short sentence naming why the card is moving. Required whenever `status` is supplied,
+         * and recorded against the card so a later reader can tell why it changed.
+         */
+        fun reason(reason: String) = reason(JsonField.of(reason))
+
+        /**
+         * Sets [Builder.reason] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.reason] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun reason(reason: JsonField<String>) = apply { this.reason = reason }
+
+        /**
          * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE |
          * FROZEN → CLOSED`. `CLOSED` is terminal and irreversible; once closed, the card stays in
          * the system for audit and reconciliation but cannot transact again.
@@ -329,6 +389,22 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun status(status: JsonField<Status>) = apply { this.status = status }
+
+        /**
+         * Why the card is moving, in the card issuer's vocabulary. Required whenever `status` is
+         * supplied, and forwarded to the issuer. Pick `OTHER` when none of the named values fit and
+         * say why in `reason`.
+         */
+        fun substatus(substatus: Substatus) = substatus(JsonField.of(substatus))
+
+        /**
+         * Sets [Builder.substatus] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.substatus] with a well-typed [Substatus] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun substatus(substatus: JsonField<Substatus>) = apply { this.substatus = substatus }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -360,7 +436,9 @@ private constructor(
                 maxSpendPerDay,
                 maxSpendPerTransaction,
                 maxTransactionsPerDay,
+                reason,
                 status,
+                substatus,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -384,7 +462,9 @@ private constructor(
         maxSpendPerDay()
         maxSpendPerTransaction()
         maxTransactionsPerDay()
+        reason()
         status()?.validate()
+        substatus()?.validate()
         validated = true
     }
 
@@ -406,7 +486,9 @@ private constructor(
             (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
             (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
-            (status.asKnown()?.validity() ?: 0)
+            (if (reason.asKnown() == null) 0 else 1) +
+            (status.asKnown()?.validity() ?: 0) +
+            (substatus.asKnown()?.validity() ?: 0)
 
     /**
      * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN
@@ -553,6 +635,201 @@ private constructor(
         override fun toString() = value.toString()
     }
 
+    /**
+     * Why the card is moving, in the card issuer's vocabulary. Required whenever `status` is
+     * supplied, and forwarded to the issuer. Pick `OTHER` when none of the named values fit and say
+     * why in `reason`.
+     */
+    class Substatus @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            val LOST = of("LOST")
+
+            val COMPROMISED = of("COMPROMISED")
+
+            val DAMAGED = of("DAMAGED")
+
+            val END_USER_REQUEST = of("END_USER_REQUEST")
+
+            val ISSUER_REQUEST = of("ISSUER_REQUEST")
+
+            val NOT_ACTIVE = of("NOT_ACTIVE")
+
+            val SUSPICIOUS_ACTIVITY = of("SUSPICIOUS_ACTIVITY")
+
+            val INTERNAL_REVIEW = of("INTERNAL_REVIEW")
+
+            val EXPIRED = of("EXPIRED")
+
+            val UNDELIVERABLE = of("UNDELIVERABLE")
+
+            val OTHER = of("OTHER")
+
+            fun of(value: String) = Substatus(JsonField.of(value))
+        }
+
+        /** An enum containing [Substatus]'s known values. */
+        enum class Known {
+            LOST,
+            COMPROMISED,
+            DAMAGED,
+            END_USER_REQUEST,
+            ISSUER_REQUEST,
+            NOT_ACTIVE,
+            SUSPICIOUS_ACTIVITY,
+            INTERNAL_REVIEW,
+            EXPIRED,
+            UNDELIVERABLE,
+            OTHER,
+        }
+
+        /**
+         * An enum containing [Substatus]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Substatus] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            LOST,
+            COMPROMISED,
+            DAMAGED,
+            END_USER_REQUEST,
+            ISSUER_REQUEST,
+            NOT_ACTIVE,
+            SUSPICIOUS_ACTIVITY,
+            INTERNAL_REVIEW,
+            EXPIRED,
+            UNDELIVERABLE,
+            OTHER,
+            /**
+             * An enum member indicating that [Substatus] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                LOST -> Value.LOST
+                COMPROMISED -> Value.COMPROMISED
+                DAMAGED -> Value.DAMAGED
+                END_USER_REQUEST -> Value.END_USER_REQUEST
+                ISSUER_REQUEST -> Value.ISSUER_REQUEST
+                NOT_ACTIVE -> Value.NOT_ACTIVE
+                SUSPICIOUS_ACTIVITY -> Value.SUSPICIOUS_ACTIVITY
+                INTERNAL_REVIEW -> Value.INTERNAL_REVIEW
+                EXPIRED -> Value.EXPIRED
+                UNDELIVERABLE -> Value.UNDELIVERABLE
+                OTHER -> Value.OTHER
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value is a not a
+         *   known member.
+         */
+        fun known(): Known =
+            when (this) {
+                LOST -> Known.LOST
+                COMPROMISED -> Known.COMPROMISED
+                DAMAGED -> Known.DAMAGED
+                END_USER_REQUEST -> Known.END_USER_REQUEST
+                ISSUER_REQUEST -> Known.ISSUER_REQUEST
+                NOT_ACTIVE -> Known.NOT_ACTIVE
+                SUSPICIOUS_ACTIVITY -> Known.SUSPICIOUS_ACTIVITY
+                INTERNAL_REVIEW -> Known.INTERNAL_REVIEW
+                EXPIRED -> Known.EXPIRED
+                UNDELIVERABLE -> Known.UNDELIVERABLE
+                OTHER -> Known.OTHER
+                else -> throw LightsparkGridInvalidDataException("Unknown Substatus: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws LightsparkGridInvalidDataException if this class instance's value does not have
+         *   the expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString() ?: throw LightsparkGridInvalidDataException("Value is not a String")
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws LightsparkGridInvalidDataException if any value type in this object doesn't match
+         *   its expected type.
+         */
+        fun validate(): Substatus = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: LightsparkGridInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Substatus && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true
@@ -563,7 +840,9 @@ private constructor(
             maxSpendPerDay == other.maxSpendPerDay &&
             maxSpendPerTransaction == other.maxSpendPerTransaction &&
             maxTransactionsPerDay == other.maxTransactionsPerDay &&
+            reason == other.reason &&
             status == other.status &&
+            substatus == other.substatus &&
             additionalProperties == other.additionalProperties
     }
 
@@ -573,7 +852,9 @@ private constructor(
             maxSpendPerDay,
             maxSpendPerTransaction,
             maxTransactionsPerDay,
+            reason,
             status,
+            substatus,
             additionalProperties,
         )
     }
@@ -581,5 +862,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, status=$status, additionalProperties=$additionalProperties}"
+        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, reason=$reason, status=$status, substatus=$substatus, additionalProperties=$additionalProperties}"
 }

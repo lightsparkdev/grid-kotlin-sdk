@@ -81,9 +81,10 @@ private constructor(
     /**
      * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
      * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-     * `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
-     * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
-     * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
+     * Supplying `status` also requires `substatus` and `reason`, so every card state change carries
+     * why it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
+     * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal
+     * and irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
      * `maxSpendPerDay`, or `maxTransactionsPerDay`.
      */
     fun cardUpdateRequest(): CardUpdateRequest = cardUpdateRequest
@@ -132,10 +133,11 @@ private constructor(
         /**
          * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
          * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
-         * `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`; any
-         * other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
-         * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
-         * `maxSpendPerDay`, or `maxTransactionsPerDay`.
+         * Supplying `status` also requires `substatus` and `reason`, so every card state change
+         * carries why it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and
+         * `ACTIVE | FROZEN → CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`.
+         * `CLOSED` is terminal and irreversible and cannot be combined with `fundingSource`,
+         * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay`.
          */
         fun cardUpdateRequest(cardUpdateRequest: CardUpdateRequest) = apply {
             this.cardUpdateRequest = cardUpdateRequest
