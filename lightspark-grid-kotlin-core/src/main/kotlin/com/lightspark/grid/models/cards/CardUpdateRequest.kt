@@ -68,9 +68,10 @@ private constructor(
     )
 
     /**
-     * Replaces the card's funding source. Must belong to the customer and be denominated in the
-     * card's currency. Cannot be supplied alongside `status: CLOSED`. To stop a card from spending,
-     * set `status: FROZEN` instead.
+     * Replaces the card's funding source. Must belong to the customer and be denominated in a
+     * currency supported by the card's program, including USDB for USD cards. Changing the funding
+     * source does not change the card's currency or spending-limit units. Cannot be supplied
+     * alongside `status: CLOSED`. To stop a card from spending, set `status: FROZEN` instead.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -251,9 +252,11 @@ private constructor(
         }
 
         /**
-         * Replaces the card's funding source. Must belong to the customer and be denominated in the
-         * card's currency. Cannot be supplied alongside `status: CLOSED`. To stop a card from
-         * spending, set `status: FROZEN` instead.
+         * Replaces the card's funding source. Must belong to the customer and be denominated in a
+         * currency supported by the card's program, including USDB for USD cards. Changing the
+         * funding source does not change the card's currency or spending-limit units. Cannot be
+         * supplied alongside `status: CLOSED`. To stop a card from spending, set `status: FROZEN`
+         * instead.
          */
         fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 

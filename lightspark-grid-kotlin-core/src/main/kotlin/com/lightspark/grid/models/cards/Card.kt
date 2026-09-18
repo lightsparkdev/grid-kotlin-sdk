@@ -237,8 +237,10 @@ private constructor(
     fun cardCapabilities(): CardCapabilities? = cardCapabilities.getNullable("cardCapabilities")
 
     /**
-     * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
-     * funding source at issue time.
+     * Currency the card transacts in, fixed at issuance by its card program. USDB-funded cards
+     * transact in USD, with funding converted at 1 USDB = 1 USD. Spending limits use the smallest
+     * unit of the card's currency (USD cents for USDB-funded cards). Changing the funding source
+     * does not change the card's currency or spending-limit units.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -772,8 +774,10 @@ private constructor(
         }
 
         /**
-         * Currency the card transacts in (ISO 4217 for fiat, tickers for crypto). Derived from the
-         * funding source at issue time.
+         * Currency the card transacts in, fixed at issuance by its card program. USDB-funded cards
+         * transact in USD, with funding converted at 1 USDB = 1 USD. Spending limits use the
+         * smallest unit of the card's currency (USD cents for USDB-funded cards). Changing the
+         * funding source does not change the card's currency or spending-limit units.
          */
         fun currency(currency: String) = currency(JsonField.of(currency))
 
