@@ -18,15 +18,15 @@ import com.lightspark.grid.core.http.json
 import com.lightspark.grid.core.http.parseable
 import com.lightspark.grid.core.prepareAsync
 import com.lightspark.grid.models.auth.credentials.AuthCredentialListResponse
-import com.lightspark.grid.models.auth.credentials.AuthCredentialResponseOneOf
-import com.lightspark.grid.models.auth.credentials.AuthMethodResponse
-import com.lightspark.grid.models.auth.credentials.AuthSession
-import com.lightspark.grid.models.auth.credentials.AuthSignedRequestChallenge
 import com.lightspark.grid.models.auth.credentials.CredentialChallengeParams
+import com.lightspark.grid.models.auth.credentials.CredentialChallengeResponse
 import com.lightspark.grid.models.auth.credentials.CredentialCreateParams
+import com.lightspark.grid.models.auth.credentials.CredentialCreateResponse
 import com.lightspark.grid.models.auth.credentials.CredentialDeleteParams
+import com.lightspark.grid.models.auth.credentials.CredentialDeleteResponse
 import com.lightspark.grid.models.auth.credentials.CredentialListParams
 import com.lightspark.grid.models.auth.credentials.CredentialVerifyParams
+import com.lightspark.grid.models.auth.credentials.CredentialVerifyResponse
 
 /**
  * Endpoints for registering and verifying end-user authentication credentials (email OTP, OAuth,
@@ -47,7 +47,7 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
     override suspend fun create(
         params: CredentialCreateParams,
         requestOptions: RequestOptions,
-    ): AuthMethodResponse =
+    ): CredentialCreateResponse =
         // post /auth/credentials
         withRawResponse().create(params, requestOptions).parse()
 
@@ -61,21 +61,21 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
     override suspend fun delete(
         params: CredentialDeleteParams,
         requestOptions: RequestOptions,
-    ): AuthSignedRequestChallenge =
+    ): CredentialDeleteResponse =
         // delete /auth/credentials/{id}
         withRawResponse().delete(params, requestOptions).parse()
 
     override suspend fun challenge(
         params: CredentialChallengeParams,
         requestOptions: RequestOptions,
-    ): AuthCredentialResponseOneOf =
+    ): CredentialChallengeResponse =
         // post /auth/credentials/{id}/challenge
         withRawResponse().challenge(params, requestOptions).parse()
 
     override suspend fun verify(
         params: CredentialVerifyParams,
         requestOptions: RequestOptions,
-    ): AuthSession =
+    ): CredentialVerifyResponse =
         // post /auth/credentials/{id}/verify
         withRawResponse().verify(params, requestOptions).parse()
 
@@ -92,13 +92,13 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
                 clientOptions.toBuilder().apply(modifier).build()
             )
 
-        private val createHandler: Handler<AuthMethodResponse> =
-            jsonHandler<AuthMethodResponse>(clientOptions.jsonMapper)
+        private val createHandler: Handler<CredentialCreateResponse> =
+            jsonHandler<CredentialCreateResponse>(clientOptions.jsonMapper)
 
         override suspend fun create(
             params: CredentialCreateParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthMethodResponse> {
+        ): HttpResponseFor<CredentialCreateResponse> {
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
@@ -155,13 +155,13 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val deleteHandler: Handler<AuthSignedRequestChallenge> =
-            jsonHandler<AuthSignedRequestChallenge>(clientOptions.jsonMapper)
+        private val deleteHandler: Handler<CredentialDeleteResponse> =
+            jsonHandler<CredentialDeleteResponse>(clientOptions.jsonMapper)
 
         override suspend fun delete(
             params: CredentialDeleteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSignedRequestChallenge> {
+        ): HttpResponseFor<CredentialDeleteResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -190,13 +190,13 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val challengeHandler: Handler<AuthCredentialResponseOneOf> =
-            jsonHandler<AuthCredentialResponseOneOf>(clientOptions.jsonMapper)
+        private val challengeHandler: Handler<CredentialChallengeResponse> =
+            jsonHandler<CredentialChallengeResponse>(clientOptions.jsonMapper)
 
         override suspend fun challenge(
             params: CredentialChallengeParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthCredentialResponseOneOf> {
+        ): HttpResponseFor<CredentialChallengeResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())
@@ -225,13 +225,13 @@ class CredentialServiceAsyncImpl internal constructor(private val clientOptions:
             }
         }
 
-        private val verifyHandler: Handler<AuthSession> =
-            jsonHandler<AuthSession>(clientOptions.jsonMapper)
+        private val verifyHandler: Handler<CredentialVerifyResponse> =
+            jsonHandler<CredentialVerifyResponse>(clientOptions.jsonMapper)
 
         override suspend fun verify(
             params: CredentialVerifyParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<AuthSession> {
+        ): HttpResponseFor<CredentialVerifyResponse> {
             // We check here instead of in the params builder because this can be specified
             // positionally or in the params class.
             checkRequired("id", params.id())

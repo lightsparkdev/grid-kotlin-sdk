@@ -10,7 +10,9 @@ import com.lightspark.grid.models.crypto.CryptoEstimateWithdrawalFeeParams
 import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeRequest
 import com.lightspark.grid.models.crypto.EstimateCryptoWithdrawalFeeResponse
 
-/** Endpoints for creating and confirming quotes for cross-currency transfers */
+/**
+ * Endpoints for creating and confirming quotes for transfers, both same-currency and cross-currency
+ */
 interface CryptoService {
 
     /**

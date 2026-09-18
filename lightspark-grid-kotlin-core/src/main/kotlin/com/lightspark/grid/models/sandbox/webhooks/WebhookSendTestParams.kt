@@ -9,7 +9,10 @@ import com.lightspark.grid.core.http.QueryParams
 import com.lightspark.grid.core.toImmutable
 import java.util.Objects
 
-/** Send a test webhook to the configured endpoint */
+/**
+ * Deliver a signed test event to the platform's configured webhook endpoint and return the
+ * endpoint's response. Available in sandbox and production.
+ */
 class WebhookSendTestParams
 private constructor(
     private val additionalHeaders: Headers,

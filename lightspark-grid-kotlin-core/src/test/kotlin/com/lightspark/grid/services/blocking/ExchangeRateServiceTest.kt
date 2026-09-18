@@ -25,7 +25,7 @@ internal class ExchangeRateServiceTest {
             exchangeRateService.list(
                 ExchangeRateListParams.builder()
                     .addDestinationCurrency("string")
-                    .sendingAmount(0L)
+                    .sendingAmount(1L)
                     .sourceCurrency("sourceCurrency")
                     .build()
             )

@@ -7,7 +7,6 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.cards.Card
-import com.lightspark.grid.models.cards.CardCreateRequest
 import com.lightspark.grid.models.cards.CardIssueParams
 import com.lightspark.grid.models.cards.CardListPage
 import com.lightspark.grid.models.cards.CardListParams
@@ -16,7 +15,7 @@ import com.lightspark.grid.models.cards.CardUpdateParams
 
 /**
  * Card management endpoints. Issue debit cards against an internal account, freeze / unfreeze,
- * close, manage card funding sources, and list card transactions.
+ * close, manage a card's funding source, and list card transactions.
  */
 interface CardService {
 
@@ -32,7 +31,11 @@ interface CardService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): CardService
 
-    /** Retrieve a card by its system-generated id. */
+    /**
+     * Retrieve a card by its system-generated id. To display the card's full PAN, CVV, and expiry
+     * to the cardholder, request a reveal with `POST /cards/{id}/reveal` — the card resource itself
+     * never carries the reveal URL.
+     */
     fun retrieve(
         id: String,
         params: CardRetrieveParams = CardRetrieveParams.none(),
@@ -50,43 +53,66 @@ interface CardService {
         retrieve(id, CardRetrieveParams.none(), requestOptions)
 
     /**
-     * Update a card's `state` and / or its bound `fundingSources`. At least one of the two fields
-     * must be supplied.
-     * - `state` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
+     * Update a card's `status`, bound `fundingSource`, and / or `maxSpendPerTransaction`,
+     * `maxSpendPerDay`, or `maxTransactionsPerDay`. At least one field must be supplied.
+     * - `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN → CLOSED`.
      *   `CLOSED` is terminal and irreversible. Any other transition returns `409
      *   INVALID_STATE_TRANSITION`.
-     * - `fundingSources`, when supplied, fully replaces the card's bound funding sources. Array
-     *   order determines the priority Authorization Decisioning tries them in. Each id must belong
-     *   to the cardholder and be denominated in the card's currency; the list must contain at least
-     *   one source. `fundingSources` cannot be supplied alongside `state: CLOSED`.
+     * - `fundingSource`, when supplied, replaces the card's bound internal account. It must belong
+     *   to the customer and be denominated in the card's currency. `fundingSource` cannot be
+     *   supplied alongside `status: CLOSED`. On card programs where the card issuer makes
+     *   authorization decisions, `fundingSource` cannot be combined with any `status` change, so
+     *   send the changes as separate requests. On card programs where Grid makes the authorization
+     *   decision, the combination remains valid for `status` changes other than `CLOSED`.
+     * - `maxSpendPerTransaction` sets the largest amount the card can authorize on a single
+     *   transaction. An authorization for exactly the limit is allowed, and a later clearing can
+     *   still settle above it — a restaurant tip, for example — so this caps the authorization, not
+     *   the final settled amount. Send a positive integer in the smallest unit of the card's
+     *   currency (cents for USD) to set the limit, or null to remove it. If your platform config
+     *   sets `cardConfigs.maxSpendPerTransaction`, the lower of the two applies. You can only send
+     *   this when the card's `cardCapabilities.supportsSpendLimits` is true, and not together with
+     *   `status: CLOSED`.
+     * - `maxSpendPerDay`, when supplied, replaces the card-specific cap on cumulative new spend
+     *   during one UTC calendar day. Supply a positive integer in the smallest unit of the card's
+     *   currency to set it or null to clear it. If the platform config sets
+     *   `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the card and platform values.
+     *   Refunds, reversals, and authorization expiries do not restore capacity during the day. The
+     *   card's `cardCapabilities.supportsSpendLimits` must be true. `maxSpendPerDay` cannot be
+     *   supplied alongside `status: CLOSED`.
+     * - `maxTransactionsPerDay`, when supplied, replaces the card-specific cap on the number of
+     *   transactions the card may authorize during one UTC calendar day. Supply a positive integer
+     *   to set it or null to clear it. If the platform config sets
+     *   `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of the card and platform
+     *   values. Refunds, reversals, and authorization expiries do not restore capacity during the
+     *   day. `maxTransactionsPerDay` requires the card's
+     *   `cardCapabilities.supportsTransactionCountLimit` to be true and cannot be supplied
+     *   alongside `status: CLOSED`.
      *
-     * Because both updates are sensitive state changes, this endpoint uses Grid's 202 →
-     * signed-retry pattern (same shape as `DELETE /auth/credentials/{id}` and `POST
-     * /internal-accounts/{id}/export`):
-     * 1. Call `PATCH /cards/{id}` with the target fields and no signing headers. The response is
-     *    `202` with a `payloadToSign`, `requestId`, and `expiresAt`.
-     * 2. Sign the `payloadToSign` with the session private key of a verified authentication
-     *    credential on the card's owning internal account and retry with the signature as the
-     *    `Grid-Wallet-Signature` header and the `requestId` echoed back as the `Request-Id` header.
-     *    The signed retry returns `200` with the updated `Card`.
+     * This endpoint is authenticated by the platform credential alone and returns `200` directly.
+     * It deliberately does not use Grid's 202 → signed-retry pattern: that pattern signs with the
+     * session key of a credential on the owning internal account, so it models actions taken *by*
+     * the end user on their own credentials or funds. Freezing or closing a card is routinely an
+     * action taken *about* a user and without them present - fraud response, offboarding, an
+     * ops-driven freeze - and requiring the cardholder's signature would make exactly those cases
+     * impossible. Operations that expose sensitive card data (`POST /cards/{id}/reveal`, 3DS
+     * password retrieval) are SCA-railed instead, because there the cardholder is the party being
+     * served.
      *
      * Effects:
-     * - `state: FROZEN`: Authorization Decisioning declines new auths with `CARD_PAUSED`. Existing
-     *   pulls and in-flight reconciliation continue — freezing does not pause the lifecycle of
-     *   authorizations that already passed.
-     * - `state: ACTIVE`: normal authorization behavior resumes.
-     * - `state: CLOSED`: terminal close. The card transitions to `state: "CLOSED"` with
-     *   `stateReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.
+     * - `status: FROZEN`: Authorization Decisioning declines new auths with `cardDeclinedReason:
+     *   CARD_NOT_ACTIVE`. Existing pulls and in-flight reconciliation continue — freezing does not
+     *   pause the lifecycle of authorizations that already passed.
+     * - `status: ACTIVE`: normal authorization behavior resumes.
+     * - `status: CLOSED`: terminal close. The card transitions to `status: "CLOSED"` with
+     *   `statusReason: "CLOSED_BY_PLATFORM"` and stays in the system for audit and reconciliation.
      *   All pending auths reconcile to a terminal state via the existing reconcile primitive.
      *   Inbound clearings received after close follow the standard force-post / late-presentment
-     *   path — Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails.
-     *   Funding-source bindings are detached. Refunds already in flight still complete because
-     *   Lightspark holds the card-reserve keys.
-     * - `fundingSources` change: emits `card.funding_source_change` reflecting the new ordered
-     *   binding.
+     *   path — Lightspark absorbs the loss if a post-hoc pull on the now-unbound source fails. The
+     *   funding source is detached. Refunds already in flight still complete because Lightspark
+     *   holds the card-reserve keys.
+     * - `fundingSource` change: returns the updated card with the new binding and fires no webhook.
      *
-     * The `card.state_change` webhook fires on every successful `state` transition; the
-     * `card.funding_source_change` webhook fires whenever `fundingSources` is updated.
+     * The `card.status_change` webhook fires on every successful `status` transition.
      */
     fun update(
         id: String,
@@ -102,7 +128,7 @@ interface CardService {
 
     /**
      * Retrieve a paginated list of cards. Cards can be filtered by cardholder, bound funding-source
-     * internal account, state, and platform-specific card identifier. If no filters are provided,
+     * internal account, status, and platform-specific card identifier. If no filters are provided,
      * returns all cards visible to the caller.
      */
     fun list(
@@ -115,25 +141,37 @@ interface CardService {
         list(CardListParams.none(), requestOptions)
 
     /**
-     * Issue a new card for a cardholder. Every card must be bound to at least one funding source at
-     * create time. The cardholder must have KYC status `APPROVED` before a card can be issued;
-     * otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
+     * Issue a new card for a cardholder. Every card is bound to one internal account,
+     * `fundingSource`, at create time. The cardholder must have KYC status `APPROVED` before a card
+     * can be issued; otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
      *
-     * New cards start in `state: "PENDING_ISSUE"` while the card issuer provisions the card. The
-     * `card.state_change` webhook fires on the transition to `ACTIVE` (or to `CLOSED` with
-     * `stateReason: "ISSUER_REJECTED"` if provisioning fails).
+     * Card issuance is fee-bearing and cannot be reversed, so an `Idempotency-Key` header is
+     * required. Retries must carry the same key.
+     *
+     * Optional `maxSpendPerTransaction`, `maxSpendPerDay`, and `maxTransactionsPerDay` values set
+     * the card-specific caps on one transaction, on spend during one UTC calendar day, and on the
+     * number of transactions during one UTC calendar day. Check the funding-source internal
+     * account's `cardCapabilities.supportsSpendLimitsAtIssuance` before supplying either spend
+     * limit, and `cardCapabilities.supportsTransactionCountLimit` before supplying the transaction
+     * count limit. If the platform config sets the corresponding `cardConfigs` value, Grid enforces
+     * the lower of the card and platform caps. Amounts use the smallest unit of the card's
+     * currency.
+     *
+     * If the funding source is an Embedded Wallet internal account, the cardholder must authorize
+     * Grid to sign Spark token transactions for that card funding source by completing the
+     * delegated-key creation flow with `POST /auth/delegated-keys`. Until an active delegated key
+     * exists for that funding source, Authorization Decisioning cannot use it to fund card
+     * transactions.
+     *
+     * A platform may be limited to a maximum number of live cards. Once that limit is reached,
+     * further issuance is rejected with `CARD_LIMIT_REACHED` until a card is closed or Lightspark
+     * raises the limit. Cards in `CLOSED` status do not count toward the limit.
+     *
+     * New cards start in `status: "PROCESSING"` while the card issuer provisions the card. The
+     * `card.status_change` webhook fires on each status transition, including the transition to
+     * `ACTIVE` (or to `CLOSED` with `statusReason: "ISSUER_REJECTED"` if provisioning fails).
      */
     fun issue(params: CardIssueParams, requestOptions: RequestOptions = RequestOptions.none()): Card
-
-    /** @see issue */
-    fun issue(
-        cardCreateRequest: CardCreateRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): Card =
-        issue(
-            CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
-            requestOptions,
-        )
 
     /** A view of [CardService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -210,16 +248,5 @@ interface CardService {
             params: CardIssueParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<Card>
-
-        /** @see issue */
-        @MustBeClosed
-        fun issue(
-            cardCreateRequest: CardCreateRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<Card> =
-            issue(
-                CardIssueParams.builder().cardCreateRequest(cardCreateRequest).build(),
-                requestOptions,
-            )
     }
 }

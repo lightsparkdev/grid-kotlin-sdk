@@ -288,6 +288,9 @@ private constructor(
 
             val OUTGOING_PAYMENT_PENDING = of("OUTGOING_PAYMENT.PENDING")
 
+            val OUTGOING_PAYMENT_PENDING_AUTHORIZATION =
+                of("OUTGOING_PAYMENT.PENDING_AUTHORIZATION")
+
             val OUTGOING_PAYMENT_PROCESSING = of("OUTGOING_PAYMENT.PROCESSING")
 
             val OUTGOING_PAYMENT_COMPLETED = of("OUTGOING_PAYMENT.COMPLETED")
@@ -308,6 +311,7 @@ private constructor(
         /** An enum containing [Type]'s known values. */
         enum class Known {
             OUTGOING_PAYMENT_PENDING,
+            OUTGOING_PAYMENT_PENDING_AUTHORIZATION,
             OUTGOING_PAYMENT_PROCESSING,
             OUTGOING_PAYMENT_COMPLETED,
             OUTGOING_PAYMENT_FAILED,
@@ -328,6 +332,7 @@ private constructor(
          */
         enum class Value {
             OUTGOING_PAYMENT_PENDING,
+            OUTGOING_PAYMENT_PENDING_AUTHORIZATION,
             OUTGOING_PAYMENT_PROCESSING,
             OUTGOING_PAYMENT_COMPLETED,
             OUTGOING_PAYMENT_FAILED,
@@ -349,6 +354,8 @@ private constructor(
         fun value(): Value =
             when (this) {
                 OUTGOING_PAYMENT_PENDING -> Value.OUTGOING_PAYMENT_PENDING
+                OUTGOING_PAYMENT_PENDING_AUTHORIZATION ->
+                    Value.OUTGOING_PAYMENT_PENDING_AUTHORIZATION
                 OUTGOING_PAYMENT_PROCESSING -> Value.OUTGOING_PAYMENT_PROCESSING
                 OUTGOING_PAYMENT_COMPLETED -> Value.OUTGOING_PAYMENT_COMPLETED
                 OUTGOING_PAYMENT_FAILED -> Value.OUTGOING_PAYMENT_FAILED
@@ -371,6 +378,8 @@ private constructor(
         fun known(): Known =
             when (this) {
                 OUTGOING_PAYMENT_PENDING -> Known.OUTGOING_PAYMENT_PENDING
+                OUTGOING_PAYMENT_PENDING_AUTHORIZATION ->
+                    Known.OUTGOING_PAYMENT_PENDING_AUTHORIZATION
                 OUTGOING_PAYMENT_PROCESSING -> Known.OUTGOING_PAYMENT_PROCESSING
                 OUTGOING_PAYMENT_COMPLETED -> Known.OUTGOING_PAYMENT_COMPLETED
                 OUTGOING_PAYMENT_FAILED -> Known.OUTGOING_PAYMENT_FAILED

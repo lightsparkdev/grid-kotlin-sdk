@@ -13,17 +13,21 @@ import java.util.Objects
  *
  * Most customer updates complete synchronously and return `200` with the updated customer. If the
  * request changes `email` for a customer that has one or more tied Embedded Wallet internal
- * accounts with `EMAIL_OTP` credentials, the email change uses the two-step signed-retry flow so
- * the customer's wallet session authorizes the authentication credential update. On the signed
- * retry, Grid updates the customer email and every tied `EMAIL_OTP` credential across all tied
- * Embedded Wallets as one logical operation. If any tied credential cannot be updated, the customer
- * email is not changed.
+ * accounts with `EMAIL_OTP` credentials, or changes `phoneNumber` for a customer that has one or
+ * more tied Embedded Wallet internal accounts with `SMS_OTP` credentials, the contact update uses
+ * the two-step signed-retry flow so the customer's wallet session authorizes the authentication
+ * credential update. On the signed retry, Grid updates the customer contact field and every tied
+ * matching OTP credential across all tied Embedded Wallets as one logical operation. If any tied
+ * credential cannot be updated, the customer contact field is not changed.
  *
- * For an Embedded Wallet email update:
+ * Update `email` and `phoneNumber` in separate PATCH calls. A request that includes both fields is
+ * rejected.
+ *
+ * For an Embedded Wallet email or SMS auth phone update:
  * 1. Call `PATCH /customers/{customerId}` with the full update body and no signature headers. Grid
  *    returns `202` with `payloadToSign`, `requestId`, and `expiresAt`. The pending challenge binds
- *    the submitted update fields and the set of tied Embedded Wallet email OTP credentials that
- *    must be updated.
+ *    the submitted update fields and the set of tied Embedded Wallet OTP credentials that must be
+ *    updated.
  * 2. Use the session API keypair of a verified authentication credential on one of the customer's
  *    tied Embedded Wallets to build an API-key stamp over `payloadToSign`, then retry the same
  *    request with that full stamp as the `Grid-Wallet-Signature` header and the `requestId` echoed
@@ -47,10 +51,12 @@ private constructor(
     fun requestId(): String? = requestId
 
     /**
-     * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer with
-     * tied Embedded Wallet internal accounts, Grid updates the customer email and every tied
-     * `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's signed-retry
-     * flow.
+     * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+     * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these appear
+     * as top-level optional fields on the customer resource itself; there is no separate EDD
+     * resource. The specific set required for a given customer is driven by the KYC provider's
+     * per-jurisdiction / per-flow / per-volume-tier rules (surfaced through `MISSING_FIELD` errors
+     * on `POST /verifications`).
      */
     fun updateCustomerRequest(): CustomerUpdateRequestOneOf = updateCustomerRequest
 
@@ -103,10 +109,12 @@ private constructor(
         fun requestId(requestId: String?) = apply { this.requestId = requestId }
 
         /**
-         * Request body for `PATCH /customers/{customerId}`. When `email` changes for a customer
-         * with tied Embedded Wallet internal accounts, Grid updates the customer email and every
-         * tied `EMAIL_OTP` credential across all tied Embedded Wallets through the endpoint's
-         * signed-retry flow.
+         * Enhanced-due-diligence (EDD) fields available as optional patchable attributes on an
+         * individual customer. Referenced via `allOf` from `IndividualCustomerFields`, so these
+         * appear as top-level optional fields on the customer resource itself; there is no separate
+         * EDD resource. The specific set required for a given customer is driven by the KYC
+         * provider's per-jurisdiction / per-flow / per-volume-tier rules (surfaced through
+         * `MISSING_FIELD` errors on `POST /verifications`).
          */
         fun updateCustomerRequest(updateCustomerRequest: CustomerUpdateRequestOneOf) = apply {
             this.updateCustomerRequest = updateCustomerRequest

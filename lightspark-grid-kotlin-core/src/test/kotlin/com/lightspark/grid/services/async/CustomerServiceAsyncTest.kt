@@ -3,6 +3,9 @@
 package com.lightspark.grid.services.async
 
 import com.lightspark.grid.client.okhttp.LightsparkGridOkHttpClientAsync
+import com.lightspark.grid.models.customers.AgreementAcceptanceMethod
+import com.lightspark.grid.models.customers.AgreementConsentRequest
+import com.lightspark.grid.models.customers.AgreementType
 import com.lightspark.grid.models.customers.CustomerCreateKycLinkParams
 import com.lightspark.grid.models.customers.CustomerExportParams
 import com.lightspark.grid.models.customers.CustomerUpdateInternalAccountParams
@@ -14,6 +17,7 @@ import com.lightspark.grid.models.customers.InternalAccountUpdateRequest
 import com.lightspark.grid.models.customers.KycLinkCreateRequest
 import com.lightspark.grid.models.customers.externalaccounts.Address
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
@@ -45,15 +49,64 @@ internal class CustomerServiceAsyncTest {
                             .state("CA")
                             .build()
                     )
+                    .addAgreementConsent(
+                        AgreementConsentRequest.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("2025-10-13")
+                            .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                            .build()
+                    )
+                    .annualIncomeRange(
+                        IndividualCustomerCreateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                    )
                     .birthDate(LocalDate.parse("1990-01-15"))
+                    .countryOfIssuance("US")
                     .addCurrency("USD")
                     .addCurrency("USDC")
                     .email("john.doe@example.com")
+                    .endUserTermsConsent(
+                        IndividualCustomerCreateRequest.EndUserTermsConsent.builder()
+                            .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                            .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                            .ipAddress("198.51.100.24")
+                            .termsVersion("V1")
+                            .build()
+                    )
+                    .expectedMonthlyTransactionCount(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionCount
+                            .COUNT_100_TO_500
+                    )
+                    .expectedMonthlyTransactionVolume(
+                        IndividualCustomerCreateRequest.ExpectedMonthlyTransactionVolume
+                            .VOLUME_100_K_TO_1_M
+                    )
                     .fullName("John Michael Doe")
+                    .identifier("123-45-6789")
+                    .idType(IndividualCustomerCreateRequest.IdType.SSN)
                     .kycStatus(IndividualCustomerCreateRequest.KycStatus.APPROVED)
                     .nationality("US")
+                    .netWorthRange(IndividualCustomerCreateRequest.NetWorthRange.RANGE_500_K_1_M)
+                    .pepStatus(IndividualCustomerCreateRequest.PepStatus.NONE)
+                    .phoneNumber("+14155551234")
                     .platformCustomerId("9f84e0c2a72c4fa")
+                    .purposeOfAccount(
+                        IndividualCustomerCreateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                    )
+                    .purposeOfAccountOtherDescription("Household budgeting between spouses")
                     .region("US")
+                    .addSourceOfFundsCategory(
+                        IndividualCustomerCreateRequest.SourceOfFundsCategory.SALARY
+                    )
+                    .sourceOfFundsOtherDescription("Contest winnings")
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.SALARY
+                    )
+                    .addSourceOfWealthCategory(
+                        IndividualCustomerCreateRequest.SourceOfWealthCategory.INVESTMENTS
+                    )
+                    .sourceOfWealthOtherDescription("Royalty income from published works")
                     .umaAddress("\$john.doe@uma.domain.com")
                     .build()
             )
@@ -111,12 +164,63 @@ internal class CustomerServiceAsyncTest {
                                     .state("CA")
                                     .build()
                             )
+                            .addAgreementConsent(
+                                AgreementConsentRequest.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("2025-10-13")
+                                    .type(AgreementType.LIGHTSPARK_END_USER_TERMS)
+                                    .build()
+                            )
+                            .annualIncomeRange(
+                                IndividualCustomerUpdateRequest.AnnualIncomeRange.RANGE_100_K_250_K
+                            )
                             .birthDate(LocalDate.parse("1990-01-15"))
+                            .countryOfIssuance("US")
                             .currencies(listOf("USD", "EUR", "USDC"))
                             .email("john.doe@example.com")
+                            .endUserTermsConsent(
+                                IndividualCustomerUpdateRequest.EndUserTermsConsent.builder()
+                                    .acceptanceMethod(AgreementAcceptanceMethod.CHECKBOX)
+                                    .acceptedAt(OffsetDateTime.parse("2019-12-27T18:11:19.117Z"))
+                                    .ipAddress("198.51.100.24")
+                                    .termsVersion("V1")
+                                    .build()
+                            )
+                            .expectedMonthlyTransactionCount(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionCount
+                                    .COUNT_100_TO_500
+                            )
+                            .expectedMonthlyTransactionVolume(
+                                IndividualCustomerUpdateRequest.ExpectedMonthlyTransactionVolume
+                                    .VOLUME_100_K_TO_1_M
+                            )
                             .fullName("John Michael Doe")
+                            .identifier("123-45-6789")
+                            .idType(IndividualCustomerUpdateRequest.IdType.SSN)
                             .kycStatus(IndividualCustomerUpdateRequest.KycStatus.APPROVED)
                             .nationality("US")
+                            .netWorthRange(
+                                IndividualCustomerUpdateRequest.NetWorthRange.RANGE_500_K_1_M
+                            )
+                            .pepStatus(IndividualCustomerUpdateRequest.PepStatus.NONE)
+                            .phoneNumber("+14155551234")
+                            .purposeOfAccount(
+                                IndividualCustomerUpdateRequest.PurposeOfAccount.CONTRACTOR_PAYOUTS
+                            )
+                            .purposeOfAccountOtherDescription("Household budgeting between spouses")
+                            .addSourceOfFundsCategory(
+                                IndividualCustomerUpdateRequest.SourceOfFundsCategory.SALARY
+                            )
+                            .sourceOfFundsOtherDescription("Contest winnings")
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.SALARY
+                            )
+                            .addSourceOfWealthCategory(
+                                IndividualCustomerUpdateRequest.SourceOfWealthCategory.INVESTMENTS
+                            )
+                            .sourceOfWealthOtherDescription("Royalty income from published works")
                             .umaAddress("\$john.doe@uma.domain.com")
                             .build()
                     )
@@ -200,7 +304,7 @@ internal class CustomerServiceAsyncTest {
                 .build()
         val customerServiceAsync = client.customers()
 
-        val internalAccountExportResponse =
+        val response =
             customerServiceAsync.export(
                 CustomerExportParams.builder()
                     .id("id")
@@ -218,7 +322,24 @@ internal class CustomerServiceAsyncTest {
                     .build()
             )
 
-        internalAccountExportResponse.validate()
+        response.validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun listAgreements() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerServiceAsync = client.customers()
+
+        val agreementDocumentListResponse = customerServiceAsync.listAgreements()
+
+        agreementDocumentListResponse.validate()
     }
 
     @Disabled("Mock server tests are disabled")
@@ -236,6 +357,23 @@ internal class CustomerServiceAsyncTest {
         val page = customerServiceAsync.listInternalAccounts()
 
         page.response().validate()
+    }
+
+    @Disabled("Mock server tests are disabled")
+    @Test
+    suspend fun retrieveEndUserTerms() {
+        val client =
+            LightsparkGridOkHttpClientAsync.builder()
+                .username("My Username")
+                .password("My Password")
+                .agentAccessToken("My Agent Access Token")
+                .webhookSignature("My Webhook Signature")
+                .build()
+        val customerServiceAsync = client.customers()
+
+        val endUserTerms = customerServiceAsync.retrieveEndUserTerms()
+
+        endUserTerms.validate()
     }
 
     @Disabled("Mock server tests are disabled")

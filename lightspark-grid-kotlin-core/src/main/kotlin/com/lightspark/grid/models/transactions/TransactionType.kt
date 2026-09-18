@@ -7,7 +7,7 @@ import com.lightspark.grid.core.Enum
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 
-/** Type of transaction (incoming payment or outgoing payment) */
+/** Type of transaction */
 class TransactionType @JsonCreator private constructor(private val value: JsonField<String>) :
     Enum {
 
@@ -26,6 +26,8 @@ class TransactionType @JsonCreator private constructor(private val value: JsonFi
 
         val OUTGOING = of("OUTGOING")
 
+        val CARD = of("CARD")
+
         fun of(value: String) = TransactionType(JsonField.of(value))
     }
 
@@ -33,6 +35,7 @@ class TransactionType @JsonCreator private constructor(private val value: JsonFi
     enum class Known {
         INCOMING,
         OUTGOING,
+        CARD,
     }
 
     /**
@@ -47,6 +50,7 @@ class TransactionType @JsonCreator private constructor(private val value: JsonFi
     enum class Value {
         INCOMING,
         OUTGOING,
+        CARD,
         /**
          * An enum member indicating that [TransactionType] was instantiated with an unknown value.
          */
@@ -64,6 +68,7 @@ class TransactionType @JsonCreator private constructor(private val value: JsonFi
         when (this) {
             INCOMING -> Value.INCOMING
             OUTGOING -> Value.OUTGOING
+            CARD -> Value.CARD
             else -> Value._UNKNOWN
         }
 
@@ -80,6 +85,7 @@ class TransactionType @JsonCreator private constructor(private val value: JsonFi
         when (this) {
             INCOMING -> Known.INCOMING
             OUTGOING -> Known.OUTGOING
+            CARD -> Known.CARD
             else -> throw LightsparkGridInvalidDataException("Unknown TransactionType: $value")
         }
 

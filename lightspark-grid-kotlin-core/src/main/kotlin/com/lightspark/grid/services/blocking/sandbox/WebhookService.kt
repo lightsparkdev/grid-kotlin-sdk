@@ -24,7 +24,10 @@ interface WebhookService {
      */
     fun withOptions(modifier: (ClientOptions.Builder) -> Unit): WebhookService
 
-    /** Send a test webhook to the configured endpoint */
+    /**
+     * Deliver a signed test event to the platform's configured webhook endpoint and return the
+     * endpoint's response. Available in sandbox and production.
+     */
     fun sendTest(
         params: WebhookSendTestParams = WebhookSendTestParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
@@ -45,8 +48,8 @@ interface WebhookService {
         fun withOptions(modifier: (ClientOptions.Builder) -> Unit): WebhookService.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /sandbox/webhooks/test`, but is otherwise the same
-         * as [WebhookService.sendTest].
+         * Returns a raw HTTP response for `post /webhooks/test`, but is otherwise the same as
+         * [WebhookService.sendTest].
          */
         @MustBeClosed
         fun sendTest(

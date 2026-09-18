@@ -11,9 +11,7 @@ import com.lightspark.grid.core.ExcludeMissing
 import com.lightspark.grid.core.JsonField
 import com.lightspark.grid.core.JsonMissing
 import com.lightspark.grid.core.JsonValue
-import com.lightspark.grid.core.checkKnown
 import com.lightspark.grid.core.checkRequired
-import com.lightspark.grid.core.toImmutable
 import com.lightspark.grid.errors.LightsparkGridInvalidDataException
 import java.util.Collections
 import java.util.Objects
@@ -21,26 +19,52 @@ import java.util.Objects
 class CardCreateRequest
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val cardholderId: JsonField<String>,
+    private val customerId: JsonField<String>,
     private val form: JsonField<Form>,
-    private val fundingSources: JsonField<List<String>>,
+    private val fundingSource: JsonField<String>,
+    private val maxSpendPerDay: JsonField<Long>,
+    private val maxSpendPerTransaction: JsonField<Long>,
+    private val maxTransactionsPerDay: JsonField<Int>,
     private val platformCardId: JsonField<String>,
+    private val threeDSecurePassword: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("cardholderId")
+        @JsonProperty("customerId")
         @ExcludeMissing
-        cardholderId: JsonField<String> = JsonMissing.of(),
+        customerId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("form") @ExcludeMissing form: JsonField<Form> = JsonMissing.of(),
-        @JsonProperty("fundingSources")
+        @JsonProperty("fundingSource")
         @ExcludeMissing
-        fundingSources: JsonField<List<String>> = JsonMissing.of(),
+        fundingSource: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerDay")
+        @ExcludeMissing
+        maxSpendPerDay: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxSpendPerTransaction")
+        @ExcludeMissing
+        maxSpendPerTransaction: JsonField<Long> = JsonMissing.of(),
+        @JsonProperty("maxTransactionsPerDay")
+        @ExcludeMissing
+        maxTransactionsPerDay: JsonField<Int> = JsonMissing.of(),
         @JsonProperty("platformCardId")
         @ExcludeMissing
         platformCardId: JsonField<String> = JsonMissing.of(),
-    ) : this(cardholderId, form, fundingSources, platformCardId, mutableMapOf())
+        @JsonProperty("threeDSecurePassword")
+        @ExcludeMissing
+        threeDSecurePassword: JsonField<String> = JsonMissing.of(),
+    ) : this(
+        customerId,
+        form,
+        fundingSource,
+        maxSpendPerDay,
+        maxSpendPerTransaction,
+        maxTransactionsPerDay,
+        platformCardId,
+        threeDSecurePassword,
+        mutableMapOf(),
+    )
 
     /**
      * The id of the `Customer` to issue the card to. The customer must have KYC status `APPROVED`;
@@ -49,7 +73,7 @@ private constructor(
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun cardholderId(): String = cardholderId.getRequired("cardholderId")
+    fun customerId(): String = customerId.getRequired("customerId")
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -61,19 +85,62 @@ private constructor(
     fun form(): Form = form.getRequired("form")
 
     /**
-     * Internal account ids to bind as funding sources, in priority order. The first entry is tried
-     * first by Authorization Decisioning. Every card must be bound to at least one source, and
-     * every source must belong to the cardholder and be denominated in a card-eligible currency
-     * (USDB in v1); otherwise the request is rejected with `FUNDING_SOURCE_INELIGIBLE`.
+     * Internal account id that funds this card. The account must belong to the customer and be
+     * denominated in a card-eligible currency; otherwise the request is rejected with
+     * `INVALID_INPUT`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun fundingSources(): List<String> = fundingSources.getRequired("fundingSources")
+    fun fundingSource(): String = fundingSource.getRequired("fundingSource")
 
     /**
-     * Optional platform-specific card identifier. System-generated when omitted, mirroring
-     * `platformCustomerId` semantics.
+     * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
+     * smallest unit of the card's currency (USD cents for USDB-funded cards). Omit this field for
+     * no card-specific daily cap. When the platform config also supplies
+     * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window resets at
+     * 00:00 UTC, and refunds, reversals, and authorization expiries do not restore capacity during
+     * the day. Accepted only when the funding-source internal account's
+     * `cardCapabilities.supportsSpendLimitsAtIssuance` is true. Spend exactly equal to the
+     * effective limit is allowed.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerDay(): Long? = maxSpendPerDay.getNullable("maxSpendPerDay")
+
+    /**
+     * The largest amount this card can authorize on a single transaction, in the smallest unit of
+     * its currency (cents for USD). An authorization for exactly the limit is allowed. A later
+     * clearing can still settle above it — a restaurant tip, for example — so this caps the
+     * authorization, not the final settled amount. Omit the field to set no limit. If your platform
+     * config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two applies. You can
+     * only send this when the funding-source internal account's
+     * `cardCapabilities.supportsSpendLimitsAtIssuance` is true.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxSpendPerTransaction(): Long? =
+        maxSpendPerTransaction.getNullable("maxSpendPerTransaction")
+
+    /**
+     * Optional card-specific cap on the number of transactions the card may authorize during one
+     * UTC calendar day. Omit this field for no card-specific daily transaction cap. When the
+     * platform config also supplies `cardConfigs.maxTransactionsPerDay`, Grid enforces the lower of
+     * the two values. The window resets at 00:00 UTC. Each approved authorization counts once;
+     * refunds, reversals, and authorization expiries do not restore capacity during the day.
+     * Accepted only when the funding-source internal account's
+     * `cardCapabilities.supportsTransactionCountLimit` is true.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun maxTransactionsPerDay(): Int? = maxTransactionsPerDay.getNullable("maxTransactionsPerDay")
+
+    /**
+     * Platform-specific card identifier. Always generated by the server; any value supplied in the
+     * request is ignored.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -81,13 +148,25 @@ private constructor(
     fun platformCardId(): String? = platformCardId.getNullable("platformCardId")
 
     /**
-     * Returns the raw JSON value of [cardholderId].
+     * Static password used as the card's 3-D Secure factor. Required when the first funding-source
+     * internal account's `cardCapabilities.supports3dSecurePassword` is true; omitting it or
+     * supplying an empty or whitespace-only string is rejected with `INVALID_INPUT`. When the
+     * capability is false, supplying this field is rejected with `INVALID_INPUT` because cards in
+     * that program have no static-password factor. Grid does not retain the value: it is forwarded
+     * to the issuer and discarded, so it cannot be read back afterwards; a cardholder who forgets
+     * it must set a new one through `PATCH /cards/{id}`.
      *
-     * Unlike [cardholderId], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
      */
-    @JsonProperty("cardholderId")
-    @ExcludeMissing
-    fun _cardholderId(): JsonField<String> = cardholderId
+    fun threeDSecurePassword(): String? = threeDSecurePassword.getNullable("threeDSecurePassword")
+
+    /**
+     * Returns the raw JSON value of [customerId].
+     *
+     * Unlike [customerId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("customerId") @ExcludeMissing fun _customerId(): JsonField<String> = customerId
 
     /**
      * Returns the raw JSON value of [form].
@@ -97,13 +176,42 @@ private constructor(
     @JsonProperty("form") @ExcludeMissing fun _form(): JsonField<Form> = form
 
     /**
-     * Returns the raw JSON value of [fundingSources].
+     * Returns the raw JSON value of [fundingSource].
      *
-     * Unlike [fundingSources], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [fundingSource], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("fundingSources")
+    @JsonProperty("fundingSource")
     @ExcludeMissing
-    fun _fundingSources(): JsonField<List<String>> = fundingSources
+    fun _fundingSource(): JsonField<String> = fundingSource
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerDay].
+     *
+     * Unlike [maxSpendPerDay], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("maxSpendPerDay")
+    @ExcludeMissing
+    fun _maxSpendPerDay(): JsonField<Long> = maxSpendPerDay
+
+    /**
+     * Returns the raw JSON value of [maxSpendPerTransaction].
+     *
+     * Unlike [maxSpendPerTransaction], this method doesn't throw if the JSON field has an
+     * unexpected type.
+     */
+    @JsonProperty("maxSpendPerTransaction")
+    @ExcludeMissing
+    fun _maxSpendPerTransaction(): JsonField<Long> = maxSpendPerTransaction
+
+    /**
+     * Returns the raw JSON value of [maxTransactionsPerDay].
+     *
+     * Unlike [maxTransactionsPerDay], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("maxTransactionsPerDay")
+    @ExcludeMissing
+    fun _maxTransactionsPerDay(): JsonField<Int> = maxTransactionsPerDay
 
     /**
      * Returns the raw JSON value of [platformCardId].
@@ -113,6 +221,16 @@ private constructor(
     @JsonProperty("platformCardId")
     @ExcludeMissing
     fun _platformCardId(): JsonField<String> = platformCardId
+
+    /**
+     * Returns the raw JSON value of [threeDSecurePassword].
+     *
+     * Unlike [threeDSecurePassword], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("threeDSecurePassword")
+    @ExcludeMissing
+    fun _threeDSecurePassword(): JsonField<String> = threeDSecurePassword
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -133,9 +251,9 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .cardholderId()
+         * .customerId()
          * .form()
-         * .fundingSources()
+         * .fundingSource()
          * ```
          */
         fun builder() = Builder()
@@ -144,17 +262,25 @@ private constructor(
     /** A builder for [CardCreateRequest]. */
     class Builder internal constructor() {
 
-        private var cardholderId: JsonField<String>? = null
+        private var customerId: JsonField<String>? = null
         private var form: JsonField<Form>? = null
-        private var fundingSources: JsonField<MutableList<String>>? = null
+        private var fundingSource: JsonField<String>? = null
+        private var maxSpendPerDay: JsonField<Long> = JsonMissing.of()
+        private var maxSpendPerTransaction: JsonField<Long> = JsonMissing.of()
+        private var maxTransactionsPerDay: JsonField<Int> = JsonMissing.of()
         private var platformCardId: JsonField<String> = JsonMissing.of()
+        private var threeDSecurePassword: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardCreateRequest: CardCreateRequest) = apply {
-            cardholderId = cardCreateRequest.cardholderId
+            customerId = cardCreateRequest.customerId
             form = cardCreateRequest.form
-            fundingSources = cardCreateRequest.fundingSources.map { it.toMutableList() }
+            fundingSource = cardCreateRequest.fundingSource
+            maxSpendPerDay = cardCreateRequest.maxSpendPerDay
+            maxSpendPerTransaction = cardCreateRequest.maxSpendPerTransaction
+            maxTransactionsPerDay = cardCreateRequest.maxTransactionsPerDay
             platformCardId = cardCreateRequest.platformCardId
+            threeDSecurePassword = cardCreateRequest.threeDSecurePassword
             additionalProperties = cardCreateRequest.additionalProperties.toMutableMap()
         }
 
@@ -162,18 +288,16 @@ private constructor(
          * The id of the `Customer` to issue the card to. The customer must have KYC status
          * `APPROVED`; otherwise the request is rejected with `CARDHOLDER_KYC_NOT_APPROVED`.
          */
-        fun cardholderId(cardholderId: String) = cardholderId(JsonField.of(cardholderId))
+        fun customerId(customerId: String) = customerId(JsonField.of(customerId))
 
         /**
-         * Sets [Builder.cardholderId] to an arbitrary JSON value.
+         * Sets [Builder.customerId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.cardholderId] with a well-typed [String] value instead.
+         * You should usually call [Builder.customerId] with a well-typed [String] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun cardholderId(cardholderId: JsonField<String>) = apply {
-            this.cardholderId = cardholderId
-        }
+        fun customerId(customerId: JsonField<String>) = apply { this.customerId = customerId }
 
         /**
          * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be
@@ -190,41 +314,95 @@ private constructor(
         fun form(form: JsonField<Form>) = apply { this.form = form }
 
         /**
-         * Internal account ids to bind as funding sources, in priority order. The first entry is
-         * tried first by Authorization Decisioning. Every card must be bound to at least one
-         * source, and every source must belong to the cardholder and be denominated in a
-         * card-eligible currency (USDB in v1); otherwise the request is rejected with
-         * `FUNDING_SOURCE_INELIGIBLE`.
+         * Internal account id that funds this card. The account must belong to the customer and be
+         * denominated in a card-eligible currency; otherwise the request is rejected with
+         * `INVALID_INPUT`.
          */
-        fun fundingSources(fundingSources: List<String>) =
-            fundingSources(JsonField.of(fundingSources))
+        fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
         /**
-         * Sets [Builder.fundingSources] to an arbitrary JSON value.
+         * Sets [Builder.fundingSource] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.fundingSources] with a well-typed `List<String>` value
+         * You should usually call [Builder.fundingSource] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun fundingSource(fundingSource: JsonField<String>) = apply {
+            this.fundingSource = fundingSource
+        }
+
+        /**
+         * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
+         * smallest unit of the card's currency (USD cents for USDB-funded cards). Omit this field
+         * for no card-specific daily cap. When the platform config also supplies
+         * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
+         * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
+         * capacity during the day. Accepted only when the funding-source internal account's
+         * `cardCapabilities.supportsSpendLimitsAtIssuance` is true. Spend exactly equal to the
+         * effective limit is allowed.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: Long) = maxSpendPerDay(JsonField.of(maxSpendPerDay))
+
+        /**
+         * Sets [Builder.maxSpendPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerDay] with a well-typed [Long] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun maxSpendPerDay(maxSpendPerDay: JsonField<Long>) = apply {
+            this.maxSpendPerDay = maxSpendPerDay
+        }
+
+        /**
+         * The largest amount this card can authorize on a single transaction, in the smallest unit
+         * of its currency (cents for USD). An authorization for exactly the limit is allowed. A
+         * later clearing can still settle above it — a restaurant tip, for example — so this caps
+         * the authorization, not the final settled amount. Omit the field to set no limit. If your
+         * platform config also sets `cardConfigs.maxSpendPerTransaction`, the lower of the two
+         * applies. You can only send this when the funding-source internal account's
+         * `cardCapabilities.supportsSpendLimitsAtIssuance` is true.
+         */
+        fun maxSpendPerTransaction(maxSpendPerTransaction: Long) =
+            maxSpendPerTransaction(JsonField.of(maxSpendPerTransaction))
+
+        /**
+         * Sets [Builder.maxSpendPerTransaction] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxSpendPerTransaction] with a well-typed [Long] value
          * instead. This method is primarily for setting the field to an undocumented or not yet
          * supported value.
          */
-        fun fundingSources(fundingSources: JsonField<List<String>>) = apply {
-            this.fundingSources = fundingSources.map { it.toMutableList() }
+        fun maxSpendPerTransaction(maxSpendPerTransaction: JsonField<Long>) = apply {
+            this.maxSpendPerTransaction = maxSpendPerTransaction
         }
 
         /**
-         * Adds a single [String] to [fundingSources].
-         *
-         * @throws IllegalStateException if the field was previously set to a non-list.
+         * Optional card-specific cap on the number of transactions the card may authorize during
+         * one UTC calendar day. Omit this field for no card-specific daily transaction cap. When
+         * the platform config also supplies `cardConfigs.maxTransactionsPerDay`, Grid enforces the
+         * lower of the two values. The window resets at 00:00 UTC. Each approved authorization
+         * counts once; refunds, reversals, and authorization expiries do not restore capacity
+         * during the day. Accepted only when the funding-source internal account's
+         * `cardCapabilities.supportsTransactionCountLimit` is true.
          */
-        fun addFundingSource(fundingSource: String) = apply {
-            fundingSources =
-                (fundingSources ?: JsonField.of(mutableListOf())).also {
-                    checkKnown("fundingSources", it).add(fundingSource)
-                }
+        fun maxTransactionsPerDay(maxTransactionsPerDay: Int) =
+            maxTransactionsPerDay(JsonField.of(maxTransactionsPerDay))
+
+        /**
+         * Sets [Builder.maxTransactionsPerDay] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.maxTransactionsPerDay] with a well-typed [Int] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun maxTransactionsPerDay(maxTransactionsPerDay: JsonField<Int>) = apply {
+            this.maxTransactionsPerDay = maxTransactionsPerDay
         }
 
         /**
-         * Optional platform-specific card identifier. System-generated when omitted, mirroring
-         * `platformCustomerId` semantics.
+         * Platform-specific card identifier. Always generated by the server; any value supplied in
+         * the request is ignored.
          */
         fun platformCardId(platformCardId: String) = platformCardId(JsonField.of(platformCardId))
 
@@ -237,6 +415,30 @@ private constructor(
          */
         fun platformCardId(platformCardId: JsonField<String>) = apply {
             this.platformCardId = platformCardId
+        }
+
+        /**
+         * Static password used as the card's 3-D Secure factor. Required when the first
+         * funding-source internal account's `cardCapabilities.supports3dSecurePassword` is true;
+         * omitting it or supplying an empty or whitespace-only string is rejected with
+         * `INVALID_INPUT`. When the capability is false, supplying this field is rejected with
+         * `INVALID_INPUT` because cards in that program have no static-password factor. Grid does
+         * not retain the value: it is forwarded to the issuer and discarded, so it cannot be read
+         * back afterwards; a cardholder who forgets it must set a new one through `PATCH
+         * /cards/{id}`.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: String) =
+            threeDSecurePassword(JsonField.of(threeDSecurePassword))
+
+        /**
+         * Sets [Builder.threeDSecurePassword] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.threeDSecurePassword] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: JsonField<String>) = apply {
+            this.threeDSecurePassword = threeDSecurePassword
         }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
@@ -265,19 +467,23 @@ private constructor(
          *
          * The following fields are required:
          * ```kotlin
-         * .cardholderId()
+         * .customerId()
          * .form()
-         * .fundingSources()
+         * .fundingSource()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
          */
         fun build(): CardCreateRequest =
             CardCreateRequest(
-                checkRequired("cardholderId", cardholderId),
+                checkRequired("customerId", customerId),
                 checkRequired("form", form),
-                checkRequired("fundingSources", fundingSources).map { it.toImmutable() },
+                checkRequired("fundingSource", fundingSource),
+                maxSpendPerDay,
+                maxSpendPerTransaction,
+                maxTransactionsPerDay,
                 platformCardId,
+                threeDSecurePassword,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -297,10 +503,14 @@ private constructor(
             return@apply
         }
 
-        cardholderId()
+        customerId()
         form().validate()
-        fundingSources()
+        fundingSource()
+        maxSpendPerDay()
+        maxSpendPerTransaction()
+        maxTransactionsPerDay()
         platformCardId()
+        threeDSecurePassword()
         validated = true
     }
 
@@ -318,10 +528,14 @@ private constructor(
      * Used for best match union deserialization.
      */
     internal fun validity(): Int =
-        (if (cardholderId.asKnown() == null) 0 else 1) +
+        (if (customerId.asKnown() == null) 0 else 1) +
             (form.asKnown()?.validity() ?: 0) +
-            (fundingSources.asKnown()?.size ?: 0) +
-            (if (platformCardId.asKnown() == null) 0 else 1)
+            (if (fundingSource.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerDay.asKnown() == null) 0 else 1) +
+            (if (maxSpendPerTransaction.asKnown() == null) 0 else 1) +
+            (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
+            (if (platformCardId.asKnown() == null) 0 else 1) +
+            (if (threeDSecurePassword.asKnown() == null) 0 else 1)
 
     /**
      * Physical form factor of the card. Only `VIRTUAL` is supported in v1; `PHYSICAL` will be added
@@ -461,19 +675,33 @@ private constructor(
         }
 
         return other is CardCreateRequest &&
-            cardholderId == other.cardholderId &&
+            customerId == other.customerId &&
             form == other.form &&
-            fundingSources == other.fundingSources &&
+            fundingSource == other.fundingSource &&
+            maxSpendPerDay == other.maxSpendPerDay &&
+            maxSpendPerTransaction == other.maxSpendPerTransaction &&
+            maxTransactionsPerDay == other.maxTransactionsPerDay &&
             platformCardId == other.platformCardId &&
+            threeDSecurePassword == other.threeDSecurePassword &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(cardholderId, form, fundingSources, platformCardId, additionalProperties)
+        Objects.hash(
+            customerId,
+            form,
+            fundingSource,
+            maxSpendPerDay,
+            maxSpendPerTransaction,
+            maxTransactionsPerDay,
+            platformCardId,
+            threeDSecurePassword,
+            additionalProperties,
+        )
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardCreateRequest{cardholderId=$cardholderId, form=$form, fundingSources=$fundingSources, platformCardId=$platformCardId, additionalProperties=$additionalProperties}"
+        "CardCreateRequest{customerId=$customerId, form=$form, fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, platformCardId=$platformCardId, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }

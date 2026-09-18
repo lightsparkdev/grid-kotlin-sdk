@@ -7,14 +7,9 @@ import com.lightspark.grid.core.ClientOptions
 import com.lightspark.grid.core.RequestOptions
 import com.lightspark.grid.core.http.HttpResponseFor
 import com.lightspark.grid.models.agents.Agent
-import com.lightspark.grid.models.agents.AgentAction
-import com.lightspark.grid.models.agents.me.MeCreateTransferInParams
-import com.lightspark.grid.models.agents.me.MeCreateTransferOutParams
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsPageAsync
 import com.lightspark.grid.models.agents.me.MeListInternalAccountsParams
 import com.lightspark.grid.models.agents.me.MeRetrieveParams
-import com.lightspark.grid.models.transferin.TransferInRequest
-import com.lightspark.grid.models.transferout.TransferOutRequest
 import com.lightspark.grid.services.async.agents.me.ActionServiceAsync
 import com.lightspark.grid.services.async.agents.me.ExternalAccountServiceAsync
 import com.lightspark.grid.services.async.agents.me.QuoteServiceAsync
@@ -92,52 +87,6 @@ interface MeServiceAsync {
         retrieve(MeRetrieveParams.none(), requestOptions)
 
     /**
-     * Transfer funds from an external account to an internal account for the authenticated agent's
-     * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS
-     * permission in the agent's policy. If the agent's policy requires approval for this amount,
-     * the transaction will be created in a pending state and must be approved by the platform via
-     * `POST /agents/{agentId}/actions/{actionId}/approve`. This endpoint should only be used for
-     * external account sources with pull functionality (e.g. ACH Pull). Otherwise, use the payment
-     * instructions on the internal account to deposit funds.
-     */
-    suspend fun createTransferIn(
-        params: MeCreateTransferInParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
-
-    /** @see createTransferIn */
-    suspend fun createTransferIn(
-        transferInRequest: TransferInRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction =
-        createTransferIn(
-            MeCreateTransferInParams.builder().transferInRequest(transferInRequest).build(),
-            requestOptions,
-        )
-
-    /**
-     * Transfer funds from an internal account to an external account for the authenticated agent's
-     * customer. Accounts must belong to the agent's customer. Requires the CREATE_TRANSFERS
-     * permission in the agent's policy. If the agent's policy requires approval for this amount,
-     * the transaction will be created in a pending state and must be approved by the platform via
-     * `POST /agents/{agentId}/actions/{actionId}/approve`.
-     */
-    suspend fun createTransferOut(
-        params: MeCreateTransferOutParams,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction
-
-    /** @see createTransferOut */
-    suspend fun createTransferOut(
-        transferOutRequest: TransferOutRequest,
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): AgentAction =
-        createTransferOut(
-            MeCreateTransferOutParams.builder().transferOutRequest(transferOutRequest).build(),
-            requestOptions,
-        )
-
-    /**
      * Retrieve the internal accounts belonging to the customer this agent operates on behalf of.
      * Use this to discover available source accounts for transfers and quotes, and to verify which
      * accounts are accessible under the agent's `accountRestrictions` policy.
@@ -213,48 +162,6 @@ interface MeServiceAsync {
         @MustBeClosed
         suspend fun retrieve(requestOptions: RequestOptions): HttpResponseFor<Agent> =
             retrieve(MeRetrieveParams.none(), requestOptions)
-
-        /**
-         * Returns a raw HTTP response for `post /agents/me/transfer-in`, but is otherwise the same
-         * as [MeServiceAsync.createTransferIn].
-         */
-        @MustBeClosed
-        suspend fun createTransferIn(
-            params: MeCreateTransferInParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
-
-        /** @see createTransferIn */
-        @MustBeClosed
-        suspend fun createTransferIn(
-            transferInRequest: TransferInRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
-            createTransferIn(
-                MeCreateTransferInParams.builder().transferInRequest(transferInRequest).build(),
-                requestOptions,
-            )
-
-        /**
-         * Returns a raw HTTP response for `post /agents/me/transfer-out`, but is otherwise the same
-         * as [MeServiceAsync.createTransferOut].
-         */
-        @MustBeClosed
-        suspend fun createTransferOut(
-            params: MeCreateTransferOutParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction>
-
-        /** @see createTransferOut */
-        @MustBeClosed
-        suspend fun createTransferOut(
-            transferOutRequest: TransferOutRequest,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<AgentAction> =
-            createTransferOut(
-                MeCreateTransferOutParams.builder().transferOutRequest(transferOutRequest).build(),
-                requestOptions,
-            )
 
         /**
          * Returns a raw HTTP response for `get /agents/me/internal-accounts`, but is otherwise the

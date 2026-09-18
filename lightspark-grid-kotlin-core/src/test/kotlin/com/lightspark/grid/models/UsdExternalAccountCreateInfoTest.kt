@@ -39,6 +39,11 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("Chase Bank")
+                .fiToFiInformation("/BNF/Invoice 4471")
+                .intermediaryBankName("JPMorgan Chase Bank")
+                .intermediaryRoutingNumber("021000021")
                 .build()
 
         assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
@@ -69,6 +74,13 @@ internal class UsdExternalAccountCreateInfoTest {
                 )
             )
         assertThat(usdExternalAccountCreateInfo.routingNumber()).isEqualTo("021000021")
+        assertThat(usdExternalAccountCreateInfo.bankAccountType())
+            .isEqualTo(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+        assertThat(usdExternalAccountCreateInfo.bankName()).isEqualTo("Chase Bank")
+        assertThat(usdExternalAccountCreateInfo.fiToFiInformation()).isEqualTo("/BNF/Invoice 4471")
+        assertThat(usdExternalAccountCreateInfo.intermediaryBankName())
+            .isEqualTo("JPMorgan Chase Bank")
+        assertThat(usdExternalAccountCreateInfo.intermediaryRoutingNumber()).isEqualTo("021000021")
     }
 
     @Test
@@ -100,6 +112,11 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
+                .bankName("Chase Bank")
+                .fiToFiInformation("/BNF/Invoice 4471")
+                .intermediaryBankName("JPMorgan Chase Bank")
+                .intermediaryRoutingNumber("021000021")
                 .build()
 
         val roundtrippedUsdExternalAccountCreateInfo =
