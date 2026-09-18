@@ -87,7 +87,7 @@ private constructor(
     /**
      * Internal account id that funds this card. The account must belong to the customer and be
      * denominated in a card-eligible currency; otherwise the request is rejected with
-     * `FUNDING_SOURCE_INELIGIBLE`.
+     * `INVALID_INPUT`.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -315,7 +315,7 @@ private constructor(
         /**
          * Internal account id that funds this card. The account must belong to the customer and be
          * denominated in a card-eligible currency; otherwise the request is rejected with
-         * `FUNDING_SOURCE_INELIGIBLE`.
+         * `INVALID_INPUT`.
          */
         fun fundingSource(fundingSource: String) = fundingSource(JsonField.of(fundingSource))
 
