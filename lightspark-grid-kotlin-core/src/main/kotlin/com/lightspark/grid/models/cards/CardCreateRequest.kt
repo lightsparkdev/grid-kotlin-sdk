@@ -96,12 +96,13 @@ private constructor(
 
     /**
      * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
-     * smallest unit of the card currency derived from its funding source. Omit this field for no
-     * card-specific daily cap. When the platform config also supplies `cardConfigs.maxSpendPerDay`,
-     * Grid enforces the lower of the two values. The window resets at 00:00 UTC, and refunds,
-     * reversals, and authorization expiries do not restore capacity during the day. Accepted only
-     * when the funding-source internal account's `cardCapabilities.supportsSpendLimitsAtIssuance`
-     * is true. Spend exactly equal to the effective limit is allowed.
+     * smallest unit of the card's currency (USD cents for USDB-funded cards). Omit this field for
+     * no card-specific daily cap. When the platform config also supplies
+     * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window resets at
+     * 00:00 UTC, and refunds, reversals, and authorization expiries do not restore capacity during
+     * the day. Accepted only when the funding-source internal account's
+     * `cardCapabilities.supportsSpendLimitsAtIssuance` is true. Spend exactly equal to the
+     * effective limit is allowed.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -332,8 +333,8 @@ private constructor(
 
         /**
          * Optional card-specific cap on cumulative new spend during one UTC calendar day, in the
-         * smallest unit of the card currency derived from its funding source. Omit this field for
-         * no card-specific daily cap. When the platform config also supplies
+         * smallest unit of the card's currency (USD cents for USDB-funded cards). Omit this field
+         * for no card-specific daily cap. When the platform config also supplies
          * `cardConfigs.maxSpendPerDay`, Grid enforces the lower of the two values. The window
          * resets at 00:00 UTC, and refunds, reversals, and authorization expiries do not restore
          * capacity during the day. Accepted only when the funding-source internal account's
