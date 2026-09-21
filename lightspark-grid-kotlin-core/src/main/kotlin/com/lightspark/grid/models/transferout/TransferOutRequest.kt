@@ -71,7 +71,11 @@ private constructor(
 
     /**
      * The purpose of the payment. This may be required when sending to certain geographies (e.g.
-     * India).
+     * India). Business payments to China must use one of the China-specific purposes rather than
+     * `GOODS_OR_SERVICES`, because each purpose requires its own supporting documents. Those
+     * purposes are `EXPORTED_GOODS_PREPAYMENT`, `EXPORTED_GOODS_POSTPAYMENT`, `SERVICE_CHARGES`,
+     * `OFFICE_EXPENSES`, `DELIVERY_FEES`, `TRAVEL`, and `HOTEL_ACCOMMODATION`. The six China-only
+     * values are rejected on other corridors.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -221,7 +225,11 @@ private constructor(
 
         /**
          * The purpose of the payment. This may be required when sending to certain geographies
-         * (e.g. India).
+         * (e.g. India). Business payments to China must use one of the China-specific purposes
+         * rather than `GOODS_OR_SERVICES`, because each purpose requires its own supporting
+         * documents. Those purposes are `EXPORTED_GOODS_PREPAYMENT`, `EXPORTED_GOODS_POSTPAYMENT`,
+         * `SERVICE_CHARGES`, `OFFICE_EXPENSES`, `DELIVERY_FEES`, `TRAVEL`, and
+         * `HOTEL_ACCOMMODATION`. The six China-only values are rejected on other corridors.
          */
         fun purposeOfPayment(purposeOfPayment: PurposeOfPayment) =
             purposeOfPayment(JsonField.of(purposeOfPayment))
@@ -832,7 +840,11 @@ private constructor(
 
     /**
      * The purpose of the payment. This may be required when sending to certain geographies (e.g.
-     * India).
+     * India). Business payments to China must use one of the China-specific purposes rather than
+     * `GOODS_OR_SERVICES`, because each purpose requires its own supporting documents. Those
+     * purposes are `EXPORTED_GOODS_PREPAYMENT`, `EXPORTED_GOODS_POSTPAYMENT`, `SERVICE_CHARGES`,
+     * `OFFICE_EXPENSES`, `DELIVERY_FEES`, `TRAVEL`, and `HOTEL_ACCOMMODATION`. The six China-only
+     * values are rejected on other corridors.
      */
     class PurposeOfPayment @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -875,6 +887,18 @@ private constructor(
 
             val SALARY_PAYMENT = of("SALARY_PAYMENT")
 
+            val EXPORTED_GOODS_PREPAYMENT = of("EXPORTED_GOODS_PREPAYMENT")
+
+            val EXPORTED_GOODS_POSTPAYMENT = of("EXPORTED_GOODS_POSTPAYMENT")
+
+            val SERVICE_CHARGES = of("SERVICE_CHARGES")
+
+            val OFFICE_EXPENSES = of("OFFICE_EXPENSES")
+
+            val DELIVERY_FEES = of("DELIVERY_FEES")
+
+            val HOTEL_ACCOMMODATION = of("HOTEL_ACCOMMODATION")
+
             val OTHER = of("OTHER")
 
             fun of(value: String) = PurposeOfPayment(JsonField.of(value))
@@ -895,6 +919,12 @@ private constructor(
             TRAVEL,
             FAMILY_SUPPORT,
             SALARY_PAYMENT,
+            EXPORTED_GOODS_PREPAYMENT,
+            EXPORTED_GOODS_POSTPAYMENT,
+            SERVICE_CHARGES,
+            OFFICE_EXPENSES,
+            DELIVERY_FEES,
+            HOTEL_ACCOMMODATION,
             OTHER,
         }
 
@@ -921,6 +951,12 @@ private constructor(
             TRAVEL,
             FAMILY_SUPPORT,
             SALARY_PAYMENT,
+            EXPORTED_GOODS_PREPAYMENT,
+            EXPORTED_GOODS_POSTPAYMENT,
+            SERVICE_CHARGES,
+            OFFICE_EXPENSES,
+            DELIVERY_FEES,
+            HOTEL_ACCOMMODATION,
             OTHER,
             /**
              * An enum member indicating that [PurposeOfPayment] was instantiated with an unknown
@@ -951,6 +987,12 @@ private constructor(
                 TRAVEL -> Value.TRAVEL
                 FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
                 SALARY_PAYMENT -> Value.SALARY_PAYMENT
+                EXPORTED_GOODS_PREPAYMENT -> Value.EXPORTED_GOODS_PREPAYMENT
+                EXPORTED_GOODS_POSTPAYMENT -> Value.EXPORTED_GOODS_POSTPAYMENT
+                SERVICE_CHARGES -> Value.SERVICE_CHARGES
+                OFFICE_EXPENSES -> Value.OFFICE_EXPENSES
+                DELIVERY_FEES -> Value.DELIVERY_FEES
+                HOTEL_ACCOMMODATION -> Value.HOTEL_ACCOMMODATION
                 OTHER -> Value.OTHER
                 else -> Value._UNKNOWN
             }
@@ -979,6 +1021,12 @@ private constructor(
                 TRAVEL -> Known.TRAVEL
                 FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
                 SALARY_PAYMENT -> Known.SALARY_PAYMENT
+                EXPORTED_GOODS_PREPAYMENT -> Known.EXPORTED_GOODS_PREPAYMENT
+                EXPORTED_GOODS_POSTPAYMENT -> Known.EXPORTED_GOODS_POSTPAYMENT
+                SERVICE_CHARGES -> Known.SERVICE_CHARGES
+                OFFICE_EXPENSES -> Known.OFFICE_EXPENSES
+                DELIVERY_FEES -> Known.DELIVERY_FEES
+                HOTEL_ACCOMMODATION -> Known.HOTEL_ACCOMMODATION
                 OTHER -> Known.OTHER
                 else -> throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
             }

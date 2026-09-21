@@ -2980,6 +2980,18 @@ private constructor(
 
                 val SALARY_PAYMENT = of("SALARY_PAYMENT")
 
+                val EXPORTED_GOODS_PREPAYMENT = of("EXPORTED_GOODS_PREPAYMENT")
+
+                val EXPORTED_GOODS_POSTPAYMENT = of("EXPORTED_GOODS_POSTPAYMENT")
+
+                val SERVICE_CHARGES = of("SERVICE_CHARGES")
+
+                val OFFICE_EXPENSES = of("OFFICE_EXPENSES")
+
+                val DELIVERY_FEES = of("DELIVERY_FEES")
+
+                val HOTEL_ACCOMMODATION = of("HOTEL_ACCOMMODATION")
+
                 val OTHER = of("OTHER")
 
                 fun of(value: String) = PurposeOfPayment(JsonField.of(value))
@@ -3000,6 +3012,12 @@ private constructor(
                 TRAVEL,
                 FAMILY_SUPPORT,
                 SALARY_PAYMENT,
+                EXPORTED_GOODS_PREPAYMENT,
+                EXPORTED_GOODS_POSTPAYMENT,
+                SERVICE_CHARGES,
+                OFFICE_EXPENSES,
+                DELIVERY_FEES,
+                HOTEL_ACCOMMODATION,
                 OTHER,
             }
 
@@ -3027,6 +3045,12 @@ private constructor(
                 TRAVEL,
                 FAMILY_SUPPORT,
                 SALARY_PAYMENT,
+                EXPORTED_GOODS_PREPAYMENT,
+                EXPORTED_GOODS_POSTPAYMENT,
+                SERVICE_CHARGES,
+                OFFICE_EXPENSES,
+                DELIVERY_FEES,
+                HOTEL_ACCOMMODATION,
                 OTHER,
                 /**
                  * An enum member indicating that [PurposeOfPayment] was instantiated with an
@@ -3057,6 +3081,12 @@ private constructor(
                     TRAVEL -> Value.TRAVEL
                     FAMILY_SUPPORT -> Value.FAMILY_SUPPORT
                     SALARY_PAYMENT -> Value.SALARY_PAYMENT
+                    EXPORTED_GOODS_PREPAYMENT -> Value.EXPORTED_GOODS_PREPAYMENT
+                    EXPORTED_GOODS_POSTPAYMENT -> Value.EXPORTED_GOODS_POSTPAYMENT
+                    SERVICE_CHARGES -> Value.SERVICE_CHARGES
+                    OFFICE_EXPENSES -> Value.OFFICE_EXPENSES
+                    DELIVERY_FEES -> Value.DELIVERY_FEES
+                    HOTEL_ACCOMMODATION -> Value.HOTEL_ACCOMMODATION
                     OTHER -> Value.OTHER
                     else -> Value._UNKNOWN
                 }
@@ -3085,6 +3115,12 @@ private constructor(
                     TRAVEL -> Known.TRAVEL
                     FAMILY_SUPPORT -> Known.FAMILY_SUPPORT
                     SALARY_PAYMENT -> Known.SALARY_PAYMENT
+                    EXPORTED_GOODS_PREPAYMENT -> Known.EXPORTED_GOODS_PREPAYMENT
+                    EXPORTED_GOODS_POSTPAYMENT -> Known.EXPORTED_GOODS_POSTPAYMENT
+                    SERVICE_CHARGES -> Known.SERVICE_CHARGES
+                    OFFICE_EXPENSES -> Known.OFFICE_EXPENSES
+                    DELIVERY_FEES -> Known.DELIVERY_FEES
+                    HOTEL_ACCOMMODATION -> Known.HOTEL_ACCOMMODATION
                     OTHER -> Known.OTHER
                     else ->
                         throw LightsparkGridInvalidDataException("Unknown PurposeOfPayment: $value")
