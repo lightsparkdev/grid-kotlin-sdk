@@ -18,7 +18,6 @@ internal class UsdExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
                 .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .putAdditionalProperty(
                     "intermediaryBankName",
                     JsonValue.from("JPMorgan Chase Bank"),
@@ -37,7 +36,6 @@ internal class UsdExternalAccountInfoTest {
                 .putAdditionalProperty("accountNumber", JsonValue.from("1234567890"))
                 .putAdditionalProperty("routingNumber", JsonValue.from("021000021"))
                 .putAdditionalProperty("bankName", JsonValue.from("Chase Bank"))
-                .putAdditionalProperty("bankAccountType", JsonValue.from("CHECKING"))
                 .putAdditionalProperty(
                     "intermediaryBankName",
                     JsonValue.from("JPMorgan Chase Bank"),
