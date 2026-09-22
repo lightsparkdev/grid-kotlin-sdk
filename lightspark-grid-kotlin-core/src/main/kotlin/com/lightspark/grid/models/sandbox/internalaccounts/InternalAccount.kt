@@ -162,6 +162,9 @@ private constructor(
      * - `RULE_BASED`: An additional account number for an existing account holder, with a routing
      *   rule attached, so incoming payments can be attributed to a specific payer and swept
      *   automatically. Created with `POST /internal-accounts`.
+     * - `BULK_SETTLEMENT`: An account for receiving bulk payments (for example, a single settlement
+     *   from a payment processor) that the platform then pays out to its customers. Only a platform
+     *   can hold one, and funds in it can move only to the platform's customers.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -512,6 +515,10 @@ private constructor(
          * - `RULE_BASED`: An additional account number for an existing account holder, with a
          *   routing rule attached, so incoming payments can be attributed to a specific payer and
          *   swept automatically. Created with `POST /internal-accounts`.
+         * - `BULK_SETTLEMENT`: An account for receiving bulk payments (for example, a single
+         *   settlement from a payment processor) that the platform then pays out to its customers.
+         *   Only a platform can hold one, and funds in it can move only to the platform's
+         *   customers.
          */
         fun type(type: Type) = type(JsonField.of(type))
 
@@ -913,6 +920,9 @@ private constructor(
      * - `RULE_BASED`: An additional account number for an existing account holder, with a routing
      *   rule attached, so incoming payments can be attributed to a specific payer and swept
      *   automatically. Created with `POST /internal-accounts`.
+     * - `BULK_SETTLEMENT`: An account for receiving bulk payments (for example, a single settlement
+     *   from a payment processor) that the platform then pays out to its customers. Only a platform
+     *   can hold one, and funds in it can move only to the platform's customers.
      */
     class Type @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
 
@@ -936,6 +946,8 @@ private constructor(
 
             val RULE_BASED = of("RULE_BASED")
 
+            val BULK_SETTLEMENT = of("BULK_SETTLEMENT")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -945,6 +957,7 @@ private constructor(
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
             RULE_BASED,
+            BULK_SETTLEMENT,
         }
 
         /**
@@ -961,6 +974,7 @@ private constructor(
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
             RULE_BASED,
+            BULK_SETTLEMENT,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -978,6 +992,7 @@ private constructor(
                 INTERNAL_CRYPTO -> Value.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Value.EMBEDDED_WALLET
                 RULE_BASED -> Value.RULE_BASED
+                BULK_SETTLEMENT -> Value.BULK_SETTLEMENT
                 else -> Value._UNKNOWN
             }
 
@@ -996,6 +1011,7 @@ private constructor(
                 INTERNAL_CRYPTO -> Known.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Known.EMBEDDED_WALLET
                 RULE_BASED -> Known.RULE_BASED
+                BULK_SETTLEMENT -> Known.BULK_SETTLEMENT
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 

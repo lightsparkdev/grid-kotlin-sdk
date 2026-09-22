@@ -274,6 +274,8 @@ private constructor(
 
             val RULE_BASED = of("RULE_BASED")
 
+            val BULK_SETTLEMENT = of("BULK_SETTLEMENT")
+
             fun of(value: String) = Type(JsonField.of(value))
         }
 
@@ -283,6 +285,7 @@ private constructor(
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
             RULE_BASED,
+            BULK_SETTLEMENT,
         }
 
         /**
@@ -299,6 +302,7 @@ private constructor(
             INTERNAL_CRYPTO,
             EMBEDDED_WALLET,
             RULE_BASED,
+            BULK_SETTLEMENT,
             /** An enum member indicating that [Type] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -316,6 +320,7 @@ private constructor(
                 INTERNAL_CRYPTO -> Value.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Value.EMBEDDED_WALLET
                 RULE_BASED -> Value.RULE_BASED
+                BULK_SETTLEMENT -> Value.BULK_SETTLEMENT
                 else -> Value._UNKNOWN
             }
 
@@ -334,6 +339,7 @@ private constructor(
                 INTERNAL_CRYPTO -> Known.INTERNAL_CRYPTO
                 EMBEDDED_WALLET -> Known.EMBEDDED_WALLET
                 RULE_BASED -> Known.RULE_BASED
+                BULK_SETTLEMENT -> Known.BULK_SETTLEMENT
                 else -> throw LightsparkGridInvalidDataException("Unknown Type: $value")
             }
 
