@@ -32,21 +32,17 @@ import java.util.Objects
  * the same `CUSTOMER.KYC_*` / `CUSTOMER.KYB_*` webhooks.
  *
  * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
- * single-use and will expire on their own. For request-level retry safety, include an
- * `Idempotency-Key` header.
+ * single-use and will expire on their own.
  */
 class CustomerCreateKycLinkParams
 private constructor(
     private val customerId: String?,
-    private val idempotencyKey: String?,
     private val kycLinkCreateRequest: KycLinkCreateRequest?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun customerId(): String? = customerId
-
-    fun idempotencyKey(): String? = idempotencyKey
 
     /** Request body for generating a hosted KYC link for an existing customer. */
     fun kycLinkCreateRequest(): KycLinkCreateRequest? = kycLinkCreateRequest
@@ -76,22 +72,18 @@ private constructor(
     class Builder internal constructor() {
 
         private var customerId: String? = null
-        private var idempotencyKey: String? = null
         private var kycLinkCreateRequest: KycLinkCreateRequest? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         internal fun from(customerCreateKycLinkParams: CustomerCreateKycLinkParams) = apply {
             customerId = customerCreateKycLinkParams.customerId
-            idempotencyKey = customerCreateKycLinkParams.idempotencyKey
             kycLinkCreateRequest = customerCreateKycLinkParams.kycLinkCreateRequest
             additionalHeaders = customerCreateKycLinkParams.additionalHeaders.toBuilder()
             additionalQueryParams = customerCreateKycLinkParams.additionalQueryParams.toBuilder()
         }
 
         fun customerId(customerId: String?) = apply { this.customerId = customerId }
-
-        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
 
         /** Request body for generating a hosted KYC link for an existing customer. */
         fun kycLinkCreateRequest(kycLinkCreateRequest: KycLinkCreateRequest?) = apply {
@@ -204,7 +196,6 @@ private constructor(
         fun build(): CustomerCreateKycLinkParams =
             CustomerCreateKycLinkParams(
                 customerId,
-                idempotencyKey,
                 kycLinkCreateRequest,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
@@ -219,13 +210,7 @@ private constructor(
             else -> ""
         }
 
-    override fun _headers(): Headers =
-        Headers.builder()
-            .apply {
-                idempotencyKey?.let { put("Idempotency-Key", it) }
-                putAll(additionalHeaders)
-            }
-            .build()
+    override fun _headers(): Headers = additionalHeaders
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -236,21 +221,14 @@ private constructor(
 
         return other is CustomerCreateKycLinkParams &&
             customerId == other.customerId &&
-            idempotencyKey == other.idempotencyKey &&
             kycLinkCreateRequest == other.kycLinkCreateRequest &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            customerId,
-            idempotencyKey,
-            kycLinkCreateRequest,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(customerId, kycLinkCreateRequest, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "CustomerCreateKycLinkParams{customerId=$customerId, idempotencyKey=$idempotencyKey, kycLinkCreateRequest=$kycLinkCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "CustomerCreateKycLinkParams{customerId=$customerId, kycLinkCreateRequest=$kycLinkCreateRequest, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

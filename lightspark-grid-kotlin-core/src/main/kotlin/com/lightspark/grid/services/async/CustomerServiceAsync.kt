@@ -191,8 +191,7 @@ interface CustomerServiceAsync {
      * transitions and the same `CUSTOMER.KYC_*` / `CUSTOMER.KYB_*` webhooks.
      *
      * Each call returns a fresh link. Previously-issued links are not invalidated, but they remain
-     * single-use and will expire on their own. For request-level retry safety, include an
-     * `Idempotency-Key` header.
+     * single-use and will expire on their own.
      */
     suspend fun createKycLink(
         customerId: String,
