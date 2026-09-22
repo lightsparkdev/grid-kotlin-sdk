@@ -102,8 +102,9 @@ private constructor(
     fun routingNumber(): String = routingNumber.getRequired("routingNumber")
 
     /**
-     * Whether the account is a checking or a savings account. Optional on every rail; when omitted,
-     * the account is treated as a checking account.
+     * Whether the account is a checking or a savings account. Grid uses this to set the ACH
+     * transaction code, so a value that does not match the account causes the receiving bank to
+     * return a notification of change.
      *
      * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
      *   the server responded with an unexpected value).
@@ -352,8 +353,9 @@ private constructor(
         }
 
         /**
-         * Whether the account is a checking or a savings account. Optional on every rail; when
-         * omitted, the account is treated as a checking account.
+         * Whether the account is a checking or a savings account. Grid uses this to set the ACH
+         * transaction code, so a value that does not match the account causes the receiving bank to
+         * return a notification of change.
          */
         fun bankAccountType(bankAccountType: BankAccountType) =
             bankAccountType(JsonField.of(bankAccountType))
@@ -819,8 +821,9 @@ private constructor(
     }
 
     /**
-     * Whether the account is a checking or a savings account. Optional on every rail; when omitted,
-     * the account is treated as a checking account.
+     * Whether the account is a checking or a savings account. Grid uses this to set the ACH
+     * transaction code, so a value that does not match the account causes the receiving bank to
+     * return a notification of change.
      */
     class BankAccountType @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
