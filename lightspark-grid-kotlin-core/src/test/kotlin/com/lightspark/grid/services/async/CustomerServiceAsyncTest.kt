@@ -280,7 +280,6 @@ internal class CustomerServiceAsyncTest {
             customerServiceAsync.createKycLink(
                 CustomerCreateKycLinkParams.builder()
                     .customerId("customerId")
-                    .idempotencyKey("<uuid>")
                     .kycLinkCreateRequest(
                         KycLinkCreateRequest.builder()
                             .redirectUri("https://app.example.com/onboarding/completed")
