@@ -36,6 +36,7 @@ internal class ExternalAccountServiceTest {
                         UsdExternalAccountCreateInfo.builder()
                             .accountNumber("12345678901")
                             .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .beneficiary(
                                 UsdBeneficiary.builder()
                                     .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -58,7 +59,6 @@ internal class ExternalAccountServiceTest {
                                     .build()
                             )
                             .routingNumber("123456789")
-                            .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                             .bankName("Chase Bank")
                             .fiToFiInformation("/BNF/Invoice 4471")
                             .intermediaryBankName("JPMorgan Chase Bank")

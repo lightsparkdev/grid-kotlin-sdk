@@ -17,6 +17,7 @@ internal class UsdExternalAccountCreateInfoTest {
             UsdExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -39,7 +40,6 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
-                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .bankName("Chase Bank")
                 .fiToFiInformation("/BNF/Invoice 4471")
                 .intermediaryBankName("JPMorgan Chase Bank")
@@ -49,6 +49,8 @@ internal class UsdExternalAccountCreateInfoTest {
         assertThat(usdExternalAccountCreateInfo.accountNumber()).isEqualTo("1234567890")
         assertThat(usdExternalAccountCreateInfo.accountType())
             .isEqualTo(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+        assertThat(usdExternalAccountCreateInfo.bankAccountType())
+            .isEqualTo(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
         assertThat(usdExternalAccountCreateInfo.beneficiary())
             .isEqualTo(
                 UsdExternalAccountCreateInfo.Beneficiary.ofIndividual(
@@ -74,8 +76,6 @@ internal class UsdExternalAccountCreateInfoTest {
                 )
             )
         assertThat(usdExternalAccountCreateInfo.routingNumber()).isEqualTo("021000021")
-        assertThat(usdExternalAccountCreateInfo.bankAccountType())
-            .isEqualTo(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
         assertThat(usdExternalAccountCreateInfo.bankName()).isEqualTo("Chase Bank")
         assertThat(usdExternalAccountCreateInfo.fiToFiInformation()).isEqualTo("/BNF/Invoice 4471")
         assertThat(usdExternalAccountCreateInfo.intermediaryBankName())
@@ -90,6 +90,7 @@ internal class UsdExternalAccountCreateInfoTest {
             UsdExternalAccountCreateInfo.builder()
                 .accountNumber("1234567890")
                 .accountType(UsdExternalAccountCreateInfo.AccountType.USD_ACCOUNT)
+                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .beneficiary(
                     UsdBeneficiary.builder()
                         .beneficiaryType(UsdBeneficiary.BeneficiaryType.INDIVIDUAL)
@@ -112,7 +113,6 @@ internal class UsdExternalAccountCreateInfoTest {
                         .build()
                 )
                 .routingNumber("021000021")
-                .bankAccountType(UsdExternalAccountCreateInfo.BankAccountType.CHECKING)
                 .bankName("Chase Bank")
                 .fiToFiInformation("/BNF/Invoice 4471")
                 .intermediaryBankName("JPMorgan Chase Bank")
