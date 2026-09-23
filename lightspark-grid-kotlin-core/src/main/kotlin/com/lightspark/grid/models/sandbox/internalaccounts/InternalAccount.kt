@@ -2206,6 +2206,8 @@ private constructor(
 
                     val ACH_COLOMBIA = of("ACH_COLOMBIA")
 
+                    val ACH_SAME_DAY = of("ACH_SAME_DAY")
+
                     val BANK_TRANSFER = of("BANK_TRANSFER")
 
                     val BRE_B = of("BRE_B")
@@ -2255,6 +2257,7 @@ private constructor(
                 enum class Known {
                     ACH,
                     ACH_COLOMBIA,
+                    ACH_SAME_DAY,
                     BANK_TRANSFER,
                     BRE_B,
                     CIPS,
@@ -2290,6 +2293,7 @@ private constructor(
                 enum class Value {
                     ACH,
                     ACH_COLOMBIA,
+                    ACH_SAME_DAY,
                     BANK_TRANSFER,
                     BRE_B,
                     CIPS,
@@ -2329,6 +2333,7 @@ private constructor(
                     when (this) {
                         ACH -> Value.ACH
                         ACH_COLOMBIA -> Value.ACH_COLOMBIA
+                        ACH_SAME_DAY -> Value.ACH_SAME_DAY
                         BANK_TRANSFER -> Value.BANK_TRANSFER
                         BRE_B -> Value.BRE_B
                         CIPS -> Value.CIPS
@@ -2366,6 +2371,7 @@ private constructor(
                     when (this) {
                         ACH -> Known.ACH
                         ACH_COLOMBIA -> Known.ACH_COLOMBIA
+                        ACH_SAME_DAY -> Known.ACH_SAME_DAY
                         BANK_TRANSFER -> Known.BANK_TRANSFER
                         BRE_B -> Known.BRE_B
                         CIPS -> Known.CIPS
