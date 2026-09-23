@@ -1876,7 +1876,8 @@ private constructor(
         /**
          * A fee charged when a transaction uses the specified rail. There can be at most one for a
          * given rail, direction and originator. For example, a config with rail: ACH, direction:
-         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions. `ACH` and
+         * `ACH_SAME_DAY` are separate rails, so price each one with its own config.
          */
         fun rail(): Rail? = rail
 
@@ -1895,7 +1896,8 @@ private constructor(
         /**
          * A fee charged when a transaction uses the specified rail. There can be at most one for a
          * given rail, direction and originator. For example, a config with rail: ACH, direction:
-         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions. `ACH` and
+         * `ACH_SAME_DAY` are separate rails, so price each one with its own config.
          */
         fun asRail(): Rail = rail.getOrThrow("rail")
 
@@ -2027,6 +2029,7 @@ private constructor(
              * A fee charged when a transaction uses the specified rail. There can be at most one
              * for a given rail, direction and originator. For example, a config with rail: ACH,
              * direction: OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+             * `ACH` and `ACH_SAME_DAY` are separate rails, so price each one with its own config.
              */
             fun ofRail(rail: Rail) = FeeConfig(rail = rail)
         }
@@ -2047,6 +2050,7 @@ private constructor(
              * A fee charged when a transaction uses the specified rail. There can be at most one
              * for a given rail, direction and originator. For example, a config with rail: ACH,
              * direction: OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+             * `ACH` and `ACH_SAME_DAY` are separate rails, so price each one with its own config.
              */
             fun visitRail(rail: Rail): T
 
@@ -2677,7 +2681,8 @@ private constructor(
         /**
          * A fee charged when a transaction uses the specified rail. There can be at most one for a
          * given rail, direction and originator. For example, a config with rail: ACH, direction:
-         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions.
+         * OUT, originator: GRID will charge a fee on all outgoing ACH transactions. `ACH` and
+         * `ACH_SAME_DAY` are separate rails, so price each one with its own config.
          */
         class Rail
         @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -2756,8 +2761,8 @@ private constructor(
             fun originator(): Originator = originator.getRequired("originator")
 
             /**
-             * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
-             * today; other rails return a `NOT_IMPLEMENTED` error.
+             * The rail used in the transaction. `ACH`, `ACH_SAME_DAY`, `RTP`, `FEDNOW` and `WIRE`
+             * are accepted today; other rails return a `NOT_IMPLEMENTED` error.
              *
              * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type
              *   or is unexpectedly missing or null (e.g. if the server responded with an unexpected
@@ -2934,8 +2939,8 @@ private constructor(
                 }
 
                 /**
-                 * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
-                 * today; other rails return a `NOT_IMPLEMENTED` error.
+                 * The rail used in the transaction. `ACH`, `ACH_SAME_DAY`, `RTP`, `FEDNOW` and
+                 * `WIRE` are accepted today; other rails return a `NOT_IMPLEMENTED` error.
                  */
                 fun rail(rail: InnerRail) = rail(JsonField.of(rail))
 
@@ -3595,8 +3600,8 @@ private constructor(
             }
 
             /**
-             * The rail used in the transaction. `ACH`, `RTP`, `FEDNOW` and `WIRE` are accepted
-             * today; other rails return a `NOT_IMPLEMENTED` error.
+             * The rail used in the transaction. `ACH`, `ACH_SAME_DAY`, `RTP`, `FEDNOW` and `WIRE`
+             * are accepted today; other rails return a `NOT_IMPLEMENTED` error.
              */
             class InnerRail @JsonCreator private constructor(private val value: JsonField<String>) :
                 Enum {
@@ -3616,6 +3621,8 @@ private constructor(
                     val ACH = of("ACH")
 
                     val ACH_COLOMBIA = of("ACH_COLOMBIA")
+
+                    val ACH_SAME_DAY = of("ACH_SAME_DAY")
 
                     val BANK_TRANSFER = of("BANK_TRANSFER")
 
@@ -3666,6 +3673,7 @@ private constructor(
                 enum class Known {
                     ACH,
                     ACH_COLOMBIA,
+                    ACH_SAME_DAY,
                     BANK_TRANSFER,
                     BRE_B,
                     CIPS,
@@ -3701,6 +3709,7 @@ private constructor(
                 enum class Value {
                     ACH,
                     ACH_COLOMBIA,
+                    ACH_SAME_DAY,
                     BANK_TRANSFER,
                     BRE_B,
                     CIPS,
@@ -3740,6 +3749,7 @@ private constructor(
                     when (this) {
                         ACH -> Value.ACH
                         ACH_COLOMBIA -> Value.ACH_COLOMBIA
+                        ACH_SAME_DAY -> Value.ACH_SAME_DAY
                         BANK_TRANSFER -> Value.BANK_TRANSFER
                         BRE_B -> Value.BRE_B
                         CIPS -> Value.CIPS
@@ -3777,6 +3787,7 @@ private constructor(
                     when (this) {
                         ACH -> Known.ACH
                         ACH_COLOMBIA -> Known.ACH_COLOMBIA
+                        ACH_SAME_DAY -> Known.ACH_SAME_DAY
                         BANK_TRANSFER -> Known.BANK_TRANSFER
                         BRE_B -> Known.BRE_B
                         CIPS -> Known.CIPS

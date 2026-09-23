@@ -689,6 +689,8 @@ private constructor(
 
             val ACH = of("ACH")
 
+            val ACH_SAME_DAY = of("ACH_SAME_DAY")
+
             val WIRE = of("WIRE")
 
             val RTP = of("RTP")
@@ -701,6 +703,7 @@ private constructor(
         /** An enum containing [PaymentRail]'s known values. */
         enum class Known {
             ACH,
+            ACH_SAME_DAY,
             WIRE,
             RTP,
             FEDNOW,
@@ -717,6 +720,7 @@ private constructor(
          */
         enum class Value {
             ACH,
+            ACH_SAME_DAY,
             WIRE,
             RTP,
             FEDNOW,
@@ -736,6 +740,7 @@ private constructor(
         fun value(): Value =
             when (this) {
                 ACH -> Value.ACH
+                ACH_SAME_DAY -> Value.ACH_SAME_DAY
                 WIRE -> Value.WIRE
                 RTP -> Value.RTP
                 FEDNOW -> Value.FEDNOW
@@ -754,6 +759,7 @@ private constructor(
         fun known(): Known =
             when (this) {
                 ACH -> Known.ACH
+                ACH_SAME_DAY -> Known.ACH_SAME_DAY
                 WIRE -> Known.WIRE
                 RTP -> Known.RTP
                 FEDNOW -> Known.FEDNOW
