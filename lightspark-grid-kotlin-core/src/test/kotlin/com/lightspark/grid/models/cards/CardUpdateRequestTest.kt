@@ -20,6 +20,7 @@ internal class CardUpdateRequestTest {
                 .reason("Cardholder reported the card stolen.")
                 .status(CardUpdateRequest.Status.FROZEN)
                 .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+                .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
         assertThat(cardUpdateRequest.fundingSource())
@@ -31,6 +32,7 @@ internal class CardUpdateRequestTest {
         assertThat(cardUpdateRequest.status()).isEqualTo(CardUpdateRequest.Status.FROZEN)
         assertThat(cardUpdateRequest.substatus())
             .isEqualTo(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+        assertThat(cardUpdateRequest.threeDSecurePassword()).isEqualTo("AbCd1234EfGh5678")
     }
 
     @Test
@@ -45,6 +47,7 @@ internal class CardUpdateRequestTest {
                 .reason("Cardholder reported the card stolen.")
                 .status(CardUpdateRequest.Status.FROZEN)
                 .substatus(CardUpdateRequest.Substatus.SUSPICIOUS_ACTIVITY)
+                .threeDSecurePassword("AbCd1234EfGh5678")
                 .build()
 
         val roundtrippedCardUpdateRequest =

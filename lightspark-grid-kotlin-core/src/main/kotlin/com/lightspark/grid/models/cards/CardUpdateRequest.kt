@@ -17,11 +17,11 @@ import java.util.Objects
 
 /**
  * Update request for `PATCH /cards/{id}`. At least one of `status`, `fundingSource`,
- * `maxSpendPerTransaction`, `maxSpendPerDay`, or `maxTransactionsPerDay` must be supplied.
- * Supplying `status` also requires `substatus` and `reason`, so every card state change carries why
- * it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN →
- * CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is terminal and
- * irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
+ * `maxSpendPerTransaction`, `maxSpendPerDay`, `maxTransactionsPerDay`, or `threeDSecurePassword`
+ * must be supplied. Supplying `status` also requires `substatus` and `reason`, so every card state
+ * change carries why it happened. `status` transitions are limited to `ACTIVE ⇄ FROZEN` and `ACTIVE
+ * | FROZEN → CLOSED`; any other transition returns `409 INVALID_STATE_TRANSITION`. `CLOSED` is
+ * terminal and irreversible and cannot be combined with `fundingSource`, `maxSpendPerTransaction`,
  * `maxSpendPerDay`, or `maxTransactionsPerDay`.
  */
 class CardUpdateRequest
@@ -34,6 +34,7 @@ private constructor(
     private val reason: JsonField<String>,
     private val status: JsonField<Status>,
     private val substatus: JsonField<Substatus>,
+    private val threeDSecurePassword: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
@@ -56,6 +57,9 @@ private constructor(
         @JsonProperty("substatus")
         @ExcludeMissing
         substatus: JsonField<Substatus> = JsonMissing.of(),
+        @JsonProperty("threeDSecurePassword")
+        @ExcludeMissing
+        threeDSecurePassword: JsonField<String> = JsonMissing.of(),
     ) : this(
         fundingSource,
         maxSpendPerDay,
@@ -64,6 +68,7 @@ private constructor(
         reason,
         status,
         substatus,
+        threeDSecurePassword,
         mutableMapOf(),
     )
 
@@ -152,6 +157,15 @@ private constructor(
     fun substatus(): Substatus? = substatus.getNullable("substatus")
 
     /**
+     * Sets a new static 3-D Secure password on the card. Send it on its own, and only when the
+     * card's `cardCapabilities.supports3dSecurePassword` is true.
+     *
+     * @throws LightsparkGridInvalidDataException if the JSON field has an unexpected type (e.g. if
+     *   the server responded with an unexpected value).
+     */
+    fun threeDSecurePassword(): String? = threeDSecurePassword.getNullable("threeDSecurePassword")
+
+    /**
      * Returns the raw JSON value of [fundingSource].
      *
      * Unlike [fundingSource], this method doesn't throw if the JSON field has an unexpected type.
@@ -210,6 +224,16 @@ private constructor(
      */
     @JsonProperty("substatus") @ExcludeMissing fun _substatus(): JsonField<Substatus> = substatus
 
+    /**
+     * Returns the raw JSON value of [threeDSecurePassword].
+     *
+     * Unlike [threeDSecurePassword], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("threeDSecurePassword")
+    @ExcludeMissing
+    fun _threeDSecurePassword(): JsonField<String> = threeDSecurePassword
+
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
         additionalProperties.put(key, value)
@@ -238,6 +262,7 @@ private constructor(
         private var reason: JsonField<String> = JsonMissing.of()
         private var status: JsonField<Status> = JsonMissing.of()
         private var substatus: JsonField<Substatus> = JsonMissing.of()
+        private var threeDSecurePassword: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         internal fun from(cardUpdateRequest: CardUpdateRequest) = apply {
@@ -248,6 +273,7 @@ private constructor(
             reason = cardUpdateRequest.reason
             status = cardUpdateRequest.status
             substatus = cardUpdateRequest.substatus
+            threeDSecurePassword = cardUpdateRequest.threeDSecurePassword
             additionalProperties = cardUpdateRequest.additionalProperties.toMutableMap()
         }
 
@@ -409,6 +435,24 @@ private constructor(
          */
         fun substatus(substatus: JsonField<Substatus>) = apply { this.substatus = substatus }
 
+        /**
+         * Sets a new static 3-D Secure password on the card. Send it on its own, and only when the
+         * card's `cardCapabilities.supports3dSecurePassword` is true.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: String) =
+            threeDSecurePassword(JsonField.of(threeDSecurePassword))
+
+        /**
+         * Sets [Builder.threeDSecurePassword] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.threeDSecurePassword] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun threeDSecurePassword(threeDSecurePassword: JsonField<String>) = apply {
+            this.threeDSecurePassword = threeDSecurePassword
+        }
+
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
             putAllAdditionalProperties(additionalProperties)
@@ -442,6 +486,7 @@ private constructor(
                 reason,
                 status,
                 substatus,
+                threeDSecurePassword,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -468,6 +513,7 @@ private constructor(
         reason()
         status()?.validate()
         substatus()?.validate()
+        threeDSecurePassword()
         validated = true
     }
 
@@ -491,7 +537,8 @@ private constructor(
             (if (maxTransactionsPerDay.asKnown() == null) 0 else 1) +
             (if (reason.asKnown() == null) 0 else 1) +
             (status.asKnown()?.validity() ?: 0) +
-            (substatus.asKnown()?.validity() ?: 0)
+            (substatus.asKnown()?.validity() ?: 0) +
+            (if (threeDSecurePassword.asKnown() == null) 0 else 1)
 
     /**
      * Target status for the card. Permitted transitions are `ACTIVE ⇄ FROZEN` and `ACTIVE | FROZEN
@@ -846,6 +893,7 @@ private constructor(
             reason == other.reason &&
             status == other.status &&
             substatus == other.substatus &&
+            threeDSecurePassword == other.threeDSecurePassword &&
             additionalProperties == other.additionalProperties
     }
 
@@ -858,6 +906,7 @@ private constructor(
             reason,
             status,
             substatus,
+            threeDSecurePassword,
             additionalProperties,
         )
     }
@@ -865,5 +914,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, reason=$reason, status=$status, substatus=$substatus, additionalProperties=$additionalProperties}"
+        "CardUpdateRequest{fundingSource=$fundingSource, maxSpendPerDay=$maxSpendPerDay, maxSpendPerTransaction=$maxSpendPerTransaction, maxTransactionsPerDay=$maxTransactionsPerDay, reason=$reason, status=$status, substatus=$substatus, threeDSecurePassword=$threeDSecurePassword, additionalProperties=$additionalProperties}"
 }
